@@ -1,5 +1,6 @@
 package net.electroland.connection.animation;
 
+import net.electroland.connection.core.ConnectionMain;
 import net.electroland.connection.core.Light;
 
 public class ScreenSaver implements Animation {
@@ -7,8 +8,8 @@ public class ScreenSaver implements Animation {
 	public int gridx, gridy;							// grid dimensions
 	public byte[] buffer, pair;						// final output
 	public Light[] lights;								// light objects
-	//public int soundID;
-	//public String soundFile;
+	public int soundID;
+	public String soundFile;
 	public int[] lightlist, activelightlist;
 	private int duration;
 	private int lightCount;
@@ -29,8 +30,8 @@ public class ScreenSaver implements Animation {
 		buffer[0] = (byte)255; 							// start byte
 		buffer[1] = (byte)0;							// command byte
 		buffer[buffer.length-1] = (byte)254; 			// end byte
-		//soundFile = ConnectionMain.properties.get("soundBiggestGlobal");
-		//soundID = -1;
+		soundFile = ConnectionMain.properties.get("soundScreenSaverGlobal");
+		soundID = -1;
 		
 		lights = new Light[6*28];							// empty array
 		lightlist = new int[6*28];
@@ -101,8 +102,8 @@ public class ScreenSaver implements Animation {
 		}
 		System.out.println("START: ScreenSaver");
 		// no sound for screensaver
-		//soundID = ConnectionMain.soundController.newSoundID();
-		//ConnectionMain.soundController.globalSound(soundID,soundFile,false,1.0f,10000);
+		soundID = ConnectionMain.soundController.newSoundID();
+		ConnectionMain.soundController.globalSound(soundID,soundFile,false,1.0f,10000,"screensaver");
 	}
 	
 	public void stop(){

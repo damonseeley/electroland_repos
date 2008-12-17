@@ -51,7 +51,7 @@ public class Matrix implements Animation{
 	public void stop() {
 		// stop the matrix sound
 		System.out.println("STOP: Matrix " + soundID);
-		ConnectionMain.soundController.killSound(soundID);
+		//ConnectionMain.soundController.killSound(soundID);
 	}
 	
 	public byte[] draw(){

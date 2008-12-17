@@ -56,7 +56,7 @@ public class QuickColor implements Animation{
 	
 	public void stop(){
 		// stop sound
-		ConnectionMain.soundController.killSound(soundID);
+		//ConnectionMain.soundController.killSound(soundID);
 	}
 	
 	public byte[] draw(){

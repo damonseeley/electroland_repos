@@ -72,7 +72,7 @@ public class Conductor implements TransitionListener{
 		trackingBars = new TrackingMain(lights, getIntProp("trackingDuration"));
 		musicbox = new MusicBox(lights, getIntProp("musicboxDuration"));
 		matrix = new Matrix(lights, getIntProp("matrixDuration"), ConnectionMain.properties.get("soundMatrixGlobal"));
-		biggest = new Biggest(lights, 120, 31, getIntProp("biggestDuration"));
+		biggest = new Biggest(lights, getIntProp("biggestHold")/33, getIntProp("biggestFade")/33, getIntProp("biggestDuration"));
 		screenSaver = new ScreenSaver(getIntProp("trackingDuration"), 30, 3000, 1000, 500);
 
 		Animation[] shows = {vegaspulse, wave, musicbox, matrix, biggest};
@@ -93,7 +93,7 @@ public class Conductor implements TransitionListener{
 		// state 
 		currentShowIndex = 0;
 		littleShowIndex = 0;
-		connectionMode = false;		// defaults to bar mode
+		connectionMode = true;		// defaults to connection mode
 		if(connectionMode){
 			currentAnimation = trackingConnections;
 		} else {
@@ -222,3 +222,4 @@ public class Conductor implements TransitionListener{
 	}
 
 }
+

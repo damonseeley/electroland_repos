@@ -31,6 +31,8 @@ public class TrackingConnections implements Animation {
 	public boolean dashedMode;
 	public int mindist = 2;
 	private int duration;
+	private int rowPairThreshold = Integer.valueOf(ConnectionMain.properties.get("rowPairThreshold"));
+	private int diagPairThreshold = Integer.valueOf(ConnectionMain.properties.get("diagPairThreshold"));
 	
 	public TrackingConnections(Light[] _lights, int duration){
 		this.duration = duration;
@@ -91,8 +93,12 @@ public class TrackingConnections implements Animation {
 					int elementB = locB[0] + locB[1]*gridx;									// position in light grid
 					if(elementB < lights.length && elementB >= 0){							// if both within the light grid...
 						// save a lot of calls by passing these variables
-						checkRow(personA, locA, elementA, personB, locB, elementB);			// check short ways
-						checkDiagonal(personA, locA, elementA, personB, locB, elementB);	// check 45 degree only
+						if(diagonalPairs.size() <= diagPairThreshold){	// if too many diagonals, don't draw new horizontal
+							checkRow(personA, locA, elementA, personB, locB, elementB);			// check short ways
+						}
+						if(rowPairs.size() <= rowPairThreshold){		// if too many horizontals, don't draw new diagonal
+							checkDiagonal(personA, locA, elementA, personB, locB, elementB);	// check 45 degree only
+						}
 					}
 				}
 			}
@@ -216,7 +222,7 @@ public class TrackingConnections implements Animation {
 	}
 	
 	private void checkRow(Person personA, int[] locA, int elementA, Person personB, int[] locB, int elementB){
-		if(locA[1] == locB[1]){																								// if in the same row...
+		if(locA[1] == locB[1] && Math.abs(locA[0] - locB[0]) > 2){									// if in the same row and atleast 2 lights inbetween...
 			if(!rowPairs.containsKey(personA.id+","+personB.id) && !rowPairs.containsKey(personB.id+","+personA.id)){		// if pair doesn't exist...
 				rowPairs.put(personA.id+","+personB.id, new HorizontalPair(personA.id+","+personB.id, personA, personB));	// make a new pair
 			}
@@ -295,7 +301,11 @@ public class TrackingConnections implements Animation {
 				int[] loc = person.getForwardIntLoc(compensation);	// check location
 				if(blastlist[i].gy == loc[1] && blastlist[i].gx == loc[0] && blastlist[i].personID != person.id){
 					if(Math.abs(blastlist[i].starty - blastlist[i].y) > blastlist[i].mindist){	// must go atleast minimum distance before exploding
-						explosions.put(new Integer(explosioncounter), new Explosion(lights, explosioncounter, blastlist[i].gx, blastlist[i].gy, blastlist[i].red, blastlist[i].blue));
+						int fadespeed = 10;
+						if(ConnectionMain.personTracker.peopleCount() > 12){
+							fadespeed = 15;
+						}
+						explosions.put(new Integer(explosioncounter), new Explosion(lights, explosioncounter, blastlist[i].gx, blastlist[i].gy, blastlist[i].red, blastlist[i].blue, fadespeed));
 						explosioncounter++;
 						blasts.remove(new Integer(blastlist[i].id));
 					}
@@ -366,8 +376,8 @@ public class TrackingConnections implements Animation {
 		private String connectsoundfile;
 		private String disconnectsoundfile;
 		private boolean broken = false;
-		private int outsidecounter = 0;	// duration a person has been outside the column
-		private int outsidemax = 15;		// max duration before pair disconnects
+		//private int outsidecounter = 0;	// duration a person has been outside the column
+		//private int outsidemax = 15;		// max duration before pair disconnects
 		
 		public ColumnPair(String id, Person personA, Person personB){
 			this.id = id;
@@ -407,9 +417,9 @@ public class TrackingConnections implements Animation {
 			if(locA[0] != column || locB[0] != column){			// if either has moved out...
 				if(age > 15){									// if older than 500ms...
 					if(!broken){								// if not broken yet...
-						if(outsidecounter < outsidemax){		// if still counting delay...
-							outsidecounter++;
-						} else {								// disconnect pair
+						//if(outsidecounter < outsidemax){		// if still counting delay...
+						//	outsidecounter++;
+						//} else {								// disconnect pair
 							state = 2;
 							drawdistance = Math.abs(locA[1] - locB[1]);
 							if(drawdistance >= 20){
@@ -421,11 +431,11 @@ public class TrackingConnections implements Animation {
 							}
 							broken = true;
 							playDisconnectSound();
-						}
+						//}
 					}
 				}
-			} else {
-				outsidecounter = 0;								// reset if both are in column
+			//} else {
+				//outsidecounter = 0;								// reset if both are in column
 			}
 			if(!(elementA < lights.length && elementA >= 0)){
 				if(age > 15){
@@ -645,6 +655,14 @@ public class TrackingConnections implements Animation {
 			} else if(drawdist <= 0 && fadeout){
 				diagonalPairs.remove(id);
 			}
+			
+			// TRYING TO STOP CRAZY CONNECTIONS TO NOWHERE
+			if(!ConnectionMain.personTracker.people.containsKey(personA.id)){
+				rowPairs.remove(id);								// fully remove when line is done disconnecting
+			} else if(!ConnectionMain.personTracker.people.containsKey(personB.id)){
+				rowPairs.remove(id);								// fully remove when line is done disconnecting
+			}
+			
 			drawLine();
 		}
 		
@@ -730,6 +748,14 @@ public class TrackingConnections implements Animation {
 			} else if(drawdist <= 0 && fadeout){
 				diagonalPairs.remove(id);
 			}
+			
+			// TRYING TO STOP CRAZY CONNECTIONS TO NOWHERE
+			if(!ConnectionMain.personTracker.people.containsKey(personA.id)){
+				diagonalPairs.remove(id);								// fully remove when line is done disconnecting
+			} else if(!ConnectionMain.personTracker.people.containsKey(personB.id)){
+				diagonalPairs.remove(id);								// fully remove when line is done disconnecting
+			}
+			
 			drawLine();
 		}
 		
@@ -765,3 +791,4 @@ public class TrackingConnections implements Animation {
 	}	
 	
 }
+

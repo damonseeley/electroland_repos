@@ -385,7 +385,7 @@ public class TrackingMain implements Animation{
 	public void stop() {
 		// stop the global sound
 		System.out.println("STOP: Tracking Main " + soundID);
-		ConnectionMain.soundController.killSound(soundID);
+		//ConnectionMain.soundController.killSound(soundID);
 	}
 	
 	public void reset(){

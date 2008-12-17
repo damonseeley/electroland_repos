@@ -17,6 +17,7 @@ public class Explosion{
 	public float age;									// age to diminish brightness
 	public float threshhold;							// stroke width of circle (in grid units)
 	public float brightness, red, blue;
+	public int fadespeed;								// rate of diminish in brightness increments
 	public boolean done;
 	public String soundFile;
 	
@@ -34,18 +35,20 @@ public class Explosion{
 		age = 253;
 		radius = 0.1f;
 		threshhold = 0.5f;
+		fadespeed = 10;
 		done = false;
 		soundFile = ConnectionMain.properties.get("soundExplosion");
 		ConnectionMain.soundController.playSimpleSound(soundFile, gx, gy, 0.8f, "explosion");
 	}
 	
-	public Explosion(Light[] lights, int id, int gx, int gy, int red, int blue){
+	public Explosion(Light[] lights, int id, int gx, int gy, int red, int blue, int fadespeed){
 		this.lights = lights;
 		this.id = id;
 		this.gx = gx;
 		this.gy = gy;
 		this.red = (red/253.0f);	// normalized color value
 		this.blue = (blue/253.0f);
+		this.fadespeed = fadespeed;
 		gridx = 6;
 		gridy = 28;
 		x = gx/gridx;
@@ -60,7 +63,7 @@ public class Explosion{
 	
 	public void expand(){
 		radius += 0.2;									// explosion outward speed
-		age -= 10;										// fade speed
+		age -= fadespeed;								// fade speed
 		for(int i=0; i<lights.length; i++){
 			xdiff = lights[i].x - gx;
 			ydiff = lights[i].y - gy;

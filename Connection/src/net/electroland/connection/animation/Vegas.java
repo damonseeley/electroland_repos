@@ -75,7 +75,7 @@ public class Vegas implements Animation {
 	public void stop() {
 		// stop the global sound
 		System.out.println("STOP: Vegas " + soundID);
-		ConnectionMain.soundController.killSound(soundID);
+		//ConnectionMain.soundController.killSound(soundID);
 	}
 	
 }

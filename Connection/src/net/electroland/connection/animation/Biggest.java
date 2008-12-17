@@ -108,7 +108,7 @@ public class Biggest implements Animation{
 	public void stop() {
 		// stop the global sound
 		System.out.println("STOP: Giant Color Shift " + soundID);
-		ConnectionMain.soundController.killSound(soundID);
+		//ConnectionMain.soundController.killSound(soundID);
 	}
 	
 }

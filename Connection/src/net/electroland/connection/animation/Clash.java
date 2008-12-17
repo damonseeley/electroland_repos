@@ -111,7 +111,7 @@ public class Clash {
 	public void stop() {
 		// stop the global sound
 		System.out.println("STOP: Clash " + soundID);
-		ConnectionMain.soundController.killSound(soundID);
+		//ConnectionMain.soundController.killSound(soundID);
 	}
 	
 	

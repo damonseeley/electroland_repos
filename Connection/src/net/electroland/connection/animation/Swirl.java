@@ -53,7 +53,7 @@ public class Swirl {
 	public void stop() {
 		// stop the global sound
 		System.out.println("STOP: Swirl " + soundID);
-		ConnectionMain.soundController.killSound(soundID);
+		//ConnectionMain.soundController.killSound(soundID);
 	}
 	
 	public void reset(){

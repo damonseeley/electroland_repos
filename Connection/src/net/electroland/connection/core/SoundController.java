@@ -70,9 +70,12 @@ public class SoundController{
 		//send("simple instance"+soundIDToStart+" "+soundFile+" "+0+" "+0+" "+0+" "+gain+" "+comment);
 	}
 	
+	/*
+	// no longer in use
 	public void killSound(int soundIDToKill){
-		//send("stop instance"+soundIDToKill);
+		send("stop instance"+soundIDToKill);
 	}
+	*/
 	
 	public void killAllSounds(){
 		send("kill");
