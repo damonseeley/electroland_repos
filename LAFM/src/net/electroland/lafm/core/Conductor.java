@@ -14,11 +14,11 @@ import net.electroland.detector.DetectorManager;
 import net.electroland.lafm.gui.GUIWindow;
 import net.electroland.lafm.scheduler.TimedEvent;
 import net.electroland.lafm.scheduler.TimedEventListener;
-import net.electroland.lafm.shows.DiagnosticThread;
 import net.electroland.lafm.weather.WeatherChangeListener;
 import net.electroland.lafm.weather.WeatherChangedEvent;
 import net.electroland.lafm.weather.WeatherChecker;
 import processing.core.PGraphics2D;
+import processing.core.PImage;
 import promidi.MidiIO;
 import promidi.Note;
 
@@ -107,11 +107,28 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			int fixturenum = Integer.valueOf(sensors.getProperty(String.valueOf(note.getPitch())));
 			boolean on = note.getVelocity() == 0 ? false : true;
 			
+			/*
 			if (!usedFixtures.contains(flowers[fixturenum])){
 				ShowThread newShow = new DiagnosticThread(flowers[fixturenum],
 						null, Integer.MAX_VALUE, 30, new PGraphics2D(256, 256, null));
 				liveShows.add(newShow);
 				usedFixtures.add(flowers[fixturenum]);
+			}
+			*/
+			
+			PGraphics2D raster = new PGraphics2D(256,256,null);
+			if(on){
+				raster.background(-1);				
+			} else {
+				raster.background(-16777216);
+			}
+			String[] fixtures = Conductor.detectorMngr.getFixtureIds();
+			for(int i=0; i<fixtures.length; i++){
+				if(fixtures[i].equals("fixture"+fixturenum)){
+					System.out.println(on+" fixture"+fixturenum);
+					Conductor.detectorMngr.getFixture("fixture"+fixturenum).sync((PImage)raster);
+					break;
+				}
 			}
 			
 			// tell each show that an event has happened
