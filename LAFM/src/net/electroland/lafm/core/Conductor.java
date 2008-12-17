@@ -1,0 +1,178 @@
+package net.electroland.lafm.core;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Vector;
+
+import net.electroland.detector.DMXLightingFixture;
+import net.electroland.detector.DetectorManager;
+import net.electroland.lafm.gui.GUIWindow;
+import net.electroland.lafm.scheduler.TimedEvent;
+import net.electroland.lafm.scheduler.TimedEventListener;
+import net.electroland.lafm.shows.DiagnosticThread;
+import net.electroland.lafm.weather.WeatherChangeListener;
+import net.electroland.lafm.weather.WeatherChangedEvent;
+import net.electroland.lafm.weather.WeatherChecker;
+import processing.core.PGraphics2D;
+import promidi.MidiIO;
+import promidi.Note;
+
+public class Conductor extends Thread implements ShowThreadListener, WeatherChangeListener, TimedEventListener{
+	
+	public GUIWindow guiWindow;				// frame for GUI
+	public Properties properties;				// holds light properties
+	static public DMXLightingFixture[] flowers;		// all flower fixtures
+	public MidiIO midiIO;						// sensor data IO
+	static public DetectorManager detectorMngr;
+	static public SoundManager soundManager;
+	public WeatherChecker weatherChecker;
+	public Properties sensors;					// pitch to fixture mappings
+	
+	// sample timed events, but I assume the building will be closed for some time at night
+	//TimedEvent sunriseOn = new TimedEvent(6,00,00, this); // on at sunrise-1 based on weather
+	//TimedEvent sunsetOn = new TimedEvent(16,00,00, this); // on at sunset-1 based on weather
+
+	static private Vector <ShowThread>liveShows;
+	private Vector <DMXLightingFixture> usedFixtures;
+
+	public Conductor(String args[]){
+		/**
+		 * TODO: Fill out properties file with real values.
+		 */
+		
+		liveShows = new Vector<ShowThread>();
+		usedFixtures = new Vector<DMXLightingFixture>();
+		
+		String filename = (args.length > 0) ? args[0] : "depends//lights.properties";
+		Properties p = new Properties();
+		try {
+
+			// load props
+			p.load(new FileInputStream(new File(filename)));
+
+			// set up fixtures
+			detectorMngr = new DetectorManager(p);
+
+			// get fixtures
+			flowers = detectorMngr.getFixtures();
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		filename = "depends//sensors.properties";
+		sensors = new Properties();
+		try{
+			// load sensor info
+			sensors.load(new FileInputStream(new File(filename)));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		midiIO = MidiIO.getInstance();
+		try{
+			midiIO.plug(this, "midiEvent", 0, 0);	// device # and midi channel
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+		soundManager = new SoundManager();
+		guiWindow = new GUIWindow();
+		guiWindow.setVisible(true);
+		// wait 6 secs (for things to get started up) then check weather every half hour
+		weatherChecker = new WeatherChecker(6000, 60 * 30 * 1000);
+		weatherChecker.addListener(this);
+		//weatherChecker.start();
+	}
+	
+	static public void makeShow(ShowThread show){
+		// this is temporary for doing diagnostics via the GUI
+		liveShows.add(show);
+	}
+	
+	public void midiEvent(Note note){
+		// flower sensor is activated
+		System.out.println("MIDI event: "+note.getPitch()+" "+note.getVelocity());
+
+		try{
+			//System.out.println(flowers);
+			int fixturenum = Integer.valueOf(sensors.getProperty(String.valueOf(note.getPitch())));
+			boolean on = note.getVelocity() == 0 ? false : true;
+			
+			if (!usedFixtures.contains(flowers[fixturenum])){
+				ShowThread newShow = new DiagnosticThread(flowers[fixturenum],
+						null, Integer.MAX_VALUE, 30, new PGraphics2D(256, 256, null));
+				liveShows.add(newShow);
+				usedFixtures.add(flowers[fixturenum]);
+			}
+			
+			// tell each show that an event has happened
+			Iterator<ShowThread> i = liveShows.iterator();
+			while (i.hasNext()){
+				ShowThread s = i.next();
+				if (s instanceof SensorListener){
+					((SensorListener)s).sensorEvent(flowers[fixturenum], on);
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+
+	// anytime a show is done, this call back will be called, so that
+	// conductor knows the show is over, and that the flowers are available
+	// for reallocation.
+	public void notifyComplete(ShowThread showthread, DMXLightingFixture[] returnedFlowers) {
+		liveShows.remove(showthread);
+		for (int i = 0; i < returnedFlowers.length; i++){
+			usedFixtures.remove(returnedFlowers[i]);
+		}
+	}
+	
+	public void tempUpdate(float update){
+		/**
+		 * TODO: Used for checking temperature of installation server.
+		 */
+	}
+	
+	public void timedEvent(TimedEvent e){
+		/**
+		 * TODO: Reacts to all timed events (15, 30, 60 minute schedule + sunset/sunrise).
+		 */
+	}
+	
+	public void weatherChanged(WeatherChangedEvent wce){
+		if(wce.hasSunriseChanged()) {
+			Calendar sunrise = wce.getRecord().getSunrise();
+			int h = sunrise.get(Calendar.HOUR_OF_DAY);
+			int m = sunrise.get(Calendar.MINUTE);
+			int s = sunrise.get(Calendar.SECOND);
+			System.out.println("Sunrise at " + h + ":" + m + ":" + s);
+			//sunriseOn.reschedule(h-1, m, s); // turn off an hour before sunrise
+		}
+		if(wce.hasSunsetChanged()) {
+			Calendar sunset = wce.getRecord().getSunset();
+			int h = sunset.get(Calendar.HOUR_OF_DAY);
+			int m = sunset.get(Calendar.MINUTE);
+			int s = sunset.get(Calendar.SECOND);
+			System.out.println("Sunset at " + h + ":" + m + ":" + s);
+			//sunsetOn.reschedule(h - 1, m, s); // turn on 1 hour before sunset
+		}
+
+		System.out.println("CONDITION = " + wce.getRecord().getCondition());
+		System.out.println("VISIBILITY = " + wce.getRecord().getVisibility());
+		System.out.println("OUTSIDE TEMP = " + wce.getRecord().getOutsideTemperature());
+	}
+	
+	public static void main(String[] args) {					// PROGRAM LAUNCH
+		new Conductor(args);
+	}
+}
