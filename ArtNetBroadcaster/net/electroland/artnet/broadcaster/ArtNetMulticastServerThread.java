@@ -24,8 +24,6 @@ public class ArtNetMulticastServerThread extends Thread{
 
 	public void run(){
 
-		boolean state = false;
-
 		byte[] onData = new byte[512];
 		for (int i=0;i<512;i++) {
 			onData[i] = (byte)0xFF;
