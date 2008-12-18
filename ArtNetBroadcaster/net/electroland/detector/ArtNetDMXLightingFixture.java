@@ -36,6 +36,9 @@ public class ArtNetDMXLightingFixture extends DMXLightingFixture {
 			DatagramSocket socket = new DatagramSocket(port);
 			DatagramPacket packet = new DatagramPacket(b.array(), b.position(), ip, port);
 			socket.send(packet);
+			
+			socket.close();
+			
 		} catch (SocketException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
