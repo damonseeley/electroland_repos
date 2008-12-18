@@ -32,7 +32,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	public SoundManager soundManager;
 	public WeatherChecker weatherChecker;
 	public Properties sensors;					// pitch to fixture mappings
-	
+
 	// sample timed events, but I assume the building will be closed for some time at night
 	//TimedEvent sunriseOn = new TimedEvent(6,00,00, this); // on at sunrise-1 based on weather
 	//TimedEvent sunsetOn = new TimedEvent(16,00,00, this); // on at sunset-1 based on weather
