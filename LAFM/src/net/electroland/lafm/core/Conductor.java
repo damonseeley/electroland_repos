@@ -183,7 +183,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			}
 
 			ShowThread newShow = new DiagnosticThread(flowers[fixturenum],
-												null, 60, 1, raster);
+												null, 60, detectorMngr.getFps(), raster);
 			// manage threadpool
 			liveShows.add(newShow);
 			usedFixtures.add(flowers[fixturenum]);		
