@@ -28,8 +28,8 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	public Properties properties;				// holds light properties
 	static public DMXLightingFixture[] flowers;		// all flower fixtures
 	public MidiIO midiIO;						// sensor data IO
-	static public DetectorManager detectorMngr;
-	static public SoundManager soundManager;
+	public DetectorManager detectorMngr;
+	public SoundManager soundManager;
 	public WeatherChecker weatherChecker;
 	public Properties sensors;					// pitch to fixture mappings
 	
@@ -85,7 +85,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			e.printStackTrace();
 		}
 		soundManager = new SoundManager();
-		guiWindow = new GUIWindow();
+		guiWindow = new GUIWindow(this);
 		guiWindow.setVisible(true);
 		// wait 6 secs (for things to get started up) then check weather every half hour
 		weatherChecker = new WeatherChecker(6000, 60 * 30 * 1000);
@@ -97,7 +97,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		// this is temporary for doing diagnostics via the GUI
 		liveShows.add(show);
 	}
-	
+		
 	public void midiEvent(Note note){
 		// flower sensor is activated
 		System.out.println("MIDI event: "+note.getPitch()+" "+note.getVelocity());
@@ -122,11 +122,11 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			} else {
 				raster.background(-16777216);
 			}
-			String[] fixtures = Conductor.detectorMngr.getFixtureIds();
+			String[] fixtures = this.detectorMngr.getFixtureIds();
 			for(int i=0; i<fixtures.length; i++){
 				if(fixtures[i].equals("fixture"+fixturenum)){
 					System.out.println(on+" fixture"+fixturenum);
-					Conductor.detectorMngr.getFixture("fixture"+fixturenum).sync((PImage)raster);
+					this.detectorMngr.getFixture("fixture"+fixturenum).sync((PImage)raster);
 					break;
 				}
 			}
