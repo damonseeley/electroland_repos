@@ -20,11 +20,15 @@ public class DetectorManager {
 
 	private HashMap <String, DMXLightingFixture> fixtures;
 	private HashMap <String, Detector> detectors;
+	private int fps;
 
 	public DetectorManager(Properties props) throws UnknownHostException{
 
 		fixtures = new HashMap<String, DMXLightingFixture>();
 		detectors = new HashMap<String, Detector>();
+
+		// fps
+		fps = Integer.parseInt(props.getProperty("fps"));
 		
 		// load fixtures
 		int i = 0;
@@ -81,6 +85,10 @@ public class DetectorManager {
 			
 			light = props.getProperty("light" + (i++));	
 		}
+	}
+
+	public int getFps() {
+		return fps;
 	}
 
 	public DMXLightingFixture getFixture(String id){

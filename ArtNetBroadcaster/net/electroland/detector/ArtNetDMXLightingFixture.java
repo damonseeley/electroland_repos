@@ -33,6 +33,10 @@ public class ArtNetDMXLightingFixture extends DMXLightingFixture {
 			
 			System.out.println(this.id + "/" + universe + ": " + bytesToHex(b.array(), b.position()));			
 
+
+			
+			// cache these??
+
 			DatagramSocket socket = new DatagramSocket(port);
 			DatagramPacket packet = new DatagramPacket(b.array(), b.position(), ip, port);
 			socket.send(packet);
