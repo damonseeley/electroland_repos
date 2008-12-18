@@ -34,6 +34,7 @@ public class DiagnosticThread extends ShowThread implements SensorListener {
 	public void sensorEvent(DMXLightingFixture eventFixture, boolean isOn) {
 		// assumes that this thread is only used in a single thread per fixture
 		// environment (thus this.getFlowers() is an array of 1)
+		//System.out.println("thread " + this.getId() + " got event " + isOn);
 		if (eventFixture == this.getFlowers()[0] && !isOn){
 			this.cleanStop();
 		}

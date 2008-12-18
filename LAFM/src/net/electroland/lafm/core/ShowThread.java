@@ -20,24 +20,28 @@ public abstract class ShowThread extends Thread {
 	public ShowThread(DMXLightingFixture flower, 
 					  SoundManager soundManager, 
 					  int lifespan, int fps,
-					  PGraphics image){ // lifespan is in seconds.
+					  PGraphics raster){ // lifespan is in seconds.
 		this.flowers = new DMXLightingFixture[1];
 		this.flowers[0] = flower;
 		this.soundManager = soundManager;
 		this.lifespan = lifespan * 1000;
 		this.delay = (long)(1000.0 / fps);
 		this.startTime = System.currentTimeMillis();
+		this.raster = raster;
+		listeners = new ArrayList<ShowThreadListener>();
 	}
 
 	public ShowThread(DMXLightingFixture[] flowers, 
 					  SoundManager soundManager, 
 					  int lifespan, int fps,
-					  PGraphics image){ // lifespan is in seconds.
+					  PGraphics raster){ // lifespan is in seconds.
 		this.flowers = flowers;
 		this.soundManager = soundManager;
 		this.lifespan = lifespan * 1000;
 		this.delay = (long)(1000.0 / fps);
 		this.startTime = System.currentTimeMillis();
+		this.raster = raster;
+		listeners = new ArrayList<ShowThreadListener>();
 	}
 
 	/**
@@ -88,6 +92,8 @@ public abstract class ShowThread extends Thread {
 			// let the subclass do some work.
 			doWork(raster);
 
+			// first frame is always black.  why?
+			
 			// synch the raster with every fixture.
 			for (int i = 0; i<flowers.length; i++){
 				flowers[i].sync(raster);
@@ -99,7 +105,11 @@ public abstract class ShowThread extends Thread {
 				e.printStackTrace();
 			}
 		}
-
+		
+		System.out.println(System.currentTimeMillis() - startTime);
+		System.out.println(lifespan);
+		
+		
 		// let the subclass do it's last frame.
 		complete(raster);
 

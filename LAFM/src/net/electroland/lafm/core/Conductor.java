@@ -14,6 +14,7 @@ import net.electroland.detector.DetectorManager;
 import net.electroland.lafm.gui.GUIWindow;
 import net.electroland.lafm.scheduler.TimedEvent;
 import net.electroland.lafm.scheduler.TimedEventListener;
+import net.electroland.lafm.shows.DiagnosticThread;
 import net.electroland.lafm.weather.WeatherChangeListener;
 import net.electroland.lafm.weather.WeatherChangedEvent;
 import net.electroland.lafm.weather.WeatherChecker;
@@ -98,15 +99,15 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		liveShows.add(show);
 	}
 		
-	public void midiEvent(Note note){
+	public void midiEventWorking(Note note){
 		// flower sensor is activated
 		System.out.println("MIDI event: "+note.getPitch()+" "+note.getVelocity());
 
 		try{
-			//System.out.println(flowers);
+
 			int fixturenum = Integer.valueOf(sensors.getProperty(String.valueOf(note.getPitch())));
 			boolean on = note.getVelocity() == 0 ? false : true;
-			
+
 			/*
 			if (!usedFixtures.contains(flowers[fixturenum])){
 				ShowThread newShow = new DiagnosticThread(flowers[fixturenum],
@@ -144,7 +145,57 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		}
 	}
 
-	// anytime a show is done, this call back will be called, so that
+	
+	public void midiEvent(Note note){
+
+		
+		// get the fixture numer that tripped the event
+		int fixturenum = Integer.valueOf(sensors.getProperty(String.valueOf(note.getPitch())));
+
+		// is it an on or off event?
+		boolean on = note.getVelocity() == 0 ? false : true;
+
+		System.out.println("Got note " + note.getPitch() + " which translates to "
+							+ "fixture " + fixturenum + (on ? " on" : " off"));
+		
+		// tell any show thread that is a midi listener that an event occured.
+		Iterator<ShowThread> i = liveShows.iterator();
+		while (i.hasNext()){
+			ShowThread s = i.next();
+			if (s instanceof SensorListener){
+				((SensorListener)s).sensorEvent(flowers[fixturenum], on);
+			}
+		}
+		
+		// if the fixture that triggered an on event is currently unallocated, 
+		// create a show thread to assign to it.
+		boolean fixture_unallocated = true;
+
+		if (fixture_unallocated && on){
+			PGraphics2D raster = new PGraphics2D(256,256,null);
+			String[] fixtures = this.detectorMngr.getFixtureIds();
+
+			for(int j = 0; j < fixtures.length; j++){
+				if(fixtures[j].equals("fixture" + fixturenum)){
+					this.detectorMngr.getFixture("fixture"+fixturenum).sync((PImage)raster);
+					break;
+				}
+			}
+
+			ShowThread newShow = new DiagnosticThread(flowers[fixturenum],
+												null, 60, 1, raster);
+			// manage threadpool
+			liveShows.add(newShow);
+			usedFixtures.add(flowers[fixturenum]);		
+			
+			// tell thread that we won't to be notified of it's end.
+			newShow.addListener(this);
+
+			newShow.start();
+		}
+	}	
+	
+	// Any time a show is done, this call back will be called, so that
 	// conductor knows the show is over, and that the flowers are available
 	// for reallocation.
 	public void notifyComplete(ShowThread showthread, DMXLightingFixture[] returnedFlowers) {
