@@ -8,8 +8,9 @@ import processing.core.PGraphics;
 
 public class DiagnosticThread extends ShowThread implements SensorListener {
 
-	boolean isOn = true;
-	
+	private static int WHITE = -1;
+	private static int BLACK = -16777216;
+
 	public DiagnosticThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster) {
 		super(flower, soundManager, lifespan, fps, raster);
@@ -21,19 +22,20 @@ public class DiagnosticThread extends ShowThread implements SensorListener {
 	}
 
 	@Override
-	public void complete() {
-		this.getRaster().background(0,0,0);		
+	public void complete(PGraphics raster) {		
+		raster.background(DiagnosticThread.BLACK);	
 	}
 
 	@Override
-	public void doWork() {
-		int c = isOn ? 255 : 0;
-		this.getRaster().background(c,c,c);
+	public void doWork(PGraphics raster) {
+		raster.background(DiagnosticThread.WHITE);	
 	}
 
 	public void sensorEvent(DMXLightingFixture eventFixture, boolean isOn) {
+		// assumes that this thread is only used in a single thread per fixture
+		// environment (thus this.getFlowers() is an array of 1)
 		if (eventFixture == this.getFlowers()[0] && !isOn){
-			this.forceStop();
+			this.cleanStop();
 		}
 	}
 }

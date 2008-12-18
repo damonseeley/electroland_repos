@@ -25,17 +25,15 @@ public class SimpleShowThread extends ShowThread implements SensorListener {
 
 
 	@Override
-	public void doWork() {
+	public void doWork(PGraphics raster) {
 
-		PGraphics raster = this.getRaster();
-		
 		// draw on the raster here.
 		
 	}
 
 	
 	@Override
-	public void complete() {
+	public void complete(PGraphics raster) {
 		// if you want to do any tear down, do it here.  there's no frame
 		// renders left, so this is mostly useful for a sound etc.
 	}
