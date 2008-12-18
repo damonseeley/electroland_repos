@@ -25,7 +25,6 @@ import promidi.Note;
 public class Conductor extends Thread implements ShowThreadListener, WeatherChangeListener, TimedEventListener{
 	
 	public GUIWindow guiWindow;				// frame for GUI
-	public Properties properties;				// holds light properties
 	static public DMXLightingFixture[] flowers;		// all flower fixtures
 	public MidiIO midiIO;						// sensor data IO
 	public DetectorManager detectorMngr;
@@ -41,13 +40,12 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	private Vector <DMXLightingFixture> usedFixtures;
 
 	public Conductor(String args[]){
-		/**
-		 * TODO: Fill out properties file with real values.
-		 */
-		
+	
+		// to track which fixtures are used, and what shows are currently running.
 		liveShows = new Vector<ShowThread>();
 		usedFixtures = new Vector<DMXLightingFixture>();
-		
+
+		// maybe move this to a static method.
 		String filename = (args.length > 0) ? args[0] : "depends//lights.properties";
 		Properties p = new Properties();
 		try {
@@ -70,14 +68,16 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		filename = "depends//sensors.properties";
 		sensors = new Properties();
 		try{
+
 			// load sensor info
 			sensors.load(new FileInputStream(new File(filename)));
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		midiIO = MidiIO.getInstance();
 		try{
 			midiIO.plug(this, "midiEvent", 0, 0);	// device # and midi channel
