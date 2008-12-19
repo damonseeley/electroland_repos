@@ -79,10 +79,12 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			e.printStackTrace();
 		}
 		
-		// print out midi devices
-		midiIO.printDevices();
 
 		midiIO = MidiIO.getInstance();
+		
+		// print out midi devices
+		midiIO.printDevices();
+		
 		try{
 			midiIO.plug(this, "midiEvent", 0, 0);	// device # and midi channel
 		} catch(Exception e){
