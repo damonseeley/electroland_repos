@@ -122,6 +122,7 @@ public class DetectorManager {
 //		System.out.println("universe=" + universe);
 		String ip = st.nextToken(", \t:");
 //		System.out.println("ipaddress=" + ip);
+		@SuppressWarnings("unused") // artnet doesn't use port, but others may.
 		int port = Integer.parseInt(st.nextToken(", \t:"));
 //		System.out.println("port=" + port);
 		int channels = Integer.parseInt(st.nextToken(", \t"));
@@ -136,6 +137,7 @@ public class DetectorManager {
 		String lightgroup = st.nextToken(", \t");
 		
 		if (protocol.equalsIgnoreCase("artnet")){
+
 			ArtNetDMXLightingFixture fixture = new ArtNetDMXLightingFixture(id, universe, ip, channels, width, height);
 			fixture.setLog(fps == 1);
 			fixture.lightgroup = lightgroup;
