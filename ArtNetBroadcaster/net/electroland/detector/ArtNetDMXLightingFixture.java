@@ -30,9 +30,7 @@ public class ArtNetDMXLightingFixture extends DMXLightingFixture {
 			
 			ByteBuffer b = dmx.getBytes();
 
-			
-			System.out.println(this.id + "/" + universe + ": " + bytesToHex(b.array(), b.position()));			
-
+			System.out.println(this.id + ", universe " + universe + " at IP " + this.ipStr + ":" + bytesToHex(b.array(), b.position()));			
 
 			
 			// cache these??
