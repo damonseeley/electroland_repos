@@ -12,23 +12,27 @@ public class DiagnosticThread extends ShowThread implements SensorListener {
 	private static int BLACK = -16777216;
 
 	public DiagnosticThread(DMXLightingFixture flower,
-			SoundManager soundManager, int lifespan, int fps, PGraphics raster) {
-		super(flower, soundManager, lifespan, fps, raster);
+			SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID) {
+		super(flower, soundManager, lifespan, fps, raster, ID);
 	}
 
 	public DiagnosticThread(DMXLightingFixture[] flowers,
-			SoundManager soundManager, int lifespan, int fps, PGraphics raster) {
-		super(flowers, soundManager, lifespan, fps, raster);
+			SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID) {
+		super(flowers, soundManager, lifespan, fps, raster, ID);
 	}
 
 	@Override
 	public void complete(PGraphics raster) {
-		raster.background(DiagnosticThread.BLACK);	
+		raster.beginDraw();
+		raster.background(DiagnosticThread.BLACK);
+		raster.endDraw();
 	}
 
 	@Override
 	public void doWork(PGraphics raster) {
-		raster.background(DiagnosticThread.WHITE);	
+		raster.beginDraw();
+		raster.background(DiagnosticThread.WHITE);
+		raster.endDraw();
 	}
 
 	public void sensorEvent(DMXLightingFixture eventFixture, boolean isOn) {

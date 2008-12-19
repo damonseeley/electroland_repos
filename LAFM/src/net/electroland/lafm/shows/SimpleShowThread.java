@@ -9,16 +9,16 @@ import processing.core.PGraphics;
 public class SimpleShowThread extends ShowThread implements SensorListener {
 
 	public SimpleShowThread(DMXLightingFixture flower,
-			SoundManager soundManager, int lifespan, int fps, PGraphics raster) {
-		super(flower, soundManager, lifespan, fps, raster);
+			SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID) {
+		super(flower, soundManager, lifespan, fps, raster, ID);
 		
 		// any other start up customization.  sound, config, etc.
 	}
 	
 	
 	public SimpleShowThread(DMXLightingFixture[] flowers,
-			SoundManager soundManager, int lifespan, int fps, PGraphics raster) {
-		super(flowers, soundManager, lifespan, fps, raster);
+			SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID) {
+		super(flowers, soundManager, lifespan, fps, raster, ID);
 		
 		// any other start up customization.  sound, config, etc.
 	}

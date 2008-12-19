@@ -12,9 +12,11 @@ import java.util.Vector;
 import net.electroland.detector.DMXLightingFixture;
 import net.electroland.detector.DetectorManager;
 import net.electroland.lafm.gui.GUIWindow;
+import net.electroland.lafm.gui.GUI;
 import net.electroland.lafm.scheduler.TimedEvent;
 import net.electroland.lafm.scheduler.TimedEventListener;
-import net.electroland.lafm.shows.DiagnosticThread;
+//import net.electroland.lafm.shows.DiagnosticThread;
+import net.electroland.lafm.shows.ThrobbingThread;
 import net.electroland.lafm.weather.WeatherChangeListener;
 import net.electroland.lafm.weather.WeatherChangedEvent;
 import net.electroland.lafm.weather.WeatherChecker;
@@ -78,20 +80,15 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 
 		midiIO = MidiIO.getInstance();
-		
-		// print out midi devices
-		midiIO.printDevices();
-		
 		try{
 			midiIO.plug(this, "midiEvent", 0, 0);	// device # and midi channel
 		} catch(Exception e){
 			e.printStackTrace();
 		}
 		soundManager = new SoundManager();
-		guiWindow = new GUIWindow(this);
+		guiWindow = new GUIWindow(this, p);
 		guiWindow.setVisible(true);
 		// wait 6 secs (for things to get started up) then check weather every half hour
 		weatherChecker = new WeatherChecker(6000, 60 * 30 * 1000);
@@ -177,12 +174,13 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			if (on){
 				// on events
 				PGraphics2D raster = new PGraphics2D(256,256,null);
-				ShowThread newShow = new DiagnosticThread(fixture,
-						null, 60, detectorMngr.getFps(), raster);
+				//ShowThread newShow = new DiagnosticThread(fixture, null, 60, detectorMngr.getFps(), raster);
+				ShowThread newShow = new ThrobbingThread(fixture, null, 60, detectorMngr.getFps(), raster, "ThrobbingThread", 255, 0, 0, 500, 500, 0, 0);
 
 				// manage threadpool
 				liveShows.add(newShow);
-				usedFixtures.add(fixture);		
+				usedFixtures.add(fixture);
+				((GUI) guiWindow.gui).addActiveShow(newShow);
 
 				// tell thread that we won't to be notified of it's end.
 				newShow.addListener(this);
@@ -201,6 +199,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	// for reallocation.
 	public void notifyComplete(ShowThread showthread, DMXLightingFixture[] returnedFlowers) {
 		liveShows.remove(showthread);
+		((GUI) guiWindow.gui).removeActiveShow(showthread.getID());
 		for (int i = 0; i < returnedFlowers.length; i++){
 			usedFixtures.remove(returnedFlowers[i]);
 		}

@@ -16,11 +16,12 @@ public abstract class ShowThread extends Thread {
 	private long startTime;
 	private boolean noStopRequested = true;
 	private ArrayList <ShowThreadListener>listeners;
+	private String ID;
 
 	public ShowThread(DMXLightingFixture flower, 
 					  SoundManager soundManager, 
 					  int lifespan, int fps,
-					  PGraphics raster){ // lifespan is in seconds.
+					  PGraphics raster, String ID){ // lifespan is in seconds.
 		this.flowers = new DMXLightingFixture[1];
 		this.flowers[0] = flower;
 		this.soundManager = soundManager;
@@ -28,19 +29,21 @@ public abstract class ShowThread extends Thread {
 		this.delay = (long)(1000.0 / fps);
 		this.startTime = System.currentTimeMillis();
 		this.raster = raster;
+		this.ID = ID;
 		listeners = new ArrayList<ShowThreadListener>();
 	}
 
 	public ShowThread(DMXLightingFixture[] flowers, 
 					  SoundManager soundManager, 
 					  int lifespan, int fps,
-					  PGraphics raster){ // lifespan is in seconds.
+					  PGraphics raster, String ID){ // lifespan is in seconds.
 		this.flowers = flowers;
 		this.soundManager = soundManager;
 		this.lifespan = lifespan * 1000;
 		this.delay = (long)(1000.0 / fps);
 		this.startTime = System.currentTimeMillis();
 		this.raster = raster;
+		this.ID = ID;
 		listeners = new ArrayList<ShowThreadListener>();
 	}
 
@@ -67,6 +70,10 @@ public abstract class ShowThread extends Thread {
 
 	final public void cleanStop(){
 		this.noStopRequested = false;
+	}
+	
+	final public String getID(){
+		return ID;
 	}
 
 	final public void resetLifespan(){

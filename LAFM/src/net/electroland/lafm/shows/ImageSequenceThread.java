@@ -10,8 +10,8 @@ public class ImageSequenceThread extends ShowThread {
 	// constructor should take an array of Images.
 	
 	public ImageSequenceThread(DMXLightingFixture flower,
-			SoundManager soundManager, int lifespan, int fps, PGraphics raster) {
-		super(flower, soundManager, lifespan, fps, raster);
+			SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID) {
+		super(flower, soundManager, lifespan, fps, raster, ID);
 		// TODO Auto-generated constructor stub
 	}
 
