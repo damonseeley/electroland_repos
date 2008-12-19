@@ -86,7 +86,7 @@ public abstract class ShowThread extends Thread {
 	}
 
 	final public void run(){
-
+		
 		while ((System.currentTimeMillis() - startTime < lifespan) && noStopRequested){
 
 			// let the subclass do some work.
@@ -95,7 +95,9 @@ public abstract class ShowThread extends Thread {
 			// first frame is always black.  why?
 			
 			// synch the raster with every fixture.
+//			System.out.println("starting a show thread attached to :");
 			for (int i = 0; i<flowers.length; i++){
+//				System.out.println("\t" + flowers[i].getID());
 				flowers[i].sync(raster);
 			}
 
@@ -104,11 +106,7 @@ public abstract class ShowThread extends Thread {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		}
-		
-		System.out.println(System.currentTimeMillis() - startTime);
-		System.out.println(lifespan);
-		
+		}		
 		
 		// let the subclass do it's last frame.
 		complete(raster);

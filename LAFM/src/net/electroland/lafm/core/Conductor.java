@@ -148,50 +148,54 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	
 	public void midiEvent(Note note){
 
-		
-		// get the fixture numer that tripped the event
-		int fixturenum = Integer.valueOf(sensors.getProperty(String.valueOf(note.getPitch())));
-
 		// is it an on or off event?
 		boolean on = note.getVelocity() == 0 ? false : true;
-
-		System.out.println("Got note " + note.getPitch() + " which translates to "
-							+ "fixture " + fixturenum + (on ? " on" : " off"));
 		
-		// tell any show thread that is a midi listener that an event occured.
-		Iterator<ShowThread> i = liveShows.iterator();
-		while (i.hasNext()){
-			ShowThread s = i.next();
-			if (s instanceof SensorListener){
-				((SensorListener)s).sensorEvent(flowers[fixturenum], on);
+		// get the fixture number that tripped the event
+		int fixturenum = Integer.valueOf(sensors.getProperty(String.valueOf(note.getPitch())));
+
+		// find the fixture with the id correlated to fixturenum
+		// (because getFixturedIds doesn't return an ordered list)
+		DMXLightingFixture fixture = null;
+		String[] fixtures = this.detectorMngr.getFixtureIds();
+		for(int j = 0; j < fixtures.length; j++){
+			if(fixtures[j].equals("fixture" + fixturenum)){
+				fixture = this.detectorMngr.getFixture("fixture"+fixturenum);
+				break;
 			}
-		}
+		}		
 		
-		// if the fixture that triggered an on event is currently unallocated, 
-		// create a show thread to assign to it.
-		boolean fixture_unallocated = true;
+		// did we get a fixture?
+		if (fixture != null){
 
-		if (fixture_unallocated && on){
-			PGraphics2D raster = new PGraphics2D(256,256,null);
-			String[] fixtures = this.detectorMngr.getFixtureIds();
-
-			for(int j = 0; j < fixtures.length; j++){
-				if(fixtures[j].equals("fixture" + fixturenum)){
-					this.detectorMngr.getFixture("fixture"+fixturenum).sync((PImage)raster);
-					break;
+			// tell any show thread that is a midi listener that an event occured.
+			Iterator<ShowThread> i = liveShows.iterator();
+				while (i.hasNext()){
+				ShowThread s = i.next();
+				if (s instanceof SensorListener){
+					((SensorListener)s).sensorEvent(fixture, on);
 				}
 			}
-
-			ShowThread newShow = new DiagnosticThread(flowers[fixturenum],
-												null, 60, detectorMngr.getFps(), raster);
-			// manage threadpool
-			liveShows.add(newShow);
-			usedFixtures.add(flowers[fixturenum]);		
 			
-			// tell thread that we won't to be notified of it's end.
-			newShow.addListener(this);
+			if (on){
+				// on events
+				PGraphics2D raster = new PGraphics2D(256,256,null);
+				ShowThread newShow = new DiagnosticThread(fixture,
+						null, 60, detectorMngr.getFps(), raster);
 
-			newShow.start();
+				// manage threadpool
+				liveShows.add(newShow);
+				usedFixtures.add(fixture);		
+
+				// tell thread that we won't to be notified of it's end.
+				newShow.addListener(this);
+
+				newShow.start();
+
+			}else{
+				// off events
+				// do nothing for now.
+			}
 		}
 	}	
 	
