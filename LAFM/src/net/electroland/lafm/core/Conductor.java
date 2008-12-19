@@ -16,6 +16,7 @@ import net.electroland.lafm.gui.GUI;
 import net.electroland.lafm.scheduler.TimedEvent;
 import net.electroland.lafm.scheduler.TimedEventListener;
 //import net.electroland.lafm.shows.DiagnosticThread;
+import net.electroland.lafm.shows.Glockenspiel;
 import net.electroland.lafm.shows.ThrobbingThread;
 import net.electroland.lafm.weather.WeatherChangeListener;
 import net.electroland.lafm.weather.WeatherChangedEvent;
@@ -34,6 +35,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	public SoundManager soundManager;
 	public WeatherChecker weatherChecker;
 	public Properties sensors;					// pitch to fixture mappings
+	public TimedEvent[] clockEvents;
 
 	// sample timed events, but I assume the building will be closed for some time at night
 	//TimedEvent sunriseOn = new TimedEvent(6,00,00, this); // on at sunrise-1 based on weather
@@ -79,6 +81,13 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+		
+		clockEvents = new TimedEvent[24*60];	// event every minute just for testing
+		for(int h=0; h<24; h++){
+			for(int m=0; m<60; m++){
+				clockEvents[(h+1)*m] = new TimedEvent(h,m,0,this);
+			}
 		}
 
 		midiIO = MidiIO.getInstance();
@@ -182,7 +191,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 				usedFixtures.add(fixture);
 				((GUI) guiWindow.gui).addActiveShow(newShow);
 
-				// tell thread that we won't to be notified of it's end.
+				// tell thread that we want to be notified of it's end.
 				newShow.addListener(this);
 
 				newShow.start();
@@ -212,9 +221,16 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	}
 	
 	public void timedEvent(TimedEvent e){
-		/**
-		 * TODO: Reacts to all timed events (15, 30, 60 minute schedule + sunset/sunrise).
-		 */
+		System.out.println(e.hour+":"+e.minute+":"+e.sec);
+		DMXLightingFixture[] fixtures = detectorMngr.getFixtures();
+		PGraphics2D raster = new PGraphics2D(256,256,null);
+		//ShowThread newShow = new Glockenspiel(fixtures, soundManager, 5, detectorMngr.getFps(), raster, "Glockenspiel");
+		ShowThread newShow = new ThrobbingThread(fixtures, null, 5, detectorMngr.getFps(), raster, "ThrobbingThread", 255, 0, 0, 500, 500, 0, 0);
+		liveShows.add(newShow);
+		//usedFixtures.addAll();	// need a Collection of fixtures
+		((GUI) guiWindow.gui).addActiveShow(newShow);
+		newShow.addListener(this);
+		newShow.start();
 	}
 	
 	public void weatherChanged(WeatherChangedEvent wce){

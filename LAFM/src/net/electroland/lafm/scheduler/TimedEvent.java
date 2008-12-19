@@ -9,9 +9,13 @@ public class TimedEvent {
 	protected TimerTask curTask;
 	protected static final Timer TIMER = new Timer();
 	protected Boolean isRunning = Boolean.TRUE;
+	public int hour, minute, sec;
 
 
 	public TimedEvent(int hour, int minute, int sec, TimedEventListener eventListener) {
+		this.hour = hour;
+		this.minute = minute;
+		this.sec = sec;
 		this.eventListener = eventListener;
 		dateIterator = new DateIterator(hour, minute, sec);
 		synchronized(isRunning) {
