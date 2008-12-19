@@ -10,7 +10,7 @@ import net.electroland.lafm.core.Conductor;
 
 public class GUIWindow extends Frame{
 	private static final long serialVersionUID = 1L;
-	private int width = 350, height = 205;
+	private int width = 380, height = 205;
 	
 	public GUIWindow(Conductor conductor){
 		super("LAFM Control Panel");						// establish name

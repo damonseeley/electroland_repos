@@ -2,10 +2,9 @@ package net.electroland.lafm.gui;
 
 import net.electroland.lafm.core.Conductor;
 import processing.core.PApplet;
-import processing.core.PGraphics;
-import processing.core.PImage;
 import promidi.Note;
-import controlP5.*;
+import controlP5.ControlEvent;
+import controlP5.ControlP5;
 
 
 public class GUI extends PApplet{
@@ -24,7 +23,7 @@ public class GUI extends PApplet{
 	public void setup(){
 		size(width, height);
 		controls = new ControlP5(this);
-		for(int i=0; i<22; i++){
+		for(int i=0; i<24; i++){
 			controls.addToggle(str(i+1),false,i*15 + 10,10,10,10).setColorActive(255);
 		}
 	}

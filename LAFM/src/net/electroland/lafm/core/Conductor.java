@@ -151,19 +151,11 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		// is it an on or off event?
 		boolean on = note.getVelocity() == 0 ? false : true;
 		
-		// get the fixture number that tripped the event
-		int fixturenum = Integer.valueOf(sensors.getProperty(String.valueOf(note.getPitch())));
+		// get the name of the fixture tied to that note value
+		String fixtureId = sensors.getProperty(String.valueOf(note.getPitch()));
 
-		// find the fixture with the id correlated to fixturenum
-		// (because getFixturedIds doesn't return an ordered list)
-		DMXLightingFixture fixture = null;
-		String[] fixtures = this.detectorMngr.getFixtureIds();
-		for(int j = 0; j < fixtures.length; j++){
-			if(fixtures[j].equals("fixture" + fixturenum)){
-				fixture = this.detectorMngr.getFixture("fixture"+fixturenum);
-				break;
-			}
-		}		
+		// find the actual fixture
+		DMXLightingFixture fixture = detectorMngr.getFixture(fixtureId);
 		
 		// did we get a fixture?
 		if (fixture != null){
