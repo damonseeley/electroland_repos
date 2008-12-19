@@ -30,7 +30,7 @@ public abstract class DMXLightingFixture {
 	 * @param channels - the total number light channels this fixture is supporting
 	 * @throws UnknownHostException
 	 */
-	public DMXLightingFixture(byte universe, String ipStr, int port, int channels, int width, int height, String id) throws UnknownHostException {
+	public DMXLightingFixture(String id, byte universe, String ipStr, int port, int channels, int width, int height) throws UnknownHostException {
 		this.universe = universe;
 		this.ipStr = ipStr;
 		this.port = port;

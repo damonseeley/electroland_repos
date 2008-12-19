@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import sun.tools.tree.ThisExpression;
+
 import net.electroland.detector.models.BlueDetectionModel;
 import net.electroland.detector.models.GreenDetectionModel;
 import net.electroland.detector.models.RedDetectionModel;
@@ -32,37 +34,35 @@ public class DetectorManager {
 		
 		// load fixtures
 		int i = 0;
-		String fixture = props.getProperty("fixture" + i);
-		while (fixture != null && fixture.length() != 0){
-//			System.out.println("loading " + fixture);
-			String id = "fixture" + (i++);
-			DMXLightingFixture fix = parseFixture(fixture, id);
-			System.out.println("got fixture " + id + " in lightgroup " + fix.lightgroup);
-			fixtures.put(id, fix);
+		String fixStr = props.getProperty("fixture" + i);
+		while (fixStr != null && fixStr.length() != 0){
+
+			DMXLightingFixture fixture = parseFixture(fixStr);
+			System.out.println("got fixture " + fixture.id + " in lightgroup " + fixture.lightgroup);
+			fixtures.put(fixture.id, fixture);
 		
-			fixture = props.getProperty("fixture" + i);			
+			fixStr = props.getProperty("fixture" + (++i));			
 		}
 
 		// load detectors
 		i = 0;
-		String detector = props.getProperty("detector" + i);
-		while (detector != null && detector.length() != 0){
-//			System.out.println("loading " + detector);
-			Detector detect = parseDetector(detector);
-			detectors.put("detector" + i++, detect);
+		String detectStr = props.getProperty("detector" + i);
+		while (detectStr != null && detectStr.length() != 0){
+			Detector detector = parseDetector(detectStr);
+			detectors.put("detector" + i++, detector);
 
 			// HACKY CRAP FOR LAFM
 			
 			// add this detector to any fixture that belongs to this light group
 			Iterator <DMXLightingFixture> itr = fixtures.values().iterator();
 			while (itr.hasNext()){
-				DMXLightingFixture fix = itr.next();
-				if (fix.lightgroup.equals(detect.lightgroup)){
-					fix.setChannelDetector(detect.channel, detect);
+				DMXLightingFixture fixture = itr.next();
+				if (fixture.lightgroup.equals(detector.lightgroup)){
+					fixture.setChannelDetector(detector.channel, detector);
 				}
 			}
 		
-			detector = props.getProperty("detector" + i);			
+			detectStr = props.getProperty("detector" + i);			
 		}
 
 		
@@ -108,12 +108,14 @@ public class DetectorManager {
 		return k;
 	}
 	
-	private static DMXLightingFixture parseFixture(String str, String id) throws UnknownHostException {
+	private static DMXLightingFixture parseFixture(String str) throws UnknownHostException {
 		
 		// example: fixture0 = 1, 127.0.0.1:8000, 75, ArtNet
 		
 		StringTokenizer st = new StringTokenizer(str);
 
+		String id = st.nextToken(", \t");
+//		System.out.println("id=" + id);
 		byte universe = (byte)Integer.parseInt(st.nextToken(", \t"));
 //		System.out.println("universe=" + universe);
 		String ip = st.nextToken(", \t:");
@@ -132,7 +134,7 @@ public class DetectorManager {
 		String lightgroup = st.nextToken(", \t");
 		
 		if (protocol.equalsIgnoreCase("artnet")){
-			ArtNetDMXLightingFixture fixture = new ArtNetDMXLightingFixture(universe, ip, port, channels, width, height, id);
+			ArtNetDMXLightingFixture fixture = new ArtNetDMXLightingFixture(id, universe, ip, port, channels, width, height);
 			fixture.lightgroup = lightgroup;
 			return fixture;
 		}else{

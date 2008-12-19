@@ -11,9 +11,9 @@ import net.electroland.artnet.ip.ArtNetDMXData;
 
 public class ArtNetDMXLightingFixture extends DMXLightingFixture {
 
-	public ArtNetDMXLightingFixture(byte universe, String ipStr, int port,
-			int channels, int width, int height, String id) throws UnknownHostException {
-		super(universe, ipStr, port, channels, width, height, id);
+	public ArtNetDMXLightingFixture(String id, byte universe, String ipStr, int port,
+			int channels, int width, int height) throws UnknownHostException {
+		super(id, universe, ipStr, port, channels, width, height);
 	}
 
 	@Override
