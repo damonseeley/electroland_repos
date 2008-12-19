@@ -1,12 +1,11 @@
 package net.electroland.detector;
 
+import java.net.DatagramSocket;
 import java.net.UnknownHostException;
-import java.util.Iterator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Properties;
 import java.util.StringTokenizer;
-
-import sun.tools.tree.ThisExpression;
 
 import net.electroland.detector.models.BlueDetectionModel;
 import net.electroland.detector.models.GreenDetectionModel;
@@ -24,6 +23,9 @@ public class DetectorManager {
 	private HashMap <String, Detector> detectors;
 	private int fps;
 
+	// FUCKING DIRTY.  Needed a singleton port for artnet for now.
+	public static DatagramSocket artnetsocket;
+	
 	public DetectorManager(Properties props) throws UnknownHostException{
 
 		fixtures = new HashMap<String, DMXLightingFixture>();
@@ -37,7 +39,7 @@ public class DetectorManager {
 		String fixStr = props.getProperty("fixture" + i);
 		while (fixStr != null && fixStr.length() != 0){
 
-			DMXLightingFixture fixture = parseFixture(fixStr);
+			DMXLightingFixture fixture = parseFixture(fixStr, fps);
 			System.out.println("got fixture " + fixture.id + " in lightgroup " + fixture.lightgroup);
 			fixtures.put(fixture.id, fixture);
 		
@@ -108,7 +110,7 @@ public class DetectorManager {
 		return k;
 	}
 	
-	private static DMXLightingFixture parseFixture(String str) throws UnknownHostException {
+	private static DMXLightingFixture parseFixture(String str, int fps) throws UnknownHostException {
 		
 		// example: fixture0 = 1, 127.0.0.1:8000, 75, ArtNet
 		
@@ -134,7 +136,8 @@ public class DetectorManager {
 		String lightgroup = st.nextToken(", \t");
 		
 		if (protocol.equalsIgnoreCase("artnet")){
-			ArtNetDMXLightingFixture fixture = new ArtNetDMXLightingFixture(id, universe, ip, port, channels, width, height);
+			ArtNetDMXLightingFixture fixture = new ArtNetDMXLightingFixture(id, universe, ip, channels, width, height);
+			fixture.setLog(fps == 1);
 			fixture.lightgroup = lightgroup;
 			return fixture;
 		}else{
