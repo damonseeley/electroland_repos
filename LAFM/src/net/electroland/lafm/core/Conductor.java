@@ -21,6 +21,7 @@ import net.electroland.lafm.shows.ThrobbingThread;
 import net.electroland.lafm.weather.WeatherChangeListener;
 import net.electroland.lafm.weather.WeatherChangedEvent;
 import net.electroland.lafm.weather.WeatherChecker;
+import processing.core.PConstants;
 import processing.core.PGraphics2D;
 import processing.core.PImage;
 import promidi.MidiIO;
@@ -224,8 +225,8 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		System.out.println(e.hour+":"+e.minute+":"+e.sec);
 		DMXLightingFixture[] fixtures = detectorMngr.getFixtures();
 		PGraphics2D raster = new PGraphics2D(256,256,null);
-		//ShowThread newShow = new Glockenspiel(fixtures, soundManager, 5, detectorMngr.getFps(), raster, "Glockenspiel");
-		ShowThread newShow = new ThrobbingThread(fixtures, null, 5, detectorMngr.getFps(), raster, "ThrobbingThread", 255, 0, 0, 500, 500, 0, 0);
+		ShowThread newShow = new Glockenspiel(fixtures, soundManager, 5, detectorMngr.getFps(), raster, "Glockenspiel", e.hour, e.minute, e.sec);
+		//ShowThread newShow = new ThrobbingThread(fixtures, null, 5, detectorMngr.getFps(), raster, "ThrobbingThread", 255, 0, 0, 500, 500, 0, 0);
 		liveShows.add(newShow);
 		//usedFixtures.addAll();	// need a Collection of fixtures
 		((GUI) guiWindow.gui).addActiveShow(newShow);
