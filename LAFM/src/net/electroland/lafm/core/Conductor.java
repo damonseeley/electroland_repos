@@ -110,52 +110,6 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		// this is temporary for doing diagnostics via the GUI
 		liveShows.add(show);
 	}
-		
-	public void midiEventWorking(Note note){
-		// flower sensor is activated
-		System.out.println("MIDI event: "+note.getPitch()+" "+note.getVelocity());
-
-		try{
-
-			int fixturenum = Integer.valueOf(sensors.getProperty(String.valueOf(note.getPitch())));
-			boolean on = note.getVelocity() == 0 ? false : true;
-
-			/*
-			if (!usedFixtures.contains(flowers[fixturenum])){
-				ShowThread newShow = new DiagnosticThread(flowers[fixturenum],
-						null, Integer.MAX_VALUE, 30, new PGraphics2D(256, 256, null));
-				liveShows.add(newShow);
-				usedFixtures.add(flowers[fixturenum]);
-			}
-			*/
-			
-			PGraphics2D raster = new PGraphics2D(256,256,null);
-			if(on){
-				raster.background(-1);				
-			} else {
-				raster.background(-16777216);
-			}
-			String[] fixtures = this.detectorMngr.getFixtureIds();
-			for(int i=0; i<fixtures.length; i++){
-				if(fixtures[i].equals("fixture"+fixturenum)){
-					System.out.println(on+" fixture"+fixturenum);
-					this.detectorMngr.getFixture("fixture"+fixturenum).sync((PImage)raster);
-					break;
-				}
-			}
-			
-			// tell each show that an event has happened
-			Iterator<ShowThread> i = liveShows.iterator();
-			while (i.hasNext()){
-				ShowThread s = i.next();
-				if (s instanceof SensorListener){
-					((SensorListener)s).sensorEvent(flowers[fixturenum], on);
-				}
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-	}
 
 	
 	public void midiEvent(Note note){
