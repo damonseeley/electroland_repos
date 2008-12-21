@@ -11,12 +11,13 @@ import net.electroland.artnet.ip.ArtNetDMXData;
 
 public class ArtNetDMXLightingFixture extends DMXLightingFixture {
 
-	public static int port = 6454; // port should be fixed for art net.
+	public static int ART_NET_PORT = 6454; // port should be fixed for art net.
+	private static DatagramSocket socket;
 	private boolean log; 
 	
 	public ArtNetDMXLightingFixture(String id, byte universe, String ipStr,
 			int channels, int width, int height) throws UnknownHostException {
-		super(id, universe, ipStr, ArtNetDMXLightingFixture.port, channels, width, height);
+		super(id, universe, ipStr, ArtNetDMXLightingFixture.ART_NET_PORT, channels, width, height);
 	}
 
 	public void setLog(boolean log){
@@ -27,7 +28,7 @@ public class ArtNetDMXLightingFixture extends DMXLightingFixture {
 	public void send(byte[] data){
 		try {
 
-			ArtNetDMXData dmx = new ArtNetDMXData();
+			ArtNetDMXData dmx = new ArtNetDMXData(); // could cache this.
 			
 			dmx.setUniverse(universe);
 			dmx.setPhysical((byte)1);
@@ -40,14 +41,13 @@ public class ArtNetDMXLightingFixture extends DMXLightingFixture {
 			if (log){
 				System.out.println(this.id + ", universe " + universe + " at IP " + this.ipStr + ":" + bytesToHex(b.array(), b.position()));			
 			}
-			
-			// get socket from cache.
-			if (DetectorManager.artnetsocket == null || DetectorManager.artnetsocket.isClosed()){
-				DetectorManager.artnetsocket = new DatagramSocket(port);
+
+			if (socket == null || socket.isClosed()){
+				socket = new DatagramSocket(port);
 			}
 
 			DatagramPacket packet = new DatagramPacket(b.array(), b.position(), ip, port);
-			DetectorManager.artnetsocket.send(packet);
+			socket.send(packet);
 			
 		} catch (SocketException e) {
 			e.printStackTrace();
