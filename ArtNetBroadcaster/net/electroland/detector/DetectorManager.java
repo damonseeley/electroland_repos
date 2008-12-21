@@ -1,6 +1,5 @@
 package net.electroland.detector;
 
-import java.net.DatagramSocket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -22,9 +21,6 @@ public class DetectorManager {
 	private HashMap <String, DMXLightingFixture> fixtures;
 	private HashMap <String, Detector> detectors;
 	private int fps;
-
-	// FUCKING DIRTY.  Needed a singleton port for artnet for now.
-	public static DatagramSocket artnetsocket;
 	
 	public DetectorManager(Properties props) throws UnknownHostException{
 
@@ -112,33 +108,33 @@ public class DetectorManager {
 	
 	private static DMXLightingFixture parseFixture(String str, int fps) throws UnknownHostException {
 		
-		// example: fixture0 = 1, 127.0.0.1:8000, 75, ArtNet
+		// example: fixture1, 1, 75, 256, 256, ARTNET, 10.7.88.50, lightgroup0
 		
-		StringTokenizer st = new StringTokenizer(str);
+		ArtNetDMXLightingFixture fixture = null;;
+		StringTokenizer st = new StringTokenizer(str, ", \t");
 
-		String id = st.nextToken(", \t");
+		String id = st.nextToken();
 //		System.out.println("id=" + id);
-		byte universe = (byte)Integer.parseInt(st.nextToken(", \t"));
+		byte universe = (byte)Integer.parseInt(st.nextToken());
 //		System.out.println("universe=" + universe);
-		String ip = st.nextToken(", \t:");
-//		System.out.println("ipaddress=" + ip);
-		@SuppressWarnings("unused") // artnet doesn't use port, but others may.
-		int port = Integer.parseInt(st.nextToken(", \t:"));
-//		System.out.println("port=" + port);
-		int channels = Integer.parseInt(st.nextToken(", \t"));
+		int channels = Integer.parseInt(st.nextToken());
 //		System.out.println("channels=" + channels);
+		int width = Integer.parseInt(st.nextToken());
+//		System.out.println("width=" + width);
+		int height = Integer.parseInt(st.nextToken());
+//		System.out.println("height=" + height);
 		String protocol = st.nextToken();
 //		System.out.println("protocol=" + protocol);
-		int width = Integer.parseInt(st.nextToken(", \t"));
-//		System.out.println("width=" + width);
-		int height = Integer.parseInt(st.nextToken(", \t"));
-//		System.out.println("height=" + height);
-		
-		String lightgroup = st.nextToken(", \t");
-		
+	
 		if (protocol.equalsIgnoreCase("artnet")){
-
-			ArtNetDMXLightingFixture fixture = new ArtNetDMXLightingFixture(id, universe, ip, channels, width, height);
+			String ip = st.nextToken();
+			fixture = new ArtNetDMXLightingFixture(id, universe, ip, channels, width, height);
+		}
+//		System.out.println("ipaddress=" + ip);		
+		String lightgroup = st.nextToken(); // need a string parse for this ("...")
+//		System.out.println("lightgroup=" + lightgroup);		
+		
+		if (fixture != null && fixture instanceof ArtNetDMXLightingFixture){
 			fixture.setLog(fps == 1);
 			fixture.lightgroup = lightgroup;
 			return fixture;
@@ -151,9 +147,9 @@ public class DetectorManager {
 		
 		// example detector0 = 0,0,2,2
 
-		StringTokenizer st = new StringTokenizer(str);
+		StringTokenizer st = new StringTokenizer(str, ", \t");
 		
-		int x = Integer.parseInt(st.nextToken(", \t"));
+		int x = Integer.parseInt(st.nextToken());
 //		System.out.println("x=" + x);
 		int y = Integer.parseInt(st.nextToken());
 //		System.out.println("y=" + y);
