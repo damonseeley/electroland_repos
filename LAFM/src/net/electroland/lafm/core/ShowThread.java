@@ -2,6 +2,7 @@ package net.electroland.lafm.core;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 
 import net.electroland.detector.DMXLightingFixture;
@@ -21,7 +22,7 @@ public abstract class ShowThread extends Thread {
 	private SoundManager soundManager;
 	private long startTime;
 	private boolean isRunning = true;
-	private ArrayList <ShowThreadListener>listeners;
+	private Collection <ShowThreadListener>listeners;
 	private String ID;
 	private int showPriority;
 
@@ -33,7 +34,7 @@ public abstract class ShowThread extends Thread {
 					  SoundManager soundManager, 
 					  int lifespan, int fps,
 					  PGraphics raster, String ID, int showPriority){ // lifespan is in seconds.
-		flowers = new ArrayList<DMXLightingFixture>();
+		flowers = Collections.synchronizedList(new ArrayList<DMXLightingFixture>());
 		flowers.add(flower);
 		this.soundManager = soundManager;
 		this.lifespan = lifespan * 1000;

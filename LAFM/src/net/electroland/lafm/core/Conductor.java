@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Properties;
 
@@ -43,9 +44,9 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	//TimedEvent sunriseOn = new TimedEvent(6,00,00, this); // on at sunrise-1 based on weather
 	//TimedEvent sunsetOn = new TimedEvent(16,00,00, this); // on at sunset-1 based on weather
 
-	private ArrayList <ShowThread>liveShows;
-	private ArrayList <DMXLightingFixture> availableFixtures;
-	private ArrayList <DMXLightingFixture> fixtures;
+	private Collection <ShowThread>liveShows;
+	private Collection <DMXLightingFixture> availableFixtures;
+	private Collection <DMXLightingFixture> fixtures;
 
 	public Conductor(String args[]){
 			
@@ -59,7 +60,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			detectorMngr = new DetectorManager(lightProps);
 
 			// get fixtures
-			fixtures = new ArrayList <DMXLightingFixture>(detectorMngr.getFixtures());
+			fixtures = Collections.synchronizedList(new ArrayList <DMXLightingFixture>(detectorMngr.getFixtures()));
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -68,8 +69,8 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		}
 
 		// to track which fixtures are used, and what shows are currently running.
-		liveShows = new ArrayList<ShowThread>();
-		availableFixtures = new ArrayList<DMXLightingFixture>(detectorMngr.getFixtures());
+		liveShows = Collections.synchronizedList(new ArrayList<ShowThread>());
+		availableFixtures = Collections.synchronizedList(new ArrayList<DMXLightingFixture>(detectorMngr.getFixtures()));
 		
 		sensors = new Properties();
 		try{
