@@ -26,7 +26,7 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 		this.blue = (float)(blue/255.0);
 		this.fadeinspeed = 255 / ((float)(fadein/1000.0)*fps);
 		this.fadeoutspeed = 255 / ((float)(fadeout/1000.0)*fps);
-		System.out.println(fadeinspeed +" "+ fadeoutspeed);
+		//System.out.println(fadeinspeed +" "+ fadeoutspeed);
 		this.holdon = holdon;
 		this.holdoff = holdoff;
 		this.brightness = 0;
