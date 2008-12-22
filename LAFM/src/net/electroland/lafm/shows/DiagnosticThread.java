@@ -4,12 +4,13 @@ import net.electroland.detector.DMXLightingFixture;
 import net.electroland.lafm.core.SensorListener;
 import net.electroland.lafm.core.ShowThread;
 import net.electroland.lafm.core.SoundManager;
+import processing.core.PConstants;
 import processing.core.PGraphics;
 
 public class DiagnosticThread extends ShowThread implements SensorListener {
 
-	private static int WHITE = -1;
-	private static int BLACK = -16777216;
+	private static int WHITE = 255;
+	private static int BLACK = 0;
 
 	public DiagnosticThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID) {
@@ -23,6 +24,7 @@ public class DiagnosticThread extends ShowThread implements SensorListener {
 
 	@Override
 	public void complete(PGraphics raster) {
+		raster.colorMode(PConstants.RGB, 255, 255, 255);
 		raster.beginDraw();
 		raster.background(DiagnosticThread.BLACK);
 		raster.endDraw();
@@ -30,6 +32,7 @@ public class DiagnosticThread extends ShowThread implements SensorListener {
 
 	@Override
 	public void doWork(PGraphics raster) {
+		raster.colorMode(PConstants.RGB, 255, 255, 255);
 		raster.beginDraw();
 		raster.background(DiagnosticThread.WHITE);
 		raster.endDraw();
