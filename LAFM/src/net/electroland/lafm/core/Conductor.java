@@ -11,19 +11,17 @@ import java.util.Vector;
 
 import net.electroland.detector.DMXLightingFixture;
 import net.electroland.detector.DetectorManager;
-import net.electroland.lafm.gui.GUIWindow;
 import net.electroland.lafm.gui.GUI;
+import net.electroland.lafm.gui.GUIWindow;
 import net.electroland.lafm.scheduler.TimedEvent;
 import net.electroland.lafm.scheduler.TimedEventListener;
-//import net.electroland.lafm.shows.DiagnosticThread;
 import net.electroland.lafm.shows.Glockenspiel;
+import net.electroland.lafm.shows.ImageSequenceThread;
 import net.electroland.lafm.shows.ThrobbingThread;
 import net.electroland.lafm.weather.WeatherChangeListener;
 import net.electroland.lafm.weather.WeatherChangedEvent;
 import net.electroland.lafm.weather.WeatherChecker;
-import processing.core.PConstants;
 import processing.core.PGraphics2D;
-import processing.core.PImage;
 import promidi.MidiIO;
 import promidi.Note;
 
@@ -150,7 +148,14 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 				// on events
 				PGraphics2D raster = new PGraphics2D(256,256,null);
 				//ShowThread newShow = new DiagnosticThread(fixture, null, 60, detectorMngr.getFps(), raster);
-				ShowThread newShow = new ThrobbingThread(fixture, null, 60, detectorMngr.getFps(), raster, "ThrobbingThread", 255, 0, 0, 500, 500, 0, 0);
+				ShowThread newShow;
+				if (note.getPitch() == 36){
+					System.out.println("new 'redThrob' ImageSequenceThread");
+					newShow = new ImageSequenceThread(fixture, null, 60, detectorMngr.getFps(), raster, "ImageSequenceThread", imageCache.getSequence("redThrob"), false);					
+				}else{
+					System.out.println("new ThrobbingThread");
+					newShow = new ThrobbingThread(fixture, null, 60, detectorMngr.getFps(), raster, "ThrobbingThread", 255, 0, 0, 500, 500, 0, 0);					
+				}
 
 				// manage threadpool
 				liveShows.add(newShow);
