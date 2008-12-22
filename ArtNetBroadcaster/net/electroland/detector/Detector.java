@@ -39,6 +39,14 @@ public class Detector {
 		return height;
 	}
 
+	/**
+	 * This is only here for LAFM, in a pinch.
+	 * @deprecated
+	 */
+	public String getLightGroup(){
+		return lightgroup;
+	}
+	
 	public DetectionModel getModel() {
 		return model;
 	}
