@@ -2,6 +2,7 @@ package net.electroland.lafm.shows;
 
 import java.util.Collection;
 
+import net.electroland.artnet.util.RunningAverage;
 import net.electroland.detector.DMXLightingFixture;
 import net.electroland.lafm.core.SensorListener;
 import net.electroland.lafm.core.ShowThread;
@@ -15,6 +16,7 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 	private int index = 0;
 	private PImage[] sequence;
 	private boolean resize = true;
+	private RunningAverage avg;
 	
 	public ImageSequenceThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID, int priority, PImage[] sequence, boolean resize) {
@@ -25,6 +27,7 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 			System.out.println("WARNING: IMAGE SEQUENCE WAS A NULL POINTER");
 		}
 		this.resize = resize;
+		this.avg = new RunningAverage(30);
 	}
 
 	public ImageSequenceThread(Collection <DMXLightingFixture> flower,
@@ -36,6 +39,7 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 			System.out.println("WARNING: IMAGE SEQUENCE WAS A NULL POINTER");
 		}
 		this.resize = resize;
+		this.avg = new RunningAverage(30);
 	}
 
 	@Override
@@ -49,6 +53,7 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 
 	@Override
 	public void doWork(PGraphics raster) {
+		//avg.addValue();
 		if (resize){
 			raster.beginDraw();
 			raster.image(sequence[index++], 0, 0, raster.width, raster.height);			
