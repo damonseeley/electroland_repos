@@ -93,6 +93,12 @@ public class DetectorManager {
 		return fixtures.get(id);
 	}
 
+	public Detector[] getDetectors(){
+		Detector[] d = new Detector[detectors.size()];
+		detectors.values().toArray(d);
+		return d;		
+	}
+	
 	// returning the array instead of the hashmap, so the user can't monkey with the hashmap.
 	public DMXLightingFixture[] getFixtures(){
 		DMXLightingFixture[] f = new DMXLightingFixture[fixtures.size()];
