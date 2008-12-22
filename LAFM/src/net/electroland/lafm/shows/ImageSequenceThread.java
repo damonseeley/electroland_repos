@@ -1,13 +1,14 @@
 package net.electroland.lafm.shows;
 
 import net.electroland.detector.DMXLightingFixture;
+import net.electroland.lafm.core.SensorListener;
 import net.electroland.lafm.core.ShowThread;
 import net.electroland.lafm.core.SoundManager;
 import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PImage;
 
-public class ImageSequenceThread extends ShowThread {
+public class ImageSequenceThread extends ShowThread  implements SensorListener {
 
 	private int index = 0;
 	private PImage[] sequence;
@@ -39,7 +40,9 @@ public class ImageSequenceThread extends ShowThread {
 	public void complete(PGraphics raster) {
 
 		raster.colorMode(PConstants.RGB, 255, 255, 255);
+		raster.beginDraw();
 		raster.background(0);	// paint it black.
+		raster.endDraw();
 	}
 
 	@Override
@@ -56,5 +59,11 @@ public class ImageSequenceThread extends ShowThread {
 		if (index == sequence.length){
 			index = 0;
 		}
+	}
+
+	public void sensorEvent(DMXLightingFixture eventFixture, boolean isOn) {
+		if (eventFixture == this.getFlowers()[0] && !isOn){
+			this.cleanStop();
+		}		
 	}
 }
