@@ -18,6 +18,7 @@ import net.electroland.lafm.scheduler.TimedEvent;
 import net.electroland.lafm.scheduler.TimedEventListener;
 import net.electroland.lafm.shows.Glockenspiel;
 import net.electroland.lafm.shows.ImageSequenceThread;
+import net.electroland.lafm.shows.ShutdownThread;
 import net.electroland.lafm.shows.ThrobbingThread;
 import net.electroland.lafm.weather.WeatherChangeListener;
 import net.electroland.lafm.weather.WeatherChangedEvent;
@@ -114,6 +115,9 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		weatherChecker = new WeatherChecker(6000, 60 * 30 * 1000);
 		weatherChecker.addListener(this);
 		//weatherChecker.start();
+
+		Runtime.getRuntime().addShutdownHook(new ShutdownThread(fixtures, new PGraphics2D(256,256,null), "ShutdownShow"));
+	
 	}
 	
 	public void midiEvent(Note note){
@@ -268,4 +272,6 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	public static void main(String[] args) {					// PROGRAM LAUNCH
 		new Conductor(args);
 	}
+
+
 }
