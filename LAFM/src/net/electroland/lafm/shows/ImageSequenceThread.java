@@ -1,5 +1,7 @@
 package net.electroland.lafm.shows;
 
+import java.util.Collection;
+
 import net.electroland.detector.DMXLightingFixture;
 import net.electroland.lafm.core.SensorListener;
 import net.electroland.lafm.core.ShowThread;
@@ -15,8 +17,8 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 	private boolean resize = true;
 	
 	public ImageSequenceThread(DMXLightingFixture flower,
-			SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID, PImage[] sequence, boolean resize) {
-		super(flower, soundManager, lifespan, fps, raster, ID);
+			SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID, int priority, PImage[] sequence, boolean resize) {
+		super(flower, soundManager, lifespan, fps, raster, ID, priority);
 		if (sequence != null){			
 			this.sequence = sequence;
 		}else{
@@ -25,9 +27,9 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 		this.resize = resize;
 	}
 
-	public ImageSequenceThread(DMXLightingFixture[] flower,
-			SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID, PImage[] sequence, boolean resize) {
-		super(flower, soundManager, lifespan, fps, raster, ID);
+	public ImageSequenceThread(Collection <DMXLightingFixture> flower,
+			SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID, int priority, PImage[] sequence, boolean resize) {
+		super(flower, soundManager, lifespan, fps, raster, ID, priority);
 		if (sequence != null){			
 			this.sequence = sequence;
 		}else{
@@ -62,8 +64,8 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 	}
 
 	public void sensorEvent(DMXLightingFixture eventFixture, boolean isOn) {
-		if (eventFixture == this.getFlowers()[0] && !isOn){
+		if (this.getFlowers().contains(eventFixture) && !isOn){
 			this.cleanStop();
-		}		
+		}
 	}
 }

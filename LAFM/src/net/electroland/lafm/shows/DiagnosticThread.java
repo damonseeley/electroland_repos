@@ -1,5 +1,7 @@
 package net.electroland.lafm.shows;
 
+import java.util.Collection;
+
 import net.electroland.detector.DMXLightingFixture;
 import net.electroland.lafm.core.SensorListener;
 import net.electroland.lafm.core.ShowThread;
@@ -13,13 +15,13 @@ public class DiagnosticThread extends ShowThread implements SensorListener {
 	private static int BLACK = 0;
 
 	public DiagnosticThread(DMXLightingFixture flower,
-			SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID) {
-		super(flower, soundManager, lifespan, fps, raster, ID);
+			SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID, int priority) {
+		super(flower, soundManager, lifespan, fps, raster, ID, priority);
 	}
 
-	public DiagnosticThread(DMXLightingFixture[] flowers,
-			SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID) {
-		super(flowers, soundManager, lifespan, fps, raster, ID);
+	public DiagnosticThread(Collection <DMXLightingFixture> flowers,
+			SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID, int priority) {
+		super(flowers, soundManager, lifespan, fps, raster, ID, priority);
 	}
 
 	@Override
@@ -41,7 +43,7 @@ public class DiagnosticThread extends ShowThread implements SensorListener {
 	public void sensorEvent(DMXLightingFixture eventFixture, boolean isOn) {
 		// assumes that this thread is only used in a single thread per fixture
 		// environment (thus this.getFlowers() is an array of 1)
-		if (eventFixture == this.getFlowers()[0] && !isOn){
+		if (this.getFlowers().contains(eventFixture) && !isOn){
 			this.cleanStop();
 		}
 	}

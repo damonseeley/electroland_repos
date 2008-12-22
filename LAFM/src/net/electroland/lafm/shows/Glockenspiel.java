@@ -1,5 +1,7 @@
 package net.electroland.lafm.shows;
 
+import java.util.Collection;
+
 import processing.core.PConstants;
 import processing.core.PGraphics;
 import net.electroland.detector.DMXLightingFixture;
@@ -10,10 +12,10 @@ public class Glockenspiel extends ShowThread {
 	
 	private int hour, minute, sec;
 
-	public Glockenspiel(DMXLightingFixture[] flowers,
+	public Glockenspiel(Collection <DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
-			String ID, int hour, int minute, int sec) {
-		super(flowers, soundManager, lifespan, fps, raster, ID);
+			String ID, int priority, int hour, int minute, int sec) {
+		super(flowers, soundManager, lifespan, fps, raster, ID, priority);
 		this.hour = hour;
 		this.minute = minute;
 		this.sec = sec;
@@ -21,8 +23,9 @@ public class Glockenspiel extends ShowThread {
 
 	@Override
 	public void complete(PGraphics raster) {
+		raster.beginDraw();
 		raster.background(0);
-
+		raster.endDraw();
 	}
 
 	@Override

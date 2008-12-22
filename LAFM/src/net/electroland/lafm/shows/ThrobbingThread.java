@@ -1,5 +1,7 @@
 package net.electroland.lafm.shows;
 
+import java.util.Collection;
+
 import processing.core.PConstants;
 import processing.core.PGraphics;
 import net.electroland.detector.DMXLightingFixture;
@@ -17,8 +19,8 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 	private int state;									// 0 = fade in, 1 = hold on, 2 = fade out, 3 = hold off
 	public String name = "ThrobbingThread";
 
-	public ThrobbingThread(DMXLightingFixture flower, SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID, int red, int blue, int green, int fadein, int fadeout, int holdon, int holdoff) {
-		super(flower, soundManager, lifespan, fps, raster, ID);
+	public ThrobbingThread(DMXLightingFixture flower, SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID, int priority, int red, int blue, int green, int fadein, int fadeout, int holdon, int holdoff) {
+		super(flower, soundManager, lifespan, fps, raster, ID, priority);
 		this.red = (float)(red/255.0);
 		this.green = (float)(green/255.0);
 		this.blue = (float)(blue/255.0);
@@ -32,8 +34,8 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 		raster.colorMode(PConstants.RGB, 255, 255, 255);
 	}
 	
-	public ThrobbingThread(DMXLightingFixture[] flowers, SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID, int red, int blue, int green, int fadein, int fadeout, int holdon, int holdoff) {
-		super(flowers, soundManager, lifespan, fps, raster, ID);
+	public ThrobbingThread(Collection <DMXLightingFixture> flowers, SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID, int priority, int red, int blue, int green, int fadein, int fadeout, int holdon, int holdoff) {
+		super(flowers, soundManager, lifespan, fps, raster, ID, priority);
 		this.red = (float)(red/255.0);
 		this.green = (float)(green/255.0);
 		this.blue = (float)(blue/255.0);
@@ -48,8 +50,9 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 
 	@Override
 	public void complete(PGraphics raster) {
+		raster.beginDraw();
 		raster.background(0);
-
+		raster.endDraw();
 	}
 
 	@Override
@@ -84,7 +87,7 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 	public void sensorEvent(DMXLightingFixture eventFixture, boolean isOn) {
 		// assumes that this thread is only used in a single thread per fixture
 		// environment (thus this.getFlowers() is an array of 1)
-		if (eventFixture == this.getFlowers()[0] && !isOn){
+		if (this.getFlowers().contains(eventFixture) && !isOn){
 			this.cleanStop();
 		}
 	}

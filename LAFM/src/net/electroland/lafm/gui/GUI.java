@@ -1,5 +1,8 @@
 package net.electroland.lafm.gui;
 
+import java.util.Collection;
+import java.util.Iterator;
+
 import net.electroland.detector.Detector;
 import net.electroland.lafm.core.Conductor;
 import net.electroland.lafm.core.ShowThread;
@@ -18,9 +21,9 @@ public class GUI extends PApplet{
 	ScrollList activeShows;
 	private Conductor conductor;
 	private ShowThread activeShow;
-	private Detector[] detectors;
+	private Collection<Detector> detectors;
 	
-	public GUI(int width, int height, Conductor conductor, Detector[] detectors){
+	public GUI(int width, int height, Conductor conductor, Collection<Detector> detectors){
 		this.width = width;
 		this.height = height;
 		this.conductor = conductor;
@@ -54,12 +57,16 @@ public class GUI extends PApplet{
 		activeShow = newShow;
 		//activeShows.addItem(newShow.getID(), 1);
 	}
+
+	// DON'T DO THIS.  FOR NOW, INSTEAD, LET'S ADD A "SYNC" BUTTON.
+	// WHEN YOU PRESS IT, IT POPULATES THE DROPDOWN MENU WITH ALL OF THE SHOWS
+	// THAT ARE IN Conductor.getRunningShows().
 	
-	public void removeActiveShow(String name){
-		activeShow = null;
-		// TOO MANY ERRORS OCCURRING HERE
-		//activeShows.removeItem(name);
-	}
+//	public void removeActiveShow(String name){
+//		activeShow = null;
+//		// TOO MANY ERRORS OCCURRING HERE
+//		//activeShows.removeItem(name);
+//	}
 	
 	void controlEvent(ControlEvent e){
 		try{
@@ -127,12 +134,11 @@ public class GUI extends PApplet{
 	}
 	
 	private void drawDetectors(String lightgroup){
-		for(int i=0; i<detectors.length; i++){
-			//point(detectors[i][0], detectors[i][1]);									// least CPU intensive
-			if (detectors[i].getLightGroup().equals(lightgroup))
-				ellipse(detectors[i].getX(), detectors[i].getY(), 16, 16);
-			//rect(detectors[i][0], detectors[i][1], detectors[i][2], detectors[i][3]);	// most accurate
+		Iterator <Detector> i = detectors.iterator();
+		while (i.hasNext()){
+			Detector detector = i.next();
+			if (detector.getLightGroup().equals(lightgroup))
+				ellipse(detector.getX(), detector.getY(), 16, 16);				
 		}
-	}
-	
+	}	
 }

@@ -4,10 +4,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Properties;
-import java.util.Vector;
 
 import net.electroland.detector.DMXLightingFixture;
 import net.electroland.detector.DetectorManager;
@@ -28,7 +29,7 @@ import promidi.Note;
 public class Conductor extends Thread implements ShowThreadListener, WeatherChangeListener, TimedEventListener{
 	
 	public GUIWindow guiWindow;				// frame for GUI
-	static public DMXLightingFixture[] flowers;		// all flower fixtures
+	//static public DMXLightingFixture[] flowers;		// all flower fixtures
 	public MidiIO midiIO;						// sensor data IO
 	public DetectorManager detectorMngr;
 	public SoundManager soundManager;
@@ -41,16 +42,12 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	//TimedEvent sunriseOn = new TimedEvent(6,00,00, this); // on at sunrise-1 based on weather
 	//TimedEvent sunsetOn = new TimedEvent(16,00,00, this); // on at sunset-1 based on weather
 
-	static private Vector <ShowThread>liveShows;
-	private Vector <DMXLightingFixture> usedFixtures;
+	private ArrayList <ShowThread>liveShows;
+	private ArrayList <DMXLightingFixture> availableFixtures;
+	private ArrayList <DMXLightingFixture> fixtures;
 
 	public Conductor(String args[]){
-	
-		// to track which fixtures are used, and what shows are currently running.
-		liveShows = new Vector<ShowThread>();
-		usedFixtures = new Vector<DMXLightingFixture>();
-		
-		// maybe move this to a static method.
+			
 		Properties lightProps = new Properties();
 		try {
 
@@ -61,13 +58,17 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			detectorMngr = new DetectorManager(lightProps);
 
 			// get fixtures
-			flowers = detectorMngr.getFixtures();
+			fixtures = new ArrayList <DMXLightingFixture>(detectorMngr.getFixtures());
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		// to track which fixtures are used, and what shows are currently running.
+		liveShows = new ArrayList<ShowThread>();
+		availableFixtures = new ArrayList<DMXLightingFixture>(detectorMngr.getFixtures());
 		
 		sensors = new Properties();
 		try{
@@ -115,10 +116,10 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		//weatherChecker.start();
 	}
 	
-	static public void makeShow(ShowThread show){
-		// this is temporary for doing diagnostics via the GUI
-		liveShows.add(show);
-	}
+//	static public void makeShow(ShowThread show){
+//		// this is temporary for doing diagnostics via the GUI
+//		liveShows.add(show);
+//	}
 
 	
 	public void midiEvent(Note note){
@@ -131,10 +132,10 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 
 		// find the actual fixture
 		DMXLightingFixture fixture = detectorMngr.getFixture(fixtureId);
-		
+				
 		// did we get a fixture?
 		if (fixture != null){
-
+				
 			// tell any show thread that is a midi listener that an event occured.
 			Iterator<ShowThread> i = liveShows.iterator();
 				while (i.hasNext()){
@@ -151,40 +152,94 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 				if (note.getPitch() == 36){
 					System.out.println("new 'redThrob' ImageSequenceThread");
 					//newShow = new DiagnosticThread(fixture, null, 60, detectorMngr.getFps(), raster, "DiagnosticThread");
-					newShow = new ImageSequenceThread(fixture, null, 60, detectorMngr.getFps(), raster, "ImageSequenceThread", imageCache.getSequence("redThrob"), false);					
+					newShow = new ImageSequenceThread(fixture, null, 60, detectorMngr.getFps(), raster, "ImageSequenceThread", ShowThread.LOW, imageCache.getSequence("redThrob"), false);					
 				}else{
 					System.out.println("new ThrobbingThread");
-					newShow = new ThrobbingThread(fixture, null, 60, detectorMngr.getFps(), raster, "ThrobbingThread", 255, 0, 0, 500, 500, 0, 0);					
+					newShow = new ThrobbingThread(fixture, null, 60, detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, 255, 0, 0, 500, 500, 0, 0);					
 				}
 
-				// manage threadpool
-				liveShows.add(newShow);
-				usedFixtures.add(fixture);
-				((GUI) guiWindow.gui).addActiveShow(newShow);
-
-				// tell thread that we want to be notified of it's end.
-				newShow.addListener(this);
-
-				newShow.start();
-
-			}else{
-				// off events
-				// do nothing for now.
-			}
+				// everything happens in here now.
+				startShow(newShow);				
+			}				
 		}
 	}	
 	
+	//******************** THREAD MANAGEMENT ***********************************
 	// Any time a show is done, this call back will be called, so that
 	// conductor knows the show is over, and that the flowers are available
 	// for reallocation.
-	public void notifyComplete(ShowThread showthread, DMXLightingFixture[] returnedFlowers) {
-		liveShows.remove(showthread);
-		((GUI) guiWindow.gui).removeActiveShow(showthread.getID());
-		for (int i = 0; i < returnedFlowers.length; i++){
-			usedFixtures.remove(returnedFlowers[i]);
+	
+	// this is essentially "stopShow", only it's the show telling us that it stopped.
+	public void notifyComplete(ShowThread showthread, Collection <DMXLightingFixture> returnedFlowers) {
+		synchronized (fixtures){
+			System.out.println("got stop from:\t" + showthread);
+			liveShows.remove(showthread);
+			availableFixtures.addAll(returnedFlowers);
+			System.out.println("currently there are still " + liveShows.size() + " running and " + availableFixtures.size() + " fixtures unallocated");
+
+//			Iterator i = availableFixtures.iterator();
+//			while (i.hasNext())
+			
+			System.out.println("");
+		}
+	}
+
+	public Collection<DMXLightingFixture> getUnallocatedFixtures(){
+		return availableFixtures;
+	}
+	
+	public Collection<ShowThread> getRunningShows(){
+		return liveShows;
+	}
+	
+	/**
+	 * stops all shows, removes them from the pool, and reaps the fixtures.
+	 */
+	public void stopAll(){
+		synchronized(fixtures){
+			Iterator<ShowThread> i = liveShows.iterator();
+			while (i.hasNext()){
+				i.next().cleanStop();				
+			}
+			// don't need to work the pools here.  see notifyComplete.			
+		}
+	}
+
+	/**
+	 * Use THIS to start a show, not show.start()
+	 * @param show
+	 */
+	public void startShow(ShowThread newshow){ // priority is so glockenspiel dosn't get trounced by singles
+
+		// if this show is more important, steal fixtures from anyone less importnat.
+		synchronized(fixtures){
+			Iterator <ShowThread> i = liveShows.iterator();
+			while (i.hasNext()){
+				ShowThread currentShow = i.next();
+				if (newshow.getShowPriority() > currentShow.getShowPriority()){
+					currentShow.getFlowers().removeAll(newshow.getFlowers());
+					if (currentShow.getFlowers().size() == 0){
+						currentShow.cleanStop();
+					}
+				}
+			}
+
+			// manage show pools
+			liveShows.add(newshow);
+			availableFixtures.removeAll(newshow.getFlowers());
+
+			// tell thread that we want to be notified of it's end.
+			newshow.addListener(this);
+
+			System.out.println("starting:\t " + newshow);
+			
+			((GUI) guiWindow.gui).addActiveShow(newshow);
+			newshow.start();
+			// maybe: if it is a midilistener, add it to the list of listeners?			
 		}
 	}
 	
+	//**************************************************************************
 	public void tempUpdate(float update){
 		/**
 		 * TODO: Used for checking temperature of installation server.
@@ -193,15 +248,9 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	
 	public void timedEvent(TimedEvent e){
 		System.out.println(e.hour+":"+e.minute+":"+e.sec);
-		DMXLightingFixture[] fixtures = detectorMngr.getFixtures();
 		PGraphics2D raster = new PGraphics2D(256,256,null);
-		ShowThread newShow = new Glockenspiel(fixtures, soundManager, 5, detectorMngr.getFps(), raster, "Glockenspiel", e.hour, e.minute, e.sec);
-		//ShowThread newShow = new ThrobbingThread(fixtures, null, 5, detectorMngr.getFps(), raster, "ThrobbingThread", 255, 0, 0, 500, 500, 0, 0);
-		liveShows.add(newShow);
-		//usedFixtures.addAll();	// need a Collection of fixtures
-		((GUI) guiWindow.gui).addActiveShow(newShow);
-		newShow.addListener(this);
-		newShow.start();
+		ShowThread newShow = new Glockenspiel(fixtures, soundManager, 5, detectorMngr.getFps(), raster, "Glockenspiel", ShowThread.HIGHEST, e.hour, e.minute, e.sec);
+		startShow(newShow);
 	}
 	
 	public void weatherChanged(WeatherChangedEvent wce){
