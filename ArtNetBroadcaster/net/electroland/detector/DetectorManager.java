@@ -1,6 +1,7 @@
 package net.electroland.detector;
 
 import java.net.UnknownHostException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Properties;
@@ -93,17 +94,19 @@ public class DetectorManager {
 		return fixtures.get(id);
 	}
 
-	public Detector[] getDetectors(){
-		Detector[] d = new Detector[detectors.size()];
-		detectors.values().toArray(d);
-		return d;		
+	public Collection<Detector> getDetectors(){
+		return detectors.values();
+//		Detector[] d = new Detector[detectors.size()];
+//		detectors.values().toArray(d);
+//		return d;		
 	}
 	
 	// returning the array instead of the hashmap, so the user can't monkey with the hashmap.
-	public DMXLightingFixture[] getFixtures(){
-		DMXLightingFixture[] f = new DMXLightingFixture[fixtures.size()];
-		fixtures.values().toArray(f);
-		return f;
+	public Collection<DMXLightingFixture> getFixtures(){
+		return fixtures.values();
+//		DMXLightingFixture[] f = new DMXLightingFixture[fixtures.size()];
+//		fixtures.values().toArray(f);
+//		return f;
 	}
 	
 	public String[] getFixtureIds(){
