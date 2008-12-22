@@ -163,22 +163,10 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	
 	// this is essentially "stopShow", only it's the show telling us that it stopped.
 	public void notifyComplete(ShowThread showthread, Collection <DMXLightingFixture> returnedFlowers) {
-		synchronized (fixtures){
-			System.out.println("got stop from:\t" + showthread);
-			liveShows.remove(showthread);
-			availableFixtures.addAll(returnedFlowers);
-			System.out.println("currently there are still " + liveShows.size() + " running and " + availableFixtures.size() + " fixtures unallocated");
-
-//			Iterator <DMXLightingFixture>i = availableFixtures.iterator();
-//			System.out.print("the following are available:\t");
-//			while (i.hasNext()){
-//				System.out.print(i.next().getID());
-//				if (i.hasNext())
-//					System.out.print(", ");
-//			}
-//
-//			System.out.println("");
-		}
+		System.out.println("got stop from:\t" + showthread);
+		liveShows.remove(showthread);
+		availableFixtures.addAll(returnedFlowers);
+		System.out.println("currently there are still " + liveShows.size() + " running and " + availableFixtures.size() + " fixtures unallocated");
 	}
 
 	public Collection<DMXLightingFixture> getUnallocatedFixtures(){
@@ -193,13 +181,12 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	 * stops all shows, removes them from the pool, and reaps the fixtures.
 	 */
 	public void stopAll(){
-		synchronized(fixtures){
-			Iterator<ShowThread> i = liveShows.iterator();
-			while (i.hasNext()){
-				i.next().cleanStop();				
-			}
-			// don't need to work the pools here.  see notifyComplete.			
+		Iterator<ShowThread> i = liveShows.iterator();
+		while (i.hasNext()){
+			i.next().cleanStop();				
 		}
+		// don't need to add or remove anything from live shows here because
+		// notifyComplete will do the math on the callback.			
 	}
 
 	/**
@@ -210,37 +197,34 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 
 		// if this show is more important, steal fixtures from anyone less important.
 		// (otherwise, vice versa)
-		synchronized(fixtures){
-			Iterator <ShowThread> i = liveShows.iterator();
-			while (i.hasNext()){
-				ShowThread currentShow = i.next();
-				if (newshow.getShowPriority() > currentShow.getShowPriority()){
-					currentShow.getFlowers().removeAll(newshow.getFlowers());
-					if (currentShow.getFlowers().size() == 0){
-						currentShow.cleanStop();
-					}
-				}else{
-					newshow.getFlowers().removeAll(currentShow.getFlowers());					
+		Iterator <ShowThread> i = liveShows.iterator();
+		while (i.hasNext()){
+			ShowThread currentShow = i.next();
+			if (newshow.getShowPriority() > currentShow.getShowPriority()){
+				currentShow.getFlowers().removeAll(newshow.getFlowers());
+				if (currentShow.getFlowers().size() == 0){
+					currentShow.cleanStop();
 				}
+			}else{
+				newshow.getFlowers().removeAll(currentShow.getFlowers());					
 			}
+		}
 
-			// if your show tried to start when there were no fixtures available
-			// that you had priority on, don't bother.
-			if (newshow.getFlowers().size() != 0){
-				// manage show pools
-				liveShows.add(newshow);
-				availableFixtures.removeAll(newshow.getFlowers());
+		// if your show tried to start when there were no fixtures available
+		// that you had priority on, don't bother.
+		if (newshow.getFlowers().size() != 0){
+			// manage show pools
+			liveShows.add(newshow);
+			availableFixtures.removeAll(newshow.getFlowers());
 
-				// tell thread that we want to be notified of it's end.
-				newshow.addListener(this);
+			// tell thread that we want to be notified of it's end.
+			newshow.addListener(this);
 
-				System.out.println("starting:\t" + newshow);
-				System.out.println("priority:\t" + newshow.getShowPriority());
-				
-				((GUI) guiWindow.gui).addActiveShow(newshow);
-				newshow.start();
-				// maybe: if it is a midilistener, add it to the list of listeners?					
-			}
+			System.out.println("starting:\t" + newshow);
+			//System.out.println("priority:\t" + newshow.getShowPriority());
+			
+			((GUI) guiWindow.gui).addActiveShow(newshow);
+			newshow.start();
 		}
 	}
 	
@@ -252,7 +236,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	}
 	
 	public void timedEvent(TimedEvent e){
-		System.out.println(e.hour+":"+e.minute+":"+e.sec);
+		//System.out.println(e.hour+":"+e.minute+":"+e.sec);
 		PGraphics2D raster = new PGraphics2D(256,256,null);
 		ShowThread newShow = new Glockenspiel(fixtures, soundManager, 5, detectorMngr.getFps(), raster, "Glockenspiel", ShowThread.HIGHEST, e.hour, e.minute, e.sec);
 		startShow(newShow);
