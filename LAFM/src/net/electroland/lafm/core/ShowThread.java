@@ -129,10 +129,4 @@ public abstract class ShowThread extends Thread {
 			i.next().notifyComplete(this, flowers);
 		}
 	}
-
-	// added by ds
-	public void sensorEvent(DMXLightingFixture eventFixture, boolean isOn) {
-		// TODO Auto-generated method stub
-		return;
-	}
 }
