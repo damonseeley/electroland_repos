@@ -81,14 +81,11 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 		raster.endDraw();
 	}
 
-	@Override
 	public void sensorEvent(DMXLightingFixture eventFixture, boolean isOn) {
 		// assumes that this thread is only used in a single thread per fixture
 		// environment (thus this.getFlowers() is an array of 1)
 		if (eventFixture == this.getFlowers()[0] && !isOn){
 			this.cleanStop();
 		}
-		
 	}
-
 }
