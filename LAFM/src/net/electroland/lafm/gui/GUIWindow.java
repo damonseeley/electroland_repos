@@ -1,6 +1,5 @@
 package net.electroland.lafm.gui;
 
-import java.applet.Applet;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
@@ -8,11 +7,12 @@ import java.awt.event.WindowEvent;
 import java.util.Properties;
 
 import net.electroland.lafm.core.Conductor;
+import processing.core.PApplet;
 
 public class GUIWindow extends Frame{
 	private static final long serialVersionUID = 1L;
 	private int width = 500, height = 320;
-	public Applet gui;
+	public PApplet gui;
 	
 	public GUIWindow(Conductor conductor, Properties p){
 		super("LAFM Control Panel");						// establish name

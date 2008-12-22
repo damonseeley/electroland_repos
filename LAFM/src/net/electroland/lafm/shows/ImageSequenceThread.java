@@ -12,7 +12,7 @@ public class ImageSequenceThread extends ShowThread {
 	public ImageSequenceThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID) {
 		super(flower, soundManager, lifespan, fps, raster, ID);
-		// TODO Auto-generated constructor stub
+		// TODO find the appropriate image
 	}
 
 	@Override
