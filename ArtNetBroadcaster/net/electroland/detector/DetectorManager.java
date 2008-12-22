@@ -2,8 +2,10 @@ package net.electroland.detector;
 
 import java.net.UnknownHostException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -19,14 +21,14 @@ import net.electroland.detector.models.ThresholdDetectionModel;
  */
 public class DetectorManager {
 
-	private HashMap <String, DMXLightingFixture> fixtures;
-	private HashMap <String, Detector> detectors;
+	private Map <String, DMXLightingFixture> fixtures;
+	private Map <String, Detector> detectors;
 	private int fps;
 	
 	public DetectorManager(Properties props) throws UnknownHostException{
 
-		fixtures = new HashMap<String, DMXLightingFixture>();
-		detectors = new HashMap<String, Detector>();
+		fixtures = Collections.synchronizedMap(new HashMap<String, DMXLightingFixture>());
+		detectors = Collections.synchronizedMap(new HashMap<String, Detector>());
 
 		// fps
 		fps = Integer.parseInt(props.getProperty("fps"));
@@ -71,14 +73,10 @@ public class DetectorManager {
 		while (light != null && light.length() != 0){
 
 			// example: light0 = 1, detector0
-//			System.out.println("loading " + light);
 			StringTokenizer st = new StringTokenizer(light);
 			int channel = Integer.parseInt(st.nextToken(" \t,"));
-//			System.out.println("channel=" + channel);
 			DMXLightingFixture f = fixtures.get(st.nextToken(" \t,"));
-//			System.out.println("fixture=" + f);
 			Detector d = detectors.get(st.nextToken(" \t,"));
-//			System.out.println("detector=" + d);
 			
 			f.setChannelDetector(channel, d);
 			
@@ -96,17 +94,11 @@ public class DetectorManager {
 
 	public Collection<Detector> getDetectors(){
 		return detectors.values();
-//		Detector[] d = new Detector[detectors.size()];
-//		detectors.values().toArray(d);
-//		return d;		
 	}
 	
 	// returning the array instead of the hashmap, so the user can't monkey with the hashmap.
 	public Collection<DMXLightingFixture> getFixtures(){
 		return fixtures.values();
-//		DMXLightingFixture[] f = new DMXLightingFixture[fixtures.size()];
-//		fixtures.values().toArray(f);
-//		return f;
 	}
 	
 	public String[] getFixtureIds(){
@@ -123,25 +115,17 @@ public class DetectorManager {
 		StringTokenizer st = new StringTokenizer(str, ", \t");
 
 		String id = st.nextToken();
-//		System.out.println("id=" + id);
 		byte universe = (byte)Integer.parseInt(st.nextToken());
-//		System.out.println("universe=" + universe);
 		int channels = Integer.parseInt(st.nextToken());
-//		System.out.println("channels=" + channels);
 		int width = Integer.parseInt(st.nextToken());
-//		System.out.println("width=" + width);
 		int height = Integer.parseInt(st.nextToken());
-//		System.out.println("height=" + height);
 		String protocol = st.nextToken();
-//		System.out.println("protocol=" + protocol);
 	
 		if (protocol.equalsIgnoreCase("artnet")){
 			String ip = st.nextToken();
 			fixture = new ArtNetDMXLightingFixture(id, universe, ip, channels, width, height);
 		}
-//		System.out.println("ipaddress=" + ip);		
 		String lightgroup = st.nextToken(); // need a string parse for this ("...")
-//		System.out.println("lightgroup=" + lightgroup);		
 		
 		if (fixture != null && fixture instanceof ArtNetDMXLightingFixture){
 			fixture.setLog(fps == 1);
@@ -159,13 +143,9 @@ public class DetectorManager {
 		StringTokenizer st = new StringTokenizer(str, ", \t");
 		
 		int x = Integer.parseInt(st.nextToken());
-//		System.out.println("x=" + x);
 		int y = Integer.parseInt(st.nextToken());
-//		System.out.println("y=" + y);
 		int w = Integer.parseInt(st.nextToken());
-//		System.out.println("w=" + w);
 		int h = Integer.parseInt(st.nextToken());
-//		System.out.println("h=" + h);
 		String dmName = st.nextToken();
 		
 		String lightgroup = st.nextToken();
@@ -186,7 +166,6 @@ public class DetectorManager {
 			model = new ThresholdDetectionModel();
 		}
 
-//		System.out.println(model);
 		Detector d = new Detector(x,y,w,h,model);
 		d.lightgroup = lightgroup;
 		d.channel = channel;
