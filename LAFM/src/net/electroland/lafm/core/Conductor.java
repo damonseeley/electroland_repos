@@ -116,12 +116,6 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		//weatherChecker.start();
 	}
 	
-//	static public void makeShow(ShowThread show){
-//		// this is temporary for doing diagnostics via the GUI
-//		liveShows.add(show);
-//	}
-
-	
 	public void midiEvent(Note note){
 
 		// is it an on or off event?
@@ -150,11 +144,9 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 				PGraphics2D raster = new PGraphics2D(256,256,null);
 				ShowThread newShow;
 				if (note.getPitch() == 36){
-					System.out.println("new 'redThrob' ImageSequenceThread");
 					//newShow = new DiagnosticThread(fixture, null, 60, detectorMngr.getFps(), raster, "DiagnosticThread");
 					newShow = new ImageSequenceThread(fixture, null, 60, detectorMngr.getFps(), raster, "ImageSequenceThread", ShowThread.LOW, imageCache.getSequence("redThrob"), false);					
 				}else{
-					System.out.println("new ThrobbingThread");
 					newShow = new ThrobbingThread(fixture, null, 60, detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, 255, 0, 0, 500, 500, 0, 0);					
 				}
 
@@ -177,10 +169,15 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			availableFixtures.addAll(returnedFlowers);
 			System.out.println("currently there are still " + liveShows.size() + " running and " + availableFixtures.size() + " fixtures unallocated");
 
-//			Iterator i = availableFixtures.iterator();
-//			while (i.hasNext())
-			
-			System.out.println("");
+//			Iterator <DMXLightingFixture>i = availableFixtures.iterator();
+//			System.out.print("the following are available:\t");
+//			while (i.hasNext()){
+//				System.out.print(i.next().getID());
+//				if (i.hasNext())
+//					System.out.print(", ");
+//			}
+//
+//			System.out.println("");
 		}
 	}
 
@@ -211,7 +208,8 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	 */
 	public void startShow(ShowThread newshow){ // priority is so glockenspiel dosn't get trounced by singles
 
-		// if this show is more important, steal fixtures from anyone less importnat.
+		// if this show is more important, steal fixtures from anyone less important.
+		// (otherwise, vice versa)
 		synchronized(fixtures){
 			Iterator <ShowThread> i = liveShows.iterator();
 			while (i.hasNext()){
@@ -221,21 +219,28 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					if (currentShow.getFlowers().size() == 0){
 						currentShow.cleanStop();
 					}
+				}else{
+					newshow.getFlowers().removeAll(currentShow.getFlowers());					
 				}
 			}
 
-			// manage show pools
-			liveShows.add(newshow);
-			availableFixtures.removeAll(newshow.getFlowers());
+			// if your show tried to start when there were no fixtures available
+			// that you had priority on, don't bother.
+			if (newshow.getFlowers().size() != 0){
+				// manage show pools
+				liveShows.add(newshow);
+				availableFixtures.removeAll(newshow.getFlowers());
 
-			// tell thread that we want to be notified of it's end.
-			newshow.addListener(this);
+				// tell thread that we want to be notified of it's end.
+				newshow.addListener(this);
 
-			System.out.println("starting:\t " + newshow);
-			
-			((GUI) guiWindow.gui).addActiveShow(newshow);
-			newshow.start();
-			// maybe: if it is a midilistener, add it to the list of listeners?			
+				System.out.println("starting:\t" + newshow);
+				System.out.println("priority:\t" + newshow.getShowPriority());
+				
+				((GUI) guiWindow.gui).addActiveShow(newshow);
+				newshow.start();
+				// maybe: if it is a midilistener, add it to the list of listeners?					
+			}
 		}
 	}
 	
