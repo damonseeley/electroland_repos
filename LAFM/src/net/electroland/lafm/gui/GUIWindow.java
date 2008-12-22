@@ -4,8 +4,8 @@ import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Properties;
 
+import net.electroland.detector.Detector;
 import net.electroland.lafm.core.Conductor;
 import processing.core.PApplet;
 
@@ -14,11 +14,11 @@ public class GUIWindow extends Frame{
 	private int width = 500, height = 320;
 	public PApplet gui;
 	
-	public GUIWindow(Conductor conductor, Properties p){
+	public GUIWindow(Conductor conductor, Detector[] d){
 		super("LAFM Control Panel");						// establish name
 		setSize(width, height+20);							// set frame size (+top bar)
 		setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));	// left/top oriented layout
-		gui = new GUI(width, height, conductor, p);			// create processing applet
+		gui = new GUI(width, height, conductor, d);			// create processing applet
 		add(gui);											// add processing gui to frame
 		setResizable(false);								// static size
 		addWindowListener(new WindowAdapter() {

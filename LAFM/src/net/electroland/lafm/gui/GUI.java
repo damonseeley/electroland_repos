@@ -1,7 +1,6 @@
 package net.electroland.lafm.gui;
 
-import java.util.Properties;
-
+import net.electroland.detector.Detector;
 import net.electroland.lafm.core.Conductor;
 import net.electroland.lafm.core.ShowThread;
 import processing.core.PApplet;
@@ -19,14 +18,13 @@ public class GUI extends PApplet{
 	ScrollList activeShows;
 	private Conductor conductor;
 	private ShowThread activeShow;
-	private Properties p;
-	private int[][] detectors;
+	private Detector[] detectors;
 	
-	public GUI(int width, int height, Conductor conductor, Properties p){
+	public GUI(int width, int height, Conductor conductor, Detector[] detectors){
 		this.width = width;
 		this.height = height;
 		this.conductor = conductor;
-		this.p = p;
+		this.detectors = detectors;
 	}
 	
 	public void setup(){
@@ -38,13 +36,6 @@ public class GUI extends PApplet{
 		}
 		// setup scrolling list for displaying active shows
 		activeShows = controls.addScrollList("activeShows",276,55,120,256);
-		// load detector data for placement on raster
-		detectors = new int[25][4];
-		for(int i=0; i<25; i++){
-			String[] tempdata = ((String)p.get("detector"+i*3)).split(",");
-			int[] tempints = {Integer.valueOf(tempdata[0]), Integer.valueOf(tempdata[1]), Integer.valueOf(tempdata[2]), Integer.valueOf(tempdata[3])};
-			detectors[i] = tempints;
-		}
 	}
 	
 	public void draw(){
@@ -55,7 +46,7 @@ public class GUI extends PApplet{
 		pushMatrix();
 		translate(10,45);
 		drawPattern();
-		drawDetectors();
+		drawDetectors("lightgroup0");
 		popMatrix();
 	}
 	
@@ -135,10 +126,11 @@ public class GUI extends PApplet{
 		rect(0, 0, 256, 256);
 	}
 	
-	private void drawDetectors(){
+	private void drawDetectors(String lightgroup){
 		for(int i=0; i<detectors.length; i++){
 			//point(detectors[i][0], detectors[i][1]);									// least CPU intensive
-			ellipse(detectors[i][0], detectors[i][1], 16, 16);							// most attractive
+			if (detectors[i].getLightGroup().equals(lightgroup))
+				ellipse(detectors[i].getX(), detectors[i].getY(), 16, 16);
 			//rect(detectors[i][0], detectors[i][1], detectors[i][2], detectors[i][3]);	// most accurate
 		}
 	}

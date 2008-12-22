@@ -95,7 +95,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			e.printStackTrace();
 		}
 		soundManager = new SoundManager();
-		guiWindow = new GUIWindow(this, lightProps);
+		guiWindow = new GUIWindow(this, detectorMngr.getDetectors());
 		guiWindow.setVisible(true);
 		
 		try {
