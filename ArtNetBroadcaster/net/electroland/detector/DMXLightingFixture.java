@@ -1,8 +1,11 @@
 package net.electroland.detector;
 
 import java.awt.Image;
+import java.util.List;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import processing.core.PImage;
 
@@ -19,7 +22,7 @@ public abstract class DMXLightingFixture {
 	protected InetAddress ip;
 	protected String ipStr, id;
 	protected int port, channels;
-	protected Detector[] detectors;
+	protected List <Detector> detectors;
 	protected int width, height; // for generating raster properly.
 	protected String lightgroup;
 
@@ -41,6 +44,8 @@ public abstract class DMXLightingFixture {
 		this.setChannels(channels);
 		
 		this.ip = InetAddress.getByName(ipStr);
+		this.detectors = Collections.synchronizedList(new ArrayList<Detector>(channels));
+		this.channels = channels;
 	}
 	
 	/**
@@ -58,27 +63,11 @@ public abstract class DMXLightingFixture {
 	 * @param channels
 	 */
 	final public void setChannels(int channels) {
-		this.channels = channels;
-			if (detectors != null){
-				synchronized (detectors){
-					Detector[] newArray = new Detector[channels];
-					System.arraycopy(detectors,	0, newArray, 0, 
-							(detectors.length > newArray.length ? 
-									newArray.length : detectors.length));
-					detectors = newArray;
-				}
-			}else{
-				detectors = new Detector[channels];
-			}
+		this.channels = channels;		
 	}
 	
 	final public void setChannelDetector(int channel, Detector detector) throws ArrayIndexOutOfBoundsException, NullPointerException{
-		if (detector == null){
-			throw new NullPointerException("Attempt to insert a null detector.");
-		}
-		synchronized (detectors){
-			detectors[channel] = detector;
-		}
+		detectors.add(channel, detector);
 	}
 
 	/**
@@ -87,27 +76,26 @@ public abstract class DMXLightingFixture {
 	 * @param PImage
 	 */
 	final public void sync(PImage raster){
-		synchronized (detectors){
-			byte[] data = new byte[detectors.length];
-			for (int i = 0; i < data.length; i++){
-				if (detectors[i] == null){
-					data[i] = 0;
-				}else{
-					// populate the pixel buffer
-					// (if we need to optimize later, I can almost guarantee we
-					//  should start here, by doing direct System.arrayCopy operations
-					//  from raster.pixels.)
-					PImage subraster = raster.get(detectors[i].x, 
-													detectors[i].y, 
-													detectors[i].width, 
-													detectors[i].height);
-					subraster.updatePixels();
-					subraster.loadPixels();
-					data[i] = (byte)detectors[i].model.getValue(subraster.pixels);
-				}
+		byte[] data = new byte[channels];
+		for (int i = 0; i < data.length; i++){
+			Detector detector = detectors.get(i);
+			if (detector == null){
+				data[i] = 0;
+			}else{
+				// populate the pixel buffer
+				// (if we need to optimize later, I can almost guarantee we
+				//  should start here, by doing direct System.arrayCopy operations
+				//  from raster.pixels.)
+				PImage subraster = raster.get(detector.x, 
+												detector.y, 
+												detector.width, 
+												detector.height);
+				subraster.updatePixels();
+				subraster.loadPixels();
+				data[i] = (byte)detector.model.getValue(subraster.pixels);
 			}
-			send(data);
 		}
+		send(data);
 	}
 
 	/**
@@ -122,7 +110,7 @@ public abstract class DMXLightingFixture {
 		return channels;
 	}
 	
-	public Detector[] getDetectors(){
+	public List<Detector> getDetectors(){
 		return detectors;
 	}
 	
