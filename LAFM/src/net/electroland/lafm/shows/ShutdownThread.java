@@ -2,11 +2,10 @@ package net.electroland.lafm.shows;
 
 import java.util.Collection;
 
-import processing.core.PConstants;
-import processing.core.PGraphics;
 import net.electroland.detector.DMXLightingFixture;
 import net.electroland.lafm.core.ShowThread;
-import net.electroland.lafm.core.SoundManager;
+import processing.core.PConstants;
+import processing.core.PGraphics;
 
 public class ShutdownThread extends ShowThread {
 
