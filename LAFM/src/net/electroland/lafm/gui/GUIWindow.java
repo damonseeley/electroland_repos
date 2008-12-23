@@ -15,7 +15,7 @@ public class GUIWindow extends Frame{
 	private int width = 500, height = 320;
 	public PApplet gui;
 	
-	public GUIWindow(Conductor conductor, Collection fixtures){
+	public GUIWindow(Conductor conductor, Collection<Detector> fixtures){
 		super("LAFM Control Panel");						// establish name
 		setSize(width, height+20);							// set frame size (+top bar)
 		setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));	// left/top oriented layout
