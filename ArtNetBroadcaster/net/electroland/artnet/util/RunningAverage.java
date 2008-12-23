@@ -1,7 +1,9 @@
 package net.electroland.artnet.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author geilfuss
@@ -11,7 +13,8 @@ public class RunningAverage {
 	private int maxDatapoints;
 	private long maxDatapointAge;
 	private boolean isIterationAverager = true;
-	private ArrayList <Datapoint> vals;
+	private List <Datapoint> vals;
+	private long last = System.currentTimeMillis();
 
 	/**
 	 * iterations is the total number of datapoints to store and average at any
@@ -22,7 +25,7 @@ public class RunningAverage {
 	public RunningAverage(int maxDatapoints){
 		this.maxDatapoints = maxDatapoints;
 		isIterationAverager = true;
-		vals = new ArrayList<Datapoint>();
+		vals = Collections.synchronizedList(new ArrayList<Datapoint>());
 	}
 
 	/**
@@ -51,9 +54,7 @@ public class RunningAverage {
 	 * @param value
 	 */
 	public void addValue(Double value){
-		synchronized (vals){			
-			vals.add(new Datapoint(System.currentTimeMillis(), value));
-		}
+		vals.add(new Datapoint(System.currentTimeMillis(), value));
 	}
 
 	/**
@@ -64,32 +65,34 @@ public class RunningAverage {
 	 * @param millis
 	 */
 	public void addValue(Double value, long millis){
-		synchronized (vals){
-			// check to see if enough time has elapsed.
-			long curr = System.currentTimeMillis();
-			if (vals.size() == 0){
-				// if there are no other values, no need to test.
+		// check to see if enough time has elapsed.
+		long curr = System.currentTimeMillis();
+		if (vals.size() == 0){
+			// if there are no other values, no need to test.
+			vals.add(new Datapoint(curr, value));
+		}else{
+			if (curr - vals.get(vals.size() - 1).timestamp >= millis){
 				vals.add(new Datapoint(curr, value));
-			}else{
-				if (curr - vals.get(vals.size() - 1).timestamp >= millis){
-					vals.add(new Datapoint(curr, value));
-				}
 			}
 		}
 	}
-	
-	//TBD
-	public double getFPS() throws NoDataException{
-		return -1;
+
+	/**
+	 * 
+	 */
+	public void markFrame(){
+		long curr = System.currentTimeMillis();
+		vals.add(new Datapoint(curr, curr - last));
+		last = curr;
 	}
-	
-	
+
 	/**
 	 * 
 	 * @return
 	 * @throws NoDataException
 	 */
 	public double getAvg() throws NoDataException{
+
 		double average = 0;
 		double points = 0;
 
@@ -97,12 +100,10 @@ public class RunningAverage {
 			// pare down the size of the list to exactly as many values as
 			// the iterator.
 			Iterator <Datapoint> i;
-			synchronized (vals){				
-				while (vals.size() > maxDatapoints){
-					vals.remove(0);
-				}			
-				i = vals.iterator();
-			}
+			while (vals.size() > maxDatapoints){
+				vals.remove(0);
+			}			
+			i = vals.iterator();
 			while (i.hasNext()){
 				Datapoint d = i.next();
 				average += d.value;
@@ -113,16 +114,14 @@ public class RunningAverage {
 			// through the list.
 			long time = System.currentTimeMillis();
 			Iterator <Datapoint> i = vals.iterator();
-			synchronized (vals){
-				while (i.hasNext()){
-					Datapoint d = i.next();
-					if (time - d.timestamp <= maxDatapointAge){
-						average += d.value;
-						points += 1;
-					}else{
-						// remove as many as we don't read.
-						vals.remove(0);
-					}
+			while (i.hasNext()){
+				Datapoint d = i.next();
+				if (time - d.timestamp <= maxDatapointAge){
+					average += d.value;
+					points += 1;
+				}else{
+					// remove as many as we don't read.
+					vals.remove(0);
 				}
 			}
 		}
