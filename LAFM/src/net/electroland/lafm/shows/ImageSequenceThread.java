@@ -1,6 +1,6 @@
 package net.electroland.lafm.shows;
 
-import java.util.Collection;
+import java.util.List;
 
 import net.electroland.detector.DMXLightingFixture;
 import net.electroland.lafm.core.SensorListener;
@@ -27,7 +27,7 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 		this.resize = resize;
 	}
 
-	public ImageSequenceThread(Collection <DMXLightingFixture> flower,
+	public ImageSequenceThread(List <DMXLightingFixture> flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID, int priority, PImage[] sequence, boolean resize) {
 		super(flower, soundManager, lifespan, fps, raster, ID, priority);
 		if (sequence != null){			

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 import net.electroland.artnet.util.NoDataException;
 import net.electroland.artnet.util.RunningAverage;
@@ -20,11 +21,11 @@ public abstract class ShowThread extends Thread {
 	private PGraphics raster;
 	private long delay;
 	private long lifespan;
-	private Collection <DMXLightingFixture> flowers;
+	private List <DMXLightingFixture> flowers;
 	private SoundManager soundManager;
 	private long startTime;
 	private boolean isRunning = true;
-	private Collection <ShowThreadListener>listeners;
+	private List <ShowThreadListener>listeners;
 	private String ID; // should rename to avoid confusion with Thread.getId();
 	private int showPriority;
 	private RunningAverage avg;
@@ -46,11 +47,11 @@ public abstract class ShowThread extends Thread {
 		this.raster = raster;
 		this.ID = ID;
 		this.showPriority = showPriority;
-		listeners = new ArrayList<ShowThreadListener>();
+		listeners = Collections.synchronizedList(new ArrayList<ShowThreadListener>());
 		this.avg = new RunningAverage(30);
 	}
 
-	public ShowThread(Collection <DMXLightingFixture> flowers, 
+	public ShowThread(List <DMXLightingFixture> flowers, 
 					  SoundManager soundManager, 
 					  int lifespan, int fps,
 					  PGraphics raster, String ID, int showPriority){ // lifespan is in seconds.
@@ -62,7 +63,7 @@ public abstract class ShowThread extends Thread {
 		this.raster = raster;
 		this.ID = ID;
 		this.showPriority = showPriority;
-		listeners = new ArrayList<ShowThreadListener>();
+		listeners = Collections.synchronizedList(new ArrayList<ShowThreadListener>());
 		this.avg = new RunningAverage(30);
 	}
 

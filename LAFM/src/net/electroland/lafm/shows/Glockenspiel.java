@@ -1,6 +1,6 @@
 package net.electroland.lafm.shows;
 
-import java.util.Collection;
+import java.util.List;
 
 import processing.core.PConstants;
 import processing.core.PGraphics;
@@ -12,7 +12,7 @@ public class Glockenspiel extends ShowThread {
 	
 	private int hour, minute, sec;
 
-	public Glockenspiel(Collection <DMXLightingFixture> flowers,
+	public Glockenspiel(List <DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int priority, int hour, int minute, int sec) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, priority);

@@ -1,6 +1,6 @@
 package net.electroland.lafm.shows;
 
-import java.util.Collection;
+import java.util.List;
 
 import processing.core.PConstants;
 import processing.core.PGraphics;
@@ -34,7 +34,7 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 		raster.colorMode(PConstants.RGB, 255, 255, 255);
 	}
 	
-	public ThrobbingThread(Collection <DMXLightingFixture> flowers, SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID, int priority, int red, int blue, int green, int fadein, int fadeout, int holdon, int holdoff) {
+	public ThrobbingThread(List <DMXLightingFixture> flowers, SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID, int priority, int red, int blue, int green, int fadein, int fadeout, int holdon, int holdoff) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, priority);
 		this.red = (float)(red/255.0);
 		this.green = (float)(green/255.0);

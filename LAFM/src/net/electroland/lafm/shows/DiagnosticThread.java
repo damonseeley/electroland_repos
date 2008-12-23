@@ -1,6 +1,6 @@
 package net.electroland.lafm.shows;
 
-import java.util.Collection;
+import java.util.List;
 
 import net.electroland.detector.DMXLightingFixture;
 import net.electroland.lafm.core.SensorListener;
@@ -19,7 +19,7 @@ public class DiagnosticThread extends ShowThread implements SensorListener {
 		super(flower, soundManager, lifespan, fps, raster, ID, priority);
 	}
 
-	public DiagnosticThread(Collection <DMXLightingFixture> flowers,
+	public DiagnosticThread(List <DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID, int priority) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, priority);
 	}

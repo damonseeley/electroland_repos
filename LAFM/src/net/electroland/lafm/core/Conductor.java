@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 
 import net.electroland.detector.DMXLightingFixture;
@@ -21,7 +22,6 @@ import net.electroland.lafm.shows.Glockenspiel;
 import net.electroland.lafm.shows.ImageSequenceThread;
 import net.electroland.lafm.shows.PropellerThread;
 import net.electroland.lafm.shows.ShutdownThread;
-import net.electroland.lafm.shows.ThrobbingThread;
 import net.electroland.lafm.weather.WeatherChangeListener;
 import net.electroland.lafm.weather.WeatherChangedEvent;
 import net.electroland.lafm.weather.WeatherChecker;
@@ -47,9 +47,9 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	//TimedEvent sunriseOn = new TimedEvent(6,00,00, this); // on at sunrise-1 based on weather
 	//TimedEvent sunsetOn = new TimedEvent(16,00,00, this); // on at sunset-1 based on weather
 
-	private Collection <ShowThread>liveShows;
-	private Collection <DMXLightingFixture> availableFixtures;
-	private Collection <DMXLightingFixture> fixtures;
+	private List <ShowThread>liveShows;
+	private List <DMXLightingFixture> availableFixtures;
+	private List <DMXLightingFixture> fixtures;
 
 	public Conductor(String args[]){
 			
@@ -120,7 +120,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		weatherChecker.addListener(this);
 		//weatherChecker.start();
 
-		Runtime.getRuntime().addShutdownHook(new ShutdownThread(fixtures, new PGraphics2D(256,256,null), "ShutdownShow"));
+		Runtime.getRuntime().addShutdownHook(new ShutdownThread(fixtures, guiWindow.gui.createGraphics(256, 256, PConstants.P2D), "ShutdownShow"));
 	
 	}
 	

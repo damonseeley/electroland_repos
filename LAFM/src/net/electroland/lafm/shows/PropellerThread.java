@@ -1,6 +1,6 @@
 package net.electroland.lafm.shows;
 
-import java.util.Collection;
+import java.util.List;
 
 import processing.core.PConstants;
 import processing.core.PGraphics;
@@ -14,7 +14,7 @@ public class PropellerThread extends ShowThread {
 	private float rotation, rotSpeed;
 	private int fadeSpeed;
 	
-	public PropellerThread(Collection<DMXLightingFixture> flowers, SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID, int showPriority, int red, int green, int blue, float rotationSpeed, int fadeSpeed) {
+	public PropellerThread(List<DMXLightingFixture> flowers, SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID, int showPriority, int red, int green, int blue, float rotationSpeed, int fadeSpeed) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
 		this.green = green;
