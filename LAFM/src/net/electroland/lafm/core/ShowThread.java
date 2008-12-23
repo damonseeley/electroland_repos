@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
+import net.electroland.artnet.util.NoDataException;
+import net.electroland.artnet.util.RunningAverage;
 import net.electroland.detector.DMXLightingFixture;
 import processing.core.PGraphics;
 
@@ -23,8 +25,9 @@ public abstract class ShowThread extends Thread {
 	private long startTime;
 	private boolean isRunning = true;
 	private Collection <ShowThreadListener>listeners;
-	private String ID;
+	private String ID; // should rename to avoid confusion with Thread.getId();
 	private int showPriority;
+	private RunningAverage avg;
 
 	public int getShowPriority() {
 		return this.showPriority;
@@ -44,6 +47,7 @@ public abstract class ShowThread extends Thread {
 		this.ID = ID;
 		this.showPriority = showPriority;
 		listeners = new ArrayList<ShowThreadListener>();
+		this.avg = new RunningAverage(30);
 	}
 
 	public ShowThread(Collection <DMXLightingFixture> flowers, 
@@ -59,6 +63,7 @@ public abstract class ShowThread extends Thread {
 		this.ID = ID;
 		this.showPriority = showPriority;
 		listeners = new ArrayList<ShowThreadListener>();
+		this.avg = new RunningAverage(30);
 	}
 
 	/**
@@ -119,6 +124,8 @@ public abstract class ShowThread extends Thread {
 				i.next().sync(raster);
 			}
 
+			avg.markFrame(); // for measuring fps
+
 			try {
 				Thread.sleep(delay);
 			} catch (InterruptedException e) {
@@ -135,6 +142,14 @@ public abstract class ShowThread extends Thread {
 			i.next().sync(raster);
 		}
 
+		avg.markFrame(); // for measuring fps
+		
+		try {
+			System.out.println("\t\t" + this.getID() + " ended with and average fps of " + avg.getAvg());
+		} catch (NoDataException e) {
+			e.printStackTrace();
+		}
+		
 		// tell any listeners that we are done.
 		Iterator<ShowThreadListener> j = listeners.iterator();
 		while (j.hasNext()){
