@@ -32,6 +32,7 @@ public class PropellerThread extends ShowThread {
 		this.rotation = 0;
 		this.rotSpeed = rotationSpeed;
 		this.fadeSpeed = fadeSpeed;
+		raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
 	}
 
 	@Override
@@ -43,26 +44,18 @@ public class PropellerThread extends ShowThread {
 
 	@Override
 	public void doWork(PGraphics raster) {
-		//raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
+		raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
 		raster.rectMode(PConstants.CENTER);
 		raster.beginDraw();
 		raster.noStroke();
-		raster.background(0,0,0,fadeSpeed);
 		raster.translate(128, 128);
+		raster.fill(0,0,0,fadeSpeed);
+		raster.rect(0,0,256,256);
 		raster.rotate((float)(rotation * Math.PI/180));
 		raster.fill(red, green, blue);
 		raster.rect(0,0,300,20);
 		raster.endDraw();
 		rotation += rotSpeed;
-		/*
-		raster.pushMatrix();
-		raster.translate(128,128);
-		raster.rotate(rotation);
-		raster.stroke(0);
-		raster.fill(red, green, blue);
-		raster.rect(0,0,100,100);
-		raster.background(0,0,0,fadeSpeed);
-		*/
 	}
 
 }

@@ -150,7 +150,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			if (on){
 				// on events
 				//PGraphics2D raster = new PGraphics2D(256,256,null);
-				PGraphics raster = guiWindow.gui.createGraphics(256, 256, PConstants.P2D);
+				PGraphics raster = guiWindow.gui.createGraphics(256, 256, PConstants.P3D);
 				ShowThread newShow;
 				if (note.getPitch() == 36){
 					//newShow = new DiagnosticThread(fixture, null, 60, detectorMngr.getFps(), raster, "DiagnosticThread");
