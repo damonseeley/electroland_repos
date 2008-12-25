@@ -14,7 +14,9 @@ public class PropellerThread extends ShowThread {
 	private float rotation, rotSpeed;
 	private int fadeSpeed;
 	
-	public PropellerThread(List<DMXLightingFixture> flowers, SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID, int showPriority, int red, int green, int blue, float rotationSpeed, int fadeSpeed) {
+	public PropellerThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
+			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
+			int red, int green, int blue, float rotationSpeed, int fadeSpeed) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
 		this.green = green;
@@ -24,7 +26,9 @@ public class PropellerThread extends ShowThread {
 		this.fadeSpeed = fadeSpeed;
 	}
 	
-	public PropellerThread(DMXLightingFixture flower, SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID, int showPriority, int red, int green, int blue, float rotationSpeed, int fadeSpeed) {
+	public PropellerThread(DMXLightingFixture flower, SoundManager soundManager,
+			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
+			int red, int green, int blue, float rotationSpeed, int fadeSpeed) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
 		this.green = green;
@@ -32,7 +36,6 @@ public class PropellerThread extends ShowThread {
 		this.rotation = 0;
 		this.rotSpeed = rotationSpeed;
 		this.fadeSpeed = fadeSpeed;
-		raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
 	}
 
 	@Override

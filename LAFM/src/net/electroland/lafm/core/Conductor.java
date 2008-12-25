@@ -22,6 +22,7 @@ import net.electroland.lafm.shows.Glockenspiel;
 import net.electroland.lafm.shows.ImageSequenceThread;
 import net.electroland.lafm.shows.PropellerThread;
 import net.electroland.lafm.shows.ShutdownThread;
+import net.electroland.lafm.shows.SpiralThread;
 import net.electroland.lafm.weather.WeatherChangeListener;
 import net.electroland.lafm.weather.WeatherChangedEvent;
 import net.electroland.lafm.weather.WeatherChecker;
@@ -157,7 +158,8 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					newShow = new ImageSequenceThread(fixture, null, 60, detectorMngr.getFps(), raster, "ImageSequenceThread", ShowThread.LOW, imageCache.getSequence("redThrob"), false);					
 				}else{
 					//newShow = new ThrobbingThread(fixture, null, 60, detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, 255, 0, 0, 500, 500, 0, 0);			
-					newShow = new PropellerThread(fixture, null, 5, detectorMngr.getFps(), raster, "PropellerThread", ShowThread.LOW, 255, 0, 0, 5, 10);					
+					//newShow = new PropellerThread(fixture, null, 5, detectorMngr.getFps(), raster, "PropellerThread", ShowThread.LOW, 255, 0, 0, 5, 10);
+					newShow = new SpiralThread(fixture, null, 20, detectorMngr.getFps(), raster, "SpiralThread", ShowThread.LOW, 0, 255, 255, 10, 10, 0.5f, 100, guiWindow.gui.loadImage("depends//images//sprites//sphere50alpha.png"));
 				}
 
 				// everything happens in here now.
