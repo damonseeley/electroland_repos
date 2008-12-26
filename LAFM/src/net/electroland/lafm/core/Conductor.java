@@ -18,6 +18,7 @@ import net.electroland.lafm.gui.GUI;
 import net.electroland.lafm.gui.GUIWindow;
 import net.electroland.lafm.scheduler.TimedEvent;
 import net.electroland.lafm.scheduler.TimedEventListener;
+import net.electroland.lafm.shows.DartBoardThread;
 import net.electroland.lafm.shows.Glockenspiel;
 import net.electroland.lafm.shows.ImageSequenceThread;
 import net.electroland.lafm.shows.PropellerThread;
@@ -26,6 +27,7 @@ import net.electroland.lafm.shows.SpiralThread;
 import net.electroland.lafm.weather.WeatherChangeListener;
 import net.electroland.lafm.weather.WeatherChangedEvent;
 import net.electroland.lafm.weather.WeatherChecker;
+import net.electroland.lafm.util.ColorScheme;
 import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PGraphics2D;
@@ -159,7 +161,23 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 				}else{
 					//newShow = new ThrobbingThread(fixture, null, 60, detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, 255, 0, 0, 500, 500, 0, 0);			
 					//newShow = new PropellerThread(fixture, null, 5, detectorMngr.getFps(), raster, "PropellerThread", ShowThread.LOW, 255, 0, 0, 5, 10);
-					newShow = new SpiralThread(fixture, null, 20, detectorMngr.getFps(), raster, "SpiralThread", ShowThread.LOW, 0, 255, 255, 10, 10, 0.5f, 100, guiWindow.gui.loadImage("depends//images//sprites//sphere50alpha.png"));
+					//newShow = new SpiralThread(fixture, null, 20, detectorMngr.getFps(), raster, "SpiralThread", ShowThread.LOW, 0, 255, 255, 10, 10, 0.5f, 100, guiWindow.gui.loadImage("depends//images//sprites//sphere50alpha.png"));
+					float[][] colorlist = new float[3][3];
+					colorlist[0][0] = 255;
+					colorlist[0][1] = 0;
+					colorlist[0][2] = 0;
+					colorlist[1][0] = 255;
+					colorlist[1][1] = 255;
+					colorlist[1][2] = 0;
+					colorlist[2][0] = 255;
+					colorlist[2][1] = 0;
+					colorlist[2][2] = 0;
+					float[] pointlist = new float[3];
+					pointlist[0] = 0;
+					pointlist[1] = 0.3f;
+					pointlist[2] = 1;
+					ColorScheme spectrum = new ColorScheme(colorlist, pointlist);
+					newShow = new DartBoardThread(fixture, null, 20, detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.LOW, spectrum);
 				}
 
 				// everything happens in here now.
