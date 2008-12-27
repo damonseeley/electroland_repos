@@ -15,6 +15,8 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 	private int index = 0;
 	private PImage[] sequence;
 	private boolean resize = true;
+	private boolean isTinted = false;
+	private int hue, brightness;
 	
 	public ImageSequenceThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID, int priority, PImage[] sequence, boolean resize) {
@@ -38,6 +40,16 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 		this.resize = resize;
 	}
 
+	public void disableTint(){
+		isTinted = false;
+	}
+	
+	public void enableTint(int hue, int brightness) {
+		isTinted = true;
+		this.hue = hue;
+		this.brightness = brightness;
+	}
+	
 	@Override
 	public void complete(PGraphics raster) {
 
@@ -51,15 +63,21 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 	@Override
 	public void doWork(PGraphics raster) {
 
-		if (resize){
-			raster.beginDraw();
-			raster.image(sequence[index++], 0, 0, raster.width, raster.height);			
-			raster.endDraw();
-		}else{
-			raster.beginDraw();
-			raster.image(sequence[index++], 0, 0);
-			raster.endDraw();
+		raster.beginDraw();
+
+		if (isTinted){
+			raster.colorMode(PConstants.HSB, 360, 100, 100);
+			raster.tint(hue, 100, brightness);
 		}
+		
+		if (resize){
+			raster.image(sequence[index++], 0, 0, raster.width, raster.height);			
+		}else{
+			raster.image(sequence[index++], 0, 0);
+		}
+
+		raster.endDraw();
+
 		if (index == sequence.length){
 			index = 0;
 		}
