@@ -22,6 +22,7 @@ public class GUI extends PApplet{
 	private Conductor conductor;
 	private ShowThread activeShow;
 	private Collection<Detector> detectors;
+	private boolean visible = true;
 	
 	public GUI(int width, int height, Conductor conductor, Collection<Detector> detectors){
 		this.width = width;

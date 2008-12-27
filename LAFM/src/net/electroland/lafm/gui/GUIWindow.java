@@ -2,6 +2,8 @@ package net.electroland.lafm.gui;
 
 import java.awt.FlowLayout;
 import java.awt.Frame;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Collection;
@@ -25,6 +27,14 @@ public class GUIWindow extends Frame{
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {		// when the X is hit in the frame
 				System.exit(0);								// closes app
+			}
+			public void windowIconified(WindowEvent e){
+				System.out.println("iconified");
+				gui.setVisible(false);
+			}
+			public void windowDeiconified(WindowEvent e){
+				System.out.println("deiconified");
+				gui.setVisible(true);
 			}
 		});
 		gui.init();
