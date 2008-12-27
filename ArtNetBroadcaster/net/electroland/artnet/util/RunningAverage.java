@@ -87,6 +87,15 @@ public class RunningAverage {
 	}
 
 	/**
+	 * convert average milliseconds between frames to FPS
+	 * @return
+	 * @throws NoDataException
+	 */
+	public double getFPS() throws NoDataException{		
+		return 1000 / getAvg();
+	}
+	
+	/**
 	 * 
 	 * @return
 	 * @throws NoDataException
