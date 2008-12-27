@@ -1,5 +1,6 @@
 package net.electroland.lafm.core;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,7 +18,7 @@ public abstract class ShowThread extends Thread {
 	final static int MEDIUM = 2;
 	final static int HIGH = 4;
 	final static int HIGHEST = 6;
-	
+
 	private PGraphics raster;
 	private long delay;
 	private long lifespan;
@@ -146,7 +147,8 @@ public abstract class ShowThread extends Thread {
 		avg.markFrame(); // for measuring fps
 		
 		try {
-			System.out.println("\t\t" + this.getID() + " ended with and average fps of " + avg.getAvg());
+			DecimalFormat d = new DecimalFormat("####.##");
+			System.out.println("\t\t" + this.getID() + " ended with and average fps of " + d.format(avg.getFPS()));
 		} catch (NoDataException e) {
 			e.printStackTrace();
 		}
