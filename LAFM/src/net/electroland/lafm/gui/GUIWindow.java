@@ -12,7 +12,7 @@ import processing.core.PApplet;
 
 public class GUIWindow extends Frame{
 	private static final long serialVersionUID = 1L;
-	private int width = 500, height = 320;
+	private int width = 650, height = 280;
 	public PApplet gui;
 	
 	public GUIWindow(Conductor conductor, Collection<Detector> fixtures){

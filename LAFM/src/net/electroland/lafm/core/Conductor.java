@@ -21,6 +21,7 @@ import net.electroland.lafm.scheduler.TimedEventListener;
 import net.electroland.lafm.shows.DartBoardThread;
 import net.electroland.lafm.shows.Glockenspiel;
 import net.electroland.lafm.shows.ImageSequenceThread;
+import net.electroland.lafm.shows.PieThread;
 import net.electroland.lafm.shows.PropellerThread;
 import net.electroland.lafm.shows.ShutdownThread;
 import net.electroland.lafm.shows.SpiralThread;
@@ -163,6 +164,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					//newShow = new ThrobbingThread(fixture, null, 60, detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, 255, 0, 0, 500, 500, 0, 0);			
 					//newShow = new PropellerThread(fixture, null, 5, detectorMngr.getFps(), raster, "PropellerThread", ShowThread.LOW, 255, 0, 0, 5, 10);
 					//newShow = new SpiralThread(fixture, null, 20, detectorMngr.getFps(), raster, "SpiralThread", ShowThread.LOW, 0, 255, 255, 10, 10, 0.5f, 100, guiWindow.gui.loadImage("depends//images//sprites//sphere50alpha.png"));
+					/*
 					float[][] colorlist = new float[3][3];
 					colorlist[0][0] = 255;
 					colorlist[0][1] = 0;
@@ -179,6 +181,8 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					pointlist[2] = 1;
 					ColorScheme spectrum = new ColorScheme(colorlist, pointlist);
 					newShow = new DartBoardThread(fixture, null, 20, detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.LOW, spectrum);
+					*/
+					newShow = new PieThread(fixture, null, 10, detectorMngr.getFps(), raster, "PieThread", ShowThread.LOW, 255, 255, 0, guiWindow.gui.loadImage("depends//images//sprites//bar40alpha.png"));
 				}
 
 				// everything happens in here now.

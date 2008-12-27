@@ -34,11 +34,25 @@ public class GUI extends PApplet{
 		size(width, height);
 		controls = new ControlP5(this);
 		// setup toggles for testing lights
-		for(int i=0; i<24; i++){
-			controls.addToggle(str(i+1),false,i*20 + 10,10,15,15).setColorActive(255);
+		controls.setColorForeground(color(255,255,255,10));
+		controls.setColorActive(color(255,255,255,20));
+		
+		int xpos = 0;
+		int ypos = 0;
+		for(int i=0; i<24; i++){	// for each fixture
+			if(i+1 != 17 && i+1 != 19){
+				controls.addBang(str(i+1),xpos*42 + 276, ypos*52 + 10, 32, 32);
+				if(xpos == 4){
+					ypos++;
+					xpos = 0;
+				} else {
+					xpos++;
+				}
+			}
 		}
+		
 		// setup scrolling list for displaying active shows
-		activeShows = controls.addScrollList("activeShows",276,55,120,256);
+		activeShows = controls.addScrollList("default_sensor_pattern",486,20,150,256);
 	}
 	
 	public void draw(){
@@ -47,10 +61,30 @@ public class GUI extends PApplet{
 		smooth();
 		stroke(255);
 		pushMatrix();
-		translate(10,45);
+		translate(10,10);
 		drawPattern();
 		drawDetectors("lightgroup0");
 		popMatrix();
+		pushMatrix();
+		translate(276,10);
+		drawRasters();
+		popMatrix();
+	}
+	
+	public void drawRasters(){
+		stroke(255);
+		noFill();
+		int xpos = 0;
+		int ypos = 0;
+		for(int i=0; i<22; i++){	// for each fixture
+			rect(xpos*42, ypos*52, 32, 32);
+			if(xpos == 4){
+				ypos++;
+				xpos = 0;
+			} else {
+				xpos++;
+			}
+		}
 	}
 	
 	public void addActiveShow(ShowThread newShow){
