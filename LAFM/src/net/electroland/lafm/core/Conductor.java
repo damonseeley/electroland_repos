@@ -48,6 +48,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	public TimedEvent[] clockEvents;
 	private ImageSequenceCache imageCache; 	// for ImageSequenceThreads
 	public String[] sensorShows;				// list of names of sensor-triggered shows
+	public String[] fixtureActivity;			// 22 fixtures, null if empty; show name if in use
 	public int currentSensorShow;				// number of show to display when sensor is triggered
 
 	// sample timed events, but I assume the building will be closed for some time at night
@@ -81,6 +82,8 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		// to track which fixtures are used, and what shows are currently running.
 		liveShows = Collections.synchronizedList(new ArrayList<ShowThread>());
 		availableFixtures = Collections.synchronizedList(new ArrayList<DMXLightingFixture>(detectorMngr.getFixtures()));
+		
+		fixtureActivity = new String[22];	// all null to begin with
 		
 		currentSensorShow = 0;
 		sensorShows = new String[6];	// size dependent on number of sensor-triggered shows
@@ -208,7 +211,11 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 				startShow(newShow);				
 			}				
 		}
-	}	
+	}
+	
+	public List <ShowThread> getLiveShows(){
+		return liveShows;
+	}
 	
 	//******************** THREAD MANAGEMENT ***********************************
 	// Any time a show is done, this call back will be called, so that
