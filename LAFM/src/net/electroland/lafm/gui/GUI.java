@@ -18,7 +18,7 @@ public class GUI extends PApplet{
 	private static final long serialVersionUID = 1L;
 	private int width, height;
 	ControlP5 controls;
-	ScrollList activeShows;
+	ScrollList sensorShows;
 	private Conductor conductor;
 	private ShowThread activeShow;
 	private Collection<Detector> detectors;
@@ -53,7 +53,10 @@ public class GUI extends PApplet{
 		}
 		
 		// setup scrolling list for displaying active shows
-		activeShows = controls.addScrollList("default_sensor_pattern",486,20,150,256);
+		sensorShows = controls.addScrollList("default_sensor_pattern",486,20,150,256);
+		for(int i=0; i<conductor.sensorShows.length; i++){
+			sensorShows.addItem(conductor.sensorShows[i], i);
+		}
 	}
 	
 	public void draw(){
@@ -107,8 +110,9 @@ public class GUI extends PApplet{
 		try{
 			//String flower = "fixture"+str(Integer.valueOf(e.controller().name())-1);
 			
-			if(e.controller().parent().name() == "activeShows"){
-				
+			if(e.controller().parent().name() == "default_sensor_pattern"){
+				// change default sensor show in conductor
+				conductor.currentSensorShow = (int) e.controller().value();
 			} else {
 				// hack.  should do reverse lookup.
 				int pitch = Integer.valueOf(e.controller().name()) + 35;

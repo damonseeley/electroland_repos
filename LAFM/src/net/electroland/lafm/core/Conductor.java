@@ -25,6 +25,7 @@ import net.electroland.lafm.shows.PieThread;
 import net.electroland.lafm.shows.PropellerThread;
 import net.electroland.lafm.shows.ShutdownThread;
 import net.electroland.lafm.shows.SpiralThread;
+import net.electroland.lafm.shows.ThrobbingThread;
 import net.electroland.lafm.weather.WeatherChangeListener;
 import net.electroland.lafm.weather.WeatherChangedEvent;
 import net.electroland.lafm.weather.WeatherChecker;
@@ -45,7 +46,9 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	public WeatherChecker weatherChecker;
 	public Properties sensors;					// pitch to fixture mappings
 	public TimedEvent[] clockEvents;
-	private ImageSequenceCache imageCache; // for ImageSequenceThreads
+	private ImageSequenceCache imageCache; 	// for ImageSequenceThreads
+	public String[] sensorShows;				// list of names of sensor-triggered shows
+	public int currentSensorShow;				// number of show to display when sensor is triggered
 
 	// sample timed events, but I assume the building will be closed for some time at night
 	//TimedEvent sunriseOn = new TimedEvent(6,00,00, this); // on at sunrise-1 based on weather
@@ -78,6 +81,15 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		// to track which fixtures are used, and what shows are currently running.
 		liveShows = Collections.synchronizedList(new ArrayList<ShowThread>());
 		availableFixtures = Collections.synchronizedList(new ArrayList<DMXLightingFixture>(detectorMngr.getFixtures()));
+		
+		currentSensorShow = 0;
+		sensorShows = new String[6];	// size dependent on number of sensor-triggered shows
+		sensorShows[0] = "Image Sequence";
+		sensorShows[1] = "Throb";
+		sensorShows[2] = "Propeller";
+		sensorShows[3] = "Spiral";
+		sensorShows[4] = "Dart Board";
+		sensorShows[5] = "Pie";
 		
 		sensors = new Properties();
 		try{
@@ -155,34 +167,41 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 				// on events
 				//PGraphics2D raster = new PGraphics2D(256,256,null);
 				PGraphics raster = guiWindow.gui.createGraphics(256, 256, PConstants.P3D);
-				ShowThread newShow;
+				ShowThread newShow = new ThrobbingThread(fixture, null, 60, detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, 255, 0, 0, 500, 500, 0, 0);	// default
 				if (note.getPitch() == 36){
 					//newShow = new DiagnosticThread(fixture, null, 60, detectorMngr.getFps(), raster, "DiagnosticThread");
 					newShow = new ImageSequenceThread(fixture, null, 60, detectorMngr.getFps(), raster, "ImageSequenceThread", ShowThread.LOW, imageCache.getSequence("redThrob"), false);					
 					((ImageSequenceThread)newShow).enableTint(90, 100); // hue (0-360), brightness (0-100)
 				}else{
-					//newShow = new ThrobbingThread(fixture, null, 60, detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, 255, 0, 0, 500, 500, 0, 0);			
-					//newShow = new PropellerThread(fixture, null, 5, detectorMngr.getFps(), raster, "PropellerThread", ShowThread.LOW, 255, 0, 0, 5, 10);
-					//newShow = new SpiralThread(fixture, null, 20, detectorMngr.getFps(), raster, "SpiralThread", ShowThread.LOW, 0, 255, 255, 10, 10, 0.5f, 100, guiWindow.gui.loadImage("depends//images//sprites//sphere50alpha.png"));
-					/*
-					float[][] colorlist = new float[3][3];
-					colorlist[0][0] = 255;
-					colorlist[0][1] = 0;
-					colorlist[0][2] = 0;
-					colorlist[1][0] = 255;
-					colorlist[1][1] = 255;
-					colorlist[1][2] = 0;
-					colorlist[2][0] = 255;
-					colorlist[2][1] = 0;
-					colorlist[2][2] = 0;
-					float[] pointlist = new float[3];
-					pointlist[0] = 0;
-					pointlist[1] = 0.3f;
-					pointlist[2] = 1;
-					ColorScheme spectrum = new ColorScheme(colorlist, pointlist);
-					newShow = new DartBoardThread(fixture, null, 20, detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.LOW, spectrum);
-					*/
-					newShow = new PieThread(fixture, null, 10, detectorMngr.getFps(), raster, "PieThread", ShowThread.LOW, 255, 255, 0, guiWindow.gui.loadImage("depends//images//sprites//bar40alpha.png"));
+					if(currentSensorShow == 0){
+						newShow = new ImageSequenceThread(fixture, null, 60, detectorMngr.getFps(), raster, "ImageSequenceThread", ShowThread.LOW, imageCache.getSequence("redThrob"), false);					
+						((ImageSequenceThread)newShow).enableTint(90, 100); // hue (0-360), brightness (0-100)
+					} else if(currentSensorShow == 1){
+						newShow = new ThrobbingThread(fixture, null, 60, detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, 255, 0, 0, 500, 500, 0, 0);			
+					} else if(currentSensorShow == 2){
+						newShow = new PropellerThread(fixture, null, 5, detectorMngr.getFps(), raster, "PropellerThread", ShowThread.LOW, 255, 0, 0, 5, 10);
+					} else if(currentSensorShow == 3){
+						newShow = new SpiralThread(fixture, null, 20, detectorMngr.getFps(), raster, "SpiralThread", ShowThread.LOW, 0, 255, 255, 10, 10, 0.5f, 100, guiWindow.gui.loadImage("depends//images//sprites//sphere50alpha.png"));
+					} else if(currentSensorShow == 4){
+						float[][] colorlist = new float[3][3];
+						colorlist[0][0] = 255;
+						colorlist[0][1] = 0;
+						colorlist[0][2] = 0;
+						colorlist[1][0] = 255;
+						colorlist[1][1] = 255;
+						colorlist[1][2] = 0;
+						colorlist[2][0] = 255;
+						colorlist[2][1] = 0;
+						colorlist[2][2] = 0;
+						float[] pointlist = new float[3];
+						pointlist[0] = 0;
+						pointlist[1] = 0.3f;
+						pointlist[2] = 1;
+						ColorScheme spectrum = new ColorScheme(colorlist, pointlist);
+						newShow = new DartBoardThread(fixture, null, 20, detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.LOW, spectrum);
+					} else if(currentSensorShow == 5){
+						newShow = new PieThread(fixture, null, 10, detectorMngr.getFps(), raster, "PieThread", ShowThread.LOW, 255, 255, 0, guiWindow.gui.loadImage("depends//images//sprites//bar40alpha.png"));
+					}
 				}
 
 				// everything happens in here now.
