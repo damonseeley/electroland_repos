@@ -13,6 +13,8 @@ import processing.core.PGraphics;
 import promidi.Note;
 import controlP5.ControlEvent;
 import controlP5.ControlP5;
+import controlP5.MultiList;
+import controlP5.MultiListButton;
 import controlP5.ScrollList;
 
 
@@ -21,10 +23,13 @@ public class GUI extends PApplet{
 	private static final long serialVersionUID = 1L;
 	private int width, height;
 	ControlP5 controls;
-	ScrollList sensorShows;
+	ScrollList sensorShows, rasterList;
+	//MultiList multiList;
 	private Conductor conductor;
 	private ShowThread activeShow;
 	private Collection<Detector> detectors;
+	//private PGraphics[] showList = new PGraphics[24];		// all null to start
+	private ShowThread[] showList = new ShowThread[24];
 	
 	public GUI(int width, int height, Conductor conductor, Collection<Detector> detectors){
 		this.width = width;
@@ -54,10 +59,29 @@ public class GUI extends PApplet{
 			}
 		}
 		
+		/*
+		multiList = controls.addMultiList("multilist",486,10,150,10);
+		MultiListButton sensorshowlist = multiList.add("default_sensor_pattern", 1);
+		MultiListButton largerasterlist = multiList.add("view_large_raster", 2);
+		for(int i=0; i<conductor.sensorShows.length; i++){
+			sensorshowlist.add(conductor.sensorShows[i], i);
+		}
+		for(int i=0; i<24; i++){
+			if(i+1 != 17 && i+1 != 19){
+				largerasterlist.add(String.valueOf(i), i);
+			}
+		}
+		*/
+		
 		// setup scrolling list for displaying active shows
-		sensorShows = controls.addScrollList("default_sensor_pattern",486,20,150,256);
+		sensorShows = controls.addScrollList("default_sensor_pattern",486,20,150,120);
 		for(int i=0; i<conductor.sensorShows.length; i++){
 			sensorShows.addItem(conductor.sensorShows[i], i);
+		}
+		
+		rasterList = controls.addScrollList("view_large_raster",486, 150, 150, 120);
+		for(int i=0; i<24; i++){
+			rasterList.addItem(str(i+1), i);
 		}
 	}
 	
@@ -83,7 +107,8 @@ public class GUI extends PApplet{
 		int xpos = 0;
 		int ypos = 0;
 		
-		PGraphics[] showList = new PGraphics[24];		// all null to start
+		//showList = new PGraphics[24];		// all null to start
+		showList = new ShowThread[24];
 		List <ShowThread> liveShows = conductor.getLiveShows();
 		Iterator<ShowThread> i = liveShows.iterator();
 		while (i.hasNext()){					// for each active show
@@ -92,14 +117,16 @@ public class GUI extends PApplet{
 			Iterator<DMXLightingFixture> f = flowers.iterator();
 			while(f.hasNext()){
 				DMXLightingFixture flower = f.next();
-				showList[Integer.parseInt(flower.getID().split("fixture")[1])-1] = s.getRaster();
+				//showList[Integer.parseInt(flower.getID().split("fixture")[1])-1] = s.getRaster();
+				showList[Integer.parseInt(flower.getID().split("fixture")[1])-1] = s;
 			}
 		}
 		
 		for(int n=0; n<24; n++){				// for each fixture
 			if(n+1 != 17 && n+1 != 19){
 				if(showList[n] != null){
-					image(showList[n], xpos*42, ypos*52, 32, 32);
+					//image(showList[n], xpos*42, ypos*52, 32, 32);
+					image(showList[n].getRaster(), xpos*42, ypos*52, 32, 32);
 				}
 				rect(xpos*42, ypos*52, 32, 32);
 				pushMatrix();
@@ -139,53 +166,24 @@ public class GUI extends PApplet{
 		try{
 			//String flower = "fixture"+str(Integer.valueOf(e.controller().name())-1);
 			
+			System.out.println(e.controller().parent().name()  +" "+ e.controller().value());
 			if(e.controller().parent().name() == "default_sensor_pattern"){
 				// change default sensor show in conductor
 				conductor.currentSensorShow = (int) e.controller().value();
+			} else if(e.controller().parent().name() == "view_large_raster"){
+				System.out.println(e.controller().value());
+				if(showList[(int)e.controller().value()] != null){
+					activeShow = showList[(int)e.controller().value()];
+				} else {
+					activeShow = null;
+				}
 			} else {
 				// hack.  should do reverse lookup.
 				int pitch = Integer.valueOf(e.controller().name()) + 35;
 				if(e.value() == 0){ 	// turn fixture off
-	
-					conductor.midiEvent(new Note(pitch, 0, 0));
-					
-					// hook this code up to tell conductor to start a thread.
-					
-					
-	//				PGraphics raster = this.createGraphics(256,256,P2D);
-	//				raster.background(-16777216);
-	//				System.out.println("off");
-	//				//Conductor.flowers[flower].sync((PImage)raster);
-	//				System.out.println(flower);
-	//				String[] fixtures = Conductor.detectorMngr.getFixtureIds();
-	//				boolean exists = false;
-	//				for(int i=0; i<fixtures.length; i++){
-	//					if(fixtures[i].equals(flower)){
-	//						exists = true;
-	//						conductor.detectorMngr.getFixture(flower).sync((PImage)raster);
-	//						break;
-	//					}
-	//				}
-					
+					conductor.midiEvent(new Note(pitch, 0, 0));				
 				} else {				// turn fixture on
-	
 					conductor.midiEvent(new Note(pitch, 127, 0));
-					
-					//Conductor.makeShow(new DiagnosticThread(Conductor.flowers[flower], Conductor.soundManager, 30, 30, this.createGraphics(256,256,"P2D")));
-	//				PGraphics raster = this.createGraphics(256,256,P2D);
-	//				raster.background(-1);
-	//				System.out.println("on");
-	//				//Conductor.flowers[flower].sync((PImage)raster);
-	//				System.out.println(flower);
-	//				String[] fixtures = Conductor.detectorMngr.getFixtureIds();
-	//				boolean exists = false;
-	//				for(int i=0; i<fixtures.length; i++){
-	//					if(fixtures[i].equals(flower)){
-	//						exists = true;
-	//						conductor.detectorMngr.getFixture(flower).sync((PImage)raster);
-	//						break;
-	//					}
-	//				}
 				}
 			}
 		}catch(Exception error){
@@ -196,6 +194,7 @@ public class GUI extends PApplet{
 	private void drawPattern(){
 		// the current pattern in play
 		if(activeShow != null){
+			activeShow.getID();
 			image(activeShow.getRaster(),0,0,256,256);
 		}
 		rect(0, 0, 256, 256);

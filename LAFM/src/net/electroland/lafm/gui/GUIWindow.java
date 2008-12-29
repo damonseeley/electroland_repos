@@ -14,14 +14,14 @@ import processing.core.PApplet;
 
 public class GUIWindow extends Frame{
 	private static final long serialVersionUID = 1L;
-	private int width = 650, height = 280;
+	private int width = 660, height = 280;
 	public PApplet gui;
 	
 	public GUIWindow(Conductor conductor, Collection<Detector> fixtures){
 		super("LAFM Control Panel");						// establish name
 		setSize(width, height+20);							// set frame size (+top bar)
 		setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));	// left/top oriented layout
-		gui = new GUI(width, height, conductor, fixtures);			// create processing applet
+		gui = new GUI(width, height, conductor, fixtures);	// create processing applet
 		add(gui);											// add processing gui to frame
 		setResizable(false);								// static size
 		addWindowListener(new WindowAdapter() {

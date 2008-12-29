@@ -284,7 +284,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			System.out.println("starting:\t" + newshow);
 			//System.out.println("priority:\t" + newshow.getShowPriority());
 			
-			((GUI) guiWindow.gui).addActiveShow(newshow);
+			//((GUI) guiWindow.gui).addActiveShow(newshow);	// sets large raster to this show
 			newshow.start();
 		}
 	}
