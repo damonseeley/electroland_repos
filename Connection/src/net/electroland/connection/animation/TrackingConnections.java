@@ -31,8 +31,8 @@ public class TrackingConnections implements Animation {
 	public boolean dashedMode;
 	public int mindist = 2;
 	private int duration;
-	private int rowPairThreshold = Integer.valueOf(ConnectionMain.properties.get("rowPairThreshold"));
-	private int diagPairThreshold = Integer.valueOf(ConnectionMain.properties.get("diagPairThreshold"));
+	//private int rowPairThreshold = Integer.valueOf(ConnectionMain.properties.get("rowPairThreshold"));
+	//private int diagPairThreshold = Integer.valueOf(ConnectionMain.properties.get("diagPairThreshold"));
 	
 	public TrackingConnections(Light[] _lights, int duration){
 		this.duration = duration;
@@ -93,12 +93,12 @@ public class TrackingConnections implements Animation {
 					int elementB = locB[0] + locB[1]*gridx;									// position in light grid
 					if(elementB < lights.length && elementB >= 0){							// if both within the light grid...
 						// save a lot of calls by passing these variables
-						if(diagonalPairs.size() <= diagPairThreshold){	// if too many diagonals, don't draw new horizontal
+						//if(diagonalPairs.size() <= diagPairThreshold){	// if too many diagonals, don't draw new horizontal
 							checkRow(personA, locA, elementA, personB, locB, elementB);			// check short ways
-						}
-						if(rowPairs.size() <= rowPairThreshold){		// if too many horizontals, don't draw new diagonal
+						//}
+						//if(rowPairs.size() <= rowPairThreshold){		// if too many horizontals, don't draw new diagonal
 							checkDiagonal(personA, locA, elementA, personB, locB, elementB);	// check 45 degree only
-						}
+						//}
 					}
 				}
 			}
@@ -158,10 +158,13 @@ public class TrackingConnections implements Animation {
 	
 	
 	private void checkColumn(Person[] buckets, int startindex){
+		// THE DELAYED-CONNECTION ISSUE RESIDES IN HERE
+		
 		Person lastperson = null;
 		int[] lastloc = null;
 		int lastdirection = -1;
-		for(int i=startindex; i<startindex+(28*5); i+=6){					// for each bucket in column...
+		//for(int i=startindex; i<startindex+(28*5); i+=6){					// for each bucket in column...
+		for(int i=startindex; i<=startindex+(27*6); i+=6){
 			if(buckets[i] != null){										// if bucket is not empty...
 				if(lastperson == null){									// if no last person...
 					lastperson = buckets[i];								// set this to last person
