@@ -9,15 +9,14 @@ import net.electroland.detector.Detector;
 import net.electroland.lafm.core.Conductor;
 import net.electroland.lafm.core.ShowThread;
 import processing.core.PApplet;
-import processing.core.PGraphics;
 import processing.core.PImage;
 import promidi.Note;
 import controlP5.ControlEvent;
 import controlP5.ControlP5;
 import controlP5.MultiList;
 import controlP5.MultiListButton;
+import controlP5.Radio;
 import controlP5.ScrollList;
-import controlP5.Toggle;
 
 
 public class GUI extends PApplet{
@@ -28,9 +27,8 @@ public class GUI extends PApplet{
 	ScrollList sensorShows, rasterList;
 	//MultiList multiList;
 	private Conductor conductor;
-	private ShowThread activeShow;
+	private int activeShowNum;
 	private Collection<Detector> detectors;
-	//private PGraphics[] showList = new PGraphics[24];		// all null to start
 	private ShowThread[] showList = new ShowThread[24];
 	private boolean thumbsViewable = true;
 	private boolean maskRaster = false;
@@ -41,21 +39,24 @@ public class GUI extends PApplet{
 		this.height = height;
 		this.conductor = conductor;
 		this.detectors = detectors;
+		activeShowNum = 0;	// default
 	}
 	
 	public void setup(){
 		size(width, height);
 		controls = new ControlP5(this);
-		// setup toggles for testing lights
-		controls.setColorForeground(color(255,255,255,10));
-		controls.setColorActive(color(255,255,255,20));
+		//controls.setColorBackground(color(100,100,100,255));
+		//controls.setColorForeground(color(255,255,255,10));
+		//controls.setColorActive(255);
 		lightmask0 = loadImage("depends//images//lightmask0.png");
 		
 		int xpos = 0;
 		int ypos = 0;
 		for(int i=0; i<24; i++){	// for each fixture
 			if(i+1 != 17 && i+1 != 19){
-				controls.addBang(str(i+1),xpos*42 + 276, ypos*52 + 10, 32, 32);
+				//controls.addBang(str(i+1),xpos*42 + 276, ypos*52 + 10, 32, 32);
+				controls.addButton("", i, xpos*42 + 277, ypos*52 + 11, 31, 31).setColorBackground(color(255,255,255,0));
+				controls.addButton(str(i+1), i, xpos*42 + 276, ypos*52 + 43, 33, 12);
 				if(xpos == 4){
 					ypos++;
 					xpos = 0;
@@ -77,21 +78,32 @@ public class GUI extends PApplet{
 				largerasterlist.add(String.valueOf(i), i);
 			}
 		}
-		*/
-		
-		controls.addToggle("view_thumbnails", true, 370, 220, 10, 10).setColorActive(255);
-		controls.addToggle("mask_raster", false, 370, 246, 10, 10).setColorActive(255);
-		
-		// setup scrolling list for displaying active shows
-		sensorShows = controls.addScrollList("default_sensor_pattern",486,20,150,110);
-		for(int i=0; i<conductor.sensorShows.length; i++){
-			sensorShows.addItem(conductor.sensorShows[i], i);
-		}
 		
 		rasterList = controls.addScrollList("view_large_raster",486, 150, 150, 120);
 		for(int i=0; i<24; i++){
 			rasterList.addItem(str(i+1), i);
 		}
+		*/
+		
+		// setup scrolling list for displaying active shows
+		/*
+		sensorShows = controls.addScrollList("default_sensor_pattern",10,290,150,200);
+		for(int i=0; i<conductor.sensorShows.length; i++){
+			sensorShows.addItem(conductor.sensorShows[i], i);
+		}
+		*/
+		
+		controls.addTextlabel("sensorlabel","SENSOR PATTERN:",15,285).setColorValue(0xffff0000);
+;
+		Radio r = controls.addRadio("default_sensor_pattern",15,300);
+		r.setColorForeground(color(0,54,82,255));
+		for(int i=0; i<conductor.sensorShows.length; i++){
+			r.addItem(conductor.sensorShows[i], i);
+		}
+		
+		controls.addTextlabel("settingslabel","SETTINGS:",148,285).setColorValue(0xffff0000);
+		controls.addToggle("view_thumbnails", true, 148, 300, 10, 10).setColorForeground(color(0,54,82,255));
+		controls.addToggle("mask_raster", false, 148, 324, 10, 10).setColorForeground(color(0,54,82,255));
 	}
 	
 	public void draw(){
@@ -102,23 +114,24 @@ public class GUI extends PApplet{
 		pushMatrix();
 		translate(10,10);
 		drawPattern();
-		drawDetectors("lightgroup0");
+		if(!maskRaster){
+			drawDetectors("lightgroup0");
+		}
 		popMatrix();
 		pushMatrix();
 		translate(276,10);
-		if(thumbsViewable){
-			drawRasters();
-		}
+		drawThumbs();
 		popMatrix();
+		rect(10,276,123,150);
+		rect(143,276,123,150);
 	}
 	
-	public void drawRasters(){
+	public void drawThumbs(){
 		stroke(255);
 		noFill();
 		int xpos = 0;
 		int ypos = 0;
 		
-		//showList = new PGraphics[24];		// all null to start
 		showList = new ShowThread[24];
 		List <ShowThread> liveShows = conductor.getLiveShows();
 		Iterator<ShowThread> i = liveShows.iterator();
@@ -128,26 +141,33 @@ public class GUI extends PApplet{
 			Iterator<DMXLightingFixture> f = flowers.iterator();
 			while(f.hasNext()){
 				DMXLightingFixture flower = f.next();
-				//showList[Integer.parseInt(flower.getID().split("fixture")[1])-1] = s.getRaster();
 				showList[Integer.parseInt(flower.getID().split("fixture")[1])-1] = s;
 			}
 		}
 		
 		for(int n=0; n<24; n++){				// for each fixture
 			if(n+1 != 17 && n+1 != 19){
-				if(showList[n] != null){
-					//image(showList[n], xpos*42, ypos*52, 32, 32);
-					image(showList[n].getRaster(), xpos*42, ypos*52, 32, 32);
+				if(thumbsViewable){
+					if(showList[n] != null){
+						image(showList[n].getRaster(), xpos*42, ypos*52, 32, 32);
+					}
 				}
 				rect(xpos*42, ypos*52, 32, 32);
-				pushMatrix();
-				translate(xpos*42, ypos*52);
-				if(n < 17){
-					drawMiniDetectors("lightgroup0");	// this seems really unnecessary
-				} else {
-					drawMiniDetectors("lightgroup1");
+				if(n == activeShowNum){
+					stroke(255,0,0);
+					rect(xpos*42 - 2, ypos*52 - 2, 36, 48);
+					stroke(255);
 				}
-				popMatrix();
+				if(thumbsViewable){
+					pushMatrix();
+					translate(xpos*42, ypos*52);
+					if(n < 17){
+						drawMiniDetectors("lightgroup0");	// this seems really unnecessary
+					} else {
+						drawMiniDetectors("lightgroup1");
+					}
+					popMatrix();
+				}
 				if(xpos == 4){
 					ypos++;
 					xpos = 0;
@@ -158,10 +178,6 @@ public class GUI extends PApplet{
 		}
 	}
 	
-	public void addActiveShow(ShowThread newShow){
-		activeShow = newShow;
-		//activeShows.addItem(newShow.getID(), 1);
-	}
 
 	// DON'T DO THIS.  FOR NOW, INSTEAD, LET'S ADD A "SYNC" BUTTON.
 	// WHEN YOU PRESS IT, IT POPULATES THE DROPDOWN MENU WITH ALL OF THE SHOWS
@@ -177,17 +193,13 @@ public class GUI extends PApplet{
 		try{
 			//String flower = "fixture"+str(Integer.valueOf(e.controller().name())-1);
 			
-			//System.out.println(e.controller().parent().name()  +" "+ e.controller().value());
-			if(e.controller().parent().name() == "default_sensor_pattern"){
+			System.out.println(e.controller().name()  +" "+ e.controller().value());
+			if(e.controller().name() == "default_sensor_pattern"){
 				// change default sensor show in conductor
 				conductor.currentSensorShow = (int) e.controller().value();
 			} else if(e.controller().parent().name() == "view_large_raster"){
 				System.out.println(e.controller().value());
-				if(showList[(int)e.controller().value()] != null){
-					activeShow = showList[(int)e.controller().value()];
-				} else {
-					activeShow = null;
-				}
+				activeShowNum = (int)e.controller().value();
 			} else if(e.controller().name() == "view_thumbnails"){	// enables/disables thumbnail raster drawing
 				if(e.controller().value() < 1){
 					thumbsViewable = false;
@@ -203,14 +215,19 @@ public class GUI extends PApplet{
 					maskRaster = true;
 				}
 				//maskRaster = Boolean.parseBoolean(String.valueOf(e.controller().value()));
+			} else if(e.controller().name() == ""){
+				activeShowNum = (int)e.controller().value();
 			} else {
 				// hack.  should do reverse lookup.
 				int pitch = Integer.valueOf(e.controller().name()) + 35;
+				/*
 				if(e.value() == 0){ 	// turn fixture off
 					conductor.midiEvent(new Note(pitch, 0, 0));				
 				} else {				// turn fixture on
 					conductor.midiEvent(new Note(pitch, 127, 0));
 				}
+				*/
+				conductor.midiEvent(new Note(pitch, 127, 0));
 			}
 		}catch(Exception error){
 			error.printStackTrace();
@@ -219,12 +236,11 @@ public class GUI extends PApplet{
 	
 	private void drawPattern(){
 		// the current pattern in play
-		if(activeShow != null){
-			activeShow.getID();
-			image(activeShow.getRaster(),0,0,256,256);
-			if(maskRaster){
-				image(lightmask0,0,0,256,256);
-			}
+		if(showList[activeShowNum] != null){
+			image(showList[activeShowNum].getRaster(),0,0,256,256);
+		}
+		if(maskRaster){
+			image(lightmask0,0,0,256,256);
 		}
 		rect(0, 0, 256, 256);
 	}
