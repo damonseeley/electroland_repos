@@ -168,6 +168,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		
 		// get the name of the fixture tied to that note value
 		String fixtureId = sensors.getProperty(String.valueOf(note.getPitch()));
+		String[] showProps = systemProps.getProperty(fixtureId).split(",");
 
 		// find the actual fixture
 		DMXLightingFixture fixture = detectorMngr.getFixture(fixtureId);
@@ -199,6 +200,38 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 				//PGraphics2D raster = new PGraphics2D(256,256,null);
 				PGraphics raster = guiWindow.gui.createGraphics(256, 256, PConstants.P3D);
 				ShowThread newShow = new ThrobbingThread(fixture, null, 5, detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, 255, 0, 0, 500, 500, 0, 0);	// default
+				
+				System.out.println(showProps[0]);
+				if(showProps[0].equals("propeller")){
+					newShow = new PropellerThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "PropellerThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]));
+				} else if(showProps[0].equals("throb")){
+					newShow = new ThrobbingThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]), Integer.parseInt(showProps[7]), Integer.parseInt(showProps[8]));
+				} else if(showProps[0].equals("spiral")){
+					newShow = new SpiralThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "SpiralThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]), Integer.parseInt(showProps[7]), Integer.parseInt(showProps[8]), guiWindow.gui.loadImage("depends//images//sprites//sphere50alpha.png"));
+				} else if(showProps[0].equals("dartboard")){
+					// red:green:blue-red:green:blue, point-point-point
+					String[] colors = showProps[2].split("-");
+					String[] points = showProps[3].split("-");
+					float[][] colorlist = new float[colors.length][3];
+					float[] pointlist = new float[points.length];
+					for(int n=0; n<points.length; n++){
+						pointlist[n] = Float.parseFloat(points[n]);
+						String[] tempcolor = colors[n].split(":");
+						colorlist[n][0] = Float.parseFloat(tempcolor[0]);
+						colorlist[n][1] = Float.parseFloat(tempcolor[1]);
+						colorlist[n][2] = Float.parseFloat(tempcolor[2]);
+					}
+					ColorScheme spectrum = new ColorScheme(colorlist, pointlist);
+					newShow = new DartBoardThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.LOW, spectrum);
+				} else if(showProps[0].equals("bubbles")){
+					newShow = new ImageSequenceThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "BubblesThread", ShowThread.LOW, imageCache.getSequence("bubbles"), false);					
+					((ImageSequenceThread)newShow).enableTint(Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]));
+				} else if(showProps[0].equals("matrix")){
+					newShow = new ImageSequenceThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "MatrixRingsThread", ShowThread.LOW, imageCache.getSequence("matrixRings"), false);					
+					((ImageSequenceThread)newShow).enableTint(Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]));
+				}
+				
+				/*
 				if(currentSensorShow == 0){
 					newShow = new ImageSequenceThread(fixture, null, 5, detectorMngr.getFps(), raster, "ImageSequenceThread", ShowThread.LOW, imageCache.getSequence("redThrob"), false);					
 					((ImageSequenceThread)newShow).enableTint(90, 100); // hue (0-360), brightness (0-100)
@@ -240,6 +273,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 				} else if(currentSensorShow == 8){
 					newShow = new ExpandingThread(fixture, null, 10, detectorMngr.getFps(), raster, "ExpandingThread", ShowThread.LOW, guiWindow.gui.loadImage("depends//images//sprites//sphere50alpha.png"));
 				}
+				*/
 
 				/*
 				// CHAINING EXAMPLE

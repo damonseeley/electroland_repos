@@ -12,8 +12,8 @@ public class ColorScheme {
 	
 	float[][] colorlist;
 	float[] pointlist;
-	int above, below;
-	float diff, percent;
+	//int above, below;
+	//float diff, percent;
 
 	public ColorScheme(float[][] colorlist, float[] pointlist){
 		this.colorlist = colorlist;
@@ -22,6 +22,12 @@ public class ColorScheme {
 	
 	public float[] getColor(float p){
 		float[] color = new float[3];
+		int above = 0;
+		int below = 0;
+		if(p > 1){
+			p = 0;
+		}
+		//System.out.println(p);
 		for(int i=0; i<pointlist.length; i++){						// for each point in list...
 			if(p < pointlist[i]){									// if point is less than current...
 				above = i;											// specify above and below positions
@@ -29,14 +35,17 @@ public class ColorScheme {
 		        break;
 			}
 		}
-		percent = map(p, pointlist[below], pointlist[above], 0, 1);	// percent between positions
+		float percent = map(p, pointlist[below], pointlist[above], 0, 1);	// percent between positions
+		//System.out.println(percent);
 		color = lerpColor(colorlist[below], colorlist[above], percent);
 		return color;
 	}
 	
 	public float map(float value, float oldlow, float oldhigh, float newlow, float newhigh){
 		float tempval = (oldhigh - oldlow) - (value - oldlow);		// difference between low and value
+		//System.out.println(tempval);
 		tempval = tempval/(oldhigh-oldlow);							// normalize value by old range
+		//System.out.println(value +" "+ oldhigh-oldlow);
 		float newvalue = (tempval * (newhigh - newlow)) + newlow;	// multiply by new range plus low value
 		return newvalue;
 	}

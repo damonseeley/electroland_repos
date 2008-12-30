@@ -1,6 +1,7 @@
 package net.electroland.lafm.gui;
 
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -93,17 +94,20 @@ public class GUI extends PApplet{
 		}
 		*/
 		
+		/*
+		// not necessary if fixtures are assigned specific shows
 		controls.addTextlabel("sensorlabel","SENSOR PATTERN:",15,285).setColorValue(0xffff0000);
-;
 		Radio r = controls.addRadio("default_sensor_pattern",15,300);
 		r.setColorForeground(color(0,54,82,255));
 		for(int i=0; i<conductor.sensorShows.length; i++){
 			r.addItem(conductor.sensorShows[i], i);
 		}
+		*/
 		
 		controls.addTextlabel("settingslabel","SETTINGS:",148,285).setColorValue(0xffff0000);
 		controls.addToggle("view_thumbnails", true, 148, 300, 10, 10).setColorForeground(color(0,54,82,255));
 		controls.addToggle("mask_raster", false, 148, 324, 10, 10).setColorForeground(color(0,54,82,255));
+		//controls.addToggle("random_sensor_show", false, 148, 348, 10, 10).setColorForeground(color(0,54,82,255));
 	}
 	
 	public void draw(){
@@ -131,18 +135,21 @@ public class GUI extends PApplet{
 		noFill();
 		int xpos = 0;
 		int ypos = 0;
-		
-		showList = new ShowThread[24];
-		List <ShowThread> liveShows = conductor.getLiveShows();
-		Iterator<ShowThread> i = liveShows.iterator();
-		while (i.hasNext()){					// for each active show
-			ShowThread s = i.next();
-			Collection<DMXLightingFixture> flowers = s.getFlowers();
-			Iterator<DMXLightingFixture> f = flowers.iterator();
-			while(f.hasNext()){
-				DMXLightingFixture flower = f.next();
-				showList[Integer.parseInt(flower.getID().split("fixture")[1])-1] = s;
+		try{
+			showList = new ShowThread[24];
+			List <ShowThread> liveShows = conductor.getLiveShows();
+			Iterator<ShowThread> i = liveShows.iterator();
+			while (i.hasNext()){					// for each active show
+				ShowThread s = i.next();
+				Collection<DMXLightingFixture> flowers = s.getFlowers();
+				Iterator<DMXLightingFixture> f = flowers.iterator();
+				while(f.hasNext()){
+					DMXLightingFixture flower = f.next();
+					showList[Integer.parseInt(flower.getID().split("fixture")[1])-1] = s;
+				}
 			}
+		} catch(ConcurrentModificationException e){
+			e.printStackTrace();
 		}
 		
 		for(int n=0; n<24; n++){				// for each fixture
@@ -215,6 +222,12 @@ public class GUI extends PApplet{
 					maskRaster = true;
 				}
 				//maskRaster = Boolean.parseBoolean(String.valueOf(e.controller().value()));
+			} else if(e.controller().name() == "random_sensor_show"){		// enables/disables randomized sensor triggered shows
+				if(e.controller().value() < 1){
+					//maskRaster = false;
+				} else {
+					//maskRaster = true;
+				}
 			} else if(e.controller().name() == ""){
 				activeShowNum = (int)e.controller().value();
 			} else {

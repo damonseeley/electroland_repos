@@ -13,6 +13,7 @@ public class DartBoardThread extends ShowThread {
 	
 	ColorScheme spectrum;
 	float val1, val2, val3;
+	float[] color;
 
 	public DartBoardThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
@@ -48,27 +49,29 @@ public class DartBoardThread extends ShowThread {
 		raster.beginDraw();
 		raster.noStroke();
 		raster.translate(128, 128);
-		float[] color = spectrum.getColor(val1);
-		raster.fill(color[0],color[1],color[2]);
+		float[] colora = spectrum.getColor(val1);
+		raster.fill(colora[0],colora[1],colora[2]);
 		raster.ellipse(0,0,250,250);
-		color = spectrum.getColor(val2);
-		raster.fill(color[0],color[1],color[2]);
+		
+		float[] colorb = spectrum.getColor(val2);
+		raster.fill(colorb[0],colorb[1],colorb[2]);
 		raster.ellipse(0,0,150,150);
-		color = spectrum.getColor(val3);
-		raster.fill(color[0],color[1],color[2]);
+		float[] colorc = spectrum.getColor(val3);
+		raster.fill(colorc[0],colorc[1],colorc[2]);
 		raster.ellipse(0,0,50,50);
+		
 		raster.endDraw();
-		if(val1 > 1){
+		if(val1 >= 1){
 			val1 = 0;
 		} else {
 			val1 += 0.01;
 		}
-		if(val2 > 1){
+		if(val2 >= 1){
 			val2 = 0;
 		} else {
 			val2 += 0.01;
 		}
-		if(val3 > 1){
+		if(val3 >= 1){
 			val3 = 0;
 		} else {
 			val3 += 0.01;
