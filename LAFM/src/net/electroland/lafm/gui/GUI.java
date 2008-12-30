@@ -104,10 +104,17 @@ public class GUI extends PApplet{
 		}
 		*/
 		
+		/*
+		// OLD SETTINGS ARRANGEMENT
 		controls.addTextlabel("settingslabel","SETTINGS:",148,285).setColorValue(0xffff0000);
 		controls.addToggle("view_thumbnails", true, 148, 300, 10, 10).setColorForeground(color(0,54,82,255));
 		controls.addToggle("mask_raster", false, 148, 324, 10, 10).setColorForeground(color(0,54,82,255));
-		//controls.addToggle("random_sensor_show", false, 148, 348, 10, 10).setColorForeground(color(0,54,82,255));
+		controls.addToggle("random_sensor_show", false, 148, 348, 10, 10).setColorForeground(color(0,54,82,255));
+		 */
+		
+		controls.addTextlabel("settingslabel","SETTINGS:",15,285).setColorValue(0xffff0000);
+		controls.addToggle("view_thumbnails", true, 15, 300, 10, 10).setColorForeground(color(0,54,82,255));
+		controls.addToggle("mask_raster", false, 15, 324, 10, 10).setColorForeground(color(0,54,82,255));
 	}
 	
 	public void draw(){
@@ -126,8 +133,9 @@ public class GUI extends PApplet{
 		translate(276,10);
 		drawThumbs();
 		popMatrix();
-		rect(10,276,123,150);
-		rect(143,276,123,150);
+		//rect(10,276,123,150);
+		//rect(143,276,123,150);
+		rect(10,276,256,75);
 	}
 	
 	public void drawThumbs(){
