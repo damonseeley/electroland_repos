@@ -18,6 +18,8 @@ public abstract class ShowThread extends Thread {
 	final static int MEDIUM = 2;
 	final static int HIGH = 4;
 	final static int HIGHEST = 6;
+	final static int NO_COMPLETE = 0;
+	final static int COMPLETE = 1;
 
 	private PGraphics raster;
 	private long delay;
@@ -30,11 +32,12 @@ public abstract class ShowThread extends Thread {
 	private String ID; // should rename to avoid confusion with Thread.getId();
 	private int showPriority;
 	private RunningAverage avg;
+	private ShowThread next;
 
 	public int getShowPriority() {
 		return this.showPriority;
 	}
-
+	
 	public ShowThread(DMXLightingFixture flower, 
 					  SoundManager soundManager, 
 					  int lifespan, int fps,
@@ -113,13 +116,31 @@ public abstract class ShowThread extends Thread {
 		listeners.remove(listener);
 	}
 
+	/**
+	 * Request that this show be immediately followed by next.  Follow on 
+	 * shows are stored as a linked list, so you can call chain sequentially
+	 * to link multiple shows.
+	 * 
+	 * Note: no listeners will be alerted of the completion of this thread, so
+	 * long as next is non-null AND isRunning == true.
+	 * 
+	 * @param next
+	 */
+	final public void chain(ShowThread next){
+		ShowThread current = this;
+		while (current.next != null 
+				&& next != this){ // check for circularities.
+			current = current.next;
+		}
+		current.next = next;
+	}
+
 	final public void run(){
 
 		while ((System.currentTimeMillis() - startTime < lifespan) && isRunning){
 
-			// let the subclass do some work.
-			doWork(raster);
-			
+			doWork(raster);				
+
 			// synch the raster with every fixture.
 			Iterator <DMXLightingFixture> i = flowers.iterator();
 			while (i.hasNext()){
@@ -134,15 +155,6 @@ public abstract class ShowThread extends Thread {
 				e.printStackTrace();
 			}
 		}		
-		
-		// let the subclass do it's last frame.
-		complete(raster);
-
-		// synch the raster with every fixture.
-		Iterator <DMXLightingFixture> i = flowers.iterator();
-		while (i.hasNext()){
-			i.next().sync(raster);
-		}
 
 		avg.markFrame(); // for measuring fps
 		
@@ -152,11 +164,34 @@ public abstract class ShowThread extends Thread {
 		} catch (NoDataException e) {
 			e.printStackTrace();
 		}
-		
-		// tell any listeners that we are done.
-		Iterator<ShowThreadListener> j = listeners.iterator();
-		while (j.hasNext()){
-			j.next().notifyComplete(this, (Collection<DMXLightingFixture>)flowers);
+
+		// if no show is chained to this one as a follow on or a force stop
+		// has been called on this thread, do the cleanup and notify listeners.
+		if (!isRunning || next == null){
+			// let the subclass do it's last frame.
+			complete(raster);
+
+			// synch the raster with every fixture.
+			Iterator <DMXLightingFixture> i = flowers.iterator();
+			while (i.hasNext()){
+				i.next().sync(raster);
+			}
+			
+			// tell any listeners that we are done.
+			Iterator<ShowThreadListener> j = listeners.iterator();
+			while (j.hasNext()){
+				j.next().notifyComplete(this, (Collection<DMXLightingFixture>)flowers);
+			}			
+		}else{
+			// otherwise, start the follow-on show thread.
+			
+			// kind of a hack.  we're overwriting the list of fixtures
+			// that the follow-on show thread previously contained.  that means
+			// chained shows must be ass
+			next.flowers = this.flowers;
+			next.listeners = this.listeners;
+			next.resetLifespan();
+			next.start();
 		}
 	}
 
