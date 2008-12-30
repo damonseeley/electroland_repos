@@ -20,15 +20,18 @@ public class DartBoardThread extends ShowThread {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		val1 = 0.1f;
-		val2 = 0.4f;
-		val3 = 0.8f;
+		val2 = 0.2f;
+		val3 = 0.3f;
 	}
 	
 	public DartBoardThread(List<DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
-			String ID, int showPriority) {
+			String ID, int showPriority, ColorScheme spectrum) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
-		// TODO Auto-generated constructor stub
+		this.spectrum = spectrum;
+		val1 = 0.1f;
+		val2 = 0.2f;
+		val3 = 0.3f;
 	}
 
 	@Override

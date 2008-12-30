@@ -1,5 +1,7 @@
 package net.electroland.lafm.shows;
 
+import java.util.List;
+
 import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PImage;
@@ -13,6 +15,7 @@ public class PieThread extends ShowThread {
 	private int rotation;
 	private float rotSpeed;
 	private PImage texture;
+	private int cycles;
 
 	public PieThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
@@ -22,8 +25,22 @@ public class PieThread extends ShowThread {
 		this.green = green;
 		this.blue = blue;
 		this.rotation = 0;
-		this.rotSpeed = 360 / (lifespan*fps);
+		this.rotSpeed = 360 / ((lifespan/3)*fps);
 		this.texture = texture;
+		cycles = 0;
+	}
+	
+	public PieThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
+			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
+			int red, int green, int blue, PImage texture) {
+		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
+		this.red = red;
+		this.green = green;
+		this.blue = blue;
+		this.rotation = 0;
+		this.rotSpeed = 360 / ((lifespan/3)*fps);
+		this.texture = texture;
+		cycles = 0;
 	}
 
 	@Override
@@ -39,15 +56,26 @@ public class PieThread extends ShowThread {
 		raster.beginDraw();
 		raster.noStroke();
 		raster.translate(128, 128);
-		raster.rotate((float)(rotation * Math.PI/180));
+		raster.fill(red,green,blue);
+		raster.rectMode(PConstants.CENTER);
 		raster.tint(red,green,blue);
+		raster.rect(0,0,30,30);
+		raster.rotate((float)(rotation * Math.PI/180));
 		raster.image(texture,0-texture.width,0-texture.height);
 		raster.endDraw();
 		
 		if(rotation < 360){
 			rotation += rotSpeed;
 		} else {
-			complete(raster);
+			if(cycles < 3){
+				cycles++;
+				rotation = 0;
+				red = (int)(Math.random()*255);		// random color may suck
+				green = (int)(Math.random()*255);
+				blue = (int)(Math.random()*255);
+			} else {
+				complete(raster);
+			}
 		}
 	}
 

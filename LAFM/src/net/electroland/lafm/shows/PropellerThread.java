@@ -56,7 +56,7 @@ public class PropellerThread extends ShowThread {
 		raster.rect(0,0,256,256);
 		raster.rotate((float)(rotation * Math.PI/180));
 		raster.fill(red, green, blue);
-		raster.rect(0,0,300,20);
+		raster.rect(0,0,300,40);
 		raster.endDraw();
 		rotation += rotSpeed;
 	}

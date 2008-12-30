@@ -10,12 +10,14 @@ import net.electroland.lafm.core.Conductor;
 import net.electroland.lafm.core.ShowThread;
 import processing.core.PApplet;
 import processing.core.PGraphics;
+import processing.core.PImage;
 import promidi.Note;
 import controlP5.ControlEvent;
 import controlP5.ControlP5;
 import controlP5.MultiList;
 import controlP5.MultiListButton;
 import controlP5.ScrollList;
+import controlP5.Toggle;
 
 
 public class GUI extends PApplet{
@@ -30,6 +32,9 @@ public class GUI extends PApplet{
 	private Collection<Detector> detectors;
 	//private PGraphics[] showList = new PGraphics[24];		// all null to start
 	private ShowThread[] showList = new ShowThread[24];
+	private boolean thumbsViewable = true;
+	private boolean maskRaster = false;
+	private PImage lightmask0;
 	
 	public GUI(int width, int height, Conductor conductor, Collection<Detector> detectors){
 		this.width = width;
@@ -44,6 +49,7 @@ public class GUI extends PApplet{
 		// setup toggles for testing lights
 		controls.setColorForeground(color(255,255,255,10));
 		controls.setColorActive(color(255,255,255,20));
+		lightmask0 = loadImage("depends//images//lightmask0.png");
 		
 		int xpos = 0;
 		int ypos = 0;
@@ -73,8 +79,11 @@ public class GUI extends PApplet{
 		}
 		*/
 		
+		controls.addToggle("view_thumbnails", true, 370, 220, 10, 10).setColorActive(255);
+		controls.addToggle("mask_raster", false, 370, 246, 10, 10).setColorActive(255);
+		
 		// setup scrolling list for displaying active shows
-		sensorShows = controls.addScrollList("default_sensor_pattern",486,20,150,120);
+		sensorShows = controls.addScrollList("default_sensor_pattern",486,20,150,110);
 		for(int i=0; i<conductor.sensorShows.length; i++){
 			sensorShows.addItem(conductor.sensorShows[i], i);
 		}
@@ -97,7 +106,9 @@ public class GUI extends PApplet{
 		popMatrix();
 		pushMatrix();
 		translate(276,10);
-		drawRasters();
+		if(thumbsViewable){
+			drawRasters();
+		}
 		popMatrix();
 	}
 	
@@ -166,7 +177,7 @@ public class GUI extends PApplet{
 		try{
 			//String flower = "fixture"+str(Integer.valueOf(e.controller().name())-1);
 			
-			System.out.println(e.controller().parent().name()  +" "+ e.controller().value());
+			//System.out.println(e.controller().parent().name()  +" "+ e.controller().value());
 			if(e.controller().parent().name() == "default_sensor_pattern"){
 				// change default sensor show in conductor
 				conductor.currentSensorShow = (int) e.controller().value();
@@ -177,6 +188,21 @@ public class GUI extends PApplet{
 				} else {
 					activeShow = null;
 				}
+			} else if(e.controller().name() == "view_thumbnails"){	// enables/disables thumbnail raster drawing
+				if(e.controller().value() < 1){
+					thumbsViewable = false;
+				} else {
+					thumbsViewable = true;
+				}
+				//thumbsViewable = Boolean.parseBoolean(String.valueOf(e.controller().value()));
+				//System.out.println(e.controller().value());
+			} else if(e.controller().name() == "mask_raster"){		// enables/disables masking of large raster
+				if(e.controller().value() < 1){
+					maskRaster = false;
+				} else {
+					maskRaster = true;
+				}
+				//maskRaster = Boolean.parseBoolean(String.valueOf(e.controller().value()));
 			} else {
 				// hack.  should do reverse lookup.
 				int pitch = Integer.valueOf(e.controller().name()) + 35;
@@ -196,6 +222,9 @@ public class GUI extends PApplet{
 		if(activeShow != null){
 			activeShow.getID();
 			image(activeShow.getRaster(),0,0,256,256);
+			if(maskRaster){
+				image(lightmask0,0,0,256,256);
+			}
 		}
 		rect(0, 0, 256, 256);
 	}

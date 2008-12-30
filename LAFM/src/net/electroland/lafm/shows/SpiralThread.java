@@ -35,9 +35,20 @@ public class SpiralThread extends ShowThread {
 	}
 	
 	public SpiralThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
-			int lifespan, int fps, PGraphics raster, String ID, int showPriority) {
+			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
+			int red, int green, int blue,  float rotationSpeed, int fadeSpeed,
+			float spiralTightness, int spriteWidth, PImage texture) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
-		// TODO Auto-generated constructor stub
+		this.red = red;
+		this.green = green;
+		this.blue = blue;
+		this.rotation = 0;
+		this.rotSpeed = rotationSpeed;
+		this.fadeSpeed = fadeSpeed;
+		this.spiralTightness = spiralTightness;
+		this.currentTightness = 0;
+		this.spriteWidth = spriteWidth;
+		this.texture = texture;
 	}
 
 	@Override
@@ -65,7 +76,9 @@ public class SpiralThread extends ShowThread {
 		rotation += rotSpeed;
 		currentTightness += spiralTightness;
 		if(currentTightness >= (raster.width/2) + spriteWidth/2){
-			currentTightness = 0;
+			//currentTightness = 0;	// resets to spiral again
+			//complete(raster);
+			cleanStop();
 		}
 	}
 
