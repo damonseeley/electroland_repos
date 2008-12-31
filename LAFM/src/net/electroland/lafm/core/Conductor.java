@@ -17,6 +17,7 @@ import net.electroland.detector.DetectorManager;
 import net.electroland.lafm.gui.GUIWindow;
 import net.electroland.lafm.scheduler.TimedEvent;
 import net.electroland.lafm.scheduler.TimedEventListener;
+import net.electroland.lafm.shows.AdditivePropellerThread;
 import net.electroland.lafm.shows.DartBoardThread;
 import net.electroland.lafm.shows.ExpandingThread;
 import net.electroland.lafm.shows.FireworksThread;
@@ -222,6 +223,8 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 				} else if(showProps[0].equals("fireworks")){
 					ColorScheme spectrum = processColorScheme(showProps[2], showProps[3]);
 					newShow = new FireworksThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "FireworksThread", ShowThread.LOW, spectrum, Float.parseFloat(showProps[4]), Float.parseFloat(showProps[5]), guiWindow.gui.loadImage("depends//images//sprites//ring50alpha.png"));
+				} else if(showProps[0].equals("additivepropeller")){
+					newShow = new AdditivePropellerThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "AdditivePropellerThread", ShowThread.LOW, Float.parseFloat(showProps[2]), Integer.parseInt(showProps[3]), Float.parseFloat(showProps[4]), Float.parseFloat(showProps[5]), guiWindow.gui.createGraphics(256, 256, PConstants.P3D), guiWindow.gui.createGraphics(256, 256, PConstants.P3D), guiWindow.gui.createGraphics(256, 256, PConstants.P3D));
 				}
 				
 				/*
