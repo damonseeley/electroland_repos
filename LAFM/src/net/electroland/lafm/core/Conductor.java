@@ -113,7 +113,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		sensorShows[5] = "Pie";
 		sensorShows[6] = "Bubbles";
 		sensorShows[7] = "Matrix Rings";
-		sensorShows[8] = "Expander";
+		sensorShows[8] = "Flashing Pie";
 		sensorShows[9] = "Vegas";
 		sensorShows[10] = "Fireworks";
 		sensorShows[11] = "Additive Propeller";
@@ -254,7 +254,8 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						newShow = new ImageSequenceThread(fixture, null, 5, detectorMngr.getFps(), raster, "MatrixRingsThread", ShowThread.LOW, imageCache.getSequence("matrixRings"), false);					
 						((ImageSequenceThread)newShow).enableTint(90, 100);
 					} else if(currentSensorShow == 8){
-						newShow = new ExpandingThread(fixture, null, 10, detectorMngr.getFps(), raster, "ExpandingThread", ShowThread.LOW, guiWindow.gui.loadImage("depends//images//sprites//sphere50alpha.png"));
+						newShow = new PieThread(fixture, null, 2, detectorMngr.getFps(), raster, "PieThread", ShowThread.LOW, 255,255,0, guiWindow.gui.loadImage("depends//images//sprites//bar40alpha.png"));
+						newShow.chain(new ThrobbingThread(fixture, null, 3, detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, 255,255,0, 300, 300, 0, 0, 0, 0));									
 					} else if(currentSensorShow == 9){
 						float[][] colorlist = new float[3][3];
 						colorlist[0][0] = 255;
@@ -320,6 +321,9 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						newShow = new FireworksThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "FireworksThread", ShowThread.LOW, spectrum, Float.parseFloat(showProps[4]), Float.parseFloat(showProps[5]), guiWindow.gui.loadImage("depends//images//sprites//ring50alpha.png"));
 					} else if(showProps[0].equals("additivepropeller")){
 						newShow = new AdditivePropellerThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "AdditivePropellerThread", ShowThread.LOW, Float.parseFloat(showProps[2]), Integer.parseInt(showProps[3]), Float.parseFloat(showProps[4]), Float.parseFloat(showProps[5]), guiWindow.gui.createGraphics(256, 256, PConstants.P3D), guiWindow.gui.createGraphics(256, 256, PConstants.P3D), guiWindow.gui.createGraphics(256, 256, PConstants.P3D));
+					} else if(showProps[0].equals("flashingpie")){
+						newShow = new PieThread(fixture, null, Integer.parseInt(showProps[5]), detectorMngr.getFps(), raster, "PieThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), guiWindow.gui.loadImage("depends//images//sprites//bar40alpha.png"));
+						newShow.chain(new ThrobbingThread(fixture, null, Integer.parseInt(showProps[6]), detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), 300, 300, 0, 0, 0, 0));									
 					}
 				}
 				

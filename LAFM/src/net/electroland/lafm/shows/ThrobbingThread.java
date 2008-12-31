@@ -22,7 +22,7 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 
 	public ThrobbingThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int priority,
-			int red, int blue, int green, int fadein, int fadeout, int holdon,
+			int red, int green, int blue, int fadein, int fadeout, int holdon,
 			int holdoff, int acceleration, int deceleration) {
 		super(flower, soundManager, lifespan, fps, raster, ID, priority);
 		this.red = (float)(red/255.0);
@@ -52,7 +52,7 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 	
 	public ThrobbingThread(List <DMXLightingFixture> flowers, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int priority,
-			int red, int blue, int green, int fadein, int fadeout, int holdon,
+			int red, int green, int blue, int fadein, int fadeout, int holdon,
 			int holdoff, int acceleration, int deceleration) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, priority);
 		this.red = (float)(red/255.0);

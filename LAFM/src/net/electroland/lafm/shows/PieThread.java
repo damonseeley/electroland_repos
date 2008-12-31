@@ -25,7 +25,7 @@ public class PieThread extends ShowThread {
 		this.green = green;
 		this.blue = blue;
 		this.rotation = 0;
-		this.rotSpeed = 360 / (int)((lifespan/3.0)*fps);
+		this.rotSpeed = 360 / (int)(lifespan*fps);
 		this.texture = texture;
 		cycles = 0;
 	}
@@ -38,7 +38,7 @@ public class PieThread extends ShowThread {
 		this.green = green;
 		this.blue = blue;
 		this.rotation = 0;
-		this.rotSpeed = 360 / ((lifespan/3)*fps);
+		this.rotSpeed = 360 / (lifespan*fps);
 		this.texture = texture;
 		cycles = 0;
 	}
@@ -67,6 +67,7 @@ public class PieThread extends ShowThread {
 		if(rotation < 360){
 			rotation += rotSpeed;
 		} else {
+			/*
 			if(cycles < 3){
 				cycles++;
 				rotation = 0;
@@ -76,6 +77,8 @@ public class PieThread extends ShowThread {
 			} else {
 				cleanStop();
 			}
+			*/
+			cleanStop();
 		}
 	}
 
