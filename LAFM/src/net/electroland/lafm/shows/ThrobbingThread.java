@@ -15,36 +15,67 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 	private float brightness;							// intensity changed in throbbing
 	private int holdon, holdoff;						// timing parameters in milliseconds
 	private float fadeinspeed, fadeoutspeed;			// brightness change increments
+	private int acceleration, deceleration;			// subtract from hold durations
+	private boolean speedUp, slowDown;
 	private long lastChange;
 	private int state;									// 0 = fade in, 1 = hold on, 2 = fade out, 3 = hold off
-	public String name = "ThrobbingThread";
 
-	public ThrobbingThread(DMXLightingFixture flower, SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID, int priority, int red, int blue, int green, int fadein, int fadeout, int holdon, int holdoff) {
+	public ThrobbingThread(DMXLightingFixture flower, SoundManager soundManager,
+			int lifespan, int fps, PGraphics raster, String ID, int priority,
+			int red, int blue, int green, int fadein, int fadeout, int holdon,
+			int holdoff, int acceleration, int deceleration) {
 		super(flower, soundManager, lifespan, fps, raster, ID, priority);
 		this.red = (float)(red/255.0);
 		this.green = (float)(green/255.0);
 		this.blue = (float)(blue/255.0);
-		this.fadeinspeed = 255 / ((float)(fadein/1000.0)*fps);
-		this.fadeoutspeed = 255 / ((float)(fadeout/1000.0)*fps);
+		if(fadein == 0){
+			this.fadeinspeed = 255;
+		} else {
+			this.fadeinspeed = 255 / ((float)(fadein/1000.0)*fps);
+		}
+		if(fadeout == 0){
+			this.fadeoutspeed = 255;
+		} else {
+			this.fadeoutspeed = 255 / ((float)(fadeout/1000.0)*fps);
+		}
 		//System.out.println(fadeinspeed +" "+ fadeoutspeed);
 		this.holdon = holdon;
 		this.holdoff = holdoff;
 		this.brightness = 0;
 		this.state = 0;
+		this.acceleration = acceleration;
+		this.deceleration = deceleration;
+		speedUp = true;
+		slowDown = false;
 		raster.colorMode(PConstants.RGB, 255, 255, 255);
 	}
 	
-	public ThrobbingThread(List <DMXLightingFixture> flowers, SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID, int priority, int red, int blue, int green, int fadein, int fadeout, int holdon, int holdoff) {
+	public ThrobbingThread(List <DMXLightingFixture> flowers, SoundManager soundManager,
+			int lifespan, int fps, PGraphics raster, String ID, int priority,
+			int red, int blue, int green, int fadein, int fadeout, int holdon,
+			int holdoff, int acceleration, int deceleration) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, priority);
 		this.red = (float)(red/255.0);
 		this.green = (float)(green/255.0);
 		this.blue = (float)(blue/255.0);
-		this.fadeinspeed = (int)((fadein/1000.0)*fps);
-		this.fadeoutspeed = (int)((fadeout/1000.0)*fps);
+		if(fadein == 0){
+			this.fadeinspeed = 255;
+		} else {
+			this.fadeinspeed = 255 / ((float)(fadein/1000.0)*fps);
+		}
+		if(fadeout == 0){
+			this.fadeoutspeed = 255;
+		} else {
+			this.fadeoutspeed = 255 / ((float)(fadeout/1000.0)*fps);
+		}
 		this.holdon = holdon;
 		this.holdoff = holdoff;
 		this.brightness = 0;
 		this.state = 0;
+		this.acceleration = acceleration;
+		this.deceleration = deceleration;
+		speedUp = true;
+		slowDown = false;
 		raster.colorMode(PConstants.RGB, 255, 255, 255);
 	}
 
@@ -79,6 +110,21 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 			}
 		}
 		
+		if(speedUp){
+			holdon -= acceleration;
+			holdoff -= acceleration;
+		} else if(slowDown){
+			holdon += deceleration;
+			holdoff += deceleration;
+			if(deceleration > 0){
+				if(holdoff > 1000){
+					cleanStop();
+				}
+			} else {
+				cleanStop();
+			}
+		}
+		
 		raster.beginDraw();
 		raster.background(red*brightness, green*brightness, blue*brightness);
 		raster.endDraw();
@@ -88,7 +134,10 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 		// assumes that this thread is only used in a single thread per fixture
 		// environment (thus this.getFlowers() is an array of 1)
 		if (this.getFlowers().contains(eventFixture) && !isOn){
-			this.cleanStop();
+			//this.cleanStop();
+			// potentially slow down when sensor triggered off
+			speedUp = false;
+			slowDown = true;
 		}
 	}
 }

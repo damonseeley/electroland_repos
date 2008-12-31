@@ -74,7 +74,7 @@ public class PieThread extends ShowThread {
 				green = (int)(Math.random()*255);
 				blue = (int)(Math.random()*255);
 			} else {
-				complete(raster);
+				cleanStop();
 			}
 		}
 	}
