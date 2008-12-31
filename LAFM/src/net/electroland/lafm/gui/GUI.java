@@ -46,7 +46,7 @@ public class GUI extends PApplet{
 	public void setup(){
 		size(width, height);
 		controls = new ControlP5(this);
-		//controls.setColorBackground(color(100,100,100,255));
+		controls.setColorBackground(color(100,100,100,0));
 		//controls.setColorForeground(color(255,255,255,10));
 		//controls.setColorActive(255);
 		lightmask0 = loadImage("depends//images//lightmask0.png");
@@ -56,8 +56,9 @@ public class GUI extends PApplet{
 		for(int i=0; i<24; i++){	// for each fixture
 			if(i+1 != 17 && i+1 != 19){
 				//controls.addBang(str(i+1),xpos*42 + 276, ypos*52 + 10, 32, 32);
-				controls.addButton("", i, xpos*42 + 277, ypos*52 + 11, 31, 31).setColorBackground(color(255,255,255,0));
-				controls.addButton("fxtr " + str(i+1), i, xpos*42 + 276, ypos*52 + 43, 33, 12);
+				// super hacky way to hide the label
+				controls.addButton("      "+i, i, xpos*42 + 277, ypos*52 + 11, 31, 31).setColorLabel(0);
+				controls.addButton("F" + str(i+1), i, xpos*42 + 276, ypos*52 + 43, 33, 12);
 				if(xpos == 4){
 					ypos++;
 					xpos = 0;
@@ -168,11 +169,15 @@ public class GUI extends PApplet{
 					}
 				}
 				rect(xpos*42, ypos*52, 32, 32);
+				noStroke();
+				fill(color(0,54,82,255));
+				rect(xpos*42, ypos*52 + 33, 33, 12);
+				noFill();
 				if(n == activeShowNum){
 					stroke(255,0,0);
 					rect(xpos*42 - 2, ypos*52 - 2, 36, 48);
-					stroke(255);
 				}
+				stroke(255);
 				if(thumbsViewable){
 					pushMatrix();
 					translate(xpos*42, ypos*52);
@@ -236,7 +241,7 @@ public class GUI extends PApplet{
 				} else {
 					//maskRaster = true;
 				}
-			} else if(e.controller().name() == ""){
+			} else if(e.controller().name().startsWith(" ")){
 				activeShowNum = (int)e.controller().value();
 			} else {
 				int pitch = (int)e.controller().value() + 36;

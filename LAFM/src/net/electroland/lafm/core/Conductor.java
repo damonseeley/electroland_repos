@@ -19,6 +19,7 @@ import net.electroland.lafm.scheduler.TimedEvent;
 import net.electroland.lafm.scheduler.TimedEventListener;
 import net.electroland.lafm.shows.DartBoardThread;
 import net.electroland.lafm.shows.ExpandingThread;
+import net.electroland.lafm.shows.FireworksThread;
 import net.electroland.lafm.shows.Glockenspiel;
 import net.electroland.lafm.shows.ImageSequenceThread;
 import net.electroland.lafm.shows.PieThread;
@@ -26,6 +27,7 @@ import net.electroland.lafm.shows.PropellerThread;
 import net.electroland.lafm.shows.ShutdownThread;
 import net.electroland.lafm.shows.SpiralThread;
 import net.electroland.lafm.shows.ThrobbingThread;
+import net.electroland.lafm.shows.VegasThread;
 import net.electroland.lafm.weather.WeatherChangeListener;
 import net.electroland.lafm.weather.WeatherChangedEvent;
 import net.electroland.lafm.weather.WeatherChecker;
@@ -209,23 +211,17 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 				} else if(showProps[0].equals("spiral")){
 					newShow = new SpiralThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "SpiralThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]), Integer.parseInt(showProps[7]), Integer.parseInt(showProps[8]), guiWindow.gui.loadImage("depends//images//sprites//sphere50alpha.png"));
 				} else if(showProps[0].equals("dartboard")){
-					// red:green:blue-red:green:blue, point-point-point
-					String[] colors = showProps[2].split("-");
-					String[] points = showProps[3].split("-");
-					float[][] colorlist = new float[colors.length][3];
-					float[] pointlist = new float[points.length];
-					for(int n=0; n<points.length; n++){
-						pointlist[n] = Float.parseFloat(points[n]);
-						String[] tempcolor = colors[n].split(":");
-						colorlist[n][0] = Float.parseFloat(tempcolor[0]);
-						colorlist[n][1] = Float.parseFloat(tempcolor[1]);
-						colorlist[n][2] = Float.parseFloat(tempcolor[2]);
-					}
-					ColorScheme spectrum = new ColorScheme(colorlist, pointlist);
+					ColorScheme spectrum = processColorScheme(showProps[2], showProps[3]);
 					newShow = new DartBoardThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.LOW, spectrum, Float.parseFloat(showProps[4]));
 				} else if(showProps[0].equals("images")){
 					newShow = new ImageSequenceThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, showProps[2], ShowThread.LOW, imageCache.getSequence(showProps[2]), false);					
 					((ImageSequenceThread)newShow).enableTint(Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]));
+				} else if(showProps[0].equals("vegas")){
+					ColorScheme spectrum = processColorScheme(showProps[2], showProps[3]);
+					newShow = new VegasThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "VegasThread", ShowThread.LOW, spectrum, Float.parseFloat(showProps[4]));
+				} else if(showProps[0].equals("fireworks")){
+					ColorScheme spectrum = processColorScheme(showProps[2], showProps[3]);
+					newShow = new FireworksThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "FireworksThread", ShowThread.LOW, spectrum, Float.parseFloat(showProps[4]), Float.parseFloat(showProps[5]), guiWindow.gui.loadImage("depends//images//sprites//ring50alpha.png"));
 				}
 				
 				/*
@@ -284,6 +280,22 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 				startShow(newShow);				
 			}				
 		}
+	}
+	
+	public ColorScheme processColorScheme(String colordata, String pointdata){
+		// red:green:blue-red:green:blue, point-point-point
+		String[] colors = colordata.split("-");
+		String[] points = pointdata.split("-");
+		float[][] colorlist = new float[colors.length][3];
+		float[] pointlist = new float[points.length];
+		for(int n=0; n<points.length; n++){
+			pointlist[n] = Float.parseFloat(points[n]);
+			String[] tempcolor = colors[n].split(":");
+			colorlist[n][0] = Float.parseFloat(tempcolor[0]);
+			colorlist[n][1] = Float.parseFloat(tempcolor[1]);
+			colorlist[n][2] = Float.parseFloat(tempcolor[2]);
+		}
+		return new ColorScheme(colorlist, pointlist);
 	}
 	
 	public List <ShowThread> getLiveShows(){

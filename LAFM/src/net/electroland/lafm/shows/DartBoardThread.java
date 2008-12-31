@@ -54,15 +54,14 @@ public class DartBoardThread extends ShowThread {
 		float[] colora = spectrum.getColor(val1);
 		raster.fill(colora[0],colora[1],colora[2]);
 		raster.ellipse(0,0,250,250);
-		
 		float[] colorb = spectrum.getColor(val2);
 		raster.fill(colorb[0],colorb[1],colorb[2]);
 		raster.ellipse(0,0,150,150);
 		float[] colorc = spectrum.getColor(val3);
 		raster.fill(colorc[0],colorc[1],colorc[2]);
 		raster.ellipse(0,0,50,50);
-		
 		raster.endDraw();
+		
 		if(val1 >= 1){
 			val1 = 0;
 		} else {

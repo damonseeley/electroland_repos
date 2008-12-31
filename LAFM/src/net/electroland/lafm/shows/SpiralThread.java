@@ -75,7 +75,7 @@ public class SpiralThread extends ShowThread {
 		raster.endDraw();
 		rotation += rotSpeed;
 		currentTightness += spiralTightness;
-		if(currentTightness >= (raster.width/2) + spriteWidth/2){
+		if(currentTightness >= (raster.width/2) + spriteWidth){
 			//currentTightness = 0;	// resets to spiral again
 			//complete(raster);
 			cleanStop();
