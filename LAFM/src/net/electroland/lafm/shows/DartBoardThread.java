@@ -12,14 +12,15 @@ import net.electroland.lafm.util.ColorScheme;
 public class DartBoardThread extends ShowThread {
 	
 	ColorScheme spectrum;
-	float val1, val2, val3;
+	float val1, val2, val3, speed;
 	float[] color;
 
 	public DartBoardThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
-			String ID, int showPriority, ColorScheme spectrum) {
+			String ID, int showPriority, ColorScheme spectrum, float speed) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
+		this.speed = speed;
 		val1 = 0.1f;
 		val2 = 0.2f;
 		val3 = 0.3f;
@@ -27,9 +28,10 @@ public class DartBoardThread extends ShowThread {
 	
 	public DartBoardThread(List<DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
-			String ID, int showPriority, ColorScheme spectrum) {
+			String ID, int showPriority, ColorScheme spectrum, float speed) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
+		this.speed = speed;
 		val1 = 0.1f;
 		val2 = 0.2f;
 		val3 = 0.3f;
@@ -64,17 +66,17 @@ public class DartBoardThread extends ShowThread {
 		if(val1 >= 1){
 			val1 = 0;
 		} else {
-			val1 += 0.01;
+			val1 += speed;
 		}
 		if(val2 >= 1){
 			val2 = 0;
 		} else {
-			val2 += 0.01;
+			val2 += speed;
 		}
 		if(val3 >= 1){
 			val3 = 0;
 		} else {
-			val3 += 0.01;
+			val3 += speed;
 		}
 	}
 

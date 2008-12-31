@@ -201,7 +201,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 				PGraphics raster = guiWindow.gui.createGraphics(256, 256, PConstants.P3D);
 				ShowThread newShow = new ThrobbingThread(fixture, null, 5, detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, 255, 0, 0, 500, 500, 0, 0);	// default
 				
-				System.out.println(showProps[0]);
+				//System.out.println(showProps[0]);
 				if(showProps[0].equals("propeller")){
 					newShow = new PropellerThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "PropellerThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]));
 				} else if(showProps[0].equals("throb")){
@@ -222,13 +222,10 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						colorlist[n][2] = Float.parseFloat(tempcolor[2]);
 					}
 					ColorScheme spectrum = new ColorScheme(colorlist, pointlist);
-					newShow = new DartBoardThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.LOW, spectrum);
-				} else if(showProps[0].equals("bubbles")){
-					newShow = new ImageSequenceThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "BubblesThread", ShowThread.LOW, imageCache.getSequence("bubbles"), false);					
-					((ImageSequenceThread)newShow).enableTint(Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]));
-				} else if(showProps[0].equals("matrix")){
-					newShow = new ImageSequenceThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "MatrixRingsThread", ShowThread.LOW, imageCache.getSequence("matrixRings"), false);					
-					((ImageSequenceThread)newShow).enableTint(Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]));
+					newShow = new DartBoardThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.LOW, spectrum, Float.parseFloat(showProps[4]));
+				} else if(showProps[0].equals("images")){
+					newShow = new ImageSequenceThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, showProps[2], ShowThread.LOW, imageCache.getSequence(showProps[2]), false);					
+					((ImageSequenceThread)newShow).enableTint(Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]));
 				}
 				
 				/*
