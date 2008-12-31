@@ -19,6 +19,7 @@ public class FireworksThread extends ShowThread {
 	PImage texture;
 	ConcurrentHashMap<Integer,Firework> fireworks;
 	int fireworkCount = 0;
+	float fadeSpeed = 10;
 
 	public FireworksThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
@@ -30,6 +31,8 @@ public class FireworksThread extends ShowThread {
 		this.frequency = frequency;		// 0-1, odds of creating a new firework
 		this.texture = texture;
 		fireworks = new ConcurrentHashMap<Integer,Firework>();
+		fireworks.put(fireworkCount, new Firework(fireworkCount, spectrum.getColor((float)Math.random())));
+		fireworkCount++;
 	}
 	
 	public FireworksThread(List<DMXLightingFixture> flowers,
@@ -42,6 +45,8 @@ public class FireworksThread extends ShowThread {
 		this.frequency = frequency;
 		this.texture = texture;
 		fireworks = new ConcurrentHashMap<Integer,Firework>();
+		fireworks.put(fireworkCount, new Firework(fireworkCount, spectrum.getColor((float)Math.random())));
+		fireworkCount++;
 	}
 
 	@Override
@@ -76,27 +81,33 @@ public class FireworksThread extends ShowThread {
 	
 	public class Firework{
 		
-		int x, y, id;
+		int x, y, id, age;
 		float diameter;
 		float[] color;
+		float alpha;
 		
 		public Firework(int id, float[] color){
 			this.id = id;
 			this.color = color;
+			alpha = 100;
+			age = 0;
 			x = (int)(Math.random()*255);
 			y = (int)(Math.random()*255);
 			diameter = 5;
 		}
 		
 		public void draw(PGraphics raster){
-			raster.tint(color[0], color[1], color[2]);
+			raster.tint(color[0], color[1], color[2], alpha);
 			raster.image(texture, x - diameter/2, y - diameter/2, diameter, diameter);
 			diameter += speed;
-			color[0] -= 5;
-			color[1] -= 5;
-			color[2] -= 5;
-			if(color[0] < 1 && color[1] < 1 && color[2] < 1){
-				fireworks.remove(id);
+			if(age > 15){
+				if(alpha < 1){
+					fireworks.remove(id);
+				} else {
+					alpha -= fadeSpeed;
+				}
+			} else {
+				age++;
 			}
 		}
 	}
