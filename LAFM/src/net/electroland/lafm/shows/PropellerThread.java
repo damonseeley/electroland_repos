@@ -10,7 +10,8 @@ import net.electroland.lafm.core.SoundManager;
 
 public class PropellerThread extends ShowThread implements SensorListener{
 
-	private int red, green, blue;					// normalized color value parameters
+	private int red, green, blue;
+	private int originalred, originalgreen, originalblue;
 	private float rotation, rotSpeed, acceleration, deceleration;
 	private int fadeSpeed;
 	private boolean speedUp, slowDown;
@@ -23,6 +24,9 @@ public class PropellerThread extends ShowThread implements SensorListener{
 		this.red = red;
 		this.green = green;
 		this.blue = blue;
+		this.originalred = red;
+		this.originalgreen = green;
+		this.originalblue = blue;
 		this.rotation = 0;
 		this.rotSpeed = rotationSpeed;
 		this.fadeSpeed = fadeSpeed;
@@ -40,6 +44,9 @@ public class PropellerThread extends ShowThread implements SensorListener{
 		this.red = red;
 		this.green = green;
 		this.blue = blue;
+		this.originalred = red;
+		this.originalgreen = green;
+		this.originalblue = blue;
 		this.rotation = 0;
 		this.rotSpeed = rotationSpeed;
 		this.fadeSpeed = fadeSpeed;
@@ -73,10 +80,15 @@ public class PropellerThread extends ShowThread implements SensorListener{
 		if(speedUp){
 			rotSpeed += acceleration;
 		} else if(slowDown){
-			if(rotSpeed > 0){
-				rotSpeed -= deceleration;
-			} else {
-				cleanStop();
+			rotSpeed -= deceleration;
+			if(rotSpeed < 1){
+				if(red > 1 || green > 1 || blue > 1){
+					red = red - fadeSpeed;
+					green = green - fadeSpeed;
+					blue = blue - fadeSpeed;
+				} else {
+					cleanStop();
+				}
 			}
 		}
 	}
@@ -89,6 +101,13 @@ public class PropellerThread extends ShowThread implements SensorListener{
 			// potentially slow down when sensor triggered off
 			speedUp = false;
 			slowDown = true;
+		} else if(this.getFlowers().contains(eventFixture) && isOn){
+			// reactivate
+			speedUp = true;
+			slowDown = false;
+			red = originalred;
+			green = originalgreen;
+			blue = originalblue;
 		}
 	}
 

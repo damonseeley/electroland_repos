@@ -138,6 +138,10 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 			// potentially slow down when sensor triggered off
 			speedUp = false;
 			slowDown = true;
+		} else if(this.getFlowers().contains(eventFixture) && isOn){
+			// reactivate
+			speedUp = true;
+			slowDown = false;
 		}
 	}
 }
