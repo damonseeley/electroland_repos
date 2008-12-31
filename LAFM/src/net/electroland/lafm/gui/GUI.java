@@ -57,7 +57,7 @@ public class GUI extends PApplet{
 			if(i+1 != 17 && i+1 != 19){
 				//controls.addBang(str(i+1),xpos*42 + 276, ypos*52 + 10, 32, 32);
 				controls.addButton("", i, xpos*42 + 277, ypos*52 + 11, 31, 31).setColorBackground(color(255,255,255,0));
-				controls.addButton(str(i+1), i, xpos*42 + 276, ypos*52 + 43, 33, 12);
+				controls.addButton("fxtr " + str(i+1), i, xpos*42 + 276, ypos*52 + 43, 33, 12);
 				if(xpos == 4){
 					ypos++;
 					xpos = 0;
@@ -208,12 +208,12 @@ public class GUI extends PApplet{
 		try{
 			//String flower = "fixture"+str(Integer.valueOf(e.controller().name())-1);
 			
-			System.out.println(e.controller().name()  +" "+ e.controller().value());
+			//System.out.println(e.controller().name()  +" "+ e.controller().value());
 			if(e.controller().name() == "default_sensor_pattern"){
 				// change default sensor show in conductor
 				conductor.currentSensorShow = (int) e.controller().value();
 			} else if(e.controller().parent().name() == "view_large_raster"){
-				System.out.println(e.controller().value());
+				//System.out.println(e.controller().value());
 				activeShowNum = (int)e.controller().value();
 			} else if(e.controller().name() == "view_thumbnails"){	// enables/disables thumbnail raster drawing
 				if(e.controller().value() < 1){
@@ -239,15 +239,7 @@ public class GUI extends PApplet{
 			} else if(e.controller().name() == ""){
 				activeShowNum = (int)e.controller().value();
 			} else {
-				// hack.  should do reverse lookup.
-				int pitch = Integer.valueOf(e.controller().name()) + 35;
-				/*
-				if(e.value() == 0){ 	// turn fixture off
-					conductor.midiEvent(new Note(pitch, 0, 0));				
-				} else {				// turn fixture on
-					conductor.midiEvent(new Note(pitch, 127, 0));
-				}
-				*/
+				int pitch = (int)e.controller().value() + 36;
 				conductor.midiEvent(new Note(pitch, 127, 0));
 			}
 		}catch(Exception error){
