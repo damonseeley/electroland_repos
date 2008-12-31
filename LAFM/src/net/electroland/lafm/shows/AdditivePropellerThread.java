@@ -71,7 +71,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		redRaster.rect(0,0,256,256);
 		redRaster.translate(128,128);
 		redRaster.rotate((float)(rotation * Math.PI/180));
-		redRaster.fill(255,0,0);
+		redRaster.fill(red,0,0);
 		redRaster.rect(0,-10,length,20);
 		redRaster.endDraw();
 		
@@ -82,7 +82,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		greenRaster.rect(0,0,256,256);
 		greenRaster.translate(128,128);
 		greenRaster.rotate((float)((rotation+120) * Math.PI/180));
-		greenRaster.fill(0,255,0);
+		greenRaster.fill(0,green,0);
 		greenRaster.rect(0,-10,length,20);
 		greenRaster.endDraw();
 		
@@ -93,7 +93,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		blueRaster.rect(0,0,256,256);
 		blueRaster.translate(128,128);
 		blueRaster.rotate((float)((rotation+240) * Math.PI/180));
-		blueRaster.fill(0,0,255);
+		blueRaster.fill(0,0,blue);
 		blueRaster.rect(0,-10,length,20);
 		blueRaster.endDraw();
 		
@@ -114,9 +114,9 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 				rotSpeed -= deceleration;
 				if(rotSpeed < 1){
 					if(red > 1 || green > 1 || blue > 1){
-						red = red - fadeSpeed;
-						green = green - fadeSpeed;
-						blue = blue - fadeSpeed;
+						red = red - 15;
+						green = green - 15;
+						blue = blue - 15;
 					} else {
 						cleanStop();
 					}

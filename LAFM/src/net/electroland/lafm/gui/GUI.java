@@ -95,27 +95,22 @@ public class GUI extends PApplet{
 		}
 		*/
 		
-		/*
-		// not necessary if fixtures are assigned specific shows
-		controls.addTextlabel("sensorlabel","SENSOR PATTERN:",15,285).setColorValue(0xffff0000);
+		
+		controls.addTextlabel("sensorlabel","SENSOR PATTERNS:",15,285).setColorValue(0xffff0000);
 		Radio r = controls.addRadio("default_sensor_pattern",15,300);
 		r.setColorForeground(color(0,54,82,255));
+		r.addItem("assigned mode", -1);	// switches back to assigned fixture/show mode
 		for(int i=0; i<conductor.sensorShows.length; i++){
 			r.addItem(conductor.sensorShows[i], i);
 		}
-		*/
 		
-		/*
-		// OLD SETTINGS ARRANGEMENT
-		controls.addTextlabel("settingslabel","SETTINGS:",148,285).setColorValue(0xffff0000);
-		controls.addToggle("view_thumbnails", true, 148, 300, 10, 10).setColorForeground(color(0,54,82,255));
-		controls.addToggle("mask_raster", false, 148, 324, 10, 10).setColorForeground(color(0,54,82,255));
-		controls.addToggle("random_sensor_show", false, 148, 348, 10, 10).setColorForeground(color(0,54,82,255));
-		 */
+		controls.addTextlabel("settingslabel","GLOCKENSPIEL SHOWS:",148,285).setColorValue(0xffff0000);
 		
-		controls.addTextlabel("settingslabel","SETTINGS:",15,285).setColorValue(0xffff0000);
-		controls.addToggle("view_thumbnails", true, 15, 300, 10, 10).setColorForeground(color(0,54,82,255));
-		controls.addToggle("mask_raster", false, 15, 324, 10, 10).setColorForeground(color(0,54,82,255));
+		
+		controls.addTextlabel("settingslabel","SETTINGS:",281,285).setColorValue(0xffff0000);
+		controls.addToggle("view_thumbnails", true, 281, 300, 10, 10).setColorForeground(color(0,54,82,255));
+		controls.addToggle("mask_raster", false, 281, 324, 10, 10).setColorForeground(color(0,54,82,255));
+		//controls.addToggle("random_sensor_show", false, 148, 348, 10, 10).setColorForeground(color(0,54,82,255));
 	}
 	
 	public void draw(){
@@ -134,9 +129,10 @@ public class GUI extends PApplet{
 		translate(276,10);
 		drawThumbs();
 		popMatrix();
-		//rect(10,276,123,150);
-		//rect(143,276,123,150);
-		rect(10,276,256,75);
+		rect(10,276,123,205);
+		rect(143,276,123,205);
+		rect(276,276,200,205);
+		//rect(10,276,256,75);
 	}
 	
 	public void drawThumbs(){
@@ -216,7 +212,12 @@ public class GUI extends PApplet{
 			//System.out.println(e.controller().name()  +" "+ e.controller().value());
 			if(e.controller().name() == "default_sensor_pattern"){
 				// change default sensor show in conductor
-				conductor.currentSensorShow = (int) e.controller().value();
+				if((int) e.controller().value() < 0){
+					conductor.forceSensorShow = false;
+				} else {
+					conductor.forceSensorShow = true;
+					conductor.currentSensorShow = (int) e.controller().value();
+				}
 			} else if(e.controller().parent().name() == "view_large_raster"){
 				//System.out.println(e.controller().value());
 				activeShowNum = (int)e.controller().value();

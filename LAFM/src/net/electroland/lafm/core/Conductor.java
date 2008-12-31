@@ -56,6 +56,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	public int currentSensorShow;				// number of show to display when sensor is triggered
 	private int hitCount = 0;					// increments each time sensor is triggered
 	private int hitCountMax = 20;				// number of hits before switching sensor triggered show
+	public boolean forceSensorShow = false;
 
 	// sample timed events, but I assume the building will be closed for some time at night
 	//TimedEvent sunriseOn = new TimedEvent(6,00,00, this); // on at sunrise-1 based on weather
@@ -103,7 +104,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		fixtureActivity = new String[22];	// all null to begin with
 		
 		currentSensorShow = 0;
-		sensorShows = new String[9];	// size dependent on number of sensor-triggered shows
+		sensorShows = new String[12];	// size dependent on number of sensor-triggered shows
 		sensorShows[0] = "Image Sequence";
 		sensorShows[1] = "Throb";
 		sensorShows[2] = "Propeller";
@@ -113,6 +114,9 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		sensorShows[6] = "Bubbles";
 		sensorShows[7] = "Matrix Rings";
 		sensorShows[8] = "Expander";
+		sensorShows[9] = "Vegas";
+		sensorShows[10] = "Fireworks";
+		sensorShows[11] = "Additive Propeller";
 		
 		sensors = new Properties();
 		try{
@@ -171,7 +175,6 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		
 		// get the name of the fixture tied to that note value
 		String fixtureId = sensors.getProperty(String.valueOf(note.getPitch()));
-		String[] showProps = systemProps.getProperty(fixtureId).split(",");
 
 		// find the actual fixture
 		DMXLightingFixture fixture = detectorMngr.getFixture(fixtureId);
@@ -189,95 +192,136 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			}
 			
 			if (on){
-				if(hitCount < hitCountMax){
-					hitCount++;
-				} else {
-					hitCount = 0;
-					if(currentSensorShow < sensorShows.length){
-						currentSensorShow++;
-					} else {
-						currentSensorShow = 0;
-					}
-				}
 				// on events
 				//PGraphics2D raster = new PGraphics2D(256,256,null);
 				PGraphics raster = guiWindow.gui.createGraphics(256, 256, PConstants.P3D);
 				ShowThread newShow = new ThrobbingThread(fixture, null, 5, detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, 255, 0, 0, 500, 500, 0, 0, 0, 0);	// default
 				
-				//System.out.println(showProps[0]);
-				if(showProps[0].equals("propeller")){
-					newShow = new PropellerThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "PropellerThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]), Float.parseFloat(showProps[7]), Float.parseFloat(showProps[8]));
-				} else if(showProps[0].equals("throb")){
-					newShow = new ThrobbingThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]), Integer.parseInt(showProps[7]), Integer.parseInt(showProps[8]), Integer.parseInt(showProps[9]), Integer.parseInt(showProps[10]));
-				} else if(showProps[0].equals("spiral")){
-					newShow = new SpiralThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "SpiralThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]), Integer.parseInt(showProps[7]), Integer.parseInt(showProps[8]), guiWindow.gui.loadImage("depends//images//sprites//sphere50alpha.png"));
-				} else if(showProps[0].equals("dartboard")){
-					ColorScheme spectrum = processColorScheme(showProps[2], showProps[3]);
-					newShow = new DartBoardThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.LOW, spectrum, Float.parseFloat(showProps[4]));
-				} else if(showProps[0].equals("images")){
-					newShow = new ImageSequenceThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, showProps[2], ShowThread.LOW, imageCache.getSequence(showProps[2]), false);					
-					((ImageSequenceThread)newShow).enableTint(Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]));
-				} else if(showProps[0].equals("vegas")){
-					ColorScheme spectrum = processColorScheme(showProps[2], showProps[3]);
-					newShow = new VegasThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "VegasThread", ShowThread.LOW, spectrum, Float.parseFloat(showProps[4]));
-				} else if(showProps[0].equals("fireworks")){
-					ColorScheme spectrum = processColorScheme(showProps[2], showProps[3]);
-					newShow = new FireworksThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "FireworksThread", ShowThread.LOW, spectrum, Float.parseFloat(showProps[4]), Float.parseFloat(showProps[5]), guiWindow.gui.loadImage("depends//images//sprites//ring50alpha.png"));
-				} else if(showProps[0].equals("additivepropeller")){
-					newShow = new AdditivePropellerThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "AdditivePropellerThread", ShowThread.LOW, Float.parseFloat(showProps[2]), Integer.parseInt(showProps[3]), Float.parseFloat(showProps[4]), Float.parseFloat(showProps[5]), guiWindow.gui.createGraphics(256, 256, PConstants.P3D), guiWindow.gui.createGraphics(256, 256, PConstants.P3D), guiWindow.gui.createGraphics(256, 256, PConstants.P3D));
-				}
-				
-				/*
-				if(currentSensorShow == 0){
-					newShow = new ImageSequenceThread(fixture, null, 5, detectorMngr.getFps(), raster, "ImageSequenceThread", ShowThread.LOW, imageCache.getSequence("redThrob"), false);					
-					((ImageSequenceThread)newShow).enableTint(90, 100); // hue (0-360), brightness (0-100)
-				} else if(currentSensorShow == 1){
-					newShow = new ThrobbingThread(fixture, null, 5, detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, 255, 0, 0, 500, 500, 0, 0);			
-				} else if(currentSensorShow == 2){
-					newShow = new PropellerThread(fixture, null, 5, detectorMngr.getFps(), raster, "PropellerThread", ShowThread.LOW, 255, 0, 0, 20, 5);
-				} else if(currentSensorShow == 3){
-					newShow = new SpiralThread(fixture, null, 10, detectorMngr.getFps(), raster, "SpiralThread", ShowThread.LOW, 0, 255, 255, 30, 2, 2, 100, guiWindow.gui.loadImage("depends//images//sprites//sphere50alpha.png"));
-				} else if(currentSensorShow == 4){
-					float[][] colorlist = new float[4][3];
-					colorlist[0][0] = 255;
-					colorlist[0][1] = 0;
-					colorlist[0][2] = 0;
-					colorlist[1][0] = 0;
-					colorlist[1][1] = 255;
-					colorlist[1][2] = 0;
-					colorlist[2][0] = 0;
-					colorlist[2][1] = 0;
-					colorlist[2][2] = 255;
-					colorlist[3][0] = 255;
-					colorlist[3][1] = 0;
-					colorlist[3][2] = 0;
-					float[] pointlist = new float[4];
-					pointlist[0] = 0;
-					pointlist[1] = 0.3f;
-					pointlist[2] = 0.6f;
-					pointlist[3] = 1;
-					ColorScheme spectrum = new ColorScheme(colorlist, pointlist);
-					newShow = new DartBoardThread(fixture, null, 20, detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.LOW, spectrum);
-				} else if(currentSensorShow == 5){
-					newShow = new PieThread(fixture, null, 3, detectorMngr.getFps(), raster, "PieThread", ShowThread.LOW, 255, 255, 0, guiWindow.gui.loadImage("depends//images//sprites//bar40alpha.png"));
-				} else if(currentSensorShow == 6){
-					newShow = new ImageSequenceThread(fixture, null, 5, detectorMngr.getFps(), raster, "BubblesThread", ShowThread.LOW, imageCache.getSequence("bubbles"), false);					
-					//((ImageSequenceThread)newShow).enableTint(90, 100);
-				} else if(currentSensorShow == 7){
-					newShow = new ImageSequenceThread(fixture, null, 5, detectorMngr.getFps(), raster, "MatrixRingsThread", ShowThread.LOW, imageCache.getSequence("matrixRings"), false);					
-					((ImageSequenceThread)newShow).enableTint(90, 100);
-				} else if(currentSensorShow == 8){
-					newShow = new ExpandingThread(fixture, null, 10, detectorMngr.getFps(), raster, "ExpandingThread", ShowThread.LOW, guiWindow.gui.loadImage("depends//images//sprites//sphere50alpha.png"));
-				}
-				*/
+				if(forceSensorShow){
+					
+					// THIS IS ONLY RUN WHEN DEFAULT SENSOR SHOWS ARE OVERRIDDEN BY GUI SELECTION
 
-				/*
-				// CHAINING EXAMPLE
-				PGraphics raster = guiWindow.gui.createGraphics(256, 256, PConstants.P3D);
-				ShowThread newShow = new ExpandingThread(fixture, null,2, detectorMngr.getFps(), raster, "ExpandingThread", ShowThread.LOW, guiWindow.gui.loadImage("depends//images//sprites//sphere50alpha.png"));
-				newShow.chain(new PieThread(fixture, null, 2, detectorMngr.getFps(), raster, "PieThread", ShowThread.LOW, 255, 255, 0, guiWindow.gui.loadImage("depends//images//sprites//bar40alpha.png")));
-				newShow.chain(new ImageSequenceThread(fixture, null, 2, detectorMngr.getFps(), raster, "BubblesThread", ShowThread.LOW, imageCache.getSequence("redThrob"), false));									
-				*/
+					/*
+					// changes sensor triggers based on hits (not used)
+					if(hitCount < hitCountMax){
+						hitCount++;
+					} else {
+						hitCount = 0;
+						if(currentSensorShow < sensorShows.length){
+							currentSensorShow++;
+						} else {
+							currentSensorShow = 0;
+						}
+					}
+					*/
+					
+					if(currentSensorShow == 0){
+						newShow = new ImageSequenceThread(fixture, null, 5, detectorMngr.getFps(), raster, "ImageSequenceThread", ShowThread.LOW, imageCache.getSequence("redThrob"), false);					
+						((ImageSequenceThread)newShow).enableTint(90, 100); // hue (0-360), brightness (0-100)
+					} else if(currentSensorShow == 1){
+						newShow = new ThrobbingThread(fixture, null, 5, detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, 255, 0, 0, 500, 500, 0, 0, 0, 0);			
+					} else if(currentSensorShow == 2){
+						newShow = new PropellerThread(fixture, null, 5, detectorMngr.getFps(), raster, "PropellerThread", ShowThread.LOW, 255, 0, 0, 20, 5, 0.1f, 0.1f);
+					} else if(currentSensorShow == 3){
+						newShow = new SpiralThread(fixture, null, 10, detectorMngr.getFps(), raster, "SpiralThread", ShowThread.LOW, 0, 255, 255, 30, 2, 2, 100, guiWindow.gui.loadImage("depends//images//sprites//sphere50alpha.png"));
+					} else if(currentSensorShow == 4){
+						float[][] colorlist = new float[4][3];
+						colorlist[0][0] = 255;
+						colorlist[0][1] = 0;
+						colorlist[0][2] = 0;
+						colorlist[1][0] = 0;
+						colorlist[1][1] = 255;
+						colorlist[1][2] = 0;
+						colorlist[2][0] = 0;
+						colorlist[2][1] = 0;
+						colorlist[2][2] = 255;
+						colorlist[3][0] = 255;
+						colorlist[3][1] = 0;
+						colorlist[3][2] = 0;
+						float[] pointlist = new float[4];
+						pointlist[0] = 0;
+						pointlist[1] = 0.3f;
+						pointlist[2] = 0.6f;
+						pointlist[3] = 1;
+						ColorScheme spectrum = new ColorScheme(colorlist, pointlist);
+						newShow = new DartBoardThread(fixture, null, 20, detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.LOW, spectrum, 0.2f);
+					} else if(currentSensorShow == 5){
+						newShow = new PieThread(fixture, null, 3, detectorMngr.getFps(), raster, "PieThread", ShowThread.LOW, 255, 255, 0, guiWindow.gui.loadImage("depends//images//sprites//bar40alpha.png"));
+					} else if(currentSensorShow == 6){
+						newShow = new ImageSequenceThread(fixture, null, 5, detectorMngr.getFps(), raster, "BubblesThread", ShowThread.LOW, imageCache.getSequence("bubbles"), false);					
+						//((ImageSequenceThread)newShow).enableTint(90, 100);
+					} else if(currentSensorShow == 7){
+						newShow = new ImageSequenceThread(fixture, null, 5, detectorMngr.getFps(), raster, "MatrixRingsThread", ShowThread.LOW, imageCache.getSequence("matrixRings"), false);					
+						((ImageSequenceThread)newShow).enableTint(90, 100);
+					} else if(currentSensorShow == 8){
+						newShow = new ExpandingThread(fixture, null, 10, detectorMngr.getFps(), raster, "ExpandingThread", ShowThread.LOW, guiWindow.gui.loadImage("depends//images//sprites//sphere50alpha.png"));
+					} else if(currentSensorShow == 9){
+						float[][] colorlist = new float[3][3];
+						colorlist[0][0] = 255;
+						colorlist[0][1] = 0;
+						colorlist[0][2] = 0;
+						colorlist[1][0] = 255;
+						colorlist[1][1] = 255;
+						colorlist[1][2] = 0;
+						colorlist[2][0] = 255;
+						colorlist[2][1] = 0;
+						colorlist[2][2] = 0;
+						float[] pointlist = new float[3];
+						pointlist[0] = 0;
+						pointlist[1] = 0.5f;
+						pointlist[2] = 1;
+						ColorScheme spectrum = new ColorScheme(colorlist, pointlist);
+						newShow = new VegasThread(fixture, null, 5, detectorMngr.getFps(), raster, "VegasThread", ShowThread.LOW, spectrum, 0);
+						//newShow = new ExpandingThread(fixture, null,2, detectorMngr.getFps(), raster, "ExpandingThread", ShowThread.LOW, guiWindow.gui.loadImage("depends//images//sprites//sphere50alpha.png"));
+						//newShow.chain(new PieThread(fixture, null, 2, detectorMngr.getFps(), raster, "PieThread", ShowThread.LOW, 255, 255, 0, guiWindow.gui.loadImage("depends//images//sprites//bar40alpha.png")));
+						//newShow.chain(new ImageSequenceThread(fixture, null, 2, detectorMngr.getFps(), raster, "BubblesThread", ShowThread.LOW, imageCache.getSequence("redThrob"), false));									
+					} else if(currentSensorShow == 10){
+						float[][] colorlist = new float[3][3];
+						colorlist[0][0] = 255;
+						colorlist[0][1] = 0;
+						colorlist[0][2] = 0;
+						colorlist[1][0] = 255;
+						colorlist[1][1] = 255;
+						colorlist[1][2] = 0;
+						colorlist[2][0] = 255;
+						colorlist[2][1] = 0;
+						colorlist[2][2] = 0;
+						float[] pointlist = new float[3];
+						pointlist[0] = 0;
+						pointlist[1] = 0.5f;
+						pointlist[2] = 1;
+						ColorScheme spectrum = new ColorScheme(colorlist, pointlist);
+						newShow = new FireworksThread(fixture, null, 5, detectorMngr.getFps(), raster, "FireworksThread", ShowThread.LOW, spectrum, 8, 0.9f, guiWindow.gui.loadImage("depends//images//sprites//ring50alpha.png"));
+					} else if(currentSensorShow == 11){
+						newShow = new AdditivePropellerThread(fixture, null, 30, detectorMngr.getFps(), raster, "AdditivePropellerThread", ShowThread.LOW, 0.1f, 2, 0.1f, 0.1f, guiWindow.gui.createGraphics(256, 256, PConstants.P3D), guiWindow.gui.createGraphics(256, 256, PConstants.P3D), guiWindow.gui.createGraphics(256, 256, PConstants.P3D));
+					}
+					
+				} else {
+					String[] showProps = systemProps.getProperty(fixtureId).split(",");
+					
+					//System.out.println(showProps[0]);
+					if(showProps[0].equals("propeller")){
+						newShow = new PropellerThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "PropellerThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]), Float.parseFloat(showProps[7]), Float.parseFloat(showProps[8]));
+					} else if(showProps[0].equals("throb")){
+						newShow = new ThrobbingThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]), Integer.parseInt(showProps[7]), Integer.parseInt(showProps[8]), Integer.parseInt(showProps[9]), Integer.parseInt(showProps[10]));
+					} else if(showProps[0].equals("spiral")){
+						newShow = new SpiralThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "SpiralThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]), Integer.parseInt(showProps[7]), Integer.parseInt(showProps[8]), guiWindow.gui.loadImage("depends//images//sprites//sphere50alpha.png"));
+					} else if(showProps[0].equals("dartboard")){
+						ColorScheme spectrum = processColorScheme(showProps[2], showProps[3]);
+						newShow = new DartBoardThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.LOW, spectrum, Float.parseFloat(showProps[4]));
+					} else if(showProps[0].equals("images")){
+						newShow = new ImageSequenceThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, showProps[2], ShowThread.LOW, imageCache.getSequence(showProps[2]), false);					
+						((ImageSequenceThread)newShow).enableTint(Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]));
+					} else if(showProps[0].equals("vegas")){
+						ColorScheme spectrum = processColorScheme(showProps[2], showProps[3]);
+						newShow = new VegasThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "VegasThread", ShowThread.LOW, spectrum, Float.parseFloat(showProps[4]));
+					} else if(showProps[0].equals("fireworks")){
+						ColorScheme spectrum = processColorScheme(showProps[2], showProps[3]);
+						newShow = new FireworksThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "FireworksThread", ShowThread.LOW, spectrum, Float.parseFloat(showProps[4]), Float.parseFloat(showProps[5]), guiWindow.gui.loadImage("depends//images//sprites//ring50alpha.png"));
+					} else if(showProps[0].equals("additivepropeller")){
+						newShow = new AdditivePropellerThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "AdditivePropellerThread", ShowThread.LOW, Float.parseFloat(showProps[2]), Integer.parseInt(showProps[3]), Float.parseFloat(showProps[4]), Float.parseFloat(showProps[5]), guiWindow.gui.createGraphics(256, 256, PConstants.P3D), guiWindow.gui.createGraphics(256, 256, PConstants.P3D), guiWindow.gui.createGraphics(256, 256, PConstants.P3D));
+					}
+				}
 				
 				// everything happens in here now.
 				startShow(newShow);				
