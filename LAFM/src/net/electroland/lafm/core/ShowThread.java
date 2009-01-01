@@ -33,6 +33,7 @@ public abstract class ShowThread extends Thread {
 	private int showPriority;
 	private RunningAverage avg;
 	private ShowThread next;
+	private ShowThread top;
 
 	public int getShowPriority() {
 		return this.showPriority;
@@ -127,6 +128,9 @@ public abstract class ShowThread extends Thread {
 	 * @param next
 	 */
 	final public void chain(ShowThread next){
+		
+		next.top = (this.top == null) ? this : this.top;
+
 		ShowThread current = this;
 		while (current.next != null 
 				&& next != this){ // check for circularities.
@@ -180,11 +184,13 @@ public abstract class ShowThread extends Thread {
 			// tell any listeners that we are done.
 			Iterator<ShowThreadListener> j = listeners.iterator();
 			while (j.hasNext()){
-				j.next().notifyComplete(this, (Collection<DMXLightingFixture>)flowers);
+				j.next().notifyComplete(this.top == null ? this : this.top, 
+										(Collection<DMXLightingFixture>)flowers);
 			}			
 		}else{
 			// otherwise, start the follow-on show thread.
-			
+			System.out.println("chain stop:\t" + this);
+			System.out.println("chain start:\t" + next);
 			// kind of a hack.  we're overwriting the list of fixtures
 			// that the follow-on show thread previously contained.  that means
 			// chained shows must be ass
