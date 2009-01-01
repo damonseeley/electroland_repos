@@ -19,7 +19,6 @@ import net.electroland.lafm.scheduler.TimedEvent;
 import net.electroland.lafm.scheduler.TimedEventListener;
 import net.electroland.lafm.shows.AdditivePropellerThread;
 import net.electroland.lafm.shows.DartBoardThread;
-import net.electroland.lafm.shows.ExpandingThread;
 import net.electroland.lafm.shows.FireworksThread;
 import net.electroland.lafm.shows.Glockenspiel;
 import net.electroland.lafm.shows.ImageSequenceThread;
@@ -54,8 +53,8 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	public String[] sensorShows;				// list of names of sensor-triggered shows
 	public String[] fixtureActivity;			// 22 fixtures, null if empty; show name if in use
 	public int currentSensorShow;				// number of show to display when sensor is triggered
-	private int hitCount = 0;					// increments each time sensor is triggered
-	private int hitCountMax = 20;				// number of hits before switching sensor triggered show
+	//private int hitCount = 0;					// increments each time sensor is triggered
+	//private int hitCountMax = 20;				// number of hits before switching sensor triggered show
 	public boolean forceSensorShow = false;
 
 	// sample timed events, but I assume the building will be closed for some time at night
@@ -95,7 +94,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			e.printStackTrace();
 		}
 		
-		hitCountMax = Integer.parseInt(systemProps.getProperty("hitCountThreshold"));
+		//hitCountMax = Integer.parseInt(systemProps.getProperty("hitCountThreshold"));
 
 		// to track which fixtures are used, and what shows are currently running.
 		liveShows = Collections.synchronizedList(new ArrayList<ShowThread>());
@@ -104,19 +103,18 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		fixtureActivity = new String[22];	// all null to begin with
 		
 		currentSensorShow = 0;
-		sensorShows = new String[12];	// size dependent on number of sensor-triggered shows
-		sensorShows[0] = "Image Sequence";
-		sensorShows[1] = "Throb";
-		sensorShows[2] = "Propeller";
-		sensorShows[3] = "Spiral";
-		sensorShows[4] = "Dart Board";
-		sensorShows[5] = "Pie";
-		sensorShows[6] = "Bubbles";
-		sensorShows[7] = "Matrix Rings";
-		sensorShows[8] = "Flashing Pie";
-		sensorShows[9] = "Vegas";
-		sensorShows[10] = "Fireworks";
-		sensorShows[11] = "Additive Propeller";
+		sensorShows = new String[11];	// size dependent on number of sensor-triggered shows
+		sensorShows[0] = "Throb";
+		sensorShows[1] = "Propeller";
+		sensorShows[2] = "Spiral";
+		sensorShows[3] = "Dart Board";
+		sensorShows[4] = "Pie";
+		sensorShows[5] = "Bubbles";
+		sensorShows[6] = "Matrix Rings";
+		sensorShows[7] = "Flashing Pie";
+		sensorShows[8] = "Vegas";
+		sensorShows[9] = "Fireworks";
+		sensorShows[10] = "Additive Propeller";
 		
 		sensors = new Properties();
 		try{
@@ -216,15 +214,12 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					*/
 					
 					if(currentSensorShow == 0){
-						newShow = new ImageSequenceThread(fixture, null, 5, detectorMngr.getFps(), raster, "ImageSequenceThread", ShowThread.LOW, imageCache.getSequence("redThrob"), false);					
-						((ImageSequenceThread)newShow).enableTint(90, 100); // hue (0-360), brightness (0-100)
+						newShow = new ThrobbingThread(fixture, null, 5, detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, 255, 0, 0, 250, 250, 0, 0, 0, 0);			
 					} else if(currentSensorShow == 1){
-						newShow = new ThrobbingThread(fixture, null, 5, detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, 255, 0, 0, 500, 500, 0, 0, 0, 0);			
-					} else if(currentSensorShow == 2){
 						newShow = new PropellerThread(fixture, null, 5, detectorMngr.getFps(), raster, "PropellerThread", ShowThread.LOW, 255, 0, 0, 20, 5, 0.1f, 0.1f);
+					} else if(currentSensorShow == 2){
+						newShow = new SpiralThread(fixture, null, 10, detectorMngr.getFps(), raster, "SpiralThread", ShowThread.LOW, 0, 255, 255, 30, 2, 3, 100, guiWindow.gui.loadImage("depends//images//sprites//sphere50alpha.png"));
 					} else if(currentSensorShow == 3){
-						newShow = new SpiralThread(fixture, null, 10, detectorMngr.getFps(), raster, "SpiralThread", ShowThread.LOW, 0, 255, 255, 30, 2, 2, 100, guiWindow.gui.loadImage("depends//images//sprites//sphere50alpha.png"));
-					} else if(currentSensorShow == 4){
 						float[][] colorlist = new float[4][3];
 						colorlist[0][0] = 255;
 						colorlist[0][1] = 0;
@@ -245,18 +240,18 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						pointlist[3] = 1;
 						ColorScheme spectrum = new ColorScheme(colorlist, pointlist);
 						newShow = new DartBoardThread(fixture, null, 20, detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.LOW, spectrum, 0.2f);
-					} else if(currentSensorShow == 5){
+					} else if(currentSensorShow == 4){
 						newShow = new PieThread(fixture, null, 3, detectorMngr.getFps(), raster, "PieThread", ShowThread.LOW, 255, 255, 0, guiWindow.gui.loadImage("depends//images//sprites//bar40alpha.png"));
-					} else if(currentSensorShow == 6){
+					} else if(currentSensorShow == 5){
 						newShow = new ImageSequenceThread(fixture, null, 5, detectorMngr.getFps(), raster, "BubblesThread", ShowThread.LOW, imageCache.getSequence("bubbles"), false);					
 						//((ImageSequenceThread)newShow).enableTint(90, 100);
-					} else if(currentSensorShow == 7){
+					} else if(currentSensorShow == 6){
 						newShow = new ImageSequenceThread(fixture, null, 5, detectorMngr.getFps(), raster, "MatrixRingsThread", ShowThread.LOW, imageCache.getSequence("matrixRings"), false);					
 						((ImageSequenceThread)newShow).enableTint(90, 100);
-					} else if(currentSensorShow == 8){
+					} else if(currentSensorShow == 7){
 						newShow = new PieThread(fixture, null, 2, detectorMngr.getFps(), raster, "PieThread", ShowThread.LOW, 255,255,0, guiWindow.gui.loadImage("depends//images//sprites//bar40alpha.png"));
-						newShow.chain(new ThrobbingThread(fixture, null, 3, detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, 255,255,0, 300, 300, 0, 0, 0, 0));									
-					} else if(currentSensorShow == 9){
+						newShow.chain(new ThrobbingThread(fixture, null, 1, detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, 255,255,0, 100, 100, 0, 0, 0, 0));									
+					} else if(currentSensorShow == 8){
 						float[][] colorlist = new float[3][3];
 						colorlist[0][0] = 255;
 						colorlist[0][1] = 0;
@@ -276,7 +271,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						//newShow = new ExpandingThread(fixture, null,2, detectorMngr.getFps(), raster, "ExpandingThread", ShowThread.LOW, guiWindow.gui.loadImage("depends//images//sprites//sphere50alpha.png"));
 						//newShow.chain(new PieThread(fixture, null, 2, detectorMngr.getFps(), raster, "PieThread", ShowThread.LOW, 255, 255, 0, guiWindow.gui.loadImage("depends//images//sprites//bar40alpha.png")));
 						//newShow.chain(new ImageSequenceThread(fixture, null, 2, detectorMngr.getFps(), raster, "BubblesThread", ShowThread.LOW, imageCache.getSequence("redThrob"), false));									
-					} else if(currentSensorShow == 10){
+					} else if(currentSensorShow == 9){
 						float[][] colorlist = new float[3][3];
 						colorlist[0][0] = 255;
 						colorlist[0][1] = 0;
@@ -293,8 +288,8 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						pointlist[2] = 1;
 						ColorScheme spectrum = new ColorScheme(colorlist, pointlist);
 						newShow = new FireworksThread(fixture, null, 5, detectorMngr.getFps(), raster, "FireworksThread", ShowThread.LOW, spectrum, 8, 0.9f, guiWindow.gui.loadImage("depends//images//sprites//ring50alpha.png"));
-					} else if(currentSensorShow == 11){
-						newShow = new AdditivePropellerThread(fixture, null, 30, detectorMngr.getFps(), raster, "AdditivePropellerThread", ShowThread.LOW, 0.1f, 2, 0.1f, 0.1f, guiWindow.gui.createGraphics(256, 256, PConstants.P3D), guiWindow.gui.createGraphics(256, 256, PConstants.P3D), guiWindow.gui.createGraphics(256, 256, PConstants.P3D));
+					} else if(currentSensorShow == 10){
+						newShow = new AdditivePropellerThread(fixture, null, 30, detectorMngr.getFps(), raster, "AdditivePropellerThread", ShowThread.LOW, 0.1f, 5, 0.1f, 0.1f, guiWindow.gui.createGraphics(256, 256, PConstants.P3D), guiWindow.gui.createGraphics(256, 256, PConstants.P3D), guiWindow.gui.createGraphics(256, 256, PConstants.P3D));
 					}
 					
 				} else {

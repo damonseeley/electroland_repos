@@ -15,6 +15,8 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 	private boolean speedUp, slowDown, rotating;
 	private PGraphics redRaster, greenRaster, blueRaster;
 	private int length = 1;
+	private int age = 0;
+	private int whitevalue = 0;
 
 	public AdditivePropellerThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
@@ -104,14 +106,24 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		raster.blend(redRaster, 0, 0, 256, 256, 0, 0, 256, 256, PConstants.ADD);
 		raster.blend(greenRaster, 0, 0, 256, 256, 0, 0, 256, 256, PConstants.ADD);
 		raster.blend(blueRaster, 0, 0, 256, 256, 0, 0, 256, 256, PConstants.ADD);
+		raster.fill(255,255,255,whitevalue);
+		raster.rect(0,0,256,256);
 		raster.endDraw();
 		
 		if(rotating){
 			rotation += rotSpeed;
 			if(speedUp){
 				rotSpeed += acceleration;
+				if(age > 90){
+					if(whitevalue < 100){
+						whitevalue += 1;
+					}
+				}
 			} else if(slowDown){
 				rotSpeed -= deceleration;
+				if(whitevalue > 0){
+					whitevalue -= 1;
+				}
 				if(rotSpeed < 1){
 					if(red > 1 || green > 1 || blue > 1){
 						red = red - 15;
@@ -123,6 +135,8 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 				}
 			}
 		}
+		
+		age++;
 	}
 	
 	public void sensorEvent(DMXLightingFixture eventFixture, boolean isOn) {
