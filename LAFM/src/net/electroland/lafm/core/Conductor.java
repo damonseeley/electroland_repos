@@ -25,6 +25,7 @@ import net.electroland.lafm.shows.ImageSequenceThread;
 import net.electroland.lafm.shows.PieThread;
 import net.electroland.lafm.shows.PropellerThread;
 import net.electroland.lafm.shows.ShutdownThread;
+import net.electroland.lafm.shows.SpinningRingThread;
 import net.electroland.lafm.shows.SpiralThread;
 import net.electroland.lafm.shows.ThrobbingThread;
 import net.electroland.lafm.shows.VegasThread;
@@ -103,7 +104,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		fixtureActivity = new String[22];	// all null to begin with
 		
 		currentSensorShow = 0;
-		sensorShows = new String[14];	// size dependent on number of sensor-triggered shows
+		sensorShows = new String[15];	// size dependent on number of sensor-triggered shows
 		sensorShows[0] = "Throb";
 		sensorShows[1] = "Propeller";
 		sensorShows[2] = "Spiral";
@@ -118,6 +119,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		sensorShows[11] = "bees";
 		sensorShows[12] = "explode";
 		sensorShows[13] = "swirlPulse";
+		sensorShows[14] = "Spinning Rings";
 		
 		timedShows = new String[1];
 		timedShows[0] = "Solid Color";
@@ -326,6 +328,10 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			            	newShow = new ImageSequenceThread(fixture, null, 5, detectorMngr.getFps(), raster, "SwirlPulseThread", ShowThread.LOW, imageCache.getSequence("swirlPulse"), false);					
 							((ImageSequenceThread)newShow).enableTint(90, 100);
 							break;
+			            case 14:
+			            	// spinning rings
+			            	newShow = new SpinningRingThread(fixture, null, 30, detectorMngr.getFps(), raster, "SpinningRingThread", ShowThread.LOW, 255, 0, 0, 1, 0.5f, 10, 5, 0.05f, 0.05f);
+			            	break;
 					}
 					
 					
