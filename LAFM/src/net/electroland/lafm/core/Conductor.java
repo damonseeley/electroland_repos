@@ -50,7 +50,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	public Properties systemProps;
 	public TimedEvent[] clockEvents;
 	private ImageSequenceCache imageCache; 	// for ImageSequenceThreads
-	public String[] sensorShows;				// list of names of sensor-triggered shows
+	public String[] sensorShows, timedShows;	// list of names of sensor-triggered shows
 	public String[] fixtureActivity;			// 22 fixtures, null if empty; show name if in use
 	public int currentSensorShow;				// number of show to display when sensor is triggered
 	//private int hitCount = 0;					// increments each time sensor is triggered
@@ -118,6 +118,9 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		sensorShows[11] = "bees";
 		sensorShows[12] = "explode";
 		sensorShows[13] = "swirlPulse";
+		
+		timedShows = new String[1];
+		timedShows[0] = "Solid Color";
 		
 		sensors = new Properties();
 		try{
@@ -459,9 +462,20 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		 */
 	}
 	
+	public void launchGlockenspiel(int showNum){
+		PGraphics raster = guiWindow.gui.createGraphics(256, 256, PConstants.P3D);
+		ShowThread newShow = null;
+		switch(showNum){
+			case 0:
+				newShow = new Glockenspiel(fixtures, soundManager, 5, detectorMngr.getFps(), raster, "Glockenspiel", ShowThread.HIGHEST, 0, 30, 0);
+		}
+		startShow(newShow);
+	}
+	
 	public void timedEvent(TimedEvent e){
 		//System.out.println(e.hour+":"+e.minute+":"+e.sec);
-		PGraphics2D raster = new PGraphics2D(256,256,null);
+		//PGraphics2D raster = new PGraphics2D(256,256,null);
+		PGraphics raster = guiWindow.gui.createGraphics(256, 256, PConstants.P3D);
 		ShowThread newShow = new Glockenspiel(fixtures, soundManager, 5, detectorMngr.getFps(), raster, "Glockenspiel", ShowThread.HIGHEST, e.hour, e.minute, e.sec);
 		startShow(newShow);
 	}

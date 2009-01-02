@@ -1,5 +1,7 @@
 package net.electroland.lafm.shows;
 
+import java.util.List;
+
 import processing.core.PConstants;
 import processing.core.PGraphics;
 import net.electroland.detector.DMXLightingFixture;
@@ -24,6 +26,28 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 			float acceleration, float deceleration, PGraphics redRaster,
 			PGraphics greenRaster, PGraphics blueRaster) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
+		this.rotation = 0;
+		this.rotSpeed = rotationSpeed;
+		this.fadeSpeed = fadeSpeed;
+		this.acceleration = acceleration;
+		this.deceleration = deceleration;
+		this.redRaster = redRaster;
+		this.greenRaster = greenRaster;
+		this.blueRaster = blueRaster;
+		red = 255;
+		green = 255;
+		blue = 255;
+		rotating = true;
+		speedUp = true;
+		slowDown = false;
+	}
+	
+	public AdditivePropellerThread(List<DMXLightingFixture> flowers,
+			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
+			String ID, int showPriority, float rotationSpeed, int fadeSpeed,
+			float acceleration, float deceleration, PGraphics redRaster,
+			PGraphics greenRaster, PGraphics blueRaster) {
+		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.rotation = 0;
 		this.rotSpeed = rotationSpeed;
 		this.fadeSpeed = fadeSpeed;
