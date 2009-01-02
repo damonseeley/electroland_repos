@@ -105,7 +105,9 @@ public class GUI extends PApplet{
 		}
 		
 		controls.addTextlabel("settingslabel","GLOCKENSPIEL SHOWS:",148,285).setColorValue(0xffff0000);
-		
+		for(int i=0; i<conductor.timedShows.length; i++){
+			controls.addButton(conductor.timedShows[i], i, 148, 298 + i*14, 114, 12);//.setColorBackground(color(0,54,82,255));
+		}
 		
 		controls.addTextlabel("settingslabel","SETTINGS:",281,285).setColorValue(0xffff0000);
 		controls.addToggle("view_thumbnails", true, 281, 300, 10, 10).setColorForeground(color(0,54,82,255));
@@ -245,6 +247,12 @@ public class GUI extends PApplet{
 			} else if(e.controller().name().startsWith(" ")){
 				activeShowNum = (int)e.controller().value();
 			} else {
+				// check against list of glockenspiel shows
+				for(int i=0; i<conductor.timedShows.length; i++){
+					if(e.controller().name().equals(conductor.timedShows[i])){
+						conductor.launchGlockenspiel(i);
+					}
+				}
 				int pitch = (int)e.controller().value() + 36;
 				conductor.midiEvent(new Note(pitch, 127, 0));
 			}
