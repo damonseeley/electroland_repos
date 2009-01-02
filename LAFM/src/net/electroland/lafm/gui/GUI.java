@@ -14,8 +14,6 @@ import processing.core.PImage;
 import promidi.Note;
 import controlP5.ControlEvent;
 import controlP5.ControlP5;
-import controlP5.MultiList;
-import controlP5.MultiListButton;
 import controlP5.Radio;
 import controlP5.ScrollList;
 
@@ -33,7 +31,7 @@ public class GUI extends PApplet{
 	private ShowThread[] showList = new ShowThread[24];
 	private boolean thumbsViewable = true;
 	private boolean maskRaster = false;
-	private PImage lightmask0;
+	private PImage lightmask0, lightmask1;
 	
 	public GUI(int width, int height, Conductor conductor, Collection<Detector> detectors){
 		this.width = width;
@@ -50,6 +48,7 @@ public class GUI extends PApplet{
 		//controls.setColorForeground(color(255,255,255,10));
 		//controls.setColorActive(255);
 		lightmask0 = loadImage("depends//images//lightmask0.png");
+		lightmask1 = loadImage("depends//images//lightmask1.png");
 		
 		int xpos = 0;
 		int ypos = 0;
@@ -124,7 +123,11 @@ public class GUI extends PApplet{
 		translate(10,10);
 		drawPattern();
 		if(!maskRaster){
-			drawDetectors("lightgroup0");
+			if(activeShowNum < 13){
+				drawDetectors("lightgroup0");
+			} else {
+				drawDetectors("lightgroup1");
+			}
 		}
 		popMatrix();
 		pushMatrix();
@@ -179,7 +182,7 @@ public class GUI extends PApplet{
 				if(thumbsViewable){
 					pushMatrix();
 					translate(xpos*42, ypos*52);
-					if(n < 17){
+					if(n < 13){
 						drawMiniDetectors("lightgroup0");	// this seems really unnecessary
 					} else {
 						drawMiniDetectors("lightgroup1");
@@ -267,7 +270,11 @@ public class GUI extends PApplet{
 			image(showList[activeShowNum].getRaster(),0,0,256,256);
 		}
 		if(maskRaster){
-			image(lightmask0,0,0,256,256);
+			if(activeShowNum < 13){
+				image(lightmask0,0,0,256,256);
+			} else {
+				image(lightmask1,0,0,256,256);
+			}
 		}
 		rect(0, 0, 256, 256);
 	}
