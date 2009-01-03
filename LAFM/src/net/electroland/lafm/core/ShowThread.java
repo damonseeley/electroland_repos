@@ -36,6 +36,7 @@ public abstract class ShowThread extends Thread {
 	private String ID; // should rename to avoid confusion with Thread.getId();
 	private int showPriority;
 	private RunningAverage avg;
+	private RunningAverage avgProcessing;
 	private ShowThread next;
 	private ShowThread top;
 
@@ -58,6 +59,7 @@ public abstract class ShowThread extends Thread {
 		this.showPriority = showPriority;
 		listeners = Collections.synchronizedList(new ArrayList<ShowThreadListener>());
 		this.avg = new RunningAverage(30);
+		this.avgProcessing = new RunningAverage(30);
 	}
 
 	public ShowThread(List <DMXLightingFixture> flowers, 
@@ -74,6 +76,7 @@ public abstract class ShowThread extends Thread {
 		this.showPriority = showPriority;
 		listeners = Collections.synchronizedList(new ArrayList<ShowThreadListener>());
 		this.avg = new RunningAverage(30);
+		this.avgProcessing = new RunningAverage(30);
 	}
 
 	/**
@@ -150,22 +153,26 @@ public abstract class ShowThread extends Thread {
 
 		while ((System.currentTimeMillis() - startTime < lifespan) && isRunning){
 
+			// synch the raster with every fixture.
+			// this is taking 2-3 millis.
+
 			long start = System.currentTimeMillis();
 			
 			doWork(raster);				
 
-			// synch the raster with every fixture.
-			// this is taking 2-3 millis.
 			Iterator <DMXLightingFixture> i = flowers.iterator();
 			while (i.hasNext()){
 				i.next().sync(raster);
 			}
-			// to here.
 
 			avg.markFrame(); // for measuring fps
+			// to here.
 
 			try {
 				long adjDelay = delay - (System.currentTimeMillis() - start);
+
+				avgProcessing.addValue((double)(System.currentTimeMillis() - start));
+				
 				if (adjDelay < 0){
 					logger.warn("warning:\tprocessing is taking longer than available sleep cycles");
 					adjDelay = 0;
@@ -182,6 +189,7 @@ public abstract class ShowThread extends Thread {
 		
 		try {
 			logger.info("\t\t" + this.getID() + " ended with and average FPS of " + d.format(avg.getFPS()));
+			logger.debug("\t\t" + this.getID() + " ended with and average frame processing time of " + d.format(avgProcessing.getAvg()));
 		} catch (NoDataException e) {
 			logger.error(e.getMessage(), e);
 		}
