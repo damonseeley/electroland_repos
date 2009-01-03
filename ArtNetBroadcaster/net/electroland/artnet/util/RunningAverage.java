@@ -39,6 +39,10 @@ public class RunningAverage {
 		vals = new ArrayList<Datapoint>();
 	}
 
+	public boolean hasEnoughData(){
+		return vals.size() > 1;
+	}
+	
 	/**
 	 * returns true if this Averager is averaging a limited number of iterations,
 	 * not a limited duration.
