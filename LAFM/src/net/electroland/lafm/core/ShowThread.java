@@ -153,11 +153,8 @@ public abstract class ShowThread extends Thread {
 
 		while ((System.currentTimeMillis() - startTime < lifespan) && isRunning){
 
-			// synch the raster with every fixture.
-			// this is taking 2-3 millis.
-
 			long start = System.currentTimeMillis();
-			
+
 			doWork(raster);				
 
 			Iterator <DMXLightingFixture> i = flowers.iterator();
@@ -166,7 +163,6 @@ public abstract class ShowThread extends Thread {
 			}
 
 			avg.markFrame(); // for measuring fps
-			// to here.
 
 			try {
 				long adjDelay = delay - (System.currentTimeMillis() - start);
@@ -181,16 +177,19 @@ public abstract class ShowThread extends Thread {
 			} catch (InterruptedException e) {
 				logger.error(e.getMessage(), e);
 			}
-			
-			
 		}		
 
 		avg.markFrame(); // for measuring fps
 		
-		try {
+		try 
+		{
 			logger.info("\t\t" + this.getID() + " ended with and average FPS of " + d.format(avg.getFPS()));
-			logger.debug("\t\t" + this.getID() + " ended with and average frame processing time of " + d.format(avgProcessing.getAvg()));
-		} catch (NoDataException e) {
+			if (avgProcessing.hasEnoughData())
+			{
+				logger.debug("\t\t" + this.getID() + " ended with and average frame processing time of " + d.format(avgProcessing.getAvg()));				
+			}
+		} catch (NoDataException e) 
+		{
 			logger.error(e.getMessage(), e);
 		}
 
