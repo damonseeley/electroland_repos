@@ -1,0 +1,10 @@
+
+Untested conditions that will fail on startup:
+
+1.) poorly formatted Controller or Light properties in the properties file
+2.) ListnerPort not specified in the properties file
+3.) Light properties referencing non-existent LightController objects
+4.) holes in sequence of lighting channels per Light
+
+Instead of validating 4, we should get rid of channels in the properties file,
+and update LightController to use a sequence.
