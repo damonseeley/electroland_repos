@@ -141,30 +141,38 @@ public abstract class ShowThread extends Thread {
 
 	final public void run(){
 
+		DecimalFormat d = new DecimalFormat("####.##");
+		System.out.println("\t\t" + this.getID() + " started with a target FPS of " + d.format(1000.0/delay));
+
 		while ((System.currentTimeMillis() - startTime < lifespan) && isRunning){
 
+			long start = System.currentTimeMillis();
+			
 			doWork(raster);				
 
 			// synch the raster with every fixture.
+			// this is taking 2-3 millis.
 			Iterator <DMXLightingFixture> i = flowers.iterator();
 			while (i.hasNext()){
 				i.next().sync(raster);
 			}
+			// to here.
 
 			avg.markFrame(); // for measuring fps
 
 			try {
-				Thread.sleep(delay);
+				Thread.sleep(delay - (System.currentTimeMillis() - start));
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+			
+			
 		}		
 
 		avg.markFrame(); // for measuring fps
 		
 		try {
-			DecimalFormat d = new DecimalFormat("####.##");
-			System.out.println("\t\t" + this.getID() + " ended with and average fps of " + d.format(avg.getFPS()));
+			System.out.println("\t\t" + this.getID() + " ended with and average FPS of " + d.format(avg.getFPS()));
 		} catch (NoDataException e) {
 			e.printStackTrace();
 		}
