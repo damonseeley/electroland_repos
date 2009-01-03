@@ -6,11 +6,14 @@ import java.util.HashMap;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import org.apache.log4j.Logger;
+
 import processing.core.PApplet;
 import processing.core.PImage;
 
 public class ImageSequenceCache {
 
+	static Logger logger = Logger.getLogger(ImageSequenceCache.class);
 	private HashMap <String, PImage[]> cache;
 
 	public ImageSequenceCache(Properties p, PApplet applet){
@@ -21,7 +24,7 @@ public class ImageSequenceCache {
 		Enumeration <?> e = p.propertyNames();
 		while (e.hasMoreElements()){
 			String name = (String)e.nextElement();
-			System.out.println("loading image sequence: " + name);
+			logger.info("loading image sequence: " + name);
 			cache.put(name, parse(p.getProperty(name), cache, applet));
 		}
 	}
@@ -46,7 +49,7 @@ public class ImageSequenceCache {
 		PImage[] sequence = new PImage[end - start + 1];
 
 		for (int i = start; i <= end; i++){
-			System.out.println("loading: " + prefix + d.format(i) + suffix);
+			logger.info("loading: " + prefix + d.format(i) + suffix);
 			sequence[i - start] = applet.loadImage(prefix + d.format(i) + suffix);
 		}
 

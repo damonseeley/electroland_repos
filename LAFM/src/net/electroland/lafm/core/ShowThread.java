@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import net.electroland.artnet.util.NoDataException;
 import net.electroland.artnet.util.RunningAverage;
 import net.electroland.detector.DMXLightingFixture;
@@ -14,6 +16,8 @@ import processing.core.PGraphics;
 
 public abstract class ShowThread extends Thread {
 
+	static Logger logger = Logger.getLogger(ShowThread.class);
+	
 	final static int LOW = 0;
 	final static int MEDIUM = 2;
 	final static int HIGH = 4;
@@ -142,7 +146,7 @@ public abstract class ShowThread extends Thread {
 	final public void run(){
 
 		DecimalFormat d = new DecimalFormat("####.##");
-		System.out.println("\t\t" + this.getID() + " started with a target FPS of " + d.format(1000.0/delay));
+		logger.info("\t\t" + this.getID() + " started with a target FPS of " + d.format(1000.0/delay));
 
 		while ((System.currentTimeMillis() - startTime < lifespan) && isRunning){
 
@@ -161,9 +165,14 @@ public abstract class ShowThread extends Thread {
 			avg.markFrame(); // for measuring fps
 
 			try {
-				Thread.sleep(delay - (System.currentTimeMillis() - start));
+				long adjDelay = delay - (System.currentTimeMillis() - start);
+				if (adjDelay < 0){
+					logger.warn("warning:\tprocessing is taking longer than available sleep cycles");
+					adjDelay = 0;
+				}
+				Thread.sleep(adjDelay);					
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
 			
 			
@@ -172,9 +181,9 @@ public abstract class ShowThread extends Thread {
 		avg.markFrame(); // for measuring fps
 		
 		try {
-			System.out.println("\t\t" + this.getID() + " ended with and average FPS of " + d.format(avg.getFPS()));
+			logger.info("\t\t" + this.getID() + " ended with and average FPS of " + d.format(avg.getFPS()));
 		} catch (NoDataException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 
 		// if no show is chained to this one as a follow on or a force stop
@@ -197,8 +206,8 @@ public abstract class ShowThread extends Thread {
 			}			
 		}else{
 			// otherwise, start the follow-on show thread.
-			System.out.println("chain stop:\t" + this);
-			System.out.println("chain start:\t" + next);
+			logger.info("chain stop:\t" + this);
+			logger.info("chain start:\t" + next);
 			// kind of a hack.  we're overwriting the list of fixtures
 			// that the follow-on show thread previously contained.  that means
 			// chained shows must be ass

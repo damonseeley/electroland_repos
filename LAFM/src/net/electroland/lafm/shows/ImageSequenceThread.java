@@ -2,7 +2,10 @@ package net.electroland.lafm.shows;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import net.electroland.detector.DMXLightingFixture;
+import net.electroland.lafm.core.ImageSequenceCache;
 import net.electroland.lafm.core.SensorListener;
 import net.electroland.lafm.core.ShowThread;
 import net.electroland.lafm.core.SoundManager;
@@ -12,6 +15,8 @@ import processing.core.PImage;
 
 public class ImageSequenceThread extends ShowThread  implements SensorListener {
 
+	static Logger logger = Logger.getLogger(ImageSequenceThread.class);
+	
 	private int index = 0;
 	private PImage[] sequence;
 	private boolean resize = true;
@@ -24,7 +29,7 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 		if (sequence != null){			
 			this.sequence = sequence;
 		}else{
-			System.out.println("WARNING: IMAGE SEQUENCE WAS A NULL POINTER");
+			logger.error("WARNING: IMAGE SEQUENCE WAS A NULL POINTER");
 		}
 		this.resize = resize;
 	}
@@ -35,7 +40,7 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 		if (sequence != null){			
 			this.sequence = sequence;
 		}else{
-			System.out.println("WARNING: IMAGE SEQUENCE WAS A NULL POINTER");
+			logger.error("WARNING: IMAGE SEQUENCE WAS A NULL POINTER");
 		}
 		this.resize = resize;
 	}

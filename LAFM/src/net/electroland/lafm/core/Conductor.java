@@ -12,6 +12,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
 import net.electroland.detector.DMXLightingFixture;
 import net.electroland.detector.DetectorManager;
 import net.electroland.lafm.gui.GUIWindow;
@@ -40,6 +42,8 @@ import promidi.MidiIO;
 import promidi.Note;
 
 public class Conductor extends Thread implements ShowThreadListener, WeatherChangeListener, TimedEventListener{
+
+	static Logger logger = Logger.getLogger(Conductor.class);
 	
 	public GUIWindow guiWindow;				// frame for GUI
 	//static public DMXLightingFixture[] flowers;		// all flower fixtures
@@ -338,7 +342,6 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 				} else {
 					String[] showProps = systemProps.getProperty(fixtureId).split(",");
 					
-					//System.out.println(showProps[0]);
 					if(showProps[0].equals("propeller")){
 						newShow = new PropellerThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "PropellerThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]), Float.parseFloat(showProps[7]), Float.parseFloat(showProps[8]));
 					} else if(showProps[0].equals("throb")){
@@ -398,10 +401,10 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	
 	// this is essentially "stopShow", only it's the show telling us that it stopped.
 	public void notifyComplete(ShowThread showthread, Collection <DMXLightingFixture> returnedFlowers) {
-		System.out.println("got stop from:\t" + showthread);
+		logger.info("got stop from:\t" + showthread);
 		liveShows.remove(showthread);
 		availableFixtures.addAll(returnedFlowers);
-		System.out.println("currently there are still " + liveShows.size() + " running and " + availableFixtures.size() + " fixtures unallocated");
+		logger.info("currently there are still " + liveShows.size() + " running and " + availableFixtures.size() + " fixtures unallocated");
 	}
 
 	public Collection<DMXLightingFixture> getUnallocatedFixtures(){
@@ -455,7 +458,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			// tell thread that we want to be notified of it's end.
 			newshow.addListener(this);
 
-			System.out.println("starting:\t" + newshow);
+			logger.info("starting:\t" + newshow);
 			
 			newshow.start();
 		}
@@ -492,7 +495,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			int h = sunrise.get(Calendar.HOUR_OF_DAY);
 			int m = sunrise.get(Calendar.MINUTE);
 			int s = sunrise.get(Calendar.SECOND);
-			System.out.println("Sunrise at " + h + ":" + m + ":" + s);
+			logger.info("Sunrise at " + h + ":" + m + ":" + s);
 			//sunriseOn.reschedule(h-1, m, s); // turn off an hour before sunrise
 		}
 		if(wce.hasSunsetChanged()) {
@@ -500,13 +503,13 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			int h = sunset.get(Calendar.HOUR_OF_DAY);
 			int m = sunset.get(Calendar.MINUTE);
 			int s = sunset.get(Calendar.SECOND);
-			System.out.println("Sunset at " + h + ":" + m + ":" + s);
+			logger.info("Sunset at " + h + ":" + m + ":" + s);
 			//sunsetOn.reschedule(h - 1, m, s); // turn on 1 hour before sunset
 		}
 
-		System.out.println("CONDITION = " + wce.getRecord().getCondition());
-		System.out.println("VISIBILITY = " + wce.getRecord().getVisibility());
-		System.out.println("OUTSIDE TEMP = " + wce.getRecord().getOutsideTemperature());
+		logger.debug("CONDITION = " + wce.getRecord().getCondition());
+		logger.debug("VISIBILITY = " + wce.getRecord().getVisibility());
+		logger.debug("OUTSIDE TEMP = " + wce.getRecord().getOutsideTemperature());
 	}
 	
 	public static void main(String[] args) {					// PROGRAM LAUNCH
