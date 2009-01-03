@@ -32,6 +32,10 @@ public class ColorScheme {
 			if(p < pointlist[i]){									// if point is less than current...
 				above = i;											// specify above and below positions
 		        below = i-1;
+		        if(below < 0){
+		        	above = 1;
+		        	below = 0;
+		        }
 		        break;
 			}
 		}

@@ -37,7 +37,6 @@ import net.electroland.lafm.weather.WeatherChecker;
 import net.electroland.lafm.util.ColorScheme;
 import processing.core.PConstants;
 import processing.core.PGraphics;
-import processing.core.PGraphics2D;
 import promidi.MidiIO;
 import promidi.Note;
 
@@ -240,26 +239,22 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			            	newShow = new SpiralThread(fixture, null, 10, detectorMngr.getFps(), raster, "SpiralThread", ShowThread.LOW, 0, 255, 255, 30, 2, 3, 100, guiWindow.gui.loadImage("depends//images//sprites//sphere50alpha.png"));
 			            	break;
 			            case 3: 
-							colorlist = new float[4][3];
+							colorlist = new float[3][3];
 							colorlist[0][0] = 255;
 							colorlist[0][1] = 0;
 							colorlist[0][2] = 0;
-							colorlist[1][0] = 0;
+							colorlist[1][0] = 255;
 							colorlist[1][1] = 255;
 							colorlist[1][2] = 0;
-							colorlist[2][0] = 0;
+							colorlist[2][0] = 255;
 							colorlist[2][1] = 0;
-							colorlist[2][2] = 255;
-							colorlist[3][0] = 255;
-							colorlist[3][1] = 0;
-							colorlist[3][2] = 0;
-							pointlist = new float[4];
+							colorlist[2][2] = 0;
+							pointlist = new float[3];
 							pointlist[0] = 0;
-							pointlist[1] = 0.3f;
-							pointlist[2] = 0.6f;
-							pointlist[3] = 1;
+							pointlist[1] = 0.5f;
+							pointlist[2] = 1;
 							spectrum = new ColorScheme(colorlist, pointlist);
-							newShow = new DartBoardThread(fixture, null, 20, detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.LOW, spectrum, 0.2f);
+							newShow = new DartBoardThread(fixture, null, 20, detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.LOW, spectrum, 0.01f, 0.1f, 0.001f, 0.002f);
 							break;
 			            case 4:
 			            	newShow = new PieThread(fixture, null, 3, detectorMngr.getFps(), raster, "PieThread", ShowThread.LOW, 255, 255, 0, guiWindow.gui.loadImage("depends//images//sprites//bar40alpha.png"));
@@ -312,10 +307,10 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 							pointlist[1] = 0.5f;
 							pointlist[2] = 1;
 							spectrum = new ColorScheme(colorlist, pointlist);
-							newShow = new FireworksThread(fixture, null, 5, detectorMngr.getFps(), raster, "FireworksThread", ShowThread.LOW, spectrum, 8, 0.9f, guiWindow.gui.loadImage("depends//images//sprites//ring50alpha.png"));
+							newShow = new FireworksThread(fixture, null, 5, detectorMngr.getFps(), raster, "FireworksThread", ShowThread.LOW, spectrum, 8, 0.8f, guiWindow.gui.loadImage("depends//images//sprites//ring50alpha.png"));
 							break;
 			            case 10: 
-			            	newShow = new AdditivePropellerThread(fixture, null, 30, detectorMngr.getFps(), raster, "AdditivePropellerThread", ShowThread.LOW, 0.1f, 5, 0.1f, 0.1f, guiWindow.gui.createGraphics(256, 256, PConstants.P3D), guiWindow.gui.createGraphics(256, 256, PConstants.P3D), guiWindow.gui.createGraphics(256, 256, PConstants.P3D));
+			            	newShow = new AdditivePropellerThread(fixture, null, 30, detectorMngr.getFps(), raster, "AdditivePropellerThread", ShowThread.LOW, 0.2f, 5, 0.1f, 0.1f, guiWindow.gui.createGraphics(256, 256, PConstants.P3D), guiWindow.gui.createGraphics(256, 256, PConstants.P3D), guiWindow.gui.createGraphics(256, 256, PConstants.P3D));
 			            	break;
 			            case 11:
 			            	// bees
@@ -334,7 +329,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 							break;
 			            case 14:
 			            	// spinning rings
-			            	newShow = new SpinningRingThread(fixture, null, 30, detectorMngr.getFps(), raster, "SpinningRingThread", ShowThread.LOW, 255, 0, 0, 1, 0.5f, 10, 5, 0.05f, 0.05f);
+			            	newShow = new SpinningRingThread(fixture, null, 30, detectorMngr.getFps(), raster, "SpinningRingThread", ShowThread.LOW, 255, 0, 0, 0.01f, 2, 20, 5, 0.05f, 0.05f, guiWindow.gui.loadImage("depends//images//sprites//dashedring256alpha.png"), guiWindow.gui.loadImage("depends//images//sprites//dashedring152alpha.png"));
 			            	break;
 					}
 					
@@ -350,7 +345,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						newShow = new SpiralThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "SpiralThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]), Integer.parseInt(showProps[7]), Integer.parseInt(showProps[8]), guiWindow.gui.loadImage("depends//images//sprites//sphere50alpha.png"));
 					} else if(showProps[0].equals("dartboard")){
 						ColorScheme spectrum = processColorScheme(showProps[2], showProps[3]);
-						newShow = new DartBoardThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.LOW, spectrum, Float.parseFloat(showProps[4]));
+						newShow = new DartBoardThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.LOW, spectrum, Float.parseFloat(showProps[4]), Float.parseFloat(showProps[5]), Float.parseFloat(showProps[6]), Float.parseFloat(showProps[7]));
 					} else if(showProps[0].equals("images")){
 						newShow = new ImageSequenceThread(fixture, null, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, showProps[2], ShowThread.LOW, imageCache.getSequence(showProps[2]), false);					
 						((ImageSequenceThread)newShow).enableTint(Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]));

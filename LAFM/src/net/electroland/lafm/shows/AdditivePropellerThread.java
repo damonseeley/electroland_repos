@@ -85,7 +85,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		*/
 		
 		if(length < 128){
-			length += 3;
+			length += 5;
 		} else if(length >= 128){
 			length = 128;
 		}

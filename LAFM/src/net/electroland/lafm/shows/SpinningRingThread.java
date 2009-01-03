@@ -4,6 +4,7 @@ import java.util.List;
 
 import processing.core.PConstants;
 import processing.core.PGraphics;
+import processing.core.PImage;
 import net.electroland.detector.DMXLightingFixture;
 import net.electroland.lafm.core.SensorListener;
 import net.electroland.lafm.core.ShowThread;
@@ -11,30 +12,35 @@ import net.electroland.lafm.core.SoundManager;
 
 public class SpinningRingThread extends ShowThread implements SensorListener{
 	
-	private float red, green, blue;						// normalized color value parameters
+	private int red, green, blue;						// color value
 	private float brightness, fadeSpeed;				// brightness of color (for center throbbing)
 	private float outerRot, innerRot;					// current rotational positions
 	private float outerSpeed, innerSpeed, coreSpeed;	// brightness change increments
 	private float acceleration, deceleration;			// subtract from hold durations
 	private boolean speedUp, slowDown, fadeIn, fadeOut;
+	private PImage outerRing, innerRing;
+	private int alpha = 100;
 
 	public SpinningRingThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, int red, int green, int blue,
 			float outerSpeed, float innerSpeed, float coreSpeed, float fadeSpeed,
-			float acceleration, float deceleration) {
+			float acceleration, float deceleration, PImage outerRing, PImage innerRing) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
-		this.red = (float)(red/255.0);
-		this.green = (float)(green/255.0);
-		this.blue = (float)(blue/255.0);
+		this.red = red;
+		this.green = green;
+		this.blue = blue;
 		this.outerSpeed = outerSpeed;
 		this.innerSpeed = innerSpeed;
+		this.coreSpeed = coreSpeed;
 		this.fadeSpeed = fadeSpeed;
 		this.acceleration = acceleration;
 		this.deceleration = deceleration;
+		this.outerRing = outerRing;
+		this.innerRing = innerRing;
 		innerRot = 0;
 		outerRot = 0;
-		brightness = 255;
+		brightness = 0;
 		speedUp = true;
 		slowDown = false;
 		fadeIn = true;
@@ -61,41 +67,23 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		raster.rectMode(PConstants.CENTER);
 		raster.beginDraw();
 		raster.noStroke();
+		raster.background(0);
 		raster.translate(128, 128);
-		raster.fill(0,0,0,fadeSpeed);
-		raster.rect(0,0,256,256);
+		
 		raster.pushMatrix();
 		raster.rotate((float)(outerRot * Math.PI/180));
-		for(int i=0; i<18; i++){	// draw circle of values
-			raster.pushMatrix();
-			raster.rotate((float)((i*(360/18)) * Math.PI/180));
-			if(i%2 == 0){
-				raster.fill(red*255, green*255, blue*255);
-			} else {
-				raster.fill(0, 0, 0);
-			}
-			raster.rect(0, 100, 30, 50);
-			raster.popMatrix();
-		}
+		raster.tint(red, green, blue, alpha);
+		raster.image(outerRing, -128, -128);
 		raster.popMatrix();
+		
 		raster.pushMatrix();
 		raster.rotate((float)(innerRot * Math.PI/180));
-		//raster.fill(red*255, green*255, blue*255);
-		//raster.rect(0, 50, 50, 50);
-		for(int i=0; i<8; i++){	// draw circle of values
-			raster.pushMatrix();
-			raster.rotate((float)((i*(360/8)) * Math.PI/180));
-			if(i%2 == 0){
-				raster.fill(red*255, green*255, blue*255);
-			} else {
-				raster.fill(0, 0, 0);
-			}
-			raster.rect(0, 50, 50, 50);
-			raster.popMatrix();
-		}
+		raster.tint(red, green, blue, alpha);
+		raster.image(innerRing, -76, -76);
 		raster.popMatrix();
-		raster.fill(red*brightness, green*brightness, blue*brightness);
-		raster.rect(0, 0, 50, 50);
+		
+		raster.fill((red/255.0f)*brightness, (green/255.0f)*brightness, (blue/255.0f)*brightness);
+		raster.rect(0,0,40,40);		
 		raster.endDraw();
 		
 		if(fadeIn && brightness < 255){
@@ -117,14 +105,22 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		if(speedUp){
 			outerSpeed += acceleration;
 			innerSpeed += acceleration;
+			coreSpeed += acceleration*10;
 		} else if(slowDown){
-			outerSpeed -= deceleration;
-			innerSpeed -= deceleration;
+			if(outerSpeed > 0){
+				outerSpeed -= deceleration;
+			}
+			if(innerSpeed > 0){
+				innerSpeed -= deceleration;
+			}
+			if(coreSpeed > 0){
+				coreSpeed -= deceleration*10;
+			}
 			if(outerSpeed < 1){
-				if(brightness > 1){
-					brightness -= fadeSpeed;
+				if(alpha <= 0){
+					cleanStop();					
 				} else {
-					cleanStop();
+					alpha -= fadeSpeed;
 				}
 			}
 		}
