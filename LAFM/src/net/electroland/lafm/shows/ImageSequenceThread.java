@@ -84,13 +84,14 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 		raster.endDraw();
 
 		if (index == sequence.length){
-			index = 0;
+			//index = 0;	// make image sequences one-shot play back
+			this.cleanStop();
 		}
 	}
 
 	public void sensorEvent(DMXLightingFixture eventFixture, boolean isOn) {
 		if (this.getFlowers().contains(eventFixture) && !isOn){
-			this.cleanStop();
+			//this.cleanStop();	// finish the animation even if someone leaves
 		}
 	}
 }
