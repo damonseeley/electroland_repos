@@ -134,9 +134,9 @@ public class GUI extends PApplet{
 		translate(276,10);
 		drawThumbs();
 		popMatrix();
-		rect(10,276,123,256);
-		rect(143,276,123,256);
-		rect(276,276,200,256);
+		rect(10,276,123,260);
+		rect(143,276,123,260);
+		rect(276,276,200,260);
 		//rect(10,276,256,75);
 	}
 	

@@ -24,6 +24,7 @@ import net.electroland.lafm.shows.DartBoardThread;
 import net.electroland.lafm.shows.FireworksThread;
 import net.electroland.lafm.shows.Glockenspiel;
 import net.electroland.lafm.shows.ImageSequenceThread;
+import net.electroland.lafm.shows.LightGroupTestThread;
 import net.electroland.lafm.shows.PieThread;
 import net.electroland.lafm.shows.PropellerThread;
 import net.electroland.lafm.shows.ShutdownThread;
@@ -107,7 +108,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		fixtureActivity = new String[22];	// all null to begin with
 		
 		currentSensorShow = 0;
-		sensorShows = new String[15];	// size dependent on number of sensor-triggered shows
+		sensorShows = new String[16];	// size dependent on number of sensor-triggered shows
 		sensorShows[0] = "Throb";
 		sensorShows[1] = "Propeller";
 		sensorShows[2] = "Spiral";
@@ -123,9 +124,11 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		sensorShows[12] = "explode";
 		sensorShows[13] = "swirlPulse";
 		sensorShows[14] = "Spinning Rings";
+		sensorShows[15] = "Light Group Test";
 		
-		timedShows = new String[1];
+		timedShows = new String[2];
 		timedShows[0] = "Solid Color";
+		timedShows[1] = "Light Group Test";
 		
 		sensors = new Properties();
 		try{
@@ -331,6 +334,9 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			            	// spinning rings
 			            	newShow = new SpinningRingThread(fixture, null, 30, detectorMngr.getFps(), raster, "SpinningRingThread", ShowThread.LOW, 255, 0, 0, 0.01f, 2, 20, 5, 0.05f, 0.05f, guiWindow.gui.loadImage("depends//images//sprites//dashedring256alpha.png"), guiWindow.gui.loadImage("depends//images//sprites//dashedring152alpha.png"));
 			            	break;
+			            case 15:
+			            	// light group test
+			            	newShow = new LightGroupTestThread(fixture, null, 30, detectorMngr.getFps(), raster, "SpinningRingThread", ShowThread.LOW, guiWindow.gui.loadImage("depends//images//lightgrouptest.png"));
 					}
 					
 					
@@ -472,6 +478,10 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		switch(showNum){
 			case 0:
 				newShow = new Glockenspiel(fixtures, soundManager, 5, detectorMngr.getFps(), raster, "Glockenspiel", ShowThread.HIGHEST, 0, 30, 0);
+				break;
+			case 1:
+				newShow = new LightGroupTestThread(fixtures, null, 30, detectorMngr.getFps(), raster, "SpinningRingThread", ShowThread.LOW, guiWindow.gui.loadImage("depends//images//lightgrouptest.png"));
+				break;
 		}
 		startShow(newShow);
 	}

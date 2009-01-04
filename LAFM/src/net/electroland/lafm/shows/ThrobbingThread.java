@@ -13,11 +13,12 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 
 	private float red, green, blue;					// normalized color value parameters
 	private float brightness;							// intensity changed in throbbing
-	private int holdon, holdoff;						// timing parameters in milliseconds
+	private float holdon, holdoff;					// timing parameters in frames
+	private int holdcount;
 	private float fadeinspeed, fadeoutspeed;			// brightness change increments
 	private int acceleration, deceleration;			// subtract from hold durations
 	private boolean speedUp, slowDown;
-	private long lastChange;
+	//private long lastChange;
 	private int state;									// 0 = fade in, 1 = hold on, 2 = fade out, 3 = hold off
 
 	public ThrobbingThread(DMXLightingFixture flower, SoundManager soundManager,
@@ -38,9 +39,20 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 		} else {
 			this.fadeoutspeed = 255 / ((float)(fadeout/1000.0)*fps);
 		}
+		if(this.holdon > 0){
+			this.holdon = ((float)(holdon/1000.0)*fps);
+		} else {
+			this.holdon = 0;
+		}
+		if(this.holdoff > 0){
+			this.holdoff = ((float)(holdoff/1000.0)*fps);
+		} else {
+			this.holdoff = 0;
+		}
+		holdcount = 0;
 		//System.out.println(fadeinspeed +" "+ fadeoutspeed);
-		this.holdon = holdon;
-		this.holdoff = holdoff;
+		//this.holdon = holdon;
+		//this.holdoff = holdoff;
 		this.brightness = 0;
 		this.state = 0;
 		this.acceleration = acceleration;
@@ -88,8 +100,9 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 
 	@Override
 	public void doWork(PGraphics raster) {
-		//System.out.println(this.brightness);
+		System.out.println(this.brightness);
 		
+		/*
 		if(state == 0 && brightness < 255){				// fade in
 			brightness += fadeinspeed;
 		} else if(state == 0 && brightness >= 255){	// switch to holding on
@@ -109,10 +122,48 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 				state = 0;
 			}
 		}
+		*/
+		
+		if(state == 0){				// fade in
+			if(brightness < 255){
+				brightness += fadeinspeed;
+			}
+			if(brightness >= 255){
+				state = 1;
+				holdcount = 0;
+			}
+		} else if(state == 2){		// fade out
+			if(brightness > 0){
+				brightness -= fadeoutspeed;
+			}
+			if(brightness <= 0){
+				state = 3;
+			}
+		}
+		
+		if(state == 1){				// hold on
+			if(holdcount < holdon){
+				holdcount++;
+			} else {
+				state = 2;
+				holdcount = 0;
+			}
+		} else if(state == 3){		// hold off
+			if(holdcount < holdoff){
+				holdcount++;
+			} else {
+				state = 0;
+				holdcount = 0;
+			}
+		}
 		
 		if(speedUp){
-			holdon -= acceleration;
-			holdoff -= acceleration;
+			if(holdon > 0){
+				holdon -= acceleration;
+			}
+			if(holdoff > 0){
+				holdoff -= acceleration;
+			}
 		} else if(slowDown){
 			holdon += deceleration;
 			holdoff += deceleration;
