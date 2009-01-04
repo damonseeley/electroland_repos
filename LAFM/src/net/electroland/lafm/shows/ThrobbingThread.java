@@ -18,7 +18,6 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 	private float fadeinspeed, fadeoutspeed;			// brightness change increments
 	private int acceleration, deceleration;			// subtract from hold durations
 	private boolean speedUp, slowDown;
-	//private long lastChange;
 	private int state;									// 0 = fade in, 1 = hold on, 2 = fade out, 3 = hold off
 
 	public ThrobbingThread(DMXLightingFixture flower, SoundManager soundManager,
@@ -50,9 +49,6 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 			this.holdoff = 0;
 		}
 		holdcount = 0;
-		//System.out.println(fadeinspeed +" "+ fadeoutspeed);
-		//this.holdon = holdon;
-		//this.holdoff = holdoff;
 		this.brightness = 0;
 		this.state = 0;
 		this.acceleration = acceleration;
@@ -100,29 +96,7 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 
 	@Override
 	public void doWork(PGraphics raster) {
-		System.out.println(this.brightness);
-		
-		/*
-		if(state == 0 && brightness < 255){				// fade in
-			brightness += fadeinspeed;
-		} else if(state == 0 && brightness >= 255){	// switch to holding on
-			state = 1;
-			lastChange = System.currentTimeMillis();
-		} else if(state == 1){							// hold on
-			if(System.currentTimeMillis() - lastChange >= holdon){
-				state = 2;
-			}
-		} else if(state == 2 && brightness > 0){		// fade out
-			brightness -= fadeoutspeed;
-		} else if(state == 2 && brightness <= 0){		// switch to holding off
-			state = 3;
-			lastChange = System.currentTimeMillis();
-		} else if(state == 3){							// hold off
-			if(System.currentTimeMillis() - lastChange >= holdoff){
-				state = 0;
-			}
-		}
-		*/
+		//System.out.println(this.brightness);
 		
 		if(state == 0){				// fade in
 			if(brightness < 255){
