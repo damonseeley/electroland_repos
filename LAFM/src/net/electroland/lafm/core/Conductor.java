@@ -20,6 +20,7 @@ import net.electroland.lafm.gui.GUIWindow;
 import net.electroland.lafm.scheduler.TimedEvent;
 import net.electroland.lafm.scheduler.TimedEventListener;
 import net.electroland.lafm.shows.AdditivePropellerThread;
+import net.electroland.lafm.shows.ChimesThread;
 import net.electroland.lafm.shows.DartBoardThread;
 import net.electroland.lafm.shows.FireworksThread;
 import net.electroland.lafm.shows.Glockenspiel;
@@ -126,9 +127,10 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		sensorShows[14] = "Spinning Rings";
 		sensorShows[15] = "Light Group Test";
 		
-		timedShows = new String[2];
+		timedShows = new String[3];
 		timedShows[0] = "Solid Color";
 		timedShows[1] = "Light Group Test";
+		timedShows[2] = "Chimes";
 		
 		sensors = new Properties();
 		try{
@@ -480,7 +482,10 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 				newShow = new Glockenspiel(fixtures, soundManager, 5, detectorMngr.getFps(), raster, "Glockenspiel", ShowThread.HIGHEST, 0, 30, 0);
 				break;
 			case 1:
-				newShow = new LightGroupTestThread(fixtures, null, 30, detectorMngr.getFps(), raster, "SpinningRingThread", ShowThread.LOW, guiWindow.gui.loadImage("depends//images//lightgrouptest.png"));
+				newShow = new LightGroupTestThread(fixtures, null, 30, detectorMngr.getFps(), raster, "LightGroupTestThread", ShowThread.LOW, guiWindow.gui.loadImage("depends//images//lightgrouptest.png"));
+				break;
+			case 2:
+				newShow = new ChimesThread(fixtures, soundManager, 60, detectorMngr.getFps(), raster, "Chimes", ShowThread.HIGHEST, 6, 5, 0, 255, 255);
 				break;
 		}
 		startShow(newShow);
