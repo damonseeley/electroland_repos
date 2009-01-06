@@ -25,7 +25,8 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, int red, int green, int blue,
 			float outerSpeed, float innerSpeed, float coreSpeed, float fadeSpeed,
-			float acceleration, float deceleration, PImage outerRing, PImage innerRing) {
+			float acceleration, float deceleration, PImage outerRing, PImage innerRing,
+			boolean startFast) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
 		this.green = green;
@@ -41,17 +42,47 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		innerRot = 0;
 		outerRot = 0;
 		brightness = 0;
-		speedUp = true;
-		slowDown = false;
+		if(startFast){
+			speedUp = false;
+			slowDown = true;
+		} else {
+			speedUp = true;
+			slowDown = false;
+		}
 		fadeIn = true;
 		fadeOut = false;
 	}
 	
 	public SpinningRingThread(List <DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
-			String ID, int showPriority) {
+			String ID, int showPriority, int red, int green, int blue,
+			float outerSpeed, float innerSpeed, float coreSpeed, float fadeSpeed,
+			float acceleration, float deceleration, PImage outerRing, PImage innerRing,
+			boolean startFast) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
-		// TODO Auto-generated constructor stub
+		this.red = red;
+		this.green = green;
+		this.blue = blue;
+		this.outerSpeed = outerSpeed;
+		this.innerSpeed = innerSpeed;
+		this.coreSpeed = coreSpeed;
+		this.fadeSpeed = fadeSpeed;
+		this.acceleration = acceleration;
+		this.deceleration = deceleration;
+		this.outerRing = outerRing;
+		this.innerRing = innerRing;
+		innerRot = 0;
+		outerRot = 0;
+		brightness = 0;
+		if(startFast){
+			speedUp = false;
+			slowDown = true;
+		} else {
+			speedUp = true;
+			slowDown = false;
+		}
+		fadeIn = true;
+		fadeOut = false;
 	}
 
 	@Override
@@ -82,7 +113,7 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		raster.image(innerRing, -76, -76);
 		raster.popMatrix();
 		
-		raster.fill((red/255.0f)*brightness, (green/255.0f)*brightness, (blue/255.0f)*brightness);
+		raster.fill((red/255.0f)*brightness, (green/255.0f)*brightness, (blue/255.0f)*brightness, alpha);
 		raster.rect(0,0,40,40);		
 		raster.endDraw();
 		

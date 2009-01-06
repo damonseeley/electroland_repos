@@ -18,16 +18,19 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 	private float fadeinspeed, fadeoutspeed;			// brightness change increments
 	private int acceleration, deceleration;			// subtract from hold durations
 	private boolean speedUp, slowDown;
+	private boolean echo;
+	private float alpha, echodecay;					// normalized decay values
 	private int state;									// 0 = fade in, 1 = hold on, 2 = fade out, 3 = hold off
 
 	public ThrobbingThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int priority,
 			int red, int green, int blue, int fadein, int fadeout, int holdon,
-			int holdoff, int acceleration, int deceleration) {
+			int holdoff, int acceleration, int deceleration, boolean echo) {
 		super(flower, soundManager, lifespan, fps, raster, ID, priority);
 		this.red = (float)(red/255.0);
 		this.green = (float)(green/255.0);
 		this.blue = (float)(blue/255.0);
+		this.echo = echo;
 		if(fadein == 0){
 			this.fadeinspeed = 255;
 		} else {
@@ -50,6 +53,8 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 		}
 		holdcount = 0;
 		this.brightness = 0;
+		this.alpha = 1;
+		this.echodecay = 1.0f/(lifespan*fps);
 		this.state = 0;
 		this.acceleration = acceleration;
 		this.deceleration = deceleration;
@@ -61,11 +66,12 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 	public ThrobbingThread(List <DMXLightingFixture> flowers, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int priority,
 			int red, int green, int blue, int fadein, int fadeout, int holdon,
-			int holdoff, int acceleration, int deceleration) {
+			int holdoff, int acceleration, int deceleration, boolean echo) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, priority);
 		this.red = (float)(red/255.0);
 		this.green = (float)(green/255.0);
 		this.blue = (float)(blue/255.0);
+		this.echo = echo;
 		if(fadein == 0){
 			this.fadeinspeed = 255;
 		} else {
@@ -76,9 +82,20 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 		} else {
 			this.fadeoutspeed = 255 / ((float)(fadeout/1000.0)*fps);
 		}
-		this.holdon = holdon;
-		this.holdoff = holdoff;
+		if(this.holdon > 0){
+			this.holdon = ((float)(holdon/1000.0)*fps);
+		} else {
+			this.holdon = 0;
+		}
+		if(this.holdoff > 0){
+			this.holdoff = ((float)(holdoff/1000.0)*fps);
+		} else {
+			this.holdoff = 0;
+		}
+		holdcount = 0;
 		this.brightness = 0;
+		this.alpha = 1;
+		this.echodecay = 1.0f/(lifespan*fps);
 		this.state = 0;
 		this.acceleration = acceleration;
 		this.deceleration = deceleration;
@@ -112,6 +129,14 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 			}
 			if(brightness <= 0){
 				state = 3;
+			}
+		}
+		
+		if(echo){
+			if(alpha > 0){
+				alpha -= echodecay;
+			} else {
+				cleanStop();
 			}
 		}
 		
@@ -151,7 +176,7 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 		}
 		
 		raster.beginDraw();
-		raster.background(red*brightness, green*brightness, blue*brightness);
+		raster.background(red*brightness*alpha, green*brightness*alpha, blue*brightness*alpha);
 		raster.endDraw();
 	}
 
