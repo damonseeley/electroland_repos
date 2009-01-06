@@ -157,7 +157,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		} catch(Exception e){
 			e.printStackTrace();
 		}
-		soundManager = new SoundManager();
+		soundManager = new SoundManager("127.0.0.1", 10000);
 		guiWindow = new GUIWindow(this, detectorMngr.getDetectors());
 		guiWindow.setVisible(true);
 		
@@ -475,20 +475,23 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	}
 	
 	public void launchGlockenspiel(int showNum){
-		PGraphics raster = guiWindow.gui.createGraphics(256, 256, PConstants.P3D);
-		ShowThread newShow = null;
-		switch(showNum){
-			case 0:
-				newShow = new Glockenspiel(fixtures, soundManager, 5, detectorMngr.getFps(), raster, "Glockenspiel", ShowThread.HIGHEST, 0, 30, 0);
-				break;
-			case 1:
-				newShow = new LightGroupTestThread(fixtures, null, 30, detectorMngr.getFps(), raster, "LightGroupTestThread", ShowThread.LOW, guiWindow.gui.loadImage("depends//images//lightgrouptest.png"));
-				break;
-			case 2:
-				newShow = new ChimesThread(fixtures, soundManager, 60, detectorMngr.getFps(), raster, "Chimes", ShowThread.HIGHEST, 6, 5, 0, 255, 255);
-				break;
+		//stopAll();
+		if(availableFixtures.size() != 0){
+			PGraphics raster = guiWindow.gui.createGraphics(256, 256, PConstants.P3D);
+			ShowThread newShow = null;
+			switch(showNum){
+				case 0:
+					newShow = new Glockenspiel(fixtures, soundManager, 5, detectorMngr.getFps(), raster, "Glockenspiel", ShowThread.HIGHEST, 0, 30, 0);
+					break;
+				case 1:
+					newShow = new LightGroupTestThread(fixtures, null, 30, detectorMngr.getFps(), raster, "LightGroupTestThread", ShowThread.HIGHEST, guiWindow.gui.loadImage("depends//images//lightgrouptest.png"));
+					break;
+				case 2:
+					newShow = new ChimesThread(fixtures, soundManager, 60, detectorMngr.getFps(), raster, "Chimes", ShowThread.HIGHEST, 6, 5, 0, 255, 255);
+					break;
+			}
+			startShow(newShow);
 		}
-		startShow(newShow);
 	}
 	
 	public void timedEvent(TimedEvent e){

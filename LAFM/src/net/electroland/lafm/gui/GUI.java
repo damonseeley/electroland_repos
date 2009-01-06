@@ -54,7 +54,6 @@ public class GUI extends PApplet{
 		int ypos = 0;
 		for(int i=0; i<24; i++){	// for each fixture
 			if(i+1 != 17 && i+1 != 19){
-				//controls.addBang(str(i+1),xpos*42 + 276, ypos*52 + 10, 32, 32);
 				// super hacky way to hide the label
 				controls.addButton("      "+i, i, xpos*42 + 277, ypos*52 + 11, 31, 31).setColorLabel(0);
 				controls.addButton("F" + str(i+1), i, xpos*42 + 276, ypos*52 + 43, 33, 12);
@@ -65,35 +64,7 @@ public class GUI extends PApplet{
 					xpos++;
 				}
 			}
-		}
-		
-		/*
-		multiList = controls.addMultiList("multilist",486,10,150,10);
-		MultiListButton sensorshowlist = multiList.add("default_sensor_pattern", 1);
-		MultiListButton largerasterlist = multiList.add("view_large_raster", 2);
-		for(int i=0; i<conductor.sensorShows.length; i++){
-			sensorshowlist.add(conductor.sensorShows[i], i);
-		}
-		for(int i=0; i<24; i++){
-			if(i+1 != 17 && i+1 != 19){
-				largerasterlist.add(String.valueOf(i), i);
-			}
-		}
-		
-		rasterList = controls.addScrollList("view_large_raster",486, 150, 150, 120);
-		for(int i=0; i<24; i++){
-			rasterList.addItem(str(i+1), i);
-		}
-		*/
-		
-		// setup scrolling list for displaying active shows
-		/*
-		sensorShows = controls.addScrollList("default_sensor_pattern",10,290,150,200);
-		for(int i=0; i<conductor.sensorShows.length; i++){
-			sensorShows.addItem(conductor.sensorShows[i], i);
-		}
-		*/
-		
+		}		
 		
 		controls.addTextlabel("sensorlabel","SENSOR PATTERNS:",15,285).setColorValue(0xffff0000);
 		Radio r = controls.addRadio("default_sensor_pattern",15,300);
@@ -112,6 +83,12 @@ public class GUI extends PApplet{
 		controls.addToggle("view_thumbnails", true, 281, 300, 10, 10).setColorForeground(color(0,54,82,255));
 		controls.addToggle("mask_raster", false, 281, 324, 10, 10).setColorForeground(color(0,54,82,255));
 		//controls.addToggle("random_sensor_show", false, 148, 348, 10, 10).setColorForeground(color(0,54,82,255));
+		
+		controls.addTextlabel("settingslabel","SOUND TESTS:",281,360).setColorValue(0xffff0000);
+		controls.addButton("soundtest_1", 1, 281, 373, 100, 12);
+		controls.addButton("soundtest_2", 2, 281, 387, 100, 12);
+		controls.addButton("soundtest_3", 3, 281, 401, 100, 12);
+		controls.addButton("soundtest_global", 4, 281, 415, 100, 12);
 	}
 	
 	public void draw(){
@@ -123,7 +100,7 @@ public class GUI extends PApplet{
 		translate(10,10);
 		drawPattern();
 		if(!maskRaster){
-			if(activeShowNum < 13){
+			if(activeShowNum < 14){
 				drawDetectors("lightgroup0");
 			} else {
 				drawDetectors("lightgroup1");
@@ -182,7 +159,7 @@ public class GUI extends PApplet{
 				if(thumbsViewable){
 					pushMatrix();
 					translate(xpos*42, ypos*52);
-					if(n < 13){
+					if(n < 14){
 						drawMiniDetectors("lightgroup0");	// this seems really unnecessary
 					} else {
 						drawMiniDetectors("lightgroup1");
@@ -249,15 +226,30 @@ public class GUI extends PApplet{
 				}
 			} else if(e.controller().name().startsWith(" ")){
 				activeShowNum = (int)e.controller().value();
+			} else if(e.controller().name().startsWith("soundtest")){
+				if((int)e.controller().value() == 1){
+					conductor.soundManager.playSimpleSound("test1.wav", 1, 1, 1.0f, "test1");
+				} else if((int)e.controller().value() == 2){
+					conductor.soundManager.playSimpleSound("test2.wav", 1, 2, 1.0f, "test2");
+				} else if((int)e.controller().value() == 3){
+					conductor.soundManager.playSimpleSound("test6.wav", 3, 2, 1.0f, "test3");
+				} else if((int)e.controller().value() == 4){
+					int soundID = conductor.soundManager.newSoundID();
+					conductor.soundManager.globalSound(soundID,"music.wav",false,1,10000,"globaltest");
+				}
 			} else {
 				// check against list of glockenspiel shows
+				boolean glock = false;
 				for(int i=0; i<conductor.timedShows.length; i++){
 					if(e.controller().name().equals(conductor.timedShows[i])){
 						conductor.launchGlockenspiel(i);
+						glock = true;
 					}
 				}
-				int pitch = (int)e.controller().value() + 36;
-				conductor.midiEvent(new Note(pitch, 127, 0));
+				if(!glock){
+					int pitch = (int)e.controller().value() + 36;
+					conductor.midiEvent(new Note(pitch, 127, 0));
+				}
 			}
 		}catch(Exception error){
 			error.printStackTrace();

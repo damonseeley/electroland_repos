@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="depends/promidi.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ArtNetBroadcaster"/>
 	<classpathentry kind="lib" path="depends/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="depends/javaosc.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
