@@ -157,7 +157,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		} catch(Exception e){
 			e.printStackTrace();
 		}
-		soundManager = new SoundManager("127.0.0.1", 10000);
+		soundManager = new SoundManager(systemProps.getProperty("soundAddress"), Integer.parseInt(systemProps.getProperty("soundPort")));
 		guiWindow = new GUIWindow(this, detectorMngr.getDetectors());
 		guiWindow.setVisible(true);
 		
