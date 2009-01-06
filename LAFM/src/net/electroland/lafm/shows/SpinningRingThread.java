@@ -41,7 +41,7 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		this.innerRing = innerRing;
 		innerRot = 0;
 		outerRot = 0;
-		brightness = 0;
+		brightness = 255;
 		if(startFast){
 			speedUp = false;
 			slowDown = true;
@@ -73,7 +73,7 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		this.innerRing = innerRing;
 		innerRot = 0;
 		outerRot = 0;
-		brightness = 0;
+		brightness = 255;
 		if(startFast){
 			speedUp = false;
 			slowDown = true;
