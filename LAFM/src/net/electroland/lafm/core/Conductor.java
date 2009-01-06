@@ -127,11 +127,13 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		sensorShows[14] = "Spinning Rings";
 		sensorShows[15] = "Light Group Test";
 		
-		timedShows = new String[4];
+		timedShows = new String[6];
 		timedShows[0] = "Solid Color";
 		timedShows[1] = "Light Group Test";
 		timedShows[2] = "Chimes";
 		timedShows[3] = "Spinning Rings";
+		timedShows[4] = "Echoes";
+		timedShows[5] = "Dart Boards";
 		
 		sensors = new Properties();
 		try{
@@ -480,23 +482,40 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		if(availableFixtures.size() != 0){
 			PGraphics raster = guiWindow.gui.createGraphics(256, 256, PConstants.P3D);
 			ShowThread newShow = null;
+			int hourcount = 6;	// for test purposes
 			switch(showNum){
 				case 0:
-					newShow = new Glockenspiel(fixtures, soundManager, 5, detectorMngr.getFps(), raster, "Glockenspiel", ShowThread.HIGHEST, 0, 30, 0);
+					// solid color (THIS CHAIN ONLY PLAYS ONE SHOW)
+					newShow = new Glockenspiel(fixtures, soundManager, 5, detectorMngr.getFps(), raster, "Glockenspiel", ShowThread.HIGHEST, 0, 30, 0, 5);
+					for(int i=1; i<hourcount; i++){
+						newShow.chain(new Glockenspiel(fixtures, soundManager, 5, detectorMngr.getFps(), raster, "Glockenspiel", ShowThread.HIGHEST, 0, 30, 0, 5));
+					}
 					break;
 				case 1:
+					// light group test
 					newShow = new LightGroupTestThread(fixtures, soundManager, 30, detectorMngr.getFps(), raster, "LightGroupTestThread", ShowThread.HIGHEST, guiWindow.gui.loadImage("depends//images//lightgrouptest.png"));
 					break;
 				case 2:
+					// sparkly chimes
 					newShow = new ChimesThread(fixtures, soundManager, 60, detectorMngr.getFps(), raster, "Chimes", ShowThread.HIGHEST, 6, 5, 0, 255, 255);
 					break;
 				case 3:
+					// spinning ring (THIS CHAIN ONLY PLAYS ONE SHOW)
 					newShow = new SpinningRingThread(fixtures, soundManager, 30, detectorMngr.getFps(), raster, "SpinningRingThread", ShowThread.HIGHEST, 255, 0, 0, 5, 5, 20, 3, 0.05f, 0.1f, guiWindow.gui.loadImage("depends//images//sprites//dashedring256alpha.png"), guiWindow.gui.loadImage("depends//images//sprites//dashedring152alpha.png"), true);
 	            	// chain shows together to play back as chimes counting the current hour
-					int hourcount = 6;	// for test purposes
 					for(int i=1; i<hourcount; i++){
 						newShow.chain(new SpinningRingThread(fixtures, soundManager, 3, detectorMngr.getFps(), raster, "SpinningRingThread", ShowThread.HIGHEST, 255, 0, 0, 5, 5, 20, 3, 0.05f, 0.1f, guiWindow.gui.loadImage("depends//images//sprites//dashedring256alpha.png"), guiWindow.gui.loadImage("depends//images//sprites//dashedring152alpha.png"), true));
 					}
+					break;
+				case 4:
+					// echoes (THIS CHAIN WORKS)
+					newShow = new ThrobbingThread(fixtures, soundManager, 2, detectorMngr.getFps(), raster, "Echoes", ShowThread.HIGHEST, 0, 255, 0, 0, 500, 0, 0, 0, 0, true);
+					for(int i=1; i<hourcount; i++){
+						newShow.chain(new ThrobbingThread(fixtures, soundManager, 2, detectorMngr.getFps(), raster, "Echoes", ShowThread.HIGHEST, 0, 255, 0, 0, 500, 0, 0, 0, 0, true));
+					}
+	            	break;
+				case 5:
+					// dart boards
 					break;
 			}
 			startShow(newShow);
@@ -507,7 +526,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		//System.out.println(e.hour+":"+e.minute+":"+e.sec);
 		//PGraphics2D raster = new PGraphics2D(256,256,null);
 		PGraphics raster = guiWindow.gui.createGraphics(256, 256, PConstants.P3D);
-		ShowThread newShow = new Glockenspiel(fixtures, soundManager, 5, detectorMngr.getFps(), raster, "Glockenspiel", ShowThread.HIGHEST, e.hour, e.minute, e.sec);
+		ShowThread newShow = new Glockenspiel(fixtures, soundManager, 10, detectorMngr.getFps(), raster, "Glockenspiel", ShowThread.HIGHEST, e.hour, e.minute, e.sec, 2);
 		startShow(newShow);
 	}
 	

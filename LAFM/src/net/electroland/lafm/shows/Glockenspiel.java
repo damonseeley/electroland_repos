@@ -10,15 +10,17 @@ import net.electroland.lafm.core.SoundManager;
 
 public class Glockenspiel extends ShowThread {
 	
-	private int hour, minute, sec;
+	private int hour, minute, sec, fadeSpeed, brightness;
 
 	public Glockenspiel(List <DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
-			String ID, int priority, int hour, int minute, int sec) {
+			String ID, int priority, int hour, int minute, int sec, int fadeSpeed) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, priority);
 		this.hour = hour;
 		this.minute = minute;
 		this.sec = sec;
+		this.fadeSpeed = fadeSpeed;
+		this.brightness = 255;
 	}
 
 	@Override
@@ -32,8 +34,13 @@ public class Glockenspiel extends ShowThread {
 	public void doWork(PGraphics raster) {
 		raster.colorMode(PConstants.HSB, 60, 255, 255);
 		raster.beginDraw();
-		raster.background(this.minute, 255, 255);
+		raster.background(minute, 255, brightness);
 		raster.endDraw();
+		if(brightness > 0){
+			brightness -= fadeSpeed;
+		} else {
+			cleanStop();
+		}
 	}
 
 }
