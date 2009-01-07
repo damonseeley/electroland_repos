@@ -32,6 +32,7 @@ public abstract class ShowThread extends Thread {
 	private SoundManager soundManager;
 	private long startTime;
 	private boolean isRunning = true;
+	private boolean isForceStopped = false;
 	private List <ShowThreadListener>listeners;
 	private String ID; // should rename to avoid confusion with Thread.getId();
 	private int showPriority;
@@ -100,8 +101,16 @@ public abstract class ShowThread extends Thread {
 		return soundManager;
 	}
 
+	// stop the run method after it's next paint and sync.  unlike forceStop,
+	// cleanStop will continue the chain of shows (if any)
 	final public void cleanStop(){
 		this.isRunning = false;
+	}
+	
+	// stop the run method after it's next pain and sync, and discontinue any
+	// chained executions.
+	final public void forceStop(){
+		this.isForceStopped = true;
 	}
 	
 	final public String getID(){
@@ -151,7 +160,7 @@ public abstract class ShowThread extends Thread {
 		DecimalFormat d = new DecimalFormat("####.##");
 		logger.info("\t\t" + this.getID() + " started with a target FPS of " + d.format(1000.0/delay));
 
-		while ((System.currentTimeMillis() - startTime < lifespan) && isRunning){
+		while ((System.currentTimeMillis() - startTime < lifespan) && isRunning && !isForceStopped){
 
 			long start = System.currentTimeMillis();
 
@@ -195,7 +204,7 @@ public abstract class ShowThread extends Thread {
 
 		// if no show is chained to this one as a follow on or a force stop
 		// has been called on this thread, do the cleanup and notify listeners.
-		if (next == null){
+		if (isForceStopped || next == null){
 			// let the subclass do it's last frame.
 			complete(raster);
 
