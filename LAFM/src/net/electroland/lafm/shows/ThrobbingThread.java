@@ -22,6 +22,8 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 	private boolean echo;
 	private float alpha, echodecay;					// normalized decay values
 	private int state;									// 0 = fade in, 1 = hold on, 2 = fade out, 3 = hold off
+	private boolean startSound;
+	private String soundFile;
 
 	public ThrobbingThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int priority,
@@ -62,9 +64,8 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 		speedUp = true;
 		slowDown = false;
 		raster.colorMode(PConstants.RGB, 255, 255, 255);
-		if(soundManager != null){
-			soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, ID);
-		}
+		this.soundFile = soundFile;
+		startSound = true;
 	}
 	
 	public ThrobbingThread(List <DMXLightingFixture> flowers, SoundManager soundManager,
@@ -106,23 +107,8 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 		speedUp = true;
 		slowDown = false;
 		raster.colorMode(PConstants.RGB, 255, 255, 255);
-
-		boolean[] channelsInUse = new boolean[6];		// null array of sound channels
-		for(int n=0; n<channelsInUse.length; n++){
-			channelsInUse[n] = false;
-		}
-		if(soundManager != null){
-			Iterator <DMXLightingFixture> i = flowers.iterator();
-			while (i.hasNext()){
-				DMXLightingFixture flower = i.next();
-				channelsInUse[flower.getSoundChannel()-1] = true;
-			}
-			for(int n=0; n<channelsInUse.length; n++){
-				if(channelsInUse[n] != false){
-					soundManager.playSimpleSound(soundFile, n+1, 1.0f, ID);
-				}
-			}
-		}
+		this.soundFile = soundFile;
+		startSound = true;
 	}
 
 	@Override
@@ -135,6 +121,11 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 	@Override
 	public void doWork(PGraphics raster) {
 		//System.out.println(this.brightness);
+		
+		if(startSound){
+			super.playSound(soundFile);
+			startSound = false;
+		}
 		
 		if(state == 0){				// fade in
 			if(brightness < 255){

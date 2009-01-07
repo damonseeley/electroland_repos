@@ -17,6 +17,8 @@ public class SpiralThread extends ShowThread {
 	private int fadeSpeed, spriteWidth;
 	private float spiralTightness, currentTightness;
 	private PImage texture;
+	private boolean startSound;
+	private String soundFile;
 
 	public SpiralThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
@@ -33,9 +35,8 @@ public class SpiralThread extends ShowThread {
 		this.currentTightness = 0;
 		this.spriteWidth = spriteWidth;
 		this.texture = texture;
-		if(soundManager != null){
-			soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, ID);
-		}
+		this.soundFile = soundFile;
+		startSound = true;
 	}
 	
 	public SpiralThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
@@ -53,23 +54,8 @@ public class SpiralThread extends ShowThread {
 		this.currentTightness = 0;
 		this.spriteWidth = spriteWidth;
 		this.texture = texture;
-
-		boolean[] channelsInUse = new boolean[6];		// null array of sound channels
-		for(int n=0; n<channelsInUse.length; n++){
-			channelsInUse[n] = false;
-		}
-		if(soundManager != null){
-			Iterator <DMXLightingFixture> i = flowers.iterator();
-			while (i.hasNext()){
-				DMXLightingFixture flower = i.next();
-				channelsInUse[flower.getSoundChannel()-1] = true;
-			}
-			for(int n=0; n<channelsInUse.length; n++){
-				if(channelsInUse[n] != false){
-					soundManager.playSimpleSound(soundFile, n+1, 1.0f, ID);
-				}
-			}
-		}
+		this.soundFile = soundFile;
+		startSound = true;
 	}
 
 	@Override
@@ -81,6 +67,12 @@ public class SpiralThread extends ShowThread {
 
 	@Override
 	public void doWork(PGraphics raster) {
+		
+		if(startSound){
+			super.playSound(soundFile);
+			startSound = false;
+		}
+		
 		raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
 		raster.rectMode(PConstants.CENTER);
 		raster.beginDraw();

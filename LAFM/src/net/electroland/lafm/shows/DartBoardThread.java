@@ -19,6 +19,8 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 	float[] color;
 	int black = 0;
 	boolean speedUp, slowDown;
+	private boolean startSound;
+	private String soundFile;
 
 	public DartBoardThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
@@ -35,9 +37,8 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 		val3 = val2 + offset;
 		speedUp = true;
 		slowDown = false;
-		if(soundManager != null){
-			soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, ID);
-		}
+		this.soundFile = soundFile;
+		startSound = true;
 	}
 	
 	public DartBoardThread(List<DMXLightingFixture> flowers,
@@ -55,23 +56,8 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 		val3 = val2 + offset;
 		speedUp = true;
 		slowDown = false;
-		
-		boolean[] channelsInUse = new boolean[6];		// null array of sound channels
-		for(int n=0; n<channelsInUse.length; n++){
-			channelsInUse[n] = false;
-		}
-		if(soundManager != null){
-			Iterator <DMXLightingFixture> i = flowers.iterator();
-			while (i.hasNext()){
-				DMXLightingFixture flower = i.next();
-				channelsInUse[flower.getSoundChannel()-1] = true;
-			}
-			for(int n=0; n<channelsInUse.length; n++){
-				if(channelsInUse[n] != false){
-					soundManager.playSimpleSound(soundFile, n+1, 1.0f, ID);
-				}
-			}
-		}
+		this.soundFile = soundFile;
+		startSound = true;
 	}
 
 	@Override
@@ -83,6 +69,12 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 
 	@Override
 	public void doWork(PGraphics raster) {
+		
+		if(startSound){
+			super.playSound(soundFile);
+			startSound = false;
+		}
+		
 		raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
 		raster.ellipseMode(PConstants.CENTER);
 		raster.beginDraw();

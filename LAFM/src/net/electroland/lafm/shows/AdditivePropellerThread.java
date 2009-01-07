@@ -20,7 +20,8 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 	private int length = 1;
 	private int age = 0;
 	private int whitevalue = 0;
-	//private String soundFile;
+	private boolean startSound;
+	private String soundFile;
 
 	public AdditivePropellerThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
@@ -36,16 +37,19 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		this.redRaster = redRaster;
 		this.greenRaster = greenRaster;
 		this.blueRaster = blueRaster;
-		//this.soundFile = soundFile;
 		red = 255;
 		green = 255;
 		blue = 255;
 		rotating = true;
 		speedUp = true;
 		slowDown = false;
+		this.soundFile = soundFile;
+		startSound = true;
+		/*
 		if(soundManager != null){
 			soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, ID);
 		}
+		*/
 	}
 	
 	public AdditivePropellerThread(List<DMXLightingFixture> flowers,
@@ -62,30 +66,14 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		this.redRaster = redRaster;
 		this.greenRaster = greenRaster;
 		this.blueRaster = blueRaster;
-		//this.soundFile = soundFile;
 		red = 255;
 		green = 255;
 		blue = 255;
 		rotating = true;
 		speedUp = true;
 		slowDown = false;
-		
-		boolean[] channelsInUse = new boolean[6];		// null array of sound channels
-		for(int n=0; n<channelsInUse.length; n++){
-			channelsInUse[n] = false;
-		}
-		if(soundManager != null){
-			Iterator <DMXLightingFixture> i = flowers.iterator();
-			while (i.hasNext()){
-				DMXLightingFixture flower = i.next();
-				channelsInUse[flower.getSoundChannel()-1] = true;
-			}
-			for(int n=0; n<channelsInUse.length; n++){
-				if(channelsInUse[n] != false){
-					soundManager.playSimpleSound(soundFile, n+1, 1.0f, ID);
-				}
-			}
-		}
+		this.soundFile = soundFile;
+		startSound = true;
 	}
 
 	@Override
@@ -97,6 +85,11 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 
 	@Override
 	public void doWork(PGraphics raster) {
+		
+		if(startSound){
+			super.playSound(soundFile);
+			startSound = false;
+		}
 		
 		/*
 		// doesn't rotate until propellers are fully extended

@@ -92,6 +92,25 @@ public abstract class ShowThread extends Thread {
 	 * Call this per frame to render on the raster.
 	 */
 	abstract public void doWork(PGraphics raster);
+	
+	final public void playSound(String soundFile){
+		boolean[] channelsInUse = new boolean[6];		// null array of sound channels
+		for(int n=0; n<channelsInUse.length; n++){
+			channelsInUse[n] = false;
+		}
+		if(getSoundManager() != null){
+			Iterator <DMXLightingFixture> i = getFlowers().iterator();
+			while (i.hasNext()){
+				DMXLightingFixture flower = i.next();
+				channelsInUse[flower.getSoundChannel()-1] = true;
+			}
+			for(int n=0; n<channelsInUse.length; n++){
+				if(channelsInUse[n] != false){
+					getSoundManager().playSimpleSound(soundFile, n+1, 1.0f, getID());
+				}
+			}
+		}
+	}
 
 	final public PGraphics getRaster() {
 		return raster;

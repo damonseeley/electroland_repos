@@ -15,6 +15,8 @@ public class VegasThread extends ShowThread {
 	ColorScheme spectrum;
 	float speed;
 	int age = 0;
+	private boolean startSound;
+	private String soundFile;
 
 	public VegasThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
@@ -22,9 +24,8 @@ public class VegasThread extends ShowThread {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
-		if(soundManager != null){
-			soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, ID);
-		}
+		this.soundFile = soundFile;
+		startSound = true;
 	}
 	
 	public VegasThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
@@ -33,23 +34,8 @@ public class VegasThread extends ShowThread {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
-
-		boolean[] channelsInUse = new boolean[6];		// null array of sound channels
-		for(int n=0; n<channelsInUse.length; n++){
-			channelsInUse[n] = false;
-		}
-		if(soundManager != null){
-			Iterator <DMXLightingFixture> i = flowers.iterator();
-			while (i.hasNext()){
-				DMXLightingFixture flower = i.next();
-				channelsInUse[flower.getSoundChannel()-1] = true;
-			}
-			for(int n=0; n<channelsInUse.length; n++){
-				if(channelsInUse[n] != false){
-					soundManager.playSimpleSound(soundFile, n+1, 1.0f, ID);
-				}
-			}
-		}
+		this.soundFile = soundFile;
+		startSound = true;
 	}
 
 	@Override
@@ -61,6 +47,12 @@ public class VegasThread extends ShowThread {
 
 	@Override
 	public void doWork(PGraphics raster) {
+		
+		if(startSound){
+			super.playSound(soundFile);
+			startSound = false;
+		}
+		
 		raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
 		raster.rectMode(PConstants.CENTER);
 		raster.beginDraw();

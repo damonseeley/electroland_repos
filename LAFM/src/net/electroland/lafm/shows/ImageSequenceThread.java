@@ -22,6 +22,8 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 	private boolean resize = true;
 	private boolean isTinted = false;
 	private int hue, brightness;
+	private boolean startSound;
+	private String soundFile;
 	
 	public ImageSequenceThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
@@ -33,9 +35,8 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 			logger.error("WARNING: IMAGE SEQUENCE WAS A NULL POINTER");
 		}
 		this.resize = resize;
-		if(soundManager != null){
-			soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, ID);
-		}
+		this.soundFile = soundFile;
+		startSound = true;
 	}
 
 	public ImageSequenceThread(List <DMXLightingFixture> flowers,
@@ -48,23 +49,8 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 			logger.error("WARNING: IMAGE SEQUENCE WAS A NULL POINTER");
 		}
 		this.resize = resize;
-		
-		boolean[] channelsInUse = new boolean[6];		// null array of sound channels
-		for(int n=0; n<channelsInUse.length; n++){
-			channelsInUse[n] = false;
-		}
-		if(soundManager != null){
-			Iterator <DMXLightingFixture> i = flowers.iterator();
-			while (i.hasNext()){
-				DMXLightingFixture flower = i.next();
-				channelsInUse[flower.getSoundChannel()-1] = true;
-			}
-			for(int n=0; n<channelsInUse.length; n++){
-				if(channelsInUse[n] != false){
-					soundManager.playSimpleSound(soundFile, n+1, 1.0f, ID);
-				}
-			}
-		}
+		this.soundFile = soundFile;
+		startSound = true;
 	}
 
 	public void disableTint(){
@@ -79,16 +65,19 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 	
 	@Override
 	public void complete(PGraphics raster) {
-
 		raster.colorMode(PConstants.RGB, 255, 255, 255);
 		raster.beginDraw();
 		raster.background(0);	// paint it black.
 		raster.endDraw();
-		
 	}
 
 	@Override
 	public void doWork(PGraphics raster) {
+		
+		if(startSound){
+			super.playSound(soundFile);
+			startSound = false;
+		}
 
 		raster.beginDraw();
 

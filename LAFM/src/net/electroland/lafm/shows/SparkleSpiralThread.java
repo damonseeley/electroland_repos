@@ -22,6 +22,8 @@ public class SparkleSpiralThread extends ShowThread implements SensorListener{
 	int sparkleCount = 0;
 	int spriteWidth = 50;
 	boolean fadeIn, fadeOut, interactive;
+	private boolean startSound;
+	private String soundFile;
 	
 	public SparkleSpiralThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
@@ -34,9 +36,8 @@ public class SparkleSpiralThread extends ShowThread implements SensorListener{
 		this.interactive = interactive;
 		fadeIn = true;
 		fadeOut = false;
-		if(soundManager != null){
-			soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, ID);
-		}
+		this.soundFile = soundFile;
+		startSound = true;
 	}
 
 	public SparkleSpiralThread(List<DMXLightingFixture> flowers,
@@ -50,23 +51,8 @@ public class SparkleSpiralThread extends ShowThread implements SensorListener{
 		this.interactive = interactive;
 		fadeIn = true;
 		fadeOut = false;
-
-		boolean[] channelsInUse = new boolean[6];		// null array of sound channels
-		for(int n=0; n<channelsInUse.length; n++){
-			channelsInUse[n] = false;
-		}
-		if(soundManager != null){
-			Iterator <DMXLightingFixture> i = flowers.iterator();
-			while (i.hasNext()){
-				DMXLightingFixture flower = i.next();
-				channelsInUse[flower.getSoundChannel()-1] = true;
-			}
-			for(int n=0; n<channelsInUse.length; n++){
-				if(channelsInUse[n] != false){
-					soundManager.playSimpleSound(soundFile, n+1, 1.0f, ID);
-				}
-			}
-		}
+		this.soundFile = soundFile;
+		startSound = true;
 	}
 
 	@Override
@@ -78,6 +64,12 @@ public class SparkleSpiralThread extends ShowThread implements SensorListener{
 
 	@Override
 	public void doWork(PGraphics raster) {
+		
+		if(startSound){
+			super.playSound(soundFile);
+			startSound = false;
+		}
+		
 		raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
 		raster.rectMode(PConstants.CENTER);
 		raster.beginDraw();

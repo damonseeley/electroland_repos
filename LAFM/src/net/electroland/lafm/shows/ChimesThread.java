@@ -18,6 +18,7 @@ public class ChimesThread extends ShowThread {
 	private int hour;
 	private int brightness, alpha, fadeSpeed, chimeCount;
 	private float red, green, blue;
+	private boolean startSound;
 	private String soundFile;
 	
 	public ChimesThread(List<DMXLightingFixture> flowers,
@@ -30,27 +31,11 @@ public class ChimesThread extends ShowThread {
 		this.green = (green/255.0f);
 		this.blue = (blue/255.0f);
 		this.fadeSpeed = fadeSpeed;
-		this.soundFile = soundFile;
 		brightness = 255;
 		alpha = 100;
 		chimeCount = 0;
-		
-		boolean[] channelsInUse = new boolean[6];		// null array of sound channels
-		for(int n=0; n<channelsInUse.length; n++){
-			channelsInUse[n] = false;
-		}
-		if(soundManager != null){
-			Iterator <DMXLightingFixture> i = flowers.iterator();
-			while (i.hasNext()){
-				DMXLightingFixture flower = i.next();
-				channelsInUse[flower.getSoundChannel()-1] = true;
-			}
-			for(int n=0; n<channelsInUse.length; n++){
-				if(channelsInUse[n] != false){
-					soundManager.playSimpleSound(soundFile, n+1, 1.0f, ID);
-				}
-			}
-		}
+		this.soundFile = soundFile;
+		startSound = true;
 	}
 	
 	public ChimesThread(DMXLightingFixture flower,
@@ -63,13 +48,11 @@ public class ChimesThread extends ShowThread {
 		this.green = (green/255.0f);
 		this.blue = (blue/255.0f);
 		this.fadeSpeed = fadeSpeed;
-		this.soundFile = soundFile;
 		brightness = 255;
 		alpha = 100;
 		chimeCount = 0;
-		if(soundManager != null){
-			soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, ID);
-		}
+		this.soundFile = soundFile;
+		startSound = true;
 	}
 
 	@Override
@@ -81,6 +64,12 @@ public class ChimesThread extends ShowThread {
 
 	@Override
 	public void doWork(PGraphics raster) {
+		
+		if(startSound){
+			super.playSound(soundFile);
+			startSound = false;
+		}
+		
 		raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
 		raster.beginDraw();
 		raster.background(0,0,0);
