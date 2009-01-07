@@ -50,11 +50,21 @@ public class FireworksThread extends ShowThread {
 		fireworks = new ConcurrentHashMap<Integer,Firework>();
 		fireworks.put(fireworkCount, new Firework(fireworkCount, spectrum.getColor((float)Math.random())));
 		fireworkCount++;
+
+		boolean[] channelsInUse = new boolean[6];		// null array of sound channels
+		for(int n=0; n<channelsInUse.length; n++){
+			channelsInUse[n] = false;
+		}
 		if(soundManager != null){
 			Iterator <DMXLightingFixture> i = flowers.iterator();
 			while (i.hasNext()){
 				DMXLightingFixture flower = i.next();
-				soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, "FireWorks");
+				channelsInUse[flower.getSoundChannel()] = true;
+			}
+			for(int n=0; n<channelsInUse.length; n++){
+				if(channelsInUse[n] != false){
+					soundManager.playSimpleSound(soundFile, n, 1.0f, ID);
+				}
 			}
 		}
 	}

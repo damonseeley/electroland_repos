@@ -48,11 +48,21 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 			logger.error("WARNING: IMAGE SEQUENCE WAS A NULL POINTER");
 		}
 		this.resize = resize;
+		
+		boolean[] channelsInUse = new boolean[6];		// null array of sound channels
+		for(int n=0; n<channelsInUse.length; n++){
+			channelsInUse[n] = false;
+		}
 		if(soundManager != null){
 			Iterator <DMXLightingFixture> i = flowers.iterator();
 			while (i.hasNext()){
 				DMXLightingFixture flower = i.next();
-				soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, ID);
+				channelsInUse[flower.getSoundChannel()] = true;
+			}
+			for(int n=0; n<channelsInUse.length; n++){
+				if(channelsInUse[n] != false){
+					soundManager.playSimpleSound(soundFile, n, 1.0f, ID);
+				}
 			}
 		}
 	}
