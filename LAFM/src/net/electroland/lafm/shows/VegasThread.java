@@ -42,11 +42,11 @@ public class VegasThread extends ShowThread {
 			Iterator <DMXLightingFixture> i = flowers.iterator();
 			while (i.hasNext()){
 				DMXLightingFixture flower = i.next();
-				channelsInUse[flower.getSoundChannel()] = true;
+				channelsInUse[flower.getSoundChannel()-1] = true;
 			}
 			for(int n=0; n<channelsInUse.length; n++){
 				if(channelsInUse[n] != false){
-					soundManager.playSimpleSound(soundFile, n, 1.0f, ID);
+					soundManager.playSimpleSound(soundFile, n+1, 1.0f, ID);
 				}
 			}
 		}
