@@ -127,7 +127,7 @@ public class DetectorManager {
 		}
 		String lightgroup = st.nextToken(); // need a string parse for this ("...")
 		String color = st.nextToken();
-		String soundChannel = st.nextToken();
+		int soundChannel = Integer.parseInt(st.nextToken());
 		
 		if (fixture != null && fixture instanceof ArtNetDMXLightingFixture){
 			fixture.setLog(fps == 1);
