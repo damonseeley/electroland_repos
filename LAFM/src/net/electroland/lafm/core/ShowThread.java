@@ -195,7 +195,7 @@ public abstract class ShowThread extends Thread {
 
 		// if no show is chained to this one as a follow on or a force stop
 		// has been called on this thread, do the cleanup and notify listeners.
-		if (!isRunning || next == null){
+		if (next == null){
 			// let the subclass do it's last frame.
 			complete(raster);
 
