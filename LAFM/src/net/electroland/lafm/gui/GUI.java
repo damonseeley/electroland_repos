@@ -228,11 +228,11 @@ public class GUI extends PApplet{
 				activeShowNum = (int)e.controller().value();
 			} else if(e.controller().name().startsWith("soundtest")){
 				if((int)e.controller().value() == 1){
-					conductor.soundManager.playSimpleSound("test1.wav", 1, 1, 1.0f, "test1");
+					conductor.soundManager.playSimpleSound("test1.wav", 1, 1.0f, "test1");
 				} else if((int)e.controller().value() == 2){
-					conductor.soundManager.playSimpleSound("test2.wav", 1, 2, 1.0f, "test2");
+					conductor.soundManager.playSimpleSound("test2.wav", 2, 1.0f, "test2");
 				} else if((int)e.controller().value() == 3){
-					conductor.soundManager.playSimpleSound("test6.wav", 3, 2, 1.0f, "test3");
+					conductor.soundManager.playSimpleSound("test6.wav", 6, 1.0f, "test3");
 				} else if((int)e.controller().value() == 4){
 					int soundID = conductor.soundManager.newSoundID();
 					conductor.soundManager.globalSound(soundID,"music.wav",false,1,10000,"globaltest");

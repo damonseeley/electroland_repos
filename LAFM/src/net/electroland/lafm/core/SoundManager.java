@@ -15,7 +15,7 @@ public class SoundManager extends Thread {
 	private Object args[];				// osc content
 	private String ip;
 	private int soundID;				// incrementing sound ID
-	public boolean audioEnabled;		// turns audio on/off
+	public boolean audioEnabled = true;		// turns audio on/off
 	public int gain = 1;				// default volume level
 	public int clamp = 1;
 
@@ -36,6 +36,47 @@ public class SoundManager extends Thread {
 		soundID++;
 		int[] speaker = getNearestSpeaker(x,y);
 		send("simple instance"+soundID+" "+filename+" "+speaker[0]+" "+speaker[1]+" 0 "+gain+" "+comment);
+	}
+	
+	public void playSimpleSound(String filename, int c, float gain, String comment){ // c is channel number
+		// this version takes a channel as argument and sends the appropriate coords to Marc Nimoy's max patch
+		soundID++;
+		int[] channelCoords = lookupCoordinates(c);
+		System.out.println("Played sound on channel " +c+ "with coords " +channelCoords.toString());
+		send("simple instance"+soundID+" "+filename+" "+channelCoords[0]+" "+channelCoords[1]+" 0 "+gain+" "+comment);
+	}
+	
+	private int[] lookupCoordinates(int c){
+		int[] channelCoords = new int[2];
+
+		switch(c){
+		case 1:
+			channelCoords[0] = 1;
+			channelCoords[1] = 1;
+			break;
+		case 2:
+			channelCoords[0] = 1;
+			channelCoords[1] = 2;
+			break;
+		case 3:
+			channelCoords[0] = 2;
+			channelCoords[1] = 1;
+			break;
+		case 4:
+			channelCoords[0] = 2;
+			channelCoords[1] = 2;
+			break;
+		case 5:
+			channelCoords[0] = 3;
+			channelCoords[1] = 1;
+			break;
+		case 6:
+			channelCoords[0] = 3;
+			channelCoords[1] = 2;
+			break;
+		}
+		
+		return channelCoords;
 	}
 	
 	public int[] getNearestSpeaker(int x, int y){	// x/y are light locations
