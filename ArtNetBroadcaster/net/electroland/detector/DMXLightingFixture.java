@@ -10,9 +10,9 @@ import java.util.Collections;
 import processing.core.PImage;
 
 /**
- * This is an abstract class that acts as a bridge between detectrors, rasters,
+ * This is an abstract class that acts as a bridge between detectors, rasters,
  * and DMX lighting fixtures.  The only method that concrete implementations
- * need to implement is send(byte[]), which actuall sends the bytes to the
+ * need to implement is send(byte[]), which actually sends the bytes to the
  * fixture, using the appropriate protocol.  See ArtNetDMXLightingFixture.
  * @author geilfuss
  */
@@ -25,6 +25,7 @@ public abstract class DMXLightingFixture {
 	protected List <Detector> detectors;
 	protected int width, height; // for generating raster properly.
 	protected String lightgroup;
+	protected String color;	// physical color of fixture
 
 	/**
 	 * @param universe - the byte id of this lighting fixtures DMX universe
@@ -132,5 +133,9 @@ public abstract class DMXLightingFixture {
 	
 	final public String getID() {
 		return id;
+	}
+	
+	final public String getColor(){
+		return color;
 	}
 }
