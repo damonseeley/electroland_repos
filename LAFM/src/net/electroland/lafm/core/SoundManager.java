@@ -42,7 +42,7 @@ public class SoundManager extends Thread {
 		// this version takes a channel as argument and sends the appropriate coords to Marc Nimoy's max patch
 		soundID++;
 		int[] channelCoords = lookupCoordinates(c);
-		System.out.println("Played sound on channel " +c+ "with coords " +channelCoords.toString());
+		//System.out.println("Played sound on channel " +c);
 		send("simple instance"+soundID+" "+filename+" "+channelCoords[0]+" "+channelCoords[1]+" 0 "+gain+" "+comment);
 	}
 	
