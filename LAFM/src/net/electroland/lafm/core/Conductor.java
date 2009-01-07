@@ -29,6 +29,7 @@ import net.electroland.lafm.shows.LightGroupTestThread;
 import net.electroland.lafm.shows.PieThread;
 import net.electroland.lafm.shows.PropellerThread;
 import net.electroland.lafm.shows.ShutdownThread;
+import net.electroland.lafm.shows.SparkleSpiralThread;
 import net.electroland.lafm.shows.SpinningRingThread;
 import net.electroland.lafm.shows.SpiralThread;
 import net.electroland.lafm.shows.ThrobbingThread;
@@ -128,13 +129,14 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		sensorShows[14] = "Spinning Rings";
 		sensorShows[15] = "Light Group Test";
 		
-		timedShows = new String[6];
+		timedShows = new String[7];
 		timedShows[0] = "Solid Color";
 		timedShows[1] = "Light Group Test";
 		timedShows[2] = "Chimes";
 		timedShows[3] = "Spinning Rings";
 		timedShows[4] = "Echoes";
 		timedShows[5] = "Dart Boards";
+		timedShows[6] = "Sparkle Spiral";
 		
 		physicalColors = new String[5];
 		physicalColors[0] = "red";
@@ -525,57 +527,57 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 				case 5:
 					// dart boards
 					float[][] redlist = new float[3][3];
-					redlist[0][0] = 255;
+					redlist[0][0] = 255;	// red
 					redlist[0][1] = 0;
 					redlist[0][2] = 0;
-					redlist[1][0] = 255;
+					redlist[1][0] = 255;	// yellow
 					redlist[1][1] = 255;
 					redlist[1][2] = 0;
-					redlist[2][0] = 255;
+					redlist[2][0] = 255;	// red
 					redlist[2][1] = 0;
 					redlist[2][2] = 0;
 					
 					float[][] orangelist = new float[3][3];
-					orangelist[0][0] = 255;
+					orangelist[0][0] = 100;	// dark red
 					orangelist[0][1] = 0;
 					orangelist[0][2] = 0;
-					orangelist[1][0] = 255;
+					orangelist[1][0] = 255;	// purple
 					orangelist[1][1] = 0;
 					orangelist[1][2] = 255;
-					orangelist[2][0] = 255;
+					orangelist[2][0] = 100;	// dark red
 					orangelist[2][1] = 0;
 					orangelist[2][2] = 0;
 					
 					float[][] yellowlist = new float[3][3];
-					yellowlist[0][0] = 255;
-					yellowlist[0][1] = 0;
+					yellowlist[0][0] = 0;	// dark green
+					yellowlist[0][1] = 100;
 					yellowlist[0][2] = 0;
-					yellowlist[1][0] = 255;
-					yellowlist[1][1] = 0;
-					yellowlist[1][2] = 255;
-					yellowlist[2][0] = 255;
-					yellowlist[2][1] = 0;
+					yellowlist[1][0] = 255;	// yellow
+					yellowlist[1][1] = 255;
+					yellowlist[1][2] = 0;	
+					yellowlist[2][0] = 0;	// dark green
+					yellowlist[2][1] = 100;
 					yellowlist[2][2] = 0;
 					
 					float[][] purplelist = new float[3][3];
-					purplelist[0][0] = 255;
+					purplelist[0][0] = 255;	// pink
 					purplelist[0][1] = 150;
 					purplelist[0][2] = 150;
-					purplelist[1][0] = 255;
+					purplelist[1][0] = 0;	// blue
 					purplelist[1][1] = 0;
 					purplelist[1][2] = 255;
-					purplelist[2][0] = 255;
+					purplelist[2][0] = 255;	// pink
 					purplelist[2][1] = 150;
 					purplelist[2][2] = 150;
 					
 					float[][] pinklist = new float[3][3];
-					pinklist[0][0] = 255;
+					pinklist[0][0] = 255;	// pink
 					pinklist[0][1] = 150;
 					pinklist[0][2] = 150;
-					pinklist[1][0] = 255;
+					pinklist[1][0] = 255;	// yellow
 					pinklist[1][1] = 255;
 					pinklist[1][2] = 0;
-					pinklist[2][0] = 255;
+					pinklist[2][0] = 255;	// pink
 					pinklist[2][1] = 150;
 					pinklist[2][2] = 150;
 					
@@ -608,10 +610,34 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 							colorlist = pinklist;
 						}
 						ColorScheme spectrum = new ColorScheme(colorlist, pointlist);
-						newShow = new DartBoardThread(monoFixtures, soundManager, 5, detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.HIGHEST, spectrum, 0.01f, 0.1f, 0, 0);
+						newShow = new DartBoardThread(monoFixtures, soundManager, 20, detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.HIGHEST, spectrum, 0.02f, 0.1f, 0, 0);
 						if(i < physicalColors.length-1){
 							startShow(newShow);	// start every show except last one							
 						}
+					}
+					break;
+				case 6:
+					// sparkle spiral (THIS CHAIN DOES NOT WORK)
+					float[] points = new float[3];
+					points[0] = 0;
+					points[1] = 0.5f;
+					points[2] = 1;
+					
+					float[][] colors = new float[3][3];
+					colors[0][0] = 255;	// white
+					colors[0][1] = 255;
+					colors[0][2] = 255;
+					colors[1][0] = 0;	// blue
+					colors[1][1] = 0;
+					colors[1][2] = 255;	
+					colors[2][0] = 255;	// white
+					colors[2][1] = 255;
+					colors[2][2] = 255;
+					
+					ColorScheme spectrum = new ColorScheme(colors, points);
+					newShow = new SparkleSpiralThread(fixtures, soundManager, 20, detectorMngr.getFps(), raster, "Sparkle Spiral", ShowThread.HIGHEST, spectrum, 0, 0, false);
+					for(int i=1; i<hourcount; i++){
+						newShow.chain(new SparkleSpiralThread(fixtures, soundManager, 20, detectorMngr.getFps(), raster, "Sparkle Spiral", ShowThread.HIGHEST, spectrum, 0, 0, false));
 					}
 					break;
 			}
@@ -621,7 +647,6 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	
 	public void timedEvent(TimedEvent e){
 		//System.out.println(e.hour+":"+e.minute+":"+e.sec);
-		//PGraphics2D raster = new PGraphics2D(256,256,null);
 		PGraphics raster = guiWindow.gui.createGraphics(256, 256, PConstants.P3D);
 		ShowThread newShow = new Glockenspiel(fixtures, soundManager, 10, detectorMngr.getFps(), raster, "Glockenspiel", ShowThread.HIGHEST, e.hour, e.minute, e.sec, 2);
 		startShow(newShow);
