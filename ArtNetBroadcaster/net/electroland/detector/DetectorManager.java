@@ -127,11 +127,13 @@ public class DetectorManager {
 		}
 		String lightgroup = st.nextToken(); // need a string parse for this ("...")
 		String color = st.nextToken();
+		String soundChannel = st.nextToken();
 		
 		if (fixture != null && fixture instanceof ArtNetDMXLightingFixture){
 			fixture.setLog(fps == 1);
 			fixture.lightgroup = lightgroup;
 			fixture.color = color;
+			fixture.soundChannel = soundChannel;
 			return fixture;
 		}else{
 			throw new RuntimeException("Unknown fixture protocol.");

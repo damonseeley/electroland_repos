@@ -26,6 +26,7 @@ public abstract class DMXLightingFixture {
 	protected int width, height; // for generating raster properly.
 	protected String lightgroup;
 	protected String color;	// physical color of fixture
+	protected String soundChannel; //sound channel to play on for this fixture.
 
 	/**
 	 * @param universe - the byte id of this lighting fixtures DMX universe
@@ -137,5 +138,9 @@ public abstract class DMXLightingFixture {
 	
 	final public String getColor(){
 		return color;
+	}
+	
+	final public String getSoundChannel(){
+		return soundChannel;
 	}
 }
