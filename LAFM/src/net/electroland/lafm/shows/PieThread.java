@@ -1,5 +1,6 @@
 package net.electroland.lafm.shows;
 
+import java.util.Iterator;
 import java.util.List;
 
 import processing.core.PConstants;
@@ -28,6 +29,9 @@ public class PieThread extends ShowThread {
 		this.rotSpeed = 360 / (int)(lifespan*fps);
 		this.texture = texture;
 		cycles = 0;
+		if(soundManager != null){
+			soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, ID);
+		}
 	}
 	
 	public PieThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
@@ -41,6 +45,13 @@ public class PieThread extends ShowThread {
 		this.rotSpeed = 360 / (lifespan*fps);
 		this.texture = texture;
 		cycles = 0;
+		if(soundManager != null){
+			Iterator <DMXLightingFixture> i = flowers.iterator();
+			while (i.hasNext()){
+				DMXLightingFixture flower = i.next();
+				soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, ID);
+			}
+		}
 	}
 
 	@Override

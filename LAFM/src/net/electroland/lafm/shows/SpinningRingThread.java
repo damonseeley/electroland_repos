@@ -1,5 +1,6 @@
 package net.electroland.lafm.shows;
 
+import java.util.Iterator;
 import java.util.List;
 
 import processing.core.PConstants;
@@ -51,6 +52,9 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		}
 		fadeIn = true;
 		fadeOut = false;
+		if(soundManager != null){
+			soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, ID);
+		}
 	}
 	
 	public SpinningRingThread(List <DMXLightingFixture> flowers,
@@ -83,6 +87,13 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		}
 		fadeIn = true;
 		fadeOut = false;
+		if(soundManager != null){
+			Iterator <DMXLightingFixture> i = flowers.iterator();
+			while (i.hasNext()){
+				DMXLightingFixture flower = i.next();
+				soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, ID);
+			}
+		}
 	}
 
 	@Override

@@ -509,7 +509,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					break;
 				case 2:
 					// sparkly chimes
-					newShow = new ChimesThread(fixtures, soundManager, 60, detectorMngr.getFps(), raster, "Chimes", ShowThread.HIGHEST, 6, 5, 0, 255, 255);
+					newShow = new ChimesThread(fixtures, soundManager, 60, detectorMngr.getFps(), raster, "Chimes", ShowThread.HIGHEST, 6, 5, 0, 255, 255, "test.wav");
 					break;
 				case 3:
 					// spinning ring (THIS CHAIN ONLY PLAYS ONE SHOW)

@@ -1,5 +1,6 @@
 package net.electroland.lafm.shows;
 
+import java.util.Iterator;
 import java.util.List;
 
 import processing.core.PConstants;
@@ -19,6 +20,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 	private int length = 1;
 	private int age = 0;
 	private int whitevalue = 0;
+	//private String soundFile;
 
 	public AdditivePropellerThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
@@ -34,12 +36,16 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		this.redRaster = redRaster;
 		this.greenRaster = greenRaster;
 		this.blueRaster = blueRaster;
+		//this.soundFile = soundFile;
 		red = 255;
 		green = 255;
 		blue = 255;
 		rotating = true;
 		speedUp = true;
 		slowDown = false;
+		if(soundManager != null){
+			soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, ID);
+		}
 	}
 	
 	public AdditivePropellerThread(List<DMXLightingFixture> flowers,
@@ -56,12 +62,20 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		this.redRaster = redRaster;
 		this.greenRaster = greenRaster;
 		this.blueRaster = blueRaster;
+		//this.soundFile = soundFile;
 		red = 255;
 		green = 255;
 		blue = 255;
 		rotating = true;
 		speedUp = true;
 		slowDown = false;
+		if(soundManager != null){
+			Iterator <DMXLightingFixture> i = flowers.iterator();
+			while (i.hasNext()){
+				DMXLightingFixture flower = i.next();
+				soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, ID);
+			}
+		}
 	}
 
 	@Override

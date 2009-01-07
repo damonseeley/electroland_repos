@@ -1,5 +1,6 @@
 package net.electroland.lafm.shows;
 
+import java.util.Iterator;
 import java.util.List;
 
 import processing.core.PConstants;
@@ -21,6 +22,9 @@ public class VegasThread extends ShowThread {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
+		if(soundManager != null){
+			soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, ID);
+		}
 	}
 	
 	public VegasThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
@@ -29,6 +33,13 @@ public class VegasThread extends ShowThread {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
+		if(soundManager != null){
+			Iterator <DMXLightingFixture> i = flowers.iterator();
+			while (i.hasNext()){
+				DMXLightingFixture flower = i.next();
+				soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, ID);
+			}
+		}
 	}
 
 	@Override

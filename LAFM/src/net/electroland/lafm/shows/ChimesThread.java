@@ -1,5 +1,6 @@
 package net.electroland.lafm.shows;
 
+import java.util.Iterator;
 import java.util.List;
 import processing.core.PConstants;
 import processing.core.PGraphics;
@@ -17,20 +18,48 @@ public class ChimesThread extends ShowThread {
 	private int hour;
 	private int brightness, alpha, fadeSpeed, chimeCount;
 	private float red, green, blue;
+	private String soundFile;
 	
 	public ChimesThread(List<DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, int hour,	int fadeSpeed,
-			int red, int green, int blue) {
+			int red, int green, int blue, String soundFile) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.hour = hour;
 		this.red = (red/255.0f);
 		this.green = (green/255.0f);
 		this.blue = (blue/255.0f);
 		this.fadeSpeed = fadeSpeed;
+		this.soundFile = soundFile;
 		brightness = 255;
 		alpha = 100;
 		chimeCount = 0;
+		if(soundManager != null){
+			Iterator <DMXLightingFixture> i = flowers.iterator();
+			while (i.hasNext()){
+				DMXLightingFixture flower = i.next();
+				soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, ID);
+			}
+		}
+	}
+	
+	public ChimesThread(DMXLightingFixture flower,
+			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
+			String ID, int showPriority, int hour,	int fadeSpeed,
+			int red, int green, int blue, String soundFile) {
+		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
+		this.hour = hour;
+		this.red = (red/255.0f);
+		this.green = (green/255.0f);
+		this.blue = (blue/255.0f);
+		this.fadeSpeed = fadeSpeed;
+		this.soundFile = soundFile;
+		brightness = 255;
+		alpha = 100;
+		chimeCount = 0;
+		if(soundManager != null){
+			soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, ID);
+		}
 	}
 
 	@Override

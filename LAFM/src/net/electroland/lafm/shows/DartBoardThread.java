@@ -1,5 +1,6 @@
 package net.electroland.lafm.shows;
 
+import java.util.Iterator;
 import java.util.List;
 
 import processing.core.PConstants;
@@ -34,6 +35,9 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 		val3 = val2 + offset;
 		speedUp = true;
 		slowDown = false;
+		if(soundManager != null){
+			soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, ID);
+		}
 	}
 	
 	public DartBoardThread(List<DMXLightingFixture> flowers,
@@ -51,6 +55,13 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 		val3 = val2 + offset;
 		speedUp = true;
 		slowDown = false;
+		if(soundManager != null){
+			Iterator <DMXLightingFixture> i = flowers.iterator();
+			while (i.hasNext()){
+				DMXLightingFixture flower = i.next();
+				soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, ID);
+			}
+		}
 	}
 
 	@Override

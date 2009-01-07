@@ -1,5 +1,6 @@
 package net.electroland.lafm.shows;
 
+import java.util.Iterator;
 import java.util.List;
 
 import processing.core.PConstants;
@@ -61,6 +62,9 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 		speedUp = true;
 		slowDown = false;
 		raster.colorMode(PConstants.RGB, 255, 255, 255);
+		if(soundManager != null){
+			soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, ID);
+		}
 	}
 	
 	public ThrobbingThread(List <DMXLightingFixture> flowers, SoundManager soundManager,
@@ -102,6 +106,13 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 		speedUp = true;
 		slowDown = false;
 		raster.colorMode(PConstants.RGB, 255, 255, 255);
+		if(soundManager != null){
+			Iterator <DMXLightingFixture> i = flowers.iterator();
+			while (i.hasNext()){
+				DMXLightingFixture flower = i.next();
+				soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, ID);
+			}
+		}
 	}
 
 	@Override

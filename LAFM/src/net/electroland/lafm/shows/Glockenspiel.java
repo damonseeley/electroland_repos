@@ -1,5 +1,6 @@
 package net.electroland.lafm.shows;
 
+import java.util.Iterator;
 import java.util.List;
 
 import processing.core.PConstants;
@@ -11,6 +12,20 @@ import net.electroland.lafm.core.SoundManager;
 public class Glockenspiel extends ShowThread {
 	
 	private int hour, minute, sec, fadeSpeed, brightness;
+	
+	public Glockenspiel(DMXLightingFixture flower,
+			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
+			String ID, int priority, int hour, int minute, int sec, int fadeSpeed, String soundFile) {
+		super(flower, soundManager, lifespan, fps, raster, ID, priority);
+		this.hour = hour;
+		this.minute = minute;
+		this.sec = sec;
+		this.fadeSpeed = fadeSpeed;
+		this.brightness = 255;
+		if(soundManager != null){
+			soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, "SolidColor");
+		}
+	}
 
 	public Glockenspiel(List <DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
@@ -21,6 +36,13 @@ public class Glockenspiel extends ShowThread {
 		this.sec = sec;
 		this.fadeSpeed = fadeSpeed;
 		this.brightness = 255;
+		if(soundManager != null){
+			Iterator <DMXLightingFixture> i = flowers.iterator();
+			while (i.hasNext()){
+				DMXLightingFixture flower = i.next();
+				soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, "SolidColor");
+			}
+		}
 	}
 
 	@Override

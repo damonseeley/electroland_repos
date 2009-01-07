@@ -33,6 +33,9 @@ public class FireworksThread extends ShowThread {
 		fireworks = new ConcurrentHashMap<Integer,Firework>();
 		fireworks.put(fireworkCount, new Firework(fireworkCount, spectrum.getColor((float)Math.random())));
 		fireworkCount++;
+		if(soundManager != null){
+			soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, "FireWorks");
+		}
 	}
 	
 	public FireworksThread(List<DMXLightingFixture> flowers,
@@ -47,6 +50,13 @@ public class FireworksThread extends ShowThread {
 		fireworks = new ConcurrentHashMap<Integer,Firework>();
 		fireworks.put(fireworkCount, new Firework(fireworkCount, spectrum.getColor((float)Math.random())));
 		fireworkCount++;
+		if(soundManager != null){
+			Iterator <DMXLightingFixture> i = flowers.iterator();
+			while (i.hasNext()){
+				DMXLightingFixture flower = i.next();
+				soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, "FireWorks");
+			}
+		}
 	}
 
 	@Override

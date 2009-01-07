@@ -1,11 +1,11 @@
 package net.electroland.lafm.shows;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import net.electroland.detector.DMXLightingFixture;
-import net.electroland.lafm.core.ImageSequenceCache;
 import net.electroland.lafm.core.SensorListener;
 import net.electroland.lafm.core.ShowThread;
 import net.electroland.lafm.core.SoundManager;
@@ -33,18 +33,28 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 			logger.error("WARNING: IMAGE SEQUENCE WAS A NULL POINTER");
 		}
 		this.resize = resize;
+		if(soundManager != null){
+			soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, ID);
+		}
 	}
 
-	public ImageSequenceThread(List <DMXLightingFixture> flower,
+	public ImageSequenceThread(List <DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int priority, PImage[] sequence, boolean resize, String soundFile) {
-		super(flower, soundManager, lifespan, fps, raster, ID, priority);
+		super(flowers, soundManager, lifespan, fps, raster, ID, priority);
 		if (sequence != null){			
 			this.sequence = sequence;
 		}else{
 			logger.error("WARNING: IMAGE SEQUENCE WAS A NULL POINTER");
 		}
 		this.resize = resize;
+		if(soundManager != null){
+			Iterator <DMXLightingFixture> i = flowers.iterator();
+			while (i.hasNext()){
+				DMXLightingFixture flower = i.next();
+				soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, ID);
+			}
+		}
 	}
 
 	public void disableTint(){
