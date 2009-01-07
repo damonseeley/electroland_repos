@@ -25,7 +25,7 @@ public class SparkleSpiralThread extends ShowThread implements SensorListener{
 	public SparkleSpiralThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float sparkleSpeed,
-			float spiralSpeed, boolean interactive) {
+			float spiralSpeed, boolean interactive, String soundFile) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.sparkleSpeed = sparkleSpeed;
@@ -38,7 +38,7 @@ public class SparkleSpiralThread extends ShowThread implements SensorListener{
 	public SparkleSpiralThread(List<DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float sparkleSpeed,
-			float spiralSpeed, boolean interactive) {
+			float spiralSpeed, boolean interactive, String soundFile) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.sparkleSpeed = sparkleSpeed;

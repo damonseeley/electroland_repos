@@ -26,7 +26,7 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 			String ID, int showPriority, int red, int green, int blue,
 			float outerSpeed, float innerSpeed, float coreSpeed, float fadeSpeed,
 			float acceleration, float deceleration, PImage outerRing, PImage innerRing,
-			boolean startFast) {
+			boolean startFast, String soundFile) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
 		this.green = green;
@@ -58,7 +58,7 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 			String ID, int showPriority, int red, int green, int blue,
 			float outerSpeed, float innerSpeed, float coreSpeed, float fadeSpeed,
 			float acceleration, float deceleration, PImage outerRing, PImage innerRing,
-			boolean startFast) {
+			boolean startFast, String soundFile) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
 		this.green = green;

@@ -24,7 +24,7 @@ public class FireworksThread extends ShowThread {
 	public FireworksThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float speed,
-			float frequency, PImage texture) {
+			float frequency, PImage texture, String soundFile) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
@@ -38,7 +38,7 @@ public class FireworksThread extends ShowThread {
 	public FireworksThread(List<DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float speed,
-			float frequency, PImage texture) {
+			float frequency, PImage texture, String soundFile) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;

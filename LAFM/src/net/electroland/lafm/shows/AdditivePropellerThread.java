@@ -24,7 +24,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, float rotationSpeed, int fadeSpeed,
 			float acceleration, float deceleration, PGraphics redRaster,
-			PGraphics greenRaster, PGraphics blueRaster) {
+			PGraphics greenRaster, PGraphics blueRaster, String soundFile) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.rotation = 0;
 		this.rotSpeed = rotationSpeed;
@@ -46,7 +46,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, float rotationSpeed, int fadeSpeed,
 			float acceleration, float deceleration, PGraphics redRaster,
-			PGraphics greenRaster, PGraphics blueRaster) {
+			PGraphics greenRaster, PGraphics blueRaster, String soundFile) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.rotation = 0;
 		this.rotSpeed = rotationSpeed;

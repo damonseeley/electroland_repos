@@ -19,7 +19,7 @@ public class PieThread extends ShowThread {
 
 	public PieThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
-			int red, int green, int blue, PImage texture) {
+			int red, int green, int blue, PImage texture, String soundFile) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
 		this.green = green;
@@ -32,7 +32,7 @@ public class PieThread extends ShowThread {
 	
 	public PieThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
-			int red, int green, int blue, PImage texture) {
+			int red, int green, int blue, PImage texture, String soundFile) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
 		this.green = green;

@@ -14,7 +14,7 @@ public class Glockenspiel extends ShowThread {
 
 	public Glockenspiel(List <DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
-			String ID, int priority, int hour, int minute, int sec, int fadeSpeed) {
+			String ID, int priority, int hour, int minute, int sec, int fadeSpeed, String soundFile) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, priority);
 		this.hour = hour;
 		this.minute = minute;

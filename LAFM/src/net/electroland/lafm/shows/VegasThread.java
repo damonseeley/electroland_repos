@@ -17,7 +17,7 @@ public class VegasThread extends ShowThread {
 
 	public VegasThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
-			ColorScheme spectrum, float speed) {
+			ColorScheme spectrum, float speed, String soundFile) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
@@ -25,7 +25,7 @@ public class VegasThread extends ShowThread {
 	
 	public VegasThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
-			ColorScheme spectrum, float speed) {
+			ColorScheme spectrum, float speed, String soundFile) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;

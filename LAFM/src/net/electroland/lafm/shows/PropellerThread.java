@@ -19,7 +19,7 @@ public class PropellerThread extends ShowThread implements SensorListener{
 	public PropellerThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
 			int red, int green, int blue, float rotationSpeed, int fadeSpeed,
-			float acceleration, float deceleration) {
+			float acceleration, float deceleration, String soundFile) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
 		this.green = green;
@@ -39,7 +39,7 @@ public class PropellerThread extends ShowThread implements SensorListener{
 	public PropellerThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
 			int red, int green, int blue, float rotationSpeed, int fadeSpeed,
-			float acceleration, float deceleration) {
+			float acceleration, float deceleration, String soundFile) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
 		this.green = green;

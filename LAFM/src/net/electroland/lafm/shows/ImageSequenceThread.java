@@ -24,7 +24,8 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 	private int hue, brightness;
 	
 	public ImageSequenceThread(DMXLightingFixture flower,
-			SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID, int priority, PImage[] sequence, boolean resize) {
+			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
+			String ID, int priority, PImage[] sequence, boolean resize, String soundFile) {
 		super(flower, soundManager, lifespan, fps, raster, ID, priority);
 		if (sequence != null){			
 			this.sequence = sequence;
@@ -35,7 +36,8 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 	}
 
 	public ImageSequenceThread(List <DMXLightingFixture> flower,
-			SoundManager soundManager, int lifespan, int fps, PGraphics raster, String ID, int priority, PImage[] sequence, boolean resize) {
+			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
+			String ID, int priority, PImage[] sequence, boolean resize, String soundFile) {
 		super(flower, soundManager, lifespan, fps, raster, ID, priority);
 		if (sequence != null){			
 			this.sequence = sequence;

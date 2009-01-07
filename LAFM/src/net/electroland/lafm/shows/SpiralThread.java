@@ -20,7 +20,7 @@ public class SpiralThread extends ShowThread {
 	public SpiralThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
 			int red, int green, int blue,  float rotationSpeed, int fadeSpeed,
-			float spiralTightness, int spriteWidth, PImage texture) {
+			float spiralTightness, int spriteWidth, PImage texture, String soundFile) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
 		this.green = green;
@@ -37,7 +37,7 @@ public class SpiralThread extends ShowThread {
 	public SpiralThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
 			int red, int green, int blue,  float rotationSpeed, int fadeSpeed,
-			float spiralTightness, int spriteWidth, PImage texture) {
+			float spiralTightness, int spriteWidth, PImage texture, String soundFile) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
 		this.green = green;

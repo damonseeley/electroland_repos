@@ -22,7 +22,7 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 	public DartBoardThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float speed,
-			float offset, float acceleration, float deceleration) {
+			float offset, float acceleration, float deceleration, String soundFile) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
@@ -39,7 +39,7 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 	public DartBoardThread(List<DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float speed,
-			float offset, float acceleration, float deceleration) {
+			float offset, float acceleration, float deceleration, String soundFile) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
