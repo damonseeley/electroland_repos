@@ -1,6 +1,8 @@
 package net.electroland.lafm.shows;
 
 import java.util.List;
+import java.util.Properties;
+
 import processing.core.PConstants;
 import processing.core.PGraphics;
 import net.electroland.detector.DMXLightingFixture;
@@ -15,15 +17,16 @@ public class ChimesThread extends ShowThread {
 	 */
 
 	private int hour;
-	private int brightness, alpha, fadeSpeed, chimeCount;
+	private int brightness, alpha, fadeSpeed;
 	private float red, green, blue;
 	private boolean startSound;
 	private String soundFile;
+	private Properties physicalProps;
 	
 	public ChimesThread(List<DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, int hour,	int fadeSpeed,
-			int red, int green, int blue, String soundFile) {
+			int red, int green, int blue, String soundFile, Properties physicalProps) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.hour = hour;
 		this.red = (red/255.0f);
@@ -32,15 +35,15 @@ public class ChimesThread extends ShowThread {
 		this.fadeSpeed = fadeSpeed;
 		brightness = 255;
 		alpha = 100;
-		chimeCount = 0;
 		this.soundFile = soundFile;
 		startSound = true;
+		this.physicalProps = physicalProps;
 	}
 	
 	public ChimesThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, int hour,	int fadeSpeed,
-			int red, int green, int blue, String soundFile) {
+			int red, int green, int blue, String soundFile, Properties physicalProps) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.hour = hour;
 		this.red = (red/255.0f);
@@ -49,9 +52,9 @@ public class ChimesThread extends ShowThread {
 		this.fadeSpeed = fadeSpeed;
 		brightness = 255;
 		alpha = 100;
-		chimeCount = 0;
 		this.soundFile = soundFile;
 		startSound = true;
+		this.physicalProps = physicalProps;
 	}
 
 	@Override
@@ -65,7 +68,7 @@ public class ChimesThread extends ShowThread {
 	public void doWork(PGraphics raster) {
 		
 		if(startSound){
-			super.playSound(soundFile);
+			super.playSound(soundFile, physicalProps);
 			startSound = false;
 		}
 		
@@ -86,12 +89,7 @@ public class ChimesThread extends ShowThread {
 			if(brightness > 0){				// fade out
 				brightness -= fadeSpeed;
 			} else {
-				alpha = 100;
-				brightness = 255;
-				chimeCount++;	
-				if(chimeCount == hour){	
-					cleanStop();
-				}
+				cleanStop();
 			}
 		}		
 	}

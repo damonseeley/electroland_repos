@@ -1,6 +1,7 @@
 package net.electroland.lafm.shows;
 
 import java.util.List;
+import java.util.Properties;
 
 import processing.core.PConstants;
 import processing.core.PGraphics;
@@ -21,10 +22,11 @@ public class VegasThread extends ShowThread implements SensorListener{
 	private boolean startSound, fadeOut;
 	private String soundFile;
 	private int duration;	// counting frames before fading out
+	private Properties physicalProps;
 
 	public VegasThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
-			ColorScheme spectrum, float speed, String soundFile) {
+			ColorScheme spectrum, float speed, String soundFile, Properties physicalProps) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
@@ -32,11 +34,12 @@ public class VegasThread extends ShowThread implements SensorListener{
 		startSound = true;
 		fadeOut = false;
 		duration = (lifespan*fps) - (100/fadeSpeed);
+		this.physicalProps = physicalProps;
 	}
 	
 	public VegasThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
-			ColorScheme spectrum, float speed, String soundFile) {
+			ColorScheme spectrum, float speed, String soundFile, Properties physicalProps) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
@@ -44,6 +47,7 @@ public class VegasThread extends ShowThread implements SensorListener{
 		startSound = true;
 		fadeOut = false;
 		duration = (lifespan*fps) - (100/fadeSpeed);
+		this.physicalProps = physicalProps;
 	}
 
 	@Override
@@ -57,7 +61,7 @@ public class VegasThread extends ShowThread implements SensorListener{
 	public void doWork(PGraphics raster) {
 		
 		if(startSound){
-			super.playSound(soundFile);
+			super.playSound(soundFile, physicalProps);
 			startSound = false;
 		}
 		

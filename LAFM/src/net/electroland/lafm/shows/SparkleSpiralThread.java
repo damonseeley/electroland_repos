@@ -1,6 +1,7 @@
 package net.electroland.lafm.shows;
 
 import java.util.List;
+import java.util.Properties;
 
 import processing.core.PConstants;
 import processing.core.PGraphics;
@@ -23,11 +24,12 @@ public class SparkleSpiralThread extends ShowThread implements SensorListener{
 	boolean fadeIn, fadeOut, interactive;
 	private boolean startSound;
 	private String soundFile;
+	private Properties physicalProps;
 	
 	public SparkleSpiralThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float sparkleSpeed,
-			float spiralSpeed, boolean interactive, String soundFile) {
+			float spiralSpeed, boolean interactive, String soundFile, Properties physicalProps) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.sparkleSpeed = sparkleSpeed;
@@ -37,12 +39,13 @@ public class SparkleSpiralThread extends ShowThread implements SensorListener{
 		fadeOut = false;
 		this.soundFile = soundFile;
 		startSound = true;
+		this.physicalProps = physicalProps;
 	}
 
 	public SparkleSpiralThread(List<DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float sparkleSpeed,
-			float spiralSpeed, boolean interactive, String soundFile) {
+			float spiralSpeed, boolean interactive, String soundFile, Properties physicalProps) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.sparkleSpeed = sparkleSpeed;
@@ -52,6 +55,7 @@ public class SparkleSpiralThread extends ShowThread implements SensorListener{
 		fadeOut = false;
 		this.soundFile = soundFile;
 		startSound = true;
+		this.physicalProps = physicalProps;
 	}
 
 	@Override
@@ -65,7 +69,7 @@ public class SparkleSpiralThread extends ShowThread implements SensorListener{
 	public void doWork(PGraphics raster) {
 		
 		if(startSound){
-			super.playSound(soundFile);
+			super.playSound(soundFile, physicalProps);
 			startSound = false;
 		}
 		

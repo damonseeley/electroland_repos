@@ -1,6 +1,7 @@
 package net.electroland.lafm.shows;
 
 import java.util.List;
+import java.util.Properties;
 
 import processing.core.PConstants;
 import processing.core.PGraphics;
@@ -22,13 +23,14 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 	private int alpha = 100;
 	private boolean startSound;
 	private String soundFile;
+	private Properties physicalProps;
 
 	public SpinningRingThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, int red, int green, int blue,
 			float outerSpeed, float innerSpeed, float coreSpeed, float fadeSpeed,
 			float acceleration, float deceleration, PImage outerRing, PImage innerRing,
-			boolean startFast, String soundFile) {
+			boolean startFast, String soundFile, Properties physicalProps) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
 		this.green = green;
@@ -55,6 +57,7 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		fadeOut = false;
 		this.soundFile = soundFile;
 		startSound = true;
+		this.physicalProps = physicalProps;
 	}
 	
 	public SpinningRingThread(List <DMXLightingFixture> flowers,
@@ -62,7 +65,7 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 			String ID, int showPriority, int red, int green, int blue,
 			float outerSpeed, float innerSpeed, float coreSpeed, float fadeSpeed,
 			float acceleration, float deceleration, PImage outerRing, PImage innerRing,
-			boolean startFast, String soundFile) {
+			boolean startFast, String soundFile, Properties physicalProps) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
 		this.green = green;
@@ -89,6 +92,7 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		fadeOut = false;
 		this.soundFile = soundFile;
 		startSound = true;
+		this.physicalProps = physicalProps;
 	}
 
 	@Override
@@ -102,7 +106,7 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 	public void doWork(PGraphics raster) {
 		
 		if(startSound){
-			super.playSound(soundFile);
+			super.playSound(soundFile, physicalProps);
 			startSound = false;
 		}
 		

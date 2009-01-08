@@ -1,6 +1,7 @@
 package net.electroland.lafm.shows;
 
 import java.util.List;
+import java.util.Properties;
 
 import processing.core.PConstants;
 import processing.core.PGraphics;
@@ -13,19 +14,21 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 	
 	private int red, green, blue;
 	private float rotation, rotSpeed, acceleration, deceleration;
-	private int fadeSpeed, topSpeed;;
+	private int fadeSpeed, topSpeed;
 	private boolean speedUp, slowDown, rotating;
 	private PGraphics redRaster, greenRaster, blueRaster;
 	private int age = 0;
 	private int whitevalue = 0;
 	private boolean startSound;
 	private String soundFile;
+	private Properties physicalProps;
 
 	public AdditivePropellerThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, float rotationSpeed, int fadeSpeed,
 			float acceleration, float deceleration, PGraphics redRaster,
-			PGraphics greenRaster, PGraphics blueRaster, String soundFile) {
+			PGraphics greenRaster, PGraphics blueRaster, String soundFile,
+			Properties physicalProps) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.rotation = 0;
 		this.rotSpeed = rotationSpeed;
@@ -44,13 +47,15 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		this.soundFile = soundFile;
 		startSound = true;
 		topSpeed = 60;
+		this.physicalProps = physicalProps;
 	}
 	
 	public AdditivePropellerThread(List<DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, float rotationSpeed, int fadeSpeed,
 			float acceleration, float deceleration, PGraphics redRaster,
-			PGraphics greenRaster, PGraphics blueRaster, String soundFile) {
+			PGraphics greenRaster, PGraphics blueRaster, String soundFile,
+			Properties physicalProps) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.rotation = 0;
 		this.rotSpeed = rotationSpeed;
@@ -69,6 +74,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		this.soundFile = soundFile;
 		startSound = true;
 		topSpeed = 60;
+		this.physicalProps = physicalProps;
 	}
 
 	@Override
@@ -82,7 +88,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 	public void doWork(PGraphics raster) {
 		
 		if(startSound){
-			super.playSound(soundFile);
+			super.playSound(soundFile, physicalProps);
 			startSound = false;
 		}
 		

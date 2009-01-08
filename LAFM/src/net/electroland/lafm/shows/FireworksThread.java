@@ -2,6 +2,7 @@ package net.electroland.lafm.shows;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 import processing.core.PConstants;
@@ -22,11 +23,12 @@ public class FireworksThread extends ShowThread {
 	float fadeSpeed = 10;
 	private boolean startSound;
 	private String soundFile;
+	private Properties physicalProps;
 
 	public FireworksThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float speed,
-			float frequency, PImage texture, String soundFile) {
+			float frequency, PImage texture, String soundFile, Properties physicalProps) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
@@ -37,12 +39,13 @@ public class FireworksThread extends ShowThread {
 		fireworkCount++;
 		this.soundFile = soundFile;
 		startSound = true;
+		this.physicalProps = physicalProps;
 	}
 	
 	public FireworksThread(List<DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float speed,
-			float frequency, PImage texture, String soundFile) {
+			float frequency, PImage texture, String soundFile, Properties physicalProps) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
@@ -53,6 +56,7 @@ public class FireworksThread extends ShowThread {
 		fireworkCount++;
 		this.soundFile = soundFile;
 		startSound = true;
+		this.physicalProps = physicalProps;
 	}
 
 	@Override
@@ -66,7 +70,7 @@ public class FireworksThread extends ShowThread {
 	public void doWork(PGraphics raster) {
 		
 		if(startSound){
-			super.playSound(soundFile);
+			super.playSound(soundFile, physicalProps);
 			startSound = false;
 		}
 		

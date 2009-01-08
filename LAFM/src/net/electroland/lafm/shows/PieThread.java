@@ -1,6 +1,7 @@
 package net.electroland.lafm.shows;
 
 import java.util.List;
+import java.util.Properties;
 
 import processing.core.PConstants;
 import processing.core.PGraphics;
@@ -17,10 +18,12 @@ public class PieThread extends ShowThread {
 	private PImage texture;
 	private boolean startSound;
 	private String soundFile;
+	private Properties physicalProps;
 
 	public PieThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
-			int red, int green, int blue, PImage texture, String soundFile) {
+			int red, int green, int blue, PImage texture, String soundFile,
+			Properties physicalProps) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
 		this.green = green;
@@ -30,11 +33,13 @@ public class PieThread extends ShowThread {
 		this.texture = texture;
 		this.soundFile = soundFile;
 		startSound = true;
+		this.physicalProps = physicalProps;
 	}
 	
 	public PieThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
-			int red, int green, int blue, PImage texture, String soundFile) {
+			int red, int green, int blue, PImage texture, String soundFile,
+			Properties physicalProps) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
 		this.green = green;
@@ -44,6 +49,7 @@ public class PieThread extends ShowThread {
 		this.texture = texture;
 		this.soundFile = soundFile;
 		startSound = true;
+		this.physicalProps = physicalProps;
 	}
 
 	@Override
@@ -57,7 +63,7 @@ public class PieThread extends ShowThread {
 	public void doWork(PGraphics raster) {
 		
 		if(startSound){
-			super.playSound(soundFile);
+			super.playSound(soundFile, physicalProps);
 			startSound = false;
 		}
 		

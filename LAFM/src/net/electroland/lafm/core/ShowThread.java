@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
@@ -93,7 +94,7 @@ public abstract class ShowThread extends Thread {
 	 */
 	abstract public void doWork(PGraphics raster);
 	
-	final public void playSound(String soundFile){
+	final public void playSound(String soundFile, Properties physicalProps){
 		boolean[] channelsInUse = new boolean[6];		// null array of sound channels
 		for(int n=0; n<channelsInUse.length; n++){
 			channelsInUse[n] = false;
@@ -102,7 +103,8 @@ public abstract class ShowThread extends Thread {
 			Iterator <DMXLightingFixture> i = getFlowers().iterator();
 			while (i.hasNext()){
 				DMXLightingFixture flower = i.next();
-				channelsInUse[flower.getSoundChannel()-1] = true;
+				channelsInUse[Integer.parseInt(physicalProps.getProperty(flower.getID()).split(",")[1])-1] = true;
+				//channelsInUse[flower.getSoundChannel()-1] = true;	// this needs to be removed from fixture
 			}
 			for(int n=0; n<channelsInUse.length; n++){
 				if(channelsInUse[n] != false){

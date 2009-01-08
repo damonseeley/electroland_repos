@@ -1,6 +1,8 @@
 package net.electroland.lafm.shows;
 
 import java.util.List;
+import java.util.Properties;
+
 import processing.core.PConstants;
 import processing.core.PGraphics;
 import net.electroland.detector.DMXLightingFixture;
@@ -17,11 +19,12 @@ public class PropellerThread extends ShowThread implements SensorListener{
 	private boolean speedUp, slowDown;
 	private boolean startSound;
 	private String soundFile;
+	private Properties physicalProps;
 	
 	public PropellerThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
 			int red, int green, int blue, float rotationSpeed, int fadeSpeed,
-			float acceleration, float deceleration, String soundFile) {
+			float acceleration, float deceleration, String soundFile, Properties physicalProps) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
 		this.green = green;
@@ -39,12 +42,13 @@ public class PropellerThread extends ShowThread implements SensorListener{
 		this.soundFile = soundFile;
 		startSound = true;
 		topSpeed = 60;
+		this.physicalProps = physicalProps;
 	}
 	
 	public PropellerThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
 			int red, int green, int blue, float rotationSpeed, int fadeSpeed,
-			float acceleration, float deceleration, String soundFile) {
+			float acceleration, float deceleration, String soundFile, Properties physicalProps) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
 		this.green = green;
@@ -62,6 +66,7 @@ public class PropellerThread extends ShowThread implements SensorListener{
 		this.soundFile = soundFile;
 		startSound = true;
 		topSpeed = 60;
+		this.physicalProps = physicalProps;
 	}
 
 	@Override
@@ -75,7 +80,7 @@ public class PropellerThread extends ShowThread implements SensorListener{
 	public void doWork(PGraphics raster) {
 		
 		if(startSound){
-			super.playSound(soundFile);
+			super.playSound(soundFile, physicalProps);
 			startSound = false;
 		}
 		

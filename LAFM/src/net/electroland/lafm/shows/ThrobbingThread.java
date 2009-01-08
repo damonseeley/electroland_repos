@@ -1,6 +1,7 @@
 package net.electroland.lafm.shows;
 
 import java.util.List;
+import java.util.Properties;
 
 import processing.core.PConstants;
 import processing.core.PGraphics;
@@ -23,11 +24,13 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 	private int state;									// 0 = fade in, 1 = hold on, 2 = fade out, 3 = hold off
 	private boolean startSound;
 	private String soundFile;
+	private Properties physicalProps;
 
 	public ThrobbingThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int priority,
 			int red, int green, int blue, int fadein, int fadeout, int holdon,
-			int holdoff, int acceleration, int deceleration, boolean echo, String soundFile) {
+			int holdoff, int acceleration, int deceleration, boolean echo,
+			String soundFile, Properties physicalProps) {
 		super(flower, soundManager, lifespan, fps, raster, ID, priority);
 		this.red = (float)(red/255.0);
 		this.green = (float)(green/255.0);
@@ -65,12 +68,14 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 		raster.colorMode(PConstants.RGB, 255, 255, 255);
 		this.soundFile = soundFile;
 		startSound = true;
+		this.physicalProps = physicalProps;
 	}
 	
 	public ThrobbingThread(List <DMXLightingFixture> flowers, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int priority,
 			int red, int green, int blue, int fadein, int fadeout, int holdon,
-			int holdoff, int acceleration, int deceleration, boolean echo, String soundFile) {
+			int holdoff, int acceleration, int deceleration, boolean echo,
+			String soundFile, Properties physicalProps) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, priority);
 		this.red = (float)(red/255.0);
 		this.green = (float)(green/255.0);
@@ -108,6 +113,7 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 		raster.colorMode(PConstants.RGB, 255, 255, 255);
 		this.soundFile = soundFile;
 		startSound = true;
+		this.physicalProps = physicalProps;
 	}
 
 	@Override
@@ -122,7 +128,7 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 		//System.out.println(this.brightness);
 		
 		if(startSound){
-			super.playSound(soundFile);
+			super.playSound(soundFile, physicalProps);
 			startSound = false;
 		}
 		

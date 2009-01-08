@@ -1,6 +1,7 @@
 package net.electroland.lafm.shows;
 
 import java.util.List;
+import java.util.Properties;
 
 import processing.core.PConstants;
 import processing.core.PGraphics;
@@ -20,11 +21,14 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 	boolean speedUp, slowDown;
 	private boolean startSound;
 	private String soundFile;
+	private Properties physicalProps;
+	private float topSpeed;
 
 	public DartBoardThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float speed,
-			float offset, float acceleration, float deceleration, String soundFile) {
+			float offset, float acceleration, float deceleration, String soundFile,
+			Properties physicalProps) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
@@ -38,12 +42,15 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 		slowDown = false;
 		this.soundFile = soundFile;
 		startSound = true;
+		this.physicalProps = physicalProps;
+		topSpeed = 0.5f;
 	}
 	
 	public DartBoardThread(List<DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float speed,
-			float offset, float acceleration, float deceleration, String soundFile) {
+			float offset, float acceleration, float deceleration, String soundFile,
+			Properties physicalProps) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
@@ -57,6 +64,8 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 		slowDown = false;
 		this.soundFile = soundFile;
 		startSound = true;
+		this.physicalProps = physicalProps;
+		topSpeed = 0.5f;
 	}
 
 	@Override
@@ -70,7 +79,7 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 	public void doWork(PGraphics raster) {
 		
 		if(startSound){
-			super.playSound(soundFile);
+			super.playSound(soundFile, physicalProps);
 			startSound = false;
 		}
 		
@@ -109,7 +118,9 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 		}
 		
 		if(speedUp){
-			speed += acceleration;
+			if(speed < topSpeed){
+				speed += acceleration;
+			}
 		} else if(slowDown){
 			if(speed > 0){
 				speed -= deceleration;

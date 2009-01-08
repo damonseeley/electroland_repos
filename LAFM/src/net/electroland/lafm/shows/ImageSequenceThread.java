@@ -1,6 +1,7 @@
 package net.electroland.lafm.shows;
 
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
@@ -23,10 +24,12 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 	private int hue, brightness;
 	private boolean startSound;
 	private String soundFile;
+	private Properties physicalProps;
 	
 	public ImageSequenceThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
-			String ID, int priority, PImage[] sequence, boolean resize, String soundFile) {
+			String ID, int priority, PImage[] sequence, boolean resize, String soundFile,
+			Properties physicalProps) {
 		super(flower, soundManager, lifespan, fps, raster, ID, priority);
 		if (sequence != null){			
 			this.sequence = sequence;
@@ -36,11 +39,13 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 		this.resize = resize;
 		this.soundFile = soundFile;
 		startSound = true;
+		this.physicalProps = physicalProps;
 	}
 
 	public ImageSequenceThread(List <DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
-			String ID, int priority, PImage[] sequence, boolean resize, String soundFile) {
+			String ID, int priority, PImage[] sequence, boolean resize, String soundFile,
+			Properties physicalProps) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, priority);
 		if (sequence != null){			
 			this.sequence = sequence;
@@ -50,6 +55,7 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 		this.resize = resize;
 		this.soundFile = soundFile;
 		startSound = true;
+		this.physicalProps = physicalProps;
 	}
 
 	public void disableTint(){
@@ -74,7 +80,7 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 	public void doWork(PGraphics raster) {
 		
 		if(startSound){
-			super.playSound(soundFile);
+			super.playSound(soundFile, physicalProps);
 			startSound = false;
 		}
 
