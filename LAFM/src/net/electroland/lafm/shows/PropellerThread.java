@@ -1,6 +1,5 @@
 package net.electroland.lafm.shows;
 
-import java.util.Iterator;
 import java.util.List;
 import processing.core.PConstants;
 import processing.core.PGraphics;
@@ -14,7 +13,7 @@ public class PropellerThread extends ShowThread implements SensorListener{
 	private int red, green, blue;
 	private int originalred, originalgreen, originalblue;
 	private float rotation, rotSpeed, acceleration, deceleration;
-	private int fadeSpeed;
+	private int fadeSpeed, topSpeed;
 	private boolean speedUp, slowDown;
 	private boolean startSound;
 	private String soundFile;
@@ -39,6 +38,7 @@ public class PropellerThread extends ShowThread implements SensorListener{
 		slowDown = false;
 		this.soundFile = soundFile;
 		startSound = true;
+		topSpeed = 60;
 	}
 	
 	public PropellerThread(DMXLightingFixture flower, SoundManager soundManager,
@@ -61,6 +61,7 @@ public class PropellerThread extends ShowThread implements SensorListener{
 		slowDown = false;
 		this.soundFile = soundFile;
 		startSound = true;
+		topSpeed = 60;
 	}
 
 	@Override
@@ -89,7 +90,9 @@ public class PropellerThread extends ShowThread implements SensorListener{
 		raster.fill(red, green, blue);
 		raster.rect(0,0,300,40);
 		raster.endDraw();
-		rotation += rotSpeed;
+		if(rotation < topSpeed){
+			rotation += rotSpeed;
+		}
 		if(speedUp){
 			rotSpeed += acceleration;
 		} else if(slowDown){

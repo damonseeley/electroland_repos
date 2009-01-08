@@ -55,6 +55,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	public WeatherChecker weatherChecker;
 	public Properties sensors;					// pitch to fixture mappings
 	public Properties systemProps;
+	public Properties physicalProps;
 	public TimedEvent[] clockEvents;
 	private ImageSequenceCache imageCache; 	// for ImageSequenceThreads
 	public String[] sensorShows, timedShows;	// list of names of sensor-triggered shows
@@ -78,6 +79,15 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		try{
 			systemProps = new Properties();
 			systemProps.load(new FileInputStream(new File("depends//system.properties")));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		try{
+			physicalProps = new Properties();
+			physicalProps.load(new FileInputStream(new File("depends/physical.properties")));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -585,7 +595,12 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						Iterator <DMXLightingFixture> iter = fixtures.iterator();
 						while (iter.hasNext()){
 							DMXLightingFixture fixture = iter.next();
+							/*
 							if(fixture.getColor().equals(physicalColors[i])){
+								monoFixtures.add(fixture);
+							}
+							*/
+							if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals(physicalColors[i])){
 								monoFixtures.add(fixture);
 							}
 						}

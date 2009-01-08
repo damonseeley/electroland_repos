@@ -1,6 +1,5 @@
 package net.electroland.lafm.shows;
 
-import java.util.Iterator;
 import java.util.List;
 
 import processing.core.PConstants;
@@ -14,10 +13,9 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 	
 	private int red, green, blue;
 	private float rotation, rotSpeed, acceleration, deceleration;
-	private int fadeSpeed;
+	private int fadeSpeed, topSpeed;;
 	private boolean speedUp, slowDown, rotating;
 	private PGraphics redRaster, greenRaster, blueRaster;
-	private int length = 1;
 	private int age = 0;
 	private int whitevalue = 0;
 	private boolean startSound;
@@ -45,11 +43,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		slowDown = false;
 		this.soundFile = soundFile;
 		startSound = true;
-		/*
-		if(soundManager != null){
-			soundManager.playSimpleSound(soundFile, flower.getSoundChannel(), 1.0f, ID);
-		}
-		*/
+		topSpeed = 60;
 	}
 	
 	public AdditivePropellerThread(List<DMXLightingFixture> flowers,
@@ -74,6 +68,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		slowDown = false;
 		this.soundFile = soundFile;
 		startSound = true;
+		topSpeed = 60;
 	}
 
 	@Override
@@ -91,22 +86,6 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 			startSound = false;
 		}
 		
-		/*
-		// doesn't rotate until propellers are fully extended
-		if(length < 128){
-			length += 3;
-		} else if(length >= 128 && !rotating){
-			length = 128;
-			rotating = true;
-		}
-		*/
-		
-		if(length < 128){
-			length += 5;
-		} else if(length >= 128){
-			length = 128;
-		}
-		
 		redRaster.colorMode(PConstants.RGB, 255, 255, 255, 100);
 		redRaster.beginDraw();
 		redRaster.noStroke();
@@ -115,7 +94,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		redRaster.translate(128,128);
 		redRaster.rotate((float)(rotation * Math.PI/180));
 		redRaster.fill(red,0,0);
-		redRaster.rect(0,-10,length,20);
+		redRaster.rect(0,-10,128,20);
 		redRaster.endDraw();
 		
 		greenRaster.colorMode(PConstants.RGB, 255, 255, 255, 100);
@@ -126,7 +105,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		greenRaster.translate(128,128);
 		greenRaster.rotate((float)((rotation+120) * Math.PI/180));
 		greenRaster.fill(0,green,0);
-		greenRaster.rect(0,-10,length,20);
+		greenRaster.rect(0,-10,128,20);
 		greenRaster.endDraw();
 		
 		blueRaster.colorMode(PConstants.RGB, 255, 255, 255, 100);
@@ -137,7 +116,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		blueRaster.translate(128,128);
 		blueRaster.rotate((float)((rotation+240) * Math.PI/180));
 		blueRaster.fill(0,0,blue);
-		blueRaster.rect(0,-10,length,20);
+		blueRaster.rect(0,-10,128,20);
 		blueRaster.endDraw();
 		
 		raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
@@ -152,7 +131,9 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		raster.endDraw();
 		
 		if(rotating){
-			rotation += rotSpeed;
+			if(rotation < topSpeed){
+				rotation += rotSpeed;
+			}
 			if(speedUp){
 				rotSpeed += acceleration;
 				if(age > 90){

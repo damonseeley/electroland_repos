@@ -1,6 +1,5 @@
 package net.electroland.lafm.shows;
 
-import java.util.Iterator;
 import java.util.List;
 
 import processing.core.PConstants;

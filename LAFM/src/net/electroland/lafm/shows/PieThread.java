@@ -1,6 +1,5 @@
 package net.electroland.lafm.shows;
 
-import java.util.Iterator;
 import java.util.List;
 
 import processing.core.PConstants;
@@ -16,7 +15,6 @@ public class PieThread extends ShowThread {
 	private int rotation;
 	private float rotSpeed;
 	private PImage texture;
-	private int cycles;
 	private boolean startSound;
 	private String soundFile;
 
@@ -30,7 +28,6 @@ public class PieThread extends ShowThread {
 		this.rotation = 0;
 		this.rotSpeed = 360 / (int)(lifespan*fps);
 		this.texture = texture;
-		cycles = 0;
 		this.soundFile = soundFile;
 		startSound = true;
 	}
@@ -45,7 +42,6 @@ public class PieThread extends ShowThread {
 		this.rotation = 0;
 		this.rotSpeed = 360 / (lifespan*fps);
 		this.texture = texture;
-		cycles = 0;
 		this.soundFile = soundFile;
 		startSound = true;
 	}
@@ -80,17 +76,6 @@ public class PieThread extends ShowThread {
 		if(rotation < 360){
 			rotation += rotSpeed;
 		} else {
-			/*
-			if(cycles < 3){
-				cycles++;
-				rotation = 0;
-				red = (int)(Math.random()*255);		// random color may suck
-				green = (int)(Math.random()*255);
-				blue = (int)(Math.random()*255);
-			} else {
-				cleanStop();
-			}
-			*/
 			cleanStop();
 		}
 	}
