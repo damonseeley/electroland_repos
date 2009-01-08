@@ -489,12 +489,12 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		 */
 	}
 	
-	public void launchGlockenspiel(int showNum){
+	public void launchGlockenspiel(int showNum, int hour, int minute, int second){
 		//stopAll();
 		if(availableFixtures.size() != 0){
 			PGraphics raster = guiWindow.gui.createGraphics(256, 256, PConstants.P3D);
 			ShowThread newShow = null;
-			int hourcount = 6;	// for test purposes
+			int hourcount = hour;	// for test purposes
 			switch(showNum){
 				case 0:
 					// solid color
@@ -728,11 +728,6 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						Iterator <DMXLightingFixture> iter = fixtures.iterator();
 						while (iter.hasNext()){
 							DMXLightingFixture fixture = iter.next();
-							/*
-							if(fixture.getColor().equals(physicalColors[i])){
-								monoFixtures.add(fixture);
-							}
-							*/
 							if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals(physicalColors[i])){
 								monoFixtures.add(fixture);
 							}
@@ -758,6 +753,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					break;
 				case 6:
 					// sparkle spiral
+					/*
 					float[] points = new float[3];
 					points[0] = 0;
 					points[1] = 0.5f;
@@ -779,6 +775,69 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					for(int i=1; i<hourcount; i++){
 						newShow.chain(new SparkleSpiralThread(fixtures, soundManager, 20, detectorMngr.getFps(), raster, "Sparkle Spiral", ShowThread.HIGHEST, spectrum, 0, 0, false, "chime03.wav", physicalProps));
 					}
+					*/
+					
+					float[] points = new float[2];
+					points[0] = 0;
+					points[1] = 1;
+					
+					// iterate through list of colors and find fixtures that match
+					for(int i=0; i<physicalColors.length; i++){
+						raster = guiWindow.gui.createGraphics(256, 256, PConstants.P3D);	// needs a unique raster for each color
+						List<DMXLightingFixture> monoFixtures = Collections.synchronizedList(new ArrayList<DMXLightingFixture>());
+						Iterator <DMXLightingFixture> iter = fixtures.iterator();
+						while (iter.hasNext()){
+							DMXLightingFixture fixture = iter.next();
+							if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals(physicalColors[i])){
+								monoFixtures.add(fixture);
+							}
+						}
+						float[][] colorlist = new float[2][3];
+						if(physicalColors[i].equals("red")){
+							colorlist[0][0] = 255;	// red
+							colorlist[0][1] = 0;
+							colorlist[0][2] = 0;
+							colorlist[1][0] = 255;	// white
+							colorlist[1][1] = 255;
+							colorlist[1][2] = 255;
+						} else if(physicalColors[i].equals("orange")){
+							colorlist[0][0] = 255;	// orange
+							colorlist[0][1] = 150;
+							colorlist[0][2] = 0;
+							colorlist[1][0] = 255;	// white
+							colorlist[1][1] = 255;
+							colorlist[1][2] = 255;
+						} else if(physicalColors[i].equals("yellow")){
+							colorlist[0][0] = 255;	// yellow
+							colorlist[0][1] = 255;
+							colorlist[0][2] = 0;
+							colorlist[1][0] = 255;	// white
+							colorlist[1][1] = 255;
+							colorlist[1][2] = 255;
+						} else if(physicalColors[i].equals("purple")){
+							colorlist[0][0] = 255;	// purple
+							colorlist[0][1] = 0;
+							colorlist[0][2] = 255;
+							colorlist[1][0] = 255;	// white
+							colorlist[1][1] = 255;
+							colorlist[1][2] = 255;
+						} else if(physicalColors[i].equals("pink")){
+							colorlist[0][0] = 255;	// white
+							colorlist[0][1] = 255;
+							colorlist[0][2] = 255;
+							colorlist[1][0] = 0;	// black
+							colorlist[1][1] = 0;
+							colorlist[1][2] = 0;
+						}
+						ColorScheme spectrum = new ColorScheme(colorlist, points);
+						newShow = new SparkleSpiralThread(monoFixtures, soundManager, 20, detectorMngr.getFps(), raster, "Sparkle Spiral", ShowThread.HIGHEST, spectrum, 0, 0, false, "chime03.wav", physicalProps);
+						for(int h=1; h<hourcount; h++){
+							newShow.chain(new SparkleSpiralThread(monoFixtures, soundManager, 20, detectorMngr.getFps(), raster, "Sparkle Spiral", ShowThread.HIGHEST, spectrum, 0, 0, false, "chime03.wav", physicalProps));
+						}
+						if(i < physicalColors.length-1){
+							startShow(newShow);	// start every show except last one							
+						}
+					}
 					break;
 			}
 			startShow(newShow);
@@ -787,9 +846,14 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	
 	public void timedEvent(TimedEvent e){
 		//System.out.println(e.hour+":"+e.minute+":"+e.sec);
-		PGraphics raster = guiWindow.gui.createGraphics(256, 256, PConstants.P3D);
-		ShowThread newShow = new Glockenspiel(fixtures, soundManager, 10, detectorMngr.getFps(), raster, "Glockenspiel", ShowThread.HIGHEST, e.hour, e.minute, e.sec, 2, "chime03.wav", physicalProps);
-		startShow(newShow);
+		//PGraphics raster = guiWindow.gui.createGraphics(256, 256, PConstants.P3D);
+		//ShowThread newShow = new Glockenspiel(fixtures, soundManager, 10, detectorMngr.getFps(), raster, "Glockenspiel", ShowThread.HIGHEST, e.hour, e.minute, e.sec, 2, "chime03.wav", physicalProps);
+		//startShow(newShow);
+		if(e.hour > 12){
+			launchGlockenspiel((int)((timedShows.length-0.01)*Math.random()), e.hour-12, e.minute, e.sec);
+		} else {
+			launchGlockenspiel((int)((timedShows.length-0.01)*Math.random()), e.hour, e.minute, e.sec);
+		}
 	}
 	
 	public void weatherChanged(WeatherChangedEvent wce){

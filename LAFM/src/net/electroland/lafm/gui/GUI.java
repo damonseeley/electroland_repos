@@ -242,7 +242,7 @@ public class GUI extends PApplet{
 				boolean glock = false;
 				for(int i=0; i<conductor.timedShows.length; i++){
 					if(e.controller().name().equals(conductor.timedShows[i])){
-						conductor.launchGlockenspiel(i);
+						conductor.launchGlockenspiel(i, 6, 0, 0);	// 6 chimes for testing
 						glock = true;
 					}
 				}
