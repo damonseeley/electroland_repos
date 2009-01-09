@@ -137,14 +137,13 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		sensorShows[12] = "Spinning Rings";
 		sensorShows[13] = "Light Group Test";
 		
-		timedShows = new String[7];
+		timedShows = new String[6];
 		timedShows[0] = "Solid Color";
-		timedShows[1] = "Light Group Test";
-		timedShows[2] = "Chimes";
-		timedShows[3] = "Spinning Rings";
-		timedShows[4] = "Echoes";
-		timedShows[5] = "Dart Boards";
-		timedShows[6] = "Sparkle Spiral";
+		timedShows[1] = "Chimes";
+		timedShows[2] = "Spinning Rings";
+		timedShows[3] = "Echoes";
+		timedShows[4] = "Dart Boards";
+		timedShows[5] = "Sparkle Spiral";
 		
 		physicalColors = new String[5];
 		physicalColors[0] = "red";
@@ -165,10 +164,18 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			e.printStackTrace();
 		}
 		
+		/*
 		clockEvents = new TimedEvent[24*12];	// event every 5 minutes just for testing
 		for(int h=0; h<24; h++){
 			for(int m=0; m<12; m++){
 				clockEvents[(h+1)*m] = new TimedEvent(h,m*5,0,this);
+			}
+		}
+		*/
+		clockEvents = new TimedEvent[24*60];	// event every minute just for testing
+		for(int h=0; h<24; h++){
+			for(int m=0; m<60; m++){
+				clockEvents[(h+1)*m] = new TimedEvent(h,m,0,this);
 			}
 		}
 
@@ -496,6 +503,10 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			ShowThread newShow = null;
 			int hourcount = hour;	// for test purposes
 			switch(showNum){
+				case -1:
+					// light group test
+					newShow = new LightGroupTestThread(fixtures, soundManager, 30, detectorMngr.getFps(), raster, "LightGroupTestThread", ShowThread.HIGHEST, guiWindow.gui.loadImage("depends//images//lightgrouptest.png"));
+					break;
 				case 0:
 					// solid color
 					for(int i=0; i<physicalColors.length; i++){
@@ -544,10 +555,6 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					
 					break;
 				case 1:
-					// light group test
-					newShow = new LightGroupTestThread(fixtures, soundManager, 600, detectorMngr.getFps(), raster, "LightGroupTestThread", ShowThread.HIGHEST, guiWindow.gui.loadImage("depends//images//lightgrouptest.png"));
-					break;
-				case 2:
 					// sparkly chimes
 					/*
 					newShow = new ChimesThread(fixtures, soundManager, 60, detectorMngr.getFps(), raster, "Chimes", ShowThread.HIGHEST, 6, 5, 0, 255, 255, "chime03.wav");
@@ -599,7 +606,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						}
 					}
 					break;
-				case 3:
+				case 2:
 					// spinning ring
 					/*
 					newShow = new SpinningRingThread(fixtures, soundManager, 30, detectorMngr.getFps(), raster, "SpinningRingThread", ShowThread.HIGHEST, 255, 0, 0, 5, 5, 20, 3, 0.05f, 0.1f, guiWindow.gui.loadImage("depends//images//sprites//dashedring256alpha.png"), guiWindow.gui.loadImage("depends//images//sprites//dashedring152alpha.png"), true, "vert_disconnect_med_whoosh16.wav");
@@ -652,14 +659,61 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						}
 					}
 					break;
-				case 4:
+				case 3:
 					// echoes
+					
+					for(int i=0; i<physicalColors.length; i++){
+						raster = guiWindow.gui.createGraphics(256, 256, PConstants.P3D);	// needs a unique raster for each color
+						List<DMXLightingFixture> monoFixtures = Collections.synchronizedList(new ArrayList<DMXLightingFixture>());
+						Iterator <DMXLightingFixture> iter = fixtures.iterator();
+						while (iter.hasNext()){
+							DMXLightingFixture fixture = iter.next();
+							if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals(physicalColors[i])){
+								monoFixtures.add(fixture);
+							}
+						}
+						//System.out.println(physicalColors[i] +" "+ monoFixtures.size());
+						int red = 0;
+						int green = 0;
+						int blue = 0;
+						if(physicalColors[i].equals("red")){
+							red = 255;
+							green = 0;
+							blue = 0;
+						} else if(physicalColors[i].equals("orange")){
+							red = 255;
+							green = 100;
+							blue = 0;
+						} else if(physicalColors[i].equals("yellow")){
+							red = 255;
+							green = 255;
+							blue = 0;
+						} else if(physicalColors[i].equals("purple")){
+							red = 255;
+							green = 0;
+							blue = 255;
+						} else if(physicalColors[i].equals("pink")){
+							red = 255;
+							green = 150;
+							blue = 150;
+						}
+						newShow = new ThrobbingThread(monoFixtures, soundManager, 2, detectorMngr.getFps(), raster, "Echoes", ShowThread.HIGHEST, red, green, blue, 0, 500, 0, 0, 0, 0, true, "chime03.wav", physicalProps);
+						for(int h=1; h<hourcount; h++){
+							newShow.chain(new ThrobbingThread(monoFixtures, soundManager, 2, detectorMngr.getFps(), raster, "Echoes", ShowThread.HIGHEST, red, green, blue, 0, 500, 0, 0, 0, 0, true, "chime03.wav", physicalProps));
+						}
+						if(i < physicalColors.length-1){
+							startShow(newShow);	// start every show except last one							
+						}
+					}
+					
+					/*
 					newShow = new ThrobbingThread(fixtures, soundManager, 2, detectorMngr.getFps(), raster, "Echoes", ShowThread.HIGHEST, 0, 255, 0, 0, 500, 0, 0, 0, 0, true, "chime03.wav", physicalProps);
 					for(int i=1; i<hourcount; i++){
 						newShow.chain(new ThrobbingThread(fixtures, soundManager, 2, detectorMngr.getFps(), raster, "Echoes", ShowThread.HIGHEST, 0, 255, 0, 0, 500, 0, 0, 0, 0, true, "chime03.wav", physicalProps));
 					}
+					*/
 	            	break;
-				case 5:
+				case 4:
 					// dart boards
 					float[][] redlist = new float[3][3];
 					redlist[0][0] = 255;	// red
@@ -673,14 +727,14 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					redlist[2][2] = 0;
 					
 					float[][] orangelist = new float[3][3];
-					orangelist[0][0] = 100;	// dark red
-					orangelist[0][1] = 0;
+					orangelist[0][0] = 255;	// orange
+					orangelist[0][1] = 150;
 					orangelist[0][2] = 0;
-					orangelist[1][0] = 255;	// purple
-					orangelist[1][1] = 0;
+					orangelist[1][0] = 255;	// white
+					orangelist[1][1] = 255;
 					orangelist[1][2] = 255;
-					orangelist[2][0] = 100;	// dark red
-					orangelist[2][1] = 0;
+					orangelist[2][0] = 255;	// orange
+					orangelist[2][1] = 150;
 					orangelist[2][2] = 0;
 					
 					float[][] yellowlist = new float[3][3];
@@ -751,7 +805,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						}
 					}
 					break;
-				case 6:
+				case 5:
 					// sparkle spiral
 					/*
 					float[] points = new float[3];

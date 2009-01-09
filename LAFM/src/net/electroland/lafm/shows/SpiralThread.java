@@ -17,9 +17,13 @@ public class SpiralThread extends ShowThread {
 	private int fadeSpeed, spriteWidth;
 	private float spiralTightness, currentTightness;
 	private PImage texture;
-	private boolean startSound;
+	private boolean startSound, fadeOut;
 	private String soundFile;
 	private Properties physicalProps;
+	int fadeOutSpeed = 3;
+	int alpha = 0;
+	int age = 0;
+	private int duration;	// counting frames before fading out
 
 	public SpiralThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
@@ -40,6 +44,8 @@ public class SpiralThread extends ShowThread {
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
+		fadeOut = false;
+		duration = (lifespan*fps) - (100/fadeSpeed);
 	}
 	
 	public SpiralThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
@@ -61,6 +67,8 @@ public class SpiralThread extends ShowThread {
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
+		fadeOut = false;
+		duration = (lifespan*fps) - (100/fadeSpeed);
 	}
 
 	@Override
@@ -90,13 +98,29 @@ public class SpiralThread extends ShowThread {
 		//raster.rect(0,currentTightness,spriteWidth,spriteWidth);
 		raster.tint(red,green,blue);
 		raster.image(texture,0-(spriteWidth/2),currentTightness-(spriteWidth/2),spriteWidth,spriteWidth);
+		
+		if(age > duration){
+			fadeOut = true;
+		}
+		if(fadeOut){
+			if(alpha < 100){
+				alpha += fadeOutSpeed;
+				raster.fill(0,0,0,alpha);
+				raster.rect(0,0,raster.width,raster.height);
+			} else {
+				cleanStop();
+			}
+		}
+		age++;
+		
 		raster.endDraw();
 		rotation += rotSpeed;
 		currentTightness += spiralTightness;
 		if(currentTightness >= (raster.width/2) + spriteWidth){
 			//currentTightness = 0;	// resets to spiral again
 			//complete(raster);
-			cleanStop();
+			//cleanStop();
+			fadeOut = true;	// should turn true before here, but just in case
 		}
 	}
 

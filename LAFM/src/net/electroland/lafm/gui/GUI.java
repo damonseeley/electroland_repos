@@ -74,7 +74,8 @@ public class GUI extends PApplet{
 			r.addItem(conductor.sensorShows[i], i);
 		}
 		
-		controls.addTextlabel("settingslabel","GLOCKENSPIEL SHOWS:",148,285).setColorValue(0xffff0000);
+		controls.addTextlabel("glocklabel","GLOCKENSPIEL SHOWS:",148,285).setColorValue(0xffff0000);
+		r.addItem("lightgroup test", -1);	// used for calibrating light groups only
 		for(int i=0; i<conductor.timedShows.length; i++){
 			controls.addButton(conductor.timedShows[i], i, 148, 298 + i*14, 114, 12);//.setColorBackground(color(0,54,82,255));
 		}
@@ -84,7 +85,7 @@ public class GUI extends PApplet{
 		controls.addToggle("mask_raster", false, 281, 324, 10, 10).setColorForeground(color(0,54,82,255));
 		//controls.addToggle("random_sensor_show", false, 148, 348, 10, 10).setColorForeground(color(0,54,82,255));
 		
-		controls.addTextlabel("settingslabel","SOUND TESTS:",281,360).setColorValue(0xffff0000);
+		controls.addTextlabel("soundlabel","SOUND TESTS:",281,360).setColorValue(0xffff0000);
 		controls.addButton("soundtest_1", 1, 281, 373, 100, 12);
 		controls.addButton("soundtest_2", 2, 281, 387, 100, 12);
 		controls.addButton("soundtest_3", 3, 281, 401, 100, 12);

@@ -17,12 +17,15 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 	float val1, val2, val3, offset;
 	float speed, acceleration, deceleration;
 	float[] color;
-	int black = 0;
 	boolean speedUp, slowDown;
-	private boolean startSound;
+	private boolean startSound, fadeOut;
 	private String soundFile;
 	private Properties physicalProps;
 	private float topSpeed;
+	int age = 0;
+	int alpha = 0;
+	int fadeSpeed = 3;
+	private int duration;	// counting frames before fading out
 
 	public DartBoardThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
@@ -43,7 +46,9 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
-		topSpeed = 0.5f;
+		topSpeed = 0.3f;
+		fadeOut = false;
+		duration = (lifespan*fps) - (100/fadeSpeed);
 	}
 	
 	public DartBoardThread(List<DMXLightingFixture> flowers,
@@ -65,7 +70,9 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
-		topSpeed = 0.5f;
+		topSpeed = 0.3f;
+		fadeOut = false;
+		duration = (lifespan*fps) - (100/fadeSpeed);
 	}
 
 	@Override
@@ -97,8 +104,21 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 		float[] colorc = spectrum.getColor(val3);
 		raster.fill(colorc[0],colorc[1],colorc[2]);
 		raster.ellipse(0,0,50,50);
-		raster.fill(0,0,0,black);
-		raster.rect(-128,-128,256,256);
+		
+		if(age > duration){
+			fadeOut = true;
+		}
+		if(fadeOut){
+			if(alpha < 100){
+				alpha += fadeSpeed;
+				raster.fill(0,0,0,alpha);
+				raster.rect(-128,-128,raster.width,raster.height);
+			} else {
+				cleanStop();
+			}
+		}
+		age++;
+		
 		raster.endDraw();
 		
 		if(val1 >= 1){
@@ -126,11 +146,7 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 				speed -= deceleration;
 			}
 			if(speed < 0.01){
-				if(black >= 100){
-					cleanStop();					
-				} else {
-					black += 5;
-				}
+				fadeOut = true;
 			}
 		}
 	}
@@ -147,7 +163,9 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 			// reactivate
 			speedUp = true;
 			slowDown = false;
-			black = 0;
+			fadeOut = false;
+			alpha = 0;
+			age = 0;
 		}
 	}
 
