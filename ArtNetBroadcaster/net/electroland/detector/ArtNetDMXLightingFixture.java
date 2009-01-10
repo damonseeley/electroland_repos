@@ -42,8 +42,10 @@ public class ArtNetDMXLightingFixture extends DMXLightingFixture {
 				System.out.println(this.id + ", universe " + universe + " at IP " + this.ipStr + ":" + bytesToHex(b.array(), b.position()));			
 			}
 
-			if (socket == null || socket.isClosed()){
-				socket = new DatagramSocket(port);
+			synchronized (this){
+				if (socket == null || socket.isClosed()){
+					socket = new DatagramSocket(port);				
+				}				
 			}
 
 			DatagramPacket packet = new DatagramPacket(b.array(), b.position(), ip, port);
