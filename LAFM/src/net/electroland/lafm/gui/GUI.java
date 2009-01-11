@@ -75,9 +75,9 @@ public class GUI extends PApplet{
 		}
 		
 		controls.addTextlabel("glocklabel","GLOCKENSPIEL SHOWS:",148,285).setColorValue(0xffff0000);
-		r.addItem("lightgroup test", -1);	// used for calibrating light groups only
+		controls.addButton("lightgroup test", -1, 148, 298, 114, 12);	// used for calibrating light groups only
 		for(int i=0; i<conductor.timedShows.length; i++){
-			controls.addButton(conductor.timedShows[i], i, 148, 298 + i*14, 114, 12);//.setColorBackground(color(0,54,82,255));
+			controls.addButton(conductor.timedShows[i], i, 148, 298 + (i+1)*14, 114, 12);//.setColorBackground(color(0,54,82,255));
 		}
 		
 		controls.addTextlabel("settingslabel","SETTINGS:",281,285).setColorValue(0xffff0000);

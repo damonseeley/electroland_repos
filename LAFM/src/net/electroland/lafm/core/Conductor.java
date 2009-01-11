@@ -40,6 +40,7 @@ import net.electroland.lafm.weather.WeatherChecker;
 import net.electroland.lafm.util.ColorScheme;
 import processing.core.PConstants;
 import processing.core.PGraphics;
+import processing.core.PImage;
 import promidi.MidiIO;
 import promidi.Note;
 
@@ -73,6 +74,10 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	private List <ShowThread>liveShows;
 	private List <DMXLightingFixture> availableFixtures;
 	private List <DMXLightingFixture> fixtures;
+	
+	// Images used in processing based procedural shows should be loaded BEFORE the show is instantiated,
+	// otherwise multiple shows going off at once will have delays in between play back.
+	private PImage imageOuterRing, imageInnerRing, imageRedMagentaCyan, imageBlueGreenYellow, imageBlueRedYellow, imageRedYellowRed;
 
 	public Conductor(String args[]){
 		
@@ -121,7 +126,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		fixtureActivity = new String[22];	// all null to begin with
 		
 		currentSensorShow = 0;
-		sensorShows = new String[14];	// size dependent on number of sensor-triggered shows
+		sensorShows = new String[15];	// size dependent on number of sensor-triggered shows
 		sensorShows[0] = "Throb";
 		sensorShows[1] = "Propeller";
 		sensorShows[2] = "Spiral";
@@ -136,6 +141,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		sensorShows[11] = "swirlPulse";
 		sensorShows[12] = "Spinning Rings";
 		sensorShows[13] = "Light Group Test";
+		sensorShows[14] = "Gradient Rings";
 		
 		timedShows = new String[6];
 		timedShows[0] = "Solid Color";
@@ -200,6 +206,13 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			e.printStackTrace();
 		}
 		
+		
+		imageOuterRing = guiWindow.gui.loadImage("depends//images//sprites//dashedring256alpha.png");
+		imageInnerRing = guiWindow.gui.loadImage("depends//images//sprites//dashedring152alpha.png");
+		imageRedMagentaCyan = guiWindow.gui.loadImage("depends//images//sprites//ring_red_magenta_cyan.png");
+		imageBlueGreenYellow = guiWindow.gui.loadImage("depends//images//sprites//ring_blue_green_yellow.png");
+		imageBlueRedYellow = guiWindow.gui.loadImage("depends//images//sprites//ring_blue_red_yellow.png");
+		imageRedYellowRed = guiWindow.gui.loadImage("depends//images//sprites//ring_red_yellow_red.png");
 		
 		
 		// wait 6 secs (for things to get started up) then check weather every half hour
@@ -354,11 +367,15 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 							break;
 			            case 12:
 			            	// spinning rings
-			            	newShow = new SpinningRingThread(fixture, soundManager, 30, detectorMngr.getFps(), raster, "SpinningRingThread", ShowThread.LOW, 255, 0, 0, 0.01f, 2, 20, 5, 0.05f, 0.05f, guiWindow.gui.loadImage("depends//images//sprites//dashedring256alpha.png"), guiWindow.gui.loadImage("depends//images//sprites//dashedring152alpha.png"), false, "blank.wav", physicalProps);
+			            	newShow = new SpinningRingThread(fixture, soundManager, 30, detectorMngr.getFps(), raster, "SpinningRingThread", ShowThread.LOW, 255, 0, 0, 0.01f, 2, 20, 5, 0.05f, 0.05f, imageOuterRing, imageInnerRing, false, "blank.wav", physicalProps);
 			            	break;
 			            case 13:
 			            	// light group test
 			            	newShow = new LightGroupTestThread(fixture, soundManager, 30, detectorMngr.getFps(), raster, "LightGroupTest", ShowThread.LOW, guiWindow.gui.loadImage("depends//images//lightgrouptest.png"));
+			            case 14:
+			            	// gradient rings
+			            	newShow = new SpinningRingThread(fixture, soundManager, 10, detectorMngr.getFps(), raster, "GradientRings", ShowThread.LOW, 255, 255, 255, 0.01f, 2, 20, 5, 0.05f, 0.05f, imageRedYellowRed, imageInnerRing, false, "blank.wav", physicalProps);
+			            	break;
 					}
 					
 					
@@ -650,9 +667,9 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 							green = 150;
 							blue = 150;
 						}
-						newShow = new SpinningRingThread(monoFixtures, soundManager, 30, detectorMngr.getFps(), raster, "SpinningRingThread", ShowThread.HIGHEST, red, green, blue, 5, 5, 20, 3, 0.05f, 0.1f, guiWindow.gui.loadImage("depends//images//sprites//dashedring256alpha.png"), guiWindow.gui.loadImage("depends//images//sprites//dashedring152alpha.png"), true, "vert_disconnect_med_whoosh16.wav", physicalProps);
+						newShow = new SpinningRingThread(monoFixtures, soundManager, 30, detectorMngr.getFps(), raster, "SpinningRingThread", ShowThread.HIGHEST, red, green, blue, 5, 5, 20, 3, 0.05f, 0.1f, imageOuterRing, imageInnerRing, true, "vert_disconnect_med_whoosh16.wav", physicalProps);
 		            	for(int h=1; h<hourcount; h++){
-							newShow.chain(new SpinningRingThread(monoFixtures, soundManager, 3, detectorMngr.getFps(), raster, "SpinningRingThread", ShowThread.HIGHEST, red, green, blue, 5, 5, 20, 3, 0.05f, 0.1f, guiWindow.gui.loadImage("depends//images//sprites//dashedring256alpha.png"), guiWindow.gui.loadImage("depends//images//sprites//dashedring152alpha.png"), true, "vert_disconnect_med_whoosh16.wav", physicalProps));
+							newShow.chain(new SpinningRingThread(monoFixtures, soundManager, 3, detectorMngr.getFps(), raster, "SpinningRingThread", ShowThread.HIGHEST, red, green, blue, 5, 5, 20, 3, 0.05f, 0.1f, imageOuterRing, imageInnerRing, true, "vert_disconnect_med_whoosh16.wav", physicalProps));
 						}
 						if(i < physicalColors.length-1){
 							startShow(newShow);	// start every show except last one							
