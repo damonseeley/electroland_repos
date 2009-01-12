@@ -34,6 +34,7 @@ import net.electroland.lafm.shows.SpinningRingThread;
 import net.electroland.lafm.shows.SpiralThread;
 import net.electroland.lafm.shows.ThrobbingThread;
 import net.electroland.lafm.shows.VegasThread;
+import net.electroland.lafm.shows.WipeThread;
 import net.electroland.lafm.weather.WeatherChangeListener;
 import net.electroland.lafm.weather.WeatherChangedEvent;
 import net.electroland.lafm.weather.WeatherChecker;
@@ -126,7 +127,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		fixtureActivity = new String[22];	// all null to begin with
 		
 		currentSensorShow = 0;
-		sensorShows = new String[15];	// size dependent on number of sensor-triggered shows
+		sensorShows = new String[16];		// size dependent on number of sensor-triggered shows
 		sensorShows[0] = "Throb";
 		sensorShows[1] = "Propeller";
 		sensorShows[2] = "Spiral";
@@ -142,6 +143,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		sensorShows[12] = "Spinning Rings";
 		sensorShows[13] = "Light Group Test";
 		sensorShows[14] = "Gradient Rings";
+		sensorShows[15] = "Wipe";
 		
 		timedShows = new String[6];
 		timedShows[0] = "Solid Color";
@@ -376,6 +378,10 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			            	// gradient rings
 			            	newShow = new SpinningRingThread(fixture, soundManager, 10, detectorMngr.getFps(), raster, "GradientRings", ShowThread.LOW, 255, 255, 255, 0.01f, 2, 20, 5, 0.05f, 0.05f, imageRedYellowRed, imageInnerRing, false, "blank.wav", physicalProps);
 			            	break;
+			            case 15:
+			            	// wipe
+			            	newShow = new WipeThread(fixture, soundManager, 10, detectorMngr.getFps(), raster, "Wipe", ShowThread.LOW, 255, 255, 255, 5, 5, "blank.wav", physicalProps);
+			            	break;
 					}
 					
 					
@@ -407,6 +413,8 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						newShow.chain(new ThrobbingThread(fixture, soundManager, Integer.parseInt(showProps[6]), detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), 300, 300, 0, 0, 0, 0, false, showProps[5], physicalProps));									
 					} else if(showProps[0].equals("spinningring")){
 						newShow = new SpinningRingThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "SpinningRingThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), Float.parseFloat(showProps[5]), Float.parseFloat(showProps[6]), Float.parseFloat(showProps[7]), Float.parseFloat(showProps[8]), Float.parseFloat(showProps[9]), Float.parseFloat(showProps[10]), guiWindow.gui.loadImage("depends//images//sprites//dashedring256alpha.png"), guiWindow.gui.loadImage("depends//images//sprites//dashedring152alpha.png"), false, showProps[11], physicalProps);
+					} else if(showProps[0].equals("wipe")){
+						newShow = new WipeThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "Wipe", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]), showProps[7], physicalProps);
 					}
 				}
 				
