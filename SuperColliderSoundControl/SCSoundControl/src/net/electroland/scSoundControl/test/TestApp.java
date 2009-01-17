@@ -15,12 +15,13 @@ public class TestApp extends PApplet {
 	int counter2;
 	
 	int soundSurge_period = 30; //period in seconds of a surge in number of sounds played
-	int maxPolyphony = 32; // how many voices max to play at once
+	int maxPolyphony = 128; // how many voices max to play at once
 	
 	int numSoundChannels = 2;
 	
 	int numSoundFiles = 12;
-	String soundFilePath = "/Users/Jacob/Pro/ElectrolandWorkspace/SCSoundControl/testSounds/";
+	//String soundFilePath = "/Users/Jacob/Pro/ElectrolandWorkspace/SCSoundControl/testSounds/";
+	String soundFilePath = "/Users/damon/Documents/_ELECTROLAND/WORKSPACE/SCSoundControl/soundfiles/";
 	String soundFilePrefix = "test_";
 	String soundFileSuffix = ".wav";
 	
@@ -123,7 +124,9 @@ public class TestApp extends PApplet {
 		//_bufferList.add(ss.readBuf(new String("sounds/a11wlk01-44_1.aiff")));
 		
 		for (int i=1; i <= numSoundFiles; i++) {
-			_bufferList.add(ss.readBuf(new String(soundFilePath + soundFilePrefix + i + soundFileSuffix)));
+			String bufferName = new String(soundFilePath + soundFilePrefix + i + soundFileSuffix);
+			_bufferList.add(ss.readBuf(bufferName));
+			System.out.println("Added buffer "+bufferName);
 		}
 	}
 	
