@@ -88,18 +88,18 @@ public class PropellerThread extends ShowThread implements SensorListener{
 		raster.rectMode(PConstants.CENTER);
 		raster.beginDraw();
 		raster.noStroke();
-		raster.translate(128, 128);
+		raster.translate(raster.width/2, raster.height/2);
 		raster.fill(0,0,0,fadeSpeed);
-		raster.rect(0,0,256,256);
+		raster.rect(0,0,raster.width,raster.height);
 		raster.rotate((float)(rotation * Math.PI/180));
 		raster.fill(red, green, blue);
-		raster.rect(0,0,300,40);
+		raster.rect(0,0,raster.width + raster.width/5,raster.height/6);
 		raster.endDraw();
-		if(rotation < topSpeed){
-			rotation += rotSpeed;
-		}
+		rotation += rotSpeed;
 		if(speedUp){
-			rotSpeed += acceleration;
+			if(rotation < topSpeed){
+				rotSpeed += acceleration;
+			}
 		} else if(slowDown){
 			rotSpeed -= deceleration;
 			if(rotSpeed < 1){

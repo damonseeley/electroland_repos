@@ -94,16 +94,16 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 		raster.ellipseMode(PConstants.CENTER);
 		raster.beginDraw();
 		raster.noStroke();
-		raster.translate(128, 128);
+		raster.translate(raster.width/2, raster.height/2);
 		float[] colora = spectrum.getColor(val1);
 		raster.fill(colora[0],colora[1],colora[2]);
-		raster.ellipse(0,0,250,250);
+		raster.ellipse(0,0,raster.width,raster.height);
 		float[] colorb = spectrum.getColor(val2);
 		raster.fill(colorb[0],colorb[1],colorb[2]);
-		raster.ellipse(0,0,150,150);
+		raster.ellipse(0,0,(raster.width/5)*3,(raster.height/5)*3);
 		float[] colorc = spectrum.getColor(val3);
 		raster.fill(colorc[0],colorc[1],colorc[2]);
-		raster.ellipse(0,0,50,50);
+		raster.ellipse(0,0,raster.width/5,raster.height/5);
 		
 		if(age > duration){
 			fadeOut = true;
@@ -112,7 +112,7 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 			if(alpha < 100){
 				alpha += fadeSpeed;
 				raster.fill(0,0,0,alpha);
-				raster.rect(-128,-128,raster.width,raster.height);
+				raster.rect(-(raster.width/2),-(raster.height/2),raster.width,raster.height);
 			} else {
 				cleanStop();
 			}

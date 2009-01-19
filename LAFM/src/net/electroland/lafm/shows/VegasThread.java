@@ -74,7 +74,7 @@ public class VegasThread extends ShowThread implements SensorListener{
 			for(int i=0; i<25; i++){
 				float[] color = spectrum.getColor((float)Math.random());
 				raster.fill(color[0], color[1], color[2]);
-				raster.rect((float)(Math.random()*255), (float)(Math.random()*255), 50, 50);
+				raster.rect((float)(Math.random()*(raster.width-1)), (float)(Math.random()*(raster.height-1)), 50, 50);
 			}
 			delay = 0;
 		} else {
@@ -87,7 +87,7 @@ public class VegasThread extends ShowThread implements SensorListener{
 			if(alpha < 100){
 				alpha += fadeSpeed;
 				raster.fill(0,0,0,alpha);
-				raster.rect(128,128,raster.width,raster.height);
+				raster.rect(raster.width/2,raster.height/2,raster.width,raster.height);
 			} else {
 				cleanStop();
 			}

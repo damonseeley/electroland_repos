@@ -35,7 +35,7 @@ public class FireworksThread extends ShowThread {
 		this.frequency = frequency;		// 0-1, odds of creating a new firework
 		this.texture = texture;
 		fireworks = new ConcurrentHashMap<Integer,Firework>();
-		fireworks.put(fireworkCount, new Firework(fireworkCount, spectrum.getColor((float)Math.random())));
+		fireworks.put(fireworkCount, new Firework(fireworkCount, spectrum.getColor((float)Math.random()), raster.width, raster.height));
 		fireworkCount++;
 		this.soundFile = soundFile;
 		startSound = true;
@@ -52,7 +52,7 @@ public class FireworksThread extends ShowThread {
 		this.frequency = frequency;
 		this.texture = texture;
 		fireworks = new ConcurrentHashMap<Integer,Firework>();
-		fireworks.put(fireworkCount, new Firework(fireworkCount, spectrum.getColor((float)Math.random())));
+		fireworks.put(fireworkCount, new Firework(fireworkCount, spectrum.getColor((float)Math.random()), raster.width, raster.height));
 		fireworkCount++;
 		this.soundFile = soundFile;
 		startSound = true;
@@ -75,7 +75,7 @@ public class FireworksThread extends ShowThread {
 		}
 		
 		if(Math.random() > frequency){
-			fireworks.put(fireworkCount, new Firework(fireworkCount, spectrum.getColor((float)Math.random())));
+			fireworks.put(fireworkCount, new Firework(fireworkCount, spectrum.getColor((float)Math.random()), raster.width, raster.height));
 			fireworkCount++;
 		}
 		
@@ -102,13 +102,13 @@ public class FireworksThread extends ShowThread {
 		float[] color;
 		float alpha;
 		
-		public Firework(int id, float[] color){
+		public Firework(int id, float[] color, int width, int height){
 			this.id = id;
 			this.color = color;
 			alpha = 100;
 			age = 0;
-			x = (int)(Math.random()*255);
-			y = (int)(Math.random()*255);
+			x = (int)(Math.random()*width);
+			y = (int)(Math.random()*height);
 			diameter = 5;
 		}
 		

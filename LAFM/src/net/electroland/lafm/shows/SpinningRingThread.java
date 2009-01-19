@@ -115,22 +115,22 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		raster.beginDraw();
 		raster.noStroke();
 		raster.background(0);
-		raster.translate(128, 128);
+		raster.translate(raster.width/2, raster.height/2);
 		
 		raster.pushMatrix();
 		raster.rotate((float)(outerRot * Math.PI/180));
 		raster.tint(red, green, blue, alpha);
-		raster.image(outerRing, -128, -128);
+		raster.image(outerRing, -raster.width/2, -raster.height/2, raster.width, raster.height);
 		raster.popMatrix();
 		
 		raster.pushMatrix();
 		raster.rotate((float)(innerRot * Math.PI/180));
 		raster.tint(red, green, blue, alpha);
-		raster.image(innerRing, -76, -76);
+		raster.image(innerRing, -raster.width/4, -raster.width/4, raster.width/2, raster.height/2);
 		raster.popMatrix();
 		
 		raster.fill((red/255.0f)*brightness, (green/255.0f)*brightness, (blue/255.0f)*brightness, alpha);
-		raster.rect(0,0,40,40);		
+		raster.rect(0,0,raster.width/6,raster.height/6);		
 		raster.endDraw();
 		
 		if(fadeIn && brightness < 255){

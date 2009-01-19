@@ -90,9 +90,9 @@ public class SpiralThread extends ShowThread {
 		raster.rectMode(PConstants.CENTER);
 		raster.beginDraw();
 		raster.noStroke();
-		raster.translate(128, 128);
+		raster.translate(raster.width/2, raster.height/2);
 		raster.fill(0,0,0,fadeSpeed);
-		raster.rect(0,0,256,256);
+		raster.rect(0,0,raster.width,raster.height);
 		raster.rotate((float)(rotation * Math.PI/180));
 		//raster.fill(red, green, blue);
 		//raster.rect(0,currentTightness,spriteWidth,spriteWidth);

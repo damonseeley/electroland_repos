@@ -96,52 +96,52 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		redRaster.beginDraw();
 		redRaster.noStroke();
 		redRaster.fill(0,0,0,fadeSpeed);
-		redRaster.rect(0,0,256,256);
-		redRaster.translate(128,128);
+		redRaster.rect(0,0,raster.width,raster.height);
+		redRaster.translate(raster.width/2,raster.height/2);
 		redRaster.rotate((float)(rotation * Math.PI/180));
 		redRaster.fill(red,0,0);
-		redRaster.rect(0,-10,128,20);
+		redRaster.rect(0,-10,raster.width/2,20);
 		redRaster.endDraw();
 		
 		greenRaster.colorMode(PConstants.RGB, 255, 255, 255, 100);
 		greenRaster.beginDraw();
 		greenRaster.noStroke();
 		greenRaster.fill(0,0,0,fadeSpeed);
-		greenRaster.rect(0,0,256,256);
-		greenRaster.translate(128,128);
+		greenRaster.rect(0,0,raster.width,raster.height);
+		greenRaster.translate(raster.width/2,raster.width/2);
 		greenRaster.rotate((float)((rotation+120) * Math.PI/180));
 		greenRaster.fill(0,green,0);
-		greenRaster.rect(0,-10,128,20);
+		greenRaster.rect(0,-10,raster.width/2,20);
 		greenRaster.endDraw();
 		
 		blueRaster.colorMode(PConstants.RGB, 255, 255, 255, 100);
 		blueRaster.beginDraw();
 		blueRaster.noStroke();
 		blueRaster.fill(0,0,0,fadeSpeed);
-		blueRaster.rect(0,0,256,256);
-		blueRaster.translate(128,128);
+		blueRaster.rect(0,0,raster.width,raster.height);
+		blueRaster.translate(raster.width/2,raster.height/2);
 		blueRaster.rotate((float)((rotation+240) * Math.PI/180));
 		blueRaster.fill(0,0,blue);
-		blueRaster.rect(0,-10,128,20);
+		blueRaster.rect(0,-10,raster.width/2,20);
 		blueRaster.endDraw();
 		
 		raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
 		raster.beginDraw();
 		raster.noStroke();
 		raster.background(0);	// wipes clean each
-		raster.blend(redRaster, 0, 0, 256, 256, 0, 0, 256, 256, PConstants.ADD);
-		raster.blend(greenRaster, 0, 0, 256, 256, 0, 0, 256, 256, PConstants.ADD);
-		raster.blend(blueRaster, 0, 0, 256, 256, 0, 0, 256, 256, PConstants.ADD);
+		raster.blend(redRaster, 0, 0, raster.width, raster.height, 0, 0, raster.width, raster.height, PConstants.ADD);
+		raster.blend(greenRaster, 0, 0, raster.width, raster.height, 0, 0, raster.width, raster.height, PConstants.ADD);
+		raster.blend(blueRaster, 0, 0, raster.width, raster.height, 0, 0, raster.width, raster.height, PConstants.ADD);
 		raster.fill(255,255,255,whitevalue);
-		raster.rect(0,0,256,256);
+		raster.rect(0,0,raster.width,raster.height);
 		raster.endDraw();
 		
 		if(rotating){
-			if(rotation < topSpeed){
-				rotation += rotSpeed;
-			}
+			rotation += rotSpeed;
 			if(speedUp){
-				rotSpeed += acceleration;
+				if(rotation < topSpeed){
+					rotSpeed += acceleration;
+				}
 				if(age > 90){
 					if(whitevalue < 100){
 						whitevalue += 1;

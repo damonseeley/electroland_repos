@@ -70,11 +70,11 @@ public class PieThread extends ShowThread {
 		raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
 		raster.beginDraw();
 		raster.noStroke();
-		raster.translate(128, 128);
+		raster.translate(raster.width/2, raster.height/2);
 		raster.fill(red,green,blue);
 		raster.rectMode(PConstants.CENTER);
 		raster.tint(red,green,blue);
-		raster.rect(0,0,30,30);
+		raster.rect(0,0,raster.width/8,raster.width/8);
 		raster.rotate((float)(rotation * Math.PI/180));
 		raster.image(texture,0-texture.width,0-texture.height);
 		raster.endDraw();
