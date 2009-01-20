@@ -136,6 +136,14 @@ public abstract class DMXLightingFixture {
 		return id;
 	}
 	
+	final public int getWidth(){
+		return width;
+	}
+	
+	final public int getHeight(){
+		return height;
+	}
+	
 	/*
 	final public String getColor(){
 		return color;

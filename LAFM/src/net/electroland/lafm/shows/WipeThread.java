@@ -13,7 +13,7 @@ import net.electroland.lafm.core.SoundManager;
 public class WipeThread extends ShowThread implements SensorListener{
 	
 	private int red, green, blue, alpha, y, barWidth;
-	private int wipeSpeed, fadeSpeed, age, duration;
+	private int wipeSpeed, fadeSpeed, age, duration, rotation;
 	private String soundFile;
 	private Properties physicalProps;
 	private boolean startSound, fadeOut;
@@ -21,7 +21,7 @@ public class WipeThread extends ShowThread implements SensorListener{
 	public WipeThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
 			int red, int green, int blue, int wipeSpeed, int fadeSpeed,
-			String soundFile, Properties physicalProps) {
+			int rotation, String soundFile, Properties physicalProps) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		
 		this.red = red;
@@ -29,6 +29,7 @@ public class WipeThread extends ShowThread implements SensorListener{
 		this.blue = blue;
 		this.wipeSpeed = wipeSpeed;
 		this.fadeSpeed = fadeSpeed;
+		this.rotation = rotation;
 		this.soundFile = soundFile;
 		this.physicalProps = physicalProps;
 		alpha = 0;
@@ -42,7 +43,7 @@ public class WipeThread extends ShowThread implements SensorListener{
 	public WipeThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
 			int red, int green, int blue, int wipeSpeed, int fadeSpeed,
-			String soundFile, Properties physicalProps) {
+			int rotation, String soundFile, Properties physicalProps) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 
 		this.red = red;
@@ -50,6 +51,7 @@ public class WipeThread extends ShowThread implements SensorListener{
 		this.blue = blue;
 		this.wipeSpeed = wipeSpeed;
 		this.fadeSpeed = fadeSpeed;
+		this.rotation = rotation;
 		this.soundFile = soundFile;
 		this.physicalProps = physicalProps;
 		alpha = 0;
@@ -77,9 +79,13 @@ public class WipeThread extends ShowThread implements SensorListener{
 		raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
 		raster.beginDraw();
 		raster.fill(0,0,0,fadeSpeed);		// gradually overwrites with black
-		raster.rect(0,0,256,256);
+		raster.rect(0,0,raster.width,raster.height);
 		raster.noStroke();
 		raster.fill(red, green, blue);
+		raster.pushMatrix();
+		raster.translate(raster.width/2, raster.height/2);
+		raster.rotate((float)(rotation * Math.PI/180));
+		raster.translate(-raster.width/2, -raster.height/2);
 		raster.rect(0,y,raster.width,barWidth);	// thin bar moves from bottom to top
 		if(age > duration){
 			fadeOut = true;
@@ -94,6 +100,7 @@ public class WipeThread extends ShowThread implements SensorListener{
 			}
 		}
 		age++;
+		raster.popMatrix();
 		raster.endDraw();
 		
 		if(y >= 0 - barWidth){
