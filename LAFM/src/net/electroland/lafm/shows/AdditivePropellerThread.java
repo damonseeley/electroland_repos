@@ -139,7 +139,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		if(rotating){
 			rotation += rotSpeed;
 			if(speedUp){
-				if(rotation < topSpeed){
+				if(rotSpeed < topSpeed){
 					rotSpeed += acceleration;
 				}
 				if(age > 90){

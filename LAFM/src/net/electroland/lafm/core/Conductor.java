@@ -127,7 +127,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		fixtureActivity = new String[22];	// all null to begin with
 		
 		currentSensorShow = 0;
-		sensorShows = new String[15];		// size dependent on number of sensor-triggered shows
+		sensorShows = new String[16];		// size dependent on number of sensor-triggered shows
 		sensorShows[0] = "Throb";
 		sensorShows[1] = "Propeller";
 		sensorShows[2] = "Spiral";
@@ -143,6 +143,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		sensorShows[12] = "Light Group Test";
 		sensorShows[13] = "Gradient Rings";
 		sensorShows[14] = "Wipe";
+		sensorShows[15] = "Knockout";
 		
 		timedShows = new String[6];
 		timedShows[0] = "Solid Color";
@@ -382,6 +383,10 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			            case 14:
 			            	// wipe
 			            	newShow = new WipeThread(fixture, soundManager, 10, detectorMngr.getFps(), raster, "Wipe", ShowThread.LOW, 255, 255, 255, 5, 5, (int)(Math.random()*360), "blank.wav", physicalProps);
+			            	break;
+			            case 15:
+			            	// knockout
+			            	newShow = new ImageSequenceThread(fixture, soundManager, 5, detectorMngr.getFps(), raster, "Knockout", ShowThread.LOW, imageCache.getSequence("knockout"), false, "blank.wav", physicalProps);					
 			            	break;
 					}
 					
