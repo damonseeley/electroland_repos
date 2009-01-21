@@ -78,7 +78,13 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	
 	// Images used in processing based procedural shows should be loaded BEFORE the show is instantiated,
 	// otherwise multiple shows going off at once will have delays in between play back.
-	private PImage imageOuterRing, imageInnerRing, imageRedMagentaCyan, imageBlueGreenYellow, imageBlueRedYellow, imageRedYellowRed;
+	private PImage imageOuterRing, imageInnerRing;
+	private PImage innerRing, outerRing;
+	private PImage innerRingRed, outerRingRed;
+	private PImage innerRingOrange, outerRingOrange;
+	private PImage innerRingYellow, outerRingYellow;
+	private PImage innerRingPink, outerRingPink;
+	private PImage innerRingPurple, outerRingPurple;
 
 	public Conductor(String args[]){
 		
@@ -217,10 +223,22 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		
 		imageOuterRing = guiWindow.gui.loadImage("depends//images//sprites//dashedring256alpha.png");
 		imageInnerRing = guiWindow.gui.loadImage("depends//images//sprites//dashedring152alpha.png");
+		/*
 		imageRedMagentaCyan = guiWindow.gui.loadImage("depends//images//sprites//ring_red_magenta_cyan.png");
 		imageBlueGreenYellow = guiWindow.gui.loadImage("depends//images//sprites//ring_blue_green_yellow.png");
 		imageBlueRedYellow = guiWindow.gui.loadImage("depends//images//sprites//ring_blue_red_yellow.png");
 		imageRedYellowRed = guiWindow.gui.loadImage("depends//images//sprites//ring_red_yellow_red.png");
+		*/
+		innerRingRed = guiWindow.gui.loadImage("depends//images//sprites//innerRing_red_yellow.png");
+		outerRingRed = guiWindow.gui.loadImage("depends//images//sprites//outerRing_red_yellow.png");
+		innerRingOrange = guiWindow.gui.loadImage("depends//images//sprites//innerRing_red_yellow_black.png");
+		outerRingOrange = guiWindow.gui.loadImage("depends//images//sprites//outerRing_red_yellow_black.png");
+		innerRingYellow = guiWindow.gui.loadImage("depends//images//sprites//innerRing_cyan_green_black.png");
+		outerRingYellow = guiWindow.gui.loadImage("depends//images//sprites//outerRing_cyan_green_black.png");
+		innerRingPink = guiWindow.gui.loadImage("depends//images//sprites//innerRing_red_purple_cyan.png");
+		outerRingPink = guiWindow.gui.loadImage("depends//images//sprites//outerRing_red_purple_cyan.png");
+		innerRingPurple = guiWindow.gui.loadImage("depends//images//sprites//innerRing_cyan_purple_black.png");
+		outerRingPurple = guiWindow.gui.loadImage("depends//images//sprites//outerRing_cyan_purple_black.png");
 		
 		
 		// wait 6 secs (for things to get started up) then check weather every half hour
@@ -378,7 +396,23 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			            	newShow = new LightGroupTestThread(fixture, soundManager, 30, detectorMngr.getFps(), raster, "LightGroupTest", ShowThread.LOW, guiWindow.gui.loadImage("depends//images//lightgrouptest.png"));
 			            case 13:
 			            	// gradient rings
-			            	newShow = new SpinningRingThread(fixture, soundManager, 10, detectorMngr.getFps(), raster, "GradientRings", ShowThread.LOW, 255, 255, 255, 0.01f, 2, 20, 5, 0.05f, 0.05f, imageRedYellowRed, imageInnerRing, false, "blank.wav", physicalProps);
+			            	if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("red")){
+								innerRing = innerRingRed;
+								outerRing = outerRingRed;
+							} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("orange")){
+								innerRing = innerRingOrange;
+								outerRing = outerRingOrange;
+							} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("yellow")){
+								innerRing = innerRingYellow;
+								outerRing = outerRingYellow;
+							} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("pink")){
+								innerRing = innerRingPink;
+								outerRing = outerRingPink;
+							} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("purple")){
+								innerRing = innerRingPurple;
+								outerRing = outerRingPurple;
+							}
+			            	newShow = new SpinningRingThread(fixture, soundManager, 30, detectorMngr.getFps(), raster, "GradientRings", ShowThread.LOW, 255, 255, 255, 2, 7, 20, 5, 0.05f, 0.05f, outerRing, innerRing, false, "blank.wav", physicalProps);
 			            	break;
 			            case 14:
 			            	// wipe

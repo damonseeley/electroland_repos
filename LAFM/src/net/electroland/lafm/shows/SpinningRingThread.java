@@ -129,8 +129,10 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		raster.image(innerRing, -raster.width/4, -raster.width/4, raster.width/2, raster.height/2);
 		raster.popMatrix();
 		
+		/*
 		raster.fill((red/255.0f)*brightness, (green/255.0f)*brightness, (blue/255.0f)*brightness, alpha);
-		raster.rect(0,0,raster.width/6,raster.height/6);		
+		raster.rect(0,0,raster.width/6,raster.height/6);	
+		*/	
 		raster.endDraw();
 		
 		if(fadeIn && brightness < 255){
@@ -163,12 +165,15 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 			if(coreSpeed > 0){
 				coreSpeed -= deceleration*10;
 			}
-			if(outerSpeed < 1){
+			if(outerSpeed < 0.001){
+				/*
 				if(alpha <= 0){
 					cleanStop();					
 				} else {
 					alpha -= fadeSpeed;
 				}
+				*/
+				cleanStop();
 			}
 		}
 	}
