@@ -99,7 +99,7 @@ public class KnockoutThread extends ShowThread {
 		// start the decay of a random box
 		if(inactiveBoxes.length > 0){
 			int luckynumber = (int)(Math.random()*(inactiveBoxes.length-1));
-			System.out.println(luckynumber +" "+ inactiveBoxes[luckynumber] +" inactive: "+ inactiveBoxes.length);
+			//System.out.println(luckynumber +" "+ inactiveBoxes[luckynumber] +" inactive: "+ inactiveBoxes.length);
 			boxes.get(inactiveBoxes[luckynumber]).beginDecay();
 			int[] newboxes = new int[inactiveBoxes.length-1];
 			System.arraycopy(inactiveBoxes, 0, newboxes, 0, luckynumber);											// add everything before number
