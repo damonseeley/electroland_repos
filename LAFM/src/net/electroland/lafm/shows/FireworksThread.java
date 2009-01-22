@@ -104,6 +104,7 @@ public class FireworksThread extends ShowThread implements SensorListener{
 			age++;
 		} else {
 			delayCount++;
+			super.resetLifespan();
 		}
 	}
 	

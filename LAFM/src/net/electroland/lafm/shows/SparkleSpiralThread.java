@@ -147,6 +147,7 @@ public class SparkleSpiralThread extends ShowThread implements SensorListener{
 			}
 		} else {
 			delayCount++;
+			super.resetLifespan();
 		}
 	}
 	

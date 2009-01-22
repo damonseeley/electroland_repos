@@ -180,6 +180,7 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 			}
 		} else {
 			delayCount++;
+			super.resetLifespan();
 		}
 	}
 	
