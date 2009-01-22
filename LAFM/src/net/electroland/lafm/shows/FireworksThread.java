@@ -9,26 +9,30 @@ import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PImage;
 import net.electroland.detector.DMXLightingFixture;
+import net.electroland.lafm.core.SensorListener;
 import net.electroland.lafm.core.ShowThread;
 import net.electroland.lafm.core.SoundManager;
 import net.electroland.lafm.util.ColorScheme;
 
-public class FireworksThread extends ShowThread {
+public class FireworksThread extends ShowThread implements SensorListener{
 	
-	ColorScheme spectrum;
-	float speed, frequency;
-	PImage texture;
-	ConcurrentHashMap<Integer,Firework> fireworks;
-	int fireworkCount = 0;
-	float fadeSpeed = 10;
+	private ColorScheme spectrum;
+	private float speed, frequency;
+	private PImage texture;
+	private ConcurrentHashMap<Integer,Firework> fireworks;
+	private int fireworkCount = 0;
+	private float fadeSpeed = 10;
 	private boolean startSound;
 	private String soundFile;
 	private Properties physicalProps;
+	private int totalFrames;
+	private int age = 0;
+	private int startDelay, delayCount;
 
 	public FireworksThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float speed,
-			float frequency, PImage texture, String soundFile, Properties physicalProps) {
+			float frequency, PImage texture, String soundFile, Properties physicalProps, int startDelay) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
@@ -40,12 +44,15 @@ public class FireworksThread extends ShowThread {
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
+		this.totalFrames = lifespan*fps;
+		this.startDelay = (int)((startDelay/1000.0f)*fps);
+		delayCount = 0;
 	}
 	
 	public FireworksThread(List<DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float speed,
-			float frequency, PImage texture, String soundFile, Properties physicalProps) {
+			float frequency, PImage texture, String soundFile, Properties physicalProps, int startDelay) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
@@ -57,6 +64,9 @@ public class FireworksThread extends ShowThread {
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
+		this.totalFrames = lifespan*fps;
+		this.startDelay = (int)((startDelay/1000.0f)*fps);
+		delayCount = 0;
 	}
 
 	@Override
@@ -68,27 +78,44 @@ public class FireworksThread extends ShowThread {
 
 	@Override
 	public void doWork(PGraphics raster) {
-		
-		if(startSound){
-			super.playSound(soundFile, physicalProps);
-			startSound = false;
+		if(delayCount >= startDelay){
+			if(startSound){
+				super.playSound(soundFile, physicalProps);
+				startSound = false;
+			}
+			
+			if(age < totalFrames - 30){
+				if(Math.random() > frequency){
+					fireworks.put(fireworkCount, new Firework(fireworkCount, spectrum.getColor((float)Math.random()), raster.width, raster.height));
+					fireworkCount++;
+				}
+			}
+			
+			raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
+			raster.rectMode(PConstants.CENTER);
+			raster.beginDraw();
+			raster.background(0);
+			Iterator<Firework> i = fireworks.values().iterator();
+			while (i.hasNext()){
+				Firework f = i.next();
+				f.draw(raster);
+			}
+			raster.endDraw();
+			age++;
+		} else {
+			delayCount++;
 		}
-		
-		if(Math.random() > frequency){
-			fireworks.put(fireworkCount, new Firework(fireworkCount, spectrum.getColor((float)Math.random()), raster.width, raster.height));
-			fireworkCount++;
+	}
+	
+	public void sensorEvent(DMXLightingFixture eventFixture, boolean isOn) {
+		// assumes that this thread is only used in a single thread per fixture
+		// environment (thus this.getFlowers() is an array of 1)
+		if (this.getFlowers().contains(eventFixture) && !isOn){
+			// fade out
+			
+		} else if(this.getFlowers().contains(eventFixture) && isOn){
+			// reactivate
 		}
-		
-		raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
-		raster.rectMode(PConstants.CENTER);
-		raster.beginDraw();
-		raster.background(0);
-		Iterator<Firework> i = fireworks.values().iterator();
-		while (i.hasNext()){
-			Firework f = i.next();
-			f.draw(raster);
-		}
-		raster.endDraw();
 	}
 	
 	

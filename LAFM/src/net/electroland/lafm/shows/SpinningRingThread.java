@@ -24,6 +24,7 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 	private boolean startSound;
 	private String soundFile;
 	private Properties physicalProps;
+	private int startDelay, delayCount;
 
 	public SpinningRingThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
@@ -56,8 +57,10 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		fadeIn = true;
 		fadeOut = false;
 		this.soundFile = soundFile;
-		startSound = true;
 		this.physicalProps = physicalProps;
+		startDelay = 0;
+		delayCount = 0;
+		startSound = true;
 	}
 	
 	public SpinningRingThread(List <DMXLightingFixture> flowers,
@@ -65,7 +68,7 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 			String ID, int showPriority, int red, int green, int blue,
 			float outerSpeed, float innerSpeed, float coreSpeed, float fadeSpeed,
 			float acceleration, float deceleration, PImage outerRing, PImage innerRing,
-			boolean startFast, String soundFile, Properties physicalProps) {
+			boolean startFast, String soundFile, Properties physicalProps, int startDelay) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
 		this.green = green;
@@ -91,8 +94,10 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		fadeIn = true;
 		fadeOut = false;
 		this.soundFile = soundFile;
-		startSound = true;
 		this.physicalProps = physicalProps;
+		this.startDelay = (int)((startDelay/1000.0f)*fps);
+		delayCount = 0;
+		startSound = true;
 	}
 
 	@Override
@@ -104,77 +109,77 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 
 	@Override
 	public void doWork(PGraphics raster) {
-		
-		if(startSound){
-			super.playSound(soundFile, physicalProps);
-			startSound = false;
-		}
-		
-		raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
-		raster.rectMode(PConstants.CENTER);
-		raster.beginDraw();
-		raster.noStroke();
-		raster.background(0);
-		raster.translate(raster.width/2, raster.height/2);
-		
-		raster.pushMatrix();
-		raster.rotate((float)(outerRot * Math.PI/180));
-		raster.tint(red, green, blue, alpha);
-		raster.image(outerRing, -raster.width/2, -raster.height/2, raster.width, raster.height);
-		raster.popMatrix();
-		
-		raster.pushMatrix();
-		raster.rotate((float)(innerRot * Math.PI/180));
-		raster.tint(red, green, blue, alpha);
-		raster.image(innerRing, -raster.width/4, -raster.width/4, raster.width/2, raster.height/2);
-		raster.popMatrix();
-		
-		/*
-		raster.fill((red/255.0f)*brightness, (green/255.0f)*brightness, (blue/255.0f)*brightness, alpha);
-		raster.rect(0,0,raster.width/6,raster.height/6);	
-		*/	
-		raster.endDraw();
-		
-		if(fadeIn && brightness < 255){
-			brightness += coreSpeed;
-		} else if(fadeIn && brightness >= 255){
-			brightness = 255;
-			fadeIn = false;
-			fadeOut = true;
-		} else if(fadeOut && brightness > 0){
-			brightness -= coreSpeed;
-		} else if(fadeOut && brightness <= 0){
-			brightness = 0;
-			fadeIn = true;
-			fadeOut = false;
-		}
-		
-		outerRot += outerSpeed;
-		innerRot += innerSpeed;
-		if(speedUp){
-			outerSpeed += acceleration;
-			innerSpeed += acceleration;
-			coreSpeed += acceleration*10;
-		} else if(slowDown){
-			if(outerSpeed > 0){
-				outerSpeed -= deceleration;
+		if(delayCount >= startDelay){
+			if(startSound){
+				super.playSound(soundFile, physicalProps);
+				startSound = false;
 			}
-			if(innerSpeed > 0){
-				innerSpeed -= deceleration;
+			
+			raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
+			raster.rectMode(PConstants.CENTER);
+			raster.beginDraw();
+			raster.noStroke();
+			raster.background(0);
+			raster.translate(raster.width/2, raster.height/2);
+			
+			raster.pushMatrix();
+			raster.rotate((float)(outerRot * Math.PI/180));
+			raster.tint(red, green, blue, alpha);
+			raster.image(outerRing, -raster.width/2, -raster.height/2, raster.width, raster.height);
+			raster.popMatrix();
+			
+			raster.pushMatrix();
+			raster.rotate((float)(innerRot * Math.PI/180));
+			raster.tint(red, green, blue, alpha);
+			raster.image(innerRing, -raster.width/4, -raster.width/4, raster.width/2, raster.height/2);
+			raster.popMatrix();
+			
+			/*
+			raster.fill((red/255.0f)*brightness, (green/255.0f)*brightness, (blue/255.0f)*brightness, alpha);
+			raster.rect(0,0,raster.width/6,raster.height/6);	
+			*/	
+			raster.endDraw();
+			
+			if(fadeIn && brightness < 255){
+				brightness += coreSpeed;
+			} else if(fadeIn && brightness >= 255){
+				brightness = 255;
+				fadeIn = false;
+				fadeOut = true;
+			} else if(fadeOut && brightness > 0){
+				brightness -= coreSpeed;
+			} else if(fadeOut && brightness <= 0){
+				brightness = 0;
+				fadeIn = true;
+				fadeOut = false;
 			}
-			if(coreSpeed > 0){
-				coreSpeed -= deceleration*10;
-			}
-			if(outerSpeed < 0.001){
-				/*
-				if(alpha <= 0){
-					cleanStop();					
-				} else {
-					alpha -= fadeSpeed;
+			
+			outerRot += outerSpeed;
+			innerRot += innerSpeed;
+			if(speedUp){
+				outerSpeed += acceleration;
+				innerSpeed += acceleration;
+				coreSpeed += acceleration*10;
+			} else if(slowDown){
+				if(outerSpeed > 0){
+					outerSpeed -= deceleration;
 				}
-				*/
-				cleanStop();
+				if(innerSpeed > 0){
+					innerSpeed -= deceleration;
+				}
+				if(coreSpeed > 0){
+					coreSpeed -= deceleration*10;
+				}
+				if(outerSpeed < 1){
+					if(alpha <= 0){
+						cleanStop();					
+					} else {
+						alpha -= fadeSpeed;
+					}
+				}
 			}
+		} else {
+			delayCount++;
 		}
 	}
 	

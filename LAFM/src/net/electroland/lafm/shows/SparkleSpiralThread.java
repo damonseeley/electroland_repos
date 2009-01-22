@@ -25,11 +25,12 @@ public class SparkleSpiralThread extends ShowThread implements SensorListener{
 	private boolean startSound;
 	private String soundFile;
 	private Properties physicalProps;
+	private int startDelay, delayCount;
 	
 	public SparkleSpiralThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float sparkleSpeed,
-			float spiralSpeed, boolean interactive, String soundFile, Properties physicalProps) {
+			float spiralSpeed, boolean interactive, String soundFile, Properties physicalProps, int startDelay) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.sparkleSpeed = sparkleSpeed;
@@ -40,12 +41,14 @@ public class SparkleSpiralThread extends ShowThread implements SensorListener{
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
+		this.startDelay = (int)((startDelay/1000.0f)*fps);
+		delayCount = 0;
 	}
 
 	public SparkleSpiralThread(List<DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float sparkleSpeed,
-			float spiralSpeed, boolean interactive, String soundFile, Properties physicalProps) {
+			float spiralSpeed, boolean interactive, String soundFile, Properties physicalProps, int startDelay) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.sparkleSpeed = sparkleSpeed;
@@ -56,6 +59,8 @@ public class SparkleSpiralThread extends ShowThread implements SensorListener{
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
+		this.startDelay = (int)((startDelay/1000.0f)*fps);
+		delayCount = 0;
 	}
 
 	@Override
@@ -67,78 +72,81 @@ public class SparkleSpiralThread extends ShowThread implements SensorListener{
 
 	@Override
 	public void doWork(PGraphics raster) {
-		
-		if(startSound){
-			super.playSound(soundFile, physicalProps);
-			startSound = false;
-		}
-		
-		raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
-		raster.rectMode(PConstants.CENTER);
-		raster.beginDraw();
-		raster.background(0);
-		raster.noStroke();
-		raster.translate(128, 128);
-		
-		for(int i=0; i<sparkleCount; i++){
-			raster.pushMatrix();
-			color = spectrum.getColor((float)Math.random());
-			raster.fill(color[0], color[1], color[2]);
-			if(!fadeOut){						// draw from outside --> in
-				if(i < 16){						// draw 16 rectangles on the outside
-					rotation = (360/16.0f)*i;
-					raster.rotate((float)(rotation * Math.PI/180));
-					raster.rect(0,100,spriteWidth,spriteWidth);
-				} else if(i >= 16 && i < 24){	// draw 8 rectangles on the inside
-					rotation = (360/8.0f)*i;
-					raster.rotate((float)(rotation * Math.PI/180));
-					raster.rect(0,50,spriteWidth,spriteWidth);
-				} else {						// draw 1 rectangle in the center
-					raster.rect(0,0,spriteWidth,spriteWidth);
-				}
-			} else {							// draw from inside --> out
-				if(i < 1){						// draw 1 rectangle in the center
-					raster.rect(0,0,spriteWidth,spriteWidth);
-				} if(i >= 1 && i < 9){			// draw 8 rectangles on the inside
-					rotation = (360/8.0f)*(24-i);
-					raster.rotate((float)(rotation * Math.PI/180));
-					raster.rect(0,50,spriteWidth,spriteWidth);
-				} else {						// draw 16 rectangles on the outside
-					rotation = (360/16.0f)*(24-i);
-					raster.rotate((float)(rotation * Math.PI/180));
-					// THE BAD RECTANGLE IS BEING DRAWN IN HERE
-					raster.rect(0,100,spriteWidth,spriteWidth);
-				}
+		if(delayCount >= startDelay){
+			if(startSound){
+				super.playSound(soundFile, physicalProps);
+				startSound = false;
 			}
-			raster.popMatrix();
-		}
-		raster.endDraw();
-		
-		if(fadeIn){
-			if(spiralDelay < spiralSpeed){	// if delay not long enough...
-				spiralDelay++;				// wait more
-			} else {						// delay matches refresh speed
-				if(sparkleCount < 25){		// less than total number of sparkles
-					sparkleCount++;			// add another sparkle
-				} else {
-					if(!interactive){
-						fadeIn = false;
-						fadeOut = true;
+			
+			raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
+			raster.rectMode(PConstants.CENTER);
+			raster.beginDraw();
+			raster.background(0);
+			raster.noStroke();
+			raster.translate(128, 128);
+			
+			for(int i=0; i<sparkleCount; i++){
+				raster.pushMatrix();
+				color = spectrum.getColor((float)Math.random());
+				raster.fill(color[0], color[1], color[2]);
+				if(!fadeOut){						// draw from outside --> in
+					if(i < 16){						// draw 16 rectangles on the outside
+						rotation = (360/16.0f)*i;
+						raster.rotate((float)(rotation * Math.PI/180));
+						raster.rect(0,100,spriteWidth,spriteWidth);
+					} else if(i >= 16 && i < 24){	// draw 8 rectangles on the inside
+						rotation = (360/8.0f)*i;
+						raster.rotate((float)(rotation * Math.PI/180));
+						raster.rect(0,50,spriteWidth,spriteWidth);
+					} else {						// draw 1 rectangle in the center
+						raster.rect(0,0,spriteWidth,spriteWidth);
+					}
+				} else {							// draw from inside --> out
+					if(i < 1){						// draw 1 rectangle in the center
+						raster.rect(0,0,spriteWidth,spriteWidth);
+					} if(i >= 1 && i < 9){			// draw 8 rectangles on the inside
+						rotation = (360/8.0f)*(24-i);
+						raster.rotate((float)(rotation * Math.PI/180));
+						raster.rect(0,50,spriteWidth,spriteWidth);
+					} else {						// draw 16 rectangles on the outside
+						rotation = (360/16.0f)*(24-i);
+						raster.rotate((float)(rotation * Math.PI/180));
+						// THE BAD RECTANGLE IS BEING DRAWN IN HERE
+						raster.rect(0,100,spriteWidth,spriteWidth);
 					}
 				}
-				spiralDelay = 0;
+				raster.popMatrix();
 			}
-		} else if(fadeOut){
-			if(spiralDelay < spiralSpeed){	// if delay not long enough...
-				spiralDelay++;				// wait more
-			} else {						// delay matches refresh speed
-				if(sparkleCount >0){		// more than 0
-					sparkleCount--;			// remove another sparkle
-				} else {
-					cleanStop();
+			raster.endDraw();
+			
+			if(fadeIn){
+				if(spiralDelay < spiralSpeed){	// if delay not long enough...
+					spiralDelay++;				// wait more
+				} else {						// delay matches refresh speed
+					if(sparkleCount < 25){		// less than total number of sparkles
+						sparkleCount++;			// add another sparkle
+					} else {
+						if(!interactive){
+							fadeIn = false;
+							fadeOut = true;
+						}
+					}
+					spiralDelay = 0;
 				}
-				spiralDelay = 0;
+			} else if(fadeOut){
+				if(spiralDelay < spiralSpeed){	// if delay not long enough...
+					spiralDelay++;				// wait more
+				} else {						// delay matches refresh speed
+					if(sparkleCount >0){		// more than 0
+						sparkleCount--;			// remove another sparkle
+					} else {
+						cleanStop();
+					}
+					spiralDelay = 0;
+				}
 			}
+		} else {
+			delayCount++;
 		}
 	}
 	

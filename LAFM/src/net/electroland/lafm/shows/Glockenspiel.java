@@ -16,11 +16,12 @@ public class Glockenspiel extends ShowThread {
 	private boolean startSound;
 	private String soundFile;
 	private Properties physicalProps;
+	private int startDelay, delayCount;
 	
 	public Glockenspiel(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int priority, int red, int green, int blue, int fadeSpeed,
-			String soundFile, Properties physicalProps) {
+			String soundFile, Properties physicalProps, int startDelay) {
 		super(flower, soundManager, lifespan, fps, raster, ID, priority);
 		this.red = (red/255.0f);
 		this.green = (green/255.0f);
@@ -30,12 +31,14 @@ public class Glockenspiel extends ShowThread {
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
+		this.startDelay = (int)((startDelay/1000.0f)*fps);
+		delayCount = 0;
 	}
 
 	public Glockenspiel(List <DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int priority, int red, int green, int blue, int fadeSpeed,
-			String soundFile, Properties physicalProps) {
+			String soundFile, Properties physicalProps,  int startDelay) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, priority);
 		this.red = (red/255.0f);
 		this.green = (green/255.0f);
@@ -45,6 +48,8 @@ public class Glockenspiel extends ShowThread {
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
+		this.startDelay = (int)((startDelay/1000.0f)*fps);
+		delayCount = 0;
 	}
 
 	@Override
@@ -56,20 +61,23 @@ public class Glockenspiel extends ShowThread {
 
 	@Override
 	public void doWork(PGraphics raster) {
-		
-		if(startSound){
-			super.playSound(soundFile, physicalProps);
-			startSound = false;
-		}
-		
-		raster.colorMode(PConstants.RGB, 255, 255, 255);
-		raster.beginDraw();
-		raster.background(red*brightness, green*brightness, blue*brightness);
-		raster.endDraw();
-		if(brightness > 0){
-			brightness -= fadeSpeed;
+		if(delayCount >= startDelay){
+			if(startSound){
+				super.playSound(soundFile, physicalProps);
+				startSound = false;
+			}
+			
+			raster.colorMode(PConstants.RGB, 255, 255, 255);
+			raster.beginDraw();
+			raster.background(red*brightness, green*brightness, blue*brightness);
+			raster.endDraw();
+			if(brightness > 0){
+				brightness -= fadeSpeed;
+			} else {
+				cleanStop();
+			}
 		} else {
-			cleanStop();
+			delayCount++;
 		}
 	}
 

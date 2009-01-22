@@ -9,11 +9,12 @@ import net.electroland.detector.DMXLightingFixture;
 import net.electroland.lafm.core.SensorListener;
 import net.electroland.lafm.core.ShowThread;
 import net.electroland.lafm.core.SoundManager;
+import net.electroland.lafm.util.ColorScheme;
 
 public class PropellerThread extends ShowThread implements SensorListener{
 
-	private int red, green, blue;
-	private int originalred, originalgreen, originalblue;
+	private int red, green, blue, red2, green2, blue2;
+	private float[] colorA, colorB;
 	private float rotation, rotSpeed, acceleration, deceleration;
 	private int fadeSpeed, topSpeed;
 	private boolean speedUp, slowDown;
@@ -23,15 +24,17 @@ public class PropellerThread extends ShowThread implements SensorListener{
 	
 	public PropellerThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
-			int red, int green, int blue, float rotationSpeed, int fadeSpeed,
+			ColorScheme spectrum, float rotationSpeed, int fadeSpeed,
 			float acceleration, float deceleration, String soundFile, Properties physicalProps) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
-		this.red = red;
-		this.green = green;
-		this.blue = blue;
-		this.originalred = red;
-		this.originalgreen = green;
-		this.originalblue = blue;
+		colorA = spectrum.getColor((float)Math.random());
+		colorB = spectrum.getColor((float)Math.random());
+		this.red = (int)colorA[0];
+		this.green = (int)colorA[1];
+		this.blue = (int)colorA[2];
+		this.red2 = (int)colorB[0];
+		this.green2 = (int)colorB[1];
+		this.blue2 = (int)colorB[2];
 		this.rotation = 0;
 		this.rotSpeed = rotationSpeed;
 		this.fadeSpeed = fadeSpeed;
@@ -47,15 +50,17 @@ public class PropellerThread extends ShowThread implements SensorListener{
 	
 	public PropellerThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
-			int red, int green, int blue, float rotationSpeed, int fadeSpeed,
+			ColorScheme spectrum, float rotationSpeed, int fadeSpeed,
 			float acceleration, float deceleration, String soundFile, Properties physicalProps) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
-		this.red = red;
-		this.green = green;
-		this.blue = blue;
-		this.originalred = red;
-		this.originalgreen = green;
-		this.originalblue = blue;
+		colorA = spectrum.getColor((float)Math.random());
+		colorB = spectrum.getColor((float)Math.random());
+		this.red = (int)colorA[0];
+		this.green = (int)colorA[1];
+		this.blue = (int)colorA[2];
+		this.red2 = (int)colorB[0];
+		this.green2 = (int)colorB[1];
+		this.blue2 = (int)colorB[2];
 		this.rotation = 0;
 		this.rotSpeed = rotationSpeed;
 		this.fadeSpeed = fadeSpeed;
@@ -82,6 +87,9 @@ public class PropellerThread extends ShowThread implements SensorListener{
 		if(startSound){
 			super.playSound(soundFile, physicalProps);
 			startSound = false;
+			raster.beginDraw();
+			raster.background(red,green,blue);
+			raster.endDraw();
 		}
 		
 		raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
@@ -94,6 +102,10 @@ public class PropellerThread extends ShowThread implements SensorListener{
 		raster.rotate((float)(rotation * Math.PI/180));
 		raster.fill(red, green, blue);
 		raster.rect(0,0,raster.width + raster.width/5,raster.height/7);
+		// A SECOND PROPELLER MIGHT BE A BAD IDEA
+		raster.rotate((float)(90 * Math.PI/180));
+		raster.fill(red2, green2, blue2);
+		raster.rect(0,0,raster.width + raster.width/5,raster.height/7);
 		raster.endDraw();
 		rotation += rotSpeed;
 		if(speedUp){
@@ -101,12 +113,19 @@ public class PropellerThread extends ShowThread implements SensorListener{
 				rotSpeed += acceleration;
 			}
 		} else if(slowDown){
-			rotSpeed -= deceleration;
+			if(rotSpeed <= 0){
+				rotSpeed = 0;
+			} else {
+				rotSpeed -= deceleration;
+			}
 			if(rotSpeed < 1){
 				if(red > 1 || green > 1 || blue > 1){
 					red = red - fadeSpeed;
 					green = green - fadeSpeed;
 					blue = blue - fadeSpeed;
+					red2 -= fadeSpeed;
+					green2 -= fadeSpeed;
+					blue2 -= fadeSpeed;
 				} else {
 					cleanStop();
 				}
@@ -126,9 +145,12 @@ public class PropellerThread extends ShowThread implements SensorListener{
 			// reactivate
 			speedUp = true;
 			slowDown = false;
-			red = originalred;
-			green = originalgreen;
-			blue = originalblue;
+			red = (int)colorA[0];
+			green = (int)colorA[0];
+			blue = (int)colorA[0];
+			red2 = (int)colorB[0];
+			green2 = (int)colorB[1];
+			blue2 = (int)colorB[2];
 		}
 	}
 

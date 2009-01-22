@@ -39,7 +39,7 @@ public class ColorScheme {
 		        break;
 			}
 		}
-		float percent = map(p, pointlist[below], pointlist[above], 0, 1);	// percent between positions
+		float percent = map(p, pointlist[below], pointlist[above], 1, 0);	// percent between positions
 		//System.out.println(percent);
 		color = lerpColor(colorlist[below], colorlist[above], percent);
 		return color;

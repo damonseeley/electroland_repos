@@ -84,6 +84,9 @@ public class SpiralThread extends ShowThread {
 		if(startSound){
 			super.playSound(soundFile, physicalProps);
 			startSound = false;
+			raster.beginDraw();
+			raster.background(red,green,blue);
+			raster.endDraw();
 		}
 		
 		raster.colorMode(PConstants.RGB, 255, 255, 255, 100);

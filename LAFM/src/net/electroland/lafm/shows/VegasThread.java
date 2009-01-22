@@ -88,7 +88,10 @@ public class VegasThread extends ShowThread implements SensorListener{
 				alpha += fadeSpeed;
 				raster.fill(0,0,0,alpha);
 				raster.rect(raster.width/2,raster.height/2,raster.width,raster.height);
-			} else {
+			} 
+			if(alpha >= 100){
+				raster.fill(0,0,0,alpha);
+				raster.rect(-(raster.width/2),-(raster.height/2),raster.width,raster.height);
 				cleanStop();
 			}
 		}
