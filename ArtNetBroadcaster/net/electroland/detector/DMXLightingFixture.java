@@ -72,6 +72,11 @@ public abstract class DMXLightingFixture {
 		detectors.add(channel, detector);
 	}
 
+	final public void scale(double scaleDimensions){
+		this.width = (int)(this.width * scaleDimensions);
+		this.height = (int)(this.height * scaleDimensions);
+	}
+	
 	/**
 	 * Whoops.  this belongs in Fixture.
 	 * 

@@ -39,6 +39,13 @@ public class Detector {
 		return height;
 	}
 
+	public void scale(double scalePositions, double scaleDimensions){
+		this.x = (int)(this.x * scalePositions);
+		this.y = (int)(this.y * scalePositions);
+		this.width = (int)(this.width * scaleDimensions);
+		this.height = (int)(this.height * scaleDimensions);
+	}
+	
 	/**
 	 * This is only here for LAFM, in a pinch.
 	 * @deprecated

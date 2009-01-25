@@ -33,13 +33,33 @@ public class DetectorManager {
 		// fps
 		fps = Integer.parseInt(props.getProperty("fps"));
 		
+		double scalePositions = 1.0;
+		
+		// scale factor for x,y of detectors
+		if (props.getProperty("scalePositions") != null && props.getProperty("scalePositions").length() > 0){
+			scalePositions = Double.parseDouble(props.getProperty("scalePositions"));
+		}
+
+		double scaleDimensions = 1.0;
+		
+		// scale factor for x,y of detectors
+		if (props.getProperty("scaleDimensions") != null && props.getProperty("scaleDimensions").length() > 0){
+			scaleDimensions = Double.parseDouble(props.getProperty("scaleDimensions"));
+		}
+		
+//		System.out.println("scalePositions=" + scalePositions);
+//		System.out.println("scaleDimensions=" + scaleDimensions);
+
 		// load fixtures
 		int i = 0;
 		String fixStr = props.getProperty("fixture" + i);
 		while (fixStr != null && fixStr.length() != 0){
 
 			DMXLightingFixture fixture = parseFixture(fixStr, fps);
-			System.out.println("got fixture " + fixture.id + " in lightgroup " + fixture.lightgroup);
+			// somewhat non-intuitive:  the fixture scales by the position of the detectors.
+			// (scale dimensions scales the detector dimensions)
+			fixture.scale(scalePositions);
+			//System.out.println("got fixture " + fixture.id + " in lightgroup " + fixture.lightgroup);
 			fixtures.put(fixture.id, fixture);
 		
 			fixStr = props.getProperty("fixture" + (++i));			
@@ -50,6 +70,7 @@ public class DetectorManager {
 		String detectStr = props.getProperty("detector" + i);
 		while (detectStr != null && detectStr.length() != 0){
 			Detector detector = parseDetector(detectStr);
+			detector.scale(scalePositions, scaleDimensions);
 			detectors.put("detector" + i++, detector);
 
 			// HACKY CRAP FOR LAFM
