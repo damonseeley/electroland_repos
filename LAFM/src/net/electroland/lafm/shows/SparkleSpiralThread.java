@@ -108,10 +108,9 @@ public class SparkleSpiralThread extends ShowThread implements SensorListener{
 						rotation = (360/8.0f)*(24-i);
 						raster.rotate((float)(rotation * Math.PI/180));
 						raster.rect(0,50,spriteWidth,spriteWidth);
-					} else {						// draw 16 rectangles on the outside
+					} else if(i > 9){						// draw 16 rectangles on the outside
 						rotation = (360/16.0f)*(24-i);
 						raster.rotate((float)(rotation * Math.PI/180));
-						// THE BAD RECTANGLE IS BEING DRAWN IN HERE
 						raster.rect(0,100,spriteWidth,spriteWidth);
 					}
 				}
