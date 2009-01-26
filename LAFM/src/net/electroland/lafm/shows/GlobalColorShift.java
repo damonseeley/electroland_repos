@@ -3,6 +3,7 @@ package net.electroland.lafm.shows;
 import java.util.List;
 import java.util.Properties;
 
+import processing.core.PConstants;
 import processing.core.PGraphics;
 import net.electroland.detector.DMXLightingFixture;
 import net.electroland.lafm.core.ShowThread;
@@ -17,6 +18,10 @@ public class GlobalColorShift extends ShowThread {
 	private boolean startSound;
 	private String soundFile;
 	private Properties physicalProps;
+	int age = 0;
+	int alpha = 0;
+	int fadeSpeed = 3;
+	private int duration;	// counting frames before fading out
 
 	public GlobalColorShift(List<DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
@@ -29,6 +34,7 @@ public class GlobalColorShift extends ShowThread {
 		this.soundFile = soundFile;
 		this.physicalProps = physicalProps;
 		this.startSound = true;
+		duration = (lifespan*fps) - (100/fadeSpeed);
 	}
 
 	@Override
@@ -47,7 +53,22 @@ public class GlobalColorShift extends ShowThread {
 		
 		color = spectrum.getColor(offset);
 		raster.beginDraw();
+		raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
 		raster.background(color[0], color[1], color[2]);
+		if(age > duration){
+			if(alpha < 100){
+				alpha += fadeSpeed;
+				raster.fill(0,0,0,alpha);
+				raster.rect(0,0,raster.width,raster.height);
+			} 
+			if(alpha >= 100){
+				raster.fill(0,0,0,alpha);
+				raster.rect(0,0,raster.width,raster.height);
+				cleanStop();
+			}
+		}
+		age++;
+		
 		raster.endDraw();
 		if(offset >= 1){
 			offset = 0;

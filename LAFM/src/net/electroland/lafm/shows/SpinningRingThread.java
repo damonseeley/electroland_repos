@@ -13,24 +13,29 @@ import net.electroland.lafm.core.SoundManager;
 
 public class SpinningRingThread extends ShowThread implements SensorListener{
 	
-	private int red, green, blue;						// color value
-	private float brightness, fadeSpeed;				// brightness of color (for center throbbing)
-	private float outerRot, innerRot;					// current rotational positions
-	private float outerSpeed, innerSpeed, coreSpeed;	// brightness change increments
-	private float acceleration, deceleration;			// subtract from hold durations
-	private boolean speedUp, slowDown, fadeIn, fadeOut;
+	private int red, green, blue;							// color value
+	private float brightness, fadeSpeed;					// brightness of color (for center throbbing)
+	private float outerRot, innerRot;						// current rotational positions
+	private float outerSpeed, innerSpeed, coreSpeed;		// brightness change increments
+	private float innerAcceleration, innerDeceleration;	// subtract from hold durations
+	private float outerAcceleration, outerDeceleration;	// subtract from hold durations
+	private boolean speedUp, slowDown, fadeIn, fadeOut, fadeEverythingOut;
 	private PImage outerRing, innerRing;
 	private int alpha = 100;
 	private boolean startSound;
 	private String soundFile;
 	private Properties physicalProps;
 	private int startDelay, delayCount;
+	int age = 0;
+	private int duration;	// counting frames before fading out
+	private int topSpeed;
 
 	public SpinningRingThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, int red, int green, int blue,
 			float outerSpeed, float innerSpeed, float coreSpeed, float fadeSpeed,
-			float acceleration, float deceleration, PImage outerRing, PImage innerRing,
+			float outerAcceleration, float outerDeceleration, float innerAcceleration,
+			float innerDeceleration, PImage outerRing, PImage innerRing,
 			boolean startFast, String soundFile, Properties physicalProps) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
@@ -40,10 +45,37 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		this.innerSpeed = innerSpeed;
 		this.coreSpeed = coreSpeed;
 		this.fadeSpeed = fadeSpeed;
-		this.acceleration = acceleration;
-		this.deceleration = deceleration;
+		this.innerAcceleration = innerAcceleration;
+		this.innerDeceleration = innerDeceleration;
+		this.outerAcceleration = outerAcceleration;
+		this.outerDeceleration = outerDeceleration;
 		this.outerRing = outerRing;
 		this.innerRing = innerRing;
+		
+		if(outerSpeed < 0){											// mirror flip image
+			PImage newOuterRing = new PImage(outerRing.width, outerRing.height, PConstants.ARGB);
+			newOuterRing.loadPixels();
+		    for (int i = 0; i < outerRing.width; i++) {			// Begin loop for width
+		    	for (int j = 0; j < outerRing.height; j++) {    	// Begin loop for height  
+		    		newOuterRing.pixels[j*outerRing.width+i] = outerRing.pixels[(outerRing.width - i - 1) + j*outerRing.width];
+		    	}
+		    } 
+		    newOuterRing.updatePixels();
+		    this.outerRing = newOuterRing;
+		}
+		if(innerSpeed < 0){	// mirror flip image
+			PImage newInnerRing = new PImage(innerRing.width, innerRing.height, PConstants.ARGB);
+			newInnerRing.loadPixels();
+		    for (int i = 0; i < innerRing.width; i++) {			// Begin loop for width
+		    	for (int j = 0; j < innerRing.height; j++) {    	// Begin loop for height  
+		    		newInnerRing.pixels[j*innerRing.width+i] = innerRing.pixels[(innerRing.width - i - 1) + j*innerRing.width];
+		    	}
+		    } 
+		    newInnerRing.updatePixels();
+		    this.innerRing = newInnerRing;
+		}
+		
+		duration = (lifespan*fps) - (int)(100/fadeSpeed);
 		innerRot = 0;
 		outerRot = 0;
 		brightness = 255;
@@ -60,6 +92,7 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		this.physicalProps = physicalProps;
 		startDelay = 0;
 		delayCount = 0;
+		topSpeed = 45;
 		startSound = true;
 	}
 	
@@ -67,7 +100,8 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, int red, int green, int blue,
 			float outerSpeed, float innerSpeed, float coreSpeed, float fadeSpeed,
-			float acceleration, float deceleration, PImage outerRing, PImage innerRing,
+			float outerAcceleration, float outerDeceleration, float innerAcceleration,
+			float innerDeceleration, PImage outerRing, PImage innerRing,
 			boolean startFast, String soundFile, Properties physicalProps, int startDelay) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
@@ -77,10 +111,13 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		this.innerSpeed = innerSpeed;
 		this.coreSpeed = coreSpeed;
 		this.fadeSpeed = fadeSpeed;
-		this.acceleration = acceleration;
-		this.deceleration = deceleration;
+		this.innerAcceleration = innerAcceleration;
+		this.innerDeceleration = innerDeceleration;
+		this.outerAcceleration = outerAcceleration;
+		this.outerDeceleration = outerDeceleration;
 		this.outerRing = outerRing;
 		this.innerRing = innerRing;
+		duration = (lifespan*fps) - (int)(100/fadeSpeed);
 		innerRot = 0;
 		outerRot = 0;
 		brightness = 255;
@@ -97,6 +134,7 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		this.physicalProps = physicalProps;
 		this.startDelay = (int)((startDelay/1000.0f)*fps);
 		delayCount = 0;
+		topSpeed = 45;
 		startSound = true;
 	}
 
@@ -134,10 +172,20 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 			raster.image(innerRing, -raster.width/4, -raster.width/4, raster.width/2, raster.height/2);
 			raster.popMatrix();
 			
-			/*
-			raster.fill((red/255.0f)*brightness, (green/255.0f)*brightness, (blue/255.0f)*brightness, alpha);
-			raster.rect(0,0,raster.width/6,raster.height/6);	
-			*/	
+			if(age > duration){
+				fadeEverythingOut = true;
+			}
+			
+			if(fadeEverythingOut){
+				if(alpha > 0){
+					alpha -= fadeSpeed;
+				} 
+				if(alpha <= 0){
+					cleanStop();
+				}
+			}
+			age++;
+			
 			raster.endDraw();
 			
 			if(fadeIn && brightness < 255){
@@ -157,20 +205,24 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 			outerRot += outerSpeed;
 			innerRot += innerSpeed;
 			if(speedUp){
-				outerSpeed += acceleration;
-				innerSpeed += acceleration;
-				coreSpeed += acceleration*10;
-			} else if(slowDown){
-				if(outerSpeed > 0){
-					outerSpeed -= deceleration;
+				if(Math.abs(outerSpeed) < topSpeed){
+					outerSpeed += outerAcceleration;
 				}
-				if(innerSpeed > 0){
-					innerSpeed -= deceleration;
+				if(Math.abs(innerSpeed) < topSpeed){
+					innerSpeed += innerAcceleration;
+				}
+				coreSpeed += innerAcceleration*10;
+			} else if(slowDown){
+				if(Math.abs(outerSpeed) > 0){
+					outerSpeed -= outerDeceleration;
+				}
+				if(Math.abs(innerSpeed) > 0){
+					innerSpeed -= innerDeceleration;
 				}
 				if(coreSpeed > 0){
-					coreSpeed -= deceleration*10;
+					coreSpeed -= innerDeceleration*10;
 				}
-				if(outerSpeed < 1){
+				if(Math.abs(outerSpeed) < 1){
 					if(alpha <= 0){
 						cleanStop();					
 					} else {

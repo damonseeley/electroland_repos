@@ -17,7 +17,7 @@ public class WipeThread extends ShowThread implements SensorListener{
 	
 	private int alpha, barWidth;
 	private ColorScheme spectrum;
-	private int wipeSpeed, fadeSpeed, age, duration;
+	private int fadeSpeed, age, duration;
 	private String soundFile;
 	private Properties physicalProps;
 	private boolean startSound, fadeOut;
@@ -31,7 +31,6 @@ public class WipeThread extends ShowThread implements SensorListener{
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		
 		this.spectrum = spectrum;
-		this.wipeSpeed = wipeSpeed;
 		this.fadeSpeed = fadeSpeed;
 		this.soundFile = soundFile;
 		this.physicalProps = physicalProps;
@@ -41,7 +40,7 @@ public class WipeThread extends ShowThread implements SensorListener{
 		duration = (lifespan*fps) - (100/fadeSpeed);
 		bars = new ConcurrentHashMap<Integer,Bar>();
 		for(int i=0; i<numberBars; i++){
-			bars.put(barCount, new Bar(barCount, raster));
+			bars.put(barCount, new Bar(raster, wipeSpeed));
 			barCount++;
 		}
 		startSound = true;
@@ -54,7 +53,6 @@ public class WipeThread extends ShowThread implements SensorListener{
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 
 		this.spectrum = spectrum;
-		this.wipeSpeed = wipeSpeed;
 		this.fadeSpeed = fadeSpeed;
 		this.soundFile = soundFile;
 		this.physicalProps = physicalProps;
@@ -64,7 +62,7 @@ public class WipeThread extends ShowThread implements SensorListener{
 		duration = (lifespan*fps) - (100/fadeSpeed);
 		bars = new ConcurrentHashMap<Integer,Bar>();
 		for(int i=0; i<numberBars; i++){
-			bars.put(barCount, new Bar(barCount, raster));
+			bars.put(barCount, new Bar(raster, wipeSpeed));
 			barCount++;
 		}
 		startSound = true;
@@ -131,10 +129,12 @@ public class WipeThread extends ShowThread implements SensorListener{
 	
 	public class Bar{
 		private int red, green, blue;
-		private int id, y, rotation;
+		private int y, rotation;
+		private int wipeSpeed, suggestedWipeSpeed;
 		
-		public Bar(int id, PGraphics raster){
-			this.id = id;
+		public Bar(PGraphics raster, int wipeSpeed){
+			this.suggestedWipeSpeed = wipeSpeed;
+			this.wipeSpeed = (int)(Math.random()*wipeSpeed) + wipeSpeed/2;
 			float[] color = spectrum.getColor((float)Math.random());
 			red = (int)color[0];
 			green = (int)color[1];
@@ -144,6 +144,7 @@ public class WipeThread extends ShowThread implements SensorListener{
 		}
 		
 		public void reset(){
+			wipeSpeed = (int)(Math.random()*suggestedWipeSpeed) + suggestedWipeSpeed/2;
 			float[] color = spectrum.getColor((float)Math.random());
 			red = (int)color[0];
 			green = (int)color[1];

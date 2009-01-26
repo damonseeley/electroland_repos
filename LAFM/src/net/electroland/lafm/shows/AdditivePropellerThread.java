@@ -16,9 +16,9 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 	private float rotation, rotSpeed, acceleration, deceleration;
 	private int fadeSpeed, topSpeed;
 	private boolean speedUp, slowDown, rotating;
-	private PGraphics redRaster, greenRaster, blueRaster;
 	private int age = 0;
 	private int whitevalue = 0;
+	private int duration;	// counting frames before fading out
 	private boolean startSound;
 	private String soundFile;
 	private Properties physicalProps;
@@ -26,8 +26,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 	public AdditivePropellerThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, float rotationSpeed, int fadeSpeed,
-			float acceleration, float deceleration, PGraphics redRaster,
-			PGraphics greenRaster, PGraphics blueRaster, String soundFile,
+			float acceleration, float deceleration, String soundFile,
 			Properties physicalProps) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.rotation = 0;
@@ -35,9 +34,6 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		this.fadeSpeed = fadeSpeed;
 		this.acceleration = acceleration;
 		this.deceleration = deceleration;
-		this.redRaster = redRaster;
-		this.greenRaster = greenRaster;
-		this.blueRaster = blueRaster;
 		red = 255;
 		green = 255;
 		blue = 255;
@@ -46,15 +42,15 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		slowDown = false;
 		this.soundFile = soundFile;
 		startSound = true;
-		topSpeed = 60;
+		topSpeed = 20;
 		this.physicalProps = physicalProps;
+		duration = (lifespan*fps) - 150;
 	}
 	
 	public AdditivePropellerThread(List<DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, float rotationSpeed, int fadeSpeed,
-			float acceleration, float deceleration, PGraphics redRaster,
-			PGraphics greenRaster, PGraphics blueRaster, String soundFile,
+			float acceleration, float deceleration, String soundFile,
 			Properties physicalProps) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.rotation = 0;
@@ -62,9 +58,6 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		this.fadeSpeed = fadeSpeed;
 		this.acceleration = acceleration;
 		this.deceleration = deceleration;
-		this.redRaster = redRaster;
-		this.greenRaster = greenRaster;
-		this.blueRaster = blueRaster;
 		red = 255;
 		green = 255;
 		blue = 255;
@@ -73,8 +66,9 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		slowDown = false;
 		this.soundFile = soundFile;
 		startSound = true;
-		topSpeed = 60;
+		topSpeed = 20;
 		this.physicalProps = physicalProps;
+		duration = (lifespan*fps) - 150;
 	}
 
 	@Override
@@ -92,49 +86,31 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 			startSound = false;
 		}
 		
-		redRaster.colorMode(PConstants.RGB, 255, 255, 255, 100);
-		redRaster.beginDraw();
-		redRaster.noStroke();
-		redRaster.fill(0,0,0,fadeSpeed);
-		redRaster.rect(0,0,raster.width,raster.height);
-		redRaster.translate(raster.width/2,raster.height/2);
-		redRaster.rotate((float)(rotation * Math.PI/180));
-		redRaster.fill(red,0,0);
-		redRaster.rect(0,-10,raster.width/2,20);
-		redRaster.endDraw();
-		
-		greenRaster.colorMode(PConstants.RGB, 255, 255, 255, 100);
-		greenRaster.beginDraw();
-		greenRaster.noStroke();
-		greenRaster.fill(0,0,0,fadeSpeed);
-		greenRaster.rect(0,0,raster.width,raster.height);
-		greenRaster.translate(raster.width/2,raster.width/2);
-		greenRaster.rotate((float)((rotation+120) * Math.PI/180));
-		greenRaster.fill(0,green,0);
-		greenRaster.rect(0,-10,raster.width/2,20);
-		greenRaster.endDraw();
-		
-		blueRaster.colorMode(PConstants.RGB, 255, 255, 255, 100);
-		blueRaster.beginDraw();
-		blueRaster.noStroke();
-		blueRaster.fill(0,0,0,fadeSpeed);
-		blueRaster.rect(0,0,raster.width,raster.height);
-		blueRaster.translate(raster.width/2,raster.height/2);
-		blueRaster.rotate((float)((rotation+240) * Math.PI/180));
-		blueRaster.fill(0,0,blue);
-		blueRaster.rect(0,-10,raster.width/2,20);
-		blueRaster.endDraw();
-		
 		raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
 		raster.beginDraw();
 		raster.noStroke();
-		raster.background(0);	// wipes clean each
-		raster.blend(redRaster, 0, 0, raster.width, raster.height, 0, 0, raster.width, raster.height, PConstants.ADD);
-		raster.blend(greenRaster, 0, 0, raster.width, raster.height, 0, 0, raster.width, raster.height, PConstants.ADD);
-		raster.blend(blueRaster, 0, 0, raster.width, raster.height, 0, 0, raster.width, raster.height, PConstants.ADD);
+		raster.fill(0,0,0,fadeSpeed);
+		raster.rect(0,0,raster.width,raster.height);
+		raster.pushMatrix();
+		raster.translate(raster.width/2,raster.height/2);
+		raster.rotate((float)(rotation * Math.PI/180));
+		raster.fill(red,0,0);
+		raster.rect(0,-10,raster.width/2,20);
+		raster.rotate((float)(120 * Math.PI/180));
+		raster.fill(0,green,0);
+		raster.rect(0,-10,raster.width/2,20);
+		raster.rotate((float)(120 * Math.PI/180));
+		raster.fill(0,0,blue);
+		raster.rect(0,-10,raster.width/2,20);
+		raster.popMatrix();
 		raster.fill(255,255,255,whitevalue);
 		raster.rect(0,0,raster.width,raster.height);
 		raster.endDraw();
+		
+		if(age > duration){
+			speedUp = false;
+			slowDown = true;
+		}
 		
 		if(rotating){
 			rotation += rotSpeed;
@@ -144,19 +120,22 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 				}
 				if(age > 90){
 					if(whitevalue < 100){
-						whitevalue += 1;
+						whitevalue += fadeSpeed;
 					}
 				}
 			} else if(slowDown){
 				rotSpeed -= deceleration;
+				if(rotSpeed < 0){
+					rotSpeed = 0;
+				}
 				if(whitevalue > 0){
-					whitevalue -= 1;
+					whitevalue -= fadeSpeed;
 				}
 				if(rotSpeed < 1){
 					if(red > 1 || green > 1 || blue > 1){
-						red = red - 15;
-						green = green - 15;
-						blue = blue - 15;
+						red = red - (int)(fadeSpeed*2.55);
+						green = green - (int)(fadeSpeed*2.55);
+						blue = blue - (int)(fadeSpeed*2.55);
 					} else {
 						cleanStop();
 					}

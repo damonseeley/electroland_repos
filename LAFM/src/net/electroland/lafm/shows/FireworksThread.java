@@ -28,6 +28,11 @@ public class FireworksThread extends ShowThread implements SensorListener{
 	private int totalFrames;
 	private int age = 0;
 	private int startDelay, delayCount;
+	private int alpha = 0;
+	private boolean fadeOut;
+	private int fadeOutSpeed = 3;
+	private int duration;	// counting frames before fading out
+	private float frequencySlowRate;
 
 	public FireworksThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
@@ -42,11 +47,13 @@ public class FireworksThread extends ShowThread implements SensorListener{
 		fireworks.put(fireworkCount, new Firework(fireworkCount, spectrum.getColor((float)Math.random()), raster.width, raster.height));
 		fireworkCount++;
 		this.soundFile = soundFile;
-		startSound = true;
 		this.physicalProps = physicalProps;
 		this.totalFrames = lifespan*fps;
 		this.startDelay = (int)((startDelay/1000.0f)*fps);
 		delayCount = 0;
+		duration = (lifespan*fps) - (100/fadeOutSpeed);
+		frequencySlowRate = (1 - frequency)/duration;	// add this to frequency
+		startSound = true;
 	}
 	
 	public FireworksThread(List<DMXLightingFixture> flowers,
@@ -62,11 +69,13 @@ public class FireworksThread extends ShowThread implements SensorListener{
 		fireworks.put(fireworkCount, new Firework(fireworkCount, spectrum.getColor((float)Math.random()), raster.width, raster.height));
 		fireworkCount++;
 		this.soundFile = soundFile;
-		startSound = true;
 		this.physicalProps = physicalProps;
 		this.totalFrames = lifespan*fps;
 		this.startDelay = (int)((startDelay/1000.0f)*fps);
 		delayCount = 0;
+		duration = (lifespan*fps) - (100/fadeOutSpeed);
+		frequencySlowRate = (1 - frequency)/duration;	// add this to frequency
+		startSound = true;
 	}
 
 	@Override
@@ -84,10 +93,26 @@ public class FireworksThread extends ShowThread implements SensorListener{
 				startSound = false;
 			}
 			
-			if(age < totalFrames - 30){
+			if(age < totalFrames - 30){			// stop introducing fireworks at end
 				if(Math.random() > frequency){
 					fireworks.put(fireworkCount, new Firework(fireworkCount, spectrum.getColor((float)Math.random()), raster.width, raster.height));
 					fireworkCount++;
+				}
+			}
+			
+			if(age > duration){
+				fadeOut = true;
+			}
+			if(fadeOut){
+				if(alpha < 100){
+					alpha += fadeSpeed;
+					raster.fill(0,0,0,alpha);
+					raster.rect(0,0,raster.width,raster.height);
+				} 
+				if(alpha >= 100){
+					raster.fill(0,0,0,alpha);
+					raster.rect(0,0,raster.width,raster.height);
+					cleanStop();
 				}
 			}
 			
@@ -101,6 +126,7 @@ public class FireworksThread extends ShowThread implements SensorListener{
 				f.draw(raster);
 			}
 			raster.endDraw();
+			frequency += frequencySlowRate;
 			age++;
 		} else {
 			delayCount++;
@@ -113,9 +139,12 @@ public class FireworksThread extends ShowThread implements SensorListener{
 		// environment (thus this.getFlowers() is an array of 1)
 		if (this.getFlowers().contains(eventFixture) && !isOn){
 			// fade out
-			
+			fadeOut = true;
 		} else if(this.getFlowers().contains(eventFixture) && isOn){
 			// reactivate
+			fadeOut = false;
+			alpha = 0;
+			age = 0;
 		}
 	}
 	

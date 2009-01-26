@@ -21,6 +21,8 @@ public class PropellerThread extends ShowThread implements SensorListener{
 	private boolean startSound;
 	private String soundFile;
 	private Properties physicalProps;
+	int age = 0;
+	private int duration;	// counting frames before fading out
 	
 	public PropellerThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
@@ -44,7 +46,8 @@ public class PropellerThread extends ShowThread implements SensorListener{
 		slowDown = false;
 		this.soundFile = soundFile;
 		startSound = true;
-		topSpeed = 60;
+		topSpeed = 20;
+		duration = (lifespan*fps) - (int)(100/fadeSpeed);
 		this.physicalProps = physicalProps;
 	}
 	
@@ -70,7 +73,8 @@ public class PropellerThread extends ShowThread implements SensorListener{
 		slowDown = false;
 		this.soundFile = soundFile;
 		startSound = true;
-		topSpeed = 60;
+		topSpeed = 20;
+		duration = (lifespan*fps) - (int)(100/fadeSpeed);
 		this.physicalProps = physicalProps;
 	}
 
@@ -107,6 +111,21 @@ public class PropellerThread extends ShowThread implements SensorListener{
 		raster.fill(red2, green2, blue2);
 		raster.rect(0,0,raster.width + raster.width/5,raster.height/7);
 		raster.endDraw();
+		
+		if(age > duration){
+			if(red > 1 || green > 1 || blue > 1){
+				red = red - fadeSpeed;
+				green = green - fadeSpeed;
+				blue = blue - fadeSpeed;
+				red2 -= fadeSpeed;
+				green2 -= fadeSpeed;
+				blue2 -= fadeSpeed;
+			} else {
+				cleanStop();
+			}
+		}
+		age++;
+		
 		rotation += rotSpeed;
 		if(speedUp){
 			if(rotSpeed < topSpeed){

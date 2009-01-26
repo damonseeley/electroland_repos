@@ -26,6 +26,7 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 	int alpha = 0;
 	int fadeSpeed = 3;
 	private int duration;	// counting frames before fading out
+	private boolean modulate;
 
 	public DartBoardThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
@@ -46,9 +47,10 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
-		topSpeed = 0.3f;
+		topSpeed = 0.2f;
 		fadeOut = false;
 		duration = (lifespan*fps) - (100/fadeSpeed);
+		modulate = false;
 	}
 	
 	public DartBoardThread(List<DMXLightingFixture> flowers,
@@ -70,9 +72,10 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
-		topSpeed = 0.3f;
+		topSpeed = 0.2f;
 		fadeOut = false;
 		duration = (lifespan*fps) - (100/fadeSpeed);
+		modulate = true;
 	}
 
 	@Override
@@ -140,16 +143,34 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 			val3 += speed;
 		}
 		
-		if(speedUp){
-			if(speed < topSpeed){
-				speed += acceleration;
+		if(modulate){	// this is show mode
+			if(speedUp){
+				if(speed < topSpeed){
+					speed += acceleration;
+				} else {
+					speedUp = false;
+					slowDown = true;
+				}
+			} else if(slowDown){
+				if(speed > 0.005){
+					speed -= deceleration;
+				} else {
+					slowDown = false;
+					speedUp = true;
+				}
 			}
-		} else if(slowDown){
-			if(speed > 0){
-				speed -= deceleration;
-			}
-			if(speed < 0.01){
-				fadeOut = true;
+		} else {		// this is sensor mode
+			if(speedUp){
+				if(speed < topSpeed){
+					speed += acceleration;
+				}
+			} else if(slowDown){
+				if(speed > 0){
+					speed -= deceleration;
+				}
+				if(speed < 0.01){
+					fadeOut = true;
+				}
 			}
 		}
 	}

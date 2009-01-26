@@ -23,14 +23,22 @@ public class VegasThread extends ShowThread implements SensorListener{
 	private String soundFile;
 	private int duration;	// counting frames before fading out
 	private Properties physicalProps;
+	private float minColorPoint, maxColorPoint;
+	private float spectrumShiftSpeed;
+	private boolean spectrumDirection;
 
 	public VegasThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
-			ColorScheme spectrum, float speed, String soundFile, Properties physicalProps) {
+			ColorScheme spectrum, float speed, float minColorPoint, float maxColorPoint,
+			float spectrumShiftSpeed, String soundFile, Properties physicalProps) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
+		this.minColorPoint = minColorPoint;
+		this.maxColorPoint = maxColorPoint;
+		this.spectrumShiftSpeed = spectrumShiftSpeed;
 		this.soundFile = soundFile;
+		this.spectrumDirection = true;
 		startSound = true;
 		fadeOut = false;
 		duration = (lifespan*fps) - (100/fadeSpeed);
@@ -39,11 +47,16 @@ public class VegasThread extends ShowThread implements SensorListener{
 	
 	public VegasThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
-			ColorScheme spectrum, float speed, String soundFile, Properties physicalProps) {
+			ColorScheme spectrum, float speed, float minColorPoint, float maxColorPoint,
+			float spectrumShiftSpeed, String soundFile, Properties physicalProps) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
+		this.minColorPoint = minColorPoint;
+		this.maxColorPoint = maxColorPoint;
+		this.spectrumShiftSpeed = spectrumShiftSpeed;
 		this.soundFile = soundFile;
+		this.spectrumDirection = true;
 		startSound = true;
 		fadeOut = false;
 		duration = (lifespan*fps) - (100/fadeSpeed);
@@ -65,6 +78,22 @@ public class VegasThread extends ShowThread implements SensorListener{
 			startSound = false;
 		}
 		
+		if(maxColorPoint >= 1){						// color range moving up or down spectrum
+			spectrumDirection = false;
+			maxColorPoint = 1;
+		} else if(minColorPoint <= 0){
+			spectrumDirection = true;
+			minColorPoint = 0;
+		}
+		
+		if(spectrumDirection){						// color range movement
+			maxColorPoint += spectrumShiftSpeed;
+			minColorPoint += spectrumShiftSpeed;
+		} else {
+			maxColorPoint -= spectrumShiftSpeed;
+			minColorPoint -= spectrumShiftSpeed;
+		}
+		
 		raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
 		raster.rectMode(PConstants.CENTER);
 		raster.beginDraw();
@@ -72,7 +101,7 @@ public class VegasThread extends ShowThread implements SensorListener{
 			raster.background(0);
 			raster.noStroke();
 			for(int i=0; i<25; i++){
-				float[] color = spectrum.getColor((float)Math.random());
+				float[] color = spectrum.getColor((float)(Math.random()*(maxColorPoint-minColorPoint))+minColorPoint);
 				raster.fill(color[0], color[1], color[2]);
 				raster.rect((float)(Math.random()*(raster.width-1)), (float)(Math.random()*(raster.height-1)), 50, 50);
 			}

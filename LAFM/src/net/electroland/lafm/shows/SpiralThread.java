@@ -7,10 +7,11 @@ import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PImage;
 import net.electroland.detector.DMXLightingFixture;
+import net.electroland.lafm.core.SensorListener;
 import net.electroland.lafm.core.ShowThread;
 import net.electroland.lafm.core.SoundManager;
 
-public class SpiralThread extends ShowThread {
+public class SpiralThread extends ShowThread implements SensorListener{
 	
 	private int red, green, blue;
 	private float rotation, rotSpeed;
@@ -23,6 +24,7 @@ public class SpiralThread extends ShowThread {
 	int fadeOutSpeed = 3;
 	int alpha = 0;
 	int age = 0;
+	private boolean loop = true;
 	private int duration;	// counting frames before fading out
 
 	public SpiralThread(DMXLightingFixture flower, SoundManager soundManager,
@@ -97,12 +99,11 @@ public class SpiralThread extends ShowThread {
 		raster.fill(0,0,0,fadeSpeed);
 		raster.rect(0,0,raster.width,raster.height);
 		raster.rotate((float)(rotation * Math.PI/180));
-		//raster.fill(red, green, blue);
-		//raster.rect(0,currentTightness,spriteWidth,spriteWidth);
 		raster.tint(red,green,blue);
 		raster.image(texture,0-(spriteWidth/2),currentTightness-(spriteWidth/2),spriteWidth,spriteWidth);
 		
 		if(age > duration){
+			loop = false;
 			fadeOut = true;
 		}
 		if(fadeOut){
@@ -119,11 +120,28 @@ public class SpiralThread extends ShowThread {
 		raster.endDraw();
 		rotation += rotSpeed;
 		currentTightness += spiralTightness;
-		if(currentTightness >= (raster.width/2) + spriteWidth){
-			//currentTightness = 0;	// resets to spiral again
-			//complete(raster);
-			//cleanStop();
-			fadeOut = true;	// should turn true before here, but just in case
+		if(currentTightness >= (raster.width/2) + spriteWidth/2){
+			if(loop){
+				spiralTightness = 0 - spiralTightness;
+			} else {
+				fadeOut = true;	// should turn true before here, but just in case
+			}
+		} else if(currentTightness <= 0){
+			spiralTightness = 0 - spiralTightness;
+			currentTightness = spiralTightness;
+		}
+	}
+	
+	public void sensorEvent(DMXLightingFixture eventFixture, boolean isOn) {
+		// assumes that this thread is only used in a single thread per fixture
+		// environment (thus this.getFlowers() is an array of 1)
+		if (this.getFlowers().contains(eventFixture) && !isOn){
+			loop = false;
+		} else if(this.getFlowers().contains(eventFixture) && isOn){
+			// reactivate
+			loop = true;
+			fadeOut = false;
+			alpha = 0;
 		}
 	}
 
