@@ -128,17 +128,17 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 		raster.endDraw();
 		
 		if(val1 >= 1){
-			val1 = 0;
+			val1 = val1 - 1;
 		} else {
 			val1 += speed;
 		}
 		if(val2 >= 1){
-			val2 = 0;
+			val2 = val2 - 1;
 		} else {
 			val2 += speed;
 		}
 		if(val3 >= 1){
-			val3 = 0;
+			val3 = val3 - 1;
 		} else {
 			val3 += speed;
 		}
