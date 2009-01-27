@@ -3,25 +3,25 @@ package net.electroland.scSoundControl.test;
 import net.electroland.scSoundControl.*;
 
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.Vector;
 
 import processing.core.*;
 
-public class TestApp extends PApplet {
+public class TestApp extends PApplet implements SCSoundControlNotifiable {
 
 	SCSoundControl ss;
-	int counter1;
-	int counter2;
 	
+	//test behavior parameters
 	int soundSurge_period = 30; //period in seconds of a surge in number of sounds played
-	int maxPolyphony = 128; // how many voices max to play at once
+	int maxPolyphony = 200; // how many voices max to play at once
 	
-	int numSoundChannels = 2;
+	//how many output channels. If there are more than 8 inputs, we'll need to add a variable for that too.
+	int numOutputChannels = 2; 
+	int numInputChannels = 2;
 	
+	//test parameters
 	int numSoundFiles = 12;
-	//String soundFilePath = "/Users/Jacob/Pro/ElectrolandWorkspace/SCSoundControl/testSounds/";
-	String soundFilePath = "/Users/damon/Documents/_ELECTROLAND/WORKSPACE/SCSoundControl/soundfiles/";
+	String soundFilePath = "soundfiles/"; //path relative to processing sketch folder
 	String soundFilePrefix = "test_";
 	String soundFileSuffix = ".wav";
 	
@@ -30,68 +30,173 @@ public class TestApp extends PApplet {
 	Vector<Integer> _bufferList;
 	Vector<SoundNode> _soundNodes;
 	
+	boolean serverIsLive = false;
+	
+	PFont theFont;
+	
+	float avgCPU, peakCPU;
+	
+	Vector<Integer> polyphonyHistory;
+	Vector<Integer> avgCPUhistory;
+	Vector<Integer> peakCPUhistory;
+	
+	int polyphonyColor = 0xff237BB4;
+	int avgCpuColor = 0xff23B476;
+	int peakCpuColor = 0xffA8B423;
+	
+	//update sound data on a longer interval than frame udpates:
+	int soundUpdateInterval = 100; //in millis
+	long lastSoundUpdateTime = 0;
+	
+	//this should get called when things are shutting down. It often doesn't.
 	public void finalize() {
 		ss.cleanup();
 	}
 	
 	
-	public void setup() {
-		
-		//internal inits
-		_bufferList = new Vector<Integer>();
-		_soundNodes = new Vector<SoundNode>();
-		counter1 = counter2 = 11;
-		
-		//SoundControl inits
-		ss = new SCSoundControl(numSoundChannels);
-		ss.init();
-		ss.showDebugOutput(false);
-		
-		initBuffers();
+	public void setup() {		
+				
+		//use an init method, since processing is calling setup twice (a workaround)
+		initTestApp();
 
 		//Processing inits
-		size(200,200);
+		size(400,400);
 		frameRate(10);
 		
 	}
 	
+	//processing core is for some reason calling setup twice! Don't know why that's
+	//happening, and since this is just test code we'll work around it for now.
+	boolean isInitialized = false;
+	public void initTestApp() {
+		
+		//only initialize once.
+		if (isInitialized) return;
+		
+		soundFilePath = sketchPath(soundFilePath);
+		//double check the soundfile path:
+		println("Looking for sound files in " + soundFilePath);
+
+		//internal inits
+		_bufferList = new Vector<Integer>();
+		_soundNodes = new Vector<SoundNode>();
+		polyphonyHistory = new Vector<Integer>();
+		peakCPUhistory = new Vector<Integer>();
+		avgCPUhistory = new Vector<Integer>();
+		
+		//SoundControl inits
+		ss = new SCSoundControl(numOutputChannels, numInputChannels, this);
+		ss.init();
+		
+		//ss.showDebugOutput(false);
+		ss.showDebugOutput(true);
+
+		theFont = loadFont("ArialMT-16.vlw");
+
+		isInitialized = true;
+	}
 	
+	//a unique function to reinitialize the test app.
+	public void reInit() {
+		isInitialized = false;
+		initTestApp();
+	}
+
+	public void loadBuffers() {		
+		//keep track of buffer numbers returned.
+		for (int i=1; i <= numSoundFiles; i++) {
+			String bufferName = new String(soundFilePath + soundFilePrefix + i + soundFileSuffix);
+			_bufferList.add(ss.readBuf(bufferName));
+			println("Added buffer " + bufferName);
+		}		
+	}
+	
+	int targetPolyphony;
 	public void draw() {
+		background(0);
+		strokeWeight(1);
+		
+		if (!serverIsLive) {
+			stroke(240, 10, 10);
+			line(0, 0, width, height);
+			line(0, height, width, 0);
+		}
 		
 		//have a cycle 
 		float timeFactor = (second() % soundSurge_period) / (float)soundSurge_period;
 		float surgeFactor = 0.5f + 0.5f * sin(timeFactor*TWO_PI);
 
-		background(255 * surgeFactor);
+		//targetPolyphony = (int)random((maxPolyphony+1) * surgeFactor); //random is exclusive of its max, so add 1 to max polyphony.
 
-		int currentPolyphony = (int)random((maxPolyphony+1) * surgeFactor); //random is exclusive of its max, so add 1 to max polyphony.
-		playToPolyphony(currentPolyphony);
+		//if pressing space, take polyphony from mouseY (UP is more)
+		//if (keyPressed && key == ' ') currentPolyphony = (int)(maxPolyphony * (height - mouseY) / (float)height);
+		if (mousePressed) targetPolyphony = (int)(maxPolyphony * (height - mouseY) / (float)height);
 		
-		//cull dead sound nodes.
-		cleanupSoundNodes();
+				
+		//draw history graphs
+		for (int i=2; i<width; i++) {
+			stroke(polyphonyColor);
+			if (polyphonyHistory.size() >= i) line(i-2, polyphonyHistory.get(i-2), i-1, polyphonyHistory.get(i-1));
+			stroke(avgCpuColor);
+			if (avgCPUhistory.size() >= i) line(i-2, avgCPUhistory.get(i-2), i-1, avgCPUhistory.get(i-1));
+			stroke(peakCpuColor);
+			if (peakCPUhistory.size() >= i) line(i-2, peakCPUhistory.get(i-2), i-1, peakCPUhistory.get(i-1));
+		}
+		
+		//draw text
+		stroke(250);
+		textFont(theFont, 16);
+		fill(polyphonyColor);
+		text("TargetPolyphony (cur): " + targetPolyphony + " (" + getCurPolyphony() + ")", 6, 20);
+		fill(avgCpuColor);
+		text("% AverageCPU: " + nf(avgCPU, 2, 1), 6, 40);
+		fill(peakCpuColor);
+		text("% PeakCPU: " + nf(peakCPU, 2, 1), 6, 60);
+
+		
+		//somewhate independently from the frame rate, update the sound playback
+		if (millis() - lastSoundUpdateTime > soundUpdateInterval) {
+			playToPolyphony(targetPolyphony);
+
+			//cull dead sound nodes.
+			cleanupSoundNodes();
+			lastSoundUpdateTime = millis();
+		}
+
 	}
 	
-	//play random sound up to a max number of simultaneous voices 
-	public void playToPolyphony(int targetPolyphony) {
+	public void keyPressed() {
+		if (key == 'q') {
+			ss.cleanup();
+			System.exit(0);
+		}
+	}
+	
+	public int getCurPolyphony() {
 		int curPolyphonyCount = 0;
 		for (int i=0; i <_soundNodes.size(); i++) {
 			if (_soundNodes.get(i).isAlive()) curPolyphonyCount++;
 		}
-		println("currentPolyphony: " + curPolyphonyCount);
-		
-		int newVoicesNeeded = targetPolyphony - curPolyphonyCount;
+		return curPolyphonyCount;
+	}
+	
+	//play random sound up to a max number of simultaneous voices
+	//returns the previous polyphony
+	public void playToPolyphony(int targetPolyphony) {
+		if (!serverIsLive || _bufferList.size() < 1) return;
+
+		int newVoicesNeeded = targetPolyphony - getCurPolyphony();
 		if (newVoicesNeeded > 0) {
 			for (int i = 0; i < newVoicesNeeded; i++) {
 				_soundNodes.add(ss.createSoundNode(_bufferList.get((int)random(0,_bufferList.size())), false, generateRandomVolumeArray()));
 			}
 		}
-		
 	}
 	
 	//populate an array of floats with random values 0-1, size equal to number of output channels
 	public float[] generateRandomVolumeArray() {
-		float[] result = new float[numSoundChannels];
-		for (int i = 0 ; i < numSoundChannels; i++) {
+		float[] result = new float[numOutputChannels];
+		for (int i = 0 ; i < numOutputChannels; i++) {
 			result[i] = random(1.0f);
 		}
 		return result;
@@ -99,7 +204,7 @@ public class TestApp extends PApplet {
 	
 	
 	//go through the list of sound nodes. If one has finished playing, cull it from the list.
-	public void cleanupSoundNodes() {
+	protected void cleanupSoundNodes() {
 		SoundNode thisNode;
 		Enumeration<SoundNode> e = _soundNodes.elements();
 		while (e.hasMoreElements()) {
@@ -110,27 +215,49 @@ public class TestApp extends PApplet {
 
 	//just play one buffer on channels 0 and 1
 	public void playBuffer(int bufferNumber) {
+		if (!serverIsLive) return;
+		
 		if (_bufferList.contains(bufferNumber)) {
-			_soundNodes.add(ss.createSoundNode(_bufferList.get(bufferNumber), false, new float[]{1f,1f}));
+			SoundNode thisNode = ss.createSoundNode(_bufferList.get(bufferNumber), false, new float[]{1f,1f});
+			if (thisNode != null) { _soundNodes.add(thisNode); }
+			else { println("Unable to create new sound node for buffer " + bufferNumber); }
 		} else {
 			println("Buffer Number " + bufferNumber + " does not exist.");
 		}
 	}
-	
 
-	public void initBuffers() {
-		//readBuf returns a buffer id. Keep track of it.
-		//_bufferList.add(ss.readBuf(new String("sounds/a11wlk01.wav")));
-		//_bufferList.add(ss.readBuf(new String("sounds/a11wlk01-44_1.aiff")));
+	public void receiveNotification_ServerRunning() {
 		
-		for (int i=1; i <= numSoundFiles; i++) {
-			String bufferName = new String(soundFilePath + soundFilePrefix + i + soundFileSuffix);
-			_bufferList.add(ss.readBuf(bufferName));
-			System.out.println("Added buffer "+bufferName);
-		}
+		println("Server running.");
+		_bufferList = new Vector<Integer>();
+		_soundNodes = new Vector<SoundNode>();
+		
+		this.loadBuffers();
+
+		serverIsLive = true;
+	}
+
+
+	public void receiveNotification_ServerStopped() {
+		serverIsLive = false;
+		println("Server stopped.");
+	}
+
+	public void receiveNotification_ServerStatus(float averageCPUload, float peakCPUload) {
+		avgCPU = averageCPUload;
+		peakCPU = peakCPUload;
+
+		//push the latest data points into graph history, and remove old ones
+		polyphonyHistory.add(0, (int)((1f-(getCurPolyphony()/(float)maxPolyphony)) * height));
+		if (polyphonyHistory.size() > width) polyphonyHistory.removeElementAt(polyphonyHistory.size()-1);
+		avgCPUhistory.add(0, floor(height * (1f - (avgCPU/ 100f))));
+		if (avgCPUhistory.size() > width) avgCPUhistory.removeElementAt(avgCPUhistory.size()-1);
+		peakCPUhistory.add(0, floor(height * (1f - (peakCPU/ 100f))));
+		if (peakCPUhistory.size() > width) peakCPUhistory.removeElementAt(peakCPUhistory.size()-1);
 	}
 	
-	
 	static public void main(String args[]) {   PApplet.main(new String[] { "net.electroland.scSoundControl.test.TestApp" });}
+
+
 
 }

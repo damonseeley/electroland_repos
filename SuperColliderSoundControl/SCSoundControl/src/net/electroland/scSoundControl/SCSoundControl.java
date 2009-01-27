@@ -3,16 +3,22 @@ package net.electroland.scSoundControl;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.concurrent.*;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Vector;
 
 import com.illposed.osc.*;
 
-public class SCSoundControl implements OSCListener {
+public class SCSoundControl implements OSCListener, Runnable {
 
 	private OSCPortOut _sender;
 	private OSCPortIn _receiver;
-	private int _motherGroupID;
+	
+	//TODO: _motherGroupID perhaps should not be final. If there's a chance that two
+	//computers could be controlling the same scsynth, then the motherGroupID
+	//should be set pending a query of existing groups on the scsynth
+	private final int _motherGroupID = 10000;
+	
 	private ConcurrentHashMap<Integer, String> _bufferMap;
 	private Vector<Integer> _busList;
 	private Vector<Integer> _nodeIdList;
@@ -23,13 +29,17 @@ public class SCSoundControl implements OSCListener {
 																// by their
 																// group id.
 
-	public SCSoundControl(int outputChannels) {
-		this(outputChannels, 0);
-	}
-
+	Thread _serverPingThread;
+	public int _serverResponseTimeout = 200; //the max allowable time for server to respond to /status queries.
+	public int _scsynthPingInterval = 100; //in milliseconds
+	private Date _prevPingResponseTime, _prevPingRequestTime;
+	
+	SCSoundControlNotifiable _notifyListener;
+	private boolean _serverLive;
+	
 	// if for some reason the system has more than 8 input channels, be sure to
 	// specify that here.
-	public SCSoundControl(int outputChannels, int inputChannels) {
+	public SCSoundControl(int outputChannels, int inputChannels, SCSoundControlNotifiable listener) {
 
 		// find the minimum id of a private audio bus.
 		// by default, SC defines 8 channels out, and 8 more in.
@@ -65,13 +75,15 @@ public class SCSoundControl implements OSCListener {
 			e1.printStackTrace();
 		}
 
-		// can sanity check some things by requesting notification when nodes
-		// are created/deleted/etc.
-		// It does not notify when playBufs reach the end of a buffer, though.
-		// Too bad, that. Would have to poll.
-		sendMessage("/notify", new Object[] { 1 });
-		// sendMessage("/dumpOSC", new Object[]{1});
-
+		_prevPingResponseTime =  _prevPingRequestTime = new Date();
+		_notifyListener = listener;
+		_serverLive = false;
+		
+		//start the thread that will ping scsynth
+		_serverPingThread = new Thread(this);
+		_serverPingThread.setPriority(Thread.MIN_PRIORITY);
+		_serverPingThread.start();
+		
 		init();
 
 	}
@@ -88,10 +100,24 @@ public class SCSoundControl implements OSCListener {
 
 	// establish group to contain all SCSoundControl nodes in SuperCollider
 	public void init() {
+		
+		// can sanity check some things by requesting notification when nodes
+		// are created/deleted/etc.
+		// It does not notify when playBufs reach the end of a buffer, though.
+		// Too bad, that. Would have to poll.
+		sendMessage("/notify", new Object[] { 1 });
+		// sendMessage("/dumpOSC", new Object[]{1});
+
+		//start by cleaning up any detritus from previous runs on the same server:
+		cleanup();
+		
 		// create a mother group, under the default group (1),
 		// which will contain all of the SCSoundControl objects.
-		_motherGroupID = 10000;
+		
+		//this is where we would query if another node == _motherGroupID already exists.
+		//if so, would need to choose an alternate groupID (e.g. += 10000)
 		createGroup(_motherGroupID, 1);
+		
 	}
 
 	// cleanup all SCSoundControl nodes in SuperCollider
@@ -103,8 +129,19 @@ public class SCSoundControl implements OSCListener {
 		freeAllBuffers();
 	}
 
+	//***************
+	//It is up to the user to be sure that the filename exists on the machine running SuperCollider.
+	//***************
 	// by default, SuperCollider provides 1024 buffers.
+	//
+	//Ideally, this would register a callback to the requesting object
+	//and then notify when the buffer was done loading. But super collider
+	//only notifies that a buffer finished loading. Not which one.
+	//In the case you load one HUGE buffer and immediately load another tiny one,
+	//the second might finish before the first, and you wouldn't know which one was
+	//valid - or which one threw an error...
 	public int readBuf(String filename) {
+		
 		// find a buffer id that hasn't been used yet.
 		int bufNum = 0;
 		while (_bufferMap.containsKey(bufNum))
@@ -144,7 +181,7 @@ public class SCSoundControl implements OSCListener {
 	// polyphony.
 	// If more are needed, see super collider help on how to do this from
 	// either command line arguments or by changing defaults via sclang code.
-	public int createBus() {
+	protected int createBus() {
 		int newBusID = _minAudioBus;
 		while (_busList.contains(newBusID))
 			newBusID++;
@@ -153,12 +190,12 @@ public class SCSoundControl implements OSCListener {
 	}
 
 	// free up a no longer used bus id
-	public synchronized void freeBus(int busNum) {
+	protected synchronized void freeBus(int busNum) {
 		_busList.remove(new Integer(busNum));
 	}
 
 	// get an unallocated node id.
-	public int getNewNodeID() {
+	protected int getNewNodeID() {
 		int newID = _minNodeID;
 		while (_nodeIdList.contains(newID))
 			newID++;
@@ -166,13 +203,13 @@ public class SCSoundControl implements OSCListener {
 	}
 
 	// free a node we've allocated on the server.
-	public void freeNode(int nodeNum) {
+	protected void freeNode(int nodeNum) {
 		sendMessage("/n_free", new Object[] { nodeNum });
 	}
 
 	// autogenerate a new group and return the group ID.
 	// groups all have ids higher than the SoundControl "mothergroup"
-	public int createGroup() {
+	protected int createGroup() {
 		int id = _motherGroupID + 1;
 		while (_soundNodes.containsKey(id))
 			id++;
@@ -181,19 +218,19 @@ public class SCSoundControl implements OSCListener {
 	}
 
 	// create a group under the SCSoundControl mothergroup
-	private void createGroup(int id) {
+	protected void createGroup(int id) {
 		createGroup(id, _motherGroupID);
 	}
 
 	// create a group on the server.
-	private void createGroup(int id, int parentGroupID) {
+	protected void createGroup(int id, int parentGroupID) {
 		sendMessage("/g_new", new Object[] { id, 0, parentGroupID });
 
 	}
 
 	// create an ELplaybuf node. Note this is a custom synthdef which must be
 	// loaded on the server.
-	public void createPlayBuf(int id, int group, int bufNum, int outBus,
+	protected void createPlayBuf(int id, int group, int bufNum, int outBus,
 			float amp, boolean loop) {
 
 		Object args[] = new Object[14];
@@ -218,7 +255,7 @@ public class SCSoundControl implements OSCListener {
 
 	// create an ELenv node. Note this is a custom synthdef which must be loaded
 	// on the server.
-	public void createEnvelope(int id, int group, int inBus, int outBus,
+	protected void createEnvelope(int id, int group, int inBus, int outBus,
 			float amp) {
 
 		Object args[] = new Object[12];
@@ -244,12 +281,12 @@ public class SCSoundControl implements OSCListener {
 	}
 
 	// helper function
-	private void sendMessage(String addr) {
+	protected void sendMessage(String addr) {
 		sendMessage(addr, null);
 	}
 
 	// helper function, we use this all over the place.
-	private void sendMessage(String addr, Object[] args) {
+	protected void sendMessage(String addr, Object[] args) {
 		try {
 			_sender.send(args == null ? new OSCMessage(addr) : new OSCMessage(
 					addr, args));
@@ -281,12 +318,14 @@ public class SCSoundControl implements OSCListener {
 	// handle incoming messages
 	public void acceptMessage(java.util.Date time, OSCMessage message) {
 		// to print the full message:
-		// debugPrint(message.getAddress());
-		// for(int i = 0; i < message.getArguments().length; i++) {
-		// debugPrint(" " + message.getArguments()[i].toString());
-		// }
-		// debugPrintln();
-
+		if (true) {
+		 debugPrint(message.getAddress());
+		 for(int i = 0; i < message.getArguments().length; i++) {
+		 debugPrint(" " + message.getArguments()[i].toString());
+		 }
+		 debugPrintln("");
+		}
+		
 		if (message.getAddress().matches("/done")) {
 			if (message.getArguments()[0].toString().matches("/b_allocRead")) {
 				debugPrintln("A buffer was created.");
@@ -296,6 +335,8 @@ public class SCSoundControl implements OSCListener {
 		if (message.getAddress().matches("/n_go")) {
 			debugPrintln("node " + message.getArguments()[0].toString()
 					+ " was created.");
+			//if it was node 1, then we can get going.
+			
 		}
 
 		// handle notices of freed nodes
@@ -322,11 +363,30 @@ public class SCSoundControl implements OSCListener {
 				}
 			}
 		}
+		
+		//handle /status responses (status.reply)
+		if (message.getAddress().matches("status.*")) {
+			Float avgCPU = (Float)(message.getArguments()[5]);
+			Float peakCPU = (Float)(message.getArguments()[6]);
+			handleServerStatusUpdate(avgCPU, peakCPU);
+		}
 	}
 
+	public SoundNode createSoundNodeOnSingleChannel(int bufferNumber, boolean doLoop, int channel, float amplitude) {
+		float[] amps = new float[_outChannels];
+		for (int i=0; i < _outChannels; i++) {
+			amps[i] = i==channel? amplitude : 0;
+		}
+		return createSoundNode(bufferNumber, doLoop, amps);
+	}
+	
 	// create a new soundNode to playback a buffer
 	public SoundNode createSoundNode(int bufferNumber, boolean doLoop,
 			float[] channelAmplitudes) {
+		
+		//sanity check the buffer that's been requested.
+		if (!_bufferMap.containsKey(bufferNumber)) return null;
+		
 		// establish group and node id's for this sound node.
 		int newGroup = createGroup();
 
@@ -342,6 +402,8 @@ public class SCSoundControl implements OSCListener {
 
 		return sn;
 	}
+	
+	
 
 	// debug output helpers
 	boolean _doDebug = false;
@@ -360,4 +422,87 @@ public class SCSoundControl implements OSCListener {
 			System.out.println(s);
 	}
 
+	protected void handleServerStatusUpdate(float avgCPU, float peakCPU) {
+		_prevPingResponseTime = new Date();
+		
+		if (_serverLive == false) {
+			_serverLive = true;
+			//Server restarted. reinit this object
+			
+			//WORKAROUND: the server will respond to a ping before it is fully booted up.
+			//One of the last things it does is create group node 1, so for now we'll simply
+			//wait a little while till it should be up and running ok.
+			//TODO: need to monitor for the creation of node 1. That requires a bit of
+			//rearchitecting, and is not appropriate until we're getting out of testing.
+			//Date then = new Date();
+			//while ((new Date()).getTime() - then.getTime() < 2000) {}
+			
+			this.init();
+			//notify client
+			_notifyListener.receiveNotification_ServerRunning();
+		}
+		
+		_notifyListener.receiveNotification_ServerStatus(avgCPU, peakCPU);
+		
+		//debugPrintln("status latency: " + (_prevPingResponseTime.getTime() - _prevPingRequestTime.getTime()));
+		
+	}
+	
+	
+	//SCSoundControl starts up a thread to make sure the server is running.
+	public void run() {
+		Date curTime;
+		while(true) {
+			curTime = new Date();
+
+			//if the previous status request is still pending...
+			if (_serverLive && (_prevPingRequestTime.getTime() > _prevPingResponseTime.getTime())) {
+				//We've not yet heard back from the previous status request.
+				//Have we timed out?
+				if (curTime.getTime() - _prevPingRequestTime.getTime() > _serverResponseTimeout) {
+					//We've timed out on the previous status request.
+					_notifyListener.receiveNotification_ServerStopped();
+					_serverLive = false;
+				}
+				//else we just keep waiting for a response or a timeout
+			}
+			//the previous status request is NOT still pending. Is it time to send another?
+			else if (curTime.getTime() - _prevPingRequestTime.getTime() > _scsynthPingInterval) {
+				//It's time to send another status request.
+				sendMessage("/status");
+				_prevPingRequestTime = new Date();
+			}
+			//it's not time to send, and we're not watching 
+			//for a reply, so go to sleep until it's time to ping again
+			else {
+				try {
+					Thread.sleep(_scsynthPingInterval - (curTime.getTime() - _prevPingRequestTime.getTime()));
+				} catch (InterruptedException e) {
+					//NOTE this thread shouldn't get interrupted.
+					e.printStackTrace();
+				}			
+			}
+			
+			
+		}
+	}
+
+	
+	//modify server ping settings: ************************************
+	public int get_serverResponseTimeout() {
+		return _serverResponseTimeout;
+	}
+	public void set_serverResponseTimeout(int responseTimeout) {
+		_serverResponseTimeout = responseTimeout;
+	}
+	public int get_scsynthPingInterval() {
+		return _scsynthPingInterval;
+	}
+	public void set_scsynthPingInterval(int pingInterval) {
+		_scsynthPingInterval = pingInterval;
+	}
+	//*****************************************************************
+	
+
 }
+
