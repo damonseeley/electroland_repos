@@ -39,7 +39,7 @@ public class LightGroupTestThread extends ShowThread {
 		raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
 		raster.rectMode(PConstants.CENTER);
 		raster.beginDraw();
-		raster.image(texture,0,0,texture.width,texture.height);
+		raster.image(texture,0,0,raster.width,raster.height);
 		raster.endDraw();
 	}
 

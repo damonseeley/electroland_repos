@@ -95,13 +95,13 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		raster.translate(raster.width/2,raster.height/2);
 		raster.rotate((float)(rotation * Math.PI/180));
 		raster.fill(red,0,0);
-		raster.rect(0,-10,raster.width/2,20);
+		raster.rect(0,-raster.width/10,raster.width/2,raster.width/10);
 		raster.rotate((float)(120 * Math.PI/180));
 		raster.fill(0,green,0);
-		raster.rect(0,-10,raster.width/2,20);
+		raster.rect(0,-raster.width/10,raster.width/2,raster.width/10);
 		raster.rotate((float)(120 * Math.PI/180));
 		raster.fill(0,0,blue);
-		raster.rect(0,-10,raster.width/2,20);
+		raster.rect(0,-raster.width/10,raster.width/2,raster.width/10);
 		raster.popMatrix();
 		raster.fill(255,255,255,whitevalue);
 		raster.rect(0,0,raster.width,raster.height);

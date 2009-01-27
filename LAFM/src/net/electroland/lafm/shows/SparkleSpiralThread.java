@@ -20,7 +20,7 @@ public class SparkleSpiralThread extends ShowThread implements SensorListener{
 	int sparkleDelay = 0;
 	int spiralDelay = 0;
 	int sparkleCount = 0;
-	int spriteWidth = 50;
+	int spriteWidth;
 	boolean fadeIn, fadeOut, interactive;
 	private boolean startSound;
 	private String soundFile;
@@ -43,6 +43,7 @@ public class SparkleSpiralThread extends ShowThread implements SensorListener{
 		this.physicalProps = physicalProps;
 		this.startDelay = (int)((startDelay/1000.0f)*fps);
 		delayCount = 0;
+		spriteWidth = raster.width/5;
 	}
 
 	public SparkleSpiralThread(List<DMXLightingFixture> flowers,
@@ -61,6 +62,7 @@ public class SparkleSpiralThread extends ShowThread implements SensorListener{
 		this.physicalProps = physicalProps;
 		this.startDelay = (int)((startDelay/1000.0f)*fps);
 		delayCount = 0;
+		spriteWidth = raster.width/5;
 	}
 
 	@Override
@@ -83,7 +85,7 @@ public class SparkleSpiralThread extends ShowThread implements SensorListener{
 			raster.beginDraw();
 			raster.background(0);
 			raster.noStroke();
-			raster.translate(128, 128);
+			raster.translate(raster.width/2, raster.height/2);
 			
 			for(int i=0; i<sparkleCount; i++){
 				raster.pushMatrix();
@@ -93,11 +95,11 @@ public class SparkleSpiralThread extends ShowThread implements SensorListener{
 					if(i < 16){						// draw 16 rectangles on the outside
 						rotation = (360/16.0f)*i;
 						raster.rotate((float)(rotation * Math.PI/180));
-						raster.rect(0,100,spriteWidth,spriteWidth);
+						raster.rect(0,raster.height/2.5f,spriteWidth,spriteWidth);
 					} else if(i >= 16 && i < 24){	// draw 8 rectangles on the inside
 						rotation = (360/8.0f)*i;
 						raster.rotate((float)(rotation * Math.PI/180));
-						raster.rect(0,50,spriteWidth,spriteWidth);
+						raster.rect(0,raster.height/5,spriteWidth,spriteWidth);
 					} else {						// draw 1 rectangle in the center
 						raster.rect(0,0,spriteWidth,spriteWidth);
 					}
@@ -107,11 +109,11 @@ public class SparkleSpiralThread extends ShowThread implements SensorListener{
 					} if(i >= 1 && i < 9){			// draw 8 rectangles on the inside
 						rotation = (360/8.0f)*(24-i);
 						raster.rotate((float)(rotation * Math.PI/180));
-						raster.rect(0,50,spriteWidth,spriteWidth);
+						raster.rect(0,raster.height/5,spriteWidth,spriteWidth);
 					} else if(i > 9){						// draw 16 rectangles on the outside
 						rotation = (360/16.0f)*(24-i);
 						raster.rotate((float)(rotation * Math.PI/180));
-						raster.rect(0,100,spriteWidth,spriteWidth);
+						raster.rect(0,raster.height/2.5f,spriteWidth,spriteWidth);
 					}
 				}
 				raster.popMatrix();

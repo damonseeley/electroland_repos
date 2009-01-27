@@ -78,7 +78,7 @@ public class ChimesThread extends ShowThread {
 		raster.noStroke();
 		for(int i=0; i<25; i++){
 			raster.fill(red*brightness, green*brightness, blue*brightness);
-			raster.rect((float)(Math.random()*255), (float)(Math.random()*255), raster.width/5, raster.height/5);
+			raster.rect((float)(Math.random()*raster.width), (float)(Math.random()*raster.height), raster.width/5, raster.height/5);
 		}
 		raster.fill(red*255, green*255, blue*255, alpha);
 		raster.rect(0,0,raster.width,raster.height);

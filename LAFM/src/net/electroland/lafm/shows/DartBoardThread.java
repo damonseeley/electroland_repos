@@ -47,7 +47,7 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
-		topSpeed = 0.2f;
+		topSpeed = 0.15f;
 		fadeOut = false;
 		duration = (lifespan*fps) - (100/fadeSpeed);
 		modulate = false;
@@ -72,7 +72,7 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
-		topSpeed = 0.2f;
+		topSpeed = 0.15f;
 		fadeOut = false;
 		duration = (lifespan*fps) - (100/fadeSpeed);
 		modulate = true;

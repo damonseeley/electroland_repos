@@ -273,21 +273,25 @@ public class GUI extends PApplet{
 	}
 	
 	private void drawDetectors(String lightgroup){
+		int xscale = 256 / conductor.width;
+		int yscale = 256 / conductor.height;
 		Iterator <Detector> i = detectors.iterator();
 		while (i.hasNext()){
 			Detector detector = i.next();
 			if (detector.getLightGroup().equals(lightgroup))
-				ellipse(detector.getX(), detector.getY(), 16, 16);				
+				ellipse(detector.getX()*xscale, detector.getY()*yscale, 16, 16);				
 		}
 	}
 	
 	private void drawMiniDetectors(String lightgroup){
+		int xscale = 256 / conductor.width;
+		int yscale = 256 / conductor.height;
 		Iterator <Detector> i = detectors.iterator();
 		while (i.hasNext()){
 			Detector detector = i.next();
 			if (detector.getLightGroup().equals(lightgroup))
 				//ellipse(detector.getX()/8, detector.getY()/8, 3, 3);
-				point(detector.getX()/8, detector.getY()/8);
+				point((detector.getX()*xscale)/8, (detector.getY()*yscale)/8);
 		}
 	}	
 }

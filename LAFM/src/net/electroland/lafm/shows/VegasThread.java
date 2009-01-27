@@ -103,7 +103,7 @@ public class VegasThread extends ShowThread implements SensorListener{
 			for(int i=0; i<25; i++){
 				float[] color = spectrum.getColor((float)(Math.random()*(maxColorPoint-minColorPoint))+minColorPoint);
 				raster.fill(color[0], color[1], color[2]);
-				raster.rect((float)(Math.random()*(raster.width-1)), (float)(Math.random()*(raster.height-1)), 50, 50);
+				raster.rect((float)(Math.random()*(raster.width-1)), (float)(Math.random()*(raster.height-1)), raster.width/5, raster.height/5);
 			}
 			delay = 0;
 		} else {
