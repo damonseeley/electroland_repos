@@ -120,7 +120,7 @@ public class SpiralThread extends ShowThread implements SensorListener{
 		raster.endDraw();
 		rotation += rotSpeed;
 		currentTightness += spiralTightness;
-		if(currentTightness >= (raster.width/2) + spriteWidth/2){
+		if(currentTightness >= (raster.width/2)){
 			if(loop){
 				spiralTightness = 0 - spiralTightness;
 			} else {

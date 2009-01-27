@@ -34,6 +34,7 @@ import net.electroland.lafm.shows.RandomPropellerThread;	// using this for now
 import net.electroland.lafm.shows.ShutdownThread;
 import net.electroland.lafm.shows.SparkleSpiralThread;
 import net.electroland.lafm.shows.SpinningRingThread;
+import net.electroland.lafm.shows.SpinningThread;
 import net.electroland.lafm.shows.SpiralThread;
 import net.electroland.lafm.shows.ThrobbingThread;
 import net.electroland.lafm.shows.VegasThread;
@@ -89,6 +90,8 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	private PImage innerRingYellow, outerRingYellow;
 	private PImage innerRingPink, outerRingPink;
 	private PImage innerRingPurple, outerRingPurple;
+	private PImage sweepSprite;
+	private PImage sweepRed, sweepOrange, sweepYellow, sweepPink, sweepPurple;
 
 	public Conductor(String args[]){
 		
@@ -148,7 +151,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		}
 		
 		currentSensorShow = 0;
-		sensorShows = new String[13];		// size dependent on number of sensor-triggered shows
+		sensorShows = new String[14];		// size dependent on number of sensor-triggered shows
 		sensorShows[0] = "Throb";
 		sensorShows[1] = "Propeller";
 		sensorShows[2] = "Spiral";
@@ -162,6 +165,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		sensorShows[10] = "Gradient Rings";
 		sensorShows[11] = "Wipe";
 		sensorShows[12] = "Knockout";
+		sensorShows[13] = "Sweep";
 		
 		timedShows = new String[8];
 		timedShows[0] = "Solid Color";
@@ -245,6 +249,11 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		innerRingPurple = guiWindow.gui.loadImage("depends//images//sprites//innerRing_blue_purple_black.png");
 		outerRingPurple = guiWindow.gui.loadImage("depends//images//sprites//outerRing_blue_purple_black.png");
 		
+		sweepRed = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_red_yellow.png");
+		sweepOrange = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_quads_rgb_light.png");
+		sweepYellow = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_watermelon.png");
+		sweepPink = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_cyan_pink.png");
+		sweepPurple = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_lizard.png");
 		
 		// wait 6 secs (for things to get started up) then check weather every half hour
 		weatherChecker = new WeatherChecker(6000, 60 * 30 * 1000);
@@ -446,6 +455,22 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			            	newShow = new KnockoutThread(fixture, soundManager, 5, detectorMngr.getFps(), raster, "Knockout", ShowThread.LOW, spectrum, 10, 5, 0.01f, 0, 0.5f, 0.001f, "blank.wav", physicalProps);
 			            	//newShow = new ImageSequenceThread(fixture, soundManager, 5, detectorMngr.getFps(), raster, "Knockout", ShowThread.LOW, imageCache.getSequence("knockout"), false, "blank.wav", physicalProps);					
 			            	break;
+			            case 13:
+			            	// sweeps
+			            	if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("red")){
+								sweepSprite = sweepRed;
+							} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("orange")){
+								sweepSprite = sweepOrange;
+							} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("yellow")){
+								sweepSprite = sweepYellow;
+							} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("pink")){
+								sweepSprite = sweepPink;
+							} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("purple")){
+								sweepSprite = sweepPurple;
+							}
+			            	newShow = new SpinningThread(fixture, soundManager, 30, detectorMngr.getFps(), raster, "Sweep", ShowThread.LOW, sweepSprite, 2, 0.1f, 0.2f, 5, "blank.wav", physicalProps, 0);
+			            	//newShow = new SpinningRingThread(fixture, soundManager, 30, detectorMngr.getFps(), raster, "GradientRings", ShowThread.LOW, 255, 255, 255, 2, 7, 20, 5, 0.05f, 0.05f, 0.05f, 0.05f, outerRing, innerRing, false, "blank.wav", physicalProps);
+			            	break;
 					}
 					
 					
@@ -610,7 +635,6 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	public void launchGlockenspiel(int showNum, int hour, int minute, int second){
 		//stopAll();
 		if(availableFixtures.size() != 0){
-			// WHAT DO WE DO ABOUT RASTER DIMENSIONS FROM A LIST OF FIXTURES?
 			PGraphics raster = guiWindow.gui.createGraphics(fixtures.get(0).getWidth(), fixtures.get(0).getHeight(), PConstants.P3D);
 			ShowThread newShow = null;
 			int hourcount = hour;	// for test purposes
@@ -621,6 +645,46 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					break;
 				case 0:
 					// solid color
+					
+					Iterator <DMXLightingFixture> fixturelist = fixtures.iterator();
+					while (fixturelist.hasNext()){
+						DMXLightingFixture fixture = fixturelist.next();
+						int red = 0;
+						int green = 0;
+						int blue = 0;
+						if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("red")){
+							red = 255;
+							green = 0;
+							blue = 0;
+						} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("orange")){
+							red = 255;
+							green = 100;
+							blue = 0;
+						} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("yellow")){
+							red = 255;
+							green = 255;
+							blue = 0;
+						} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("pink")){
+							red = 255;
+							green = 0;
+							blue = 255;
+						} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("purple")){
+							red = 255;
+							green = 150;
+							blue = 150;
+						}
+						int bongRate = (int)(Math.random()*1000);
+						raster = guiWindow.gui.createGraphics(fixtures.get(0).getWidth(), fixtures.get(0).getHeight(), PConstants.P3D);	// needs a unique raster for each color
+						newShow = new Glockenspiel(fixture, soundManager, 10, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, red, green, blue, 5, "lumenabroken4.wav", physicalProps, (int)(Math.random()*10000));
+						for(int h=1; h<hourcount; h++){
+							newShow.chain(new Glockenspiel(fixture, soundManager, 5, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, red, green, blue, 5, "lumenabroken4.wav", physicalProps, bongRate));
+						}
+						if(fixturelist.hasNext()){
+							startShow(newShow);	// start every show except last one							
+						}
+					}
+					
+					/*
 					for(int i=0; i<physicalColors.length; i++){
 						raster = guiWindow.gui.createGraphics(fixtures.get(0).getWidth(), fixtures.get(0).getHeight(), PConstants.P3D);	// needs a unique raster for each color
 						List<DMXLightingFixture> monoFixtures = Collections.synchronizedList(new ArrayList<DMXLightingFixture>());
@@ -664,7 +728,8 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						if(i < physicalColors.length-1){
 							startShow(newShow);	// start every show except last one							
 						}
-					}	
+					}
+					*/
 					
 					break;
 				case 1:
@@ -1010,6 +1075,9 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 								fixtureset.add(fixture);
 							}
 						}
+						
+						/*
+						// grayscale
 						float[] points = new float[3];
 						points[0] = 0;
 						points[1] = 0.05f;
@@ -1024,6 +1092,30 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						colorlist[2][0] = 0;
 						colorlist[2][1] = 0;
 						colorlist[2][2] = 0;
+						*/
+						
+						float[] points = new float[5];
+						points[0] = 0;
+						points[1] = 0.25f;
+						points[2] = 0.5f;
+						points[3] = 0.75f;
+						points[4] = 1;
+						float[][] colorlist = new float[5][3];
+						colorlist[0][0] = 0;	// cyan
+						colorlist[0][1] = 255;
+						colorlist[0][2] = 255;
+						colorlist[1][0] = 255;	// yellow
+						colorlist[1][1] = 255;
+						colorlist[1][2] = 0;
+						colorlist[2][0] = 255;	// red
+						colorlist[2][1] = 0;
+						colorlist[2][2] = 0;
+						colorlist[3][0] = 200;	// violet
+						colorlist[3][1] = 75;
+						colorlist[3][2] = 255;
+						colorlist[4][0] = 0;	// cyan
+						colorlist[4][1] = 255;
+						colorlist[4][2] = 255;
 						
 						ColorScheme spectrum = new ColorScheme(colorlist, points);
 						newShow = new GlobalColorShift(fixtureset, soundManager, 20, detectorMngr.getFps(), raster, "RadialColorShift", ShowThread.HIGHEST, spectrum, 0.02f, i/(float)sectors.length, "blank.wav", physicalProps);

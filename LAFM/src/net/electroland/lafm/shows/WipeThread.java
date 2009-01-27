@@ -23,6 +23,7 @@ public class WipeThread extends ShowThread implements SensorListener{
 	private boolean startSound, fadeOut;
 	private ConcurrentHashMap<Integer,Bar> bars;
 	private int barCount = 0;
+	private int numberBars, wipeSpeed;
 
 	public WipeThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
@@ -34,15 +35,19 @@ public class WipeThread extends ShowThread implements SensorListener{
 		this.fadeSpeed = fadeSpeed;
 		this.soundFile = soundFile;
 		this.physicalProps = physicalProps;
+		this.numberBars = numberBars;
+		this.wipeSpeed = wipeSpeed;
 		alpha = 0;
 		age = 0;
 		barWidth = raster.width/12;
 		duration = (lifespan*fps) - (100/fadeSpeed);
 		bars = new ConcurrentHashMap<Integer,Bar>();
-		for(int i=0; i<numberBars; i++){
-			bars.put(barCount, new Bar(raster, wipeSpeed));
-			barCount++;
-		}
+		bars.put(barCount, new Bar(raster, wipeSpeed));
+		barCount++;
+		//for(int i=0; i<numberBars; i++){
+			//bars.put(barCount, new Bar(raster, wipeSpeed));
+			//barCount++;
+		//}
 		startSound = true;
 	}
 	
@@ -56,15 +61,19 @@ public class WipeThread extends ShowThread implements SensorListener{
 		this.fadeSpeed = fadeSpeed;
 		this.soundFile = soundFile;
 		this.physicalProps = physicalProps;
+		this.numberBars = numberBars;
+		this.wipeSpeed = wipeSpeed;
 		alpha = 0;
 		age = 0;
 		barWidth = raster.width/12;
 		duration = (lifespan*fps) - (100/fadeSpeed);
 		bars = new ConcurrentHashMap<Integer,Bar>();
-		for(int i=0; i<numberBars; i++){
-			bars.put(barCount, new Bar(raster, wipeSpeed));
-			barCount++;
-		}
+		bars.put(barCount, new Bar(raster, wipeSpeed));
+		barCount++;
+		//for(int i=0; i<numberBars; i++){
+			//bars.put(barCount, new Bar(raster, wipeSpeed));
+			//barCount++;
+		//}
 		startSound = true;
 	}
 
@@ -80,6 +89,15 @@ public class WipeThread extends ShowThread implements SensorListener{
 		if(startSound){
 			super.playSound(soundFile, physicalProps);
 			startSound = false;
+		}
+		
+		if(age > 30){
+			if(barCount < numberBars){
+				if(Math.random() > 0.8){
+					bars.put(barCount, new Bar(raster, wipeSpeed));
+					barCount++;
+				}
+			}
 		}
 		
 		raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
