@@ -31,6 +31,7 @@ public class GUI extends PApplet{
 	private ShowThread[] showList = new ShowThread[24];
 	private boolean thumbsViewable = true;
 	private boolean maskRaster = false;
+	private boolean viewRaster = true;
 	private PImage lightmask0, lightmask1;
 	
 	public GUI(int width, int height, Conductor conductor, Collection<Detector> detectors){
@@ -82,6 +83,7 @@ public class GUI extends PApplet{
 		
 		controls.addTextlabel("settingslabel","SETTINGS:",281,285).setColorValue(0xffff0000);
 		controls.addToggle("view_thumbnails", true, 281, 300, 10, 10).setColorForeground(color(0,54,82,255));
+		controls.addToggle("view_raster", true, 400, 300, 10, 10).setColorForeground(color(0,54,82,255));
 		controls.addToggle("mask_raster", false, 281, 324, 10, 10).setColorForeground(color(0,54,82,255));
 		//controls.addToggle("random_sensor_show", false, 148, 348, 10, 10).setColorForeground(color(0,54,82,255));
 		
@@ -100,7 +102,7 @@ public class GUI extends PApplet{
 		pushMatrix();
 		translate(10,10);
 		drawPattern();
-		if(!maskRaster){
+		if(!maskRaster && viewRaster){
 			if(activeShowNum < 14){
 				drawDetectors("lightgroup0");
 			} else {
@@ -221,11 +223,11 @@ public class GUI extends PApplet{
 					maskRaster = true;
 				}
 				//maskRaster = Boolean.parseBoolean(String.valueOf(e.controller().value()));
-			} else if(e.controller().name() == "random_sensor_show"){		// enables/disables randomized sensor triggered shows
+			} else if(e.controller().name() == "view_raster"){		// enables/disables raster drawing
 				if(e.controller().value() < 1){
-					//maskRaster = false;
+					viewRaster = false;
 				} else {
-					//maskRaster = true;
+					viewRaster = true;
 				}
 			} else if(e.controller().name().startsWith(" ")){
 				activeShowNum = (int)e.controller().value();
@@ -265,14 +267,16 @@ public class GUI extends PApplet{
 	
 	private void drawPattern(){
 		// the current pattern in play
-		if(showList[activeShowNum] != null){
-			image(showList[activeShowNum].getRaster(),0,0,256,256);
-		}
-		if(maskRaster){
-			if(activeShowNum < 13){
-				image(lightmask0,0,0,256,256);
-			} else {
-				image(lightmask1,0,0,256,256);
+		if(viewRaster){
+			if(showList[activeShowNum] != null){
+				image(showList[activeShowNum].getRaster(),0,0,256,256);
+			}
+			if(maskRaster){
+				if(activeShowNum < 13){
+					image(lightmask0,0,0,256,256);
+				} else {
+					image(lightmask1,0,0,256,256);
+				}
 			}
 		}
 		rect(0, 0, 256, 256);
