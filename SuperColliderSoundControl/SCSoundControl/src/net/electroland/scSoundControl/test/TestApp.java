@@ -88,8 +88,8 @@ public class TestApp extends PApplet implements SCSoundControlNotifiable {
 		ss = new SCSoundControl(numOutputChannels, numInputChannels, this);
 		ss.init();
 		
-		//ss.showDebugOutput(false);
-		ss.showDebugOutput(true);
+		ss.showDebugOutput(false);
+		//ss.showDebugOutput(true);
 
 		theFont = loadFont("ArialMT-16.vlw");
 
