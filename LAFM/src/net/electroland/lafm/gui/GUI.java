@@ -157,6 +157,7 @@ public class GUI extends PApplet{
 					rect(xpos*42 - 2, ypos*52 - 2, 36, 48);
 				}
 				stroke(255);
+				/*
 				if(thumbsViewable){
 					pushMatrix();
 					translate(xpos*42, ypos*52);
@@ -167,6 +168,7 @@ public class GUI extends PApplet{
 					}
 					popMatrix();
 				}
+				*/
 				if(xpos == 4){
 					ypos++;
 					xpos = 0;
@@ -246,6 +248,10 @@ public class GUI extends PApplet{
 						conductor.launchGlockenspiel(i, 6, 0, 0);	// 6 chimes for testing
 						glock = true;
 					}
+				}
+				if(e.controller().name().equals("lightgroup test")){
+					conductor.launchGlockenspiel(-1, 6, 0, 0);
+					glock = true;
 				}
 				if(!glock){
 					int pitch = (int)e.controller().value() + 36;

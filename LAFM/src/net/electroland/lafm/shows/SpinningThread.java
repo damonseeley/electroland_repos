@@ -39,7 +39,7 @@ public class SpinningThread extends ShowThread implements SensorListener{
 		this.fadeSpeed = fadeSpeed;
 		this.soundFile = soundFile;
 		this.physicalProps = physicalProps;
-		this.startDelay = startDelay;
+		this.startDelay = (int)((startDelay/1000.0f)*fps);
 		rotation = 0;
 		delayCount = 0;
 		duration = (lifespan*fps) - (int)(100/fadeSpeed);
@@ -63,7 +63,7 @@ public class SpinningThread extends ShowThread implements SensorListener{
 		this.fadeSpeed = fadeSpeed;
 		this.soundFile = soundFile;
 		this.physicalProps = physicalProps;
-		this.startDelay = startDelay;
+		this.startDelay = (int)((startDelay/1000.0f)*fps);
 		rotation = 0;
 		delayCount = 0;
 		duration = (lifespan*fps) - (int)(100/fadeSpeed);
