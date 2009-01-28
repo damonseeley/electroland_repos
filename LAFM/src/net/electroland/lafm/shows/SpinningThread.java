@@ -25,6 +25,7 @@ public class SpinningThread extends ShowThread implements SensorListener{
 	private int alpha = 100;
 	private int duration;	// counting frames before fading out
 	private int topSpeed, fadeSpeed;
+	private int spriteSize;
 	
 	public SpinningThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
@@ -48,6 +49,8 @@ public class SpinningThread extends ShowThread implements SensorListener{
 		speedUp = true;
 		slowDown = false;
 		startSound = true;
+		spriteSize = raster.width;
+		this.sprite.resize(spriteSize, spriteSize);
 	}
 	
 	public SpinningThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
@@ -72,6 +75,8 @@ public class SpinningThread extends ShowThread implements SensorListener{
 		speedUp = true;
 		slowDown = false;
 		startSound = true;
+		spriteSize = raster.width;
+		this.sprite.resize(spriteSize, spriteSize);
 	}
 
 	@Override
@@ -96,7 +101,8 @@ public class SpinningThread extends ShowThread implements SensorListener{
 			raster.translate(raster.width/2, raster.height/2);
 			raster.rotate((float)(rotation * Math.PI/180));
 			raster.tint(255, 255, 255, alpha);	// default full color
-			raster.image(sprite,-raster.width/2,-raster.height/2,raster.width,raster.height);
+			//raster.image(sprite,-raster.width/2,-raster.height/2,raster.width,raster.height);
+			raster.image(sprite, -spriteSize/2, -spriteSize/2);
 			
 			if(age > duration){
 				fadeOut = true;

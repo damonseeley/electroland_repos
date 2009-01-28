@@ -44,6 +44,7 @@ public class GUI extends PApplet{
 	
 	public void setup(){
 		size(width, height);
+		frameRate(30);
 		controls = new ControlP5(this);
 		controls.setColorBackground(color(100,100,100,0));
 		//controls.setColorForeground(color(255,255,255,10));
@@ -83,9 +84,9 @@ public class GUI extends PApplet{
 		
 		controls.addTextlabel("settingslabel","SETTINGS:",281,285).setColorValue(0xffff0000);
 		controls.addToggle("view_thumbnails", true, 281, 300, 10, 10).setColorForeground(color(0,54,82,255));
-		controls.addToggle("view_raster", true, 400, 300, 10, 10).setColorForeground(color(0,54,82,255));
+		controls.addToggle("view_raster", true, 370, 300, 10, 10).setColorForeground(color(0,54,82,255));
 		controls.addToggle("mask_raster", false, 281, 324, 10, 10).setColorForeground(color(0,54,82,255));
-		//controls.addToggle("random_sensor_show", false, 148, 348, 10, 10).setColorForeground(color(0,54,82,255));
+		controls.addToggle("toggle_detectors", true, 370, 324, 10, 10).setColorForeground(color(0,54,82,255));
 		
 		controls.addTextlabel("soundlabel","SOUND TESTS:",281,360).setColorValue(0xffff0000);
 		controls.addButton("soundtest_1", 1, 281, 373, 100, 12);
@@ -228,6 +229,13 @@ public class GUI extends PApplet{
 					viewRaster = false;
 				} else {
 					viewRaster = true;
+				}
+			} else if(e.controller().name() == "toggle_detectors"){	// enables/disables detectors
+				List<DMXLightingFixture> fixtures = conductor.getAllFixtures();
+				Iterator <DMXLightingFixture> iter = fixtures.iterator();
+				while (iter.hasNext()){
+					DMXLightingFixture fixture = iter.next();
+					fixture.toggleDetectors();
 				}
 			} else if(e.controller().name().startsWith(" ")){
 				activeShowNum = (int)e.controller().value();

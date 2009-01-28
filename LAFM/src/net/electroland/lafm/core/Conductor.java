@@ -573,6 +573,10 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		return availableFixtures;
 	}
 	
+	public List<DMXLightingFixture> getAllFixtures(){
+		return fixtures;
+	}
+	
 	public Collection<ShowThread> getRunningShows(){
 		return liveShows;
 	}
@@ -639,7 +643,6 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			PGraphics raster = guiWindow.gui.createGraphics(fixtures.get(0).getWidth(), fixtures.get(0).getHeight(), PConstants.P3D);
 			ShowThread newShow = null;
 			int hourcount = hour;	// for test purposes
-			System.out.println(showNum);
 			switch(showNum){
 				case -1:
 					// light group test

@@ -25,8 +25,7 @@ public abstract class DMXLightingFixture {
 	protected List <Detector> detectors;
 	protected int width, height; // for generating raster properly.
 	protected String lightgroup;
-	//protected String color;	// physical color of fixture
-	//protected int soundChannel; //sound channel to play on for this fixture.
+	protected boolean detectorsOn = true;
 
 	/**
 	 * @param universe - the byte id of this lighting fixtures DMX universe
@@ -83,26 +82,28 @@ public abstract class DMXLightingFixture {
 	 * @param PImage
 	 */
 	final public void sync(PImage raster){
-		byte[] data = new byte[channels];
-		for (int i = 0; i < data.length; i++){
-			Detector detector = detectors.get(i);
-			if (detector == null){
-				data[i] = 0;
-			}else{
-				// populate the pixel buffer
-				// (if we need to optimize later, I can almost guarantee we
-				//  should start here, by doing direct System.arrayCopy operations
-				//  from raster.pixels.)
-				PImage subraster = raster.get(detector.x, 
-												detector.y, 
-												detector.width, 
-												detector.height);
-				subraster.updatePixels();
-				subraster.loadPixels();
-				data[i] = (byte)detector.model.getValue(subraster.pixels);
+		if(detectorsOn){
+			byte[] data = new byte[channels];
+			for (int i = 0; i < data.length; i++){
+				Detector detector = detectors.get(i);
+				if (detector == null){
+					data[i] = 0;
+				}else{
+					// populate the pixel buffer
+					// (if we need to optimize later, I can almost guarantee we
+					//  should start here, by doing direct System.arrayCopy operations
+					//  from raster.pixels.)
+					PImage subraster = raster.get(detector.x, 
+													detector.y, 
+													detector.width, 
+													detector.height);
+					subraster.updatePixels();
+					subraster.loadPixels();
+					data[i] = (byte)detector.model.getValue(subraster.pixels);
+				}
 			}
+			send(data);
 		}
-		send(data);
 	}
 
 	/**
@@ -111,6 +112,10 @@ public abstract class DMXLightingFixture {
 	 */
 	final public void sync(Image raster){
 		// to do: IMPLEMENT
+	}
+	
+	final public void toggleDetectors(){
+		detectorsOn = !detectorsOn;
 	}
 
 	public int getChannels() {
