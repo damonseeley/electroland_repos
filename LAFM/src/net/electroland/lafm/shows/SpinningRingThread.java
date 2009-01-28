@@ -29,6 +29,7 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 	int age = 0;
 	private int duration;	// counting frames before fading out
 	private int topSpeed;
+	private int outerRadius, innerRadius;
 
 	public SpinningRingThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
@@ -75,6 +76,11 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		    this.innerRing = newInnerRing;
 		}
 		
+		outerRadius = raster.width/2;
+		innerRadius = raster.width/4;
+		//this.outerRing.resize(outerRadius*2, outerRadius*2);	// getting poor results from this
+		//this.innerRing.resize(innerRadius*2, innerRadius*2);
+		
 		duration = (lifespan*fps) - (int)(100/fadeSpeed);
 		innerRot = 0;
 		outerRot = 0;
@@ -117,6 +123,10 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		this.outerDeceleration = outerDeceleration;
 		this.outerRing = outerRing;
 		this.innerRing = innerRing;
+		outerRadius = raster.width/2;
+		innerRadius = raster.width/4;
+		//this.outerRing.resize(outerRadius*2, outerRadius*2);
+		//this.innerRing.resize(innerRadius*2, innerRadius*2);
 		duration = (lifespan*fps) - (int)(100/fadeSpeed);
 		innerRot = 0;
 		outerRot = 0;
@@ -164,12 +174,14 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 			raster.rotate((float)(outerRot * Math.PI/180));
 			raster.tint(red, green, blue, alpha);
 			raster.image(outerRing, -raster.width/2, -raster.height/2, raster.width, raster.height);
+			//raster.image(outerRing, -outerRadius, -outerRadius);
 			raster.popMatrix();
 			
 			raster.pushMatrix();
 			raster.rotate((float)(innerRot * Math.PI/180));
 			raster.tint(red, green, blue, alpha);
 			raster.image(innerRing, -raster.width/4, -raster.width/4, raster.width/2, raster.height/2);
+			//raster.image(innerRing, -innerRadius, -innerRadius);
 			raster.popMatrix();
 			
 			if(age > duration){

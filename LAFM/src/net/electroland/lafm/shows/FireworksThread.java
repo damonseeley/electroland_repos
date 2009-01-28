@@ -127,11 +127,12 @@ public class FireworksThread extends ShowThread implements SensorListener{
 			}
 			raster.endDraw();
 			frequency += frequencySlowRate;
-			age++;
+			//age++;
 		} else {
 			delayCount++;
-			super.resetLifespan();
+			//super.resetLifespan();
 		}
+		age++;
 	}
 	
 	public void sensorEvent(DMXLightingFixture eventFixture, boolean isOn) {

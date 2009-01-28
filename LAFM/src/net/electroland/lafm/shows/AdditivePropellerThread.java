@@ -22,6 +22,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 	private boolean startSound;
 	private String soundFile;
 	private Properties physicalProps;
+	private int barWidth;
 
 	public AdditivePropellerThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
@@ -45,6 +46,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		topSpeed = 20;
 		this.physicalProps = physicalProps;
 		duration = (lifespan*fps) - 150;
+		barWidth = raster.width/6;
 	}
 	
 	public AdditivePropellerThread(List<DMXLightingFixture> flowers,
@@ -69,6 +71,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		topSpeed = 20;
 		this.physicalProps = physicalProps;
 		duration = (lifespan*fps) - 150;
+		barWidth = raster.width/6;
 	}
 
 	@Override
@@ -95,16 +98,16 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		raster.translate(raster.width/2,raster.height/2);
 		raster.rotate((float)(rotation * Math.PI/180));
 		raster.fill(red,0,0);
-		raster.rect(0,-raster.width/10,raster.width/2,raster.width/10);
+		raster.rect(0,-barWidth,raster.width/2,barWidth);
 		raster.rotate((float)(120 * Math.PI/180));
 		raster.fill(0,green,0);
-		raster.rect(0,-raster.width/10,raster.width/2,raster.width/10);
+		raster.rect(0,-barWidth,raster.width/2,barWidth);
 		raster.rotate((float)(120 * Math.PI/180));
 		raster.fill(0,0,blue);
-		raster.rect(0,-raster.width/10,raster.width/2,raster.width/10);
+		raster.rect(0,-barWidth,raster.width/2,barWidth);
 		raster.popMatrix();
-		raster.fill(255,255,255,whitevalue);
-		raster.rect(0,0,raster.width,raster.height);
+		//raster.fill(255,255,255,whitevalue);
+		//raster.rect(0,0,raster.width,raster.height);
 		raster.endDraw();
 		
 		if(age > duration){

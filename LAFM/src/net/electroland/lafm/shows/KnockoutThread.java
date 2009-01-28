@@ -189,7 +189,7 @@ public class KnockoutThread extends ShowThread implements SensorListener{
 			this.width = width;
 			this.height = height;
 			this.colorPoint = (float)(Math.random()*maxColorPoint) - minColorPoint;
-			System.out.println(maxColorPoint +" "+ minColorPoint +" "+ colorPoint);
+			//System.out.println(maxColorPoint +" "+ minColorPoint +" "+ colorPoint);
 			color = spectrum.getColor(colorPoint);
 			red = color[0]/255.0f;
 			green = color[1]/255.0f;

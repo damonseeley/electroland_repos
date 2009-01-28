@@ -114,11 +114,22 @@ public class RandomPropellerThread extends ShowThread implements SensorListener 
 		raster.endDraw();
 		
 		if(numPropellers < 2){			// add another propeller
-			if(Math.random() > 0.8){
-				propellers.put(propellerCount, new Propeller(propellerCount, (int)(Math.random()*90)));
+			//if(Math.random() > 0.7){
+				Iterator<Propeller> iter = propellers.values().iterator();
+				if(iter.hasNext()){
+					Propeller prop = iter.next();
+					int newrot = prop.rotation + (int)(Math.random()*90) + 45;
+					if(prop.colorPoint > 0.5){
+						propellers.put(propellerCount, new Propeller(propellerCount, (int)(Math.random()*90), newrot, (float)(Math.random()*0.5)));
+					} else {
+						propellers.put(propellerCount, new Propeller(propellerCount, (int)(Math.random()*90), newrot, (float)(Math.random()*0.5) + 0.5f));
+					}
+				} else {
+					propellers.put(propellerCount, new Propeller(propellerCount, 0));
+				}
 				propellerCount++;
 				numPropellers++;
-			}
+			//}
 		}
 		
 		if(age > duration){
@@ -138,6 +149,7 @@ public class RandomPropellerThread extends ShowThread implements SensorListener 
 		}
 		age++;
 		
+		/*
 		if(speedUp){
 			if(rotSpeed < topSpeed){
 				rotSpeed += acceleration;
@@ -152,6 +164,7 @@ public class RandomPropellerThread extends ShowThread implements SensorListener 
 				// fade out
 			}
 		}
+		*/
 
 	}
 	
@@ -173,17 +186,35 @@ public class RandomPropellerThread extends ShowThread implements SensorListener 
 	
 	private class Propeller{
 		
-		private int id, rotation, age, oldAge, alpha, startDelay, delayCounter;
+		private int id, age, oldAge, alpha, startDelay, delayCounter;
+		private float speed;
 		private float[] color;
+		public float colorPoint;
+		public int rotation;
 		
 		private Propeller(int id, int startDelay){
 			this.id = id;
 			this.startDelay = startDelay;
+			this.speed = rotSpeed;	// starting speed
 			rotation = (int)(Math.random()*360);
 			age = 0;
 			alpha = 100;
 			oldAge = (int)(Math.random()*450)+150;	// when to fade out (5-20 seconds)
-			color = spectrum.getColor((float)Math.random());
+			colorPoint = (float)Math.random();
+			color = spectrum.getColor(colorPoint);
+			delayCounter = 0;
+		}
+		
+		private Propeller(int id, int startDelay, int rotation, float colorpoint){
+			this.id = id;
+			this.startDelay = startDelay;
+			this.speed = rotSpeed;	// starting speed
+			this.rotation = rotation;
+			this.colorPoint = colorpoint;
+			age = 0;
+			alpha = 100;
+			oldAge = (int)(Math.random()*450)+150;	// when to fade out (5-20 seconds)
+			color = spectrum.getColor(colorPoint);
 			delayCounter = 0;
 		}
 		
@@ -200,7 +231,19 @@ public class RandomPropellerThread extends ShowThread implements SensorListener 
 					}
 				}
 				age++;
-				rotation += rotSpeed;
+				rotation += speed;
+				
+				if(speedUp){
+					if(speed < topSpeed){
+						speed += acceleration;
+					}
+				} else if(slowDown){
+					if(speed <= 0){
+						speed = 0;
+					} else {
+						speed -= deceleration;
+					}
+				}
 				
 				raster.pushMatrix();
 				raster.rotate((float)(rotation * Math.PI/180));

@@ -116,7 +116,7 @@ public class SpinningThread extends ShowThread implements SensorListener{
 					cleanStop();
 				}
 			}
-			age++;
+			//age++;
 			
 			raster.endDraw();
 			
@@ -139,8 +139,11 @@ public class SpinningThread extends ShowThread implements SensorListener{
 			}
 		} else {
 			delayCount++;
-			super.resetLifespan();
+			// all of the shows start at the same point, and thus will end at the same point
+			// they only appear to start at different points
+			//super.resetLifespan();
 		}
+		age++;
 	}
 
 	public void sensorEvent(DMXLightingFixture eventFixture, boolean isOn) {

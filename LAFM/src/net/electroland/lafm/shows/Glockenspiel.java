@@ -78,7 +78,7 @@ public class Glockenspiel extends ShowThread {
 			}
 		} else {
 			delayCount++;
-			super.resetLifespan();
+			//super.resetLifespan();
 		}
 	}
 

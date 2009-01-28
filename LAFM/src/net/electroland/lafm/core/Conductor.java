@@ -395,7 +395,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			            	break;
 			            case 9:
 			            	// light group test
-			            	newShow = new LightGroupTestThread(fixture, soundManager, 30, detectorMngr.getFps(), raster, "LightGroupTest", ShowThread.LOW, guiWindow.gui.loadImage("depends//images//lightgrouptest.png"));
+			            	newShow = new LightGroupTestThread(fixture, soundManager, 30, detectorMngr.getFps(), raster, "LightGroupTest", ShowThread.LOW, guiWindow.gui.loadImage("depends//images//lightgrouptest2.png"));
 			            	break;
 			            case 10:
 			            	// gradient rings
@@ -485,7 +485,19 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					} else if(showProps[0].equals("throb")){
 						newShow = new ThrobbingThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]), Integer.parseInt(showProps[7]), Integer.parseInt(showProps[8]), Integer.parseInt(showProps[9]), Integer.parseInt(showProps[10]), showProps[11], physicalProps);
 					} else if(showProps[0].equals("spiral")){
-						newShow = new SpiralThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "SpiralThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]), Integer.parseInt(showProps[7]), Integer.parseInt(showProps[8]), guiWindow.gui.loadImage("depends//images//sprites//blueRedSphere.png"), showProps[9], physicalProps);
+						PImage sprite = null;
+		            	if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("red")){
+							sprite = guiWindow.gui.loadImage("depends//images//sprites//blueRedSphere.png");
+						} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("orange")){
+							sprite = guiWindow.gui.loadImage("depends//images//sprites//yellowRedSphere.png");
+						} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("yellow")){
+							sprite = guiWindow.gui.loadImage("depends//images//sprites//yellowCyanSphere.png");
+						} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("pink")){
+							sprite = guiWindow.gui.loadImage("depends//images//sprites//blueRedSphere.png");
+						} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("purple")){
+							sprite = guiWindow.gui.loadImage("depends//images//sprites//blueRedSphere.png");
+						}
+						newShow = new SpiralThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "SpiralThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]), Integer.parseInt(showProps[7]), Integer.parseInt(showProps[8]), sprite, showProps[9], physicalProps);
 					} else if(showProps[0].equals("dartboard")){
 						ColorScheme spectrum = processColorScheme(showProps[2], showProps[3]);
 						newShow = new DartBoardThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.LOW, spectrum, Float.parseFloat(showProps[4]), Float.parseFloat(showProps[5]), Float.parseFloat(showProps[6]), Float.parseFloat(showProps[7]), showProps[8], physicalProps);
@@ -646,7 +658,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			switch(showNum){
 				case -1:
 					// light group test
-					newShow = new LightGroupTestThread(fixtures, soundManager, 30, detectorMngr.getFps(), raster, "LightGroupTestThread", ShowThread.HIGHEST, guiWindow.gui.loadImage("depends//images//lightgrouptest.png"));
+					newShow = new LightGroupTestThread(fixtures, soundManager, 30, detectorMngr.getFps(), raster, "LightGroupTestThread", ShowThread.HIGHEST, guiWindow.gui.loadImage("depends//images//lightgrouptest2.png"));
 					break;
 				case 0:
 					// solid color
