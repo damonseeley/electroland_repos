@@ -47,7 +47,10 @@ public class GlobalColorShift extends ShowThread {
 	@Override
 	public void doWork(PGraphics raster) {
 		if(startSound){
-			super.playSound(soundFile, physicalProps);
+			//super.playSound(soundFile, physicalProps);
+			SoundManager s = super.getSoundManager();
+			int soundID = s.newSoundID();
+			s.globalSound(soundID,"blank.wav",false,1,10000,"globalcolorshift");
 			startSound = false;
 		}
 		

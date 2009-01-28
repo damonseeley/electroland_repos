@@ -893,6 +893,10 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 							startShow(newShow);	// start every show except last one							
 						}
 					}
+					
+					int soundID = soundManager.newSoundID();
+					soundManager.globalSound(soundID,"blank.wav",false,1,20000,"dartboardshow");
+					
 					break;
 				case 3:
 					// sparkle spiral

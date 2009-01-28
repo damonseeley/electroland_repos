@@ -70,7 +70,7 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 		speedUp = true;
 		slowDown = false;
 		this.soundFile = soundFile;
-		startSound = true;
+		startSound = false;		// sound is turned off to be triggered as a global sound
 		this.physicalProps = physicalProps;
 		topSpeed = 0.15f;
 		fadeOut = false;
