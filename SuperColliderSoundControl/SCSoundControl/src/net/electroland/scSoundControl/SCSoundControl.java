@@ -1,9 +1,12 @@
 package net.electroland.scSoundControl;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.concurrent.*;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -36,6 +39,13 @@ public class SCSoundControl implements OSCListener, Runnable {
 	
 	SCSoundControlNotifiable _notifyListener;
 	private boolean _serverLive;
+	private boolean _serverBooted;
+	
+	private int _bufferReadIdOffset = 1000;
+	
+	private String[] _synthdefFile = 
+		{"SuperColliderSynthDefs/ELenv.scsyndef", 
+		"SuperColliderSynthDefs/ELplaybuf.scsyndef"};
 	
 	// if for some reason the system has more than 8 input channels, be sure to
 	// specify that here.
@@ -78,6 +88,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 		_prevPingResponseTime =  _prevPingRequestTime = new Date();
 		_notifyListener = listener;
 		_serverLive = false;
+		_serverBooted = false;
 		
 		//start the thread that will ping scsynth
 		_serverPingThread = new Thread(this);
@@ -106,7 +117,6 @@ public class SCSoundControl implements OSCListener, Runnable {
 		// It does not notify when playBufs reach the end of a buffer, though.
 		// Too bad, that. Would have to poll.
 		sendMessage("/notify", new Object[] { 1 });
-		// sendMessage("/dumpOSC", new Object[]{1});
 
 		//start by cleaning up any detritus from previous runs on the same server:
 		cleanup();
@@ -118,6 +128,18 @@ public class SCSoundControl implements OSCListener, Runnable {
 		//if so, would need to choose an alternate groupID (e.g. += 10000)
 		createGroup(_motherGroupID, 1);
 		
+		//load the synthdefs onto the server - not working yet.
+//		for (int i=0; i < _synthdefFile.length; i++) {
+//			File f = new File(_synthdefFile[i]);
+//			if (f.canRead()) {
+//				FileInputStream stream = new FileInputStream(f);
+//			}
+//			char[] synthdata = new char[0];
+//		
+//			sendMessage("/d_recv", new Object[]{synthdata});
+//		}
+
+		
 	}
 
 	// cleanup all SCSoundControl nodes in SuperCollider
@@ -127,6 +149,19 @@ public class SCSoundControl implements OSCListener, Runnable {
 		sendMessage("/g_freeAll", new Object[] { _motherGroupID });
 		freeNode(_motherGroupID);
 		freeAllBuffers();
+		
+		//reset the lists of sound nodes, nodeIds, busses, etc
+		SoundNode sn;
+		Enumeration<SoundNode> e = _soundNodes.elements();
+		while (e.hasMoreElements()) {
+			sn = e.nextElement();
+			sn.setAlive(false);
+		}
+		_soundNodes.clear();
+		_nodeIdList.clear();
+		_busList.clear();
+		_bufferMap.clear();
+		
 	}
 
 	//***************
@@ -152,6 +187,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 
 		// create and load the buffer
 		sendMessage("/b_allocRead", new Object[] { bufNum, filename });
+		sendMessage("/sync", new Object[]{bufNum + _bufferReadIdOffset});
 		return bufNum;
 	}
 
@@ -181,7 +217,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 	// polyphony.
 	// If more are needed, see super collider help on how to do this from
 	// either command line arguments or by changing defaults via sclang code.
-	protected int createBus() {
+	protected synchronized int createBus() {
 		int newBusID = _minAudioBus;
 		while (_busList.contains(newBusID))
 			newBusID++;
@@ -197,8 +233,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 	// get an unallocated node id.
 	protected int getNewNodeID() {
 		int newID = _minNodeID;
-		while (_nodeIdList.contains(newID))
-			newID++;
+		while (_nodeIdList.contains(newID)) newID++;
 		return newID;
 	}
 
@@ -318,29 +353,42 @@ public class SCSoundControl implements OSCListener, Runnable {
 	// handle incoming messages
 	public void acceptMessage(java.util.Date time, OSCMessage message) {
 		// to print the full message:
-		if (true) {
+		if (false) {
 		 debugPrint(message.getAddress());
 		 for(int i = 0; i < message.getArguments().length; i++) {
-		 debugPrint(" " + message.getArguments()[i].toString());
+			 debugPrint(" " + message.getArguments()[i].toString());
 		 }
 		 debugPrintln("");
 		}
 		
 		if (message.getAddress().matches("/done")) {
 			if (message.getArguments()[0].toString().matches("/b_allocRead")) {
-				debugPrintln("A buffer was created.");
+				//debugPrintln("A buffer was created.");
 			}
 		}
 
-		if (message.getAddress().matches("/n_go")) {
-			debugPrintln("node " + message.getArguments()[0].toString()
-					+ " was created.");
+		else if (message.getAddress().matches("/synced")) {
+			int id = (Integer)(message.getArguments()[0]) - _bufferReadIdOffset;
+			if (_bufferMap.containsKey(id)) {
+				debugPrintln("Buffer " + id + " was loaded.");
+				_notifyListener.receiveNotification_BufferLoaded(id, _bufferMap.get(id));
+			}
+		}
+		
+		else if (message.getAddress().matches("/n_go") ||
+			message.getAddress().matches("/n_info")) {
 			//if it was node 1, then we can get going.
-			
+			if ((Integer)(message.getArguments()[0]) == 1 && 
+				(Integer)(message.getArguments()[1]) == 0 ) {
+				if (!_serverBooted) {
+					_serverBooted = true;
+					handleServerBooted();
+				}
+			}
 		}
 
 		// handle notices of freed nodes
-		if (message.getAddress().matches("/n_end")) {
+		else if (message.getAddress().matches("/n_end")) {
 			// take message.getArguments()[0] (the node id that was freed)
 			// and free up any resources associated with it.
 			debugPrintln("node " + message.getArguments()[0].toString()
@@ -365,11 +413,12 @@ public class SCSoundControl implements OSCListener, Runnable {
 		}
 		
 		//handle /status responses (status.reply)
-		if (message.getAddress().matches("status.*")) {
+		else if (message.getAddress().matches("status.*")) {
 			Float avgCPU = (Float)(message.getArguments()[5]);
 			Float peakCPU = (Float)(message.getArguments()[6]);
 			handleServerStatusUpdate(avgCPU, peakCPU);
 		}
+		
 	}
 
 	public SoundNode createSoundNodeOnSingleChannel(int bufferNumber, boolean doLoop, int channel, float amplitude) {
@@ -403,7 +452,6 @@ public class SCSoundControl implements OSCListener, Runnable {
 		return sn;
 	}
 	
-	
 
 	// debug output helpers
 	boolean _doDebug = false;
@@ -422,30 +470,28 @@ public class SCSoundControl implements OSCListener, Runnable {
 			System.out.println(s);
 	}
 
+	protected void handleServerBooted() {
+		//reinit data.
+		this.init();
+		//notify client.
+		_notifyListener.receiveNotification_ServerRunning();		
+	}
+	
 	protected void handleServerStatusUpdate(float avgCPU, float peakCPU) {
 		_prevPingResponseTime = new Date();
 		
-		if (_serverLive == false) {
+		//if (!_serverLive || !_serverBooted) {
+		if (!_serverLive) {
 			_serverLive = true;
-			//Server restarted. reinit this object
-			
-			//WORKAROUND: the server will respond to a ping before it is fully booted up.
-			//One of the last things it does is create group node 1, so for now we'll simply
-			//wait a little while till it should be up and running ok.
-			//TODO: need to monitor for the creation of node 1. That requires a bit of
-			//rearchitecting, and is not appropriate until we're getting out of testing.
-			//Date then = new Date();
-			//while ((new Date()).getTime() - then.getTime() < 2000) {}
-			
-			this.init();
-			//notify client
-			_notifyListener.receiveNotification_ServerRunning();
+			//Server is running. Query for node 1 (the sign that server's booted).
+			sendMessage("/notify", new Object[] { 1 });
+			sendMessage("/n_query", new Object[]{1});	
+			debugPrintln("Querying node 1");
 		}
 		
 		_notifyListener.receiveNotification_ServerStatus(avgCPU, peakCPU);
 		
 		//debugPrintln("status latency: " + (_prevPingResponseTime.getTime() - _prevPingRequestTime.getTime()));
-		
 	}
 	
 	
@@ -463,6 +509,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 					//We've timed out on the previous status request.
 					_notifyListener.receiveNotification_ServerStopped();
 					_serverLive = false;
+					_serverBooted = false;
 				}
 				//else we just keep waiting for a response or a timeout
 			}

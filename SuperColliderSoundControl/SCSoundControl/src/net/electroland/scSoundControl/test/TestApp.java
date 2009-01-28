@@ -106,8 +106,9 @@ public class TestApp extends PApplet implements SCSoundControlNotifiable {
 		//keep track of buffer numbers returned.
 		for (int i=1; i <= numSoundFiles; i++) {
 			String bufferName = new String(soundFilePath + soundFilePrefix + i + soundFileSuffix);
-			_bufferList.add(ss.readBuf(bufferName));
-			println("Added buffer " + bufferName);
+			//_bufferList.add(ss.readBuf(bufferName));
+			ss.readBuf(bufferName);
+			println("Requested buffer " + bufferName);
 		}		
 	}
 	
@@ -255,6 +256,12 @@ public class TestApp extends PApplet implements SCSoundControlNotifiable {
 		peakCPUhistory.add(0, floor(height * (1f - (peakCPU/ 100f))));
 		if (peakCPUhistory.size() > width) peakCPUhistory.removeElementAt(peakCPUhistory.size()-1);
 	}
+	
+	public void receiveNotification_BufferLoaded(int id, String filename) {
+		println("Loaded buffer " + id + ", " + filename);
+		_bufferList.add(id);
+	}
+
 	
 	static public void main(String args[]) {   PApplet.main(new String[] { "net.electroland.scSoundControl.test.TestApp" });}
 
