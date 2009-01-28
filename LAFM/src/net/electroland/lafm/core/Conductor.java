@@ -895,7 +895,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					}
 					
 					int soundID = soundManager.newSoundID();
-					soundManager.globalSound(soundID,"blank.wav",false,1,20000,"dartboardshow");
+					soundManager.globalSound(soundID,"Alliance.wav",false,1,20000,"dartboardshow");
 					
 					break;
 				case 3:
