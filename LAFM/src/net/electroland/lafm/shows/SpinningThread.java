@@ -26,6 +26,7 @@ public class SpinningThread extends ShowThread implements SensorListener{
 	private int duration;	// counting frames before fading out
 	private int topSpeed, fadeSpeed;
 	private int spriteSize;
+	private boolean interactive;
 	
 	public SpinningThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
@@ -50,7 +51,8 @@ public class SpinningThread extends ShowThread implements SensorListener{
 		slowDown = false;
 		startSound = true;
 		spriteSize = raster.width;
-		this.sprite.resize(spriteSize, spriteSize);
+		interactive = true;
+		//this.sprite.resize(spriteSize, spriteSize);
 	}
 	
 	public SpinningThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
@@ -76,7 +78,8 @@ public class SpinningThread extends ShowThread implements SensorListener{
 		slowDown = false;
 		startSound = true;
 		spriteSize = raster.width;
-		this.sprite.resize(spriteSize, spriteSize);
+		interactive = false;
+		//this.sprite.resize(spriteSize, spriteSize);
 	}
 
 	@Override
@@ -104,6 +107,7 @@ public class SpinningThread extends ShowThread implements SensorListener{
 			//raster.image(sprite,-raster.width/2,-raster.height/2,raster.width,raster.height);
 			raster.image(sprite, -spriteSize/2, -spriteSize/2);
 			
+			//System.out.println(age +" "+ duration);
 			if(age > duration){
 				fadeOut = true;
 			}
@@ -125,7 +129,7 @@ public class SpinningThread extends ShowThread implements SensorListener{
 				if(Math.abs(rotSpeed) < topSpeed){
 					rotSpeed += acceleration;
 				}
-			} else if(slowDown){
+			} else if(slowDown && age > 60){
 				if(Math.abs(rotSpeed) > 0){
 					rotSpeed -= deceleration;
 				}
@@ -149,12 +153,17 @@ public class SpinningThread extends ShowThread implements SensorListener{
 	public void sensorEvent(DMXLightingFixture eventFixture, boolean isOn) {
 		if (this.getFlowers().contains(eventFixture) && !isOn){
 			// slow down when sensor triggered off
-			speedUp = false;
-			slowDown = true;
+			if(interactive){
+				speedUp = false;
+				slowDown = true;
+			}
 		} else if(this.getFlowers().contains(eventFixture) && isOn){
 			// reactivate
-			speedUp = true;
-			slowDown = false;
+			if(interactive){
+				speedUp = true;
+				slowDown = false;
+				alpha = 100;
+			}
 		}
 	}
 	

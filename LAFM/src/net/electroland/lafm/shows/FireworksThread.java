@@ -105,7 +105,7 @@ public class FireworksThread extends ShowThread implements SensorListener{
 			}
 			if(fadeOut){
 				if(alpha < 100){
-					alpha += fadeSpeed;
+					alpha += fadeOutSpeed;
 					raster.fill(0,0,0,alpha);
 					raster.rect(0,0,raster.width,raster.height);
 				} 
@@ -145,7 +145,7 @@ public class FireworksThread extends ShowThread implements SensorListener{
 			// reactivate
 			fadeOut = false;
 			alpha = 0;
-			age = 0;
+			//age = 0;
 		}
 	}
 	

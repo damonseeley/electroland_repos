@@ -94,6 +94,7 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		}
 		fadeIn = true;
 		fadeOut = false;
+		fadeEverythingOut = false;
 		this.soundFile = soundFile;
 		this.physicalProps = physicalProps;
 		this.startDelay = (int)((startDelay/1000.0f)*fps);
@@ -140,6 +141,7 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		}
 		fadeIn = true;
 		fadeOut = false;
+		fadeEverythingOut = false;
 		this.soundFile = soundFile;
 		this.physicalProps = physicalProps;
 		this.startDelay = (int)((startDelay/1000.0f)*fps);
@@ -196,10 +198,11 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 					cleanStop();
 				}
 			}
-			age++;
+			//age++;
 			
 			raster.endDraw();
-			
+			/*
+			// this was originally for the core, which is no longer in use
 			if(fadeIn && brightness < 255){
 				brightness += coreSpeed;
 			} else if(fadeIn && brightness >= 255){
@@ -213,6 +216,7 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 				fadeIn = true;
 				fadeOut = false;
 			}
+			*/
 			
 			outerRot += outerSpeed;
 			innerRot += innerSpeed;
@@ -235,17 +239,21 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 					coreSpeed -= innerDeceleration*10;
 				}
 				if(Math.abs(outerSpeed) < 1){
+					fadeEverythingOut = true;
+					/*
 					if(alpha <= 0){
 						cleanStop();					
 					} else {
 						alpha -= fadeSpeed;
 					}
+					*/
 				}
 			}
 		} else {
 			delayCount++;
-			super.resetLifespan();
+			//super.resetLifespan();
 		}
+		age++;
 	}
 	
 	public void sensorEvent(DMXLightingFixture eventFixture, boolean isOn) {
@@ -258,8 +266,10 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 			slowDown = true;
 		} else if(this.getFlowers().contains(eventFixture) && isOn){
 			// reactivate
+			fadeEverythingOut = false;
 			speedUp = true;
 			slowDown = false;
+			alpha = 100;
 		}
 	}
 

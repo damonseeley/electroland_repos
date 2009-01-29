@@ -178,6 +178,7 @@ public class RandomPropellerThread extends ShowThread implements SensorListener 
 			// reactivate
 			speedUp = true;
 			slowDown = false;
+			alpha = 100;
 		}
 	}
 	
@@ -240,6 +241,15 @@ public class RandomPropellerThread extends ShowThread implements SensorListener 
 				} else if(slowDown){
 					if(speed <= 0){
 						speed = 0;
+					} else if(speed < 1){
+						/*
+						if(alpha > 0){
+							alpha -= fadeSpeed;
+						} else {
+							cleanStop();
+						}
+						*/
+						fadeOut = true;
 					} else {
 						speed -= deceleration;
 					}

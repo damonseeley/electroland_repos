@@ -92,6 +92,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	private PImage innerRingPurple, outerRingPurple;
 	private PImage sweepSprite;
 	private PImage sweepRed, sweepOrange, sweepYellow, sweepPink, sweepPurple;
+	private PImage[] sweepSpriteList;
 
 	public Conductor(String args[]){
 		
@@ -255,6 +256,20 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		sweepYellow = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_watermelon.png");
 		sweepPink = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_cyan_pink.png");
 		sweepPurple = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_lizard.png");
+		
+		sweepSpriteList = new PImage[12];
+		sweepSpriteList[0] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_red_yellow.png");
+		sweepSpriteList[1] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_blue_orange.png");
+		sweepSpriteList[2] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_cyan_pink.png");
+		sweepSpriteList[3] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_lizard.png");
+		sweepSpriteList[4] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_pink.png");
+		sweepSpriteList[5] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_purple_green.png");
+		sweepSpriteList[6] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_quads_rgb_light.png");
+		sweepSpriteList[7] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_quads_rgb.png");
+		sweepSpriteList[8] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_red_yellow.png");
+		sweepSpriteList[9] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_watermelon.png");
+		sweepSpriteList[10] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_red_aqua.png");
+		sweepSpriteList[11] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_watermelon.png");
 		
 		// wait 6 secs (for things to get started up) then check weather every half hour
 		weatherChecker = new WeatherChecker(6000, 60 * 30 * 1000);
@@ -658,7 +673,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			switch(showNum){
 				case -1:
 					// light group test
-					newShow = new LightGroupTestThread(fixtures, soundManager, 30, detectorMngr.getFps(), raster, "LightGroupTestThread", ShowThread.HIGHEST, guiWindow.gui.loadImage("depends//images//lightgrouptest2.png"));
+					newShow = new LightGroupTestThread(fixtures, soundManager, 600, detectorMngr.getFps(), raster, "LightGroupTestThread", ShowThread.HIGHEST, guiWindow.gui.loadImage("depends//images//lightgrouptest2.png"));
 					break;
 				case 0:
 					// solid color
@@ -1170,6 +1185,9 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 							startShow(newShow);	// start every show except last one							
 						}
 					}
+					
+					int soundID2 = soundManager.newSoundID();
+					soundManager.globalSound(soundID2,"Alliance.wav",false,1,20000,"verticalcolorshift");
 					break;
 				case 6:
 					// radial color shift
@@ -1232,6 +1250,8 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 							startShow(newShow);	// start every show except last one							
 						}
 					}
+					int sID = soundManager.newSoundID();
+					soundManager.globalSound(sID,"Alliance.wav",false,1,20000,"radialcolorshift");
 					break;
 				case 7:
 					// fireworks
@@ -1376,10 +1396,10 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					*/
 					break;
 				case 8:
-					// sweeps
 					Iterator <DMXLightingFixture> fixtureiter = fixtures.iterator();
 					while (fixtureiter.hasNext()){
 						DMXLightingFixture fixture = fixtureiter.next();
+						/*
 						if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("red")){
 							sweepSprite = sweepRed;
 						} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("orange")){
@@ -1391,6 +1411,9 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("purple")){
 							sweepSprite = sweepPurple;
 						}
+						*/
+						int luckynumber = (int)(Math.random()*(sweepSpriteList.length-1));
+						sweepSprite = sweepSpriteList[luckynumber];
 						raster = guiWindow.gui.createGraphics(fixtures.get(0).getWidth(), fixtures.get(0).getHeight(), PConstants.P3D);	// needs a unique raster for each color
 						newShow = new SpinningThread(fixture, soundManager, 30, detectorMngr.getFps(), raster, "Sweep", ShowThread.HIGHEST, sweepSprite, 2, 0.1f, 0.2f, 5, "blank.wav", physicalProps, (int)(Math.random()*6000));
 						if(fixtureiter.hasNext()){

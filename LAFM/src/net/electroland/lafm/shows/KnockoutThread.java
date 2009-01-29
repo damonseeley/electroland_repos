@@ -148,7 +148,7 @@ public class KnockoutThread extends ShowThread implements SensorListener{
 		}
 		age++;
 		
-		if(knockOut){	// start the decay of a random box
+		if(knockOut && age > 60){	// start the decay of a random box (after minimum time on)
 			if(inactiveBoxes.length > 0){
 				removeBox();
 				removeBox();
