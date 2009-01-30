@@ -12,7 +12,7 @@ public class TestApp extends PApplet implements SCSoundControlNotifiable {
 	SCSoundControl ss;
 	
 	//test behavior parameters
-	int soundSurge_period = 30; //period in seconds of a surge in number of sounds played
+	int soundSurge_period = 10; //period in seconds of a surge in number of sounds played
 	int maxPolyphony = 200; // how many voices max to play at once
 	
 	//how many output channels. If there are more than 8 inputs, we'll need to add a variable for that too.
@@ -154,6 +154,11 @@ public class TestApp extends PApplet implements SCSoundControlNotifiable {
 		fill(peakCpuColor);
 		text("% PeakCPU: " + nf(peakCPU, 2, 1), 6, 60);
 
+		//oscillate the playback rates
+		for (int i=0; i <_soundNodes.size(); i++) {
+			if (_soundNodes.get(i).isAlive()) _soundNodes.get(i).setPlaybackRate(surgeFactor);
+		}
+
 		
 		//somewhate independently from the frame rate, update the sound playback
 		if (millis() - lastSoundUpdateTime > soundUpdateInterval) {
@@ -189,7 +194,7 @@ public class TestApp extends PApplet implements SCSoundControlNotifiable {
 		int newVoicesNeeded = targetPolyphony - getCurPolyphony();
 		if (newVoicesNeeded > 0) {
 			for (int i = 0; i < newVoicesNeeded; i++) {
-				_soundNodes.add(ss.createSoundNode(_bufferList.get((int)random(0,_bufferList.size())), false, generateRandomVolumeArray()));
+				_soundNodes.add(ss.createSoundNode(_bufferList.get((int)random(0,_bufferList.size())), false, generateRandomVolumeArray(), 2f));
 			}
 		}
 	}
@@ -219,7 +224,7 @@ public class TestApp extends PApplet implements SCSoundControlNotifiable {
 		if (!serverIsLive) return;
 		
 		if (_bufferList.contains(bufferNumber)) {
-			SoundNode thisNode = ss.createSoundNode(_bufferList.get(bufferNumber), false, new float[]{1f,1f});
+			SoundNode thisNode = ss.createSoundNode(_bufferList.get(bufferNumber), false, new float[]{1f,1f}, 2f);
 			if (thisNode != null) { _soundNodes.add(thisNode); }
 			else { println("Unable to create new sound node for buffer " + bufferNumber); }
 		} else {

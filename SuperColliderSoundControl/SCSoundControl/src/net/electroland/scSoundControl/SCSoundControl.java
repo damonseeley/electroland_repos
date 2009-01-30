@@ -143,7 +143,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 	}
 
 	// cleanup all SCSoundControl nodes in SuperCollider
-	public void cleanup() {
+	public synchronized void cleanup() {
 		// by freeing the mother group we clean up all the nodes we've created
 		// on the SC server
 		sendMessage("/g_freeAll", new Object[] { _motherGroupID });
@@ -163,6 +163,25 @@ public class SCSoundControl implements OSCListener, Runnable {
 		_bufferMap.clear();
 		
 	}
+	
+	private void bootScsynth() {
+		//launcing scsynth as an external OS process
+		try {
+			//scsynthProcess = Runtime.getRuntime().exec("/Applications/SuperCollider/scsynth -u 57110", null, new File("/Applications/SuperCollider/"));
+			//InputStream is = scsynthProcess.getInputStream();
+
+//			// print output
+//			byte[] buf = new byte[1024];
+//			int nr = is.read(buf);
+//			while (nr != -1)
+//			{
+//			System.out.write(buf, 0, nr);
+//			nr = is.read(buf);
+//			}
+			
+		} catch (Exception e) {}
+	}
+	
 
 	//***************
 	//It is up to the user to be sure that the filename exists on the machine running SuperCollider.
@@ -175,7 +194,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 	//In the case you load one HUGE buffer and immediately load another tiny one,
 	//the second might finish before the first, and you wouldn't know which one was
 	//valid - or which one threw an error...
-	public int readBuf(String filename) {
+	public synchronized int readBuf(String filename) {
 		
 		// find a buffer id that hasn't been used yet.
 		int bufNum = 0;
@@ -192,7 +211,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 	}
 
 	// free a given buffer from the SC server.
-	public void freeBuf(int bufNum) {
+	public synchronized void freeBuf(int bufNum) {
 		// if it's a valid remove request:
 		if (_bufferMap.containsKey(bufNum)) {
 			// remove it from the buffer map
@@ -203,7 +222,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 	}
 
 	// free all the buffers we've allocated on the SC server.
-	public void freeAllBuffers() {
+	public synchronized void freeAllBuffers() {
 		Iterator<Integer> iter = _bufferMap.keySet().iterator();
 		while (iter.hasNext()) {
 			int bufNum = iter.next();
@@ -266,9 +285,9 @@ public class SCSoundControl implements OSCListener, Runnable {
 	// create an ELplaybuf node. Note this is a custom synthdef which must be
 	// loaded on the server.
 	protected void createPlayBuf(int id, int group, int bufNum, int outBus,
-			float amp, boolean loop) {
+			float amp, float rate, boolean loop) {
 
-		Object args[] = new Object[14];
+		Object args[] = new Object[16];
 		args[0] = new String("ELplaybuf");
 		args[1] = new Integer(id); // need a unique ID
 		args[2] = new Integer(1); // add to tail of node list in group
@@ -281,8 +300,10 @@ public class SCSoundControl implements OSCListener, Runnable {
 		args[9] = loop ? new Integer(1) : new Integer(0);
 		args[10] = new String("ampScale");
 		args[11] = new Float(amp);
-		args[12] = new String("groupToFreeWhenDone");
-		args[13] = new Integer(group);
+		args[12] = new String("playbackRate");
+		args[13] = new Float(rate);
+		args[14] = new String("groupToFreeWhenDone");
+		args[15] = new Integer(group);
 
 		sendMessage("/s_new", args);
 		_nodeIdList.add(id);
@@ -311,8 +332,8 @@ public class SCSoundControl implements OSCListener, Runnable {
 	}
 
 	// set the amplitude of an ELplaybuf or an ELenv.
-	public void setAmplitude(int id, float amp) {
-		sendMessage("/n_set", new Object[] { id, "ampScale", amp });
+	public void setProperty(int id, String paramName, float amp) {
+		sendMessage("/n_set", new Object[] { id, paramName, amp });
 	}
 
 	// helper function
@@ -367,11 +388,15 @@ public class SCSoundControl implements OSCListener, Runnable {
 			}
 		}
 
+		//TODO: this /synced watch will work as long as the buffers load correctly.
+		//but there's not yet any way to know if they fail.
 		else if (message.getAddress().matches("/synced")) {
 			int id = (Integer)(message.getArguments()[0]) - _bufferReadIdOffset;
-			if (_bufferMap.containsKey(id)) {
-				debugPrintln("Buffer " + id + " was loaded.");
-				_notifyListener.receiveNotification_BufferLoaded(id, _bufferMap.get(id));
+			synchronized (this) {
+				if (_bufferMap.containsKey(id)) {
+					debugPrintln("Buffer " + id + " was loaded.");
+					_notifyListener.receiveNotification_BufferLoaded(id, _bufferMap.get(id));
+				}
 			}
 		}
 		
@@ -400,7 +425,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 					SoundNode sn = _soundNodes.get(id);
 					if (sn != null) {
 						sn.setAlive(false);
-						freeBus(sn.get_bus());
+						freeBus(sn.get_busID());
 					}
 					_soundNodes.remove(id);
 				}
@@ -421,17 +446,17 @@ public class SCSoundControl implements OSCListener, Runnable {
 		
 	}
 
-	public SoundNode createSoundNodeOnSingleChannel(int bufferNumber, boolean doLoop, int channel, float amplitude) {
+	public SoundNode createSoundNodeOnSingleChannel(int bufferNumber, boolean doLoop, int channel, float amplitude, float playbackRate) {
 		float[] amps = new float[_outChannels];
 		for (int i=0; i < _outChannels; i++) {
 			amps[i] = i==channel? amplitude : 0;
 		}
-		return createSoundNode(bufferNumber, doLoop, amps);
+		return createSoundNode(bufferNumber, doLoop, amps, playbackRate);
 	}
 	
 	// create a new soundNode to playback a buffer
 	public SoundNode createSoundNode(int bufferNumber, boolean doLoop,
-			float[] channelAmplitudes) {
+			float[] channelAmplitudes, float playbackRate) {
 		
 		//sanity check the buffer that's been requested.
 		if (!_bufferMap.containsKey(bufferNumber)) return null;
@@ -445,7 +470,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 		SoundNode sn;
 		synchronized (this) {
 			sn = new SoundNode(this, newGroup, bufferNumber, doLoop,
-					_outChannels, channelAmplitudes);
+					_outChannels, channelAmplitudes, playbackRate);
 			_soundNodes.put(newGroup, sn);			
 		}
 
