@@ -13,8 +13,8 @@ import net.electroland.lafm.core.ShowThread;
 import net.electroland.lafm.core.SoundManager;
 import net.electroland.lafm.util.ColorScheme;
 
-public class WipeThread extends ShowThread implements SensorListener{
-	
+public class RadialWipeThread extends ShowThread implements SensorListener{
+
 	private int alpha, barWidth;
 	private ColorScheme spectrum;
 	private int fadeSpeed, age, duration;
@@ -23,9 +23,9 @@ public class WipeThread extends ShowThread implements SensorListener{
 	private boolean startSound, fadeOut;
 	private ConcurrentHashMap<Integer,Bar> bars;
 	private int barCount = 0;
-	private int numberBars, wipeSpeed;
+	private int wipeSpeed;
 
-	public WipeThread(DMXLightingFixture flower, SoundManager soundManager,
+	public RadialWipeThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
 			ColorScheme spectrum, int wipeSpeed, int fadeSpeed,
 			int numberBars, String soundFile, Properties physicalProps) {
@@ -35,23 +35,23 @@ public class WipeThread extends ShowThread implements SensorListener{
 		this.fadeSpeed = fadeSpeed;
 		this.soundFile = soundFile;
 		this.physicalProps = physicalProps;
-		this.numberBars = numberBars;
 		this.wipeSpeed = wipeSpeed;
 		alpha = 0;
 		age = 0;
 		barWidth = raster.width/5;
 		duration = (lifespan*fps) - (100/fadeSpeed);
 		bars = new ConcurrentHashMap<Integer,Bar>();
-		bars.put(barCount, new Bar(raster, wipeSpeed));
-		barCount++;
-		//for(int i=0; i<numberBars; i++){
-			//bars.put(barCount, new Bar(raster, wipeSpeed));
-			//barCount++;
-		//}
+		//bars.put(barCount, new Bar(raster, wipeSpeed));
+		//barCount++;
+		float step = 1.0f/numberBars;
+		for(int i=0; i<numberBars; i++){
+			bars.put(barCount, new Bar(raster, i*step));
+			barCount++;
+		}
 		startSound = true;
 	}
 	
-	public WipeThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
+	public RadialWipeThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
 			ColorScheme spectrum, int wipeSpeed, int fadeSpeed,
 			int numberBars, String soundFile, Properties physicalProps) {
@@ -61,19 +61,19 @@ public class WipeThread extends ShowThread implements SensorListener{
 		this.fadeSpeed = fadeSpeed;
 		this.soundFile = soundFile;
 		this.physicalProps = physicalProps;
-		this.numberBars = numberBars;
 		this.wipeSpeed = wipeSpeed;
 		alpha = 0;
 		age = 0;
 		barWidth = raster.width/5;
 		duration = (lifespan*fps) - (100/fadeSpeed);
 		bars = new ConcurrentHashMap<Integer,Bar>();
-		bars.put(barCount, new Bar(raster, wipeSpeed));
-		barCount++;
-		//for(int i=0; i<numberBars; i++){
-			//bars.put(barCount, new Bar(raster, wipeSpeed));
-			//barCount++;
-		//}
+		//bars.put(barCount, new Bar(raster, wipeSpeed));
+		//barCount++;
+		float step = 1.0f/numberBars;
+		for(int i=0; i<numberBars; i++){
+			bars.put(barCount, new Bar(raster, i*step));
+			barCount++;
+		}
 		startSound = true;
 	}
 
@@ -91,15 +91,6 @@ public class WipeThread extends ShowThread implements SensorListener{
 			startSound = false;
 		}
 		
-		if(age > 30){
-			if(barCount < numberBars){
-				if(Math.random() > 0.8){
-					bars.put(barCount, new Bar(raster, wipeSpeed));
-					barCount++;
-				}
-			}
-		}
-		
 		raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
 		raster.beginDraw();
 		raster.noStroke();
@@ -113,7 +104,7 @@ public class WipeThread extends ShowThread implements SensorListener{
 		if(age > duration){
 			fadeOut = true;
 		}
-		if(fadeOut){
+		if(fadeOut && age > 30){
 			if(alpha < 100){
 				alpha += fadeSpeed;
 				raster.fill(0,0,0,alpha);
@@ -148,42 +139,38 @@ public class WipeThread extends ShowThread implements SensorListener{
 	public class Bar{
 		private int red, green, blue;
 		private int y, rotation;
-		private int wipeSpeed, suggestedWipeSpeed;
+		private int barAge, delay;
+		private int totalDelay = 90;
 		
-		public Bar(PGraphics raster, int wipeSpeed){
-			this.suggestedWipeSpeed = wipeSpeed;
-			this.wipeSpeed = (int)(Math.random()*wipeSpeed) + wipeSpeed/2;
-			float[] color = spectrum.getColor((float)Math.random());
+		public Bar(PGraphics raster, float offset){
+			float[] color = spectrum.getColor(offset);
 			red = (int)color[0];
 			green = (int)color[1];
 			blue = (int)color[2];
 			y = 0;
-			rotation = (int)(Math.random()*360);
-		}
-		
-		public void reset(){
-			wipeSpeed = (int)(Math.random()*suggestedWipeSpeed) + suggestedWipeSpeed/2;
-			float[] color = spectrum.getColor((float)Math.random());
-			red = (int)color[0];
-			green = (int)color[1];
-			blue = (int)color[2];
-			y = 0;
-			rotation = (int)(Math.random()*360);
+			barAge = 0;
+			rotation = (int)(offset*360);
+			delay = (int)(offset*totalDelay);
 		}
 		
 		public void draw(PGraphics raster){
-			if(y < raster.height){
-				y += wipeSpeed;
-			} else {
-				reset();
+			if(barAge >= delay){
+				raster.pushMatrix();
+				raster.translate(raster.width/2, raster.height/2);
+				raster.rotate((float)(rotation * Math.PI/180));
+				raster.translate(-raster.width/2, -raster.height/2);
+				raster.fill(red, green, blue);
+				raster.rect(0,y,raster.width,barWidth);
+				raster.popMatrix();
+				if(y < raster.height){
+					y += wipeSpeed;
+				} else {
+					barAge = 0;
+					y = 0;
+					delay = totalDelay;
+				}
 			}
-			raster.pushMatrix();
-			raster.translate(raster.width/2, raster.height/2);
-			raster.rotate((float)(rotation * Math.PI/180));
-			raster.translate(-raster.width/2, -raster.height/2);
-			raster.fill(red, green, blue);
-			raster.rect(0,y,raster.width,barWidth);
-			raster.popMatrix();
+			barAge++;
 		}
 	}
 

@@ -14,22 +14,23 @@ import net.electroland.lafm.core.SoundManager;
 public class SpinningRingThread extends ShowThread implements SensorListener{
 	
 	private int red, green, blue;							// color value
-	private float brightness, fadeSpeed;					// brightness of color (for center throbbing)
+	private float fadeSpeed;					// brightness of color (for center throbbing)
 	private float outerRot, innerRot;						// current rotational positions
 	private float outerSpeed, innerSpeed, coreSpeed;		// brightness change increments
 	private float innerAcceleration, innerDeceleration;	// subtract from hold durations
 	private float outerAcceleration, outerDeceleration;	// subtract from hold durations
-	private boolean speedUp, slowDown, fadeIn, fadeOut, fadeEverythingOut;
+	private boolean speedUp, slowDown, fadeIn, fadeEverythingOut;
 	private PImage outerRing, innerRing;
 	private int alpha = 100;
 	private boolean startSound;
+	private boolean interactive;
 	private String soundFile;
 	private Properties physicalProps;
 	private int startDelay, delayCount;
-	int age = 0;
+	private int age = 0;
 	private int duration;	// counting frames before fading out
 	private int topSpeed;
-	private int outerRadius, innerRadius;
+	//private int outerRadius, innerRadius;
 
 	public SpinningRingThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
@@ -37,7 +38,7 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 			float outerSpeed, float innerSpeed, float coreSpeed, float fadeSpeed,
 			float outerAcceleration, float outerDeceleration, float innerAcceleration,
 			float innerDeceleration, PImage outerRing, PImage innerRing,
-			boolean startFast, String soundFile, Properties physicalProps, int startDelay) {
+			boolean startFast, String soundFile, Properties physicalProps, int startDelay, boolean interactive) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
 		this.green = green;
@@ -52,6 +53,11 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		this.outerDeceleration = outerDeceleration;
 		this.outerRing = outerRing;
 		this.innerRing = innerRing;
+		this.interactive = interactive;
+		if(!interactive){
+			alpha = 0;
+			fadeIn = true;
+		}
 		
 		if(outerSpeed < 0){											// mirror flip image
 			PImage newOuterRing = new PImage(outerRing.width, outerRing.height, PConstants.ARGB);
@@ -76,15 +82,14 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		    this.innerRing = newInnerRing;
 		}
 		
-		outerRadius = raster.width/2;
-		innerRadius = raster.width/4;
+		//outerRadius = raster.width/2;
+		//innerRadius = raster.width/4;
 		//this.outerRing.resize(outerRadius*2, outerRadius*2);	// getting poor results from this
 		//this.innerRing.resize(innerRadius*2, innerRadius*2);
 		
 		duration = (lifespan*fps) - (int)(100/fadeSpeed);
 		innerRot = 0;
 		outerRot = 0;
-		brightness = 255;
 		if(startFast){
 			speedUp = false;
 			slowDown = true;
@@ -92,14 +97,12 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 			speedUp = true;
 			slowDown = false;
 		}
-		fadeIn = true;
-		fadeOut = false;
 		fadeEverythingOut = false;
 		this.soundFile = soundFile;
 		this.physicalProps = physicalProps;
 		this.startDelay = (int)((startDelay/1000.0f)*fps);
 		delayCount = 0;
-		topSpeed = 45;
+		topSpeed = 40;
 		startSound = true;
 	}
 	
@@ -109,7 +112,7 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 			float outerSpeed, float innerSpeed, float coreSpeed, float fadeSpeed,
 			float outerAcceleration, float outerDeceleration, float innerAcceleration,
 			float innerDeceleration, PImage outerRing, PImage innerRing,
-			boolean startFast, String soundFile, Properties physicalProps, int startDelay) {
+			boolean startFast, String soundFile, Properties physicalProps, int startDelay, boolean interactive) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
 		this.green = green;
@@ -124,14 +127,19 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		this.outerDeceleration = outerDeceleration;
 		this.outerRing = outerRing;
 		this.innerRing = innerRing;
-		outerRadius = raster.width/2;
-		innerRadius = raster.width/4;
+		this.interactive = interactive;
+		if(!interactive){
+			alpha = 0;
+			fadeIn = true;
+		}
+		
+		//outerRadius = raster.width/2;
+		//innerRadius = raster.width/4;
 		//this.outerRing.resize(outerRadius*2, outerRadius*2);
 		//this.innerRing.resize(innerRadius*2, innerRadius*2);
 		duration = (lifespan*fps) - (int)(100/fadeSpeed);
 		innerRot = 0;
 		outerRot = 0;
-		brightness = 255;
 		if(startFast){
 			speedUp = false;
 			slowDown = true;
@@ -139,14 +147,12 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 			speedUp = true;
 			slowDown = false;
 		}
-		fadeIn = true;
-		fadeOut = false;
 		fadeEverythingOut = false;
 		this.soundFile = soundFile;
 		this.physicalProps = physicalProps;
 		this.startDelay = (int)((startDelay/1000.0f)*fps);
 		delayCount = 0;
-		topSpeed = 45;
+		topSpeed = 40;
 		startSound = true;
 	}
 
@@ -197,26 +203,17 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 				if(alpha <= 0){
 					cleanStop();
 				}
+			} else if(fadeIn){
+				if(alpha < 100){
+					alpha += fadeSpeed;
+				} 
+				if(alpha >= 100){
+					fadeIn = false;
+					alpha = 100;
+				}
 			}
-			//age++;
 			
 			raster.endDraw();
-			/*
-			// this was originally for the core, which is no longer in use
-			if(fadeIn && brightness < 255){
-				brightness += coreSpeed;
-			} else if(fadeIn && brightness >= 255){
-				brightness = 255;
-				fadeIn = false;
-				fadeOut = true;
-			} else if(fadeOut && brightness > 0){
-				brightness -= coreSpeed;
-			} else if(fadeOut && brightness <= 0){
-				brightness = 0;
-				fadeIn = true;
-				fadeOut = false;
-			}
-			*/
 			
 			outerRot += outerSpeed;
 			innerRot += innerSpeed;
@@ -228,12 +225,28 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 					innerSpeed += innerAcceleration;
 				}
 				coreSpeed += innerAcceleration*10;
-			} else if(slowDown){
-				if(Math.abs(outerSpeed) > 0){
+			} else if(slowDown && age > 30){
+				if(outerSpeed > 0 && outerDeceleration > 0){
 					outerSpeed -= outerDeceleration;
+					if(outerSpeed <= 0){
+						outerSpeed = 0;
+					}
+				} else if(outerSpeed < 0 && outerDeceleration < 0){
+					outerSpeed -= outerDeceleration;
+					if(outerSpeed >= 0){
+						outerSpeed = 0;
+					}
 				}
-				if(Math.abs(innerSpeed) > 0){
+				if(innerSpeed > 0 && innerDeceleration > 0){
 					innerSpeed -= innerDeceleration;
+					if(innerSpeed <= 0){
+						innerSpeed = 0;
+					}
+				} else if(innerSpeed < 0 && innerDeceleration < 0){
+					innerSpeed -= innerDeceleration;
+					if(innerSpeed >= 0){
+						innerSpeed = 0;
+					}
 				}
 				if(coreSpeed > 0){
 					coreSpeed -= innerDeceleration*10;
@@ -259,17 +272,21 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 	public void sensorEvent(DMXLightingFixture eventFixture, boolean isOn) {
 		// assumes that this thread is only used in a single thread per fixture
 		// environment (thus this.getFlowers() is an array of 1)
-		if (this.getFlowers().contains(eventFixture) && !isOn){
-			//this.cleanStop();
-			// potentially slow down when sensor triggered off
-			speedUp = false;
-			slowDown = true;
-		} else if(this.getFlowers().contains(eventFixture) && isOn){
-			// reactivate
-			fadeEverythingOut = false;
-			speedUp = true;
-			slowDown = false;
-			alpha = 100;
+		if(interactive){
+			if (this.getFlowers().contains(eventFixture) && !isOn){
+				//this.cleanStop();
+				// potentially slow down when sensor triggered off
+				speedUp = false;
+				slowDown = true;
+				innerDeceleration = innerSpeed / 60;	// deceleration based on current speed,
+				outerDeceleration = outerSpeed / 60;	// always takes same amount of time to stop
+			} else if(this.getFlowers().contains(eventFixture) && isOn){
+				// reactivate
+				fadeEverythingOut = false;
+				speedUp = true;
+				slowDown = false;
+				alpha = 100;
+			}
 		}
 	}
 

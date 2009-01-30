@@ -31,7 +31,7 @@ public class SpinningThread extends ShowThread implements SensorListener{
 	public SpinningThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
 			PImage sprite, float rotSpeed, float acceleration, float deceleration,
-			int fadeSpeed, String soundFile, Properties physicalProps, int startDelay) {
+			int fadeSpeed, String soundFile, Properties physicalProps, int startDelay, boolean interactive) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		
 		this.sprite = sprite;
@@ -42,6 +42,7 @@ public class SpinningThread extends ShowThread implements SensorListener{
 		this.soundFile = soundFile;
 		this.physicalProps = physicalProps;
 		this.startDelay = (int)((startDelay/1000.0f)*fps);
+		this.interactive = interactive;
 		rotation = 0;
 		delayCount = 0;
 		duration = (lifespan*fps) - (int)(100/fadeSpeed);
@@ -51,14 +52,13 @@ public class SpinningThread extends ShowThread implements SensorListener{
 		slowDown = false;
 		startSound = true;
 		spriteSize = raster.width;
-		interactive = true;
 		//this.sprite.resize(spriteSize, spriteSize);
 	}
 	
 	public SpinningThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
 			PImage sprite, float rotSpeed, float acceleration, float deceleration,
-			int fadeSpeed, String soundFile, Properties physicalProps, int startDelay) {
+			int fadeSpeed, String soundFile, Properties physicalProps, int startDelay, boolean interactive) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		
 		this.sprite = sprite;
@@ -69,6 +69,7 @@ public class SpinningThread extends ShowThread implements SensorListener{
 		this.soundFile = soundFile;
 		this.physicalProps = physicalProps;
 		this.startDelay = (int)((startDelay/1000.0f)*fps);
+		this.interactive = interactive;
 		rotation = 0;
 		delayCount = 0;
 		duration = (lifespan*fps) - (int)(100/fadeSpeed);
@@ -78,7 +79,6 @@ public class SpinningThread extends ShowThread implements SensorListener{
 		slowDown = false;
 		startSound = true;
 		spriteSize = raster.width;
-		interactive = false;
 		//this.sprite.resize(spriteSize, spriteSize);
 	}
 
@@ -129,9 +129,17 @@ public class SpinningThread extends ShowThread implements SensorListener{
 				if(Math.abs(rotSpeed) < topSpeed){
 					rotSpeed += acceleration;
 				}
-			} else if(slowDown && age > 60){
-				if(Math.abs(rotSpeed) > 0){
+			} else if(slowDown && age > 30){
+				if(rotSpeed > 0 && deceleration > 0){
 					rotSpeed -= deceleration;
+					if(rotSpeed <= 0){
+						rotSpeed = 0;
+					}
+				} else if(rotSpeed < 0 && deceleration < 0){
+					rotSpeed -= deceleration;
+					if(rotSpeed >= 0){
+						rotSpeed = 0;
+					}
 				}
 				if(Math.abs(rotSpeed) < 1){
 					if(alpha <= 0){
@@ -151,15 +159,14 @@ public class SpinningThread extends ShowThread implements SensorListener{
 	}
 
 	public void sensorEvent(DMXLightingFixture eventFixture, boolean isOn) {
-		if (this.getFlowers().contains(eventFixture) && !isOn){
-			// slow down when sensor triggered off
-			if(interactive){
+		if(interactive){
+			if (this.getFlowers().contains(eventFixture) && !isOn){
+				// slow down when sensor triggered off
 				speedUp = false;
 				slowDown = true;
-			}
-		} else if(this.getFlowers().contains(eventFixture) && isOn){
-			// reactivate
-			if(interactive){
+				deceleration = rotSpeed / 60;	// deceleration based on current speed,
+			} else if(this.getFlowers().contains(eventFixture) && isOn){
+				// reactivate
 				speedUp = true;
 				slowDown = false;
 				alpha = 100;

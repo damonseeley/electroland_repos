@@ -112,7 +112,7 @@ public class VegasThread extends ShowThread implements SensorListener{
 		if(age > duration){
 			fadeOut = true;
 		}
-		if(fadeOut){
+		if(fadeOut && age > 30){
 			if(alpha < 100){
 				alpha += fadeSpeed;
 				raster.fill(0,0,0,alpha);

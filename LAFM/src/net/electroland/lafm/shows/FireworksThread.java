@@ -30,14 +30,17 @@ public class FireworksThread extends ShowThread implements SensorListener{
 	private int startDelay, delayCount;
 	private int alpha = 0;
 	private boolean fadeOut;
+	private boolean interactive;
 	private int fadeOutSpeed = 3;
 	private int duration;	// counting frames before fading out
 	private float frequencySlowRate;
+	private int backgroundColor = 255;
 
 	public FireworksThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float speed,
-			float frequency, PImage texture, String soundFile, Properties physicalProps, int startDelay) {
+			float frequency, PImage texture, String soundFile, Properties physicalProps,
+			int startDelay, boolean interactive) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
@@ -50,16 +53,18 @@ public class FireworksThread extends ShowThread implements SensorListener{
 		this.physicalProps = physicalProps;
 		this.totalFrames = lifespan*fps;
 		this.startDelay = (int)((startDelay/1000.0f)*fps);
+		this.interactive = interactive;
 		delayCount = 0;
 		duration = (lifespan*fps) - (100/fadeOutSpeed);
-		frequencySlowRate = (1 - frequency)/duration;	// add this to frequency
+		frequencySlowRate = (0.9f - frequency)/duration;	// add this to frequency
 		startSound = true;
 	}
 	
 	public FireworksThread(List<DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float speed,
-			float frequency, PImage texture, String soundFile, Properties physicalProps, int startDelay) {
+			float frequency, PImage texture, String soundFile, Properties physicalProps,
+			int startDelay, boolean interactive) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
@@ -72,9 +77,10 @@ public class FireworksThread extends ShowThread implements SensorListener{
 		this.physicalProps = physicalProps;
 		this.totalFrames = lifespan*fps;
 		this.startDelay = (int)((startDelay/1000.0f)*fps);
+		this.interactive = interactive;
 		delayCount = 0;
 		duration = (lifespan*fps) - (100/fadeOutSpeed);
-		frequencySlowRate = (1 - frequency)/duration;	// add this to frequency
+		frequencySlowRate = (0.9f - frequency)/duration;	// add this to frequency
 		startSound = true;
 	}
 
@@ -100,10 +106,26 @@ public class FireworksThread extends ShowThread implements SensorListener{
 				}
 			}
 			
+			raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
+			//raster.rectMode(PConstants.CENTER);
+			raster.beginDraw();
+			raster.noStroke();
+			raster.background(backgroundColor);
+			if(backgroundColor > 0){
+				backgroundColor -= 10;
+			}
+			if(backgroundColor < 0){
+				backgroundColor = 0;
+			}
+			Iterator<Firework> i = fireworks.values().iterator();
+			while (i.hasNext()){
+				Firework f = i.next();
+				f.draw(raster);
+			}
 			if(age > duration){
 				fadeOut = true;
 			}
-			if(fadeOut){
+			if(fadeOut && age > 30){	// minimum duration to stay on
 				if(alpha < 100){
 					alpha += fadeOutSpeed;
 					raster.fill(0,0,0,alpha);
@@ -114,16 +136,6 @@ public class FireworksThread extends ShowThread implements SensorListener{
 					raster.rect(0,0,raster.width,raster.height);
 					cleanStop();
 				}
-			}
-			
-			raster.colorMode(PConstants.RGB, 255, 255, 255, 100);
-			raster.rectMode(PConstants.CENTER);
-			raster.beginDraw();
-			raster.background(0);
-			Iterator<Firework> i = fireworks.values().iterator();
-			while (i.hasNext()){
-				Firework f = i.next();
-				f.draw(raster);
 			}
 			raster.endDraw();
 			frequency += frequencySlowRate;
@@ -138,14 +150,16 @@ public class FireworksThread extends ShowThread implements SensorListener{
 	public void sensorEvent(DMXLightingFixture eventFixture, boolean isOn) {
 		// assumes that this thread is only used in a single thread per fixture
 		// environment (thus this.getFlowers() is an array of 1)
-		if (this.getFlowers().contains(eventFixture) && !isOn){
-			// fade out
-			fadeOut = true;
-		} else if(this.getFlowers().contains(eventFixture) && isOn){
-			// reactivate
-			fadeOut = false;
-			alpha = 0;
-			//age = 0;
+		if(interactive){
+			if (this.getFlowers().contains(eventFixture) && !isOn){
+				// fade out
+				fadeOut = true;
+			} else if(this.getFlowers().contains(eventFixture) && isOn){
+				// reactivate
+				fadeOut = false;
+				alpha = 0;
+				//age = 0;
+			}
 		}
 	}
 	

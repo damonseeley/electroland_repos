@@ -5,6 +5,7 @@ import java.util.Properties;
 
 import processing.core.PConstants;
 import processing.core.PGraphics;
+import processing.core.PImage;
 import net.electroland.detector.DMXLightingFixture;
 import net.electroland.lafm.core.SensorListener;
 import net.electroland.lafm.core.ShowThread;
@@ -27,18 +28,23 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 	int fadeSpeed = 3;
 	private int duration;	// counting frames before fading out
 	private boolean modulate;
+	private boolean interactive;
+	private PImage overlay;
 
 	public DartBoardThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float speed,
-			float offset, float acceleration, float deceleration, String soundFile,
-			Properties physicalProps) {
+			float offset, float acceleration, float deceleration, float topSpeed,
+			String soundFile, Properties physicalProps, boolean interactive, PImage overlay) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
 		this.offset = offset;
 		this.acceleration = acceleration;
 		this.deceleration = deceleration;
+		this.topSpeed = topSpeed;
+		this.interactive = interactive;
+		this.overlay = overlay;
 		val1 = 0;
 		val2 = val1 + offset;
 		val3 = val2 + offset;
@@ -47,7 +53,6 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
-		topSpeed = 0.15f;
 		fadeOut = false;
 		duration = (lifespan*fps) - (100/fadeSpeed);
 		modulate = false;
@@ -56,14 +61,17 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 	public DartBoardThread(List<DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float speed,
-			float offset, float acceleration, float deceleration, String soundFile,
-			Properties physicalProps) {
+			float offset, float acceleration, float deceleration, float topSpeed,
+			String soundFile, Properties physicalProps, boolean interactive, PImage overlay) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
 		this.offset = offset;
 		this.acceleration = acceleration;
 		this.deceleration = deceleration;
+		this.topSpeed = topSpeed;
+		this.interactive = interactive;
+		this.overlay = overlay;
 		val1 = 0;
 		val2 = val1 + offset;
 		val3 = val2 + offset;
@@ -72,7 +80,6 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 		this.soundFile = soundFile;
 		startSound = false;		// sound is turned off to be triggered as a global sound
 		this.physicalProps = physicalProps;
-		topSpeed = 0.15f;
 		fadeOut = false;
 		duration = (lifespan*fps) - (100/fadeSpeed);
 		modulate = true;
@@ -107,6 +114,9 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 		float[] colorc = spectrum.getColor(val3);
 		raster.fill(colorc[0],colorc[1],colorc[2]);
 		raster.ellipse(0,0,raster.width/5,raster.height/5);
+		raster.translate(-raster.width/2, -raster.height/2);
+		raster.image(overlay, 0, 0, raster.width, raster.height);
+		raster.translate(raster.width/2, raster.height/2);
 		
 		if(age > duration){
 			fadeOut = true;
@@ -164,7 +174,7 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 				if(speed < topSpeed){
 					speed += acceleration;
 				}
-			} else if(slowDown){
+			} else if(slowDown && age > 30){
 				if(speed > 0){
 					speed -= deceleration;
 				}
@@ -178,18 +188,20 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 	public void sensorEvent(DMXLightingFixture eventFixture, boolean isOn) {
 		// assumes that this thread is only used in a single thread per fixture
 		// environment (thus this.getFlowers() is an array of 1)
-		if (this.getFlowers().contains(eventFixture) && !isOn){
-			//this.cleanStop();
-			// potentially slow down when sensor triggered off
-			speedUp = false;
-			slowDown = true;
-		} else if(this.getFlowers().contains(eventFixture) && isOn){
-			// reactivate
-			speedUp = true;
-			slowDown = false;
-			fadeOut = false;
-			alpha = 0;
-			age = 0;
+		if(interactive){
+			if (this.getFlowers().contains(eventFixture) && !isOn){
+				//this.cleanStop();
+				// potentially slow down when sensor triggered off
+				speedUp = false;
+				slowDown = true;
+			} else if(this.getFlowers().contains(eventFixture) && isOn){
+				// reactivate
+				speedUp = true;
+				slowDown = false;
+				fadeOut = false;
+				alpha = 0;
+				age = 0;
+			}
 		}
 	}
 

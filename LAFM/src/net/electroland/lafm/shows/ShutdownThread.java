@@ -15,12 +15,15 @@ public class ShutdownThread extends ShowThread {
 
 	public ShutdownThread(List<DMXLightingFixture> flowers, PGraphics raster,
 			String ID) {
-		super(flowers, null, 0, 1, raster, ID, 1000000);
+		super(flowers, null, 5, 30, raster, ID, 1000000);	// extended lifespan to make sure all fixtures are painted black
 	}
 
 	@Override
 	public void doWork(PGraphics raster) {
-		// won't get called, due to instantly short lifespan.
+		raster.colorMode(PConstants.RGB, 255, 255, 255);
+		raster.beginDraw();
+		raster.background(0);	// paint it black.
+		raster.endDraw();
 	}
 
 	@Override

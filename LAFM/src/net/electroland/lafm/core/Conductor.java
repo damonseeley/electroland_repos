@@ -30,6 +30,7 @@ import net.electroland.lafm.shows.KnockoutThread;
 import net.electroland.lafm.shows.LightGroupTestThread;
 import net.electroland.lafm.shows.PieThread;
 import net.electroland.lafm.shows.PropellerThread;
+import net.electroland.lafm.shows.RadialWipeThread;
 import net.electroland.lafm.shows.RandomPropellerThread;	// using this for now
 import net.electroland.lafm.shows.ShutdownThread;
 import net.electroland.lafm.shows.SparkleSpiralThread;
@@ -152,7 +153,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		}
 		
 		currentSensorShow = 0;
-		sensorShows = new String[14];		// size dependent on number of sensor-triggered shows
+		sensorShows = new String[15];		// size dependent on number of sensor-triggered shows
 		sensorShows[0] = "Throb";
 		sensorShows[1] = "Propeller";
 		sensorShows[2] = "Spiral";
@@ -167,6 +168,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		sensorShows[11] = "Wipe";
 		sensorShows[12] = "Knockout";
 		sensorShows[13] = "Sweep";
+		sensorShows[14] = "Radial Wipe";
 		
 		timedShows = new String[9];
 		timedShows[0] = "Solid Color";
@@ -357,7 +359,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 							pointlist[1] = 0.5f;
 							pointlist[2] = 1;
 							spectrum = new ColorScheme(colorlist, pointlist);
-							newShow = new DartBoardThread(fixture, soundManager, 7, detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.LOW, spectrum, 0.01f, 0.1f, 0.001f, 0.002f, "blank.wav", physicalProps);
+							newShow = new DartBoardThread(fixture, soundManager, 7, detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.LOW, spectrum, 0.01f, 0.1f, 0.001f, 0.002f, 0.15f, "blank.wav", physicalProps, true, guiWindow.gui.loadImage("depends//images//sprites//randomwhitespots.png"));
 							break;
 			            case 4:
 			            	newShow = new PieThread(fixture, soundManager, 3, detectorMngr.getFps(), raster, "PieThread", ShowThread.LOW, 255, 255, 0, guiWindow.gui.loadImage("depends//images//sprites//bar40alpha.png"), "blank.wav", physicalProps);
@@ -403,10 +405,10 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 							pointlist[1] = 0.5f;
 							pointlist[2] = 1;
 							spectrum = new ColorScheme(colorlist, pointlist);
-							newShow = new FireworksThread(fixture, soundManager, 5, detectorMngr.getFps(), raster, "FireworksThread", ShowThread.LOW, spectrum, 8, 0.8f, guiWindow.gui.loadImage("depends//images//sprites//ring50alpha.png"), "blank.wav", physicalProps, 0);
+							newShow = new FireworksThread(fixture, soundManager, 5, detectorMngr.getFps(), raster, "FireworksThread", ShowThread.LOW, spectrum, 8, 0.8f, guiWindow.gui.loadImage("depends//images//sprites//thickring.png"), "blank.wav", physicalProps, 0, true);
 							break;
 			            case 8: 
-			            	newShow = new AdditivePropellerThread(fixture, soundManager, 30, detectorMngr.getFps(), raster, "AdditivePropellerThread", ShowThread.LOW, 0.2f, 5, 0.1f, 0.1f, "blank.wav", physicalProps);
+			            	newShow = new AdditivePropellerThread(fixture, soundManager, 30, detectorMngr.getFps(), raster, "AdditivePropellerThread", ShowThread.LOW, 3, 5, 0.2f, 0.5f, "blank.wav", physicalProps);
 			            	break;
 			            case 9:
 			            	// light group test
@@ -430,7 +432,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 								innerRing = innerRingPurple;
 								outerRing = outerRingPurple;
 							}
-			            	newShow = new SpinningRingThread(fixture, soundManager, 30, detectorMngr.getFps(), raster, "GradientRings", ShowThread.LOW, 255, 255, 255, 2, 7, 20, 5, 0.05f, 0.05f, 0.05f, 0.05f, outerRing, innerRing, false, "blank.wav", physicalProps, 0);
+			            	newShow = new SpinningRingThread(fixture, soundManager, 30, detectorMngr.getFps(), raster, "GradientRings", ShowThread.LOW, 255, 255, 255, 2, 7, 20, 5, 0.05f, 0.05f, 0.05f, 0.05f, outerRing, innerRing, false, "blank.wav", physicalProps, 0, true);
 			            	break;
 			            case 11:
 			            	// wipe
@@ -484,9 +486,29 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 							} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("purple")){
 								sweepSprite = sweepPurple;
 							}
-			            	newShow = new SpinningThread(fixture, soundManager, 30, detectorMngr.getFps(), raster, "Sweep", ShowThread.LOW, sweepSprite, 2, 0.1f, 0.2f, 5, "blank.wav", physicalProps, 0);
+			            	newShow = new SpinningThread(fixture, soundManager, 30, detectorMngr.getFps(), raster, "Sweep", ShowThread.LOW, sweepSprite, 2, 0.1f, 0.2f, 5, "blank.wav", physicalProps, 0, true);
 			            	//newShow = new SpinningRingThread(fixture, soundManager, 30, detectorMngr.getFps(), raster, "GradientRings", ShowThread.LOW, 255, 255, 255, 2, 7, 20, 5, 0.05f, 0.05f, 0.05f, 0.05f, outerRing, innerRing, false, "blank.wav", physicalProps);
 			            	break;
+			            case 14:
+			            	// radial wipe
+			            	colorlist = new float[3][3];
+							colorlist[0][0] = 255;
+							colorlist[0][1] = 0;
+							colorlist[0][2] = 0;
+							colorlist[1][0] = 255;
+							colorlist[1][1] = 255;
+							colorlist[1][2] = 0;
+							colorlist[2][0] = 255;
+							colorlist[2][1] = 0;
+							colorlist[2][2] = 0;
+							pointlist = new float[3];
+							pointlist[0] = 0;
+							pointlist[1] = 0.5f;
+							pointlist[2] = 1;
+							spectrum = new ColorScheme(colorlist, pointlist);
+			            	newShow = new RadialWipeThread(fixture, soundManager, 10, detectorMngr.getFps(), raster, "Wipe", ShowThread.LOW, spectrum, 5, 5, 10, "blank.wav", physicalProps);
+			            	break;
+			            	
 					}
 					
 					
@@ -515,7 +537,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						newShow = new SpiralThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "SpiralThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]), Integer.parseInt(showProps[7]), Integer.parseInt(showProps[8]), sprite, showProps[9], physicalProps);
 					} else if(showProps[0].equals("dartboard")){
 						ColorScheme spectrum = processColorScheme(showProps[2], showProps[3]);
-						newShow = new DartBoardThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.LOW, spectrum, Float.parseFloat(showProps[4]), Float.parseFloat(showProps[5]), Float.parseFloat(showProps[6]), Float.parseFloat(showProps[7]), showProps[8], physicalProps);
+						newShow = new DartBoardThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.LOW, spectrum, Float.parseFloat(showProps[4]), Float.parseFloat(showProps[5]), Float.parseFloat(showProps[6]), Float.parseFloat(showProps[7]), Float.parseFloat(showProps[8]), showProps[9], physicalProps, true, guiWindow.gui.loadImage("depends//images//sprites//randomwhitespots.png"));
 					} else if(showProps[0].equals("images")){
 						newShow = new ImageSequenceThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, showProps[2], ShowThread.LOW, imageCache.getSequence(showProps[2]), false, showProps[3], physicalProps);					
 						((ImageSequenceThread)newShow).enableTint(Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]));
@@ -524,7 +546,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						newShow = new VegasThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "VegasThread", ShowThread.LOW, spectrum, Float.parseFloat(showProps[4]), Float.parseFloat(showProps[5]), Float.parseFloat(showProps[6]), Float.parseFloat(showProps[7]), showProps[8], physicalProps);
 					} else if(showProps[0].equals("fireworks")){
 						ColorScheme spectrum = processColorScheme(showProps[2], showProps[3]);
-						newShow = new FireworksThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "FireworksThread", ShowThread.LOW, spectrum, Float.parseFloat(showProps[4]), Float.parseFloat(showProps[5]), guiWindow.gui.loadImage("depends//images//sprites//ring50alpha.png"), showProps[6], physicalProps, 0);
+						newShow = new FireworksThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "FireworksThread", ShowThread.LOW, spectrum, Float.parseFloat(showProps[4]), Float.parseFloat(showProps[5]), guiWindow.gui.loadImage("depends//images//sprites//thickring.png"), showProps[6], physicalProps, 0, true);
 					} else if(showProps[0].equals("additivepropeller")){
 						newShow = new AdditivePropellerThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "AdditivePropellerThread", ShowThread.LOW, Float.parseFloat(showProps[2]), Integer.parseInt(showProps[3]), Float.parseFloat(showProps[4]), Float.parseFloat(showProps[5]), showProps[6], physicalProps);
 					} else if(showProps[0].equals("flashingpie")){
@@ -547,13 +569,16 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 							innerRing = innerRingPurple;
 							outerRing = outerRingPurple;
 						}
-		            	newShow = new SpinningRingThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "GradientRings", ShowThread.LOW, 255, 255, 255, Float.parseFloat(showProps[2]), Float.parseFloat(showProps[3]), Float.parseFloat(showProps[4]), Float.parseFloat(showProps[5]), Float.parseFloat(showProps[6]), Float.parseFloat(showProps[7]), Float.parseFloat(showProps[8]), Float.parseFloat(showProps[9]), outerRing, innerRing, Boolean.parseBoolean(showProps[10]), showProps[11], physicalProps, 0);
+		            	newShow = new SpinningRingThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "GradientRings", ShowThread.LOW, 255, 255, 255, Float.parseFloat(showProps[2]), Float.parseFloat(showProps[3]), Float.parseFloat(showProps[4]), Float.parseFloat(showProps[5]), Float.parseFloat(showProps[6]), Float.parseFloat(showProps[7]), Float.parseFloat(showProps[8]), Float.parseFloat(showProps[9]), outerRing, innerRing, Boolean.parseBoolean(showProps[10]), showProps[11], physicalProps, 0, true);
 		            } else if(showProps[0].equals("wipe")){
 		            	ColorScheme spectrum = processColorScheme(showProps[2], showProps[3]);
 						newShow = new WipeThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "Wipe", ShowThread.LOW, spectrum, Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]),showProps[7], physicalProps);
 					} else if(showProps[0].equals("knockout")){
 						ColorScheme spectrum = processColorScheme(showProps[2], showProps[3]);
 						newShow = new KnockoutThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "Knockout", ShowThread.LOW, spectrum, Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Float.parseFloat(showProps[6]), Float.parseFloat(showProps[7]), Float.parseFloat(showProps[8]), Float.parseFloat(showProps[9]), showProps[10], physicalProps);
+					} else if(showProps[0].equals("radialwipe")){
+						ColorScheme spectrum = processColorScheme(showProps[2], showProps[3]);
+		            	newShow = new RadialWipeThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "RadialWipe", ShowThread.LOW, spectrum, Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]), showProps[7], physicalProps);
 					}
 				}
 				
@@ -677,7 +702,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					break;
 				case 0:
 					// solid color
-					
+					String[] soundFiles = systemProps.getProperty("solidColorShowSounds").split(",");
 					Iterator <DMXLightingFixture> fixturelist = fixtures.iterator();
 					while (fixturelist.hasNext()){
 						DMXLightingFixture fixture = fixturelist.next();
@@ -707,9 +732,12 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						}
 						int bongRate = (int)(Math.random()*1000);
 						raster = guiWindow.gui.createGraphics(fixtures.get(0).getWidth(), fixtures.get(0).getHeight(), PConstants.P3D);	// needs a unique raster for each color
-						newShow = new Glockenspiel(fixture, soundManager, 10, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, red, green, blue, 5, "Shaker_14.wav", physicalProps, (int)(Math.random()*6000));
+						String soundFile = soundFiles[(int)(Math.random()*(soundFiles.length-0.01))]; 	// unique per fixture, but same throughout chain
+						//newShow = new Glockenspiel(fixture, soundManager, 10, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, red, green, blue, 5, "Shaker_14.wav", physicalProps, (int)(Math.random()*6000));
+						newShow = new Glockenspiel(fixture, soundManager, 10, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, red, green, blue, 5, soundFile, physicalProps, (int)(Math.random()*6000));
 						for(int h=1; h<hourcount; h++){
-							newShow.chain(new Glockenspiel(fixture, soundManager, 5, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, red, green, blue, 5, "Shaker_14.wav", physicalProps, bongRate));
+							//newShow.chain(new Glockenspiel(fixture, soundManager, 5, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, red, green, blue, 5, "Shaker_14.wav", physicalProps, bongRate));
+							newShow.chain(new Glockenspiel(fixture, soundManager, 5, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, red, green, blue, 5, soundFile, physicalProps, bongRate));
 						}
 						if(fixturelist.hasNext()){
 							startShow(newShow);	// start every show except last one							
@@ -765,7 +793,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					
 					break;
 				case 1:
-					// sparkly chimes
+					// chimes
 					/*
 					newShow = new ChimesThread(fixtures, soundManager, 60, detectorMngr.getFps(), raster, "Chimes", ShowThread.HIGHEST, 6, 5, 0, 255, 255, "chime03.wav");
 					for(int i=1; i<hourcount; i++){
@@ -903,7 +931,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						}
 						ColorScheme spectrum = new ColorScheme(colorlist, pointlist);
 						float throbspeed =  (float)(Math.random()*0.001f)+0.0005f;
-						newShow = new DartBoardThread(monoFixtures, soundManager, 20, detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.HIGHEST, spectrum, (float)(Math.random()*0.02f)+0.01f, 0.1f, throbspeed, throbspeed, "blank.wav", physicalProps);
+						newShow = new DartBoardThread(monoFixtures, soundManager, 20, detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.HIGHEST, spectrum, (float)(Math.random()*0.02f)+0.01f, 0.1f, throbspeed, throbspeed, 0.12f, "blank.wav", physicalProps, false, guiWindow.gui.loadImage("depends//images//sprites//randomwhitespots.png"));
 						if(i < physicalColors.length-1){
 							startShow(newShow);	// start every show except last one							
 						}
@@ -1082,7 +1110,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 							outerRing = outerRingPurple;
 						}
 						raster = guiWindow.gui.createGraphics(fixtures.get(0).getWidth(), fixtures.get(0).getHeight(), PConstants.P3D);	// needs a unique raster for each color
-						newShow = new SpinningRingThread(fixture, soundManager, 30, detectorMngr.getFps(), raster, "GradientRings", ShowThread.HIGHEST, 255, 255, 255, (int)(Math.random()*5), (int)(Math.random()*10), 20, 5, 0.05f, 0.05f, 0.05f, 0.05f, outerRing, innerRing, false, "Borealis_low.wav", physicalProps, (int)(Math.random()*6000));
+						newShow = new SpinningRingThread(fixture, soundManager, 30, detectorMngr.getFps(), raster, "GradientRings", ShowThread.HIGHEST, 255, 255, 255, (int)(Math.random()*5), (int)(Math.random()*10), 20, 2, 0.05f, 0.05f, 0.05f, 0.05f, outerRing, innerRing, false, "Borealis_low.wav", physicalProps, (int)(Math.random()*6000), false);
 						//newShow = new SpinningThread(fixture, soundManager, 30, detectorMngr.getFps(), raster, "Sweep", ShowThread.LOW, sweepSprite, 2, 0.1f, 0.2f, 5, "blank.wav", physicalProps, (int)(Math.random()*6000));
 						if(fixturearray.hasNext()){
 							startShow(newShow);	// start every show except last one							
@@ -1303,9 +1331,9 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						ColorScheme spectrum = new ColorScheme(colorlist, points);
 		            	int bongRate = (int)(Math.random()*1000);
 						raster = guiWindow.gui.createGraphics(fixtures.get(0).getWidth(), fixtures.get(0).getHeight(), PConstants.P3D);	// needs a unique raster for each color
-						newShow = new FireworksThread(fixture, soundManager, 5, detectorMngr.getFps(), raster, "FireworksThread", ShowThread.HIGHEST, spectrum, 8, 0.8f, guiWindow.gui.loadImage("depends//images//sprites//ring50alpha.png"), "blank.wav", physicalProps, (int)(Math.random()*6000));
+						newShow = new FireworksThread(fixture, soundManager, 5, detectorMngr.getFps(), raster, "FireworksThread", ShowThread.HIGHEST, spectrum, 8, 0.8f, guiWindow.gui.loadImage("depends//images//sprites//thickring.png"), "blank.wav", physicalProps, (int)(Math.random()*6000), false);
 						for(int h=1; h<4; h++){
-							newShow.chain(new FireworksThread(fixture, soundManager, 5, detectorMngr.getFps(), raster, "FireworksThread", ShowThread.HIGHEST, spectrum, 8, 0.8f, guiWindow.gui.loadImage("depends//images//sprites//ring50alpha.png"), "blank.wav", physicalProps, bongRate));
+							newShow.chain(new FireworksThread(fixture, soundManager, 5, detectorMngr.getFps(), raster, "FireworksThread", ShowThread.HIGHEST, spectrum, 8, 0.8f, guiWindow.gui.loadImage("depends//images//sprites//thickring.png"), "blank.wav", physicalProps, bongRate, false));
 						}
 						if(floweriter.hasNext()){
 							startShow(newShow);	// start every show except last one							
@@ -1396,6 +1424,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					*/
 					break;
 				case 8:
+					// sweeps
 					Iterator <DMXLightingFixture> fixtureiter = fixtures.iterator();
 					while (fixtureiter.hasNext()){
 						DMXLightingFixture fixture = fixtureiter.next();
@@ -1415,7 +1444,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						int luckynumber = (int)(Math.random()*(sweepSpriteList.length-1));
 						sweepSprite = sweepSpriteList[luckynumber];
 						raster = guiWindow.gui.createGraphics(fixtures.get(0).getWidth(), fixtures.get(0).getHeight(), PConstants.P3D);	// needs a unique raster for each color
-						newShow = new SpinningThread(fixture, soundManager, 30, detectorMngr.getFps(), raster, "Sweep", ShowThread.HIGHEST, sweepSprite, 2, 0.1f, 0.2f, 5, "blank.wav", physicalProps, (int)(Math.random()*6000));
+						newShow = new SpinningThread(fixture, soundManager, 30, detectorMngr.getFps(), raster, "Sweep", ShowThread.HIGHEST, sweepSprite, 2, 0.1f, 0.2f, 5, "blank.wav", physicalProps, (int)(Math.random()*6000), false);
 						if(fixtureiter.hasNext()){
 							startShow(newShow);	// start every show except last one							
 						}
