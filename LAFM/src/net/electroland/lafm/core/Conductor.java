@@ -259,7 +259,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		sweepPink = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_cyan_pink.png");
 		sweepPurple = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_lizard.png");
 		
-		sweepSpriteList = new PImage[12];
+		sweepSpriteList = new PImage[15];
 		sweepSpriteList[0] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_red_yellow.png");
 		sweepSpriteList[1] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_blue_orange.png");
 		sweepSpriteList[2] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_cyan_pink.png");
@@ -272,6 +272,10 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		sweepSpriteList[9] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_watermelon.png");
 		sweepSpriteList[10] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_red_aqua.png");
 		sweepSpriteList[11] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_watermelon.png");
+		sweepSpriteList[12] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_red_yellow_noise.png");
+		sweepSpriteList[13] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_strobe.png");
+		sweepSpriteList[14] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_white.png");
+		
 		
 		// wait 6 secs (for things to get started up) then check weather every half hour
 		weatherChecker = new WeatherChecker(6000, 60 * 30 * 1000);
