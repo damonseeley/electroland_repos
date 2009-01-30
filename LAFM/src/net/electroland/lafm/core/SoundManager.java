@@ -33,9 +33,11 @@ public class SoundManager extends Thread {
 	}
 	
 	public void playSimpleSound(String filename, int x, int y, float gain, String comment){
-		soundID++;
-		int[] speaker = getNearestSpeaker(x,y);
-		send("simple instance"+soundID+" "+filename+" "+speaker[0]+" "+speaker[1]+" 0 "+gain+" "+comment);
+		if(filename != "none"){
+			soundID++;
+			int[] speaker = getNearestSpeaker(x,y);
+			send("simple instance"+soundID+" "+filename+" "+speaker[0]+" "+speaker[1]+" 0 "+gain+" "+comment);
+		}
 	}
 	
 	public void playSimpleSound(String filename, int c, float gain, String comment){ // c is channel number
@@ -101,10 +103,12 @@ public class SoundManager extends Thread {
 	}
 	
 	public void globalSound(int soundIDToStart, String soundFile, boolean loop, float gain, int duration, String comment) {
-		// duration not used, no looping
-		// send simple instanceID soundfilename.wav 0 0 1 1
-		send("global instance"+soundIDToStart+" "+soundFile+" "+gain+" "+comment);
-		//send("simple instance"+soundIDToStart+" "+soundFile+" "+0+" "+0+" "+0+" "+gain+" "+comment);
+		if(soundFile != "none"){
+			// duration not used, no looping
+			// send simple instanceID soundfilename.wav 0 0 1 1
+			send("global instance"+soundIDToStart+" "+soundFile+" "+gain+" "+comment);
+			//send("simple instance"+soundIDToStart+" "+soundFile+" "+0+" "+0+" "+0+" "+gain+" "+comment);
+		}
 	}
 	
 	public void killAllSounds(){
