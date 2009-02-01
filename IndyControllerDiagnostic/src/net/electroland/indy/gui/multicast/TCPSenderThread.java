@@ -9,13 +9,13 @@ import net.electroland.indy.test.Util;
 
 public class TCPSenderThread extends Thread {
 
-	private MulticastRunner runner;
+	private IndyControllerDiagnostic runner;
 	private boolean running = false;
 	private Target2[] targets;
 	private TCPReceiverThread[] responseProcessors;
 	private Socket[] clients;
 	
-	public TCPSenderThread(MulticastRunner runner, Target2[] targets){
+	public TCPSenderThread(IndyControllerDiagnostic runner, Target2[] targets){
 		this.runner = runner;
 		this.targets = targets;
 	}
@@ -196,7 +196,7 @@ public class TCPSenderThread extends Thread {
 
 			try {
 				// if we are sending one packet, not streaming.
-				if (runner.streamButton.getText() == MulticastRunner.START_STREAM){
+				if (runner.streamButton.getText() == IndyControllerDiagnostic.START_STREAM){
 					running = false;
 				}else{
 					Thread.sleep(1000/runner.fpsSlider.getValue());

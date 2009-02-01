@@ -20,7 +20,7 @@ import net.electroland.indy.test.Util;
 public class Sender2Thread extends Thread {
 
 	private Target2[] targets;
-	private MulticastRunner runner;
+	private IndyControllerDiagnostic runner;
 	private boolean running = false;
 	private boolean single = false;
 	private int seed = 0;
@@ -33,7 +33,7 @@ public class Sender2Thread extends Thread {
 	 * @param runner
 	 * @param single - if true, send a single packet and die.
 	 */
-	public Sender2Thread(Target2[] targets, MulticastRunner runner, boolean single){
+	public Sender2Thread(Target2[] targets, IndyControllerDiagnostic runner, boolean single){
 		this.targets = targets;
 		this.runner = runner;
 		this.single = single;
@@ -51,7 +51,7 @@ public class Sender2Thread extends Thread {
 	 * @param single
 	 * @param seed
 	 */
-	public Sender2Thread(Target2[] targets, MulticastRunner runner, boolean single, int seed){
+	public Sender2Thread(Target2[] targets, IndyControllerDiagnostic runner, boolean single, int seed){
 		this.targets = targets;
 		this.runner = runner;
 		this.single = single;
@@ -237,7 +237,7 @@ public class Sender2Thread extends Thread {
 			e.printStackTrace();
 		} finally {
 			runner.streamButton.setSelected(false);
-			runner.streamButton.setText(MulticastRunner.START_STREAM);
+			runner.streamButton.setText(IndyControllerDiagnostic.START_STREAM);
 			runner.oneButton.setEnabled(true);
 		}
 	}

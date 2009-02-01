@@ -64,7 +64,7 @@ import net.miginfocom.swing.MigLayout;
  */
 
 @SuppressWarnings("serial")
-public class MulticastRunner extends JFrame {
+public class IndyControllerDiagnostic extends JFrame {
 
 	protected JSlider byteSlider, fpsSlider, cmdSlider, 
 						offsetBytesSlider, pcktLengthSlider, offsetDelay;	
@@ -84,10 +84,10 @@ public class MulticastRunner extends JFrame {
 	private Target2[] tcpTargets;
 	public final static String START_STREAM = "Start stream";
 	public final static String STOP_STREAM = "Stop stream";
-	private MulticastRunner runner;
+	private IndyControllerDiagnostic runner;
 	private int seedCtr = 0;
 
-	public MulticastRunner(int width, int height){
+	public IndyControllerDiagnostic(int width, int height){
 		
 		super("Lantronix Multi-port testing");
 		
@@ -420,6 +420,6 @@ public class MulticastRunner extends JFrame {
 		}
 	}
 	public static void main(String args[]){		
-		new MulticastRunner(575, 830).init(args);
+		new IndyControllerDiagnostic(575, 830).init(args);
 	}
 }

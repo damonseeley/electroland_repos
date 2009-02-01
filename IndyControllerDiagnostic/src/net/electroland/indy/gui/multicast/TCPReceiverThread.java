@@ -13,10 +13,10 @@ public class TCPReceiverThread extends Thread {
 	private InputStream is;
 	private boolean running = false;
 	private Target2 target;
-	private MulticastRunner runner;
+	private IndyControllerDiagnostic runner;
 	private Socket socket;
 
-	public TCPReceiverThread(InputStream is, Target2 target, MulticastRunner runner, Socket socket){
+	public TCPReceiverThread(InputStream is, Target2 target, IndyControllerDiagnostic runner, Socket socket){
 
 		System.out.println("Receiver listening on port " + target.getPort());
 

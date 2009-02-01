@@ -20,7 +20,7 @@ import net.electroland.indy.test.Util;
 public class Receiver2Thread extends Thread {
 
 	private int port;
-	private MulticastRunner runner;
+	private IndyControllerDiagnostic runner;
 	private boolean running = false;
 
 	/**
@@ -29,7 +29,7 @@ public class Receiver2Thread extends Thread {
 	 * @param port
 	 * @param runner
 	 */
-	public Receiver2Thread(int port, MulticastRunner runner){
+	public Receiver2Thread(int port, IndyControllerDiagnostic runner){
 		this.runner = runner;
 		this.port = port;
 	}
