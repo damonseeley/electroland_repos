@@ -140,7 +140,7 @@ public class RadialWipeThread extends ShowThread implements SensorListener{
 		private int red, green, blue;
 		private int y, rotation;
 		private int barAge, delay;
-		private int totalDelay = 90;
+		private int totalDelay = 60;
 		
 		public Bar(PGraphics raster, float offset){
 			float[] color = spectrum.getColor(offset);

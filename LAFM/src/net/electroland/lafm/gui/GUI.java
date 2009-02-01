@@ -33,6 +33,7 @@ public class GUI extends PApplet{
 	private boolean maskRaster = false;
 	private boolean viewRaster = true;
 	private PImage lightmask0, lightmask1;
+	private int testChimeCount = 6;
 	
 	public GUI(int width, int height, Conductor conductor, Collection<Detector> detectors){
 		this.width = width;
@@ -78,8 +79,9 @@ public class GUI extends PApplet{
 		
 		controls.addTextlabel("glocklabel","GLOCKENSPIEL SHOWS:",148,285).setColorValue(0xffff0000);
 		controls.addButton("lightgroup test", -1, 148, 298, 114, 12);	// used for calibrating light groups only
+		controls.addButton("chimes", -2, 148, 312, 114, 12);			// used for demonstrating chimes only
 		for(int i=0; i<conductor.timedShows.length; i++){
-			controls.addButton(conductor.timedShows[i], i, 148, 298 + (i+1)*14, 114, 12);//.setColorBackground(color(0,54,82,255));
+			controls.addButton(conductor.timedShows[i], i, 148, 298 + (i+2)*14, 114, 12);//.setColorBackground(color(0,54,82,255));
 		}
 		
 		controls.addTextlabel("settingslabel","SETTINGS:",281,285).setColorValue(0xffff0000);
@@ -87,12 +89,13 @@ public class GUI extends PApplet{
 		controls.addToggle("view_raster", true, 370, 300, 10, 10).setColorForeground(color(0,54,82,255));
 		controls.addToggle("mask_raster", false, 281, 324, 10, 10).setColorForeground(color(0,54,82,255));
 		controls.addToggle("toggle_detectors", true, 370, 324, 10, 10).setColorForeground(color(0,54,82,255));
+		controls.addNumberbox("test_chimes",testChimeCount,281,356,50,14);
 		
-		controls.addTextlabel("soundlabel","SOUND TESTS:",281,360).setColorValue(0xffff0000);
-		controls.addButton("soundtest_1", 1, 281, 373, 100, 12);
-		controls.addButton("soundtest_2", 2, 281, 387, 100, 12);
-		controls.addButton("soundtest_3", 3, 281, 401, 100, 12);
-		controls.addButton("soundtest_global", 4, 281, 415, 100, 12);
+		controls.addTextlabel("soundlabel","SOUND TESTS:",281,400).setColorValue(0xffff0000);
+		controls.addButton("soundtest_1", 1, 281, 413, 100, 12);
+		controls.addButton("soundtest_2", 2, 281, 427, 100, 12);
+		controls.addButton("soundtest_3", 3, 281, 441, 100, 12);
+		controls.addButton("soundtest_global", 4, 281, 455, 100, 12);
 	}
 	
 	public void draw(){
@@ -193,6 +196,7 @@ public class GUI extends PApplet{
 //		//activeShows.removeItem(name);
 //	}
 	
+	
 	void controlEvent(ControlEvent e){
 		try{
 			//String flower = "fixture"+str(Integer.valueOf(e.controller().name())-1);
@@ -250,6 +254,9 @@ public class GUI extends PApplet{
 					int soundID = conductor.soundManager.newSoundID();
 					conductor.soundManager.globalSound(soundID,"music.wav",false,1,10000,"globaltest");
 				}
+			} else if(e.controller().name().startsWith("test_chimes")){
+				if((int)e.controller().value() >= 0 && (int)e.controller().value() <= 12)
+				testChimeCount = (int)e.controller().value();
 			} else {
 				// check against list of glockenspiel shows
 				boolean glock = false;
@@ -261,6 +268,9 @@ public class GUI extends PApplet{
 				}
 				if(e.controller().name().equals("lightgroup test")){
 					conductor.launchGlockenspiel(-1, 6, 0, 0);
+					glock = true;
+				} else if(e.controller().name().equals("chimes")){
+					conductor.launchChimes(testChimeCount, 0, 0);	// control chime count from textfield
 					glock = true;
 				}
 				if(!glock){

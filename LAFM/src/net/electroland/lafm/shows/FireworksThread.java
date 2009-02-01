@@ -120,7 +120,7 @@ public class FireworksThread extends ShowThread implements SensorListener{
 			Iterator<Firework> i = fireworks.values().iterator();
 			while (i.hasNext()){
 				Firework f = i.next();
-				f.draw(raster);
+				f.draw(this, raster);
 			}
 			if(age > duration){
 				fadeOut = true;
@@ -173,6 +173,7 @@ public class FireworksThread extends ShowThread implements SensorListener{
 		float diameter;
 		float[] color;
 		float alpha;
+		boolean startExplosionSound;
 		
 		public Firework(int id, float[] color, int width, int height){
 			this.id = id;
@@ -182,9 +183,14 @@ public class FireworksThread extends ShowThread implements SensorListener{
 			x = (int)(Math.random()*width);
 			y = (int)(Math.random()*height);
 			diameter = 5;
+			startExplosionSound = true;
 		}
 		
-		public void draw(PGraphics raster){
+		public void draw(FireworksThread parent, PGraphics raster){
+			if(startExplosionSound && interactive){
+				parent.playSound(soundFile, physicalProps);
+				startExplosionSound = false;
+			}
 			raster.tint(color[0], color[1], color[2], alpha);
 			raster.image(texture, x - diameter/2, y - diameter/2, diameter, diameter);
 			diameter += speed;

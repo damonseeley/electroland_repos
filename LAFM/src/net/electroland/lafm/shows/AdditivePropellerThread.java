@@ -12,7 +12,9 @@ import net.electroland.lafm.core.SoundManager;
 
 public class AdditivePropellerThread extends ShowThread implements SensorListener{
 	
-	private int red, green, blue;
+	//private int red, green, blue;
+	private float[] rgb1, rgb2, rgb3;
+	private int brightness = 255;
 	private float rotation, rotSpeed, acceleration, deceleration;
 	private int fadeSpeed, topSpeed;
 	private boolean speedUp, slowDown, rotating;
@@ -26,18 +28,30 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 
 	public AdditivePropellerThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
-			String ID, int showPriority, float rotationSpeed, int fadeSpeed,
-			float acceleration, float deceleration, String soundFile,
-			Properties physicalProps) {
+			String ID, int showPriority, String rgb1, String rgb2, String rgb3,
+			float rotationSpeed, int fadeSpeed, float acceleration, float deceleration,
+			String soundFile, Properties physicalProps) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.rotation = 0;
 		this.rotSpeed = rotationSpeed;
 		this.fadeSpeed = fadeSpeed;
 		this.acceleration = acceleration;
 		this.deceleration = deceleration;
-		red = 255;
-		green = 255;
-		blue = 255;
+		String[] temprgb = rgb1.split(":");
+		this.rgb1 = new float[3];
+		this.rgb1[0] = Integer.parseInt(temprgb[0])/255.0f;
+		this.rgb1[1] = Integer.parseInt(temprgb[1])/255.0f;
+		this.rgb1[2] = Integer.parseInt(temprgb[2])/255.0f;
+		temprgb = rgb2.split(":");
+		this.rgb2 = new float[3];
+		this.rgb2[0] = Integer.parseInt(temprgb[0])/255.0f;
+		this.rgb2[1] = Integer.parseInt(temprgb[1])/255.0f;
+		this.rgb2[2] = Integer.parseInt(temprgb[2])/255.0f;
+		temprgb = rgb3.split(":");
+		this.rgb3 = new float[3];
+		this.rgb3[0] = Integer.parseInt(temprgb[0])/255.0f;
+		this.rgb3[1] = Integer.parseInt(temprgb[1])/255.0f;
+		this.rgb3[2] = Integer.parseInt(temprgb[2])/255.0f;
 		rotating = true;
 		speedUp = true;
 		slowDown = false;
@@ -51,18 +65,30 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 	
 	public AdditivePropellerThread(List<DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
-			String ID, int showPriority, float rotationSpeed, int fadeSpeed,
-			float acceleration, float deceleration, String soundFile,
-			Properties physicalProps) {
+			String ID, int showPriority, String rgb1, String rgb2, String rgb3,
+			float rotationSpeed, int fadeSpeed, float acceleration, float deceleration,
+			String soundFile, Properties physicalProps) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.rotation = 0;
 		this.rotSpeed = rotationSpeed;
 		this.fadeSpeed = fadeSpeed;
 		this.acceleration = acceleration;
 		this.deceleration = deceleration;
-		red = 255;
-		green = 255;
-		blue = 255;
+		String[] temprgb = rgb1.split(":");
+		this.rgb1 = new float[3];
+		this.rgb1[0] = Integer.parseInt(temprgb[0])/255.0f;
+		this.rgb1[1] = Integer.parseInt(temprgb[1])/255.0f;
+		this.rgb1[2] = Integer.parseInt(temprgb[2])/255.0f;
+		temprgb = rgb2.split(":");
+		this.rgb2 = new float[3];
+		this.rgb2[0] = Integer.parseInt(temprgb[0])/255.0f;
+		this.rgb2[1] = Integer.parseInt(temprgb[1])/255.0f;
+		this.rgb2[2] = Integer.parseInt(temprgb[2])/255.0f;
+		temprgb = rgb3.split(":");
+		this.rgb3 = new float[3];
+		this.rgb3[0] = Integer.parseInt(temprgb[0])/255.0f;
+		this.rgb3[1] = Integer.parseInt(temprgb[1])/255.0f;
+		this.rgb3[2] = Integer.parseInt(temprgb[2])/255.0f;
 		rotating = true;
 		speedUp = true;
 		slowDown = false;
@@ -97,13 +123,13 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		raster.pushMatrix();
 		raster.translate(raster.width/2,raster.height/2);
 		raster.rotate((float)(rotation * Math.PI/180));
-		raster.fill(red,0,0);
+		raster.fill(rgb1[0]*brightness,rgb1[1]*brightness,rgb1[2]*brightness);
 		raster.rect(0,-barWidth,raster.width/2,barWidth);
 		raster.rotate((float)(120 * Math.PI/180));
-		raster.fill(0,green,0);
+		raster.fill(rgb2[0]*brightness,rgb2[1]*brightness,rgb2[2]*brightness);
 		raster.rect(0,-barWidth,raster.width/2,barWidth);
 		raster.rotate((float)(120 * Math.PI/180));
-		raster.fill(0,0,blue);
+		raster.fill(rgb3[0]*brightness,rgb3[1]*brightness,rgb3[2]*brightness);
 		raster.rect(0,-barWidth,raster.width/2,barWidth);
 		raster.popMatrix();
 		//raster.fill(255,255,255,whitevalue);
@@ -135,10 +161,8 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 					whitevalue -= fadeSpeed;
 				}
 				if(rotSpeed < 1){
-					if(red > 1 || green > 1 || blue > 1){
-						red = red - (int)(fadeSpeed*2.55);
-						green = green - (int)(fadeSpeed*2.55);
-						blue = blue - (int)(fadeSpeed*2.55);
+					if(brightness > 1){
+						brightness -= fadeSpeed*2.55;
 					} else {
 						cleanStop();
 					}
@@ -161,9 +185,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 			// reactivate
 			speedUp = true;
 			slowDown = false;
-			red = 255;
-			green = 255;
-			blue = 255;
+			brightness = 255;
 		}
 	}
 

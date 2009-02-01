@@ -17,6 +17,7 @@ public class Glockenspiel extends ShowThread {
 	private String soundFile;
 	private Properties physicalProps;
 	private int startDelay, delayCount;
+	private int age = 0;
 	
 	public Glockenspiel(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
@@ -71,11 +72,14 @@ public class Glockenspiel extends ShowThread {
 			raster.beginDraw();
 			raster.background(red*brightness, green*brightness, blue*brightness);
 			raster.endDraw();
-			if(brightness > 0){
-				brightness -= fadeSpeed;
-			} else {
-				cleanStop();
+			if(age > 8){
+				if(brightness > 0){
+					brightness -= fadeSpeed;
+				} else {
+					cleanStop();
+				}
 			}
+			age++;
 		} else {
 			delayCount++;
 			//super.resetLifespan();
