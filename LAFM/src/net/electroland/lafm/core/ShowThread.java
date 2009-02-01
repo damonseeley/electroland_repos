@@ -250,8 +250,9 @@ public abstract class ShowThread extends Thread {
 			}
 			
 			// notification collection (if any) that you can be checked off.
-			if (collection != null){
-				collection.complete(this.top == null ? this : this.top);
+			ShowThread cnotifier = this.top == null ? this : this.top;
+			if (cnotifier.collection != null){
+				cnotifier.collection.complete(cnotifier);
 			}
 			
 		}else{
