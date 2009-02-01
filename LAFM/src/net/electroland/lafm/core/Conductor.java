@@ -627,8 +627,9 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		logger.info("currently there are still " + liveShows.size() + " running and " + availableFixtures.size() + " fixtures unallocated");
 	}
 
+	// if any collection is complete, you'll here about it here.
 	public void notifyCollectionComplete(ShowCollection collection){
-		// if any collection is complete, you'll here about it here.
+		logger.info("collection " + collection.getId() + " is complete.");
 	}
 	
 	public Collection<DMXLightingFixture> getUnallocatedFixtures(){
@@ -766,6 +767,10 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					newShow = new LightGroupTestThread(fixtures, soundManager, 600, detectorMngr.getFps(), raster, "LightGroupTestThread", ShowThread.HIGHEST, guiWindow.gui.loadImage("depends//images//lightgrouptest2.png"));
 					break;
 				case 0:
+					// create collection, and let it know we need to be notified when everyone is done.
+					ShowCollection solidColorCollection = new ShowCollection("solidColor");
+					solidColorCollection.addListener(this);
+					
 					// solid color
 					soundFiles = systemProps.getProperty("solidColorShowSounds").split(",");
 					Iterator <DMXLightingFixture> fixturelist = fixtures.iterator();
@@ -799,6 +804,10 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						raster = guiWindow.gui.createGraphics(fixtures.get(0).getWidth(), fixtures.get(0).getHeight(), PConstants.P3D);	// needs a unique raster for each color
 						String soundFile = soundFiles[(int)(Math.random()*(soundFiles.length-0.01))]; 	// unique per fixture, but same throughout chain
 						newShow = new Glockenspiel(fixture, soundManager, 5, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, red, green, blue, 5, soundFile, physicalProps, (int)(Math.random()*6000));
+
+						// join collection
+						newShow.joinCollection(solidColorCollection);
+						
 						for(int h=1; h<6; h++){
 							newShow.chain(new Glockenspiel(fixture, soundManager, 5, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, red, green, blue, 5, soundFile, physicalProps, bongRate));
 							bongRate = (bongRate/6) * h;	// reduces delays to create crescendo
