@@ -41,7 +41,7 @@ public abstract class ShowThread extends Thread {
 	private RunningAverage avgProcessing;
 	private ShowThread next;
 	private ShowThread top;
-	private ShowCollection collection;
+	protected ShowCollection collection;
 	
 	public ShowThread(DMXLightingFixture flower, 
 					  SoundManager soundManager, 
@@ -90,11 +90,6 @@ public abstract class ShowThread extends Thread {
 	 * Call this per frame to render on the raster.
 	 */
 	abstract public void doWork(PGraphics raster);
-
-	final public void joinCollection(ShowCollection collection){
-		this.collection = collection;
-		collection.addToCollection(this);
-	}
 	
 	final public int getShowPriority() {
 		return this.showPriority;

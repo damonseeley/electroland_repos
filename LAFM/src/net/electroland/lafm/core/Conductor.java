@@ -805,8 +805,8 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						String soundFile = soundFiles[(int)(Math.random()*(soundFiles.length-0.01))]; 	// unique per fixture, but same throughout chain
 						newShow = new Glockenspiel(fixture, soundManager, 5, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, red, green, blue, 5, soundFile, physicalProps, (int)(Math.random()*6000));
 
-						// join collection
-						newShow.joinCollection(solidColorCollection);
+						// add to collection
+						solidColorCollection.addToCollection(newShow);
 						
 						for(int h=1; h<6; h++){
 							newShow.chain(new Glockenspiel(fixture, soundManager, 5, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, red, green, blue, 5, soundFile, physicalProps, bongRate));

@@ -20,6 +20,7 @@ public class ShowCollection {
 	}
 	
 	final protected void addToCollection(ShowThread show){
+		show.collection = this;
 		collection.add(show);
 	}
 	
