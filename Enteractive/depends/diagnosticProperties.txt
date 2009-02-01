@@ -1,0 +1,12 @@
+# networking properties
+IPAddress = 192.168.0.10
+sendPort = 10001
+rcvPort = 10011
+
+# byte packet properties
+bytes01 = FF 00 FD FD FD FD FD FD FD FD FE
+bytes02 = FF 01 FD FD FD FD FD FD FD FD FE
+bytes03 = FF 02 FD FD FD FD FD FD FD FD FE
+bytes04 = FF 11 FD FD FD FD FD FD FD FD FE
+bytes05 = FF 80 00 00 FE
+bytes06 = FF 20 FD FE

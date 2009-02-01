@@ -1,4 +1,4 @@
-package net.electroland.enteractive.diagnostic;
+package net.electroland.enteractive.diagnostic.old;
 
 import java.io.IOException;
 import java.lang.reflect.Array;

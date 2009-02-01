@@ -1,10 +1,11 @@
-package net.electroland.enteractive.diagnostic;
+package net.electroland.enteractive.diagnostic.old;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import net.electroland.enteractive.diagnostic.Timer;
 import net.electroland.enteractive.utils.HexUtils;
 
 public class LTUDPBroadcaster extends Thread {

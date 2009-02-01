@@ -1,4 +1,4 @@
-package net.electroland.enteractive.diagnostic;
+package net.electroland.enteractive.diagnostic.old;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

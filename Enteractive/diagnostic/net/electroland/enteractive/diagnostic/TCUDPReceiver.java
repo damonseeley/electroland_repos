@@ -1,4 +1,4 @@
-package net.electroland.enteractive.udpUtils;
+package net.electroland.enteractive.diagnostic;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -19,7 +19,7 @@ import net.electroland.enteractive.utils.HexUtils;
  * @author eitan
  *
  */
-public class UDPReceiver extends Thread {
+public class TCUDPReceiver extends Thread {
 	boolean isRunning = true;
 
 	public LinkedBlockingQueue<String> msgQueue = new LinkedBlockingQueue<String>();
@@ -29,8 +29,15 @@ public class UDPReceiver extends Thread {
 	private DatagramPacket receivePacket;
 
 	int receiveOnPort;
+	
+	int count = 0;
+	long lastTime = System.currentTimeMillis();
+	long[] packetTimes = new long[10];
+	
+	//private LTOutputPanel ltto;
+	private JTextArea outputTA;
 
-	public UDPReceiver(int receiveOnPort) throws SocketException, UnknownHostException {
+	public TCUDPReceiver(int receiveOnPort) throws SocketException, UnknownHostException {
 		receivePacket = new DatagramPacket(new byte[128], 64);
 		this.receiveOnPort = receiveOnPort;
 		receiveSocket = new DatagramSocket(receiveOnPort);
@@ -51,7 +58,18 @@ public class UDPReceiver extends Thread {
 				msgQueue.offer(new String(receivePacket.getData(), 0, receivePacket.getLength()));
 				byte[] b = receivePacket.getData();
 				//HexUtils.printHex(b);
-				//feedOutput(b, receivePacket.getLength());
+				
+				long thisTime = System.currentTimeMillis();
+				long diff = thisTime - lastTime;
+				lastTime = thisTime;
+				packetTimes[count] = diff;
+				if (count == 9) {
+					count = 0;
+				} else {
+					count++;
+				}
+			
+				feedOutput(b, receivePacket.getLength());
 				
 			} catch (SocketTimeoutException e) {
 			} catch (IOException e) {
@@ -60,7 +78,19 @@ public class UDPReceiver extends Thread {
 		}
 		receiveSocket.close();
 	}
-
+	
+	public void registerOutput(TCOutputPanel ltto) {
+		outputTA = ltto.getOutputField();
+	}
+	
+	private void feedOutput(byte b[], int length) {
+		//HexUtils.getBytesToHex(b);
+		long intervalSum = 0;
+		for (int a=0;a<packetTimes.length;a++) {
+			intervalSum += packetTimes[a];
+		}
+		outputTA.setText(HexUtils.bytesToHex(b,length) + "   interval= " + intervalSum/packetTimes.length);
+	}
 
 	public void stopRunning() {
 		isRunning = false;

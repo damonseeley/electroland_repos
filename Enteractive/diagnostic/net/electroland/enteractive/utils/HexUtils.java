@@ -1,5 +1,4 @@
 package net.electroland.enteractive.utils;
-
  
 public class HexUtils {
 	
@@ -59,6 +58,9 @@ public class HexUtils {
     }
     
     public static byte[] hexToBytes(String theHex) {
+
+    	theHex = theHex.replaceAll(" ", "");
+
 		byte[] bts = new byte[theHex.length() / 2];
 		for (int i = 0; i < bts.length; i++) {
 			bts[i] = (byte) Integer.parseInt(theHex.substring(2*i, 2*i+2), 16);
@@ -81,6 +83,8 @@ public class HexUtils {
         }
         return hex;
     }
+    
+
 
     
     

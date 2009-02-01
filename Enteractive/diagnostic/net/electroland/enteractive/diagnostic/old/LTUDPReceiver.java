@@ -1,4 +1,4 @@
-package net.electroland.enteractive.diagnostic;
+package net.electroland.enteractive.diagnostic.old;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -9,7 +9,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.swing.JTextArea;
 
-import net.electroland.enteractive.diagnostic.LTOutputPanel;
+import net.electroland.enteractive.diagnostic.old.LTOutputPanel;
 import net.electroland.enteractive.utils.HexUtils;
 
 /**
