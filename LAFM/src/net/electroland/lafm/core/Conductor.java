@@ -50,7 +50,7 @@ import processing.core.PImage;
 import promidi.MidiIO;
 import promidi.Note;
 
-public class Conductor extends Thread implements ShowThreadListener, WeatherChangeListener, TimedEventListener{
+public class Conductor extends Thread implements ShowThreadListener, WeatherChangeListener, TimedEventListener, ShowCollectionListener{
 
 	static Logger logger = Logger.getLogger(Conductor.class);
 	
@@ -627,6 +627,10 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		logger.info("currently there are still " + liveShows.size() + " running and " + availableFixtures.size() + " fixtures unallocated");
 	}
 
+	public void notifyCollectionComplete(ShowCollection collection){
+		// if any collection is complete, you'll here about it here.
+	}
+	
 	public Collection<DMXLightingFixture> getUnallocatedFixtures(){
 		return availableFixtures;
 	}

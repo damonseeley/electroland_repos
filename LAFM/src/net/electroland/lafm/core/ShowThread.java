@@ -41,10 +41,7 @@ public abstract class ShowThread extends Thread {
 	private RunningAverage avgProcessing;
 	private ShowThread next;
 	private ShowThread top;
-
-	public int getShowPriority() {
-		return this.showPriority;
-	}
+	private ShowCollection collection;
 	
 	public ShowThread(DMXLightingFixture flower, 
 					  SoundManager soundManager, 
@@ -88,12 +85,22 @@ public abstract class ShowThread extends Thread {
 	 * Implement any code you want to happen on the final frame here.
 	 */
 	abstract public void complete(PGraphics raster);
-
+	
 	/**
 	 * Call this per frame to render on the raster.
 	 */
 	abstract public void doWork(PGraphics raster);
+
+	final public void joinCollection(ShowCollection collection){
+		this.collection = collection;
+		collection.addToCollection(this);
+	}
 	
+	final public int getShowPriority() {
+		return this.showPriority;
+	}
+
+
 	final public void playSound(String soundFile, Properties physicalProps){
 		boolean[] channelsInUse = new boolean[6];		// null array of sound channels
 		for(int n=0; n<channelsInUse.length; n++){
@@ -240,14 +247,21 @@ public abstract class ShowThread extends Thread {
 			while (j.hasNext()){
 				j.next().notifyComplete(this.top == null ? this : this.top, 
 										(Collection<DMXLightingFixture>)flowers);
-			}			
+			}
+			
+			// notification collection (if any) that you can be checked off.
+			if (collection != null){
+				collection.complete(this);
+			}
+			
 		}else{
 			// otherwise, start the follow-on show thread.
 			logger.info("chain stop:\t" + this);
 			logger.info("chain start:\t" + next);
 			// kind of a hack.  we're overwriting the list of fixtures
 			// that the follow-on show thread previously contained.  that means
-			// chained shows must be ass
+			// chained shows must be associated with the same fixtures start
+			// to finish.
 			next.flowers = this.flowers;
 			next.listeners = this.listeners;
 			next.resetLifespan();
