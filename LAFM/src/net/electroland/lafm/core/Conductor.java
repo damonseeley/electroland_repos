@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 
 import net.electroland.detector.DMXLightingFixture;
 import net.electroland.detector.DetectorManager;
+import net.electroland.lafm.gui.GUI;
 import net.electroland.lafm.gui.GUIWindow;
 import net.electroland.lafm.scheduler.TimedEvent;
 import net.electroland.lafm.scheduler.TimedEventListener;
@@ -630,6 +631,9 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	// if any collection is complete, you'll here about it here.
 	public void notifyCollectionComplete(ShowCollection collection){
 		logger.info("collection " + collection.getId() + " is complete.");
+		if(collection.getId().equals("hourlyShow")){
+			launchChimes(((GUI) guiWindow.gui).getChimeCount(), 0, 0);
+		}
 	}
 	
 	public Collection<DMXLightingFixture> getUnallocatedFixtures(){
@@ -762,11 +766,61 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			String[] soundFiles = null;
 			int soundID = soundManager.newSoundID();
 			switch(showNum){
+				case -2:
+					// hourly show (similar to solid color, but sequenced specifically for hourly sound)
+					ShowCollection hourlyCollection = new ShowCollection("hourlyShow");
+					hourlyCollection.addListener(this);
+					
+					// timed solid color show
+					// TODO: currently random, needs to be sequenced timing with the proper sound file
+					//soundFiles = systemProps.getProperty("solidColorShowSounds").split(",");
+					Iterator <DMXLightingFixture> newfixtures = fixtures.iterator();
+					while (newfixtures.hasNext()){
+						DMXLightingFixture fixture = newfixtures.next();
+						int red = 0;
+						int green = 0;
+						int blue = 0;
+						if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("red")){
+							red = 255;
+							green = 0;
+							blue = 0;
+						} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("orange")){
+							red = 255;
+							green = 100;
+							blue = 0;
+						} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("yellow")){
+							red = 255;
+							green = 255;
+							blue = 0;
+						} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("pink")){
+							red = 255;
+							green = 0;
+							blue = 255;
+						} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("purple")){
+							red = 255;
+							green = 150;
+							blue = 150;
+						}
+						raster = guiWindow.gui.createGraphics(fixtures.get(0).getWidth(), fixtures.get(0).getHeight(), PConstants.P3D);	// needs a unique raster for each color
+						//String soundFile = soundFiles[(int)(Math.random()*(soundFiles.length-0.01))]; 	// unique per fixture, but same throughout chain
+						newShow = new Glockenspiel(fixture, soundManager, 5, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, red, green, blue, 5, "none", physicalProps, (int)(Math.random()*6000));
+
+						// add to collection
+						hourlyCollection.addToCollection(newShow);
+						if(newfixtures.hasNext()){
+							startShow(newShow);	// start every show except last one							
+						}
+					}
+					
+					globalSound = systemProps.getProperty("hourlyShowSound");
+					soundManager.globalSound(soundID,globalSound,false,1,20000,"hourlyshow");
+					
+					break;
 				case -1:
-					// light group test
+					// light group test	(only for testing)
 					newShow = new LightGroupTestThread(fixtures, soundManager, 600, detectorMngr.getFps(), raster, "LightGroupTestThread", ShowThread.HIGHEST, guiWindow.gui.loadImage("depends//images//lightgrouptest2.png"));
 					break;
-				case 0:
+				case 0:		// (shows 0+ are selected randomly every 5 minutes)
 					// create collection, and let it know we need to be notified when everyone is done.
 					ShowCollection solidColorCollection = new ShowCollection("solidColor");
 					solidColorCollection.addListener(this);
