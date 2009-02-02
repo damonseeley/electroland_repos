@@ -32,20 +32,36 @@ public class SoundManager extends Thread {
 		soundID = 0;
 	}
 	
-	public void playSimpleSound(String filename, int x, int y, float gain, String comment){
-		if(filename != "none"){
+/*	public void playSimpleSound(String filename, int x, int y, float gain, String comment){
+		System.out.println(filename);
+		if(!filename.equals("none")){
+			System.out.println(filename);
 			soundID++;
 			int[] speaker = getNearestSpeaker(x,y);
 			send("simple instance"+soundID+" "+filename+" "+speaker[0]+" "+speaker[1]+" 0 "+gain+" "+comment);
 		}
-	}
+	}*/
 	
 	public void playSimpleSound(String filename, int c, float gain, String comment){ // c is channel number
 		// this version takes a channel as argument and sends the appropriate coords to Marc Nimoy's max patch
-		soundID++;
-		int[] channelCoords = lookupCoordinates(c);
-		//System.out.println("Played sound on channel " +c);
-		send("simple instance"+soundID+" "+filename+" "+channelCoords[0]+" "+channelCoords[1]+" 0 "+gain+" "+comment);
+		//System.out.println(filename);
+		if(!filename.equals("none")){
+			//System.out.println(filename);
+			soundID++;
+			int[] channelCoords = lookupCoordinates(c);
+			//System.out.println("Played sound on channel " +c);
+			send("simple instance"+soundID+" "+filename+" "+channelCoords[0]+" "+channelCoords[1]+" 0 "+gain+" "+comment);
+		}
+	}
+	
+	public void globalSound(int soundIDToStart, String filename, boolean loop, float gain, int duration, String comment) {
+		if(!filename.equals("none")){
+			//System.out.println(filename);
+			// duration not used, no looping
+			// send simple instanceID soundfilename.wav 0 0 1 1
+			send("global instance"+soundIDToStart+" "+filename+" "+gain+" "+comment);
+			//send("simple instance"+soundIDToStart+" "+soundFile+" "+0+" "+0+" "+0+" "+gain+" "+comment);
+		}
 	}
 	
 	private int[] lookupCoordinates(int c){
@@ -102,20 +118,12 @@ public class SoundManager extends Thread {
 		return soundID;
 	}
 	
-	public void globalSound(int soundIDToStart, String soundFile, boolean loop, float gain, int duration, String comment) {
-		if(soundFile != "none"){
-			// duration not used, no looping
-			// send simple instanceID soundfilename.wav 0 0 1 1
-			send("global instance"+soundIDToStart+" "+soundFile+" "+gain+" "+comment);
-			//send("simple instance"+soundIDToStart+" "+soundFile+" "+0+" "+0+" "+0+" "+gain+" "+comment);
-		}
-	}
-	
 	public void killAllSounds(){
 		send("kill");
 	}
 	
 	public String randomSound(String[] soundfiles){
+		
 		int filenumber = (int)(Math.random()*soundfiles.length);
 		if(filenumber == soundfiles.length){
 			filenumber--;
