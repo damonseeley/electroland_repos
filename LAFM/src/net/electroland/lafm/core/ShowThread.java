@@ -50,7 +50,11 @@ public abstract class ShowThread extends Thread {
 		flowers = Collections.synchronizedList(new ArrayList<DMXLightingFixture>());
 		flowers.add(flower);
 		this.soundManager = soundManager;
-		this.lifespan = lifespan * 1000;
+		if(lifespan > 600){
+			this.lifespan = lifespan;
+		} else {
+			this.lifespan = lifespan * 1000;
+		}
 		this.delay = (long)(1000.0 / fps);
 		this.startTime = System.currentTimeMillis();
 		this.raster = raster;
@@ -67,7 +71,11 @@ public abstract class ShowThread extends Thread {
 					  PGraphics raster, String ID, int showPriority){ // lifespan is in seconds.
 		this.flowers = flowers;
 		this.soundManager = soundManager;
-		this.lifespan = lifespan * 1000;
+		if(lifespan > 600){
+			this.lifespan = lifespan;
+		} else {
+			this.lifespan = lifespan * 1000;
+		}
 		this.delay = (long)(1000.0 / fps);
 		this.startTime = System.currentTimeMillis();
 		this.raster = raster;

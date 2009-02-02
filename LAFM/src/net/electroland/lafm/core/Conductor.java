@@ -742,8 +742,11 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					green = 150;
 					blue = 150;
 				}
-				
-				String soundFile = systemProps.getProperty("chimeSound");
+
+				String soundFile = "none";
+				if(i == 0){
+					soundFile = systemProps.getProperty("chimeSound");
+				} 
 				
 				newShow = new ChimesThread(monoFixtures, soundManager, 10, detectorMngr.getFps(), raster, "Chimes", ShowThread.HIGHEST, 6, 5, red, green, blue, soundFile, physicalProps);
 				for(int h=1; h<hour; h++){
@@ -774,6 +777,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					// timed solid color show
 					// TODO: currently random, needs to be sequenced timing with the proper sound file
 					//soundFiles = systemProps.getProperty("solidColorShowSounds").split(",");
+					/*
 					Iterator <DMXLightingFixture> newfixtures = fixtures.iterator();
 					while (newfixtures.hasNext()){
 						DMXLightingFixture fixture = newfixtures.next();
@@ -811,6 +815,30 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 							startShow(newShow);	// start every show except last one							
 						}
 					}
+					*/
+					
+					int quarterNote = 800;			// length of quarter note
+					int wholeNote = quarterNote*3;	// 3:4 scale
+					
+					newShow = new Glockenspiel(fixtures, soundManager, quarterNote, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, (int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255), 0, "c_quarter.wav", physicalProps, 0);
+					newShow.chain(new Glockenspiel(fixtures, soundManager, quarterNote, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, (int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255), 0, "e_quarter.wav", physicalProps, 0));
+					newShow.chain(new Glockenspiel(fixtures, soundManager, quarterNote, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, (int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255), 0, "c_quarter.wav", physicalProps, 0));
+					newShow.chain(new Glockenspiel(fixtures, soundManager, wholeNote, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, (int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255), 0, "g_whole.wav", physicalProps, 0));
+
+					newShow.chain(new Glockenspiel(fixtures, soundManager, quarterNote, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, (int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255), 0, "c_quarter.wav", physicalProps, 0));
+					newShow.chain(new Glockenspiel(fixtures, soundManager, quarterNote, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, (int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255), 0, "d_quarter.wav", physicalProps, 0));
+					newShow.chain(new Glockenspiel(fixtures, soundManager, quarterNote, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, (int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255), 0, "e_quarter.wav", physicalProps, 0));
+					newShow.chain(new Glockenspiel(fixtures, soundManager, wholeNote, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, (int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255), 0, "g_whole.wav", physicalProps, 0));
+					
+					newShow.chain(new Glockenspiel(fixtures, soundManager, quarterNote, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, (int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255), 0, "e_quarter.wav", physicalProps, 0));
+					newShow.chain(new Glockenspiel(fixtures, soundManager, quarterNote, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, (int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255), 0, "c_quarter.wav", physicalProps, 0));
+					newShow.chain(new Glockenspiel(fixtures, soundManager, quarterNote, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, (int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255), 0, "d_quarter.wav", physicalProps, 0));
+					newShow.chain(new Glockenspiel(fixtures, soundManager, wholeNote, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, (int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255), 0, "g_whole.wav", physicalProps, 0));
+					
+					newShow.chain(new Glockenspiel(fixtures, soundManager, quarterNote, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, (int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255), 0, "g_quarter.wav", physicalProps, 0));
+					newShow.chain(new Glockenspiel(fixtures, soundManager, quarterNote, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, (int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255), 0, "d_quarter.wav", physicalProps, 0));
+					newShow.chain(new Glockenspiel(fixtures, soundManager, quarterNote, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, (int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255), 0, "e_quarter.wav", physicalProps, 0));
+					newShow.chain(new Glockenspiel(fixtures, soundManager, wholeNote, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, (int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255), 2, "c_whole.wav", physicalProps, 0));	// last note fades out
 					
 					globalSound = systemProps.getProperty("hourlyShowSound");
 					soundManager.globalSound(soundID,globalSound,false,1,20000,"hourlyshow");

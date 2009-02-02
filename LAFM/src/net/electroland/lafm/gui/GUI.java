@@ -41,6 +41,8 @@ public class GUI extends PApplet{
 		this.conductor = conductor;
 		this.detectors = detectors;
 		activeShowNum = 0;	// default
+		this.viewRaster = Boolean.parseBoolean(conductor.systemProps.getProperty("viewRaster"));
+		this.thumbsViewable = Boolean.parseBoolean(conductor.systemProps.getProperty("viewThumbs"));
 	}
 	
 	public void setup(){
@@ -85,8 +87,8 @@ public class GUI extends PApplet{
 		}
 		
 		controls.addTextlabel("settingslabel","SETTINGS:",281,285).setColorValue(0xffff0000);
-		controls.addToggle("view_thumbnails", true, 281, 300, 10, 10).setColorForeground(color(0,54,82,255));
-		controls.addToggle("view_raster", true, 370, 300, 10, 10).setColorForeground(color(0,54,82,255));
+		controls.addToggle("view_thumbnails", thumbsViewable, 281, 300, 10, 10).setColorForeground(color(0,54,82,255));
+		controls.addToggle("view_raster", viewRaster, 370, 300, 10, 10).setColorForeground(color(0,54,82,255));
 		controls.addToggle("mask_raster", false, 281, 324, 10, 10).setColorForeground(color(0,54,82,255));
 		controls.addToggle("toggle_detectors", true, 370, 324, 10, 10).setColorForeground(color(0,54,82,255));
 		controls.addNumberbox("test_chimes",testChimeCount,281,356,50,14);

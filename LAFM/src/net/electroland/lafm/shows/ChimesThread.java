@@ -16,19 +16,19 @@ public class ChimesThread extends ShowThread {
 	 * to count what hour it is.
 	 */
 
-	private int hour;
+	//private int hour;
 	private int brightness, alpha, fadeSpeed;
 	private float red, green, blue;
 	private boolean startSound;
 	private String soundFile;
-	private Properties physicalProps;
+	//private Properties physicalProps;
 	
 	public ChimesThread(List<DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, int hour,	int fadeSpeed,
 			int red, int green, int blue, String soundFile, Properties physicalProps) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
-		this.hour = hour;
+		//this.hour = hour;
 		this.red = (red/255.0f);
 		this.green = (green/255.0f);
 		this.blue = (blue/255.0f);
@@ -37,7 +37,7 @@ public class ChimesThread extends ShowThread {
 		alpha = 100;
 		this.soundFile = soundFile;
 		startSound = true;
-		this.physicalProps = physicalProps;
+		//this.physicalProps = physicalProps;
 	}
 	
 	public ChimesThread(DMXLightingFixture flower,
@@ -45,7 +45,7 @@ public class ChimesThread extends ShowThread {
 			String ID, int showPriority, int hour,	int fadeSpeed,
 			int red, int green, int blue, String soundFile, Properties physicalProps) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
-		this.hour = hour;
+		//this.hour = hour;
 		this.red = (red/255.0f);
 		this.green = (green/255.0f);
 		this.blue = (blue/255.0f);
@@ -54,7 +54,7 @@ public class ChimesThread extends ShowThread {
 		alpha = 100;
 		this.soundFile = soundFile;
 		startSound = true;
-		this.physicalProps = physicalProps;
+		//this.physicalProps = physicalProps;
 	}
 
 	@Override
@@ -68,7 +68,9 @@ public class ChimesThread extends ShowThread {
 	public void doWork(PGraphics raster) {
 		
 		if(startSound){
-			super.playSound(soundFile, physicalProps);
+			//super.playSound(soundFile, physicalProps);
+			int soundID = super.getSoundManager().newSoundID();
+			super.getSoundManager().globalSound(soundID, soundFile, false, 1.0f, 5000, "chimes");
 			startSound = false;
 		}
 		
