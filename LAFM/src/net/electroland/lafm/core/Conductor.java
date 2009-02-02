@@ -840,8 +840,9 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					newShow.chain(new Glockenspiel(fixtures, soundManager, quarterNote, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, (int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255), 0, "e_quarter.wav", physicalProps, 0));
 					newShow.chain(new Glockenspiel(fixtures, soundManager, wholeNote, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, (int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255), 2, "c_whole.wav", physicalProps, 0));	// last note fades out
 					
-					globalSound = systemProps.getProperty("hourlyShowSound");
-					soundManager.globalSound(soundID,globalSound,false,1,20000,"hourlyshow");
+					hourlyCollection.addToCollection(newShow);
+					//globalSound = systemProps.getProperty("hourlyShow");
+					//soundManager.globalSound(soundID,globalSound,false,1,20000,"hourlyshow");
 					
 					break;
 				case -1:
