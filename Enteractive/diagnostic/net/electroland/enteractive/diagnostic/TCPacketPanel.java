@@ -3,6 +3,9 @@ package net.electroland.enteractive.diagnostic;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -10,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 
+import net.electroland.enteractive.diagnostic.TCAddressPanel.addressKeyAction;
 import net.electroland.enteractive.utils.HexUtils;
 import net.miginfocom.swing.MigLayout;
 
@@ -34,6 +38,8 @@ public class TCPacketPanel extends JPanel {
 	private JButton send04;
 	private JButton send05;
 	private JButton send06;
+	
+	private JButton writeProps;
 
 	public TCPacketPanel(int inset, TCBroadcaster tcb) {
 
@@ -45,13 +51,14 @@ public class TCPacketPanel extends JPanel {
 //		p.add(new JLabel("Packets"), "split, span");
 //		p.add(new JSeparator(), "growx, wrap");
 
-		Font packetFont = new Font("Consolas", Font.PLAIN, 10);
+		Font packetFont = new Font("Consolas", Font.PLAIN, 11);
 		
 		send01 = new JButton("Send Packet 1");
 		send01.setOpaque(true);
 		send01.addActionListener(new sendPacket());
 		p.add(send01,"left");
 		bytes01 = new JTextField(TCDiagnosticMain.properties.get("bytes01"),tfWidth);
+		bytes01.addKeyListener(new bytesFieldListener());
 		bytes01.setFont(packetFont);
 		p.add(bytes01, "span, growx");
 		
@@ -95,9 +102,71 @@ public class TCPacketPanel extends JPanel {
 		bytes06.setFont(packetFont);
 		p.add(bytes06, "span, growx");
 		
+		writeProps = new JButton("Write Properties File");
+		writeProps.setOpaque(true);
+		writeProps.addActionListener(new writePropsAction());
+		p.add(writeProps,"span, center");
+		
 		add(p);
 
 	}
+	
+	public class bytesFieldListener implements KeyListener {
+        public void keyReleased(KeyEvent ke) {
+        	//System.out.println(ke.getKeyCode());
+        	// set the address on a return
+        	if (ke.getKeyCode() == 10){
+        		byte[] b;
+        		
+        		// update all fields with processed hex utils output
+        		
+        		b = HexUtils.hexToBytes(bytes01.getText());
+        		bytes01.setText(HexUtils.bytesToHex(b, b.length));
+        		
+        		b = HexUtils.hexToBytes(bytes02.getText());
+        		bytes02.setText(HexUtils.bytesToHex(b, b.length));
+        		
+        		b = HexUtils.hexToBytes(bytes03.getText());
+        		bytes03.setText(HexUtils.bytesToHex(b, b.length));
+        		
+        		b = HexUtils.hexToBytes(bytes04.getText());
+        		bytes04.setText(HexUtils.bytesToHex(b, b.length));
+        		
+        		b = HexUtils.hexToBytes(bytes05.getText());
+        		bytes05.setText(HexUtils.bytesToHex(b, b.length));
+        		
+        		b = HexUtils.hexToBytes(bytes06.getText());
+        		bytes06.setText(HexUtils.bytesToHex(b, b.length));
+        	}
+        }
+        
+        public void keyPressed (KeyEvent ke) {
+        	//System.out.println(ke.getKeyCode());
+        }
+        
+        public void keyTyped (KeyEvent ke) {
+        	//System.out.println(ke.getKeyCode());
+        }
+    }
+	
+	public class writePropsAction implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+        	// update all properties from local text fields before writing properties
+        	TCDiagnosticMain.properties.put("bytes01", bytes01.getText());
+        	TCDiagnosticMain.properties.put("bytes02", bytes02.getText());
+        	TCDiagnosticMain.properties.put("bytes03", bytes03.getText());
+        	TCDiagnosticMain.properties.put("bytes04", bytes04.getText());
+        	TCDiagnosticMain.properties.put("bytes05", bytes05.getText());
+        	TCDiagnosticMain.properties.put("bytes06", bytes06.getText());
+        	
+        	try {
+				TCDiagnosticMain.writeProperties();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+        }
+    }
 	
 	public class sendPacket implements ActionListener {
         public void actionPerformed(ActionEvent e) {

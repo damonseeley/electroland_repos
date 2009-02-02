@@ -28,7 +28,7 @@ public class TCUDPReceiver extends Thread {
 
 	private DatagramPacket receivePacket;
 
-	int receiveOnPort;
+	int rcvPort;
 	
 	int count = 0;
 	long lastTime = System.currentTimeMillis();
@@ -37,10 +37,23 @@ public class TCUDPReceiver extends Thread {
 	//private LTOutputPanel ltto;
 	private JTextArea outputTA;
 
-	public TCUDPReceiver(int receiveOnPort) throws SocketException, UnknownHostException {
+	public TCUDPReceiver(int rcvPort) throws SocketException, UnknownHostException {
 		receivePacket = new DatagramPacket(new byte[128], 64);
-		this.receiveOnPort = receiveOnPort;
-		receiveSocket = new DatagramSocket(receiveOnPort);
+		this.rcvPort = rcvPort;
+		receiveSocket = new DatagramSocket(rcvPort);
+	}
+	
+	@SuppressWarnings("deprecation")
+	public void setNewRcvPort(int newPort) throws SocketException, UnknownHostException {
+		if (newPort != rcvPort) {
+			rcvPort = newPort;
+			isRunning = false;
+			receiveSocket.close();
+			receiveSocket = new DatagramSocket(rcvPort);
+			isRunning = true;
+			TCDiagnosticMain.logger.info("UDP reciever set to receive on port " + rcvPort);
+		}
+		
 	}
 
 	public void run() {
@@ -73,6 +86,7 @@ public class TCUDPReceiver extends Thread {
 				
 			} catch (SocketTimeoutException e) {
 			} catch (IOException e) {
+				TCDiagnosticMain.logger.info("IO Exception on UDP socket re-open.  Ignore for now");
 				e.printStackTrace();
 			}
 		}
@@ -89,7 +103,8 @@ public class TCUDPReceiver extends Thread {
 		for (int a=0;a<packetTimes.length;a++) {
 			intervalSum += packetTimes[a];
 		}
-		outputTA.setText(HexUtils.bytesToHex(b,length) + "   interval= " + intervalSum/packetTimes.length);
+		//outputTA.setText(HexUtils.bytesToHex(b,length) + "   interval= " + intervalSum/packetTimes.length);
+		outputTA.setText(HexUtils.bytesToHex(b,length));
 	}
 
 	public void stopRunning() {

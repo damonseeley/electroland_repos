@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -28,11 +30,12 @@ public class TCAddressPanel extends JPanel {
 	private int tfWidth = 30;
 
 	private JTextField ipAddress;
-	private JTextField udpPort;
+	private JTextField sendPort;
+	private JTextField rcvPort;
 	private JButton setAddress;
 
 
-	public TCAddressPanel(int inset, String ip, Integer intPort, TCBroadcaster tcb) {
+	public TCAddressPanel(int inset, String ip, Integer intSendPort, Integer intRcvPort, TCBroadcaster tcb) {
 
 		this.w = w;
 		this.h = h;
@@ -47,10 +50,15 @@ public class TCAddressPanel extends JPanel {
 		ipAddress.addKeyListener(new addressKeyAction());
 		p.add(ipAddress, "span, grow");
 
-		p.add(new JLabel("UDP Port"), "gap 10");
-		udpPort = new JTextField(intPort.toString(),tfWidth);
-		udpPort.addKeyListener(new addressKeyAction());
-		p.add(udpPort, "span, grow");
+		p.add(new JLabel("Send Port"), "gap 10");
+		sendPort = new JTextField(intSendPort.toString(),tfWidth);
+		sendPort.addKeyListener(new addressKeyAction());
+		p.add(sendPort, "span, grow");
+		
+		p.add(new JLabel("Receive Port"), "gap 10");
+		rcvPort = new JTextField(intRcvPort.toString(),tfWidth);
+		rcvPort.addKeyListener(new addressKeyAction());
+		p.add(rcvPort, "span, grow");
 		
 		setAddress = new JButton("Set Socket Properties");
 		setAddress.setOpaque(true);
@@ -65,7 +73,25 @@ public class TCAddressPanel extends JPanel {
 	// reset the address and port in tcb and reopen socket
 	public class setAddressAction implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-        	tcb.setNewSocketParameters(ipAddress.getText(),Integer.parseInt(udpPort.getText()));
+        	tcb.setNewSocketParameters(ipAddress.getText(),Integer.parseInt(sendPort.getText()));
+        	
+        	// update the props file
+        	TCDiagnosticMain.properties.put("IPAddress", ipAddress.getText());
+        	TCDiagnosticMain.properties.put("sendPort", sendPort.getText());
+        	TCDiagnosticMain.properties.put("rcvPort", rcvPort.getText());
+        	
+        	try {
+				TCDiagnosticMain.udpr.setNewRcvPort(Integer.parseInt(rcvPort.getText()));
+			} catch (NumberFormatException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (SocketException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (UnknownHostException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
         }
     }
 

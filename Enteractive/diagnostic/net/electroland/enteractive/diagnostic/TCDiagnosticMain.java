@@ -3,47 +3,44 @@ package net.electroland.enteractive.diagnostic;
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 
-import net.electroland.enteractive.diagnostic.old.LTUDPBroadcasterManager;
-import net.electroland.enteractive.udpUtils.UDPReceiver;
 import net.miginfocom.swing.MigLayout;
+
 import org.apache.log4j.Logger;
 
 
 public class TCDiagnosticMain extends JFrame {
 	
 	static Logger logger = Logger.getLogger(TCDiagnosticMain.class);
+	public static HashMap<String, String> properties = new HashMap<String, String>();
+	BufferedReader input;
+	static BufferedWriter propsWriter;
 	
 	private TCAddressPanel addressPanel;
 	private TCPacketPanel packetPanel;
 	private TCOutputPanel outputPanel;
 	
-	private TCUDPReceiver udpr;
+	static TCUDPReceiver udpr;
 	private TCBroadcaster tcb;
-	
-	//private int initSendPort;
-	private int rcvPort;
-	
-	public static HashMap<String, String> properties = new HashMap<String, String>();
-	BufferedReader input;
-		
+
 	public TCDiagnosticMain(int w, int h) {
 		super("Electroland Tile Controller Diagnostic");
 		
 		loadProperties();
-		
-		//initSendPort = 10000;
-		rcvPort = 10001;
+
 		
 		try {
-			udpr = new TCUDPReceiver(rcvPort);
+			udpr = new TCUDPReceiver(Integer.parseInt(TCDiagnosticMain.properties.get("rcvPort")));
 			udpr.start();
 		} catch (Exception e) {
 		}
@@ -61,7 +58,7 @@ public class TCDiagnosticMain extends JFrame {
 		setLayout(layout);
 		
 		
-		addressPanel = new TCAddressPanel(inset, TCDiagnosticMain.properties.get("IPAddress"),  Integer.parseInt(TCDiagnosticMain.properties.get("sendPort")), tcb);
+		addressPanel = new TCAddressPanel(inset, TCDiagnosticMain.properties.get("IPAddress"),  Integer.parseInt(TCDiagnosticMain.properties.get("sendPort")), Integer.parseInt(TCDiagnosticMain.properties.get("rcvPort")), tcb);
 		addressPanel.setMinimumSize(new Dimension (w-inset*2, inset));
 		addressPanel.setBorder(BorderFactory.createTitledBorder("IP Address Setup"));
 		
@@ -93,6 +90,38 @@ public class TCDiagnosticMain extends JFrame {
 		});
 
 	}
+	
+	
+	
+	public static void writeProperties() throws IOException {
+		logger.info("begin writing properties file");
+		
+		propsWriter = new BufferedWriter(new FileWriter("depends/diagnosticProperties.txt", false));
+		
+		String[] allProps;
+		
+		allProps = properties.toString().split(",");
+		
+		for (int i = 0; i < allProps.length; i++){
+			String line = allProps[i];
+			//eliminate leading spaces and curly bracket
+			if (line.startsWith("{") || line.startsWith(" ")){
+				line = line.substring(1);
+			}
+			if (line.endsWith("}")) {
+				line = line.substring(0,line.length()-1);
+			}
+			propsWriter.write(line);
+			propsWriter.newLine();
+		}
+		
+		propsWriter.flush();
+		propsWriter.close();
+		
+		logger.info("successfully wrote properties file");
+		
+	}
+	
 	
 	public void loadProperties(){
 		String line;
@@ -133,7 +162,7 @@ public class TCDiagnosticMain extends JFrame {
 
 	
 	public static void main(String[] args) {
-		new TCDiagnosticMain(600,700);
+		new TCDiagnosticMain(600,800);
 	}
 
 }
