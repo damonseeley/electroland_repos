@@ -123,6 +123,11 @@ public abstract class ShowThread extends Thread {
 			}
 		}
 	}
+	
+	final public void playGlobalSound(String soundFile){
+		SoundManager sm = getSoundManager();
+		soundManager.globalSound(sm.newSoundID(),soundFile,false,1,20000,getID());
+	}
 
 	final public PGraphics getRaster() {
 		return raster;

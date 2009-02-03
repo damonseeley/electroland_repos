@@ -18,6 +18,7 @@ public class Glockenspiel extends ShowThread {
 	private Properties physicalProps;
 	private int startDelay, delayCount;
 	private int age = 0;
+	private boolean globalSound;
 	
 	public Glockenspiel(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
@@ -34,6 +35,7 @@ public class Glockenspiel extends ShowThread {
 		this.physicalProps = physicalProps;
 		this.startDelay = (int)((startDelay/1000.0f)*fps);
 		delayCount = 0;
+		globalSound = false;
 	}
 
 	public Glockenspiel(List <DMXLightingFixture> flowers,
@@ -51,6 +53,7 @@ public class Glockenspiel extends ShowThread {
 		this.physicalProps = physicalProps;
 		this.startDelay = (int)((startDelay/1000.0f)*fps);
 		delayCount = 0;
+		globalSound = true;
 	}
 
 	@Override
@@ -64,7 +67,11 @@ public class Glockenspiel extends ShowThread {
 	public void doWork(PGraphics raster) {
 		if(delayCount >= startDelay){
 			if(startSound){
-				super.playSound(soundFile, physicalProps);
+				if(globalSound){
+					super.playGlobalSound(soundFile);
+				} else {
+					super.playSound(soundFile, physicalProps);
+				}
 				startSound = false;
 			}
 			
