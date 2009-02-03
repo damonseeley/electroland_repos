@@ -771,7 +771,13 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 			ShowThread newShow = null;
 			String globalSound = null;
 			String[] soundFiles = null;
+			int chainDelayMin = 0;
+			int chainDelayMax = 6000;
+			int startDelayMin = 0;
+			int startDelayMax = 6000;
+			int chainCount = 4;	// default
 			int soundID = soundManager.newSoundID();
+			
 			switch(showNum){
 				case - 3:
 					// hourly show TEST (westminster progression)
@@ -849,12 +855,18 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					newShow = new LightGroupTestThread(fixtures, soundManager, 600, detectorMngr.getFps(), raster, "LightGroupTestThread", ShowThread.HIGHEST, guiWindow.gui.loadImage("depends//images//lightgrouptest2.png"));
 					break;
 				case 0:		// (shows 0+ are selected randomly every 5 minutes)
+					// solid color
 					// create collection, and let it know we need to be notified when everyone is done.
 					ShowCollection solidColorCollection = new ShowCollection("solidColor");
 					solidColorCollection.addListener(this);
 					int solidColorShowGain = Integer.parseInt(systemProps.getProperty("solidColorGlobalGain"));
 					
-					// solid color
+					chainDelayMin = Integer.parseInt(systemProps.getProperty("solidColorGlockChainMin"));
+					chainDelayMax = Integer.parseInt(systemProps.getProperty("solidColorGlockChainMax"));
+					startDelayMin = Integer.parseInt(systemProps.getProperty("solidColorGlockStartMin"));
+					startDelayMax = Integer.parseInt(systemProps.getProperty("solidColorGlockStartMax"));
+					chainCount = Integer.parseInt(systemProps.getProperty("solidColorGlockChainCount"));
+					
 					soundFiles = systemProps.getProperty("solidColorShowSounds").split(",");
 					Iterator <DMXLightingFixture> fixturelist = fixtures.iterator();
 					while (fixturelist.hasNext()){
@@ -883,15 +895,15 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 							green = 150;
 							blue = 150;
 						}
-						int bongRate = (int)(Math.random()*1000);
+						int bongRate = (int)(Math.random()*(chainDelayMax-chainDelayMin)) + chainDelayMin;
 						raster = guiWindow.gui.createGraphics(fixtures.get(0).getWidth(), fixtures.get(0).getHeight(), PConstants.P3D);	// needs a unique raster for each color
 						String soundFile = soundFiles[(int)(Math.random()*(soundFiles.length-0.01))]; 	// unique per fixture, but same throughout chain
-						newShow = new Glockenspiel(fixture, soundManager, 5, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, red, green, blue, 5, soundFile, physicalProps, (int)(Math.random()*6000), solidColorShowGain);
+						newShow = new Glockenspiel(fixture, soundManager, 5, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, red, green, blue, 5, soundFile, physicalProps, (int)(Math.random()*(startDelayMax-startDelayMin)) + startDelayMin, solidColorShowGain);
 
 						// add to collection
 						solidColorCollection.addToCollection(newShow);
 						
-						for(int h=1; h<6; h++){
+						for(int h=1; h<=chainCount; h++){
 							newShow.chain(new Glockenspiel(fixture, soundManager, 5, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, red, green, blue, 5, soundFile, physicalProps, bongRate, solidColorShowGain));
 							bongRate = (bongRate/6) * h;	// reduces delays to create crescendo
 							// entire collection must end at apex to be affective
@@ -1011,6 +1023,11 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					soundFiles = systemProps.getProperty("sparkleSpiralShowSounds").split(",");
 					Iterator <DMXLightingFixture> fiter = fixtures.iterator();
 					int sparkleSpiralShowGain = Integer.parseInt(systemProps.getProperty("sparkleSpiralShowGain"));
+					chainDelayMin = Integer.parseInt(systemProps.getProperty("sparkleSpiralGlockChainMin"));
+					chainDelayMax = Integer.parseInt(systemProps.getProperty("sparkleSpiralGlockChainMax"));
+					startDelayMin = Integer.parseInt(systemProps.getProperty("sparkleSpiralGlockStartMin"));
+					startDelayMax = Integer.parseInt(systemProps.getProperty("sparkleSpiralGlockStartMax"));
+					chainCount = Integer.parseInt(systemProps.getProperty("sparkleSpiralGlockChainCount"));
 					
 					while (fiter.hasNext()){
 						DMXLightingFixture fixture = fiter.next();
@@ -1057,11 +1074,11 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						}
 						
 						ColorScheme spectrum = new ColorScheme(colorlist, points);
-		            	int bongRate = (int)(Math.random()*1000);
+						int bongRate = (int)(Math.random()*(chainDelayMax-chainDelayMin)) + chainDelayMin;
 		            	String soundFile = soundFiles[(int)(Math.random()*(soundFiles.length-0.01))]; 	// unique per fixture, but same throughout chain
 						raster = guiWindow.gui.createGraphics(fixture.getWidth(), fixture.getHeight(), PConstants.P3D);	// needs a unique raster for each color
-						newShow = new SparkleSpiralThread(fixture, soundManager, 20, detectorMngr.getFps(), raster, "Sparkle Spiral", ShowThread.HIGHEST, spectrum, 0, 0, false, soundFile, physicalProps, (int)(Math.random()*6000), sparkleSpiralShowGain);
-						for(int h=1; h<4; h++){
+						newShow = new SparkleSpiralThread(fixture, soundManager, 20, detectorMngr.getFps(), raster, "Sparkle Spiral", ShowThread.HIGHEST, spectrum, 0, 0, false, soundFile, physicalProps, (int)(Math.random()*(startDelayMax-startDelayMin)) + startDelayMin, sparkleSpiralShowGain);
+						for(int h=1; h<=chainCount; h++){
 							newShow.chain(new SparkleSpiralThread(fixture, soundManager, 20, detectorMngr.getFps(), raster, "Sparkle Spiral", ShowThread.HIGHEST, spectrum, 0, 0, false, soundFile, physicalProps, bongRate, sparkleSpiralShowGain));
 						}
 						if(fiter.hasNext()){
@@ -1252,6 +1269,11 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					soundFiles = systemProps.getProperty("fireworksShowSounds").split(",");
 					Iterator <DMXLightingFixture> floweriter = fixtures.iterator();
 					int fireworksGlobalGain = Integer.parseInt(systemProps.getProperty("fireworksGlobalGain"));
+					chainDelayMin = Integer.parseInt(systemProps.getProperty("fireworksGlockChainMin"));
+					chainDelayMax = Integer.parseInt(systemProps.getProperty("fireworksGlockChainMax"));
+					startDelayMin = Integer.parseInt(systemProps.getProperty("fireworksGlockStartMin"));
+					startDelayMax = Integer.parseInt(systemProps.getProperty("fireworksGlockStartMax"));
+					chainCount = Integer.parseInt(systemProps.getProperty("fireworksGlockChainCount"));
 					
 					while (floweriter.hasNext()){
 						DMXLightingFixture fixture = floweriter.next();
@@ -1298,13 +1320,13 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						}
 						
 						ColorScheme spectrum = new ColorScheme(colorlist, points);
-		            	//int bongRate = (int)(Math.random()*2000);
+						//int bongRate = (int)(Math.random()*(chainDelayMax-chainDelayMin)) + chainDelayMin;
 		            	int duration = (int)(Math.random()*5) + 5;
 		            	String soundFile = soundFiles[(int)(Math.random()*(soundFiles.length-0.01))]; 	// unique per fixture, but same throughout chain
 		            	raster = guiWindow.gui.createGraphics(fixtures.get(0).getWidth(), fixtures.get(0).getHeight(), PConstants.P3D);	// needs a unique raster for each color
-						newShow = new FireworksThread(fixture, soundManager, duration, detectorMngr.getFps(), raster, "FireworksThread", ShowThread.HIGHEST, spectrum, 8, 0.8f, guiWindow.gui.loadImage("depends//images//sprites//thickring.png"), soundFile, physicalProps, (int)(Math.random()*6000), false, fireworksGlobalGain);
-						for(int h=1; h<4; h++){
-							newShow.chain(new FireworksThread(fixture, soundManager, duration, detectorMngr.getFps(), raster, "FireworksThread", ShowThread.HIGHEST, spectrum, 8, 0.8f, guiWindow.gui.loadImage("depends//images//sprites//thickring.png"), soundFile, physicalProps, (int)(Math.random()*2000), false, fireworksGlobalGain));
+						newShow = new FireworksThread(fixture, soundManager, duration, detectorMngr.getFps(), raster, "FireworksThread", ShowThread.HIGHEST, spectrum, 8, 0.8f, guiWindow.gui.loadImage("depends//images//sprites//thickring.png"), soundFile, physicalProps, (int)(Math.random()*(startDelayMax-startDelayMin)) + startDelayMin, false, fireworksGlobalGain);
+						for(int h=1; h<=chainCount; h++){
+							newShow.chain(new FireworksThread(fixture, soundManager, duration, detectorMngr.getFps(), raster, "FireworksThread", ShowThread.HIGHEST, spectrum, 8, 0.8f, guiWindow.gui.loadImage("depends//images//sprites//thickring.png"), soundFile, physicalProps, (int)(Math.random()*(chainDelayMax-chainDelayMin)) + chainDelayMin, false, fireworksGlobalGain));
 						}
 						if(floweriter.hasNext()){
 							startShow(newShow);	// start every show except last one							
