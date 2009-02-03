@@ -1187,13 +1187,14 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						colorlist[2][2] = 0;
 						*/
 						
-						float[] points = new float[4];
+						float[] points = new float[5];
 						points[0] = 0;
-						points[1] = 0.49f;
+						points[1] = 0.25f;
 						points[2] = 0.5f;
-						points[3] = 1;
+						points[3] = 0.75f;
+						points[4] = 1;
 						
-						float[][] colorlist = new float[4][3];
+						float[][] colorlist = new float[5][3];
 						colorlist[0][0] = 0;	// cyan
 						colorlist[0][1] = 255;
 						colorlist[0][2] = 255;
@@ -1206,6 +1207,9 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						colorlist[3][0] = 255;	// white
 						colorlist[3][1] = 255;
 						colorlist[3][2] = 255;
+						colorlist[4][0] = 0;	// cyan
+						colorlist[4][1] = 255;
+						colorlist[4][2] = 255;
 						/*
 						float[][] colorlist = new float[5][3];
 						colorlist[0][0] = 0;	// cyan
@@ -1285,13 +1289,13 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						}
 						
 						ColorScheme spectrum = new ColorScheme(colorlist, points);
-		            	int bongRate = (int)(Math.random()*2000);
+		            	//int bongRate = (int)(Math.random()*2000);
 		            	int duration = (int)(Math.random()*5) + 5;
 		            	String soundFile = soundFiles[(int)(Math.random()*(soundFiles.length-0.01))]; 	// unique per fixture, but same throughout chain
 		            	raster = guiWindow.gui.createGraphics(fixtures.get(0).getWidth(), fixtures.get(0).getHeight(), PConstants.P3D);	// needs a unique raster for each color
 						newShow = new FireworksThread(fixture, soundManager, duration, detectorMngr.getFps(), raster, "FireworksThread", ShowThread.HIGHEST, spectrum, 8, 0.8f, guiWindow.gui.loadImage("depends//images//sprites//thickring.png"), soundFile, physicalProps, (int)(Math.random()*6000), false);
 						for(int h=1; h<4; h++){
-							newShow.chain(new FireworksThread(fixture, soundManager, duration, detectorMngr.getFps(), raster, "FireworksThread", ShowThread.HIGHEST, spectrum, 8, 0.8f, guiWindow.gui.loadImage("depends//images//sprites//thickring.png"), soundFile, physicalProps, bongRate, false));
+							newShow.chain(new FireworksThread(fixture, soundManager, duration, detectorMngr.getFps(), raster, "FireworksThread", ShowThread.HIGHEST, spectrum, 8, 0.8f, guiWindow.gui.loadImage("depends//images//sprites//thickring.png"), soundFile, physicalProps, (int)(Math.random()*2000), false));
 						}
 						if(floweriter.hasNext()){
 							startShow(newShow);	// start every show except last one							
