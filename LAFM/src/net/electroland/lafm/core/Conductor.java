@@ -817,7 +817,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					}
 					*/
 					
-					int quarterNote = 900;			// length of quarter note
+					int quarterNote = 850;			// length of quarter note
 					int wholeNote = quarterNote*4;	// 3:4 scale
 					
 					newShow = new Glockenspiel(fixtures, soundManager, quarterNote, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, 255, 0, 0, 0, "c_quarter.wav", physicalProps, 0);
@@ -838,8 +838,8 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					newShow.chain(new Glockenspiel(fixtures, soundManager, quarterNote, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, 255, 0, 0, 0, "g_quarter.wav", physicalProps, 0));
 					newShow.chain(new Glockenspiel(fixtures, soundManager, quarterNote, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, 0, 255, 0, 0, "d_quarter.wav", physicalProps, 0));
 					newShow.chain(new Glockenspiel(fixtures, soundManager, quarterNote, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, 0, 0, 255, 0, "e_quarter.wav", physicalProps, 0));
-					newShow.chain(new Glockenspiel(fixtures, soundManager, wholeNote*3, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, 255, 255, 255, 1, "c_whole.wav", physicalProps, 0));	// last note fades out
-					
+					newShow.chain(new Glockenspiel(fixtures, soundManager, wholeNote+quarterNote, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, 255, 255, 255, 1, "c_whole.wav", physicalProps, 0));	// last note fades out
+								
 					hourlyCollection.addToCollection(newShow);
 					//globalSound = systemProps.getProperty("hourlyShow");
 					//soundManager.globalSound(soundID,globalSound,false,1,20000,"hourlyshow");
