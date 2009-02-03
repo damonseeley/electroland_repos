@@ -1187,13 +1187,13 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						colorlist[2][2] = 0;
 						*/
 						
-						float[] points = new float[6];
+						float[] points = new float[4];
 						points[0] = 0;
 						points[1] = 0.49f;
 						points[2] = 0.5f;
 						points[3] = 1;
 						
-						float[][] colorlist = new float[6][3];
+						float[][] colorlist = new float[4][3];
 						colorlist[0][0] = 0;	// cyan
 						colorlist[0][1] = 255;
 						colorlist[0][2] = 255;
