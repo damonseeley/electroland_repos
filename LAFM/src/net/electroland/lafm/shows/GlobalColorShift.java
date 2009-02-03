@@ -50,7 +50,7 @@ public class GlobalColorShift extends ShowThread {
 			//super.playSound(soundFile, physicalProps);
 			SoundManager s = super.getSoundManager();
 			int soundID = s.newSoundID();
-			s.globalSound(soundID,"blank.wav",false,1,10000,"globalcolorshift");
+			s.globalSound(soundID,"none",false,1,10000,"globalcolorshift");
 			startSound = false;
 		}
 		
