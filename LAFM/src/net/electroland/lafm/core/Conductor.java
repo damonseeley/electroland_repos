@@ -752,9 +752,12 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					soundFile = systemProps.getProperty("chimeSound");
 				} 
 				
-				newShow = new ChimesThread(monoFixtures, soundManager, 10, detectorMngr.getFps(), raster, "Chimes", ShowThread.HIGHEST, 6, 5, red, green, blue, soundFile, physicalProps);
+				// need gain value here
+				float chimeSoundGain = Float.parseFloat(systemProps.getProperty("chimeSoundGain"));
+				
+				newShow = new ChimesThread(monoFixtures, soundManager, 10, detectorMngr.getFps(), raster, "Chimes", ShowThread.HIGHEST, 6, 5, red, green, blue, soundFile, physicalProps,chimeSoundGain);
 				for(int h=1; h<hour; h++){
-					newShow.chain(new ChimesThread(monoFixtures, soundManager, 10, detectorMngr.getFps(), raster, "Chimes", ShowThread.HIGHEST, 6, 5, red, green, blue, soundFile, physicalProps));
+					newShow.chain(new ChimesThread(monoFixtures, soundManager, 10, detectorMngr.getFps(), raster, "Chimes", ShowThread.HIGHEST, 6, 5, red, green, blue, soundFile, physicalProps,chimeSoundGain));
 				}
 				if(i < physicalColors.length-1){
 					startShow(newShow);	// start every show except last one							
@@ -979,7 +982,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					pointlist[1] = 0.5f;
 					pointlist[2] = 1;
 
-					float dartBoardGlockGain = Float.parseFloat(systemProps.getProperty("dartBoardGlockGain"));
+					float dartBoardGlockGain = Float.parseFloat(systemProps.getProperty("dartBoardGlobalGain"));
 					int dartboardDuration = Integer.parseInt(systemProps.getProperty("dartBoardGlockDuration"));
 					
 					// iterate through list of colors and find fixtures that match

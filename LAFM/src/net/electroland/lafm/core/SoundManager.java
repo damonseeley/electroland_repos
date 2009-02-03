@@ -59,7 +59,10 @@ public class SoundManager extends Thread {
 			//System.out.println(filename);
 			// duration not used, no looping
 			// send simple instanceID soundfilename.wav 0 0 1 1
+			
 			send("global instance"+soundIDToStart+" "+filename+" "+gain+" "+comment);
+			//send("global instance"+soundIDToStart+" "+filename+" "+gain);
+
 			//send("simple instance"+soundIDToStart+" "+soundFile+" "+0+" "+0+" "+0+" "+gain+" "+comment);
 		}
 	}

@@ -21,12 +21,13 @@ public class ChimesThread extends ShowThread {
 	private float red, green, blue;
 	private boolean startSound;
 	private String soundFile;
+	private float gain;
 	//private Properties physicalProps;
 	
 	public ChimesThread(List<DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, int hour,	int fadeSpeed,
-			int red, int green, int blue, String soundFile, Properties physicalProps) {
+			int red, int green, int blue, String soundFile, Properties physicalProps,float gain) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		//this.hour = hour;
 		this.red = (red/255.0f);
@@ -38,12 +39,13 @@ public class ChimesThread extends ShowThread {
 		this.soundFile = soundFile;
 		startSound = true;
 		//this.physicalProps = physicalProps;
+		this.gain = gain;
 	}
 	
 	public ChimesThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, int hour,	int fadeSpeed,
-			int red, int green, int blue, String soundFile, Properties physicalProps) {
+			int red, int green, int blue, String soundFile, Properties physicalProps,float gain) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		//this.hour = hour;
 		this.red = (red/255.0f);
@@ -55,6 +57,7 @@ public class ChimesThread extends ShowThread {
 		this.soundFile = soundFile;
 		startSound = true;
 		//this.physicalProps = physicalProps;
+		this.gain = gain;
 	}
 
 	@Override
@@ -70,7 +73,7 @@ public class ChimesThread extends ShowThread {
 		if(startSound){
 			//super.playSound(soundFile, physicalProps);
 			int soundID = super.getSoundManager().newSoundID();
-			super.getSoundManager().globalSound(soundID, soundFile, false, 1.0f, 5000, "chimes");
+			super.getSoundManager().globalSound(soundID, soundFile, false, gain, 5000, "chimes");
 			startSound = false;
 		}
 		
