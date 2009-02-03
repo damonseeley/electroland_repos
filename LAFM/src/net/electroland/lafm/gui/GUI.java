@@ -280,7 +280,7 @@ public class GUI extends PApplet{
 					conductor.launchChimes(testChimeCount, 0, 0);	// control chime count from textfield
 					glock = true;
 				} else if(e.controller().name().equals("hourly show")){	// runs major hourly show + chimes
-					conductor.launchGlockenspiel(-2, 6, 0, 0);
+					conductor.launchGlockenspiel(-3, 6, 0, 0);
 					glock = true;
 				}
 				if(!glock){

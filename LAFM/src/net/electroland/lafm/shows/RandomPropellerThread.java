@@ -29,11 +29,12 @@ public class RandomPropellerThread extends ShowThread implements SensorListener 
 	private int duration;	// counting frames before fading out
 	private ColorScheme spectrum;
 	private ConcurrentHashMap<Integer,Propeller> propellers;
+	private float gain;
 
 	public RandomPropellerThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float rotationSpeed, int fadeSpeed,
-			float acceleration, float deceleration, String soundFile, Properties physicalProps) {
+			float acceleration, float deceleration, String soundFile, Properties physicalProps, float gain) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 
 		this.spectrum = spectrum;
@@ -43,6 +44,7 @@ public class RandomPropellerThread extends ShowThread implements SensorListener 
 		this.deceleration = deceleration;
 		this.soundFile = soundFile;
 		this.physicalProps = physicalProps;
+		this.gain = gain;
 		speedUp = true;
 		slowDown = false;
 		topSpeed = 15;
@@ -69,7 +71,7 @@ public class RandomPropellerThread extends ShowThread implements SensorListener 
 	public RandomPropellerThread(List<DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float rotationSpeed, int fadeSpeed,
-			float acceleration, float deceleration, String soundFile, Properties physicalProps) {
+			float acceleration, float deceleration, String soundFile, Properties physicalProps, float gain) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 
 		this.spectrum = spectrum;
@@ -79,6 +81,7 @@ public class RandomPropellerThread extends ShowThread implements SensorListener 
 		this.deceleration = deceleration;
 		this.soundFile = soundFile;
 		this.physicalProps = physicalProps;
+		this.gain = gain;
 		speedUp = true;
 		slowDown = false;
 		topSpeed = 15;
@@ -112,7 +115,7 @@ public class RandomPropellerThread extends ShowThread implements SensorListener 
 	@Override
 	public void doWork(PGraphics raster) {
 		if(startSound){
-			super.playSound(soundFile, physicalProps);
+			super.playSound(soundFile, gain, physicalProps);
 			startSound = false;
 			raster.beginDraw();
 			raster.background(255,255,255);	// flashes white at beginning

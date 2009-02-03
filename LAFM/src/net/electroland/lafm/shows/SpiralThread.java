@@ -26,12 +26,13 @@ public class SpiralThread extends ShowThread implements SensorListener{
 	int age = 0;
 	private boolean loop = true;
 	private int duration;	// counting frames before fading out
+	private float gain;
 
 	public SpiralThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
 			int red, int green, int blue,  float rotationSpeed, int fadeSpeed,
 			float spiralTightness, int spriteWidth, PImage texture, String soundFile,
-			Properties physicalProps) {
+			Properties physicalProps, float gain) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
 		this.green = green;
@@ -46,6 +47,7 @@ public class SpiralThread extends ShowThread implements SensorListener{
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
+		this.gain = gain;
 		fadeOut = false;
 		duration = (lifespan*fps) - (100/fadeSpeed);
 	}
@@ -54,7 +56,7 @@ public class SpiralThread extends ShowThread implements SensorListener{
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
 			int red, int green, int blue,  float rotationSpeed, int fadeSpeed,
 			float spiralTightness, int spriteWidth, PImage texture, String soundFile,
-			Properties physicalProps) {
+			Properties physicalProps, float gain) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
 		this.green = green;
@@ -69,6 +71,7 @@ public class SpiralThread extends ShowThread implements SensorListener{
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
+		this.gain = gain;
 		fadeOut = false;
 		duration = (lifespan*fps) - (100/fadeSpeed);
 	}
@@ -84,7 +87,7 @@ public class SpiralThread extends ShowThread implements SensorListener{
 	public void doWork(PGraphics raster) {
 		
 		if(startSound){
-			super.playSound(soundFile, physicalProps);
+			super.playSound(soundFile, gain, physicalProps);
 			startSound = false;
 			raster.beginDraw();
 			raster.background(red,green,blue);

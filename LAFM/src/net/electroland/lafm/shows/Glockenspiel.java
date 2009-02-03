@@ -19,11 +19,12 @@ public class Glockenspiel extends ShowThread {
 	private int startDelay, delayCount;
 	private int age = 0;
 	private boolean globalSound;
+	private float gain;
 	
 	public Glockenspiel(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int priority, int red, int green, int blue, int fadeSpeed,
-			String soundFile, Properties physicalProps, int startDelay) {
+			String soundFile, Properties physicalProps, int startDelay, float gain) {
 		super(flower, soundManager, lifespan, fps, raster, ID, priority);
 		this.red = (red/255.0f);
 		this.green = (green/255.0f);
@@ -33,6 +34,7 @@ public class Glockenspiel extends ShowThread {
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
+		this.gain = gain;
 		this.startDelay = (int)((startDelay/1000.0f)*fps);
 		delayCount = 0;
 		globalSound = false;
@@ -41,7 +43,7 @@ public class Glockenspiel extends ShowThread {
 	public Glockenspiel(List <DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int priority, int red, int green, int blue, int fadeSpeed,
-			String soundFile, Properties physicalProps,  int startDelay) {
+			String soundFile, Properties physicalProps,  int startDelay, float gain) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, priority);
 		this.red = (red/255.0f);
 		this.green = (green/255.0f);
@@ -51,6 +53,7 @@ public class Glockenspiel extends ShowThread {
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
+		this.gain = gain;
 		this.startDelay = (int)((startDelay/1000.0f)*fps);
 		delayCount = 0;
 		globalSound = true;
@@ -68,9 +71,9 @@ public class Glockenspiel extends ShowThread {
 		if(delayCount >= startDelay){
 			if(startSound){
 				if(globalSound){
-					super.playGlobalSound(soundFile);
+					super.playGlobalSound(soundFile, gain);
 				} else {
-					super.playSound(soundFile, physicalProps);
+					super.playSound(soundFile, gain, physicalProps);
 				}
 				startSound = false;
 			}

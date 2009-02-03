@@ -24,11 +24,12 @@ public class WipeThread extends ShowThread implements SensorListener{
 	private ConcurrentHashMap<Integer,Bar> bars;
 	private int barCount = 0;
 	private int numberBars, wipeSpeed;
+	private float gain;
 
 	public WipeThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
 			ColorScheme spectrum, int wipeSpeed, int fadeSpeed,
-			int numberBars, String soundFile, Properties physicalProps) {
+			int numberBars, String soundFile, Properties physicalProps, float gain) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		
 		this.spectrum = spectrum;
@@ -48,13 +49,14 @@ public class WipeThread extends ShowThread implements SensorListener{
 			//bars.put(barCount, new Bar(raster, wipeSpeed));
 			//barCount++;
 		//}
+		this.gain = gain;
 		startSound = true;
 	}
 	
 	public WipeThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
 			ColorScheme spectrum, int wipeSpeed, int fadeSpeed,
-			int numberBars, String soundFile, Properties physicalProps) {
+			int numberBars, String soundFile, Properties physicalProps, float gain) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 
 		this.spectrum = spectrum;
@@ -74,6 +76,7 @@ public class WipeThread extends ShowThread implements SensorListener{
 			//bars.put(barCount, new Bar(raster, wipeSpeed));
 			//barCount++;
 		//}
+		this.gain = gain;
 		startSound = true;
 	}
 
@@ -87,7 +90,7 @@ public class WipeThread extends ShowThread implements SensorListener{
 	@Override
 	public void doWork(PGraphics raster) {
 		if(startSound){
-			super.playSound(soundFile, physicalProps);
+			super.playSound(soundFile, gain, physicalProps);
 			startSound = false;
 		}
 		

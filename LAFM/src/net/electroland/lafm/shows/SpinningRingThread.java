@@ -30,6 +30,7 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 	private int age = 0;
 	private int duration;	// counting frames before fading out
 	private int topSpeed;
+	private float gain;
 	//private int outerRadius, innerRadius;
 
 	public SpinningRingThread(DMXLightingFixture flower,
@@ -38,7 +39,8 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 			float outerSpeed, float innerSpeed, float coreSpeed, float fadeSpeed,
 			float outerAcceleration, float outerDeceleration, float innerAcceleration,
 			float innerDeceleration, PImage outerRing, PImage innerRing,
-			boolean startFast, String soundFile, Properties physicalProps, int startDelay, boolean interactive) {
+			boolean startFast, String soundFile, Properties physicalProps,
+			int startDelay, boolean interactive, float gain) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
 		this.green = green;
@@ -101,6 +103,7 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		this.soundFile = soundFile;
 		this.physicalProps = physicalProps;
 		this.startDelay = (int)((startDelay/1000.0f)*fps);
+		this.gain = gain;
 		delayCount = 0;
 		topSpeed = 40;
 		startSound = true;
@@ -112,7 +115,8 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 			float outerSpeed, float innerSpeed, float coreSpeed, float fadeSpeed,
 			float outerAcceleration, float outerDeceleration, float innerAcceleration,
 			float innerDeceleration, PImage outerRing, PImage innerRing,
-			boolean startFast, String soundFile, Properties physicalProps, int startDelay, boolean interactive) {
+			boolean startFast, String soundFile, Properties physicalProps,
+			int startDelay, boolean interactive, float gain) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
 		this.green = green;
@@ -151,6 +155,7 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		this.soundFile = soundFile;
 		this.physicalProps = physicalProps;
 		this.startDelay = (int)((startDelay/1000.0f)*fps);
+		this.gain = gain;
 		delayCount = 0;
 		topSpeed = 40;
 		startSound = true;
@@ -167,7 +172,7 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 	public void doWork(PGraphics raster) {
 		if(delayCount >= startDelay){
 			if(startSound){
-				super.playSound(soundFile, physicalProps);
+				super.playSound(soundFile, gain, physicalProps);
 				startSound = false;
 			}
 			

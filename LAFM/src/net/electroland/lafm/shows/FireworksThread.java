@@ -35,12 +35,13 @@ public class FireworksThread extends ShowThread implements SensorListener{
 	private int duration;	// counting frames before fading out
 	private float frequencySlowRate;
 	private int backgroundColor = 255;
+	private float gain;
 
 	public FireworksThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float speed,
 			float frequency, PImage texture, String soundFile, Properties physicalProps,
-			int startDelay, boolean interactive) {
+			int startDelay, boolean interactive, float gain) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
@@ -54,6 +55,7 @@ public class FireworksThread extends ShowThread implements SensorListener{
 		this.totalFrames = lifespan*fps;
 		this.startDelay = (int)((startDelay/1000.0f)*fps);
 		this.interactive = interactive;
+		this.gain = gain;
 		delayCount = 0;
 		duration = (lifespan*fps) - (100/fadeOutSpeed);
 		frequencySlowRate = (0.9f - frequency)/duration;	// add this to frequency
@@ -64,7 +66,7 @@ public class FireworksThread extends ShowThread implements SensorListener{
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float speed,
 			float frequency, PImage texture, String soundFile, Properties physicalProps,
-			int startDelay, boolean interactive) {
+			int startDelay, boolean interactive, float gain) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
@@ -78,6 +80,7 @@ public class FireworksThread extends ShowThread implements SensorListener{
 		this.totalFrames = lifespan*fps;
 		this.startDelay = (int)((startDelay/1000.0f)*fps);
 		this.interactive = interactive;
+		this.gain = gain;
 		delayCount = 0;
 		duration = (lifespan*fps) - (100/fadeOutSpeed);
 		frequencySlowRate = (0.9f - frequency)/duration;	// add this to frequency
@@ -95,7 +98,7 @@ public class FireworksThread extends ShowThread implements SensorListener{
 	public void doWork(PGraphics raster) {
 		if(delayCount >= startDelay){
 			if(startSound){
-				super.playSound(soundFile, physicalProps);
+				super.playSound(soundFile, gain, physicalProps);
 				startSound = false;
 			}
 			
@@ -188,7 +191,7 @@ public class FireworksThread extends ShowThread implements SensorListener{
 		
 		public void draw(FireworksThread parent, PGraphics raster){
 			if(startExplosionSound && interactive){
-				parent.playSound(soundFile, physicalProps);
+				parent.playSound(soundFile, gain, physicalProps);
 				startExplosionSound = false;
 			}
 			raster.tint(color[0], color[1], color[2], alpha);

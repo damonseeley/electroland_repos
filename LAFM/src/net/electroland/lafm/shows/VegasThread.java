@@ -26,11 +26,12 @@ public class VegasThread extends ShowThread implements SensorListener{
 	private float minColorPoint, maxColorPoint;
 	private float spectrumShiftSpeed;
 	private boolean spectrumDirection;
+	private float gain;
 
 	public VegasThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
 			ColorScheme spectrum, float speed, float minColorPoint, float maxColorPoint,
-			float spectrumShiftSpeed, String soundFile, Properties physicalProps) {
+			float spectrumShiftSpeed, String soundFile, Properties physicalProps, float gain) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
@@ -43,12 +44,13 @@ public class VegasThread extends ShowThread implements SensorListener{
 		fadeOut = false;
 		duration = (lifespan*fps) - (100/fadeSpeed);
 		this.physicalProps = physicalProps;
+		this.gain = gain;
 	}
 	
 	public VegasThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
 			ColorScheme spectrum, float speed, float minColorPoint, float maxColorPoint,
-			float spectrumShiftSpeed, String soundFile, Properties physicalProps) {
+			float spectrumShiftSpeed, String soundFile, Properties physicalProps, float gain) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
@@ -61,6 +63,7 @@ public class VegasThread extends ShowThread implements SensorListener{
 		fadeOut = false;
 		duration = (lifespan*fps) - (100/fadeSpeed);
 		this.physicalProps = physicalProps;
+		this.gain = gain;
 	}
 
 	@Override
@@ -74,7 +77,7 @@ public class VegasThread extends ShowThread implements SensorListener{
 	public void doWork(PGraphics raster) {
 		
 		if(startSound){
-			super.playSound(soundFile, physicalProps);
+			super.playSound(soundFile, gain, physicalProps);
 			startSound = false;
 		}
 		

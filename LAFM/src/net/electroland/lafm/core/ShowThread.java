@@ -104,7 +104,7 @@ public abstract class ShowThread extends Thread {
 	}
 
 
-	final public void playSound(String soundFile, Properties physicalProps){
+	final public void playSound(String soundFile, float gain, Properties physicalProps){
 		boolean[] channelsInUse = new boolean[6];		// null array of sound channels
 		for(int n=0; n<channelsInUse.length; n++){
 			channelsInUse[n] = false;
@@ -118,15 +118,15 @@ public abstract class ShowThread extends Thread {
 			}
 			for(int n=0; n<channelsInUse.length; n++){
 				if(channelsInUse[n] != false){
-					getSoundManager().playSimpleSound(soundFile, n+1, 1.0f, getID());
+					getSoundManager().playSimpleSound(soundFile, n+1, gain, getID());
 				}
 			}
 		}
 	}
 	
-	final public void playGlobalSound(String soundFile){
+	final public void playGlobalSound(String soundFile, float gain){
 		SoundManager sm = getSoundManager();
-		soundManager.globalSound(sm.newSoundID(),soundFile,false,1,20000,getID());
+		soundManager.globalSound(sm.newSoundID(),soundFile,false,gain,20000,getID());
 	}
 
 	final public PGraphics getRaster() {

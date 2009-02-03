@@ -27,11 +27,13 @@ public class SpinningThread extends ShowThread implements SensorListener{
 	private int topSpeed, fadeSpeed;
 	private int spriteSize;
 	private boolean interactive;
+	private float gain;
 	
 	public SpinningThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
 			PImage sprite, float rotSpeed, float acceleration, float deceleration,
-			int fadeSpeed, String soundFile, Properties physicalProps, int startDelay, boolean interactive) {
+			int fadeSpeed, String soundFile, Properties physicalProps, int startDelay,
+			boolean interactive, float gain) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		
 		this.sprite = sprite;
@@ -43,6 +45,7 @@ public class SpinningThread extends ShowThread implements SensorListener{
 		this.physicalProps = physicalProps;
 		this.startDelay = (int)((startDelay/1000.0f)*fps);
 		this.interactive = interactive;
+		this.gain = gain;
 		rotation = 0;
 		delayCount = 0;
 		duration = (lifespan*fps) - (int)(100/fadeSpeed);
@@ -58,7 +61,8 @@ public class SpinningThread extends ShowThread implements SensorListener{
 	public SpinningThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
 			PImage sprite, float rotSpeed, float acceleration, float deceleration,
-			int fadeSpeed, String soundFile, Properties physicalProps, int startDelay, boolean interactive) {
+			int fadeSpeed, String soundFile, Properties physicalProps, int startDelay,
+			boolean interactive, float gain) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		
 		this.sprite = sprite;
@@ -70,6 +74,7 @@ public class SpinningThread extends ShowThread implements SensorListener{
 		this.physicalProps = physicalProps;
 		this.startDelay = (int)((startDelay/1000.0f)*fps);
 		this.interactive = interactive;
+		this.gain = gain;
 		rotation = 0;
 		delayCount = 0;
 		duration = (lifespan*fps) - (int)(100/fadeSpeed);
@@ -93,7 +98,7 @@ public class SpinningThread extends ShowThread implements SensorListener{
 	public void doWork(PGraphics raster) {
 		if(delayCount >= startDelay){
 			if(startSound){
-				super.playSound(soundFile, physicalProps);
+				super.playSound(soundFile, gain, physicalProps);
 				startSound = false;
 			}
 			

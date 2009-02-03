@@ -26,11 +26,13 @@ public class SparkleSpiralThread extends ShowThread implements SensorListener{
 	private String soundFile;
 	private Properties physicalProps;
 	private int startDelay, delayCount;
+	private float gain;
 	
 	public SparkleSpiralThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float sparkleSpeed,
-			float spiralSpeed, boolean interactive, String soundFile, Properties physicalProps, int startDelay) {
+			float spiralSpeed, boolean interactive, String soundFile,
+			Properties physicalProps, int startDelay, float gain) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.sparkleSpeed = sparkleSpeed;
@@ -41,6 +43,7 @@ public class SparkleSpiralThread extends ShowThread implements SensorListener{
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
+		this.gain = gain;
 		this.startDelay = (int)((startDelay/1000.0f)*fps);
 		delayCount = 0;
 		spriteWidth = raster.width/5;
@@ -49,7 +52,8 @@ public class SparkleSpiralThread extends ShowThread implements SensorListener{
 	public SparkleSpiralThread(List<DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float sparkleSpeed,
-			float spiralSpeed, boolean interactive, String soundFile, Properties physicalProps, int startDelay) {
+			float spiralSpeed, boolean interactive, String soundFile,
+			Properties physicalProps, int startDelay, float gain) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.sparkleSpeed = sparkleSpeed;
@@ -60,6 +64,7 @@ public class SparkleSpiralThread extends ShowThread implements SensorListener{
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
+		this.gain = gain;
 		this.startDelay = (int)((startDelay/1000.0f)*fps);
 		delayCount = 0;
 		spriteWidth = raster.width/5;
@@ -76,7 +81,7 @@ public class SparkleSpiralThread extends ShowThread implements SensorListener{
 	public void doWork(PGraphics raster) {
 		if(delayCount >= startDelay){
 			if(startSound){
-				super.playSound(soundFile, physicalProps);
+				super.playSound(soundFile, gain, physicalProps);
 				startSound = false;
 			}
 			

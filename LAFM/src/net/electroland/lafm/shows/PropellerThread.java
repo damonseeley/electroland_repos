@@ -21,13 +21,14 @@ public class PropellerThread extends ShowThread implements SensorListener{
 	private boolean startSound;
 	private String soundFile;
 	private Properties physicalProps;
+	private float gain;
 	int age = 0;
 	private int duration;	// counting frames before fading out
 	
 	public PropellerThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
 			ColorScheme spectrum, float rotationSpeed, int fadeSpeed,
-			float acceleration, float deceleration, String soundFile, Properties physicalProps) {
+			float acceleration, float deceleration, String soundFile, Properties physicalProps, float gain) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		colorA = spectrum.getColor((float)Math.random());
 		colorB = spectrum.getColor((float)Math.random());
@@ -49,12 +50,13 @@ public class PropellerThread extends ShowThread implements SensorListener{
 		topSpeed = 20;
 		duration = (lifespan*fps) - (int)(100/fadeSpeed);
 		this.physicalProps = physicalProps;
+		this.gain = gain;
 	}
 	
 	public PropellerThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
 			ColorScheme spectrum, float rotationSpeed, int fadeSpeed,
-			float acceleration, float deceleration, String soundFile, Properties physicalProps) {
+			float acceleration, float deceleration, String soundFile, Properties physicalProps, float gain) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		colorA = spectrum.getColor((float)Math.random());
 		colorB = spectrum.getColor((float)Math.random());
@@ -76,6 +78,7 @@ public class PropellerThread extends ShowThread implements SensorListener{
 		topSpeed = 20;
 		duration = (lifespan*fps) - (int)(100/fadeSpeed);
 		this.physicalProps = physicalProps;
+		this.gain = gain;
 	}
 
 	@Override
@@ -89,7 +92,7 @@ public class PropellerThread extends ShowThread implements SensorListener{
 	public void doWork(PGraphics raster) {
 		
 		if(startSound){
-			super.playSound(soundFile, physicalProps);
+			super.playSound(soundFile, gain, physicalProps);
 			startSound = false;
 			raster.beginDraw();
 			raster.background(red,green,blue);

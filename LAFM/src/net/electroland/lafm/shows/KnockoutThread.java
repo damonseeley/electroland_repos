@@ -29,12 +29,13 @@ public class KnockoutThread extends ShowThread implements SensorListener{
 	private boolean spectrumDirection;
 	private boolean knockOut = false;
 	private int duration;	// counting frames before fading out
+	private float gain;
 
 	public KnockoutThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
 			ColorScheme spectrum, int rowCount, int fadeSpeed, float minColorPoint,
 			float maxColorPoint, float colorShiftSpeed, float spectrumShiftSpeed,
-			String soundFile, Properties physicalProps) {
+			String soundFile, Properties physicalProps, float gain) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 
 		this.spectrum = spectrum;
@@ -45,6 +46,7 @@ public class KnockoutThread extends ShowThread implements SensorListener{
 		this.spectrumShiftSpeed = spectrumShiftSpeed;
 		this.soundFile = soundFile;
 		this.physicalProps = physicalProps;
+		this.gain = gain;
 		this.spectrumDirection = true;
 		boxes = new ConcurrentHashMap<Integer,Box>();
 		for(int x=0; x<rowCount; x++){
@@ -65,7 +67,7 @@ public class KnockoutThread extends ShowThread implements SensorListener{
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
 			ColorScheme spectrum, int rowCount, int fadeSpeed, float minColorPoint,
 			float maxColorPoint, float colorShiftSpeed, float spectrumShiftSpeed,
-			String soundFile, Properties physicalProps) {
+			String soundFile, Properties physicalProps, float gain) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 
 		this.spectrum = spectrum;
@@ -76,6 +78,7 @@ public class KnockoutThread extends ShowThread implements SensorListener{
 		this.spectrumShiftSpeed = spectrumShiftSpeed;
 		this.soundFile = soundFile;
 		this.physicalProps = physicalProps;
+		this.gain = gain;
 		this.spectrumDirection = true;
 		boxes = new ConcurrentHashMap<Integer,Box>();
 		for(int x=0; x<rowCount; x++){
@@ -112,7 +115,7 @@ public class KnockoutThread extends ShowThread implements SensorListener{
 	@Override
 	public void doWork(PGraphics raster) {
 		if(startSound){
-			super.playSound(soundFile, physicalProps);
+			super.playSound(soundFile, gain, physicalProps);
 			startSound = false;
 		}
 		

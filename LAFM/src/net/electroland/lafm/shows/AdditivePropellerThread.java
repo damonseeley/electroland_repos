@@ -22,6 +22,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 	private int whitevalue = 0;
 	private int duration;	// counting frames before fading out
 	private boolean startSound;
+	private float gain;
 	private String soundFile;
 	private Properties physicalProps;
 	private int barWidth;
@@ -30,7 +31,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, String rgb1, String rgb2, String rgb3,
 			float rotationSpeed, int fadeSpeed, float acceleration, float deceleration,
-			String soundFile, Properties physicalProps) {
+			String soundFile, Properties physicalProps, float gain) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.rotation = 0;
 		this.rotSpeed = rotationSpeed;
@@ -59,6 +60,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		startSound = true;
 		topSpeed = 20;
 		this.physicalProps = physicalProps;
+		this.gain = gain;
 		duration = (lifespan*fps) - 150;
 		barWidth = raster.width/6;
 	}
@@ -67,7 +69,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, String rgb1, String rgb2, String rgb3,
 			float rotationSpeed, int fadeSpeed, float acceleration, float deceleration,
-			String soundFile, Properties physicalProps) {
+			String soundFile, Properties physicalProps, float gain) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.rotation = 0;
 		this.rotSpeed = rotationSpeed;
@@ -96,6 +98,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		startSound = true;
 		topSpeed = 20;
 		this.physicalProps = physicalProps;
+		this.gain = gain;
 		duration = (lifespan*fps) - 150;
 		barWidth = raster.width/6;
 	}
@@ -111,7 +114,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 	public void doWork(PGraphics raster) {
 		
 		if(startSound){
-			super.playSound(soundFile, physicalProps);
+			super.playSound(soundFile, gain, physicalProps);
 			startSound = false;
 		}
 		

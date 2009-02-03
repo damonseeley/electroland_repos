@@ -21,6 +21,7 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 	boolean speedUp, slowDown;
 	private boolean startSound, fadeOut;
 	private String soundFile;
+	private float gain;
 	private Properties physicalProps;
 	private float topSpeed;
 	int age = 0;
@@ -35,7 +36,7 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float speed,
 			float offset, float acceleration, float deceleration, float topSpeed,
-			String soundFile, Properties physicalProps, boolean interactive, PImage overlay) {
+			String soundFile, Properties physicalProps, boolean interactive, PImage overlay, float gain) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
@@ -53,6 +54,7 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
+		this.gain = gain;
 		fadeOut = false;
 		duration = (lifespan*fps) - (100/fadeSpeed);
 		modulate = false;
@@ -62,7 +64,7 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int showPriority, ColorScheme spectrum, float speed,
 			float offset, float acceleration, float deceleration, float topSpeed,
-			String soundFile, Properties physicalProps, boolean interactive, PImage overlay) {
+			String soundFile, Properties physicalProps, boolean interactive, PImage overlay, float gain) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.spectrum = spectrum;
 		this.speed = speed;
@@ -80,6 +82,7 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 		this.soundFile = soundFile;
 		startSound = false;		// sound is turned off to be triggered as a global sound
 		this.physicalProps = physicalProps;
+		this.gain = gain;
 		fadeOut = false;
 		duration = (lifespan*fps) - (100/fadeSpeed);
 		modulate = true;
@@ -96,7 +99,7 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 	public void doWork(PGraphics raster) {
 		
 		if(startSound){
-			super.playSound(soundFile, physicalProps);
+			super.playSound(soundFile, gain, physicalProps);
 			startSound = false;
 		}
 		

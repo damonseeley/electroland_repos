@@ -23,12 +23,13 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 	private boolean startSound;
 	private String soundFile;
 	private Properties physicalProps;
+	private float gain;
 
 	public ThrobbingThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int priority,
 			int red, int green, int blue, int fadein, int fadeout, int holdon,
 			int holdoff, int acceleration, int deceleration, String soundFile,
-			Properties physicalProps) {
+			Properties physicalProps, float gain) {
 		super(flower, soundManager, lifespan, fps, raster, ID, priority);
 		this.red = (float)(red/255.0);
 		this.green = (float)(green/255.0);
@@ -64,13 +65,14 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
+		this.gain = gain;
 	}
 	
 	public ThrobbingThread(List <DMXLightingFixture> flowers, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int priority,
 			int red, int green, int blue, int fadein, int fadeout, int holdon,
 			int holdoff, int acceleration, int deceleration, String soundFile,
-			Properties physicalProps) {
+			Properties physicalProps, float gain) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, priority);
 		this.red = (float)(red/255.0);
 		this.green = (float)(green/255.0);
@@ -106,6 +108,7 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
+		this.gain = gain;
 	}
 
 	@Override
@@ -120,7 +123,7 @@ public class ThrobbingThread extends ShowThread implements SensorListener{
 		//System.out.println(this.brightness);
 		
 		if(startSound){
-			super.playSound(soundFile, physicalProps);
+			super.playSound(soundFile, gain, physicalProps);
 			startSound = false;
 		}
 		

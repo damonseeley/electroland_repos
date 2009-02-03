@@ -19,11 +19,12 @@ public class PieThread extends ShowThread {
 	private boolean startSound;
 	private String soundFile;
 	private Properties physicalProps;
+	private float gain;
 
 	public PieThread(DMXLightingFixture flower, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
 			int red, int green, int blue, PImage texture, String soundFile,
-			Properties physicalProps) {
+			Properties physicalProps, float gain) {
 		super(flower, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
 		this.green = green;
@@ -34,12 +35,13 @@ public class PieThread extends ShowThread {
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
+		this.gain = gain;
 	}
 	
 	public PieThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
 			int lifespan, int fps, PGraphics raster, String ID, int showPriority,
 			int red, int green, int blue, PImage texture, String soundFile,
-			Properties physicalProps) {
+			Properties physicalProps, float gain) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, showPriority);
 		this.red = red;
 		this.green = green;
@@ -50,6 +52,7 @@ public class PieThread extends ShowThread {
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
+		this.gain = gain;
 	}
 
 	@Override
@@ -63,7 +66,7 @@ public class PieThread extends ShowThread {
 	public void doWork(PGraphics raster) {
 		
 		if(startSound){
-			super.playSound(soundFile, physicalProps);
+			super.playSound(soundFile, gain, physicalProps);
 			startSound = false;
 		}
 		

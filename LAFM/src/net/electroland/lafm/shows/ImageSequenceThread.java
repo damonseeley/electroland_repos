@@ -25,11 +25,12 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 	private boolean startSound;
 	private String soundFile;
 	private Properties physicalProps;
+	private float gain;
 	
 	public ImageSequenceThread(DMXLightingFixture flower,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int priority, PImage[] sequence, boolean resize, String soundFile,
-			Properties physicalProps) {
+			Properties physicalProps, float gain) {
 		super(flower, soundManager, lifespan, fps, raster, ID, priority);
 		if (sequence != null){			
 			this.sequence = sequence;
@@ -40,12 +41,13 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
+		this.gain = gain;
 	}
 
 	public ImageSequenceThread(List <DMXLightingFixture> flowers,
 			SoundManager soundManager, int lifespan, int fps, PGraphics raster,
 			String ID, int priority, PImage[] sequence, boolean resize, String soundFile,
-			Properties physicalProps) {
+			Properties physicalProps, float gain) {
 		super(flowers, soundManager, lifespan, fps, raster, ID, priority);
 		if (sequence != null){			
 			this.sequence = sequence;
@@ -56,6 +58,7 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 		this.soundFile = soundFile;
 		startSound = true;
 		this.physicalProps = physicalProps;
+		this.gain = gain;
 	}
 
 	public void disableTint(){
@@ -80,7 +83,7 @@ public class ImageSequenceThread extends ShowThread  implements SensorListener {
 	public void doWork(PGraphics raster) {
 		
 		if(startSound){
-			super.playSound(soundFile, physicalProps);
+			super.playSound(soundFile, gain, physicalProps);
 			startSound = false;
 		}
 
