@@ -521,9 +521,9 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					if(showProps[0].equals("propeller")){
 						ColorScheme spectrum = processColorScheme(showProps[2], showProps[3]);
 						//newShow = new PropellerThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "PropellerThread", ShowThread.LOW, spectrum, Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Float.parseFloat(showProps[6]), Float.parseFloat(showProps[7]), showProps[8], physicalProps);
-						newShow = new RandomPropellerThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "PropellerThread", ShowThread.LOW, spectrum, Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Float.parseFloat(showProps[6]), Float.parseFloat(showProps[7]), showProps[8], physicalProps, 1);
+						newShow = new RandomPropellerThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "PropellerThread", ShowThread.LOW, spectrum, Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Float.parseFloat(showProps[6]), Float.parseFloat(showProps[7]), showProps[8], physicalProps, Float.parseFloat(showProps[9]));
 					} else if(showProps[0].equals("throb")){
-						newShow = new ThrobbingThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]), Integer.parseInt(showProps[7]), Integer.parseInt(showProps[8]), Integer.parseInt(showProps[9]), Integer.parseInt(showProps[10]), showProps[11], physicalProps, 1);
+						newShow = new ThrobbingThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]), Integer.parseInt(showProps[7]), Integer.parseInt(showProps[8]), Integer.parseInt(showProps[9]), Integer.parseInt(showProps[10]), showProps[11], physicalProps, Float.parseFloat(showProps[12]));
 					} else if(showProps[0].equals("spiral")){
 						PImage sprite = null;
 		            	if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("red")){
@@ -537,24 +537,24 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("purple")){
 							sprite = guiWindow.gui.loadImage("depends//images//sprites//blueRedSphere.png");
 						}
-						newShow = new SpiralThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "SpiralThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]), Integer.parseInt(showProps[7]), Integer.parseInt(showProps[8]), sprite, showProps[9], physicalProps, 1);
+						newShow = new SpiralThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "SpiralThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]), Integer.parseInt(showProps[7]), Integer.parseInt(showProps[8]), sprite, showProps[9], physicalProps, Float.parseFloat(showProps[10]));
 					} else if(showProps[0].equals("dartboard")){
 						ColorScheme spectrum = processColorScheme(showProps[2], showProps[3]);
-						newShow = new DartBoardThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.LOW, spectrum, Float.parseFloat(showProps[4]), Float.parseFloat(showProps[5]), Float.parseFloat(showProps[6]), Float.parseFloat(showProps[7]), Float.parseFloat(showProps[8]), showProps[9], physicalProps, true, guiWindow.gui.loadImage("depends//images//sprites//randomwhitespots.png"), 1);
+						newShow = new DartBoardThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "DartBoardThread", ShowThread.LOW, spectrum, Float.parseFloat(showProps[4]), Float.parseFloat(showProps[5]), Float.parseFloat(showProps[6]), Float.parseFloat(showProps[7]), Float.parseFloat(showProps[8]), showProps[9], physicalProps, true, guiWindow.gui.loadImage("depends//images//sprites//randomwhitespots.png"), Float.parseFloat(showProps[10]));
 					} else if(showProps[0].equals("images")){
-						newShow = new ImageSequenceThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, showProps[2], ShowThread.LOW, imageCache.getSequence(showProps[2]), false, showProps[3], physicalProps, 1);					
+						newShow = new ImageSequenceThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, showProps[2], ShowThread.LOW, imageCache.getSequence(showProps[2]), false, showProps[3], physicalProps, Float.parseFloat(showProps[5]));					
 						((ImageSequenceThread)newShow).enableTint(Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]));
 					} else if(showProps[0].equals("vegas")){
 						ColorScheme spectrum = processColorScheme(showProps[2], showProps[3]);
-						newShow = new VegasThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "VegasThread", ShowThread.LOW, spectrum, Float.parseFloat(showProps[4]), Float.parseFloat(showProps[5]), Float.parseFloat(showProps[6]), Float.parseFloat(showProps[7]), showProps[8], physicalProps, 1);
+						newShow = new VegasThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "VegasThread", ShowThread.LOW, spectrum, Float.parseFloat(showProps[4]), Float.parseFloat(showProps[5]), Float.parseFloat(showProps[6]), Float.parseFloat(showProps[7]), showProps[8], physicalProps, Float.parseFloat(showProps[9]));
 					} else if(showProps[0].equals("fireworks")){
 						ColorScheme spectrum = processColorScheme(showProps[2], showProps[3]);
-						newShow = new FireworksThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "FireworksThread", ShowThread.LOW, spectrum, Float.parseFloat(showProps[4]), Float.parseFloat(showProps[5]), guiWindow.gui.loadImage("depends//images//sprites//thickring.png"), showProps[6], physicalProps, 0, true, 1);
+						newShow = new FireworksThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "FireworksThread", ShowThread.LOW, spectrum, Float.parseFloat(showProps[4]), Float.parseFloat(showProps[5]), guiWindow.gui.loadImage("depends//images//sprites//thickring.png"), showProps[6], physicalProps, 0, true, Float.parseFloat(showProps[7]));
 					} else if(showProps[0].equals("additivepropeller")){
-						newShow = new AdditivePropellerThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "AdditivePropellerThread", ShowThread.LOW, showProps[2], showProps[3], showProps[4], Float.parseFloat(showProps[5]), Integer.parseInt(showProps[6]), Float.parseFloat(showProps[7]), Float.parseFloat(showProps[8]), showProps[9], physicalProps, 1);
+						newShow = new AdditivePropellerThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "AdditivePropellerThread", ShowThread.LOW, showProps[2], showProps[3], showProps[4], Float.parseFloat(showProps[5]), Integer.parseInt(showProps[6]), Float.parseFloat(showProps[7]), Float.parseFloat(showProps[8]), showProps[9], physicalProps, Float.parseFloat(showProps[10]));
 					} else if(showProps[0].equals("flashingpie")){
-						newShow = new PieThread(fixture, soundManager, Integer.parseInt(showProps[5]), detectorMngr.getFps(), raster, "PieThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), guiWindow.gui.loadImage("depends//images//sprites//bar40alpha.png"), showProps[5], physicalProps, 1);
-						newShow.chain(new ThrobbingThread(fixture, soundManager, Integer.parseInt(showProps[6]), detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), 300, 300, 0, 0, 0, 0, showProps[5], physicalProps, 1));									
+						newShow = new PieThread(fixture, soundManager, Integer.parseInt(showProps[5]), detectorMngr.getFps(), raster, "PieThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), guiWindow.gui.loadImage("depends//images//sprites//bar40alpha.png"), showProps[5], physicalProps, Float.parseFloat(showProps[6]));
+						newShow.chain(new ThrobbingThread(fixture, soundManager, Integer.parseInt(showProps[6]), detectorMngr.getFps(), raster, "ThrobbingThread", ShowThread.LOW, Integer.parseInt(showProps[2]), Integer.parseInt(showProps[3]), Integer.parseInt(showProps[4]), 300, 300, 0, 0, 0, 0, showProps[5], physicalProps, Float.parseFloat(showProps[6])));									
 					} else if(showProps[0].equals("gradientrings")){
 						if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("red")){
 							innerRing = innerRingRed;
@@ -572,21 +572,21 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 							innerRing = innerRingPurple;
 							outerRing = outerRingPurple;
 						}
-		            	newShow = new SpinningRingThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "GradientRings", ShowThread.LOW, 255, 255, 255, Float.parseFloat(showProps[2]), Float.parseFloat(showProps[3]), Float.parseFloat(showProps[4]), Float.parseFloat(showProps[5]), Float.parseFloat(showProps[6]), Float.parseFloat(showProps[7]), Float.parseFloat(showProps[8]), Float.parseFloat(showProps[9]), outerRing, innerRing, Boolean.parseBoolean(showProps[10]), showProps[11], physicalProps, 0, true, 1);
+		            	newShow = new SpinningRingThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "GradientRings", ShowThread.LOW, 255, 255, 255, Float.parseFloat(showProps[2]), Float.parseFloat(showProps[3]), Float.parseFloat(showProps[4]), Float.parseFloat(showProps[5]), Float.parseFloat(showProps[6]), Float.parseFloat(showProps[7]), Float.parseFloat(showProps[8]), Float.parseFloat(showProps[9]), outerRing, innerRing, Boolean.parseBoolean(showProps[10]), showProps[11], physicalProps, 0, true, Float.parseFloat(showProps[12]));
 		            } else if(showProps[0].equals("wipe")){
 		            	ColorScheme spectrum = processColorScheme(showProps[2], showProps[3]);
-						newShow = new WipeThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "Wipe", ShowThread.LOW, spectrum, Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]),showProps[7], physicalProps, 1);
+						newShow = new WipeThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "Wipe", ShowThread.LOW, spectrum, Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]),showProps[7], physicalProps, Float.parseFloat(showProps[8]));
 					} else if(showProps[0].equals("knockout")){
 						ColorScheme spectrum = processColorScheme(showProps[2], showProps[3]);
-						newShow = new KnockoutThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "Knockout", ShowThread.LOW, spectrum, Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Float.parseFloat(showProps[6]), Float.parseFloat(showProps[7]), Float.parseFloat(showProps[8]), Float.parseFloat(showProps[9]), showProps[10], physicalProps, 1);
+						newShow = new KnockoutThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "Knockout", ShowThread.LOW, spectrum, Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Float.parseFloat(showProps[6]), Float.parseFloat(showProps[7]), Float.parseFloat(showProps[8]), Float.parseFloat(showProps[9]), showProps[10], physicalProps, Float.parseFloat(showProps[11]));
 					} else if(showProps[0].equals("radialwipe")){
 						ColorScheme spectrum = processColorScheme(showProps[2], showProps[3]);
-		            	newShow = new RadialWipeThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "RadialWipe", ShowThread.LOW, spectrum, Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]), showProps[7], physicalProps, 1);
+		            	newShow = new RadialWipeThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "RadialWipe", ShowThread.LOW, spectrum, Integer.parseInt(showProps[4]), Integer.parseInt(showProps[5]), Integer.parseInt(showProps[6]), showProps[7], physicalProps, Float.parseFloat(showProps[8]));
 					} else if(showProps[0].equals("sweep")){
 						// sweeps
 						int luckynumber = (int)(Math.random()*(sweepSpriteList.length-1));
 						sweepSprite = sweepSpriteList[luckynumber];
-		            	newShow = new SpinningThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "Sweep", ShowThread.LOW, sweepSprite, Float.parseFloat(showProps[2]), Float.parseFloat(showProps[3]), Float.parseFloat(showProps[4]), Integer.parseInt(showProps[5]), showProps[6], physicalProps, 0, true, 1);
+		            	newShow = new SpinningThread(fixture, soundManager, Integer.parseInt(showProps[1]), detectorMngr.getFps(), raster, "Sweep", ShowThread.LOW, sweepSprite, Float.parseFloat(showProps[2]), Float.parseFloat(showProps[3]), Float.parseFloat(showProps[4]), Integer.parseInt(showProps[5]), showProps[6], physicalProps, 0, true, Float.parseFloat(showProps[7]));
 					}
 				}
 				
@@ -786,7 +786,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					
 					int quarterNote = 850;			// length of quarter note
 					int wholeNote = quarterNote*4;	// 3:4 scale
-					int hourlyShowGain = Integer.parseInt(systemProps.getProperty("hourShowGain"));
+					float hourlyShowGain =Float.parseFloat(systemProps.getProperty("hourShowGain"));
 					String cQuarter = systemProps.getProperty("cQuarterSound");
 					String dQuarter = systemProps.getProperty("dQuarterSound");
 					String eQuarter = systemProps.getProperty("eQuarterSound");
@@ -823,7 +823,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					
 					quarterNote = 850;			// length of quarter note
 					wholeNote = quarterNote*4;	// 3:4 scale
-					int glockShowGain = Integer.parseInt(systemProps.getProperty("hourShowGain"));
+					float glockShowGain = Float.parseFloat(systemProps.getProperty("hourShowGain"));
 					
 					newShow = new Glockenspiel(fixtures, soundManager, quarterNote, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, 255, 0, 0, 0, "c_quarter.wav", physicalProps, 0, glockShowGain);
 					newShow.chain(new Glockenspiel(fixtures, soundManager, quarterNote, detectorMngr.getFps(), raster, "Solid Color", ShowThread.HIGHEST, 0, 255, 0, 0, "e_quarter.wav", physicalProps, 0, glockShowGain));
@@ -859,7 +859,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					// create collection, and let it know we need to be notified when everyone is done.
 					ShowCollection solidColorCollection = new ShowCollection("solidColor");
 					solidColorCollection.addListener(this);
-					int solidColorShowGain = Integer.parseInt(systemProps.getProperty("solidColorGlobalGain"));
+					float solidColorShowGain = Float.parseFloat(systemProps.getProperty("solidColorGlobalGain"));
 					
 					chainDelayMin = Integer.parseInt(systemProps.getProperty("solidColorGlockChainMin"));
 					chainDelayMax = Integer.parseInt(systemProps.getProperty("solidColorGlockChainMax"));
@@ -979,7 +979,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					pointlist[1] = 0.5f;
 					pointlist[2] = 1;
 
-					int dartBoardGlockGain = Integer.parseInt(systemProps.getProperty("dartBoardGlockGain"));
+					float dartBoardGlockGain = Float.parseFloat(systemProps.getProperty("dartBoardGlockGain"));
 					int dartboardDuration = Integer.parseInt(systemProps.getProperty("dartBoardGlockDuration"));
 					
 					// iterate through list of colors and find fixtures that match
@@ -1022,7 +1022,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					
 					soundFiles = systemProps.getProperty("sparkleSpiralShowSounds").split(",");
 					Iterator <DMXLightingFixture> fiter = fixtures.iterator();
-					int sparkleSpiralShowGain = Integer.parseInt(systemProps.getProperty("sparkleSpiralShowGain"));
+					float sparkleSpiralShowGain = Float.parseFloat(systemProps.getProperty("sparkleSpiralShowGain"));
 					chainDelayMin = Integer.parseInt(systemProps.getProperty("sparkleSpiralGlockChainMin"));
 					chainDelayMax = Integer.parseInt(systemProps.getProperty("sparkleSpiralGlockChainMax"));
 					startDelayMin = Integer.parseInt(systemProps.getProperty("sparkleSpiralGlockStartMin"));
@@ -1094,7 +1094,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					// gradient rings
 					int gradientringsDuration = Integer.parseInt(systemProps.getProperty("gradientRingsGlockDuration"));
 					Iterator <DMXLightingFixture> fixturearray = fixtures.iterator();
-					int gradientRingsGlobalGain = Integer.parseInt(systemProps.getProperty("gradientRingsGlobalGain"));
+					float gradientRingsGlobalGain = Float.parseFloat(systemProps.getProperty("gradientRingsGlobalGain"));
 					
 					while (fixturearray.hasNext()){
 						DMXLightingFixture fixture = fixturearray.next();
@@ -1172,7 +1172,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						}
 					}
 
-					int verticalColorShiftGlobalGain = Integer.parseInt(systemProps.getProperty("verticalColorShiftGlobalGain"));
+					float verticalColorShiftGlobalGain = Float.parseFloat(systemProps.getProperty("verticalColorShiftGlobalGain"));
 					globalSound = systemProps.getProperty("verticalColorShiftGlobalSound");
 					soundManager.globalSound(soundID,globalSound,false,verticalColorShiftGlobalGain,20000,"verticalcolorshiftshow");
 					
@@ -1259,7 +1259,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						}
 					}
 
-					int radialColorShiftGlobalGain = Integer.parseInt(systemProps.getProperty("radialColorShiftGlobalGain"));
+					float radialColorShiftGlobalGain = Float.parseFloat(systemProps.getProperty("radialColorShiftGlobalGain"));
 					globalSound = systemProps.getProperty("radialColorShiftGlobalSound");
 					soundManager.globalSound(soundID,globalSound,false,radialColorShiftGlobalGain,20000,"radialcolorshiftshow");
 					
@@ -1268,7 +1268,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					// fireworks
 					soundFiles = systemProps.getProperty("fireworksShowSounds").split(",");
 					Iterator <DMXLightingFixture> floweriter = fixtures.iterator();
-					int fireworksGlobalGain = Integer.parseInt(systemProps.getProperty("fireworksGlobalGain"));
+					float fireworksGlobalGain = Float.parseFloat(systemProps.getProperty("fireworksGlobalGain"));
 					chainDelayMin = Integer.parseInt(systemProps.getProperty("fireworksGlockChainMin"));
 					chainDelayMax = Integer.parseInt(systemProps.getProperty("fireworksGlockChainMax"));
 					startDelayMin = Integer.parseInt(systemProps.getProperty("fireworksGlockStartMin"));
@@ -1341,7 +1341,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					// sweeps
 					Iterator <DMXLightingFixture> fixtureiter = fixtures.iterator();
 					int luckynumber = (int)(Math.random()*(sweepSpriteList.length-1));
-					int sweepsGlobalGain = Integer.parseInt(systemProps.getProperty("sweepsGlobalGain"));
+					float sweepsGlobalGain = Float.parseFloat(systemProps.getProperty("sweepsGlobalGain"));
 					
 					while (fixtureiter.hasNext()){
 						DMXLightingFixture fixture = fixtureiter.next();
