@@ -1093,7 +1093,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 							outerRing = outerRingPurple;
 						}
 						raster = guiWindow.gui.createGraphics(fixtures.get(0).getWidth(), fixtures.get(0).getHeight(), PConstants.P3D);	// needs a unique raster for each color
-						newShow = new SpinningRingThread(fixture, soundManager, gradientringsDuration, detectorMngr.getFps(), raster, "GradientRings", ShowThread.HIGHEST, 255, 255, 255, (int)(Math.random()*5), (int)(Math.random()*10), 20, 2, 0.05f, 0.05f, 0.05f, 0.05f, outerRing, innerRing, false, "Borealis_low.wav", physicalProps, (int)(Math.random()*6000), false);
+						newShow = new SpinningRingThread(fixture, soundManager, gradientringsDuration, detectorMngr.getFps(), raster, "GradientRings", ShowThread.HIGHEST, 255, 255, 255, (int)(Math.random()*5), (int)(Math.random()*10), 20, 2, 0.05f, 0.05f, 0.05f, 0.05f, outerRing, innerRing, false, "none", physicalProps, (int)(Math.random()*6000), false);
 						//newShow = new SpinningThread(fixture, soundManager, 30, detectorMngr.getFps(), raster, "Sweep", ShowThread.LOW, sweepSprite, 2, 0.1f, 0.2f, 5, "none", physicalProps, (int)(Math.random()*6000));
 						if(fixturearray.hasNext()){
 							startShow(newShow);	// start every show except last one							
@@ -1187,12 +1187,26 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						colorlist[2][2] = 0;
 						*/
 						
-						float[] points = new float[5];
+						float[] points = new float[6];
 						points[0] = 0;
-						points[1] = 0.25f;
+						points[1] = 0.49f;
 						points[2] = 0.5f;
-						points[3] = 0.75f;
-						points[4] = 1;
+						points[3] = 1;
+						
+						float[][] colorlist = new float[6][3];
+						colorlist[0][0] = 0;	// cyan
+						colorlist[0][1] = 255;
+						colorlist[0][2] = 255;
+						colorlist[1][0] = 255;	// white
+						colorlist[1][1] = 255;
+						colorlist[1][2] = 255;
+						colorlist[2][0] = 255;	// magenta
+						colorlist[2][1] = 0;
+						colorlist[2][2] = 150;
+						colorlist[3][0] = 255;	// white
+						colorlist[3][1] = 255;
+						colorlist[3][2] = 255;
+						/*
 						float[][] colorlist = new float[5][3];
 						colorlist[0][0] = 0;	// cyan
 						colorlist[0][1] = 255;
@@ -1209,6 +1223,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						colorlist[4][0] = 0;	// cyan
 						colorlist[4][1] = 255;
 						colorlist[4][2] = 255;
+						*/
 						
 						ColorScheme spectrum = new ColorScheme(colorlist, points);
 						newShow = new GlobalColorShift(fixtureset, soundManager, radialColorDuration, detectorMngr.getFps(), raster, "RadialColorShift", ShowThread.HIGHEST, spectrum, 0.02f, i/(float)sectors.length, "none", physicalProps);
