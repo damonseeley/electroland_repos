@@ -56,14 +56,12 @@ public class SoundManager extends Thread {
 	
 	public void globalSound(int soundIDToStart, String filename, boolean loop, float gain, int duration, String comment) {
 		if(!filename.equals("none")){
-			//System.out.println(filename);
 			// duration not used, no looping
-			// send simple instanceID soundfilename.wav 0 0 1 1
 			
 			send("global instance"+soundIDToStart+" "+filename+" "+gain+" "+comment);
-			//send("global instance"+soundIDToStart+" "+filename+" "+gain);
-
-			//send("simple instance"+soundIDToStart+" "+soundFile+" "+0+" "+0+" "+0+" "+gain+" "+comment);
+			
+			// TO SEND FULL GAIN FOR MIXING TEST
+			//send("global instance"+soundIDToStart+" "+filename+" "+1.0+" "+comment);
 		}
 	}
 	
