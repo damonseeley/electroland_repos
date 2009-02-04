@@ -179,9 +179,9 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		timedShows[2] = "Sparkle Spiral";
 		timedShows[3] = "Gradient Rings";
 		timedShows[4] = "Vertical Color Shift";
-		timedShows[5] = "Radial Color Shift";
-		timedShows[6] = "Fireworks";
-		timedShows[7] = "Sweeps";
+		timedShows[5] = "Fireworks";
+		timedShows[6] = "Sweeps";
+		timedShows[7] = "Radial Color Shift";
 		
 		timedShowCount = 0;
 		
@@ -1180,6 +1180,104 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					
 					break;
 				case 5:
+					// fireworks
+					soundFiles = systemProps.getProperty("fireworksShowSounds").split(",");
+					Iterator <DMXLightingFixture> floweriter = fixtures.iterator();
+					float fireworksGlobalGain = Float.parseFloat(systemProps.getProperty("fireworksGlobalGain"));
+					chainDelayMin = Integer.parseInt(systemProps.getProperty("fireworksGlockChainMin"));
+					chainDelayMax = Integer.parseInt(systemProps.getProperty("fireworksGlockChainMax"));
+					startDelayMin = Integer.parseInt(systemProps.getProperty("fireworksGlockStartMin"));
+					startDelayMax = Integer.parseInt(systemProps.getProperty("fireworksGlockStartMax"));
+					chainCount = Integer.parseInt(systemProps.getProperty("fireworksGlockChainCount"));
+					
+					while (floweriter.hasNext()){
+						DMXLightingFixture fixture = floweriter.next();
+						
+						float[] points = new float[2];
+						points[0] = 0;
+						points[1] = 1;
+						float[][] colorlist = new float[2][3];
+						if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("red")){
+							colorlist[0][0] = 255;	// red
+							colorlist[0][1] = 0;
+							colorlist[0][2] = 0;
+							colorlist[1][0] = 255;	// yellow
+							colorlist[1][1] = 255;
+							colorlist[1][2] = 0;
+						} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("orange")){
+							colorlist[0][0] = 255;	// orange
+							colorlist[0][1] = 100;
+							colorlist[0][2] = 0;
+							colorlist[1][0] = 255;	// white
+							colorlist[1][1] = 255;
+							colorlist[1][2] = 255;
+						} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("yellow")){
+							colorlist[0][0] = 255;	// yellow
+							colorlist[0][1] = 255;
+							colorlist[0][2] = 0;
+							colorlist[1][0] = 0;	// green
+							colorlist[1][1] = 255;
+							colorlist[1][2] = 0;
+						} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("pink")){
+							colorlist[0][0] = 255;	// white
+							colorlist[0][1] = 255;
+							colorlist[0][2] = 255;
+							colorlist[1][0] = 255;	// red
+							colorlist[1][1] = 0;
+							colorlist[1][2] = 0;
+						} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("purple")){
+							colorlist[0][0] = 255;	// red
+							colorlist[0][1] = 0;
+							colorlist[0][2] = 0;
+							colorlist[1][0] = 0;	// blue
+							colorlist[1][1] = 0;
+							colorlist[1][2] = 255;
+						}
+						
+						ColorScheme spectrum = new ColorScheme(colorlist, points);
+						//int bongRate = (int)(Math.random()*(chainDelayMax-chainDelayMin)) + chainDelayMin;
+		            	int duration = (int)(Math.random()*5) + 5;
+		            	String soundFile = soundFiles[(int)(Math.random()*(soundFiles.length-0.01))]; 	// unique per fixture, but same throughout chain
+		            	raster = guiWindow.gui.createGraphics(fixtures.get(0).getWidth(), fixtures.get(0).getHeight(), PConstants.P3D);	// needs a unique raster for each color
+						newShow = new FireworksThread(fixture, soundManager, duration, detectorMngr.getFps(), raster, "FireworksThread", ShowThread.HIGHEST, spectrum, 8, 0.8f, guiWindow.gui.loadImage("depends//images//sprites//thickring.png"), soundFile, physicalProps, (int)(Math.random()*(startDelayMax-startDelayMin)) + startDelayMin, false, fireworksGlobalGain);
+						for(int h=1; h<=chainCount; h++){
+							newShow.chain(new FireworksThread(fixture, soundManager, duration, detectorMngr.getFps(), raster, "FireworksThread", ShowThread.HIGHEST, spectrum, 8, 0.8f, guiWindow.gui.loadImage("depends//images//sprites//thickring.png"), soundFile, physicalProps, (int)(Math.random()*(chainDelayMax-chainDelayMin)) + chainDelayMin, false, fireworksGlobalGain));
+						}
+						if(floweriter.hasNext()){
+							startShow(newShow);	// start every show except last one							
+						}
+					}
+					
+					globalSound = systemProps.getProperty("fireworksGlobalSound");
+					soundManager.globalSound(soundID,globalSound,false,fireworksGlobalGain,20000,"fireworksshow");
+					
+					break;
+				case 6:
+					// sweeps
+					Iterator <DMXLightingFixture> fixtureiter = fixtures.iterator();
+					int luckynumber = (int)(Math.random()*(sweepSpriteList.length-1));
+					int sweepsDuration = Integer.parseInt(systemProps.getProperty("sweepsGlockDuration"));
+					float sweepsGlobalGain = Float.parseFloat(systemProps.getProperty("sweepsGlobalGain"));
+					
+					while (fixtureiter.hasNext()){
+						DMXLightingFixture fixture = fixtureiter.next();
+						sweepSprite = sweepSpriteList[luckynumber];
+						raster = guiWindow.gui.createGraphics(fixtures.get(0).getWidth(), fixtures.get(0).getHeight(), PConstants.P3D);	// needs a unique raster for each color
+						newShow = new SpinningThread(fixture, soundManager, sweepsDuration, detectorMngr.getFps(), raster, "Sweep", ShowThread.HIGHEST, sweepSprite, 2, 0.1f, 0.2f, 5, "none", physicalProps, 0, false, sweepsGlobalGain);
+						luckynumber++;
+						if(luckynumber == sweepSpriteList.length){
+							luckynumber = 0;
+						}
+						if(fixtureiter.hasNext()){
+							startShow(newShow);	// start every show except last one							
+						}
+					}
+					
+					globalSound = systemProps.getProperty("sweepsGlobalSound");
+					soundManager.globalSound(soundID,globalSound,false,sweepsGlobalGain,20000,"sweepsshow");
+					
+					break;
+				case 7:
 					// radial color shift
 					int radialColorDuration = Integer.parseInt(systemProps.getProperty("radialColorGlockDuration"));
 					for(int i=0; i<sectors.length; i++){
@@ -1264,104 +1362,6 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					float radialColorShiftGlobalGain = Float.parseFloat(systemProps.getProperty("radialColorShiftGlobalGain"));
 					globalSound = systemProps.getProperty("radialColorShiftGlobalSound");
 					soundManager.globalSound(soundID,globalSound,false,radialColorShiftGlobalGain,20000,"radialcolorshiftshow");
-					
-					break;
-				case 6:
-					// fireworks
-					soundFiles = systemProps.getProperty("fireworksShowSounds").split(",");
-					Iterator <DMXLightingFixture> floweriter = fixtures.iterator();
-					float fireworksGlobalGain = Float.parseFloat(systemProps.getProperty("fireworksGlobalGain"));
-					chainDelayMin = Integer.parseInt(systemProps.getProperty("fireworksGlockChainMin"));
-					chainDelayMax = Integer.parseInt(systemProps.getProperty("fireworksGlockChainMax"));
-					startDelayMin = Integer.parseInt(systemProps.getProperty("fireworksGlockStartMin"));
-					startDelayMax = Integer.parseInt(systemProps.getProperty("fireworksGlockStartMax"));
-					chainCount = Integer.parseInt(systemProps.getProperty("fireworksGlockChainCount"));
-					
-					while (floweriter.hasNext()){
-						DMXLightingFixture fixture = floweriter.next();
-						
-						float[] points = new float[2];
-						points[0] = 0;
-						points[1] = 1;
-						float[][] colorlist = new float[2][3];
-						if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("red")){
-							colorlist[0][0] = 255;	// red
-							colorlist[0][1] = 0;
-							colorlist[0][2] = 0;
-							colorlist[1][0] = 255;	// yellow
-							colorlist[1][1] = 255;
-							colorlist[1][2] = 0;
-						} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("orange")){
-							colorlist[0][0] = 255;	// orange
-							colorlist[0][1] = 100;
-							colorlist[0][2] = 0;
-							colorlist[1][0] = 255;	// white
-							colorlist[1][1] = 255;
-							colorlist[1][2] = 255;
-						} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("yellow")){
-							colorlist[0][0] = 255;	// yellow
-							colorlist[0][1] = 255;
-							colorlist[0][2] = 0;
-							colorlist[1][0] = 0;	// green
-							colorlist[1][1] = 255;
-							colorlist[1][2] = 0;
-						} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("pink")){
-							colorlist[0][0] = 255;	// white
-							colorlist[0][1] = 255;
-							colorlist[0][2] = 255;
-							colorlist[1][0] = 255;	// red
-							colorlist[1][1] = 0;
-							colorlist[1][2] = 0;
-						} else if(physicalProps.getProperty(fixture.getID()).split(",")[0].equals("purple")){
-							colorlist[0][0] = 255;	// red
-							colorlist[0][1] = 0;
-							colorlist[0][2] = 0;
-							colorlist[1][0] = 0;	// blue
-							colorlist[1][1] = 0;
-							colorlist[1][2] = 255;
-						}
-						
-						ColorScheme spectrum = new ColorScheme(colorlist, points);
-						//int bongRate = (int)(Math.random()*(chainDelayMax-chainDelayMin)) + chainDelayMin;
-		            	int duration = (int)(Math.random()*5) + 5;
-		            	String soundFile = soundFiles[(int)(Math.random()*(soundFiles.length-0.01))]; 	// unique per fixture, but same throughout chain
-		            	raster = guiWindow.gui.createGraphics(fixtures.get(0).getWidth(), fixtures.get(0).getHeight(), PConstants.P3D);	// needs a unique raster for each color
-						newShow = new FireworksThread(fixture, soundManager, duration, detectorMngr.getFps(), raster, "FireworksThread", ShowThread.HIGHEST, spectrum, 8, 0.8f, guiWindow.gui.loadImage("depends//images//sprites//thickring.png"), soundFile, physicalProps, (int)(Math.random()*(startDelayMax-startDelayMin)) + startDelayMin, false, fireworksGlobalGain);
-						for(int h=1; h<=chainCount; h++){
-							newShow.chain(new FireworksThread(fixture, soundManager, duration, detectorMngr.getFps(), raster, "FireworksThread", ShowThread.HIGHEST, spectrum, 8, 0.8f, guiWindow.gui.loadImage("depends//images//sprites//thickring.png"), soundFile, physicalProps, (int)(Math.random()*(chainDelayMax-chainDelayMin)) + chainDelayMin, false, fireworksGlobalGain));
-						}
-						if(floweriter.hasNext()){
-							startShow(newShow);	// start every show except last one							
-						}
-					}
-					
-					globalSound = systemProps.getProperty("fireworksGlobalSound");
-					soundManager.globalSound(soundID,globalSound,false,fireworksGlobalGain,20000,"fireworksshow");
-					
-					break;
-				case 7:
-					// sweeps
-					Iterator <DMXLightingFixture> fixtureiter = fixtures.iterator();
-					int luckynumber = (int)(Math.random()*(sweepSpriteList.length-1));
-					int sweepsDuration = Integer.parseInt(systemProps.getProperty("sweepsGlockDuration"));
-					float sweepsGlobalGain = Float.parseFloat(systemProps.getProperty("sweepsGlobalGain"));
-					
-					while (fixtureiter.hasNext()){
-						DMXLightingFixture fixture = fixtureiter.next();
-						sweepSprite = sweepSpriteList[luckynumber];
-						raster = guiWindow.gui.createGraphics(fixtures.get(0).getWidth(), fixtures.get(0).getHeight(), PConstants.P3D);	// needs a unique raster for each color
-						newShow = new SpinningThread(fixture, soundManager, sweepsDuration, detectorMngr.getFps(), raster, "Sweep", ShowThread.HIGHEST, sweepSprite, 2, 0.1f, 0.2f, 5, "none", physicalProps, 0, false, sweepsGlobalGain);
-						luckynumber++;
-						if(luckynumber == sweepSpriteList.length){
-							luckynumber = 0;
-						}
-						if(fixtureiter.hasNext()){
-							startShow(newShow);	// start every show except last one							
-						}
-					}
-					
-					globalSound = systemProps.getProperty("sweepsGlobalSound");
-					soundManager.globalSound(soundID,globalSound,false,sweepsGlobalGain,20000,"sweepsshow");
 					
 					break;
 			}
