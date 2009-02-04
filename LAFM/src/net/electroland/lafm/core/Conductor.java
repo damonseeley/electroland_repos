@@ -70,6 +70,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	public String[] sensorShows, timedShows;	// list of names of sensor-triggered shows
 	public String[] fixtureActivity;			// 22 fixtures, null if empty; show name if in use
 	public String[] physicalColors;
+	public int timedShowCount;
 	public int currentSensorShow;				// number of show to display when sensor is triggered
 	public boolean forceSensorShow = false;
 	public boolean headless;
@@ -181,6 +182,8 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		timedShows[5] = "Radial Color Shift";
 		timedShows[6] = "Fireworks";
 		timedShows[7] = "Sweeps";
+		
+		timedShowCount = 0;
 		
 		physicalColors = new String[5];
 		physicalColors[0] = "red";
@@ -1372,18 +1375,28 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	public void timedEvent(TimedEvent e){
 		//System.out.println(e.hour+":"+e.minute+":"+e.sec);
 		if(e.hour > 12){
-			if(e.minute == 0){
+			if(e.minute == 0){	// hourly show
 				//launchChimes(e.hour-12, e.minute, e.sec);
 				launchGlockenspiel((int)-2, e.hour-12, e.minute, e.sec);
 			} else {
-				launchGlockenspiel((int)((timedShows.length-0.01)*Math.random()), e.hour-12, e.minute, e.sec);
+				//launchGlockenspiel((int)((timedShows.length-0.01)*Math.random()), e.hour-12, e.minute, e.sec);
+				launchGlockenspiel(timedShowCount, e.hour-12, e.minute, e.sec);
+				timedShowCount++;
+				if(timedShowCount >= timedShows.length){
+					timedShowCount = 0;
+				}
 			}
 		} else {
 			if(e.minute == 0){
 				//launchChimes(e.hour, e.minute, e.sec);
 				launchGlockenspiel((int)-2, e.hour, e.minute, e.sec);
 			} else {
-				launchGlockenspiel((int)((timedShows.length-0.01)*Math.random()), e.hour, e.minute, e.sec);
+				//launchGlockenspiel((int)((timedShows.length-0.01)*Math.random()), e.hour, e.minute, e.sec);
+				launchGlockenspiel(timedShowCount, e.hour, e.minute, e.sec);
+				timedShowCount++;
+				if(timedShowCount >= timedShows.length){
+					timedShowCount = 0;
+				}
 			}
 		}
 	}
