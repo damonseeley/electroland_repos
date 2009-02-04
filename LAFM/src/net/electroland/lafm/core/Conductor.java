@@ -260,20 +260,19 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		sweepPink = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_cyan_pink.png");
 		sweepPurple = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_lizard.png");
 		
-		sweepSpriteList = new PImage[13];
+		sweepSpriteList = new PImage[12];
 		sweepSpriteList[0] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_red_yellow.png");
 		sweepSpriteList[1] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_blue_orange.png");
 		sweepSpriteList[2] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_cyan_pink.png");
-		sweepSpriteList[3] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_lizard.png");
-		sweepSpriteList[4] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_pink.png");
-		sweepSpriteList[5] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_purple_green.png");
-		sweepSpriteList[6] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_quads_rgb_light.png");
-		sweepSpriteList[7] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_quads_rgb.png");
-		sweepSpriteList[8] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_red_yellow.png");
-		sweepSpriteList[9] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_watermelon.png");
-		sweepSpriteList[10] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_red_aqua.png");
-		sweepSpriteList[11] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_strobe.png");
-		sweepSpriteList[12] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_white.png");
+		sweepSpriteList[3] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_pink.png");
+		sweepSpriteList[4] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_purple_green.png");
+		sweepSpriteList[5] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_quads_rgb_light.png");
+		sweepSpriteList[6] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_quads_rgb.png");
+		sweepSpriteList[7] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_red_yellow.png");
+		sweepSpriteList[8] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_watermelon.png");
+		sweepSpriteList[9] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_red_aqua.png");
+		sweepSpriteList[10] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_strobe.png");
+		sweepSpriteList[11] = guiWindow.gui.loadImage("depends//images//sprites//sweeps//sweep_white.png");
 		
 		
 		// wait 6 secs (for things to get started up) then check weather every half hour
@@ -1344,13 +1343,14 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 					// sweeps
 					Iterator <DMXLightingFixture> fixtureiter = fixtures.iterator();
 					int luckynumber = (int)(Math.random()*(sweepSpriteList.length-1));
+					int sweepsDuration = Integer.parseInt(systemProps.getProperty("sweepsGlockDuration"));
 					float sweepsGlobalGain = Float.parseFloat(systemProps.getProperty("sweepsGlobalGain"));
 					
 					while (fixtureiter.hasNext()){
 						DMXLightingFixture fixture = fixtureiter.next();
 						sweepSprite = sweepSpriteList[luckynumber];
 						raster = guiWindow.gui.createGraphics(fixtures.get(0).getWidth(), fixtures.get(0).getHeight(), PConstants.P3D);	// needs a unique raster for each color
-						newShow = new SpinningThread(fixture, soundManager, 30, detectorMngr.getFps(), raster, "Sweep", ShowThread.HIGHEST, sweepSprite, 2, 0.1f, 0.2f, 5, "none", physicalProps, 0, false, sweepsGlobalGain);
+						newShow = new SpinningThread(fixture, soundManager, sweepsDuration, detectorMngr.getFps(), raster, "Sweep", ShowThread.HIGHEST, sweepSprite, 2, 0.1f, 0.2f, 5, "none", physicalProps, 0, false, sweepsGlobalGain);
 						luckynumber++;
 						if(luckynumber == sweepSpriteList.length){
 							luckynumber = 0;
