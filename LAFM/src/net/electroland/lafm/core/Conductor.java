@@ -761,11 +761,8 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 				for(int h=1; h<hour; h++){
 					newShow.chain(new ChimesThread(monoFixtures, soundManager, 10, detectorMngr.getFps(), raster, "Chimes", ShowThread.HIGHEST, 6, 5, red, green, blue, soundFile, physicalProps,chimeSoundGain));
 				}
-				if(i < physicalColors.length-1){
-					startShow(newShow);	// start every show except last one							
-				}
+				startShow(newShow);
 			}
-			startShow(newShow);
 		}
 	}
 	
