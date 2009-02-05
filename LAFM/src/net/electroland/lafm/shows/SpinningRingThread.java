@@ -89,7 +89,7 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		//this.outerRing.resize(outerRadius*2, outerRadius*2);	// getting poor results from this
 		//this.innerRing.resize(innerRadius*2, innerRadius*2);
 		
-		duration = (lifespan*fps) - (int)(100/fadeSpeed);
+		duration = ((int)(lifespan/1000.0f)*fps) - (int)(100/fadeSpeed);
 		innerRot = 0;
 		outerRot = 0;
 		if(startFast){
@@ -141,7 +141,7 @@ public class SpinningRingThread extends ShowThread implements SensorListener{
 		//innerRadius = raster.width/4;
 		//this.outerRing.resize(outerRadius*2, outerRadius*2);
 		//this.innerRing.resize(innerRadius*2, innerRadius*2);
-		duration = (lifespan*fps) - (int)(100/fadeSpeed);
+		duration = ((int)(lifespan/1000.0f)*fps) - (int)(100/fadeSpeed);
 		innerRot = 0;
 		outerRot = 0;
 		if(startFast){

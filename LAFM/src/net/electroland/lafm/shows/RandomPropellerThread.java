@@ -48,7 +48,7 @@ public class RandomPropellerThread extends ShowThread implements SensorListener 
 		speedUp = true;
 		slowDown = false;
 		topSpeed = 15;
-		duration = (lifespan*fps) - (int)(100/(fadeSpeed/4));
+		duration = ((int)(lifespan/1000.0f)*fps) - (int)(100/(fadeSpeed/4));
 		propellers = new ConcurrentHashMap<Integer,Propeller>();
 		int lastRot = (int)(Math.random()*360);
 		float lastColor = (float)Math.random();
@@ -85,7 +85,7 @@ public class RandomPropellerThread extends ShowThread implements SensorListener 
 		speedUp = true;
 		slowDown = false;
 		topSpeed = 15;
-		duration = (lifespan*fps) - (int)(100/(fadeSpeed/4));
+		duration = ((int)(lifespan/1000.0f)*fps) - (int)(100/(fadeSpeed/4));
 		propellers = new ConcurrentHashMap<Integer,Propeller>();
 		int lastRot = (int)(Math.random()*360);
 		float lastColor = (float)Math.random();

@@ -15,7 +15,7 @@ public class ShutdownThread extends ShowThread {
 
 	public ShutdownThread(List<DMXLightingFixture> flowers, PGraphics raster,
 			String ID) {
-		super(flowers, null, 5, 30, raster, ID, 1000000);	// extended lifespan to make sure all fixtures are painted black
+		super(flowers, null, 5000, 30, raster, ID, 1000000);	// extended lifespan to make sure all fixtures are painted black
 	}
 
 	@Override

@@ -15,9 +15,9 @@ public class GlobalColorShift extends ShowThread {
 	private ColorScheme spectrum;
 	private float speed, offset;
 	private float[] color;
-	private boolean startSound;
-	private String soundFile;
-	private Properties physicalProps;
+	//private boolean startSound;
+	//private String soundFile;
+	//private Properties physicalProps;
 	int age = 0;
 	int alpha = 0;
 	int fadeSpeed = 3;
@@ -31,10 +31,10 @@ public class GlobalColorShift extends ShowThread {
 		this.spectrum = spectrum;
 		this.speed = speed;
 		this.offset = offset;
-		this.soundFile = soundFile;
-		this.physicalProps = physicalProps;
-		this.startSound = true;
-		duration = (lifespan*fps) - (100/fadeSpeed);
+		//this.soundFile = soundFile;	// this is being called within conductor
+		//this.physicalProps = physicalProps;
+		//this.startSound = true;
+		duration = ((int)(lifespan/1000.0f)*fps) - (100/fadeSpeed);
 	}
 
 	@Override
@@ -46,6 +46,7 @@ public class GlobalColorShift extends ShowThread {
 
 	@Override
 	public void doWork(PGraphics raster) {
+		/*
 		if(startSound){
 			//super.playSound(soundFile, physicalProps);
 			SoundManager s = super.getSoundManager();
@@ -53,6 +54,7 @@ public class GlobalColorShift extends ShowThread {
 			s.globalSound(soundID,"none",false,1,10000,"globalcolorshift");
 			startSound = false;
 		}
+		*/
 		
 		color = spectrum.getColor(offset);
 		raster.beginDraw();

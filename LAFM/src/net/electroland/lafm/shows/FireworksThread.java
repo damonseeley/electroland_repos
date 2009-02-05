@@ -57,7 +57,7 @@ public class FireworksThread extends ShowThread implements SensorListener{
 		this.interactive = interactive;
 		this.gain = gain;
 		delayCount = 0;
-		duration = (lifespan*fps) - (100/fadeOutSpeed);
+		duration = ((int)(lifespan/1000.0f)*fps) - (100/fadeOutSpeed);
 		frequencySlowRate = (0.9f - frequency)/duration;	// add this to frequency
 		startSound = true;
 	}
@@ -82,7 +82,7 @@ public class FireworksThread extends ShowThread implements SensorListener{
 		this.interactive = interactive;
 		this.gain = gain;
 		delayCount = 0;
-		duration = (lifespan*fps) - (100/fadeOutSpeed);
+		duration = ((int)(lifespan/1000.0f)*fps) - (100/fadeOutSpeed);
 		frequencySlowRate = (0.9f - frequency)/duration;	// add this to frequency
 		startSound = true;
 	}

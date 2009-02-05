@@ -59,7 +59,7 @@ public class KnockoutThread extends ShowThread implements SensorListener{
 		for(int i=0; i<boxCount; i++){
 			inactiveBoxes[i] = i;
 		}
-		duration = (lifespan*fps) - ((rowCount*rowCount) + 100/fadeSpeed);
+		duration = ((int)(lifespan/1000.0f)*fps) - ((rowCount*rowCount) + 100/fadeSpeed);
 		this.startSound = true;
 	}
 	
@@ -91,7 +91,7 @@ public class KnockoutThread extends ShowThread implements SensorListener{
 		for(int i=0; i<=boxCount; i++){
 			inactiveBoxes[i] = i;
 		}
-		duration = (lifespan*fps) - ((rowCount*rowCount) + 100/fadeSpeed);
+		duration = ((int)(lifespan/1000.0f)*fps) - ((rowCount*rowCount) + 100/fadeSpeed);
 		this.startSound = true;
 	}
 

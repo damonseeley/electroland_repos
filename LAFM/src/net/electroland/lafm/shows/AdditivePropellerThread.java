@@ -61,7 +61,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		topSpeed = 20;
 		this.physicalProps = physicalProps;
 		this.gain = gain;
-		duration = (lifespan*fps) - 150;
+		duration = ((int)(lifespan/1000.0f)*fps) - 150;
 		barWidth = raster.width/6;
 	}
 	
@@ -99,7 +99,7 @@ public class AdditivePropellerThread extends ShowThread implements SensorListene
 		topSpeed = 20;
 		this.physicalProps = physicalProps;
 		this.gain = gain;
-		duration = (lifespan*fps) - 150;
+		duration = ((int)(lifespan/1000.0f)*fps) - 150;
 		barWidth = raster.width/6;
 	}
 

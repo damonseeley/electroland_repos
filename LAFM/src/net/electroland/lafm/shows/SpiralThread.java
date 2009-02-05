@@ -49,7 +49,7 @@ public class SpiralThread extends ShowThread implements SensorListener{
 		this.physicalProps = physicalProps;
 		this.gain = gain;
 		fadeOut = false;
-		duration = (lifespan*fps) - (100/fadeSpeed);
+		duration = ((int)(lifespan/1000.0f)*fps) - (100/fadeSpeed);
 	}
 	
 	public SpiralThread(List<DMXLightingFixture> flowers, SoundManager soundManager,
@@ -73,7 +73,7 @@ public class SpiralThread extends ShowThread implements SensorListener{
 		this.physicalProps = physicalProps;
 		this.gain = gain;
 		fadeOut = false;
-		duration = (lifespan*fps) - (100/fadeSpeed);
+		duration = ((int)(lifespan/1000.0f)*fps) - (100/fadeSpeed);
 	}
 
 	@Override

@@ -41,7 +41,7 @@ public class RadialWipeThread extends ShowThread implements SensorListener{
 		alpha = 0;
 		age = 0;
 		barWidth = raster.width/5;
-		duration = (lifespan*fps) - (100/fadeSpeed);
+		duration = ((int)(lifespan/1000.0f)*fps) - (100/fadeSpeed);
 		bars = new ConcurrentHashMap<Integer,Bar>();
 		//bars.put(barCount, new Bar(raster, wipeSpeed));
 		//barCount++;
@@ -68,7 +68,7 @@ public class RadialWipeThread extends ShowThread implements SensorListener{
 		alpha = 0;
 		age = 0;
 		barWidth = raster.width/5;
-		duration = (lifespan*fps) - (100/fadeSpeed);
+		duration = ((int)(lifespan/1000.0f)*fps) - (100/fadeSpeed);
 		bars = new ConcurrentHashMap<Integer,Bar>();
 		//bars.put(barCount, new Bar(raster, wipeSpeed));
 		//barCount++;

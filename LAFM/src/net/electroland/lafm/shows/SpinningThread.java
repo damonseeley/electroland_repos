@@ -48,7 +48,7 @@ public class SpinningThread extends ShowThread implements SensorListener{
 		this.gain = gain;
 		rotation = 0;
 		delayCount = 0;
-		duration = (lifespan*fps) - (int)(100/fadeSpeed);
+		duration = ((int)(lifespan/1000.0f)*fps) - (int)(100/fadeSpeed);
 		topSpeed = 45;
 		fadeOut = false;
 		speedUp = true;
@@ -77,7 +77,7 @@ public class SpinningThread extends ShowThread implements SensorListener{
 		this.gain = gain;
 		rotation = 0;
 		delayCount = 0;
-		duration = (lifespan*fps) - (int)(100/fadeSpeed);
+		duration = ((int)(lifespan/1000.0f)*fps) - (int)(100/fadeSpeed);
 		topSpeed = 45;
 		fadeOut = false;
 		speedUp = true;

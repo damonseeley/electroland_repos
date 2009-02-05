@@ -56,7 +56,7 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 		this.physicalProps = physicalProps;
 		this.gain = gain;
 		fadeOut = false;
-		duration = (lifespan*fps) - (100/fadeSpeed);
+		duration = ((int)(lifespan/1000.0f)*fps) - (100/fadeSpeed);
 		modulate = false;
 	}
 	
@@ -84,7 +84,7 @@ public class DartBoardThread extends ShowThread implements SensorListener{
 		this.physicalProps = physicalProps;
 		this.gain = gain;
 		fadeOut = false;
-		duration = (lifespan*fps) - (100/fadeSpeed);
+		duration = ((int)(lifespan/1000.0f)*fps) - (100/fadeSpeed);
 		modulate = true;
 	}
 

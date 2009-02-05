@@ -42,7 +42,7 @@ public class VegasThread extends ShowThread implements SensorListener{
 		this.spectrumDirection = true;
 		startSound = true;
 		fadeOut = false;
-		duration = (lifespan*fps) - (100/fadeSpeed);
+		duration = ((int)(lifespan/1000.0f)*fps) - (100/fadeSpeed);
 		this.physicalProps = physicalProps;
 		this.gain = gain;
 	}
@@ -61,7 +61,7 @@ public class VegasThread extends ShowThread implements SensorListener{
 		this.spectrumDirection = true;
 		startSound = true;
 		fadeOut = false;
-		duration = (lifespan*fps) - (100/fadeSpeed);
+		duration = ((int)(lifespan/1000.0f)*fps) - (100/fadeSpeed);
 		this.physicalProps = physicalProps;
 		this.gain = gain;
 	}

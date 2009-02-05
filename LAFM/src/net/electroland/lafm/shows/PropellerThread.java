@@ -48,7 +48,7 @@ public class PropellerThread extends ShowThread implements SensorListener{
 		this.soundFile = soundFile;
 		startSound = true;
 		topSpeed = 20;
-		duration = (lifespan*fps) - (int)(100/fadeSpeed);
+		duration = ((int)(lifespan/1000.0f)*fps) - (int)(100/fadeSpeed);
 		this.physicalProps = physicalProps;
 		this.gain = gain;
 	}
@@ -76,7 +76,7 @@ public class PropellerThread extends ShowThread implements SensorListener{
 		this.soundFile = soundFile;
 		startSound = true;
 		topSpeed = 20;
-		duration = (lifespan*fps) - (int)(100/fadeSpeed);
+		duration = ((int)(lifespan/1000.0f)*fps) - (int)(100/fadeSpeed);
 		this.physicalProps = physicalProps;
 		this.gain = gain;
 	}
