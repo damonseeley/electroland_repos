@@ -14,5 +14,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="/SCSoundControl"/>
+	<classpathentry kind="lib" path="libraries/wrapper.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

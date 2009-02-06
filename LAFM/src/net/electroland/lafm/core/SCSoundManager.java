@@ -13,13 +13,14 @@ import net.electroland.scSoundControl.*;
 public class SCSoundManager implements SCSoundControlNotifiable {
 
 	private SCSoundControl ss;
+	private Process scsynthProcess;
 	private boolean serverIsLive;
 	private Hashtable<String, Integer> soundFiles;
 	
 	public SCSoundManager(int numOutputChannels, int numInputChannels){
 		serverIsLive = false;
 		soundFiles = new Hashtable<String, Integer>();
-		//ss = new SCSoundControl(numOutputChannels, numInputChannels, this);
+		ss = new SCSoundControl(numOutputChannels, numInputChannels, this);
 		//ss.init();
 		//ss.showDebugOutput(true);
 	}
