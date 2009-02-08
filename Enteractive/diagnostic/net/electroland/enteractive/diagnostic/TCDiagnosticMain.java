@@ -75,6 +75,7 @@ public class TCDiagnosticMain extends JFrame {
 		add(outputPanel);
 		
 		udpr.registerOutput(outputPanel);
+		udpr.registerOutputPanel(outputPanel);
 
 		//Dimension packetPanelSize = packetPanel.getPreferredSize();
 		//packetPanel.setBounds(0,0, (int) packetPanelSize.getWidth(),h/2);

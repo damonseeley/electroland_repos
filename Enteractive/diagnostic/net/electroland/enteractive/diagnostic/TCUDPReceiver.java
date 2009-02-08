@@ -82,7 +82,9 @@ public class TCUDPReceiver extends Thread {
 					count++;
 				}
 			
-				feedOutput(b, receivePacket.getLength());
+				//feedOutput(b, receivePacket.getLength());
+				// roll the incoming text instead of replacing
+				addOutput(b, receivePacket.getLength());
 				
 			} catch (SocketTimeoutException e) {
 			} catch (IOException e) {
@@ -97,6 +99,11 @@ public class TCUDPReceiver extends Thread {
 		outputTA = ltto.getOutputField();
 	}
 	
+	TCOutputPanel tcop;
+	public void registerOutputPanel(TCOutputPanel tcop){
+		this.tcop = tcop;
+	}
+	
 	private void feedOutput(byte b[], int length) {
 		//HexUtils.getBytesToHex(b);
 		long intervalSum = 0;
@@ -105,6 +112,16 @@ public class TCUDPReceiver extends Thread {
 		}
 		//outputTA.setText(HexUtils.bytesToHex(b,length) + "   interval= " + intervalSum/packetTimes.length);
 		outputTA.setText(HexUtils.bytesToHex(b,length));
+	}
+	
+	private void addOutput(byte b[], int length){
+		//HexUtils.getBytesToHex(b);
+		long intervalSum = 0;
+		for (int a=0;a<packetTimes.length;a++) {
+			intervalSum += packetTimes[a];
+		}
+		String newText = HexUtils.bytesToHex(b,length);
+		tcop.updateTextField(newText);
 	}
 
 	public void stopRunning() {

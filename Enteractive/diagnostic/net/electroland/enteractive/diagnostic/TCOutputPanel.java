@@ -10,6 +10,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -34,6 +35,7 @@ public class TCOutputPanel extends JPanel {
 	private JTextArea returnTA;
 	private JScrollPane jScrollPane1;
 	private JButton clear;
+	private JCheckBox rollingOutput;
 	
 	public UDPReceiver udpr;
 
@@ -54,13 +56,18 @@ public class TCOutputPanel extends JPanel {
 		returnTA.setRows(5);
 		returnTA.setWrapStyleWord(true);
 		returnTA.setEditable(true);
+		returnTA.setText(" ");
 		jScrollPane1 = new JScrollPane(returnTA);
-		p.add(jScrollPane1);
+		p.add(jScrollPane1,"span, center");
+		
+		rollingOutput = new JCheckBox("Rolling Output", true);
+		p.add(rollingOutput, "center");
 		
 		clear = new JButton("Clear");
 		clear.setOpaque(true);
 		clear.addActionListener(new clearAction());
-		p.add(clear,"span, center");
+		p.add(clear,"center");
+		
 		
 		add(p);
 
@@ -68,10 +75,25 @@ public class TCOutputPanel extends JPanel {
 	
 	public class clearAction implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-        	returnTA.setText("");
+        	returnTA.setText(" ");
         }
     }
 	
+	public void updateTextField(String updateString) {
+		String NEW_LINE = System.getProperty("line.separator");
+		String curText = returnTA.getText();
+		if (rollingOutput.isSelected()) {
+		if (curText.length() < 3){
+			returnTA.setText(updateString);
+		} else {
+			returnTA.setText(returnTA.getText() + NEW_LINE + updateString);
+		}
+		} else {
+			returnTA.setText(updateString);
+		}
+		returnTA.setCaretPosition( returnTA.getDocument().getLength() );
+
+	}
 	
 	
 	public JTextArea getOutputField() {
