@@ -153,7 +153,6 @@ public class SCSoundManager implements SCSoundControlNotifiable {
 		}
 	}
 	
-	@Override
 	public void receiveNotification_BufferLoaded(int id, String filename) {
 		System.out.println("Loaded buffer " + id + ", " + filename);
 		if(soundFiles.containsKey(filename)){
@@ -161,17 +160,14 @@ public class SCSoundManager implements SCSoundControlNotifiable {
 		}
 	}
 
-	@Override
 	public void receiveNotification_ServerRunning() {
 		serverIsLive = true;
 	}
 
-	@Override
 	public void receiveNotification_ServerStatus(float averageCPU, float peakCPU) {
 		// TODO Keep track of server load
 	}
 
-	@Override
 	public void receiveNotification_ServerStopped() {
 		serverIsLive = false;
 	}

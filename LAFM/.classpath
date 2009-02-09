@@ -5,7 +5,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/ArtNetBroadcaster"/>
 	<classpathentry kind="lib" path="libraries/controlP5.jar"/>
 	<classpathentry kind="lib" path="libraries/core.jar"/>
-	<classpathentry kind="lib" path="libraries/javaosc.jar"/>
 	<classpathentry kind="lib" path="libraries/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="libraries/promidi.jar"/>
 	<classpathentry kind="lib" path="libraries/libProMandoMidiJNILib.jar">
@@ -15,5 +14,6 @@
 	</classpathentry>
 	<classpathentry kind="src" path="/SCSoundControl"/>
 	<classpathentry kind="lib" path="libraries/wrapper.jar"/>
+	<classpathentry kind="lib" path="/JavaOSC/lib/javaosc.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

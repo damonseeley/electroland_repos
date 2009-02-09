@@ -11,19 +11,16 @@ public class LAFMWrapper implements WrapperListener{
 		
 	}
 
-	@Override
 	public Integer start(String[] args) {
 		conductor = new Conductor(args);
 		return null;
 	}
 
-	@Override
 	public int stop(int exitCode) {
 		System.out.println("stop event: "+ exitCode);
 		return exitCode;
 	}
 	
-	@Override
 	public void controlEvent(int event) {
 		System.out.println("wrapper event: "+ event);
 		if(WrapperManager.WRAPPER_CTRL_CLOSE_EVENT == event){
