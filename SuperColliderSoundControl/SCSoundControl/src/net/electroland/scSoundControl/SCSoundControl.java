@@ -1,7 +1,5 @@
 package net.electroland.scSoundControl;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.concurrent.*;
@@ -10,7 +8,7 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Vector;
 
-import com.illposed.osc.*;
+import com.illposed.osc_ELmod.*;
 
 public class SCSoundControl implements OSCListener, Runnable {
 
@@ -187,13 +185,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 	//It is up to the user to be sure that the filename exists on the machine running SuperCollider.
 	//***************
 	// by default, SuperCollider provides 1024 buffers.
-	//
-	//Ideally, this would register a callback to the requesting object
-	//and then notify when the buffer was done loading. But super collider
-	//only notifies that a buffer finished loading. Not which one.
-	//In the case you load one HUGE buffer and immediately load another tiny one,
-	//the second might finish before the first, and you wouldn't know which one was
-	//valid - or which one threw an error...
+	
 	public synchronized int readBuf(String filename) {
 		
 		// find a buffer id that hasn't been used yet.
@@ -243,10 +235,26 @@ public class SCSoundControl implements OSCListener, Runnable {
 		_busList.add(newBusID);
 		return newBusID;
 	}
+	
+//	//find two consecutive busses:
+//	protected synchronized int createStereoBus() {
+//		int newBusID = _minAudioBus;
+//		while (_busList.contains(newBusID) || _busList.contains(newBusID + 1)) {
+//			newBusID++;
+//		}
+//		_busList.add(newBusID);
+//		_busList.add(newBusID + 1);
+//		return newBusID;
+//	}
 
 	// free up a no longer used bus id
 	protected synchronized void freeBus(int busNum) {
 		_busList.remove(new Integer(busNum));
+	}
+	
+	protected synchronized void freeStereoBus(int busNum) {
+		freeBus(busNum);
+		freeBus(busNum+1);
 	}
 
 	// get an unallocated node id.
@@ -309,6 +317,33 @@ public class SCSoundControl implements OSCListener, Runnable {
 		_nodeIdList.add(id);
 	}
 
+//	// create an ELplaybuf node. Note this is a custom synthdef which must be
+//	// loaded on the server.
+//	protected void createStereoPlayBuf(int id, int group, int bufNum, int outBus,
+//			float amp, float rate, boolean loop) {
+//
+//		Object args[] = new Object[16];
+//		args[0] = new String("ELStereoPlaybuf");
+//		args[1] = new Integer(id); // need a unique ID
+//		args[2] = new Integer(1); // add to tail of node list in group
+//		args[3] = new Integer(group); // target group
+//		args[4] = new String("outBus");
+//		args[5] = new Integer(outBus); // need a unique bus # here
+//		args[6] = new String("bufNum");
+//		args[7] = new Integer(bufNum);
+//		args[8] = new String("doLoop");
+//		args[9] = loop ? new Integer(1) : new Integer(0);
+//		args[10] = new String("ampScale");
+//		args[11] = new Float(amp);
+//		args[12] = new String("playbackRate");
+//		args[13] = new Float(rate);
+//		args[14] = new String("groupToFreeWhenDone");
+//		args[15] = new Integer(group);
+//
+//		sendMessage("/s_new", args);
+//		_nodeIdList.add(id);
+//	}
+	
 	// create an ELenv node. Note this is a custom synthdef which must be loaded
 	// on the server.
 	protected void createEnvelope(int id, int group, int inBus, int outBus,

@@ -2,18 +2,21 @@ package net.electroland.scSoundControl;
 
 public class SoundNode {
 
+	//always need a reference to the mother ship:
 	SCSoundControl _sc;
-	private boolean _alive; //is this node alive and playing on the server?
-	
+
+	//keep track of various super collider IDs:
 	private int _bus;
 	private int _group;
 	private int _playbufID;
-	private int _baseEnvelopeID;
+	private int[] _envelopeNodeIDs;
+
+	//properties:
 	private int _numChannels;
 	private boolean _looping;
-	private int[] _envelopeNodeIDs;
 	private float[] _amplitude;
 	private float _rate;
+	private boolean _alive; //is this node alive and playing on the server?
 	
 	public SoundNode(SCSoundControl sc, int groupID, int bufferNumber, boolean doLoop, int numChannels, float[] amplitude, float playbackRate) {
 		_sc = sc;
@@ -30,14 +33,14 @@ public class SoundNode {
 		}
 		
 		//create a playbuffer
-		_playbufID = sc.getNewNodeID();
-		_bus = sc.createBus();
-		sc.createPlayBuf(_playbufID, _group, bufferNumber, _bus, 1f, _rate, _looping);
+		_playbufID = _sc.getNewNodeID();
+		_bus = _sc.createBus();
+		_sc.createPlayBuf(_playbufID, _group, bufferNumber, _bus, 1f, _rate, _looping);
 		
 		//create an env for each out channel
 		for (int i = 0; i < _numChannels; i++) {
 			_envelopeNodeIDs[i] = sc.getNewNodeID();
-			sc.createEnvelope(_envelopeNodeIDs[i], _group, _bus, i, _amplitude[i]);
+			_sc.createEnvelope(_envelopeNodeIDs[i], _group, _bus, i, _amplitude[i]);
 		}
 		
 	}
