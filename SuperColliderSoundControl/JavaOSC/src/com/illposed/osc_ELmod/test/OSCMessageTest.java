@@ -1,9 +1,9 @@
-package com.illposed.osc.test;
+package com.illposed.osc_ELmod.test;
 
 import java.math.BigInteger;
 
-import com.illposed.osc.*;
-import com.illposed.osc.utility.*;
+import com.illposed.osc_ELmod.*;
+import com.illposed.osc_ELmod.utility.*;
 
 public class OSCMessageTest extends junit.framework.TestCase {
 

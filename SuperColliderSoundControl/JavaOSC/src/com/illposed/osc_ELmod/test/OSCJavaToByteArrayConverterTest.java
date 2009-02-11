@@ -8,9 +8,9 @@
  * http://www.emergent.de/Goodies/
  */
 
-package com.illposed.osc.test;
+package com.illposed.osc_ELmod.test;
 
-import com.illposed.osc.utility.*;
+import com.illposed.osc_ELmod.utility.*;
 
 public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 

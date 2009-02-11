@@ -1,9 +1,10 @@
-package com.illposed.osc;
+package com.illposed.osc_ELmod;
 
 import java.net.*;
 import java.io.IOException;
-import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
-import com.illposed.osc.utility.OSCPacketDispatcher;
+
+import com.illposed.osc_ELmod.utility.OSCByteArrayToJavaConverter;
+import com.illposed.osc_ELmod.utility.OSCPacketDispatcher;
 
 /**
  * OSCPortIn is the class that listens for OSC messages.

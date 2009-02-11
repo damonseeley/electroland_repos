@@ -8,10 +8,11 @@
 //  Modified by JT March 2003
 
 // include this
-package com.illposed.osc.ui;
+package com.illposed.osc_ELmod.ui;
 
 // import these packages as well
-import com.illposed.osc.*;
+import com.illposed.osc_ELmod.*;
+
 import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.*;

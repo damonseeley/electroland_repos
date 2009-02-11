@@ -1,4 +1,4 @@
-package com.illposed.osc.utility;
+package com.illposed.osc_ELmod.utility;
 
 import java.io.IOException;
 import java.io.ByteArrayOutputStream;

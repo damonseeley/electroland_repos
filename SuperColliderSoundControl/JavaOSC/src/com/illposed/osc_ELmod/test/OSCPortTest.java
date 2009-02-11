@@ -6,11 +6,11 @@
 //  Copyright (c) 2001 Illposed Software. All rights reserved.
 //
 
-package com.illposed.osc.test;
+package com.illposed.osc_ELmod.test;
 
 import java.util.Date;
 
-import com.illposed.osc.*;
+import com.illposed.osc_ELmod.*;
 
 public class OSCPortTest extends junit.framework.TestCase {
 	boolean messageReceived;

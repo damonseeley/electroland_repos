@@ -1,4 +1,4 @@
-<project name="JavaOSC" default="dist" basedir=".">
+<project name="JavaOSC_ELmod" default="dist" basedir=".">
 	<description>
 		Build file for JavaOSC
 	</description>
@@ -18,13 +18,13 @@
 	<target name="dist" depends="compile" description="Jar it all up">
 		<!-- Only put the important stuff in javaosc.jar -->
 		<jar 
-			destfile="${dest}/javaosc.jar"
+			destfile="${dest}/javaosc_ELmod.jar"
 			basedir="build"
 			includes="com/illposed/osc/*.class com/illposed/osc/utility/*.class"
 		/>
 		<!-- Put examples and tests in javaoscfull.jar -->		
 		<jar 
-			destfile="${dest}/javaoscfull.jar"
+			destfile="${dest}/javaoscfull_ELmod.jar"
 			manifest="build-support/MainClass.mf"	
 			basedir="build"	
 		/>
@@ -42,7 +42,7 @@
 			<classpath>
 				<pathelement path="${classpath}"/>
 				<pathelement path="${lib}/junit.jar" />
-				<pathelement path="${lib}/javaoscfull.jar" />
+				<pathelement path="${lib}/javaoscfull_ELmod.jar" />
 			</classpath>
 			<batchtest>
 				<fileset dir="src/">
@@ -52,7 +52,7 @@
 		</junit>
 	</target>
 	<target name="run" depends="compile" description="Run the JavaOSC Example">
-		<java jar="${lib}/javaosc.jar" fork="true" />
+		<java jar="${lib}/javaosc_ELmod.jar" fork="true" />
 	</target>
 	
 	<target name="runtests" depends="compile" description="Run the tests in a seperate jvm">
@@ -60,7 +60,7 @@
 			<classpath>
 				<pathelement path="${classpath}"/>
 				<pathelement path="${lib}/junit.jar" />
-				<pathelement path="${lib}/javaoscfull.jar" />
+				<pathelement path="${lib}/javaoscfull_ELmod.jar" />
 			</classpath>		
 		</java>
 	</target>	

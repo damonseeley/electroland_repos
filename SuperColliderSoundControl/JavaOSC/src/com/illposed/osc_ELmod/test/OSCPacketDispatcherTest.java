@@ -1,13 +1,13 @@
 /* $Id$
  * Created on 28.10.2003
  */
-package com.illposed.osc.test;
+package com.illposed.osc_ELmod.test;
 
 
 import java.util.Date;
 
-import com.illposed.osc.*;
-import com.illposed.osc.utility.*;
+import com.illposed.osc_ELmod.*;
+import com.illposed.osc_ELmod.utility.*;
 
 /**
  * @author cramakrishnan

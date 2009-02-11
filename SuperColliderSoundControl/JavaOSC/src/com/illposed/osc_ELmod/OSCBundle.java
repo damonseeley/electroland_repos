@@ -1,4 +1,4 @@
-package com.illposed.osc;
+package com.illposed.osc_ELmod;
 
 import java.math.BigInteger;
 import java.util.Date;
@@ -6,7 +6,7 @@ import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.Vector;
 
-import com.illposed.osc.utility.*;
+import com.illposed.osc_ELmod.utility.*;
 
 /**
  * A bundle represents a collection of osc packets (either messages or other bundles) and

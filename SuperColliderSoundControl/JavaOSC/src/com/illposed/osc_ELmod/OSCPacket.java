@@ -1,6 +1,6 @@
-package com.illposed.osc;
+package com.illposed.osc_ELmod;
 
-import com.illposed.osc.utility.*;
+import com.illposed.osc_ELmod.utility.*;
 
 /**
  * OSCPacket is the abstract superclass for the various

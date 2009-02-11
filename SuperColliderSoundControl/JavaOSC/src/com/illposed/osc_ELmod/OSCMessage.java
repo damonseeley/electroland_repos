@@ -1,9 +1,9 @@
-package com.illposed.osc;
+package com.illposed.osc_ELmod;
 
 import java.util.Enumeration;
 import java.util.Vector;
 
-import com.illposed.osc.utility.*;
+import com.illposed.osc_ELmod.utility.*;
 
 /**
  * An simple (non-bundle) OSC message. An OSC message is made up of 

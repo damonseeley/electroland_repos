@@ -14,7 +14,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-import com.illposed.osc.ui.OscUI;
+import com.illposed.osc_ELmod.ui.OscUI;
 
 public class javaosc extends JFrame {
 

@@ -1,9 +1,9 @@
 /* $Id$
  * Created on 28.10.2003
  */
-package com.illposed.osc.utility;
+package com.illposed.osc_ELmod.utility;
 
-import com.illposed.osc.*;
+import com.illposed.osc_ELmod.*;
 
 import java.util.Date;
 import java.util.Enumeration;
