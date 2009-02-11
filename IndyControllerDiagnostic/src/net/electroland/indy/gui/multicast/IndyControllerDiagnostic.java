@@ -150,7 +150,7 @@ public class IndyControllerDiagnostic extends JFrame {
 		fpsVal = new JLabel("30");
 		multicastPanel.add(fpsVal, "span 2, growx, wrap");
 
-		fpsSlider = new JSlider(1, 100, 30);
+		fpsSlider = new JSlider(1, 180, 30);
 		multicastPanel.add(fpsSlider, "span, growx, wrap");
 		fpsSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
@@ -179,7 +179,7 @@ public class IndyControllerDiagnostic extends JFrame {
 		multicastPanel.add(ascending, "growx, wrap");
 		buttonGroup.add(ascending);
 
-		oscillating = new JRadioButton("Oscillating packets", false);
+		oscillating = new JRadioButton("Oscillate 00/20", false);
 		multicastPanel.add(oscillating, "growx");
 		buttonGroup.add(oscillating);
 
@@ -308,16 +308,16 @@ public class IndyControllerDiagnostic extends JFrame {
 		loggingPanel.setBorder(BorderFactory.createTitledBorder("Logging options"));
 		this.add(loggingPanel, "span, growx, wrap");
 		
-		logSends = new JCheckBox("Data packets sent", true);
+		logSends = new JCheckBox("Data packets sent", false);
 		loggingPanel.add(logSends, "left, span 2, growx");
 
-		logOffsets = new JCheckBox("Offset packets sent", true);
+		logOffsets = new JCheckBox("Offset packets sent", false);
 		loggingPanel.add(logOffsets, "wrap");
 
-		logReceives = new JCheckBox("Received packets", true);
+		logReceives = new JCheckBox("Received packets", false);
 		loggingPanel.add(logReceives, "left, span 2");
 
-		logTimes = new JCheckBox("Round trip durations", true);
+		logTimes = new JCheckBox("Round trip durations", false);
 		loggingPanel.add(logTimes, "wrap");
 		
 	}

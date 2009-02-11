@@ -112,7 +112,9 @@ public class Sender2Thread extends Thread {
 
 						if (ctr%2 == 0){
 							for (int i = 2; i < packetSize - 1; i++){
-								buffer[i] = (byte)253;
+								buffer[i] = (byte)32;
+								//old code was full on for oscillating mode
+								//buffer[i] = (byte)253;
 							}
 						}// else do nothing.  default is 'off' bytes.
 						
