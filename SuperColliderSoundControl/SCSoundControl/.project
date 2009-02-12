@@ -3,7 +3,6 @@
 	<name>SCSoundControl</name>
 	<comment></comment>
 	<projects>
-		<project>JavaOSC</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
