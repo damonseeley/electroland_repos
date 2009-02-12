@@ -20,7 +20,7 @@
 		<jar 
 			destfile="${dest}/javaosc_ELmod.jar"
 			basedir="build"
-			includes="com/illposed/osc/*.class com/illposed/osc/utility/*.class"
+			includes="com/illposed/osc_ELmod/*.class com/illposed/osc_ELmod/utility/*.class"
 		/>
 		<!-- Put examples and tests in javaoscfull.jar -->		
 		<jar 
@@ -32,8 +32,8 @@
 	<target name="doc" description="Create the documentation">
 		<javadoc destdir="doc/">
 			<fileset dir="src/">
-				<include name="com/illposed/osc/*.java"/>
-				<include name="com/illposed/osc/utility/*.java"/>				
+				<include name="com/illposed/osc_ELmod/*.java"/>
+				<include name="com/illposed/osc_ELmod/utility/*.java"/>				
 			</fileset>
 		</javadoc>
 	</target>	
@@ -56,7 +56,7 @@
 	</target>
 	
 	<target name="runtests" depends="compile" description="Run the tests in a seperate jvm">
-		<java classname="com.illposed.osc.test.JavaOSCRunnerUtility">
+		<java classname="com.illposed.osc_ELmod.test.JavaOSCRunnerUtility">
 			<classpath>
 				<pathelement path="${classpath}"/>
 				<pathelement path="${lib}/junit.jar" />
