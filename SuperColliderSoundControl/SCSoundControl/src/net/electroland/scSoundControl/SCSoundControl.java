@@ -181,9 +181,11 @@ public class SCSoundControl implements OSCListener, Runnable {
 	}
 	
 
-	//***************
-	//It is up to the user to be sure that the filename exists on the machine running SuperCollider.
-	//***************
+	//*********************************
+	// Buffer Management
+	//*********************************
+	
+	// It is up to the user to be sure that the filename exists on the machine running SuperCollider.
 	// by default, SuperCollider provides 1024 buffers.
 	
 	public synchronized int readBuf(String filename) {
@@ -223,12 +225,18 @@ public class SCSoundControl implements OSCListener, Runnable {
 		}
 	}
 
+	
+	//*********************************
+	// Internal Bus ID Management
+	//*********************************
+	
 	// by default, SuperCollider allocates 128 audio rate busses.
 	// The way SCSoundControl has been designed, this should allow for 128 voice
 	// polyphony.
 	// If more are needed, see super collider help on how to do this from
 	// either command line arguments or by changing defaults via sclang code.
-	protected synchronized int createBus() {
+	
+	protected synchronized int allocateBus() {
 		int newBusID = _minAudioBus;
 		while (_busList.contains(newBusID))
 			newBusID++;
@@ -236,34 +244,52 @@ public class SCSoundControl implements OSCListener, Runnable {
 		return newBusID;
 	}
 	
-//	//find two consecutive busses:
-//	protected synchronized int createStereoBus() {
-//		int newBusID = _minAudioBus;
-//		while (_busList.contains(newBusID) || _busList.contains(newBusID + 1)) {
-//			newBusID++;
-//		}
-//		_busList.add(newBusID);
-//		_busList.add(newBusID + 1);
-//		return newBusID;
-//	}
+	//find consecutive busses, return lowest id.
+	protected synchronized int allocateConsecutiveBusses(int howManyBusses) {
+		int newBusID = _minAudioBus;
+		while (!testConsecutiveBusses_recursive(newBusID, howManyBusses)) {
+			newBusID++;
+			//TODO should check for failure condition, e.g.:
+			//if (newBusID > MAXBUSSES) return -1;
+		}
+		for (int i=0; i<howManyBusses; i++) {
+			_busList.add(newBusID + i);
+		}
+		return newBusID;
+	}
+	
+	//recursively look for consecutive bus ID's to be free.
+	private boolean testConsecutiveBusses_recursive(int startID, int howMany) {
+		if (howMany == 0) return true;
+		if (_busList.contains(startID)) return false;
+		else return testConsecutiveBusses_recursive(startID+1, howMany-1);
+	}
 
 	// free up a no longer used bus id
 	protected synchronized void freeBus(int busNum) {
 		_busList.remove(new Integer(busNum));
 	}
 	
-	protected synchronized void freeStereoBus(int busNum) {
-		freeBus(busNum);
-		freeBus(busNum+1);
+	protected void freeConsecutiveBusses(int busNum, int howManyBusses) {
+		for (int i=0; i < howManyBusses; i++) freeBus(busNum + i);
 	}
 
+	
+	//*********************************
+	// Node ID Management
+	//*********************************
+	
 	// get an unallocated node id.
-	protected int getNewNodeID() {
+	public int getNewNodeID() {
 		int newID = _minNodeID;
 		while (_nodeIdList.contains(newID)) newID++;
 		return newID;
 	}
 
+	//****************************************
+	// Messaging to Super Collider
+	//****************************************
+	
 	// free a node we've allocated on the server.
 	protected void freeNode(int nodeNum) {
 		sendMessage("/n_free", new Object[] { nodeNum });
@@ -273,8 +299,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 	// groups all have ids higher than the SoundControl "mothergroup"
 	protected int createGroup() {
 		int id = _motherGroupID + 1;
-		while (_soundNodes.containsKey(id))
-			id++;
+		while (_soundNodes.containsKey(id)) { id++; }
 		createGroup(id);
 		return id;
 	}
@@ -317,32 +342,32 @@ public class SCSoundControl implements OSCListener, Runnable {
 		_nodeIdList.add(id);
 	}
 
-//	// create an ELplaybuf node. Note this is a custom synthdef which must be
-//	// loaded on the server.
-//	protected void createStereoPlayBuf(int id, int group, int bufNum, int outBus,
-//			float amp, float rate, boolean loop) {
-//
-//		Object args[] = new Object[16];
-//		args[0] = new String("ELStereoPlaybuf");
-//		args[1] = new Integer(id); // need a unique ID
-//		args[2] = new Integer(1); // add to tail of node list in group
-//		args[3] = new Integer(group); // target group
-//		args[4] = new String("outBus");
-//		args[5] = new Integer(outBus); // need a unique bus # here
-//		args[6] = new String("bufNum");
-//		args[7] = new Integer(bufNum);
-//		args[8] = new String("doLoop");
-//		args[9] = loop ? new Integer(1) : new Integer(0);
-//		args[10] = new String("ampScale");
-//		args[11] = new Float(amp);
-//		args[12] = new String("playbackRate");
-//		args[13] = new Float(rate);
-//		args[14] = new String("groupToFreeWhenDone");
-//		args[15] = new Integer(group);
-//
-//		sendMessage("/s_new", args);
-//		_nodeIdList.add(id);
-//	}
+	// create an ELplaybuf node. Note this is a custom synthdef which must be
+	// loaded on the server.
+	protected void createStereoPlayBuf(int id, int group, int bufNum, int outBus,
+			float amp, float rate, boolean loop) {
+
+		Object args[] = new Object[16];
+		args[0] = new String("ELStereoPlaybuf");
+		args[1] = new Integer(id); // need a unique ID
+		args[2] = new Integer(1); // add to tail of node list in group
+		args[3] = new Integer(group); // target group
+		args[4] = new String("outBus");
+		args[5] = new Integer(outBus); // need a unique bus # here
+		args[6] = new String("bufNum");
+		args[7] = new Integer(bufNum);
+		args[8] = new String("doLoop");
+		args[9] = loop ? new Integer(1) : new Integer(0);
+		args[10] = new String("ampScale");
+		args[11] = new Float(amp);
+		args[12] = new String("playbackRate");
+		args[13] = new Float(rate);
+		args[14] = new String("groupToFreeWhenDone");
+		args[15] = new Integer(group);
+
+		sendMessage("/s_new", args);
+		_nodeIdList.add(id);
+	}
 	
 	// create an ELenv node. Note this is a custom synthdef which must be loaded
 	// on the server.
@@ -389,7 +414,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 	// reset the SC server - same as pressing "CMD-." in sclang
 	// just for development. Shouldn't need to call this typically.
 	// it would kill nodes created by something else controlling the server.
-	public void reset() {
+	public void resetScsynth() {
 		sendMessage("/g_freeAll", new Object[] { 0 });
 		sendMessage("/clearSched");
 		sendMessage("/g_new", new Object[] { 1 });
@@ -406,6 +431,13 @@ public class SCSoundControl implements OSCListener, Runnable {
 		sendMessage("/n_trace", new Object[] { node });
 	}
 
+	
+	
+	
+	//**************************************
+	// Handle Incoming messages from Super Collider
+	//**************************************
+	
 	// handle incoming messages
 	public void acceptMessage(java.util.Date time, OSCMessage message) {
 		// to print the full message:
@@ -451,8 +483,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 		else if (message.getAddress().matches("/n_end")) {
 			// take message.getArguments()[0] (the node id that was freed)
 			// and free up any resources associated with it.
-			debugPrintln("node " + message.getArguments()[0].toString()
-					+ " was freed.");
+			debugPrintln("node " + message.getArguments()[0].toString() + " was freed.");
 			Integer id = (Integer) (message.getArguments()[0]);
 			if (id > _motherGroupID) {
 				// it's a group node. a SoundNode has died.
@@ -481,38 +512,80 @@ public class SCSoundControl implements OSCListener, Runnable {
 		
 	}
 
+
+	//*****************************************
+	// Sound Node Factory Methods
+	//*****************************************
+	
 	public SoundNode createSoundNodeOnSingleChannel(int bufferNumber, boolean doLoop, int channel, float amplitude, float playbackRate) {
 		float[] amps = new float[_outChannels];
 		for (int i=0; i < _outChannels; i++) {
 			amps[i] = i==channel? amplitude : 0;
 		}
-		return createSoundNode(bufferNumber, doLoop, amps, playbackRate);
+		return createMonoSoundNode(bufferNumber, doLoop, amps, playbackRate);
 	}
 	
 	// create a new soundNode to playback a buffer
-	public SoundNode createSoundNode(int bufferNumber, boolean doLoop,
+	public SoundNode createMonoSoundNode(int bufferNumber, boolean doLoop,
 			float[] channelAmplitudes, float playbackRate) {
 		
 		//sanity check the buffer that's been requested.
 		if (!_bufferMap.containsKey(bufferNumber)) return null;
 		
-		// establish group and node id's for this sound node.
-		int newGroup = createGroup();
+		float[][] amps = new float[1][];
+		amps[0] = channelAmplitudes;
+		
+		// instantiate a new SoundNode and remember it by its group ID.
+		// when that group ID is freed on the server we'll know this SoundNode
+		// is dead.
+		SoundNode sn;
+		synchronized (this) {
+			sn = new SoundNode(this, bufferNumber, 1, doLoop,
+					_outChannels, amps, playbackRate);
+			_soundNodes.put(sn.getGroup(), sn);
+		}
+
+		return sn;
+	}
+	
+	public SoundNode createStereoSoundNodeWithLRMap(int bufferNumber, boolean doLoop,
+			int[] leftChannelMap, int[] rightChannelMap, float playbackRate) {
+		float[] lChannelAmplitudes = new float[_outChannels];
+		float[] rChannelAmplitudes = new float[_outChannels];
+		for (int i=0; i<leftChannelMap.length; i++) {
+			lChannelAmplitudes[leftChannelMap[i]] = 1f;
+		}
+		for (int i=0; i<rightChannelMap.length; i++) {
+			rChannelAmplitudes[rightChannelMap[i]] = 1f;
+		}
+		return createStereoSoundNode(bufferNumber, doLoop, lChannelAmplitudes, rChannelAmplitudes, playbackRate);
+	}
+	
+	// create a new soundNode to playback a buffer
+	public SoundNode createStereoSoundNode(int bufferNumber, boolean doLoop,
+			float[] lChannelAmplitudes, float[] rChannelAmplitudes, float playbackRate) {
+		
+		//sanity check the buffer that's been requested.
+		if (!_bufferMap.containsKey(bufferNumber)) return null;
+		
+		float[][] amps = new float[2][];
+		amps[0] = lChannelAmplitudes;
+		amps[1] = rChannelAmplitudes;
 
 		// instantiate a new SoundNode and remember it by its group ID.
 		// when that group ID is freed on the server we'll know this SoundNode
 		// is dead.
 		SoundNode sn;
 		synchronized (this) {
-			sn = new SoundNode(this, newGroup, bufferNumber, doLoop,
-					_outChannels, channelAmplitudes, playbackRate);
-			_soundNodes.put(newGroup, sn);			
+			sn = new SoundNode(this, bufferNumber, 2, doLoop,
+					_outChannels, amps, playbackRate);
+			_soundNodes.put(sn.getGroup(), sn);
 		}
 
 		return sn;
 	}
-	
 
+	
 	// debug output helpers
 	boolean _doDebug = false;
 
@@ -530,6 +603,12 @@ public class SCSoundControl implements OSCListener, Runnable {
 			System.out.println(s);
 	}
 
+	
+	
+	//*********************************
+	// Event Handling Methods
+	//*********************************
+	
 	protected void handleServerBooted() {
 		//reinit data.
 		this.init();
@@ -595,7 +674,10 @@ public class SCSoundControl implements OSCListener, Runnable {
 	}
 
 	
-	//modify server ping settings: ************************************
+	//*********************************	
+	//modify server ping settings: 
+	//*********************************
+	
 	public int get_serverResponseTimeout() {
 		return _serverResponseTimeout;
 	}
@@ -608,7 +690,6 @@ public class SCSoundControl implements OSCListener, Runnable {
 	public void set_scsynthPingInterval(int pingInterval) {
 		_scsynthPingInterval = pingInterval;
 	}
-	//*****************************************************************
 	
 
 }

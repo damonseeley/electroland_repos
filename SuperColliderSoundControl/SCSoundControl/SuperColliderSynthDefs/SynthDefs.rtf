@@ -24,6 +24,16 @@
 	\}).load(s);\
 )\
 \
+//the stereo playbuf:\
+(\
+\cf2 SynthDef\cf0 (\cf3 "ELStereoPlaybuf"\cf0 , \{ \cf2 arg\cf0  outBus=0, bufNum=0, doLoop=0, ampScale=1.0, playbackRate=1.0, groupToFreeWhenDone;\
+	var playbackSynth;\
+	playbackSynth = \cf2 PlayBuf\cf0 .ar(2, bufNum, \cf2 BufRateScale\cf0 .kr(bufNum) * playbackRate, loop:doLoop);\
+	\cf4 Free\cf0 .kr(Done.kr(playbackSynth), groupToFreeWhenDone); //free this synth's parent group\
+	\cf2 Out\cf0 .ar(outBus, playbackSynth); //output to designated bus (not usually the hardware output)\
+	\}).load(s);\
+)\
+\
 //for each sound being played by an instance of the ELplaybuf synth:\
 //1 instance of ELenv is created for EACH output channel.\
 //They each read from the same private bus - the one to which the given ELplaybuf is being output.\

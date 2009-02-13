@@ -6,55 +6,85 @@ public class SoundNode {
 	SCSoundControl _sc;
 
 	//keep track of various super collider IDs:
-	private int _bus;
-	private int _group;
-	private int _playbufID;
-	private int[] _envelopeNodeIDs;
+	protected int _bus;
+	protected int _group;
+	protected int _playbufID;
+	protected int[][] _envelopeNodeIDs;
+	protected int _buffer;
 
 	//properties:
-	private int _numChannels;
-	private boolean _looping;
-	private float[] _amplitude;
-	private float _rate;
-	private boolean _alive; //is this node alive and playing on the server?
+	protected int _numBufferChannels;
+	protected int _numOutputChannels;
+	protected boolean _looping;
+	protected float[][] _amplitude;
+	protected float _rate;
+	protected boolean _alive; //is this node alive and playing on the server?
 	
-	public SoundNode(SCSoundControl sc, int groupID, int bufferNumber, boolean doLoop, int numChannels, float[] amplitude, float playbackRate) {
+	public SoundNode(SCSoundControl sc, int bufferNumber, int numBufferChannels, boolean doLoop, int numOutputChannels, float[][] amplitude, float playbackRate) {
 		_sc = sc;
 		_alive = true;
 		_looping = doLoop;
-		_numChannels = numChannels;
-		_group = groupID;
-		_amplitude = new float[_numChannels];
-		_envelopeNodeIDs = new int[_numChannels];
+		_numBufferChannels = numBufferChannels;
+		_numOutputChannels = numOutputChannels;
 		_rate = playbackRate;
+		_buffer = bufferNumber;
 		
-		for (int i = 0; i < _numChannels; i++) {
-			_amplitude[i] = amplitude[i];
-		}
-		
+		_amplitude = new float[_numBufferChannels][_numOutputChannels];
+		_envelopeNodeIDs = new int[_numBufferChannels][_numOutputChannels];
+
+		_group = _sc.createGroup();
+		_bus = _sc.allocateConsecutiveBusses(_numBufferChannels);
+
 		//create a playbuffer
 		_playbufID = _sc.getNewNodeID();
-		_bus = _sc.createBus();
-		_sc.createPlayBuf(_playbufID, _group, bufferNumber, _bus, 1f, _rate, _looping);
-		
+		if (_numBufferChannels == 1) {
+			_sc.createPlayBuf(_playbufID, _group, _buffer, _bus, 1f, _rate, _looping);
+		}
+		else if (_numBufferChannels == 2) {
+			_sc.createStereoPlayBuf(_playbufID, _group, _buffer, _bus, 1f, _rate, _looping);
+		}
+		else {
+			_sc.debugPrintln("SoundNode: buffers over 2 channels (stereo sound files) not supported");
+		}
+
 		//create an env for each out channel
-		for (int i = 0; i < _numChannels; i++) {
-			_envelopeNodeIDs[i] = sc.getNewNodeID();
-			_sc.createEnvelope(_envelopeNodeIDs[i], _group, _bus, i, _amplitude[i]);
+		for (int i = 0; i < _numBufferChannels; i++) {
+			for (int j = 0; j < _numOutputChannels; j++) {
+				_envelopeNodeIDs[i][j] = _sc.getNewNodeID();
+				_sc.createEnvelope(_envelopeNodeIDs[i][j], _group, _bus + i, j, _amplitude[i][j]);
+			}
 		}
 		
-	}
-	
-	
-	public void setAmplitude(int channel, float level) {
-		if (channel < 0 || channel > _numChannels) System.err.println("SoundNode::setAmplitude() : channel value of " + channel + " is outside valid range.");
-		_sc.setProperty(_envelopeNodeIDs[channel], "ampScale", level);
-	}
-	
-	public void setAmplitudes(int[] channel, float[]level) {
-		for (int i = 0; i < _numChannels; i++) {
-			setAmplitude(channel[i], level[i]);
+		//hang on to amplitudes
+		for (int i = 0; i < _numBufferChannels; i++) {
+			for (int j = 0; j < _numOutputChannels; j++) {
+				_amplitude[i][j] = amplitude[i][j];
+			}
 		}
+	}
+		
+	//multi channel version
+	public void setAmplitude(int bufferChannel, int outputChannel, float level) {
+		if (outputChannel < 0 || outputChannel > _numOutputChannels) System.err.println("SoundNode::setAmplitude() : channel value of " + outputChannel + " is outside valid range.");
+		_amplitude[bufferChannel][outputChannel] = level;
+		_sc.setProperty(_envelopeNodeIDs[bufferChannel][outputChannel], "ampScale", level);
+	}
+	
+	//mono version
+	public void setAmplitude(int channel, float level) {
+		setAmplitude(0, channel, level);
+	}
+
+	//multi channel version
+	public void setAmplitudes(int bufferChannel, int outputChannel[], float level[]) {
+		for (int i = 0; i < Math.min(outputChannel.length, level.length); i++) {
+			setAmplitude(bufferChannel, outputChannel[i], level[i]);
+		}
+	}
+	
+	//mono version
+	public void setAmplitudes(int[] channel, float[] level) {
+		setAmplitudes(0, channel, level);
 	}
 	
 	public void setPlaybackRate(float playbackRate) {
@@ -65,6 +95,10 @@ public class SoundNode {
 	public void die() {
 		_sc.freeNode(_group);
 	}
+	
+	public void cleanup() {
+		for (int i = 0; i < _numBufferChannels; i++) _sc.freeBus(_bus + i);		
+	}
 
 	//accessor and mutator methods:
 	public int get_busID() {
@@ -72,7 +106,7 @@ public class SoundNode {
 	}
 
 	public int get_numChannels() {
-		return _numChannels;
+		return _numOutputChannels;
 	}
 
 	public boolean is_looping() {
@@ -92,5 +126,9 @@ public class SoundNode {
 
 	public void setAlive(boolean alive) {
 		this._alive = alive;
+	}
+
+	public int getGroup() {
+		return _group;
 	}
 }

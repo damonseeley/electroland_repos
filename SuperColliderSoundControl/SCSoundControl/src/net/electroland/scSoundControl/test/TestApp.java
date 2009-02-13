@@ -194,7 +194,7 @@ public class TestApp extends PApplet implements SCSoundControlNotifiable {
 		int newVoicesNeeded = targetPolyphony - getCurPolyphony();
 		if (newVoicesNeeded > 0) {
 			for (int i = 0; i < newVoicesNeeded; i++) {
-				_soundNodes.add(ss.createSoundNode(_bufferList.get((int)random(0,_bufferList.size())), false, generateRandomVolumeArray(), 2f));
+				_soundNodes.add(ss.createMonoSoundNode(_bufferList.get((int)random(0,_bufferList.size())), false, generateRandomVolumeArray(), 2f));
 			}
 		}
 	}
@@ -224,7 +224,7 @@ public class TestApp extends PApplet implements SCSoundControlNotifiable {
 		if (!serverIsLive) return;
 		
 		if (_bufferList.contains(bufferNumber)) {
-			SoundNode thisNode = ss.createSoundNode(_bufferList.get(bufferNumber), false, new float[]{1f,1f}, 2f);
+			SoundNode thisNode = ss.createMonoSoundNode(_bufferList.get(bufferNumber), false, new float[]{1f,1f}, 2f);
 			if (thisNode != null) { _soundNodes.add(thisNode); }
 			else { println("Unable to create new sound node for buffer " + bufferNumber); }
 		} else {

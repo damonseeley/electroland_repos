@@ -26,8 +26,9 @@ public class SimpleTest extends PApplet implements SCSoundControlNotifiable {
 	
 	public void setup() {		
 
-		soundFile1 = sketchPath("soundfiles/test_1.wav");
-		soundFile2 = sketchPath("soundfiles/test_11.wav");
+		soundFile1 = sketchPath("soundfiles/StereoTest.wav");
+		//soundFile1 = sketchPath("soundfiles/test_1.wav");
+		//soundFile2 = sketchPath("soundfiles/test_11.wav");
 
 		//use an init method, since processing is calling setup twice (a workaround)
 		initTestApp();
@@ -39,7 +40,7 @@ public class SimpleTest extends PApplet implements SCSoundControlNotifiable {
 	
 	private void loadBuffers() {
 		ss.readBuf(soundFile1);
-		ss.readBuf(soundFile2);
+		//ss.readBuf(soundFile2);
 	}
 	
 	//processing core is for some reason calling setup twice! Don't know why that's
@@ -79,11 +80,11 @@ public class SimpleTest extends PApplet implements SCSoundControlNotifiable {
 		float surgeFactor = 0.5f + 0.5f * sin(timeFactor*TWO_PI);
 
 		if (mousePressed) howMuchY = (height - mouseY) / (float)height;
-		if (mousePressed) howMuchX = 4 * mouseX / (float)width;
+		if (mousePressed) howMuchX = mouseX / (float)width;
 		
 		if (sound1 != null) {
-			if (sound1.isAlive()) sound1.setAmplitude(0, howMuchY);
-			if (sound1.isAlive()) sound1.setPlaybackRate(howMuchX);
+			if (sound1.isAlive()) sound1.setAmplitude(0, 0, howMuchY);
+			if (sound1.isAlive()) sound1.setAmplitude(1, 1, howMuchX);
 		}
 
 	}
@@ -101,7 +102,7 @@ public class SimpleTest extends PApplet implements SCSoundControlNotifiable {
 	}
 	
 	public void mousePressed() {
-		if (serverIsLive) sound1 = ss.createSoundNode(buffer2, true, new float[]{1, 0}, 1.5f);
+		if (serverIsLive) sound1 = ss.createStereoSoundNodeWithLRMap(buffer2, true, new int[]{1, 0}, new int[]{0, 1}, 0.85f);
 	}
 	
 	public void mouseReleased() {
