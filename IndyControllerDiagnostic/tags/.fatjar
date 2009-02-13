@@ -1,0 +1,14 @@
+#Fat Jar Configuration File
+#Thu Jul 10 00:43:39 PDT 2008
+onejar.license.required=false
+manifest.classpath=
+manifest.removesigners=true
+onejar.checkbox=false
+jarname=/Users/damon/Documents/_ELECTROLAND/INDY JAR/Indy_fat.jar
+manifest.mergeall=true
+manifest.mainclass=net.electroland.indy.gui.multicast.MulticastRunner
+manifest.file=<createnew>
+jarname.isextern=true
+onejar.expand=
+excludes=
+includes=
