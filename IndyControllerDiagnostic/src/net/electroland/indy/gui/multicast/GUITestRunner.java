@@ -1,6 +1,8 @@
 package net.electroland.indy.gui.multicast;
 
 //comment
+//comment 2
+
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
