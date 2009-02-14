@@ -1,6 +1,5 @@
 package net.electroland.indy.gui.multicast;
 
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -26,6 +25,9 @@ import net.miginfocom.swing.MigLayout;
 @SuppressWarnings("serial")
 public class GUITestRunner extends JFrame {
 
+	// test of tagging
+
+	
 	protected JSlider byteSlider, fpsSlider, cmdSlider;	
 	protected JButton oneButton, streamButton;
 	protected JRadioButton triangle, slider;
