@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 public class Util {
 
-	/**
+	/** TEST
 	 * Given an array of bytes, returns a nicely formatted string of space
 	 * delimited hex values representing the byte array.
 	 * 
