@@ -228,7 +228,9 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		} catch(Exception e){
 			e.printStackTrace();
 		}
-		soundManager = new SoundManager(systemProps.getProperty("soundAddress"), Integer.parseInt(systemProps.getProperty("soundPort")));
+		//soundManager = new SoundManager(systemProps.getProperty("soundAddress"), Integer.parseInt(systemProps.getProperty("soundPort")));
+		soundManager = new SoundManager(2,2,systemProps);
+		//soundManager.parseSoundFiles(systemProps);
 		
 		// GUI must be instantiated for use by ImageSequenceCache
 		guiWindow = new GUIWindow(this, detectorMngr.getDetectors());

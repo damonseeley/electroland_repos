@@ -14,6 +14,6 @@
 	</classpathentry>
 	<classpathentry kind="src" path="/SCSoundControl"/>
 	<classpathentry kind="lib" path="libraries/wrapper.jar"/>
-	<classpathentry kind="lib" path="/JavaOSC/lib/javaosc.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JavaOSC_ELmod"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

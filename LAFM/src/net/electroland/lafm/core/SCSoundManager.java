@@ -13,20 +13,22 @@ import net.electroland.scSoundControl.*;
 public class SCSoundManager implements SCSoundControlNotifiable {
 
 	private SCSoundControl ss;
-	private Process scsynthProcess;
+	//private Process scsynthProcess;
 	private boolean serverIsLive;
 	private Hashtable<String, Integer> soundFiles;
+	private String absolutePath;
 	
 	public SCSoundManager(int numOutputChannels, int numInputChannels){
 		serverIsLive = false;
 		soundFiles = new Hashtable<String, Integer>();
+		absolutePath = "D:\\Programming\\Java\\LAFM\\soundfiles\\";
 		ss = new SCSoundControl(numOutputChannels, numInputChannels, this);
-		//ss.init();
-		//ss.showDebugOutput(true);
+		ss.init();
+		ss.showDebugOutput(true);
 	}
 
 	public void loadBuffer(String soundFile){
-		ss.readBuf(soundFile);	// this needs to notify when loaded
+		ss.readBuf(absolutePath+soundFile);
 	}
 	
 	private int[] lookupCoordinatesForMax(int c){
@@ -129,9 +131,9 @@ public class SCSoundManager implements SCSoundControlNotifiable {
 			for(int i=0; i<proplist.length; i++){
 				if(proplist[i].endsWith(".wav")){
 					if(!soundFiles.containsKey(proplist[i])){
-						System.out.println(proplist[i]);	// print out sound file to make sure it's working
+						//System.out.println(proplist[i]);	// print out sound file to make sure it's working
 						soundFiles.put(proplist[i], -1);	// -1 default unassigned value
-						//loadBuffer(proplist[i]);
+						loadBuffer(proplist[i]);
 					}
 				}
 			}
@@ -142,14 +144,14 @@ public class SCSoundManager implements SCSoundControlNotifiable {
 	public void playSimpleSound(String filename, int c, float gain, String comment){
 		if(!filename.equals("none") && serverIsLive){
 			float[] amplitudes = lookupCoordinatesForSC(c, gain);
-			ss.createSoundNode(soundFiles.get(filename), false, amplitudes, 1.0f);
+			ss.createMonoSoundNode(soundFiles.get(filename), false, amplitudes, 1.0f);
 		}
 	}
 
 	// this is a replacement for the original globalSound
 	public void globalSound(int soundIDToStart, String filename, boolean loop, float gain, int duration, String comment) {
 		if(!filename.equals("none") && serverIsLive){
-			ss.createSoundNode(soundFiles.get(filename), false, new float[] {gain,gain,gain,gain,gain,gain}, 1.0f);
+			ss.createMonoSoundNode(soundFiles.get(filename), false, new float[] {gain,gain,gain,gain,gain,gain}, 1.0f);
 		}
 	}
 	

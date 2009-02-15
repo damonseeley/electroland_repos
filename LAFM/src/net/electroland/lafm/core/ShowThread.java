@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import net.electroland.artnet.util.NoDataException;
 import net.electroland.artnet.util.RunningAverage;
 import net.electroland.detector.DMXLightingFixture;
+import net.electroland.scSoundControl.SoundNode;
 import processing.core.PGraphics;
 
 public abstract class ShowThread extends Thread {
@@ -42,6 +43,7 @@ public abstract class ShowThread extends Thread {
 	private ShowThread next;
 	private ShowThread top;
 	protected ShowCollection collection;
+	private SoundNode soundNode = null;
 	
 	public ShowThread(DMXLightingFixture flower, 
 					  SoundManager soundManager, 
@@ -110,7 +112,7 @@ public abstract class ShowThread extends Thread {
 			}
 			for(int n=0; n<channelsInUse.length; n++){
 				if(channelsInUse[n] != false){
-					getSoundManager().playSimpleSound(soundFile, n+1, gain, getID());
+					soundNode = getSoundManager().playSimpleSound(soundFile, n+1, gain, getID());
 				}
 			}
 		}
@@ -247,6 +249,11 @@ public abstract class ShowThread extends Thread {
 			while (j.hasNext()){
 				j.next().notifyComplete(this.top == null ? this : this.top, 
 										(Collection<DMXLightingFixture>)flowers);
+			}
+			
+			// stop the sound if it exists
+			if(soundNode != null){
+				soundNode.die();
 			}
 			
 			// notification collection (if any) that you can be checked off.
