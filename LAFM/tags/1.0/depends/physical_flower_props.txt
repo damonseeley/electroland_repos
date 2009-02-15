@@ -1,0 +1,27 @@
+physical flower properties
+
+num	color	level	notes
+1	red		upper
+2	orange	lower
+3	yellow	lower
+4	purple	upper		does not sense
+5	red		lower
+6	orange	lower
+7	yellow	upper
+8	pink	upper
+9	purple	middle
+10	red		middle
+11	yellow 	middle
+12	purple	lower
+13	red		middle
+14	orange	middle	sense at rail only
+15	orange	upper
+16	yellow	middle
+17	--
+18	yellow	upper
+19	--
+20	orange	upper
+21	pink	middle
+22	pink	lower
+23	red		lower
+24	orange	middle
