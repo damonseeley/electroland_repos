@@ -1,9 +1,9 @@
-bytes02=ff 01 fd fd fd fd fd fd fd fd fe
+bytes02=ff 00 fd fd fd fd fd fd fd fd fe
 bytes04=ff 11 fd fd fd fd fd fd fd fd fe
-bytes01=ff 00 fd fd fd fd fd fd fd fd fe
-bytes05=ff 80 00 00 fe
-rcvPort=10001
-bytes03=ff 02 fd fd fd fd fd fd fd fd fe
+bytes01=ff 00 00 00 00 00 00 00 00 00 fe
+bytes05=ff 88 aa 55 fe
+rcvPort=10011
+bytes03=ff 80 00 00 fe
 bytes06=ff 20 fd fe
 sendPort=10001
-IPAddress=localhost
+IPAddress=192.168.0.255
