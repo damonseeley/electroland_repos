@@ -47,6 +47,13 @@ public class SoundNode {
 			_sc.debugPrintln("SoundNode: buffers over 2 channels (stereo sound files) not supported");
 		}
 
+		//hang on to amplitudes
+		for (int i = 0; i < _numBufferChannels; i++) {
+			for (int j = 0; j < _numOutputChannels; j++) {
+				_amplitude[i][j] = amplitude[i][j];
+			}
+		}
+
 		//create an env for each out channel
 		for (int i = 0; i < _numBufferChannels; i++) {
 			for (int j = 0; j < _numOutputChannels; j++) {
@@ -55,12 +62,6 @@ public class SoundNode {
 			}
 		}
 		
-		//hang on to amplitudes
-		for (int i = 0; i < _numBufferChannels; i++) {
-			for (int j = 0; j < _numOutputChannels; j++) {
-				_amplitude[i][j] = amplitude[i][j];
-			}
-		}
 	}
 		
 	//multi channel version
