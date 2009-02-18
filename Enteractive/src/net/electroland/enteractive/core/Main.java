@@ -1,7 +1,7 @@
 package net.electroland.enteractive.core;
 
-import net.electroland.lafm.scheduler.TimedEvent;
-import net.electroland.lafm.scheduler.TimedEventListener;
+import net.electroland.enteractive.scheduler.TimedEvent;
+import net.electroland.enteractive.scheduler.TimedEventListener;
 
 /**
  * ENTERACTIVE by Electroland - Spring 2009

@@ -25,7 +25,7 @@ public class SoundManager implements SCSoundControlNotifiable {
 		this.systemProps = systemProps;
 		serverIsLive = false;
 		soundFiles = new Hashtable<String, Integer>();
-		absolutePath = "D:\\Programming\\Java\\LAFM\\soundfiles\\";
+		absolutePath = "D:\\Programming\\Java\\Enteractive\\soundfiles\\";	// should come from systemProps
 		ss = new SCSoundControl(numOutputChannels, numInputChannels, this);
 		ss.init();
 		ss.showDebugOutput(true);

@@ -27,7 +27,7 @@ public abstract class Sprite {
 		// tell any listeners that we are done.
 		Iterator<SpriteListener> i = listeners.iterator();
 		while (i.hasNext()){
-			i.next().notifyComplete(this);
+			i.next().spriteComplete(this);
 		}
 	}
 

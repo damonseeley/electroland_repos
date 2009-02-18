@@ -6,6 +6,5 @@
 	<classpathentry kind="lib" path="libraries/miglayout15-swing.jar"/>
 	<classpathentry kind="lib" path="libraries/log4j-1.2.15.jar"/>
 	<classpathentry kind="src" path="/SCSoundControl"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/LAFM"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
