@@ -12,8 +12,8 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="LAFM/libraries"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="libraries/javaosc_ELmod.jar"/>
 	<classpathentry kind="src" path="/SCSoundControl"/>
 	<classpathentry kind="lib" path="libraries/wrapper.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JavaOSC_ELmod"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
