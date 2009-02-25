@@ -132,7 +132,7 @@ public class DetectorManager {
 		
 		// example: fixture1, 1, 75, 256, 256, ARTNET, 10.7.88.50, lightgroup0
 		
-		ArtNetDMXLightingFixture fixture = null;;
+		DMXLightingFixture fixture = null;;
 		StringTokenizer st = new StringTokenizer(str, ", \t");
 
 		String id = st.nextToken();
@@ -145,12 +145,16 @@ public class DetectorManager {
 		if (protocol.equalsIgnoreCase("artnet")){
 			String ip = st.nextToken();
 			fixture = new ArtNetDMXLightingFixture(id, universe, ip, channels, width, height);
+		}else if(protocol.equalsIgnoreCase("haleUDP")){
+			String ip = st.nextToken();
+			int port = Integer.parseInt(st.nextToken());
+			fixture = new HaleUDPLightingFixture(id, universe, ip, port, channels, width, height);			
 		}
 		String lightgroup = st.nextToken(); // need a string parse for this ("...")
 		//String color = st.nextToken();
 		//int soundChannel = Integer.parseInt(st.nextToken());
 		
-		if (fixture != null && fixture instanceof ArtNetDMXLightingFixture){
+		if (fixture != null && fixture instanceof DMXLightingFixture){
 			fixture.setLog(fps == 1);
 			fixture.lightgroup = lightgroup;
 			//fixture.color = color;				// THIS DATA HAS BEEN MOVED TO physicalProps

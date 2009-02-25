@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Properties;
 
+@SuppressWarnings("serial")
 public class DetectorProperties extends Properties {
 
 	public final String FIXTURE = "fixture";

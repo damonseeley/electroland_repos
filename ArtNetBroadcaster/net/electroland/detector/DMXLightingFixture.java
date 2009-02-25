@@ -1,11 +1,11 @@
 package net.electroland.detector;
 
-import java.awt.Image;
-import java.util.List;
+import java.awt.image.BufferedImage;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import processing.core.PImage;
 
@@ -26,6 +26,7 @@ public abstract class DMXLightingFixture {
 	protected int width, height; // for generating raster properly.
 	protected String lightgroup;
 	protected boolean detectorsOn = true;
+	protected boolean log; 
 
 	/**
 	 * @param universe - the byte id of this lighting fixtures DMX universe
@@ -77,29 +78,33 @@ public abstract class DMXLightingFixture {
 	}
 	
 	/**
-	 * Whoops.  this belongs in Fixture.
 	 * 
 	 * @param PImage
 	 */
-	final public void sync(PImage raster){
-		if(detectorsOn){
+	final public void sync(PImage raster)
+	{
+		if(detectorsOn)
+		{
 			byte[] data = new byte[channels];
-			for (int i = 0; i < data.length; i++){
-				Detector detector = detectors.get(i);
-				if (detector == null){
-					data[i] = 0;
-				}else{
-					// populate the pixel buffer
-					// (if we need to optimize later, I can almost guarantee we
-					//  should start here, by doing direct System.arrayCopy operations
-					//  from raster.pixels.)
-					PImage subraster = raster.get(detector.x, 
-													detector.y, 
-													detector.width, 
-													detector.height);
-					subraster.updatePixels();
-					subraster.loadPixels();
-					data[i] = (byte)detector.model.getValue(subraster.pixels);
+
+			for (int i = 0; i < data.length; i++)
+			{
+				data[i] = 0;
+				
+				if (i < detectors.size())
+				{					
+					Detector detector = detectors.get(i);
+
+					if (detector != null)
+					{
+						PImage subraster = raster.get(detector.x, 
+														detector.y, 
+														detector.width, 
+														detector.height);
+						subraster.updatePixels();
+						subraster.loadPixels();
+						data[i] = (byte)detector.model.getValue(subraster.pixels);
+					}
 				}
 			}
 			send(data);
@@ -107,11 +112,36 @@ public abstract class DMXLightingFixture {
 	}
 
 	/**
-	 * NOT IMPLEMENTED YET.
 	 * @param image
 	 */
-	final public void sync(Image raster){
-		// to do: IMPLEMENT
+	final public void sync(BufferedImage raster)
+	{
+		if(detectorsOn)
+		{
+			byte[] data = new byte[channels];
+
+			for (int i = 0; i < data.length; i++)
+			{
+				data[i] = 0;// unnecessary?
+
+				if (i < detectors.size())
+				{
+					Detector detector = detectors.get(i);
+					
+					if (detector != null)
+					{
+						int pixels[] = new int[detector.width * detector.height];
+
+						raster.getRGB(detector.x, detector.y, 
+									detector.width, detector.height, pixels, 
+									0, detector.width);
+						
+						data[i] = (byte)detector.model.getValue(pixels);						
+					}
+				}
+			}
+			send(data);
+		}
 	}
 	
 	final public void toggleDetectors(){
@@ -153,14 +183,16 @@ public abstract class DMXLightingFixture {
 	final public int getHeight(){
 		return height;
 	}
-	
-	/*
-	final public String getColor(){
-		return color;
+
+	public void setLog(boolean log){
+		this.log = log;
 	}
 	
-	final public int getSoundChannel(){
-		return soundChannel;
+	public static String bytesToHex(byte[] b, int length){
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i< length; i++){
+			sb.append(Integer.toHexString((b[i]&0xFF) | 0x100).substring(1,3) + " ");
+		}
+		return sb.toString();
 	}
-	*/
 }

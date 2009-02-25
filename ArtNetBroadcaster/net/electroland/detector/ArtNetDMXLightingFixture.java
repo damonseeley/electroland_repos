@@ -13,15 +13,10 @@ public class ArtNetDMXLightingFixture extends DMXLightingFixture {
 
 	public static int ART_NET_PORT = 6454; // port should be fixed for art net.
 	private static DatagramSocket socket;
-	private boolean log; 
 	
 	public ArtNetDMXLightingFixture(String id, byte universe, String ipStr,
 			int channels, int width, int height) throws UnknownHostException {
 		super(id, universe, ipStr, ArtNetDMXLightingFixture.ART_NET_PORT, channels, width, height);
-	}
-
-	public void setLog(boolean log){
-		this.log = log;
 	}
 	
 	@Override
@@ -58,11 +53,4 @@ public class ArtNetDMXLightingFixture extends DMXLightingFixture {
 		}
 	}
 
-	public static String bytesToHex(byte[] b, int length){
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i< length; i++){
-			sb.append(Integer.toHexString((b[i]&0xFF) | 0x100).substring(1,3) + " ");
-		}
-		return sb.toString();
-	}
 }
