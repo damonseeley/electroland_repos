@@ -4,7 +4,7 @@ import net.electroland.enteractive.scheduler.TimedEvent;
 import net.electroland.enteractive.scheduler.TimedEventListener;
 
 /**
- * ENTERACTIVE by Electroland - Spring 2009
+ * Initiates the program and controls show changes
  * @author asiegel
  */
 
@@ -17,7 +17,8 @@ public class Main implements TimedEventListener, SensorListener {
 		loadProperties();
 		soundManager = new SoundManager(2,2,null);
 		// TODO: buffer sound files from properties
-		// TODO: Start sensor manager
+		// TODO: Start sensorManager
+		// TODO: Start syncThread
 	}
 	
 	private void loadProperties(){
@@ -26,12 +27,12 @@ public class Main implements TimedEventListener, SensorListener {
 
 	@Override
 	public void timedEvent(TimedEvent event) {
-		// TODO Trigger scheduled show changes here
+		// TODO: Trigger scheduled show changes here
 	}
 
 	@Override
 	public void sensorEvent() {
-		// TODO Trigger easter-egg shows based on special circumstances/patterns
+		// TODO: Receives an updated Model when a new sensor event occurs
 	}
 	
 	public static void main(String[] args) {	// PROGRAM LAUNCH
