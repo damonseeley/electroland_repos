@@ -24,7 +24,7 @@ public class SoundManager implements SCSoundControlNotifiable {
 		serverIsLive = false;
 		soundFiles = new Hashtable<String, Integer>();
 		absolutePath = "D:\\Programming\\Java\\LAFM\\soundfiles\\";
-		ss = new SCSoundControl(numOutputChannels, numInputChannels, this);
+		ss = new SCSoundControl(this);
 		ss.init();
 		ss.showDebugOutput(true);
 	}
@@ -133,7 +133,7 @@ public class SoundManager implements SCSoundControlNotifiable {
 			for(int i=0; i<proplist.length; i++){
 				if(proplist[i].endsWith(".wav")){
 					if(!soundFiles.containsKey(proplist[i])){
-						//System.out.println(proplist[i]);	// print out sound file to make sure it's working
+						System.out.println(proplist[i]);	// print out sound file to make sure it's working
 						soundFiles.put(absolutePath+proplist[i], -1);	// -1 default unassigned value
 						loadBuffer(proplist[i]);
 					}

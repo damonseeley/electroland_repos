@@ -22,7 +22,7 @@ public class SCSoundManager implements SCSoundControlNotifiable {
 		serverIsLive = false;
 		soundFiles = new Hashtable<String, Integer>();
 		absolutePath = "D:\\Programming\\Java\\LAFM\\soundfiles\\";
-		ss = new SCSoundControl(numOutputChannels, numInputChannels, this);
+		ss = new SCSoundControl(this);
 		ss.init();
 		ss.showDebugOutput(true);
 	}
