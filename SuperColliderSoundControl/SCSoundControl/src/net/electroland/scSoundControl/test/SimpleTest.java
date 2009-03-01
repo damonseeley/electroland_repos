@@ -5,7 +5,6 @@ import processing.core.*;
 public class SimpleTest extends PApplet implements SCSoundControlNotifiable {
 
 	SCSoundControl ss;
-	Process scsynthProcess;
 	
 	//test behavior parameters
 	int soundSurge_period = 10; //period in seconds of a surge in number of sounds played
@@ -52,8 +51,7 @@ public class SimpleTest extends PApplet implements SCSoundControlNotifiable {
 		if (isInitialized) return;
 		
 		//SoundControl inits
-		ss = new SCSoundControl(numOutputChannels, numInputChannels, this);
-		ss.init();
+		ss = new SCSoundControl(this);
 		
 		//ss.showDebugOutput(false);
 		ss.showDebugOutput(true);
@@ -77,7 +75,7 @@ public class SimpleTest extends PApplet implements SCSoundControlNotifiable {
 		
 		//have a cycle 
 		float timeFactor = (second() % soundSurge_period) / (float)soundSurge_period;
-		float surgeFactor = 0.5f + 0.5f * sin(timeFactor*TWO_PI);
+		//float surgeFactor = 0.5f + 0.5f * sin(timeFactor*TWO_PI);
 
 		if (mousePressed) howMuchY = (height - mouseY) / (float)height;
 		if (mousePressed) howMuchX = mouseX / (float)width;
@@ -91,8 +89,7 @@ public class SimpleTest extends PApplet implements SCSoundControlNotifiable {
 	
 	public void keyPressed() {
 		if (key == 'q') {
-			if (ss != null) ss.cleanup();
-			if (scsynthProcess != null) scsynthProcess.destroy();
+			if (ss != null) ss.shutdown();
 			System.exit(0);
 		}
 		if (key == '1') {
@@ -102,11 +99,11 @@ public class SimpleTest extends PApplet implements SCSoundControlNotifiable {
 	}
 	
 	public void mousePressed() {
-		if (serverIsLive) sound1 = ss.createStereoSoundNodeWithLRMap(buffer2, true, new int[]{1, 0}, new int[]{0, 1}, 0.85f);
+		if (serverIsLive) sound1 = ss.createStereoSoundNodeWithLRMap(buffer2, true, new int[]{0}, new int[]{1}, 0.85f);
 	}
 	
 	public void mouseReleased() {
-		sound1.die();
+		if (sound1 != null) sound1.die();
 	}
 
 	public void receiveNotification_ServerRunning() {

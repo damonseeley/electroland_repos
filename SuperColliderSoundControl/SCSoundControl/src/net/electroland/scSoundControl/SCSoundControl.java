@@ -1,63 +1,119 @@
 package net.electroland.scSoundControl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.concurrent.*;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.Properties;
 import java.util.Vector;
+
+import javax.swing.JFrame;
 
 import com.illposed.osc_ELmod.*;
 
 public class SCSoundControl implements OSCListener, Runnable {
 
+	/**
+	 * SCSoundControl provides various services:
+	 * It launches scsynth, the super collider server.
+	 * It handles messaging with scsynth via OSC.
+	 * It provides a simple public interface for playing and controlling sounds via scsynth.
+	 * 
+	 * TODO: USAGE EXAMPLES
+	 */
+	
+	//ports for sending and receiving OSC messages:
 	private OSCPortOut _sender;
 	private OSCPortIn _receiver;
 	
-	//TODO: _motherGroupID perhaps should not be final. If there's a chance that two
-	//computers could be controlling the same scsynth, then the motherGroupID
-	//should be set pending a query of existing groups on the scsynth
+	//the "mother group", a group to contain all the other group nodes. 
 	private final int _motherGroupID = 10000;
 	
+	//Data Structures
 	private ConcurrentHashMap<Integer, String> _bufferMap;
 	private Vector<Integer> _busList;
 	private Vector<Integer> _nodeIdList;
 	private int _minAudioBus, _minNodeID;
 	private int _inChannels, _outChannels;
-	private ConcurrentHashMap<Integer, SoundNode> _soundNodes; // keep track of
-																// sound nodes
-																// by their
-																// group id.
-
-	Thread _serverPingThread;
-	public int _serverResponseTimeout = 200; //the max allowable time for server to respond to /status queries.
-	public int _scsynthPingInterval = 100; //in milliseconds
-	private Date _prevPingResponseTime, _prevPingRequestTime;
+	//sound nodes are keyed off their group ID
+	private ConcurrentHashMap<Integer, SoundNode> _soundNodes; 
 	
-	SCSoundControlNotifiable _notifyListener;
+	//we monitor the state of the server by "pinging" it on a thread.
+	private Thread _serverPingThread;
+	private int _serverResponseTimeout = 200; //the max allowable time for server to respond to /status queries.
+	private int _scsynthPingInterval = 100; //in milliseconds
+	private Date _prevPingResponseTime, _prevPingRequestTime;
+
+	//the state of the scsynth server.
 	private boolean _serverLive;
 	private boolean _serverBooted;
+
+	//the client code, which will receive notifications of scsynth status and events
+	private SCSoundControlNotifiable _notifyListener;
 	
+	//used for internal bookkeeping...
+	//when a buffer read request is completed by scsynth, it replies with
+	//a number (specified in the original request). We know what buffer has finished loading
+	//by adding the buffer id number to this value:
+	//i.e. when a reply of value 1005 is receieved, we know that buffer 5 finished.
+	//this same technique can be used to confirm completion of other asynchronous events (but using a different offset)
 	private int _bufferReadIdOffset = 1000;
 	
-	private String[] _synthdefFile = 
-		{"SuperColliderSynthDefs/ELenv.scsyndef", 
-		"SuperColliderSynthDefs/ELplaybuf.scsyndef"};
+	//a pointer to the scsynth OS process
+	private ScsynthLauncher _scsynthLauncher;
 	
-	// if for some reason the system has more than 8 input channels, be sure to
-	// specify that here.
-	public SCSoundControl(int outputChannels, int inputChannels, SCSoundControlNotifiable listener) {
+	//the gui control panel
+	private SCSoundControlPanel _controlPanel;
+	
+	//load properties from a file
+	private Properties _props;
+	private String _propertiesFilename;
+	
+	//the max polyphony, set in the properties file:
+	private int _maxPolyphony = 64;
+	
+	/**
+	 * Create an instance of SCSoundControl, using the default properties file.
+	 * @param listener an object that will receive notifications from this instance of SCSoundControl
+	 */
+	//providing default parameters:
+	public SCSoundControl(SCSoundControlNotifiable listener) {
+		//this defines the default properties filename:
+		this(listener, "SCSoundControl.properties");
+	}
+	
+	/**
+	 * Create an instance of SCSoundControl
+	 * 
+	 * @param listener an object that will receive notifications from this instance of SCSoundControl 
+	 * @param propertiesFilename provide a unique filename for the properties file.
+	 * This allows multiple use scenarios (e.g. testing different audio hardware)
+	 */
+	public SCSoundControl(SCSoundControlNotifiable listener, String propertiesFilename) {
+		_propertiesFilename = propertiesFilename;
+		showDebugOutput(true);
+
+		//load properties from a file
+		loadPropertiesFile(_propertiesFilename);
+		
+		//setup synth launcher so that scsynth properties are handled and defaults are setup as needed.
+        _scsynthLauncher = new ScsynthLauncher(this, _props);
+		_maxPolyphony = _scsynthLauncher.getMaxPolyphony();
+		//TODO: use maxPolyphony to check before new soundNode creation...
 
 		// find the minimum id of a private audio bus.
-		// by default, SC defines 8 channels out, and 8 more in.
-		// so this will be at least 16, with 8 or fewer output channels
-		_inChannels = inputChannels;
-		_outChannels = outputChannels;
-		_minAudioBus = Math.max(inputChannels, 8) + Math.max(outputChannels, 8);
+		// if certain properties are unset, use the scsynth defaults
+		_inChannels = Integer.valueOf(_props.getProperty("SuperCollider_NumberOfInputChannels", "8"));
+		_outChannels = Integer.valueOf(_props.getProperty("SuperCollider_NumberOfOutputChannels", "8"));
+		_minAudioBus = _inChannels + _outChannels;
 
-		_minNodeID = 2; // SC allocates 0 as the root node and 1 as the default
-						// group. The rest are up for grabs.
+		_minNodeID = 2; //We're following the scsynth convention of allocating 0 as the 
+						//root node and 1 as the default group. The rest are up for grabs.
 
 		// initialize id data structures
 		_bufferMap = new ConcurrentHashMap<Integer, String>();
@@ -65,42 +121,108 @@ public class SCSoundControl implements OSCListener, Runnable {
 		_nodeIdList = new Vector<Integer>();
 		_soundNodes = new ConcurrentHashMap<Integer, SoundNode>();
 
+		//grab the scsynth udp port for the socket:
+		int udpport = Integer.valueOf(_props.getProperty("SuperCollider_UDPportNumber", "57110"));
+		
 		// open the port for sending
-		try {
-			_sender = new OSCPortOut(InetAddress.getLocalHost(), OSCPort
-					.defaultSCOSCPort());
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		try { _sender = new OSCPortOut(InetAddress.getLocalHost(), udpport); }
+		catch (Exception e) { e.printStackTrace();}
 
 		// begin by listening for messages:
 		try {
 			_receiver = new OSCPortIn(_sender.getSocket());
 			_receiver.addListener(".*", this); // receive all notify info
 			_receiver.startListening();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
+		} catch (Exception e1) { e1.printStackTrace(); }
 
+		//state variables
 		_prevPingResponseTime =  _prevPingRequestTime = new Date();
 		_notifyListener = listener;
 		_serverLive = false;
 		_serverBooted = false;
-		
+				
+		//create the GUI: the control panel
+		_controlPanel = new SCSoundControlPanel();
+        _controlPanel.setOpaque(true); //content panes must be opaque
+
+        //TODO: maybe we don't want to create a frame, but rather hand off the panel.
+		//setup a window to display the control panel
+        JFrame frame = new JFrame("SuperColliderSoundControl");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setContentPane(_controlPanel);
+        frame.pack();
+        frame.setSize(400, 300);
+        frame.setVisible(true);
+        
+		//start the server.
+		bootScsynth();
+        
 		//start the thread that will ping scsynth
 		_serverPingThread = new Thread(this);
 		_serverPingThread.setPriority(Thread.MIN_PRIORITY);
 		_serverPingThread.start();
-		
-		init();
 
 	}
 
+	/**
+	 * Load properties from a file.
+	 * @param propertiesFile a string referring to a properties file. If not found, it will be created if possible.
+	 * 
+	 */
+	private void loadPropertiesFile(String propertiesFile) {
+
+		//open the properties file.
+		_props = new Properties();
+
+		//sanity check the properties file
+		File f = new File(propertiesFile);
+		if (!f.canRead()) {
+			//print an error - can't read the props file.
+			System.err.println("Properties file " + propertiesFile + " cannot be read.");
+		}
+
+		try {
+			_props.load(new FileInputStream(f));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	/**
+	 * Output the current state of SCSoundControl properties to a file.
+	 * @param propertiesFile the output filename
+	 */
+	private void savePropertiesFile(String propertiesFile) {
+		if (_props == null) return; //or maybe save a default file?
+		File f = new File(propertiesFile);
+		
+		//does it exist yet?
+		if (!f.exists()) {
+			//touch the file and close it.
+			try {f.createNewFile();}
+			catch (Exception e) {
+				System.err.println("Properties file " + propertiesFile + " does not exist and cannot be created.");
+			}
+		}
+		
+		//write the file.
+		try {
+			_props.store(new FileOutputStream(f), "SCSoundControl Properties File");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	
 	// cleanup if we're getting gc'ed.
 	protected void finalize() throws Throwable {
 		cleanup();
 
+		//kill the scsynth
+		_scsynthLauncher.killScsynth();
+		
 		// free the UDP port from JavaOSC
 		if (_receiver != null)
 			_receiver.close();
@@ -110,6 +232,8 @@ public class SCSoundControl implements OSCListener, Runnable {
 	// establish group to contain all SCSoundControl nodes in SuperCollider
 	public void init() {
 		
+		debugPrintln("Doing init.");
+		
 		// can sanity check some things by requesting notification when nodes
 		// are created/deleted/etc.
 		// It does not notify when playBufs reach the end of a buffer, though.
@@ -118,28 +242,26 @@ public class SCSoundControl implements OSCListener, Runnable {
 
 		//start by cleaning up any detritus from previous runs on the same server:
 		cleanup();
-		
+
+		//sclang creates the default group, not supercollider, so let's follow that convention.
+		createGroup(1, 0);
+
 		// create a mother group, under the default group (1),
 		// which will contain all of the SCSoundControl objects.
-		
 		//this is where we would query if another node == _motherGroupID already exists.
 		//if so, would need to choose an alternate groupID (e.g. += 10000)
 		createGroup(_motherGroupID, 1);
 		
-		//load the synthdefs onto the server - not working yet.
-//		for (int i=0; i < _synthdefFile.length; i++) {
-//			File f = new File(_synthdefFile[i]);
-//			if (f.canRead()) {
-//				FileInputStream stream = new FileInputStream(f);
-//			}
-//			char[] synthdata = new char[0];
-//		
-//			sendMessage("/d_recv", new Object[]{synthdata});
-//		}
-
-		
 	}
 
+	public void shutdown() {
+		cleanup();
+		quitScsynth();
+		savePropertiesFile(_propertiesFilename);
+		//TODO if the quit message fails, need to kill scsynth
+		//_scsynthLauncher.killScsynth();
+	}
+	
 	// cleanup all SCSoundControl nodes in SuperCollider
 	public synchronized void cleanup() {
 		// by freeing the mother group we clean up all the nodes we've created
@@ -159,25 +281,13 @@ public class SCSoundControl implements OSCListener, Runnable {
 		_nodeIdList.clear();
 		_busList.clear();
 		_bufferMap.clear();
-		
 	}
 	
 	private void bootScsynth() {
-		//launcing scsynth as an external OS process
-		try {
-			//scsynthProcess = Runtime.getRuntime().exec("/Applications/SuperCollider/scsynth -u 57110", null, new File("/Applications/SuperCollider/"));
-			//InputStream is = scsynthProcess.getInputStream();
+		
+		_scsynthLauncher.launch();
+		_controlPanel.connectScsynthOutput(_scsynthLauncher.getScsynthOutput());
 
-//			// print output
-//			byte[] buf = new byte[1024];
-//			int nr = is.read(buf);
-//			while (nr != -1)
-//			{
-//			System.out.write(buf, 0, nr);
-//			nr = is.read(buf);
-//			}
-			
-		} catch (Exception e) {}
 	}
 	
 
@@ -249,8 +359,6 @@ public class SCSoundControl implements OSCListener, Runnable {
 		int newBusID = _minAudioBus;
 		while (!testConsecutiveBusses_recursive(newBusID, howManyBusses)) {
 			newBusID++;
-			//TODO should check for failure condition, e.g.:
-			//if (newBusID > MAXBUSSES) return -1;
 		}
 		for (int i=0; i<howManyBusses; i++) {
 			_busList.add(newBusID + i);
@@ -431,7 +539,9 @@ public class SCSoundControl implements OSCListener, Runnable {
 		sendMessage("/n_trace", new Object[] { node });
 	}
 
-	
+	public void quitScsynth() {
+		sendMessage("quit");
+	}
 	
 	
 	//**************************************
@@ -440,7 +550,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 	
 	// handle incoming messages
 	public void acceptMessage(java.util.Date time, OSCMessage message) {
-		// to print the full message:
+		// FOR DEBUGGING: to print the full message:
 		if (false) {
 		 debugPrint(message.getAddress());
 		 for(int i = 0; i < message.getArguments().length; i++) {
@@ -470,8 +580,8 @@ public class SCSoundControl implements OSCListener, Runnable {
 		else if (message.getAddress().matches("/n_go") ||
 			message.getAddress().matches("/n_info")) {
 			//if it was node 1, then we can get going.
-			if ((Integer)(message.getArguments()[0]) == 1 && 
-				(Integer)(message.getArguments()[1]) == 0 ) {
+			if ((Integer)(message.getArguments()[0]) == _motherGroupID && 
+				(Integer)(message.getArguments()[1]) == 1 ) {
 				if (!_serverBooted) {
 					_serverBooted = true;
 					handleServerBooted();
@@ -505,6 +615,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 		
 		//handle /status responses (status.reply)
 		else if (message.getAddress().matches("status.*")) {
+			//TODO update control panel display with status data
 			Float avgCPU = (Float)(message.getArguments()[5]);
 			Float peakCPU = (Float)(message.getArguments()[6]);
 			handleServerStatusUpdate(avgCPU, peakCPU);
@@ -610,8 +721,9 @@ public class SCSoundControl implements OSCListener, Runnable {
 	//*********************************
 	
 	protected void handleServerBooted() {
+		debugPrintln("scsynth is booted.");
 		//reinit data.
-		this.init();
+		//this.init();
 		//notify client.
 		_notifyListener.receiveNotification_ServerRunning();		
 	}
@@ -621,11 +733,9 @@ public class SCSoundControl implements OSCListener, Runnable {
 		
 		//if (!_serverLive || !_serverBooted) {
 		if (!_serverLive) {
+			debugPrintln("scsynth is live.");
 			_serverLive = true;
-			//Server is running. Query for node 1 (the sign that server's booted).
-			sendMessage("/notify", new Object[] { 1 });
-			sendMessage("/n_query", new Object[]{1});	
-			debugPrintln("Querying node 1");
+			this.init();
 		}
 		
 		_notifyListener.receiveNotification_ServerStatus(avgCPU, peakCPU);
@@ -655,14 +765,27 @@ public class SCSoundControl implements OSCListener, Runnable {
 			//the previous status request is NOT still pending. Is it time to send another?
 			else if (curTime.getTime() - _prevPingRequestTime.getTime() > _scsynthPingInterval) {
 				//It's time to send another status request.
-				sendMessage("/status");
+				
+				//generally, ping with a /status message.
+				//but, if we're live but not booted, query node 1 (the sign that init completed)
+				if (_serverLive && !_serverBooted) { 
+					sendMessage("/notify", new Object[] { 1 });
+					sendMessage("/n_query", new Object[]{_motherGroupID});
+					//debugPrintln("Querying SCSC mother node");
+				}
+				else {
+					//if the server's booted, request a status update.
+					sendMessage("/status"); 
+				}
+				
 				_prevPingRequestTime = new Date();
 			}
 			//it's not time to send, and we're not watching 
 			//for a reply, so go to sleep until it's time to ping again
 			else {
+				long sleeptime = Math.max(_scsynthPingInterval - (curTime.getTime() - _prevPingRequestTime.getTime()), 0);
 				try {
-					Thread.sleep(_scsynthPingInterval - (curTime.getTime() - _prevPingRequestTime.getTime()));
+					Thread.sleep(sleeptime);
 				} catch (InterruptedException e) {
 					//NOTE this thread shouldn't get interrupted.
 					e.printStackTrace();

@@ -5,8 +5,7 @@
 \deftab560
 \pard\pardeftab560\ql\qnatural
 
-\f0\fs18 \cf0 //TODO: will need a stereo version of both play and env\
-\
+\f0\fs18 \cf0 \
 //note: both of these synthdefs end with the command .load(s);\
 //This causes the synthdefs to be written to disk and auto-loaded by the given scsynth every time it starts.\
 //It might be even better to have the synthdefs sent via an OSC message, \
@@ -44,4 +43,7 @@ SynthDef("ELenv", \{ arg inBus, outChannel=0, ampScale=1;\
 	input = MulAdd(\cf5 In\cf0 .ar(inBus, 1), ampScale, 0);\
 	Out.ar(outChannel, input);\
 \}).load(s);\
-)}
+)\
+\
+\
+}

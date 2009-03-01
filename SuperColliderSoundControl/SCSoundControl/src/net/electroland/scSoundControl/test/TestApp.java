@@ -85,7 +85,7 @@ public class TestApp extends PApplet implements SCSoundControlNotifiable {
 		avgCPUhistory = new Vector<Integer>();
 		
 		//SoundControl inits
-		ss = new SCSoundControl(numOutputChannels, numInputChannels, this);
+		ss = new SCSoundControl(this);
 		ss.init();
 		
 		ss.showDebugOutput(false);
