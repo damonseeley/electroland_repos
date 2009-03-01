@@ -84,7 +84,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 	//providing default parameters:
 	public SCSoundControl(SCSoundControlNotifiable listener) {
 		//this defines the default properties filename:
-		this(listener, "SCSoundControl.properties");
+		this(listener, "depends/SCSoundControl.properties");
 	}
 	
 	/**
