@@ -18,11 +18,10 @@ public class ExampleAnimation implements Animation {
 		this.r = r;
 		this.sm = sm;
 	}
-	
+
 	public void initialize() {
 		// play some sound, clear the raster, etc.
 	}
-
 	
 	public Raster getFrame() {
 		// lock the model so other people don't modify it while we do paint
@@ -41,5 +40,4 @@ public class ExampleAnimation implements Animation {
 	public boolean isDone() {
 		return cycles-- > 0;
 	}
-
 }
