@@ -1,5 +1,6 @@
 package net.electroland.enteractive.shows;
 
+import processing.core.PConstants;
 import processing.core.PGraphics;
 import net.electroland.animation.Animation;
 import net.electroland.animation.Raster;
@@ -23,6 +24,8 @@ public class ExampleAnimation implements Animation {
 	public void initialize() {
 		// play some sound, clear the raster, etc.
 		//System.out.println("initializing.");
+		PGraphics myRaster = (PGraphics)(r.getRaster());
+		myRaster.colorMode(PConstants.RGB, 255, 255, 255, 255);
 	}
 	
 	public Raster getFrame() {
@@ -31,6 +34,9 @@ public class ExampleAnimation implements Animation {
 		synchronized (m){
 			// presumes that you instantiated Raster with a PGraphics.
 			PGraphics myRaster = (PGraphics)(r.getRaster());
+			myRaster.beginDraw();
+			myRaster.background(255,0,0);
+			myRaster.endDraw();
 		}
 		return r;
 	}
@@ -38,6 +44,10 @@ public class ExampleAnimation implements Animation {
 	public void cleanUp() {
 		// play some sound, clear the raster, etc.
 		//System.out.println("cleaning up.");
+		PGraphics myRaster = (PGraphics)(r.getRaster());
+		myRaster.beginDraw();
+		myRaster.background(0);
+		myRaster.endDraw();
 	}
 
 	public boolean isDone() {

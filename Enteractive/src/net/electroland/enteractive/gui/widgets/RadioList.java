@@ -78,7 +78,6 @@ public class RadioList extends Widget implements WidgetListener{
 		}
 	}
 	
-	@Override
 	public void widgetEvent(WidgetEvent we) {
 		if(we.widget.value == value){
 			((Button)we.widget).silentOn();

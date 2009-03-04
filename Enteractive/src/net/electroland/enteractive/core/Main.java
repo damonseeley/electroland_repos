@@ -6,6 +6,7 @@ import net.electroland.animation.Animation;
 import net.electroland.animation.AnimationListener;
 import net.electroland.animation.AnimationThread;
 import net.electroland.animation.Raster;
+import net.electroland.enteractive.gui.GUI;
 import net.electroland.enteractive.gui.GUIWindow;
 import net.electroland.enteractive.scheduler.TimedEvent;
 import net.electroland.enteractive.scheduler.TimedEventListener;
@@ -31,17 +32,18 @@ public class Main implements TimedEventListener, SensorListener, AnimationListen
 		// TODO: Start sensorManager
 		
 		// start gui
-		guiWindow = new GUIWindow(300, 150);
+		guiWindow = new GUIWindow(312, 250);
 		guiWindow.setVisible(true);
-		
-		p5 = new PApplet();		// Processing used for generating raster
-		p5.noLoop();
 
 		/** this is just for testing the new animation classes **/
 		// should this raster be used across all Animations?
-		Raster raster = new Raster(p5.createGraphics(11,16,PConstants.P3D));
-		Animation test = (Animation)new ExampleAnimation(new Model(), raster, soundManager);
+		Raster raster = new Raster(guiWindow.gui.createGraphics(16,11,PConstants.P3D));
+		
+		// if it is used across all animations, can we send a reference to the GUI for visualizing?
+		((GUI)guiWindow.gui).setRaster(raster);
+		
 		// should this AnimationThread be used for all Animations?
+		Animation test = (Animation)new ExampleAnimation(new Model(), raster, soundManager);
 		currentAnimation = new AnimationThread(test, 30);
 		currentAnimation.start();
 	}
@@ -51,18 +53,15 @@ public class Main implements TimedEventListener, SensorListener, AnimationListen
 	}
 	
 
-	@Override
 	public void animationComplete(Animation a) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void timedEvent(TimedEvent event) {
 		// TODO: Trigger scheduled show changes here
 	}
 
-	@Override
 	public void sensorEvent() {
 		// TODO: Receives an updated Model when a new sensor event occurs
 	}
