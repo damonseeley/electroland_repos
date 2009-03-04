@@ -11,16 +11,18 @@ public class ExampleAnimation implements Animation {
 	private Model m;
 	private Raster r;
 	private SoundManager sm;
-	private int cycles = 30;
+	private int cycles = 90;
 	
 	public ExampleAnimation(Model m, Raster r, SoundManager sm){
 		this.m = m;
 		this.r = r;
 		this.sm = sm;
+		//System.out.println("instantiated.");
 	}
 
 	public void initialize() {
 		// play some sound, clear the raster, etc.
+		//System.out.println("initializing.");
 	}
 	
 	public Raster getFrame() {
@@ -35,9 +37,10 @@ public class ExampleAnimation implements Animation {
 
 	public void cleanUp() {
 		// play some sound, clear the raster, etc.
+		//System.out.println("cleaning up.");
 	}
 
 	public boolean isDone() {
-		return cycles-- > 0;
+		return cycles-- <= 0;
 	}
 }
