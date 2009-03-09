@@ -86,7 +86,7 @@ public class TCSimulator extends Thread {
 				}
 				logger.info(offsetByteA);
 				
-				String fullPacketString = "FF02" + tileStates + offsetByteA + "00" + "FE";
+				String fullPacketString = "FF20" + tileStates + offsetByteA + "00" + "FE";
 				byte[] b = HexUtils.hexToBytes(fullPacketString);
 				sendPacket(b);
 				logger.info("sent " + fullPacketString);
