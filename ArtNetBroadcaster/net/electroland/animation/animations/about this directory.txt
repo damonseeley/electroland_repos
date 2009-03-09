@@ -1,0 +1,4 @@
+This directory is for animations intended to be used ACROSS projects.
+
+Any animation that has internal project dependencies (e.g., Model, etc.) should
+not go in here.
