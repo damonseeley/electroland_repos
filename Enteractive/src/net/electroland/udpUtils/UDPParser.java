@@ -20,11 +20,12 @@ public class UDPParser extends Thread {
 
 	public void parseMsg(String msg) {
 		//logger.debug("msg: " + msg);
-		String[] line = msg.split(",");
+		logger.info(msg);
+		//String[] line = msg.split(",");
 		// TODO check command byte against TCUtils command bytes
-		if((byte)Integer.parseInt(line[1]) == 0x00){
+		//if((byte)Integer.parseInt(line[1]) == 0x00){
 			
-		}
+		//}
 	}
 
 	public void stopRunning() {
@@ -50,9 +51,9 @@ public class UDPParser extends Thread {
 
 
 	//just for testing
-	//	public static void main(String[] args) throws SocketException, UnknownHostException {
-	//		UDPParser parser = new UDPParser(4114) ;
-	//		parser.start();
-	//	}
+	public static void main(String[] args) throws SocketException, UnknownHostException {
+		UDPParser parser = new UDPParser(10011) ;
+		parser.start();
+	}
 
 }

@@ -9,5 +9,13 @@ public class Tile {
 		this.x = x;
 		this.y = y;
 	}
+	
+	public int getID(){
+		return id;
+	}
+	
+	public void getRasterPosition(){
+		// TODO return the x/y pixel position of the corresponding detector
+	}
 
 }
