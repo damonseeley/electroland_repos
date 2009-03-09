@@ -78,7 +78,15 @@ public class TCSimulator extends Thread {
 						tileStates += "00";
 					}
 				}
-				String fullPacketString = "FF02" + tileStates + "FE";
+				
+				double offset = Math.random()*22;
+				String offsetByteA = Integer.toString((int)Math.round(offset));
+				if (offsetByteA.length() == 1){
+					offsetByteA = "0" + offsetByteA;
+				}
+				logger.info(offsetByteA);
+				
+				String fullPacketString = "FF02" + tileStates + offsetByteA + "00" + "FE";
 				byte[] b = HexUtils.hexToBytes(fullPacketString);
 				sendPacket(b);
 				logger.info("sent " + fullPacketString);
@@ -131,6 +139,7 @@ public class TCSimulator extends Thread {
 	
 
 	public static void main(String[] args) {
+		// change these args to have the simulator send to a different address/port
 		TCSimulator tcs = new TCSimulator("localhost",10011);
 		tcs.start();
 	}
