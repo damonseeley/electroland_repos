@@ -35,7 +35,13 @@ public class ExampleAnimation implements Animation {
 			// presumes that you instantiated Raster with a PGraphics.
 			PGraphics myRaster = (PGraphics)(r.getRaster());
 			myRaster.beginDraw();
-			myRaster.background(255,0,0);
+			//myRaster.background(255,0,0); // fully on
+			// VEGAS!
+			for(int y=0; y<myRaster.height; y++){
+				for(int x=0; x<myRaster.width; x++){
+					myRaster.pixels[y*myRaster.width + x] = myRaster.color((int)(Math.random()*255),0,0);
+				}
+			}
 			myRaster.endDraw();
 		}
 		return r;

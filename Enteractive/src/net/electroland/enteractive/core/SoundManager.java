@@ -21,7 +21,7 @@ public class SoundManager implements SCSoundControlNotifiable {
 	private String absolutePath;
 	private Properties systemProps;
 	
-	public SoundManager(int numOutputChannels, int numInputChannels, Properties systemProps){
+	public SoundManager(Properties systemProps){
 		this.systemProps = systemProps;
 		serverIsLive = false;
 		soundFiles = new Hashtable<String, Integer>();
