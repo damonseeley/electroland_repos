@@ -61,7 +61,7 @@ public class UDPReceiver extends Thread {
 				}
 				//msgQueue.offer(new String(receivePacket.getData(), 0, receivePacket.getLength()));
 				byte[] newbytes = receivePacket.getData();
-				String message = receivePacket.getAddress().getHostAddress();	// start with address
+				String message = "";
 				for(int i=0; i<receivePacket.getLength(); i++){
 					message += String.valueOf((int)newbytes[i]);				// int value of byte turned to string
 					if(i < receivePacket.getLength()-1){
