@@ -15,10 +15,10 @@ import net.electroland.animation.AnimationManager;
 import net.electroland.animation.Raster;
 import net.electroland.artnet.util.DetectorManagerJPanel;
 import net.electroland.detector.DMXLightingFixture;
-import net.electroland.detector.Detector;
 import net.electroland.detector.DetectorManager;
 import net.electroland.enteractive.shows.ExampleAnimation;
 
+@SuppressWarnings("serial")
 public class Main2 extends JFrame implements AnimationListener, ActionListener{
 
 	private DetectorManager dmr;
@@ -26,7 +26,7 @@ public class Main2 extends JFrame implements AnimationListener, ActionListener{
 	private AnimationManager amr;
 	private SoundManager smr;
 	private Model m;
-	private int counter = 0;
+	//private int counter = 0;
 
 	public static void main(String args[])
 	{
@@ -70,7 +70,8 @@ public class Main2 extends JFrame implements AnimationListener, ActionListener{
 	private Raster getRaster()
 	{
 		// instantiate a new raster using a PImage from whereever you can get it.
-		return new Raster(this.getPGraphics()); // or whatever it is Processing requires to generate a PGraphics.
+		//return new Raster(this.getPGraphics()); // or whatever it is Processing requires to generate a PGraphics.
+		return null;
 	}
 
 	public Properties loadProperties(String args[])
@@ -80,13 +81,19 @@ public class Main2 extends JFrame implements AnimationListener, ActionListener{
 	
 	public void actionPerformed(ActionEvent e){
 		// on action, force a transitioned switch
-		Animation next = new AnotherAnimation(m, getRaster(), smr); // some fake animation
-		amr.startAnimation(next, new FadeTransition(5), dmr.getFixtures()); // some fake transition with a 5 second fade
+		//Animation next = new AnotherAnimation(m, getRaster(), smr); // some fake animation
+		//amr.startAnimation(next, new FadeTransition(5), dmr.getFixtures()); // some fake transition with a 5 second fade
 	}
 
 	public void animationComplete(Animation a, List <DMXLightingFixture> f)
 	{
-		Animation next = ;
-		amr.startAnimation(new MyOtherAnimation(m, getRaster(), smr), f); // some other fake animation
+		//Animation next = ;
+		//amr.startAnimation(new MyOtherAnimation(m, getRaster(), smr), f); // some other fake animation
+	}
+	
+
+	public void animationComplete(Animation a) {
+		// TODO Auto-generated method stub
+		
 	}
 }
