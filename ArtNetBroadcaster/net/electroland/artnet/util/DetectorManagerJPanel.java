@@ -30,7 +30,7 @@ public class DetectorManagerJPanel extends JPanel implements ActionListener {
 		/* list of fixtures */
 		fixtureList = new JComboBox();
 		Iterator <DMXLightingFixture> i = dm.getFixtures().iterator();
-		
+
 		while (i.hasNext())
 		{
 			fixtureList.addItem(i.next().getID());
@@ -43,17 +43,25 @@ public class DetectorManagerJPanel extends JPanel implements ActionListener {
 		newRaster();
 	}
 
-	public void setLog(boolean isLogging){
+	public DetectorManager getDetectorManager()
+	{
+		return dm;
+	}
+	
+	public void setLog(boolean isLogging)
+	{
 		System.out.println("is logging=" + isLogging);
 		dm.getFixture((String)fixtureList.getSelectedItem()).setLog(isLogging);
 	}
 	
-	private void newRaster(){
+	private void newRaster()
+	{
 		DMXLightingFixture fixture = dm.getFixture((String)fixtureList.getSelectedItem());
 		this.raster = new BufferedImage(fixture.getWidth(), fixture.getHeight(), BufferedImage.TYPE_INT_ARGB);		
 	}
 
-	public Image getRaster(){
+	public Image getRaster()
+	{
 		return this.raster;
 	}
 	
