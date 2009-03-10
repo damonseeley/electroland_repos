@@ -36,7 +36,7 @@ public class Main implements TimedEventListener, AnimationListener {
 		// TODO: buffer sound files from properties
 		
 		tcUtils = new TCUtil();
-		personTracker = new PersonTracker();
+		personTracker = new PersonTracker(16,11);
 		
 		try {
 			udpParser = new UDPParser(10011, tcUtils, personTracker);

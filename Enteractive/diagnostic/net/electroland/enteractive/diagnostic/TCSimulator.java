@@ -71,7 +71,7 @@ public class TCSimulator extends Thread {
 			if (Math.random()*100 > 90){
 				//randomly set some tiles on/off
 				String tileStates = "";
-				for (int i=0;i<7;i++){
+				for (int i=0;i<8;i++){
 					if (Math.random()*100 > 70){
 						tileStates += "fd";
 					} else {

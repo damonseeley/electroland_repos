@@ -12,6 +12,8 @@ import java.util.List;
 public abstract class Sprite {
 	
 	private List <SpriteListener> listeners;
+	protected float x, y, width, height;
+	private float xvec, yvec;
 	
 	abstract public void draw(Graphics raster);	// show calls this every frame
 	
@@ -30,5 +32,21 @@ public abstract class Sprite {
 			i.next().spriteComplete(this);
 		}
 	}
+	
+	final public void moveTo(int x, int y){
+		this.x = x;
+		this.y = y;
+	}
+	
+	final public void tweenTo(float xpos, float ypos, int durationMs){
+		// TODO set new X/Y vectors and tween to the position over the duration
+	}
+
+	/* VISUAL EFFECTS */
+	
+	final public void throb(int min, int max, int speedMs){
+		// TODO throb the sprite brightness between min and max values
+	}
+	
 
 }
