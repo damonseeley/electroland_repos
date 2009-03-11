@@ -1,8 +1,10 @@
 package net.electroland.enteractive.core;
 
-import java.awt.Graphics;
 import java.util.Iterator;
 import java.util.List;
+
+import processing.core.PGraphics;
+import net.electroland.animation.Raster;
 
 /**
  * This is used for sub-show animation objects.
@@ -12,10 +14,22 @@ import java.util.List;
 public abstract class Sprite {
 	
 	private List <SpriteListener> listeners;
+	protected Raster raster;		// Raster passed into sprite
+	protected Object canvas;		// PGraphics or Graphics object used to draw on
 	protected float x, y, width, height;
-	private float xvec, yvec;
+	protected int tileSize;		// size of tile relative to raster pixel dimensions
 	
-	abstract public void draw(Graphics raster);	// show calls this every frame
+	public Sprite(Raster raster, int x, int y){
+		this.raster = raster;
+		this.x = x;
+		this.y = y;
+		if(raster.isProcessing()){
+			canvas = (PGraphics)raster.getRaster();
+		}
+		this.tileSize = (int)(((PGraphics)canvas).height/11.0);
+	}
+	
+	abstract public void draw();	// show calls this every frame
 	
 	final public void addListener(SpriteListener listener){
 		listeners.add(listener);
