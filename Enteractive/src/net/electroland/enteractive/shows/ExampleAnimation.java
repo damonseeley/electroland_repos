@@ -6,12 +6,12 @@ package net.electroland.enteractive.shows;
 
 import processing.core.PConstants;
 import processing.core.PGraphics;
-import net.electroland.animation.Animation;
-import net.electroland.animation.Raster;
 import net.electroland.enteractive.core.Model;
 import net.electroland.enteractive.core.SoundManager;
 //import net.electroland.enteractive.core.Sprite;
 import net.electroland.enteractive.sprites.Cross;
+import net.electroland.lighting.detector.animation.Animation;
+import net.electroland.lighting.detector.animation.Raster;
 
 public class ExampleAnimation implements Animation {
 

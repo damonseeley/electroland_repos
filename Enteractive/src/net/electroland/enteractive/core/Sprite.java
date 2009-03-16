@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import processing.core.PGraphics;
-import net.electroland.animation.Raster;
+import net.electroland.lighting.detector.animation.Raster;
 
 /**
  * This is used for sub-show animation objects.

@@ -9,14 +9,15 @@ import java.util.Properties;
 
 import javax.swing.JFrame;
 
-import net.electroland.animation.Animation;
-import net.electroland.animation.AnimationListener;
-import net.electroland.animation.AnimationManager;
-import net.electroland.animation.Raster;
-import net.electroland.artnet.util.DetectorManagerJPanel;
-import net.electroland.detector.DMXLightingFixture;
-import net.electroland.detector.DetectorManager;
 import net.electroland.enteractive.shows.ExampleAnimation;
+import net.electroland.lighting.detector.DetectorManagerJPanel;
+import net.electroland.lighting.detector.Recipient;
+import net.electroland.lighting.detector.DetectorManager;
+import net.electroland.lighting.detector.animation.Animation;
+import net.electroland.lighting.detector.animation.AnimationListener;
+import net.electroland.lighting.detector.animation.AnimationManager;
+import net.electroland.lighting.detector.animation.Raster;
+import net.electroland.util.OptionException;
 
 @SuppressWarnings("serial")
 public class Main2 extends JFrame implements AnimationListener, ActionListener{
@@ -34,9 +35,11 @@ public class Main2 extends JFrame implements AnimationListener, ActionListener{
 			new Main2(args);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
+		} catch (OptionException e) {
+			e.printStackTrace();
 		}
 	}
-	public Main2(String args[]) throws UnknownHostException
+	public Main2(String args[]) throws UnknownHostException, OptionException
 	{
 		int fps = 33;
 		// ----- setup GUI -----
@@ -62,7 +65,7 @@ public class Main2 extends JFrame implements AnimationListener, ActionListener{
 		Animation a = new ExampleAnimation(m, getRaster(), smr);// <-- create a raster here.
 
 		// get all the fixtures
-		Collection<DMXLightingFixture> fixtures = dmr.getFixtures();
+		Collection<Recipient> fixtures = dmr.getRecipients();
 		amr.startAnimation(a, fixtures); // start a show now, on this list of fixtures.
 		amr.goLive(); // the whole system does nothing unless you "start" it.
 	}
@@ -85,7 +88,7 @@ public class Main2 extends JFrame implements AnimationListener, ActionListener{
 		//amr.startAnimation(next, new FadeTransition(5), dmr.getFixtures()); // some fake transition with a 5 second fade
 	}
 
-	public void animationComplete(Animation a, List <DMXLightingFixture> f)
+	public void animationComplete(Animation a, List <Recipient> f)
 	{
 		//Animation next = ;
 		//amr.startAnimation(new MyOtherAnimation(m, getRaster(), smr), f); // some other fake animation

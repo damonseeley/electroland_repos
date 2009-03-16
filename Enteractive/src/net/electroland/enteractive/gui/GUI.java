@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.electroland.animation.Raster;
 import net.electroland.enteractive.gui.widgets.Button;
 import net.electroland.enteractive.gui.widgets.RadioList;
 import net.electroland.enteractive.gui.widgets.Slider;
 import net.electroland.enteractive.gui.widgets.Widget;
 import net.electroland.enteractive.gui.widgets.WidgetEvent;
 import net.electroland.enteractive.gui.widgets.WidgetListener;
+import net.electroland.lighting.detector.animation.Raster;
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PImage;

@@ -2,8 +2,8 @@ package net.electroland.enteractive.sprites;
 
 import processing.core.PConstants;
 import processing.core.PGraphics;
-import net.electroland.animation.Raster;
 import net.electroland.enteractive.core.Sprite;
+import net.electroland.lighting.detector.animation.Raster;
 
 //	###
 //	# #

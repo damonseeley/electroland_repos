@@ -9,18 +9,19 @@ import java.util.Properties;
 import javax.swing.JFrame;
 import processing.core.PApplet;
 import processing.core.PConstants;
-import net.electroland.animation.Animation;
-import net.electroland.animation.AnimationListener;
-import net.electroland.animation.AnimationManager;
-import net.electroland.animation.Raster;
-import net.electroland.artnet.util.DetectorManagerJPanel;
-import net.electroland.detector.DMXLightingFixture;
-import net.electroland.detector.DetectorManager;
 import net.electroland.enteractive.scheduler.TimedEvent;
 import net.electroland.enteractive.scheduler.TimedEventListener;
 import net.electroland.enteractive.shows.ExampleAnimation;
+import net.electroland.lighting.detector.DetectorManagerJPanel;
+import net.electroland.lighting.detector.Recipient;
+import net.electroland.lighting.detector.DetectorManager;
+import net.electroland.lighting.detector.animation.Animation;
+import net.electroland.lighting.detector.animation.AnimationListener;
+import net.electroland.lighting.detector.animation.AnimationManager;
+import net.electroland.lighting.detector.animation.Raster;
 import net.electroland.udpUtils.TCUtil;
 import net.electroland.udpUtils.UDPParser;
+import net.electroland.util.OptionException;
 
 @SuppressWarnings("serial")
 public class Main extends JFrame implements AnimationListener, ActionListener, TimedEventListener{
@@ -35,7 +36,7 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 	private PersonTracker ptr;
 	private UDPParser udp;
 	
-	public Main(String[] args) throws UnknownHostException{
+	public Main(String[] args) throws UnknownHostException, OptionException{
 		int fps = 33;										// TODO FPS should be read from lights.properties
 		dmr = new DetectorManager(loadProperties(args)); 	// requires loading properties
 		dmp = new DetectorManagerJPanel(dmr);				// panel that renders the filters
@@ -59,7 +60,7 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		
 		p5 = new PApplet();									// used solely to get PGraphics for rasters
 		Animation a = new ExampleAnimation(m, getRaster(), smr);
-		Collection<DMXLightingFixture> fixtures = dmr.getFixtures();
+		Collection<Recipient> fixtures = dmr.getRecipients();
 		amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
 		amr.goLive(); 										// the whole system does nothing unless you "start" it.
 	}
@@ -94,6 +95,8 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		try {
 			new Main(args);
 		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (OptionException e) {
 			e.printStackTrace();
 		}
 	}
