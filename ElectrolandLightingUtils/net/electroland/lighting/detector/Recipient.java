@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import processing.core.PImage;
 
 /**
@@ -19,6 +21,8 @@ import processing.core.PImage;
  */
 public abstract class Recipient 
 {
+
+	static Logger logger = Logger.getLogger(Recipient.class);
 
 	protected InetAddress ip;
 	protected String ipStr, id;
@@ -36,51 +40,46 @@ public abstract class Recipient
 	 * @param channels - the total number light channels this fixture is supporting
 	 * @throws UnknownHostException
 	 */
-	public Recipient(String id, String ipStr, int port, int channels, Dimension preferredDimensions) throws UnknownHostException {
+	public Recipient(String id, String ipStr, int port, int channels, 
+					Dimension preferredDimensions) throws UnknownHostException
+	{
 		this.ipStr = ipStr;
 		this.port = port;
-
 		this.id = id;
-		this.setChannels(channels);
 		this.preferredDimensions = preferredDimensions;
-
 		this.ip = InetAddress.getByName(ipStr);
-		this.detectors = Collections.synchronizedList(new ArrayList<Detector>(channels));
-		this.channels = channels;
+
+		this.setChannels(channels);
 	}
 
-	public Recipient(String id, String ipStr, int port, int channels, Dimension preferredDimensions, String patchgroup) throws UnknownHostException {
+	public Recipient(String id, String ipStr, int port, int channels, 
+					Dimension preferredDimensions, String patchgroup) throws UnknownHostException
+	{
 		this.ipStr = ipStr;
 		this.port = port;
-
 		this.id = id;
-		this.setChannels(channels);
 		this.preferredDimensions = preferredDimensions;
-
 		this.ip = InetAddress.getByName(ipStr);
-		this.detectors = Collections.synchronizedList(new ArrayList<Detector>(channels));
-		this.channels = channels;
+		this.setChannels(channels);
+
 		this.patchgroup = patchgroup;
 	}
 
+	private void setChannels(int channels){
+		this.channels = channels;
+		this.detectors = Collections.synchronizedList(new ArrayList<Detector>(channels));
+		for (int i = 0; i < channels; i++){
+			detectors.add(null);
+		}
+	}
+	
 	/**
 	 * Implement this.
 	 * 
 	 * @param data
 	 */
 	abstract void send(byte[] data);
-	
-	/**
-	 * Sets the total number of channels for this fixure.  This method preserve
-	 * your existing channel detectors, but it will discard any that are
-	 * addressed beyond the number of channesl you are setting to.
-	 * 
-	 * @param channels
-	 */
-	final public void setChannels(int channels) {
-		this.channels = channels;		
-	}
-	
+
 	final public void setChannelDetector(int channel, Detector detector) throws ArrayIndexOutOfBoundsException, NullPointerException{
 		detectors.add(channel, detector);
 	}
@@ -149,7 +148,7 @@ public abstract class Recipient
 									detector.width, detector.height, pixels, 
 									0, detector.width);
 						
-						data[i] = (byte)detector.model.getValue(pixels);						
+						data[i] = (byte)detector.model.getValue(pixels);
 					}
 				}
 			}
@@ -157,31 +156,38 @@ public abstract class Recipient
 		}
 	}
 	
-	final public void toggleDetectors(){
+	final public void toggleDetectors()
+	{
 		detectorsOn = !detectorsOn;
 	}
 
-	public int getChannels() {
+	public int getChannels()
+	{
 		return channels;
 	}
 	
-	public List<Detector> getDetectors(){
+	public List<Detector> getDetectors()
+	{
 		return detectors;
 	}
 	
-	final public InetAddress getIp() {
+	final public InetAddress getIp()
+	{
 		return ip;
 	}
 
-	final public String getIpStr() {
+	final public String getIpStr()
+	{
 		return ipStr;
 	}
 
-	final public int getPort() {
+	final public int getPort()
+	{
 		return port;
 	}
 	
-	final public String getID() {
+	final public String getID()
+	{
 		return id;
 	}
 
@@ -190,11 +196,25 @@ public abstract class Recipient
 		return preferredDimensions;
 	}
 
-	public void setLog(boolean log){
+	public void setLog(boolean log)
+	{
 		this.log = log;
 	}
-	
-	public static String bytesToHex(byte[] b, int length){
+
+	public String toString()
+	{
+		StringBuffer sb = new StringBuffer(id);
+		sb.append("=Recipient[InetAddress=").append(ip);
+		sb.append(",port=").append(port);
+		sb.append(",channels=").append(channels);
+		sb.append(",preferredDimensions=").append(preferredDimensions);
+		sb.append(",patchgroup=").append(patchgroup);
+		sb.append(',').append(detectors).append(']');
+		return sb.toString();
+	}
+
+	public static String bytesToHex(byte[] b, int length)
+	{
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i< length; i++){
 			sb.append(Integer.toHexString((b[i]&0xFF) | 0x100).substring(1,3) + " ");

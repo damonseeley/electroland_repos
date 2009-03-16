@@ -10,8 +10,6 @@ public class Detector {
 
 	protected int x, y, width, height;
 	protected DetectionModel model;
-	
-	// hacky crap that should be removed:
 	protected String patchgroup;
 	protected int channel;
 
@@ -62,5 +60,14 @@ public class Detector {
 	
 	public DetectionModel getModel() {
 		return model;
+	}
+
+	public String toString(){
+		StringBuffer sb = new StringBuffer("Detector=[x=");
+		sb.append(x).append(",y=").append(y).append(",width=");
+		sb.append(width).append(",height=").append(height).append(",model=");
+		sb.append(model).append(",patchgroup=").append(patchgroup);
+		sb.append(",channel=").append(channel).append("]");
+		return sb.toString();
 	}
 }

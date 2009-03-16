@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import org.apache.log4j.Logger;
+
 import net.electroland.lighting.detector.models.BlueDetectionModel;
 import net.electroland.lighting.detector.models.GreenDetectionModel;
 import net.electroland.lighting.detector.models.RedDetectionModel;
@@ -26,14 +28,16 @@ import net.electroland.util.OptionParser;
  */
 public class DetectorManager {
 
+	static Logger logger = Logger.getLogger(DetectorManager.class);
+
 	private Map <String, Dimension> rasters;
 	private Map <String, Recipient> recipients;
 	private Map <String, Detector> detectors;
 	private int fps;
 
-	
 	public DetectorManager(Properties props) throws UnknownHostException, OptionException
 	{
+		rasters = Collections.synchronizedMap(new HashMap<String, Dimension>());
 		recipients = Collections.synchronizedMap(new HashMap<String, Recipient>());
 		detectors = Collections.synchronizedMap(new HashMap<String, Detector>());
 
@@ -48,6 +52,7 @@ public class DetectorManager {
 		{
 			scalePositions = Double.parseDouble(props.getProperty("detectorPositionScaling"));
 		}
+		logger.info("detectorPositionScaling=" + scalePositions);
 
 		double scaleDimensions = 1.0;
 
@@ -57,6 +62,7 @@ public class DetectorManager {
 		{
 			scaleDimensions = Double.parseDouble(props.getProperty("detectorDimensionScaling"));
 		}
+		logger.info("detectorDimensionScaling=" + scaleDimensions);
 
 		double scaleRaster = 1.0;
 
@@ -64,8 +70,9 @@ public class DetectorManager {
 		if (props.getProperty("rasterDimensionScaling") != null && 
 			props.getProperty("rasterDimensionScaling").length() > 0)
 		{
-			scaleDimensions = Double.parseDouble(props.getProperty("rasterDimensionScaling"));
+			scaleRaster = Double.parseDouble(props.getProperty("rasterDimensionScaling"));
 		}
+		logger.info("rasterDimensionScaling=" + scaleRaster);
 
 		// load rasters
 		Enumeration <Object> e = props.keys();
@@ -81,13 +88,13 @@ public class DetectorManager {
 				}else{
 					String id = key.substring(idStart + 1, key.length());
 					Dimension raster = parseRaster(id, "" + props.get(key));
-					rasters.put(key.toString(), raster);
-					
+					logger.info(id + "=" + raster);
+					rasters.put(id, raster);
 				}
 			}
 		}
 
-		// load fixtures
+		// load recipient
 		Enumeration <Object> f = props.keys();
 		while (f.hasMoreElements())
 		{
@@ -102,8 +109,7 @@ public class DetectorManager {
 					String id = key.substring(idStart + 1, key.length());
 					Recipient recipient = parseRecipient(id, "" + props.get(key), rasters);
 					recipient.scale(scaleRaster);
-					recipients.put(key.toString(), recipient);
-					
+					recipients.put(id, recipient);
 				}
 			}
 		}
@@ -123,14 +129,17 @@ public class DetectorManager {
 					String id = key.substring(idStart + 1, key.length());
 					Detector detector = parseDetector(id, "" + props.get(key));
 					detector.scale(scalePositions, scaleDimensions);
-					detectors.put(key.toString(), detector);
+					detectors.put(id, detector);
 
 					// add this detector to any fixture that belongs to this light group
-					Iterator <Recipient> itr = recipients.values().iterator();
-					while (itr.hasNext()){
-						Recipient fixture = itr.next();
-						if (fixture.patchgroup.equals(detector.patchgroup)){
-							fixture.setChannelDetector(detector.channel, detector);
+					if (detector.patchgroup != null){
+						Iterator <Recipient> itr = recipients.values().iterator();
+						while (itr.hasNext()){
+							Recipient recipient = itr.next();
+							if (recipient.patchgroup != null && 
+								recipient.patchgroup.equals(detector.patchgroup)){
+								recipient.setChannelDetector(detector.channel, detector);
+							}
 						}
 					}
 				}
@@ -159,6 +168,12 @@ public class DetectorManager {
 				}
 			}
 		}
+
+		Iterator<Recipient> itr = recipients.values().iterator();
+		while (itr.hasNext()){
+			logger.info(itr.next());
+		}
+	
 	}
 
 	final private static Dimension parseRaster(String id, String str) throws OptionException
@@ -207,13 +222,13 @@ public class DetectorManager {
 		String modelStr = getOption(options, "-model", id, true);
 		DetectionModel model = null;
 		// need to implement a real class loader here.
-		if (modelStr.equalsIgnoreCase("RedDetectionModel")){
+		if (modelStr.equalsIgnoreCase("net.electroland.lighting.detector.models.RedDetectionModel")){
 			model = new RedDetectionModel();
-		}else if (modelStr.equalsIgnoreCase("GreenDetectionModel")){
+		}else if (modelStr.equalsIgnoreCase("net.electroland.lighting.detector.models.GreenDetectionModel")){
 			model = new GreenDetectionModel();
-		}else if (modelStr.equalsIgnoreCase("BlueDetectionModel")){
+		}else if (modelStr.equalsIgnoreCase("net.electroland.lighting.detector.models.BlueDetectionModel")){
 			model = new BlueDetectionModel();
-		}else if (modelStr.equalsIgnoreCase("ThresholdDetectionModel")){
+		}else if (modelStr.equalsIgnoreCase("net.electroland.lighting.detector.models.ThresholdDetectionModel")){
 			model = new ThresholdDetectionModel();
 		}
 
@@ -243,7 +258,7 @@ public class DetectorManager {
 	{
 		if (str.toLowerCase().startsWith("rectangle(")){
 			str = str.substring(10, str.length());
-			StringTokenizer st = new StringTokenizer(str, ",");
+			StringTokenizer st = new StringTokenizer(str, " \t,)");
 			try{
 				return new Rectangle(Integer.parseInt(st.nextToken()),
 										Integer.parseInt(st.nextToken()),
@@ -291,13 +306,13 @@ public class DetectorManager {
 	{
 		return detectors.values();
 	}
-	
+
 	// returning the array instead of the hashmap, so the user can't monkey with the hashmap.
 	public Collection<Recipient> getRecipients()
 	{
 		return recipients.values();
 	}
-	
+
 	public String[] getRecipientIds()
 	{
 		String[] k = new String[recipients.size()];
