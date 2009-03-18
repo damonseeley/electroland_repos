@@ -2,6 +2,10 @@ package net.electroland.enteractive.core;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Collection;
@@ -35,10 +39,20 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 	private TCUtil tcu;
 	private PersonTracker ptr;
 	private UDPParser udp;
+	private Properties lightProps;
 	
 	public Main(String[] args) throws UnknownHostException, OptionException{
-		int fps = 33;										// TODO FPS should be read from lights.properties
-		dmr = new DetectorManager(loadProperties(args)); 	// requires loading properties
+		try{
+			lightProps = new Properties();
+			lightProps.load(new FileInputStream(new File("lights.properties")));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		int fps = Integer.parseInt(lightProps.getProperty("fps"));
+		
+		dmr = new DetectorManager(lightProps); 				// requires loading properties
 		dmp = new DetectorManagerJPanel(dmr);				// panel that renders the filters
 		amr = new AnimationManager(dmp, fps);				// animation manager
 		amr.addListener(this);								// let me know when animations are complete
