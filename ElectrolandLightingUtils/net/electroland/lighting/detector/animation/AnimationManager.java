@@ -66,9 +66,6 @@ public class AnimationManager implements Runnable {
 		if (thread == null){
 			thread = new Thread(this);
 			thread.start();
-			System.out.println("start!");
-		}else{
-			System.out.println("already running");			
 		}
 	}
 
@@ -133,7 +130,6 @@ public class AnimationManager implements Runnable {
 			try 
 			{
 				long cycleDuration = System.currentTimeMillis() - startTime;
-				System.out.println("cycleDuration=" + cycleDuration);
 				Thread.sleep(cycleDuration >= delay ? 0 : delay - cycleDuration);
 			} catch (InterruptedException e) 
 			{
