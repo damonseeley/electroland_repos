@@ -1,12 +1,15 @@
 package net.electroland.lighting.detector;
 
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import net.electroland.lighting.detector.animation.Raster;
 
 import org.apache.log4j.Logger;
 
@@ -88,7 +91,17 @@ public abstract class Recipient
 		this.preferredDimensions.width = (int)(this.preferredDimensions.width * scaleDimensions);
 		this.preferredDimensions.height = (int)(this.preferredDimensions.height * scaleDimensions);
 	}
-	
+
+	final public void sync(Raster raster)
+	{
+		if (raster.isJava2d())
+		{
+			sync((BufferedImage)raster.getRaster());
+		}else{
+			sync((PImage)raster.getRaster());
+		}
+	}
+
 	/**
 	 * 
 	 * @param PImage
@@ -143,10 +156,13 @@ public abstract class Recipient
 					if (detector != null)
 					{
 						int pixels[] = new int[detector.width * detector.height];
-
-						raster.getRGB(detector.x, detector.y, 
-									detector.width, detector.height, pixels, 
-									0, detector.width);
+						try{
+							raster.getRGB(detector.x, detector.y, 
+										detector.width, detector.height, pixels, 
+										0, detector.width);
+						}catch(ArrayIndexOutOfBoundsException e){
+							// Coordinate out of bounds! (just ignore)
+						}
 						
 						data[i] = (byte)detector.model.getValue(pixels);
 					}

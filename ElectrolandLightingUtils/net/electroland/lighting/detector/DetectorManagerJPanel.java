@@ -53,6 +53,10 @@ public class DetectorManagerJPanel extends JPanel implements ActionListener {
 	
 	private void newRaster()
 	{
+		Recipient fixture = dm.getRecipient((String)fixtureList.getSelectedItem());
+		this.raster = new BufferedImage(fixture.getPreferredDimensions().width, 
+										fixture.getPreferredDimensions().height, 
+										BufferedImage.TYPE_INT_ARGB);
 	}
 
 	public Image getRaster()
@@ -88,9 +92,12 @@ public class DetectorManagerJPanel extends JPanel implements ActionListener {
 		while (i.hasNext())
 		{
 			Detector detector = i.next();
-			g.setColor(Color.WHITE);
-			g.drawRect(detector.getX(), detector.getY(), 
-						detector.getWidth(), detector.getHeight());
+			if (detector != null)
+			{
+				g.setColor(Color.WHITE);
+				g.drawRect(detector.getX(), detector.getY(), 
+							detector.getWidth(), detector.getHeight());
+			}
 		}
 
 		// do the shit!

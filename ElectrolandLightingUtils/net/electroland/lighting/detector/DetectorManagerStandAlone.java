@@ -58,7 +58,7 @@ public class DetectorManagerStandAlone extends JFrame implements ChangeListener,
 		testControls.setLayout(new MigLayout(""));
 		testControls.setSize(450, 150);
 
-		/* slider for test thread fps */		
+		/* slider for test thread fps */
 		fpsSlider = new JSlider(0, 100, 30);
 		fpsSlider.addChangeListener(this);
 		fps = new JLabel("30");
@@ -94,20 +94,20 @@ public class DetectorManagerStandAlone extends JFrame implements ChangeListener,
 		testControls.setVisible(true);
 		
 		/* activate close button for windows. */
-		this.addWindowListener(new java.awt.event.WindowAdapter() 
+		this.addWindowListener(new java.awt.event.WindowAdapter()
 		{
-		    public void windowClosing(WindowEvent winEvt) 
-		    {
+			public void windowClosing(WindowEvent winEvt)
+			{
 				System.exit(0);
-		    }
-		});	
-		testControls.addWindowListener(new java.awt.event.WindowAdapter() 
+			}
+		});
+		testControls.addWindowListener(new java.awt.event.WindowAdapter()
 		{
-		    public void windowClosing(WindowEvent winEvt) 
-		    {
+			public void windowClosing(WindowEvent winEvt)
+			{
 				System.exit(0);
-		    }
-		});	
+			}
+		});
 	}
 
 	
@@ -117,11 +117,11 @@ public class DetectorManagerStandAlone extends JFrame implements ChangeListener,
 
 	
 	/* update vale provided by FPS slider */
-	public void stateChanged(ChangeEvent e) 
+	public void stateChanged(ChangeEvent e)
 	{
 		if (e.getSource() == fpsSlider)
 		{
-			fps.setText("" + getFPS().getValue());			
+			fps.setText("" + getFPS().getValue());
 		}
 	}
 
@@ -143,14 +143,14 @@ public class DetectorManagerStandAlone extends JFrame implements ChangeListener,
 				sendOne.setEnabled(false);
 			}else{
 				stopThread();
-				stream.setText(START_STREAM);				
+				stream.setText(START_STREAM);
 				sendOne.setEnabled(true);
 			}
 		}else if (e.getSource() == isLogging){
 			fixture.setLog(isLogging.isSelected());
 		}
 	}
-	
+
 	private void setThread(){
 		// if there is a thread running, call startThread
 		// (else do nothing)
@@ -183,10 +183,11 @@ public class DetectorManagerStandAlone extends JFrame implements ChangeListener,
 		// seed is so "send one" will step through cleanly.
 	}
 	
-	private void stopThread(){
+	private void stopThread()
+	{
 		
 	}
-	
+
 	public static void main(String args[])
 	{
 		try
@@ -195,7 +196,7 @@ public class DetectorManagerStandAlone extends JFrame implements ChangeListener,
 
 			p.load((args.length == 1) ? 
 						new FileInputStream(new File(args[0])) :
-						new FileInputStream(new File("lights.properties")));			
+						new FileInputStream(new File("lights.properties")));
 
 			new DetectorManagerStandAlone(new DetectorManager(p));
 

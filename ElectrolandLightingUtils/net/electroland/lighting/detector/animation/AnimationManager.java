@@ -1,6 +1,10 @@
 package net.electroland.lighting.detector.animation;
 
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import net.electroland.lighting.detector.DetectorManagerJPanel;
@@ -9,48 +13,43 @@ import net.electroland.lighting.detector.DetectorManager;
 
 public class AnimationManager implements Runnable {
 
-	private DetectorManager dmr;
 	private DetectorManagerJPanel dmp;
 	private Thread thread;
-	private CopyOnWriteArrayList <Animation>live;
-	private CopyOnWriteArrayList <AnimationListener>listeners;	
+	private CopyOnWriteArrayList<AnimationRecipients>live;
+	private CopyOnWriteArrayList<AnimationListener>listeners;	
 	private boolean isRunning = false;
 	private long delay;
 
-	public AnimationManager(DetectorManager dmr, int fps)
+	public AnimationManager(int fps)
 	{
-		this.dmr = dmr;
 		this.delay = (long)(1000 / (double)fps);
+		live = new CopyOnWriteArrayList<AnimationRecipients>();
+		listeners = new CopyOnWriteArrayList<AnimationListener>();
 	}
 
 	public AnimationManager(DetectorManagerJPanel dmp, int fps)
 	{
-		this.dmr = dmp.getDetectorManager();
 		this.dmp = dmp;
 		this.delay = (long)(1000 / (double)fps);
-		
+		live = new CopyOnWriteArrayList<AnimationRecipients>();
+		listeners = new CopyOnWriteArrayList<AnimationListener>();
 	}
 
-	final public void startAnimation(Animation a, Collection <Recipient> fixtures){
+	final public void startAnimation(Animation a, Collection <Recipient> recipients){
 		a.initialize();
-		
-		// store all the fixtures related to the Animation.
-		
-		live.add(a);
+		live.add(new AnimationRecipients(a, recipients));
 	}
-
-	final public void startAnimation(Animation a, Transition t, Collection <Recipient> fixtures){
-
-
-		// how the FUCK is this going to work.
-
-
+	final public void startAnimation(Animation a, Recipient r){
+		Vector<Recipient> v = new Vector<Recipient>();
+		v.add(r);
+		startAnimation(a, v);
 	}
-
-
-	// MAYBE have some short cut methods here like startAnimation(Animation, DMXLightingFixture);
-	// (really just wrappers the generate single element fixtures)
-
+	// HOW TO STOP AN ANIMATION BY FORCE???
+	
+	
+//	final public void startAnimation(Animation a, Transition t, Collection <Recipient> fixtures){
+//		// how the FUCK is this going to work.
+//	}
 
 	final public void addListener(AnimationListener listener){
 		listeners.add(listener);
@@ -79,6 +78,36 @@ public class AnimationManager implements Runnable {
 		while (isRunning){
 			startTime = System.currentTimeMillis();
 
+			// temp -----------------------------------------------------------
+			// just iterator through each live show. sync what you have with
+			// each fixture.
+			Iterator<AnimationRecipients> animeRecips = live.iterator();
+			while (animeRecips.hasNext())
+			{
+				AnimationRecipients ar = animeRecips.next();
+				if (ar.animation.isDone())
+				{	// if the animation is done, cleanup, kill it, and alert all listeners.
+					ar.animation.cleanUp();
+					live.remove(ar);
+					Iterator<AnimationListener> list = listeners.iterator();
+					while (list.hasNext())
+					{
+						list.next().animationComplete(ar.animation);
+					}
+				}else{
+					// otherwise, update the animation and sync the fixtures.
+					Raster r = ar.animation.getFrame();
+					Iterator<Recipient> recips = ar.recipients.iterator();
+					while (recips.hasNext())
+					{
+						recips.next().sync(r);
+					}
+				}
+			}
+			dmp.repaint();
+
+			// end temp -------------------------------------------------------
+			
 			// do work
 
 			// a:  call getFrame() on all animations. Create a List per fixture
@@ -104,5 +133,13 @@ public class AnimationManager implements Runnable {
 			}
 		}
 		thread = null;
+	}
+}
+class AnimationRecipients{
+	protected Animation animation;
+	protected Collection<Recipient> recipients;
+	public AnimationRecipients(Animation a, Collection<Recipient>r){
+		this.animation = a;
+		this.recipients = r;
 	}
 }
