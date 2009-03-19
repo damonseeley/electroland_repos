@@ -41,7 +41,7 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 	private PersonTracker ptr;
 	private UDPParser udp;
 	private Properties lightProps;
-	private int guiWidth = 314;	// TODO get from properties
+	private int guiWidth = 348;	// TODO get from properties
 	private int guiHeight = 220;
 	
 	public Main(String[] args) throws UnknownHostException, OptionException{

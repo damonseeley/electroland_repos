@@ -52,8 +52,9 @@ public class ExampleAnimation implements Animation {
 					int x = i % 16;			// probably shouldn't be static values
 					int y = i / 16;
 					// position is offset by 1 because of the extra column on each side
-					cross.moveTo(x+1, y);	// moves instance of sprite to active tile
-					cross.draw();			// draws instance
+					//cross.moveTo(x+1, y);	// moves instance of sprite to active tile
+					//cross.draw();			// draws instance
+					myRaster.pixels[y*myRaster.width + x+1] = myRaster.color(255,0,0);
 				} 
 			}
 			
@@ -66,7 +67,7 @@ public class ExampleAnimation implements Animation {
 			}
 			*/
 			
-			myRaster.background(255,0,0); // FULLY ON
+			//myRaster.background(255,0,0); // FULLY ON
 			
 			/*
 			// VEGAS!

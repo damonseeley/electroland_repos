@@ -63,7 +63,7 @@ public class GUI extends PApplet implements WidgetListener{
 		background(0);
 		noFill();
 		stroke(50);
-		rect(8,8,289,199);
+		rect(8,8,325,199);
 		translate(10, 10);
 		drawTiles();
 		/*
