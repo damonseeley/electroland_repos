@@ -12,6 +12,7 @@ import net.electroland.enteractive.gui.widgets.WidgetEvent;
 import net.electroland.enteractive.gui.widgets.WidgetListener;
 import net.electroland.lighting.detector.animation.Raster;
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PFont;
 import processing.core.PImage;
 
@@ -55,12 +56,13 @@ public class GUI extends PApplet implements WidgetListener{
 		size(width, height);
 		frameRate(30);
 		noStroke();
+		colorMode(PConstants.RGB, 255, 255, 255, 255);
 		titlefont = loadFont("depends//fonts//DIN-Medium-18.vlw");
 		smallfont = loadFont("depends//fonts//DIN-Regular-10.vlw");
 	}
 	
 	public void draw(){
-		background(0);
+		background(30);
 		noFill();
 		stroke(50);
 		rect(8,8,325,199);
@@ -91,7 +93,6 @@ public class GUI extends PApplet implements WidgetListener{
 				for(int y=0; y<image.height; y++){
 					for(int x=0; x<image.width; x++){
 						int color = image.pixels[(y*image.width) + x];
-						//System.out.println(color);
 						stroke(color);
 						rect(x*18, y*18, 15, 15);
 					}

@@ -46,7 +46,7 @@ public class ExampleAnimation implements Animation {
 			myRaster.background(0);		// clear the raster
 			
 			Cross cross = new Cross(r, 1, 1, 3, 3);		// 3x3 cross
-			//cross.moveTo(6, 6);
+			//cross.moveTo(1, 1);
 			//cross.draw();
 			boolean[] sensorlist = m.getSensors();
 			for(int i=0; i<sensorlist.length; i++){	// sensorlist is 16x11
@@ -54,9 +54,9 @@ public class ExampleAnimation implements Animation {
 					int x = i % 16;			// probably shouldn't be static values
 					int y = i / 16;
 					// position is offset by 1 because of the extra column on each side
-					//cross.moveTo(x+1, y);	// moves instance of sprite to active tile
-					//cross.draw();			// draws instance
-					myRaster.pixels[y*myRaster.width + x+1] = myRaster.color(255,0,0);
+					cross.moveTo(x+1, y);	// moves instance of sprite to active tile
+					cross.draw();			// draws instance
+					//myRaster.pixels[y*myRaster.width + x+1] = myRaster.color(255,0,0);
 				} 
 			}
 			
