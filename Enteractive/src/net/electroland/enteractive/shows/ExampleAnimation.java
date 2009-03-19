@@ -45,14 +45,15 @@ public class ExampleAnimation implements Animation {
 			myRaster.beginDraw();
 			myRaster.background(0);		// clear the raster
 			
-			Cross cross = new Cross(r, 0, 0, 3, 3);	// 3x3 cross
+			Cross cross = new Cross(r, 0, 0, 3, 3);		// 3x3 cross
 			boolean[] sensorlist = m.getSensors();
-			for(int i=0; i<sensorlist.length; i++){
+			for(int i=0; i<sensorlist.length; i++){	// sensorlist is 16x11
 				if(sensorlist[i]){
-					int x = i % 16;		// probably shouldn't be static values
+					int x = i % 16;			// probably shouldn't be static values
 					int y = i / 16;
-					cross.moveTo(x, y);	// moves instance of sprite to active tile
-					cross.draw();		// draws instance
+					// position is offset by 1 because of the extra column on each side
+					cross.moveTo(x+1, y);	// moves instance of sprite to active tile
+					cross.draw();			// draws instance
 				} 
 			}
 			
