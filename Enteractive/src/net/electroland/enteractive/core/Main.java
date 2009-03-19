@@ -1,5 +1,6 @@
 package net.electroland.enteractive.core;
 
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -13,6 +14,8 @@ import java.util.Properties;
 import javax.swing.JFrame;
 import processing.core.PApplet;
 import processing.core.PConstants;
+import net.electroland.enteractive.gui.GUI;
+import net.electroland.enteractive.gui.GUIWindow;
 import net.electroland.enteractive.scheduler.TimedEvent;
 import net.electroland.enteractive.scheduler.TimedEventListener;
 import net.electroland.enteractive.shows.ExampleAnimation;
@@ -35,11 +38,13 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 	private AnimationManager amr;
 	private SoundManager smr;
 	private Model m;
-	private PApplet p5;
+	private GUIWindow guiWindow;
 	private TCUtil tcu;
 	private PersonTracker ptr;
 	private UDPParser udp;
 	private Properties lightProps;
+	private int guiWidth = 314;	// TODO get from properties
+	private int guiHeight = 220;
 	
 	public Main(String[] args) throws UnknownHostException, OptionException{
 		try{
@@ -71,9 +76,13 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
+
+		guiWindow = new GUIWindow(guiWidth,guiHeight);
+		guiWindow.setVisible(true);
+		Raster raster = getRaster();
+		((GUI)guiWindow.gui).setRaster(raster);
 		
-		p5 = new PApplet();									// used solely to get PGraphics for rasters
-		Animation a = new ExampleAnimation(m, getRaster(), smr);
+		Animation a = new ExampleAnimation(m, raster, smr);
 		Collection<Recipient> fixtures = dmr.getRecipients();
 		amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
 		amr.goLive(); 										// the whole system does nothing unless you "start" it.
@@ -92,7 +101,7 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 	}
 	
 	private Raster getRaster(){
-		return new Raster(p5.createGraphics(0, 0, PConstants.P3D)); // or whatever it is Processing requires to generate a PGraphics.
+		return new Raster(guiWindow.gui.createGraphics(18, 11, PConstants.P3D)); // or whatever it is Processing requires to generate a PGraphics.
 	}
 	
 	public Properties loadProperties(String args[]) {

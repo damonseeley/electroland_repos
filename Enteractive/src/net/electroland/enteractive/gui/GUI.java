@@ -102,6 +102,10 @@ public class GUI extends PApplet implements WidgetListener{
 	
 	public void setRaster(Raster raster){
 		this.raster = raster;
+		if(raster.isProcessing()){
+			PImage image = (PImage)raster.getRaster();
+			System.out.println(image.width+" "+image.height);
+		}
 	}
 	
 	public void mouseMoved(){
