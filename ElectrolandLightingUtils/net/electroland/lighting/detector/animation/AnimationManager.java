@@ -2,14 +2,11 @@ package net.electroland.lighting.detector.animation;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import net.electroland.lighting.detector.DetectorManagerJPanel;
 import net.electroland.lighting.detector.Recipient;
-import net.electroland.lighting.detector.DetectorManager;
 
 public class AnimationManager implements Runnable {
 
@@ -25,6 +22,7 @@ public class AnimationManager implements Runnable {
 		this.delay = (long)(1000 / (double)fps);
 		live = new CopyOnWriteArrayList<AnimationRecipients>();
 		listeners = new CopyOnWriteArrayList<AnimationListener>();
+		System.out.println("Delay=" + delay);
 	}
 
 	public AnimationManager(DetectorManagerJPanel dmp, int fps)
@@ -33,16 +31,19 @@ public class AnimationManager implements Runnable {
 		this.delay = (long)(1000 / (double)fps);
 		live = new CopyOnWriteArrayList<AnimationRecipients>();
 		listeners = new CopyOnWriteArrayList<AnimationListener>();
+		System.out.println("Delay=" + delay);
 	}
 
 	final public void startAnimation(Animation a, Collection <Recipient> recipients){
 		a.initialize();
 		live.add(new AnimationRecipients(a, recipients));
+		System.out.println("starting animation " + a);
 	}
 	final public void startAnimation(Animation a, Recipient r){
 		Vector<Recipient> v = new Vector<Recipient>();
 		v.add(r);
 		startAnimation(a, v);
+		System.out.println("starting animation " + a);
 	}
 	// HOW TO STOP AN ANIMATION BY FORCE???
 	
@@ -62,9 +63,12 @@ public class AnimationManager implements Runnable {
 	// start all animation (presuming any Animations are in the set)
 	final public void goLive(){
 		isRunning = true;
-		if (thread != null){
+		if (thread == null){
 			thread = new Thread(this);
 			thread.start();
+			System.out.println("start!");
+		}else{
+			System.out.println("already running");			
 		}
 	}
 
@@ -129,6 +133,7 @@ public class AnimationManager implements Runnable {
 			try 
 			{
 				long cycleDuration = System.currentTimeMillis() - startTime;
+				System.out.println("cycleDuration=" + cycleDuration);
 				Thread.sleep(cycleDuration >= delay ? 0 : delay - cycleDuration);
 			} catch (InterruptedException e) 
 			{

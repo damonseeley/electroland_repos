@@ -32,7 +32,7 @@ public class DetectorManagerJPanel extends JPanel implements ActionListener {
 		{
 			fixtureList.addItem(i.next().getID());
 		}
-		
+
 		this.setLayout(new BorderLayout());
 		this.add(fixtureList, BorderLayout.SOUTH);
 		fixtureList.addActionListener(this);
@@ -44,13 +44,13 @@ public class DetectorManagerJPanel extends JPanel implements ActionListener {
 	{
 		return dm;
 	}
-	
+
 	public void setLog(boolean isLogging)
 	{
 		System.out.println("is logging=" + isLogging);
 		dm.getRecipient((String)fixtureList.getSelectedItem()).setLog(isLogging);
 	}
-	
+
 	private void newRaster()
 	{
 		Recipient fixture = dm.getRecipient((String)fixtureList.getSelectedItem());
@@ -68,7 +68,7 @@ public class DetectorManagerJPanel extends JPanel implements ActionListener {
 	{
 		newRaster();
 		repaint();
-    }
+	}
 
 	@Override
 	protected void paintComponent(Graphics g) 
@@ -86,7 +86,7 @@ public class DetectorManagerJPanel extends JPanel implements ActionListener {
 			= dm.getRecipient((String)fixtureList.getSelectedItem());
 		g.setColor(Color.DARK_GRAY);
 		g.drawRect(0, 0, fixture.getPreferredDimensions().width, fixture.getPreferredDimensions().height);
-
+/*
 		// draw the detectors
 		Iterator <Detector> i = fixture.getDetectors().iterator();
 		while (i.hasNext())
@@ -99,7 +99,7 @@ public class DetectorManagerJPanel extends JPanel implements ActionListener {
 							detector.getWidth(), detector.getHeight());
 			}
 		}
-
+*/
 		// do the shit!
 		fixture.sync(raster);
 	}
