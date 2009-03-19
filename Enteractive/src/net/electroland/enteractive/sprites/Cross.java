@@ -24,9 +24,11 @@ public class Cross extends Sprite{
 			//c.beginDraw();						// may not be necessary since show is required to do this
 			c.pushMatrix();
 			c.rectMode(PConstants.CENTER);			// centered at sprite's X/Y position
-			c.fill(255,0,0);
-			c.rect(x, y, width, tileSize);			// horizontal rectangle
-			c.rect(x, y, tileSize, height);			// vertical rectangle
+			//c.fill(255,0,0);
+			c.stroke(255,0,0);
+			c.rect(x, y, width-1, tileSize-1);			// horizontal rectangle
+			c.rect(x, y, tileSize-1, height-1);			// vertical rectangle
+			//System.out.println(x +" "+ y +" "+ width +" "+ height);
 			c.popMatrix();
 			//c.endDraw();							// may not be necessary since show is required to do this
 		}

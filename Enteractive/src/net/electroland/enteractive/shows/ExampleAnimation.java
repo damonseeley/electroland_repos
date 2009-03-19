@@ -45,7 +45,9 @@ public class ExampleAnimation implements Animation {
 			myRaster.beginDraw();
 			myRaster.background(0);		// clear the raster
 			
-			Cross cross = new Cross(r, 0, 0, 3, 3);		// 3x3 cross
+			Cross cross = new Cross(r, 1, 1, 3, 3);		// 3x3 cross
+			//cross.moveTo(6, 6);
+			//cross.draw();
 			boolean[] sensorlist = m.getSensors();
 			for(int i=0; i<sensorlist.length; i++){	// sensorlist is 16x11
 				if(sensorlist[i]){
