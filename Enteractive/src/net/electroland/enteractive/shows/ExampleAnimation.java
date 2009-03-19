@@ -37,7 +37,6 @@ public class ExampleAnimation implements Animation {
 	}
 	
 	public Raster getFrame() {
-		System.out.println("Hello?");
 		// lock the model so other people don't modify it while we do paint
 		// calls based on it.
 		synchronized (m){

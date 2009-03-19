@@ -81,7 +81,7 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		Raster raster = getRaster();
 		((GUI)guiWindow.gui).setRaster(raster);
 		
-		Animation a = new ExampleAnimation(m, raster, smr);
+		Animation a = new ExampleAnimation(ptr.getModel(), raster, smr);
 		Collection<Recipient> fixtures = dmr.getRecipients();
 		amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
 		amr.goLive(); 										// the whole system does nothing unless you "start" it.
