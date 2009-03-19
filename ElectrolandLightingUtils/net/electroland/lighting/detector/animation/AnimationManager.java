@@ -104,7 +104,10 @@ public class AnimationManager implements Runnable {
 					}
 				}
 			}
-			dmp.repaint();
+			if (dmp != null)
+			{
+				dmp.repaint();
+			}
 
 			// end temp -------------------------------------------------------
 			
