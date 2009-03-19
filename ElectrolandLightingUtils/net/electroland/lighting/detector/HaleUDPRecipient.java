@@ -27,14 +27,21 @@ public class HaleUDPRecipient extends Recipient {
 	void send(byte[] data) {
 
 		byte[] protocolAndData = new byte[data.length + 3];
+		for (int i = 0; i < data.length; i++)
+		{
+			if (data[i] == (byte)255 ||
+				data[i] == (byte)254){
+				data[i] = (byte)253;
+			}
+		}
 
 		System.arraycopy(data, 0, protocolAndData, 2, data.length);
 		
-		protocolAndData[0] = (byte)0;
+		protocolAndData[0] = (byte)255;
 		protocolAndData[1] = (byte)0;
-		protocolAndData[protocolAndData.length - 1] = (byte)255;
+		protocolAndData[protocolAndData.length - 1] = (byte)254;
 
-		if (log)
+		if (true)
 		{
 			System.out.println(this.id + " at IP " + 
 								this.ipStr + ":" + 
