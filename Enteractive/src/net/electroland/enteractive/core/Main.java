@@ -1,6 +1,5 @@
 package net.electroland.enteractive.core;
 
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -12,7 +11,6 @@ import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Properties;
 import javax.swing.JFrame;
-import processing.core.PApplet;
 import processing.core.PConstants;
 import net.electroland.enteractive.gui.GUI;
 import net.electroland.enteractive.gui.GUIWindow;
@@ -61,7 +59,8 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		dmp = new DetectorManagerJPanel(dmr);				// panel that renders the filters
 		amr = new AnimationManager(dmp, fps);				// animation manager
 		amr.addListener(this);								// let me know when animations are complete
-		smr = new SoundManager(null);
+		//smr = new SoundManager(null);
+		smr = null;
 		this.add(dmp);
 		this.setVisible(true);
 		

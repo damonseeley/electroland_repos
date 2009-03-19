@@ -91,6 +91,7 @@ public class GUI extends PApplet implements WidgetListener{
 				for(int y=0; y<image.height; y++){
 					for(int x=0; x<image.width; x++){
 						int color = image.pixels[(y*image.width) + x];
+						//System.out.println(color);
 						stroke(color);
 						rect(x*18, y*18, 15, 15);
 					}
@@ -102,10 +103,6 @@ public class GUI extends PApplet implements WidgetListener{
 	
 	public void setRaster(Raster raster){
 		this.raster = raster;
-		if(raster.isProcessing()){
-			PImage image = (PImage)raster.getRaster();
-			System.out.println(image.width+" "+image.height);
-		}
 	}
 	
 	public void mouseMoved(){
