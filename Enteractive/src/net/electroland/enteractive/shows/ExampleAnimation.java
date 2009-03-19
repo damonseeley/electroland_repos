@@ -69,7 +69,7 @@ public class ExampleAnimation implements Animation {
 			}
 			*/
 			
-			//myRaster.background(255,0,0); // FULLY ON
+			myRaster.background(255,0,0); // FULLY ON
 			
 			/*
 			// VEGAS!
