@@ -75,6 +75,8 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
+		
+		Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){tcu.billyJeanMode();}});
 
 		guiWindow = new GUIWindow(guiWidth,guiHeight);
 		guiWindow.setVisible(true);
