@@ -30,21 +30,20 @@ public class UDPParser extends Thread {
 		byte[] line = HexUtils.hexToBytes(msg);
 		int offset = (int)(line[line.length-3] & 0xFF) + (int)(line[line.length-2] & 0xFF);	// determines starting position of payload values
 		byte[] data = new byte[line.length - 5];												// everything but start/end/offset/command bytes
-		String commandByte = "0x"+Integer.toHexString(line[1]);
+		String commandByte = Integer.toHexString(line[1]);
 		System.arraycopy(line, 2, data, 0, line.length-5);
-		//System.out.println(offset);
 		if(tcUtils != null){
-			if(commandByte.equals(tcUtils.tileProps.getProperty("TileUpdateCmd"))){				// direct response of light values
+			if(commandByte.equals(tcUtils.tileProps.getProperty("updateByte"))){				// direct response of light values
 				lightValues(offset, data);
-			} else if(commandByte.equals(tcUtils.tileProps.getProperty("TileFeedbackCmd"))){	// direct response of sensor states
+			} else if(commandByte.equals(tcUtils.tileProps.getProperty("feedbackByte"))){	// direct response of sensor states
 				sensorValues(offset, data);
-			} else if(commandByte.equals(tcUtils.tileProps.getProperty("TileOnOffCmd"))){		// direct response from tiles being powered on/off
+			} else if(commandByte.equals(tcUtils.tileProps.getProperty("powerByte"))){		// direct response from tiles being powered on/off
 				tilePowerState(offset, data);
-			} else if(commandByte.equals(tcUtils.tileProps.getProperty("TileReportCmd"))){		// continuous sensor state reporting on change
+			} else if(commandByte.equals(tcUtils.tileProps.getProperty("reportByte"))){		// continuous sensor state reporting on change
 				sensorValues(offset, data);
-			} else if(commandByte.equals(tcUtils.tileProps.getProperty("TileOffsetCmd"))){
+			} else if(commandByte.equals(tcUtils.tileProps.getProperty("offsetByte"))){
 				// TODO direct response from setting offset value
-			} else if(commandByte.equals(tcUtils.tileProps.getProperty("TileMCResetCmd"))){
+			} else if(commandByte.equals(tcUtils.tileProps.getProperty("mcResetByte"))){
 				// TODO direct response from resetting microcontroller on tile controller
 			} 
 		} 
@@ -55,7 +54,7 @@ public class UDPParser extends Thread {
 	}
 	
 	public void sensorValues(int offset, byte[] data){
-		//logger.debug("offset: "+ offset + ", sensor states: " + HexUtils.bytesToHex(data, data.length));
+		logger.debug("offset: "+ offset + ", sensor states: " + HexUtils.bytesToHex(data, data.length));
 		personTracker.updateSensors(offset, data);
 	}
 	

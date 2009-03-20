@@ -102,7 +102,11 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 	}
 	
 	private Raster getRaster(){
-		return new Raster(guiWindow.gui.createGraphics(18, 11, PConstants.P3D)); // or whatever it is Processing requires to generate a PGraphics.
+		String[] dimensions = lightProps.getProperty("raster.tileRaster").split(" ");
+		float multiplier = Float.parseFloat(lightProps.getProperty("rasterDimensionScaling"));
+		int width = (int)(Integer.parseInt(dimensions[1]) * multiplier);
+		int height = (int)(Integer.parseInt(dimensions[3]) * multiplier);
+		return new Raster(guiWindow.gui.createGraphics(width, height, PConstants.P3D));
 	}
 	
 	public Properties loadProperties(String args[]) {

@@ -90,6 +90,8 @@ public class GUI extends PApplet implements WidgetListener{
 		if(raster != null){
 			if(raster.isProcessing()){
 				PImage image = (PImage)raster.getRaster();
+				image(image, 10, 10);
+				/*
 				for(int y=0; y<image.height; y++){
 					for(int x=0; x<image.width; x++){
 						int color = image.pixels[(y*image.width) + x];
@@ -97,6 +99,7 @@ public class GUI extends PApplet implements WidgetListener{
 						rect(x*18, y*18, 15, 15);
 					}
 				}
+				*/
 			}
 		}
 		popMatrix();
