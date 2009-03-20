@@ -1,7 +1,13 @@
 package net.electroland.enteractive.core;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+/**
+ * Stores properties and manages functions regarding tile controller hardware devices. 
+ * @author asiegel
+ */
 
 public class TileController {
 	
@@ -15,7 +21,6 @@ public class TileController {
 		this.ip = ip;
 		this.start = start;
 		this.end = end;
-		//System.out.println(id+" "+ip+" "+start+" "+end);
 		tiles = new ArrayList<Tile>();
 		for(int i=start; i<=end; i++){
 			int x = i%gridWidth;
@@ -27,6 +32,28 @@ public class TileController {
 			}
 			tiles.add(new Tile(this, i, x, y));
 		}
+	}
+	
+	public void setSensorStates(boolean[] states){
+		Iterator<Tile> iter = tiles.iterator();
+		int n = 0;
+		while(iter.hasNext()){
+			Tile tile = iter.next();
+			tile.setSensorState(states[n]);
+			n++;
+		}
+		iter.remove();
+	}
+	
+	public void setLightValues(int[] values){
+		Iterator<Tile> iter = tiles.iterator();
+		int n = 0;
+		while(iter.hasNext()){
+			Tile tile = iter.next();
+			tile.setLightValue(values[n]);
+			n++;
+		}
+		iter.remove();
 	}
 	
 	public void addTile(Tile tile){

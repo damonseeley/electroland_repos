@@ -4,6 +4,8 @@ public class Tile {
 	
 	private TileController parent;
 	private int id, x, y;
+	private boolean sensorState;
+	private int lightValue;
 	
 	public Tile(TileController parent, int id, int x, int y){
 		this.parent = parent;
@@ -11,6 +13,24 @@ public class Tile {
 		this.x = x;
 		this.y = y;
 		//System.out.println("tile:\t"+id+"\t x: "+x+"\t y:"+y);
+	}
+	
+	public boolean getSensorState(){
+		return sensorState;
+	}
+	
+	public void setSensorState(boolean sensorState){
+		this.sensorState = sensorState;
+		//System.out.println("sensor state "+sensorState+" tile "+id);
+	}
+	
+	public int getLightValue(){
+		return lightValue;
+	}
+	
+	public void setLightValue(int lightValue){
+		this.lightValue = lightValue;
+		System.out.println("light value "+lightValue+" tile "+id);
 	}
 	
 	public int getID(){

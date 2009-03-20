@@ -51,11 +51,13 @@ public class UDPParser extends Thread {
 	
 	public void lightValues(int offset, byte[] data){
 		//logger.debug("offset: "+ offset + ", light values: " + HexUtils.bytesToHex(data, data.length));
+		tcUtils.updateLights(offset, data);
 	}
 	
 	public void sensorValues(int offset, byte[] data){
 		//logger.debug("offset: "+ offset + ", sensor states: " + HexUtils.bytesToHex(data, data.length));
 		personTracker.updateSensors(offset, data);
+		tcUtils.updateSensors(offset, data);
 	}
 	
 	public void tilePowerState(int offset, byte[] data){

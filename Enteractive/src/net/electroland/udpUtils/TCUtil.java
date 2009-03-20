@@ -67,6 +67,38 @@ public class TCUtil {
 		sendOffsetPackets();
 	}
 	
+	public void updateLights(int offset, byte[] data){
+		int[] values = new int[data.length];
+		for(int i=0; i<data.length; i++){
+			values[i] = (int)(data[i] & 0xFF);
+		}
+		Iterator<TileController> iter = tileControllers.iterator();
+		while(iter.hasNext()){
+			TileController tc = iter.next();
+			if(tc.getOffset() == offset){
+				tc.setLightValues(values);
+			}
+		}
+	}
+	
+	public void updateSensors(int offset, byte[] data){
+		boolean[] newdata = new boolean[data.length];
+		for(int i=0; i<data.length; i++){
+			if((int)(data[i] & 0xFF) > 0){
+				newdata[i] = true;
+			} else {
+				newdata[i] = false;
+			}
+		}
+		Iterator<TileController> iter = tileControllers.iterator();
+		while(iter.hasNext()){
+			TileController tc = iter.next();
+			if(tc.getOffset() == offset){
+				tc.setSensorStates(newdata);
+			}
+		}
+	}
+	
 	public void turnOffTile(Tile tile){
 		// TODO cycle power off
 	}

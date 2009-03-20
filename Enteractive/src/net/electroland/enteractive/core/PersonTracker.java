@@ -1,5 +1,10 @@
 package net.electroland.enteractive.core;
 
+/**
+ * Handles any adjustments to the model based on sensor activity sent from UDPParser.
+ * @author asiegel
+ */
+
 public class PersonTracker {
 	
 	private Model model;
