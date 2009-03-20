@@ -54,7 +54,7 @@ public class UDPParser extends Thread {
 	}
 	
 	public void sensorValues(int offset, byte[] data){
-		logger.debug("offset: "+ offset + ", sensor states: " + HexUtils.bytesToHex(data, data.length));
+		//logger.debug("offset: "+ offset + ", sensor states: " + HexUtils.bytesToHex(data, data.length));
 		personTracker.updateSensors(offset, data);
 	}
 	
