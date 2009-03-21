@@ -42,7 +42,6 @@ public class TileController {
 			tile.setSensorState(states[n]);
 			n++;
 		}
-		iter.remove();
 	}
 	
 	public void setLightValues(int[] values){
@@ -53,7 +52,6 @@ public class TileController {
 			tile.setLightValue(values[n]);
 			n++;
 		}
-		iter.remove();
 	}
 	
 	public void addTile(Tile tile){

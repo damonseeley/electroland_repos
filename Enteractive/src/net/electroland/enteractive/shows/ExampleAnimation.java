@@ -1,14 +1,15 @@
 package net.electroland.enteractive.shows;
 
-//import java.util.ArrayList;
-//import java.util.Iterator;
-//import java.util.List;
-
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import processing.core.PConstants;
 import processing.core.PGraphics;
 import net.electroland.enteractive.core.Model;
+import net.electroland.enteractive.core.Person;
 import net.electroland.enteractive.core.SoundManager;
-//import net.electroland.enteractive.core.Sprite;
+import net.electroland.enteractive.core.Sprite;
 import net.electroland.enteractive.sprites.Cross;
 import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.Raster;
@@ -20,14 +21,14 @@ public class ExampleAnimation implements Animation {
 	private SoundManager sm;
 	private int tileSize;
 	//private int cycles = 600;
-	//private List<Sprite> sprites;
+	private List<Sprite> sprites;
 	
 	public ExampleAnimation(Model m, Raster r, SoundManager sm){
 		this.m = m;
 		this.r = r;
 		this.sm = sm;
 		this.tileSize = (int)(((PGraphics)(r.getRaster())).height/11.0);
-		//sprites = new ArrayList<Sprite>();
+		sprites = new ArrayList<Sprite>();
 		//System.out.println("instantiated.");
 	}
 
@@ -47,9 +48,27 @@ public class ExampleAnimation implements Animation {
 			myRaster.beginDraw();
 			myRaster.background(0);		// clear the raster
 			
+			/*
+			// TODO PRETTY SURE THIS IS CAUSING THREAD LOCKING
+			
+			HashMap<Integer,Person> enters = m.getEnters();
+			Iterator<Person> iter = enters.values().iterator();
+			while(iter.hasNext()){
+				// TODO instantiate new sprites here
+			}
+			//m.clearEnters();	// always clear to prevent double instances
+			
+			HashMap<Integer,Person> exits = m.getExits();
+			Iterator<Person> exititer = exits.values().iterator();
+			while(exititer.hasNext()){
+				// TODO destroy sprites here
+			}
+			//m.clearExits();	// always clear to prevent double removal attempts
+			*/
+			
 			Cross cross = new Cross(r, 1, 1, 3, 3);		// 3x3 cross
-			//cross.moveTo(9*tileSize, 5*tileSize);
-			//cross.draw();
+			cross.moveTo(9,6);
+			cross.draw();
 			boolean[] sensorlist = m.getSensors();
 			for(int i=0; i<sensorlist.length; i++){	// sensorlist is 16x11
 				if(sensorlist[i]){
@@ -58,9 +77,9 @@ public class ExampleAnimation implements Animation {
 					// position is offset by 1 because of the extra column on each side
 					cross.moveTo((x+1)*tileSize, y*tileSize);	// moves instance of sprite to active tile
 					cross.draw();			// draws instance
-					//myRaster.pixels[y*myRaster.width + x+1] = myRaster.color(255,0,0);
 				} 
 			}
+			
 			
 			/*
 			// this is the normal way to draw all sprites

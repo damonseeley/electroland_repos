@@ -56,7 +56,6 @@ public class TCUtil {
 				tileControllers.add(new TileController(Integer.parseInt(pair.getKey().toString().substring(14)), values[0], Integer.parseInt(values[1]), Integer.parseInt(values[2])));
 			}
 		}
-		iter.remove();
 		
 		try {
 			socket = new DatagramSocket();
@@ -114,7 +113,6 @@ public class TCUtil {
 			byte[] buf = HexUtils.hexToBytes(startByte +" "+ powerByte +" 00 00 00 00 00 00 00 00 00 "+ Integer.toHexString(tc.getOffset()-1) +" "+ endByte);
 			send(tc.getAddress(), buf);
 		}
-		iter.remove();
 	}
 	
 	public void turnOnAllTiles(){
@@ -124,7 +122,6 @@ public class TCUtil {
 			byte[] buf = HexUtils.hexToBytes(startByte +" "+ powerByte +" FD FD FD FD FD FD FD FD 00 "+ Integer.toHexString(tc.getOffset()-1) +" "+ endByte);
 			send(tc.getAddress(), buf);
 		}
-		iter.remove();
 	}
 	
 	public void billyJeanMode(){
@@ -133,7 +130,6 @@ public class TCUtil {
 			TileController tc = iter.next();
 			resetTileController(tc);
 		}
-		iter.remove();
 	}
 	
 	public void resetTileController(TileController tc){
@@ -148,7 +144,6 @@ public class TCUtil {
 			TileController tc = iter.next();
 			sendOffsetPacket(tc);
 		}
-		iter.remove();
 	}
 	
 	public void sendOffsetPacket(TileController tc){

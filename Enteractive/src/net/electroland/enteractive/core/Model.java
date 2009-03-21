@@ -1,6 +1,7 @@
 package net.electroland.enteractive.core;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class Model {
 	
@@ -9,11 +10,10 @@ public class Model {
 	private HashMap<Integer,Person> enters;	// brand new people
 	private HashMap<Integer,Person> exits;		// people who just left
 	private boolean[] sensors, pastSensors;
-	private int gridWidth, gridHeight;
+	private int gridWidth;
 	
 	public Model(int gridWidth, int gridHeight){
 		this.gridWidth = gridWidth;
-		this.gridHeight = gridHeight;
 		people = new HashMap<Integer,Person>();
 		enters = new HashMap<Integer,Person>();
 		exits = new HashMap<Integer,Person>();
@@ -40,9 +40,28 @@ public class Model {
 				Person newperson = new Person(personIndex, offset+i, x+1, y);	// new person at grid x/y
 				people.put(personIndex, newperson);						// add to master people map
 				enters.put(personIndex, newperson);						// add to new enters map
+				//System.out.println(personIndex +" added");
 				personIndex++;
 			} else if(oldstates[i] && !newstates[i]){
-				// TODO add to exit map and remove from people map (somehow?)
+				Iterator<Person> iter = people.values().iterator();
+				int id = -1;
+				Person person = null;
+				// TODO this seems fairly kludge... any better ideas?
+				while(iter.hasNext()){									// for each active person...
+					person = iter.next();
+					if(person.getLinearLoc() == offset+i){				// if person is on the tile that just turned off...
+						id = person.getID();							// get their id
+						break;											// exit the loop
+					}
+				}
+				if(id >= 0){
+					exits.put(person.getID(), person);					// add person to the exits map
+					people.remove(person.getID());						// remove person from active people
+					if(!people.containsKey(person.getID())){
+						//System.out.println(person.getID() +" removed");
+						//System.out.println("people size: "+people.size());
+					}
+				}
 			}
 		}
 	}
@@ -63,6 +82,14 @@ public class Model {
 	public HashMap<Integer,Person> getExits(){
 		// this is for shows to know when to destroy a sprite
 		return exits;	// should be cleared by the show that calls it
+	}
+	
+	public void clearEnters(){
+		enters.clear();
+	}
+	
+	public void clearExits(){
+		exits.clear();
 	}
 
 }
