@@ -13,7 +13,7 @@ public class Lights3D extends PApplet{
 	private int floorWidth, floorHeight;	// tile grid
 	private int faceWidth, faceHeight;		// light grid
 	private float rotX, rotY, velX, velY;	// rotation properties
-	private float zoom = 1.8f;
+	private float zoom = 2.0f;
 	private boolean dampening = true;
 	private int tileSize = 10;
 	private Recipient floor, face;
@@ -28,7 +28,7 @@ public class Lights3D extends PApplet{
 		faceWidth = 18;
 		faceHeight = 6;
 		rotX = -70;
-		rotY = 30;
+		rotY = -30;
 		velX = 0;
 		velY = 0;
 	}
@@ -69,16 +69,17 @@ public class Lights3D extends PApplet{
 	
 	public void drawFace(){
 		rotateX(radians(90));
-		/*
+		
 		for(int y=0; y<faceHeight; y++){
 			for(int x = 0; x<faceWidth; x++){
 				rect(x*12, y*24, 10, 10);
 			}
 		}
-		*/
+		
 	}
 	
 	public void drawFloor(){
+		/*
 		try{
 			Iterator<Detector> i = floor.getDetectors().iterator();
 			while(i.hasNext()){
@@ -86,15 +87,16 @@ public class Lights3D extends PApplet{
 				//System.out.println(val);
 			}
 		} catch(NullPointerException e){
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
-		/*
+		*/
+		
 		for(int y=0; y<floorHeight; y++){
 			for(int x = 0; x<floorWidth; x++){
 				rect(x*12, y*12, 10, 10);
 			}
 		}
-		*/
+		
 	}
 	
 }
