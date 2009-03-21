@@ -69,7 +69,7 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		}
 		int fps = Integer.parseInt(lightProps.getProperty("fps"));
 		
-		MigLayout layout = new MigLayout();
+		MigLayout layout = new MigLayout("insets 0 0 0 0");
 		setLayout(layout);
 		//JPanel p = new JPanel(new MigLayout("", "[right]"));
 		//add(p);
@@ -106,32 +106,31 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		Raster raster = getRaster();
 		((GUI)gui).setRaster(raster);
 		
-		JPanel lightspanel = new JPanel();
-		lightspanel.setMinimumSize(new Dimension(600,600));
-		lights3D = new Lights3D(600,600);
-		lightspanel.add(lights3D, "west");
-		add(lightspanel, "west");
+		//JPanel lightspanel = new JPanel();
+		//lightspanel.setMinimumSize(new Dimension(600,600));
+		lights3D = new Lights3D(600,600, dmr.getRecipient("floor"),  dmr.getRecipient("face"));
+		add(lights3D, "cell 0 0 1 3");
+		//lightspanel.add(lights3D, "insets 0 0 0 0");
+		//lightspanel.setBackground(new Color(0, 150, 200));
+		//add(lightspanel, "cell 0 0 1 3");
 		//add(gui, "wrap");
 		
 		JPanel placeHolder1 = new JPanel();
-		placeHolder1.setSize(100, 100);
 		placeHolder1.setBackground(new Color(200, 200, 200));
 		placeHolder1.add(new JLabel("Controls Go Here"));
-		add(placeHolder1, "wrap");
+		add(placeHolder1, "cell 1 0, width 200!, height 380!, gap 0! 0! 0! 0!");
 		
 		JPanel placeHolder2 = new JPanel();
-		placeHolder2.setSize(100, 100);
-		placeHolder2.setBackground(new Color(150, 150, 150));
+		placeHolder2.setBackground(new Color(175, 175, 175));
 		placeHolder2.add(new JLabel("Raster Goes Here"));
-		add(placeHolder2, "wrap");
+		add(placeHolder2, "cell 1 1, width 200!, height 100!, gap 0! 0! 0! 0!");
 		
 		JPanel placeHolder3 = new JPanel();
-		placeHolder3.setSize(100, 100);
-		placeHolder3.setBackground(new Color(100, 100, 100));
+		placeHolder3.setBackground(new Color(150, 150, 150));
 		placeHolder3.add(new JLabel("Audio Levels Go Here"));
-		add(placeHolder3, "wrap");
+		add(placeHolder3, "cell 1 2, width 200!, height 100!, gap 0! 0! 0! 0!");
 		
-		setSize(800, 640);
+		setSize(800, 620);
 		setVisible(true);
 		setResizable(false);
 		lights3D.init();

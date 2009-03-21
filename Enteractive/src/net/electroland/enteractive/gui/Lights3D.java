@@ -1,7 +1,10 @@
 package net.electroland.enteractive.gui;
 
+import java.util.Iterator;
+
+import net.electroland.lighting.detector.Detector;
+import net.electroland.lighting.detector.Recipient;
 import processing.core.PApplet;
-import processing.core.PConstants;
 
 @SuppressWarnings("serial")
 public class Lights3D extends PApplet{
@@ -13,10 +16,13 @@ public class Lights3D extends PApplet{
 	private float zoom = 1.8f;
 	private boolean dampening = true;
 	private int tileSize = 10;
+	private Recipient floor, face;
 	
-	public Lights3D(int width, int height){
+	public Lights3D(int width, int height, Recipient floor, Recipient face){
 		this.width = width;
-		this.height = height;		
+		this.height = height;
+		this.floor = floor;
+		this.face = face;
 		floorWidth = 16;
 		floorHeight = 11;
 		faceWidth = 18;
@@ -63,19 +69,32 @@ public class Lights3D extends PApplet{
 	
 	public void drawFace(){
 		rotateX(radians(90));
+		/*
 		for(int y=0; y<faceHeight; y++){
 			for(int x = 0; x<faceWidth; x++){
 				rect(x*12, y*24, 10, 10);
 			}
 		}
+		*/
 	}
 	
 	public void drawFloor(){
+		try{
+			Iterator<Detector> i = floor.getDetectors().iterator();
+			while(i.hasNext()){
+				int val = floor.getLastEvaluatedValue(i.next()) & 0xFF;
+				//System.out.println(val);
+			}
+		} catch(NullPointerException e){
+			e.printStackTrace();
+		}
+		/*
 		for(int y=0; y<floorHeight; y++){
 			for(int x = 0; x<floorWidth; x++){
 				rect(x*12, y*12, 10, 10);
 			}
 		}
+		*/
 	}
 	
 }
