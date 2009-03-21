@@ -23,6 +23,7 @@ import javax.swing.JPanel;
 import processing.core.PConstants;
 import net.electroland.enteractive.gui.GUI;
 import net.electroland.enteractive.gui.GUIWindow;
+import net.electroland.enteractive.gui.Lights3D;
 import net.electroland.enteractive.scheduler.TimedEvent;
 import net.electroland.enteractive.scheduler.TimedEventListener;
 import net.electroland.enteractive.shows.ExampleAnimation;
@@ -46,6 +47,7 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 	private AnimationManager amr;
 	private SoundManager smr;
 	private Model m;
+	private Lights3D lights3D;
 	private GUI gui;
 	private TCUtil tcu;
 	private PersonTracker ptr;
@@ -103,28 +105,32 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		Raster raster = getRaster();
 		((GUI)gui).setRaster(raster);
 		
+		lights3D = new Lights3D(600,600);
+		add(lights3D, "west");
+		//add(gui, "wrap");
+		
 		JPanel placeHolder1 = new JPanel();
 		placeHolder1.setSize(100, 100);
-		placeHolder1.setBackground(new Color(0, 150, 200));
-		placeHolder1.add(new JLabel("3d Goes Here"));
-		add(placeHolder1, "west");
-		
-		add(gui, "wrap");
+		placeHolder1.setBackground(new Color(200, 200, 200));
+		placeHolder1.add(new JLabel("Controls Go Here"));
+		add(placeHolder1, "wrap");
 		
 		JPanel placeHolder2 = new JPanel();
 		placeHolder2.setSize(100, 100);
-		placeHolder2.setBackground(new Color(200, 200, 200));
-		placeHolder2.add(new JLabel("Controls Go Here"));
+		placeHolder2.setBackground(new Color(150, 150, 150));
+		placeHolder2.add(new JLabel("Raster Goes Here"));
 		add(placeHolder2, "wrap");
 		
 		JPanel placeHolder3 = new JPanel();
 		placeHolder3.setSize(100, 100);
-		placeHolder3.setBackground(new Color(150, 150, 150));
+		placeHolder3.setBackground(new Color(100, 100, 100));
 		placeHolder3.add(new JLabel("Audio Levels Go Here"));
 		add(placeHolder3, "wrap");
 		
-		setSize(320, 240);
+		setSize(800, 600);
 		setVisible(true);
+		setResizable(false);
+		lights3D.init();
 		gui.init();
 		
 		Animation a = new ExampleAnimation(ptr.getModel(), raster, smr);
