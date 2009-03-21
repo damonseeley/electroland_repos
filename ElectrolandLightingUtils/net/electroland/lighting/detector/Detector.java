@@ -12,8 +12,10 @@ public class Detector {
 	protected DetectionModel model;
 	protected String patchgroup;
 	protected int channel;
+	protected byte lastEvaluatedValue;
 
-	public Detector(int x, int y, int width, int height, DetectionModel model){
+	public Detector(int x, int y, int width, int height, DetectionModel model)
+	{
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -21,7 +23,8 @@ public class Detector {
 		this.model = model;
 	}
 
-	public Detector(int x, int y, int width, int height, DetectionModel model, String patchgroup, int channel){
+	public Detector(int x, int y, int width, int height, DetectionModel model, String patchgroup, int channel)
+	{
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -31,38 +34,51 @@ public class Detector {
 		this.channel = channel;
 	}
 
-	public int getX() {
-		return x;
+	final public int getX()
+	{
+		return this.x;
 	}
 
-	public int getY() {
-		return y;
+	final public int getY()
+	{
+		return this.y;
 	}
 
-	public int getWidth() {
-		return width;
+	final public int getWidth()
+	{
+		return this.width;
 	}
 
-	public int getHeight() {
-		return height;
+	final public int getHeight()
+	{
+		return this.height;
 	}
 
-	public void scale(double scalePositions, double scaleDimensions){
+	final public byte getLastEvaluatedValue()
+	{
+		return this.lastEvaluatedValue;
+	}
+
+	final public void scale(double scalePositions, double scaleDimensions)
+	{
 		this.x = (int)(this.x * scalePositions);
 		this.y = (int)(this.y * scalePositions);
 		this.width = (int)(this.width * scaleDimensions);
 		this.height = (int)(this.height * scaleDimensions);
 	}
 	
-	public String getPatchgroup(){
-		return patchgroup;
+	final public String getPatchgroup()
+	{
+		return this.patchgroup;
 	}
 	
-	public DetectionModel getModel() {
-		return model;
+	final public DetectionModel getModel()
+	{
+		return this.model;
 	}
 
-	public String toString(){
+	public String toString()
+	{
 		StringBuffer sb = new StringBuffer("Detector=[x=");
 		sb.append(x).append(",y=").append(y).append(",width=");
 		sb.append(width).append(",height=").append(height).append(",model=");

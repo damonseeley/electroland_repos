@@ -41,7 +41,7 @@ public class HaleUDPRecipient extends Recipient {
 		protocolAndData[1] = (byte)0;
 		protocolAndData[protocolAndData.length - 1] = (byte)254;
 
-		if (true)
+		if (log)
 		{
 			System.out.println(this.id + " at IP " + 
 								this.ipStr + ":" + 
@@ -62,8 +62,8 @@ public class HaleUDPRecipient extends Recipient {
 					e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
-				}				
-			}				
-		}		
+				}
+			}
+		}
 	}
 }
