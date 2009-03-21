@@ -1,0 +1,102 @@
+Electroland Blob Tracking Documentation
+
+For a quick start see
+	net.electroland.blobDetection.example.TrackExample.java
+	
+	
+The blob tracker works as follows:
+
+1) The image is received from the Axis cam (or other source)
+2) The processed by BlobTracker.java as follows:
+	a) background subtraction and thresholding to detect pixels with changes
+	b) contiguous pixels with change are determined to be in the same blob
+	c) blobs that are too small or too big are thrown out as noise
+3) The blobs are sent to Tracker.java
+	a) tracker maintains a list of existing tracks
+	b) detected blobs are matched to tracks
+	c) "provisional tracks" are created for unmatched blobs
+	d) tracks remain provisional for a set amount of frames
+	e) tracks that go unmatched for a set number of frames are deleted
+4) Results are sent to registered track listeners.
+    Note: new tracks are listed twice - once among new tracks and again with the existing tracks
+    
+    
+** Properties **
+
+The main method of BlobkTrackerServer takes a property file filename as an argument (as does the TrackExample). 
+If no property is provided the class looks for blobTracker.props (and if that isn't found it uses default values).
+
+** Console/Graphics **
+These are either true or false
+	showGraphics=true   // show the video window and allow interactive control
+	showConsole=true    // show the console (displays std out and err)
+
+The graphics provides some interactive control (mostly over image processing settings).
+For a list of controls type '?' to save current settings type 's'
+
+** Video Source **
+	camera=axis  // use this for axis cameras else jmyron
+	axisUsername=root //user name for axis cam
+	axisIP=10.0.1.90 // ip for axis cam
+	axisPassword=n0h0 // pw for axis cam
+	srcWidth=320 // width of image requested from axis
+	srcHeight=240 // hieght of image requested from axis
+
+** Image Processing **
+
+The image processing is the same as the other Elvis derived projects.  The following properties are used:
+
+	adaptation=0.0010 // background adaptation rate
+	threshold=1300 // threshold for detecting difference
+
+These values should probably be set interactively using showGraphics=ture
+
+** Blob Detection **
+Contiguous pixels above the threshold are considered to be in the same blob.
+	
+Once a blob is detected is center (and bounds) is computed.
+The image can be split into multiple non-overlapping regions (eg sidewalk an street).
+Regions are defined by the image defined in the regionMap property:
+	regionMap=regionMap.png
+Each unique color in the regionMap defined a region.  Regions are numbered
+as the occur left to right, top to bottom.  (Eg the color of the top left pixel defines region 0)
+
+After blobs are detected ones that are too small or too big are eliminated as noise/errors.
+These values are set via:
+	minBlobSize0=50  // size in pixels
+	maxBlobSize0=400 // size in pixels
+These values are region specific so its really (minBlobSize0, minBlobSize1, ...)
+ 		
+** Tracking **
+
+There are a number of region specific settings that can effect the quality of tracking.
+
+	maxTrackMove0=25
+The is the largest number of pixels a tracked object can be expected to move in a frame.
+You should set this value as small as possible (while not eliminating valid movements) 
+
+When a new track is created it is initially labeled "provisional."  
+	framesUntilCertainTrack0=20
+This is the number of frames a track should be tracked before being upgraded to a non-provisional track.
+
+	framesUntilDeleteTrack0=150
+This is the number of frames a track should go un-matched with a blob before its considered lost and deleted
+	
+When the tracker is trying to match blobs to tracks it initially does a "greedy" match going through all the tracks in order matchnig each one to the closest unmached blob. 
+This may not result in an optimal match so the tracker continues to try to optimize the matching until the next frame comes in.
+Optimality is defined by the sum of the distances between each track and blob.
+Blobs matched to provisional tracks have an added penalty in order to bias the matching towards non-provisional tracks.
+The provisional penalty is defined with the property
+	nonMatchPenalty0=25.0
+New tracks are created for all unmatched blobs.  A non match penalty is added for each unmatched blob and track (Again to bias the match to make as many matches as possible).  It is defined as
+	nonMatchPenalty0=50.0
+
+I would suggest making the provisionalPentaly greater than or equal to the maxTrackMove0.
+The nonMathcPentaly should be larger than the provisionalPentaly.
+
+If its wasn't clear before all the properties with a 0 on the end are region specific.  There should be one per region.
+
+Questions?  Feel free to contact me @ eitan@cs.ucla.edu
+
+
+

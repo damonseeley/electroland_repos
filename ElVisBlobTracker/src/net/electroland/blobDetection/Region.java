@@ -1,0 +1,28 @@
+package net.electroland.blobDetection;
+
+import net.electroland.blobTracker.util.ElProps;
+
+public class Region {
+
+	public int id;
+	public int minBlobSize;
+	public int maxBlobSize;
+	public float maxTrackMove;
+	public float nonMatchPenalty;
+	public float provisionalPentaly;
+	
+	public int framesUntilCertainTrack;
+	public int framesUntilDeleteTrack; // persistance
+	
+	public Region(int i) {
+		id = i;
+		minBlobSize = ElProps.THE_PROPS.getProperty("minBlobSize" + i, 50);
+		maxBlobSize = ElProps.THE_PROPS.getProperty("maxBlobSize" + i, 400);
+		maxTrackMove = ElProps.THE_PROPS.getProperty("maxTrackMove" + i, 25);
+		nonMatchPenalty = ElProps.THE_PROPS.getProperty("nonMatchPenalty" + i, 2.0f * maxTrackMove);
+		provisionalPentaly = ElProps.THE_PROPS.getProperty("provisionalPentaly" + i, maxTrackMove);
+		framesUntilCertainTrack = ElProps.THE_PROPS.getProperty("framesUntilCertainTrack" + i, 20);
+		framesUntilDeleteTrack = ElProps.THE_PROPS.getProperty("framesUntilDeleteTrack" + i, 40);
+	}
+
+}
