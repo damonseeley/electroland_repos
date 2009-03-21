@@ -7,7 +7,9 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.electroland.lighting.detector.animation.Raster;
 
@@ -30,6 +32,7 @@ public abstract class Recipient
 	protected String ipStr, id;
 	protected int port, channels;
 	protected List <Detector> detectors;
+	protected Map <Detector, Byte> lastEvals;
 	protected Dimension preferredDimensions; // for generating raster properly.
 	protected String patchgroup;
 	protected boolean detectorsOn = true;
@@ -71,6 +74,7 @@ public abstract class Recipient
 	{
 		this.channels = channels;
 		this.detectors = Collections.synchronizedList(new ArrayList<Detector>(channels));
+		lastEvals = new HashMap<Detector, Byte>();
 		for (int i = 0; i < channels; i++){
 			detectors.add(null);
 		}
@@ -86,6 +90,7 @@ public abstract class Recipient
 	final public void setChannelDetector(int channel, Detector detector) throws ArrayIndexOutOfBoundsException, NullPointerException
 	{
 		detectors.set(channel, detector);
+		lastEvals.put(detector, new Byte((byte)0));
 	}
 
 	final public void scale(double scaleDimensions)
@@ -131,6 +136,7 @@ public abstract class Recipient
 						subraster.updatePixels();
 						subraster.loadPixels();
 						data[i] = (byte)detector.model.getValue(subraster.pixels);
+						lastEvals.put(detector, new Byte(data[i]));
 					}
 				}
 			}
@@ -165,14 +171,19 @@ public abstract class Recipient
 						}
 
 						data[i] = (byte)detector.model.getValue(pixels);
-						detector.lastEvaluatedValue = data[i];
+						lastEvals.put(detector, new Byte(data[i]));
 					}
 				}
 			}
 			send(data);
 		}
 	}
-	
+
+	final public Byte getLastEvaluatedValue(Detector detector)
+	{
+		return this.lastEvals.get(detector);
+	}
+
 	final public void toggleDetectors()
 	{
 		detectorsOn = !detectorsOn;

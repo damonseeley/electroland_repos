@@ -12,7 +12,6 @@ public class Detector {
 	protected DetectionModel model;
 	protected String patchgroup;
 	protected int channel;
-	protected byte lastEvaluatedValue;
 
 	public Detector(int x, int y, int width, int height, DetectionModel model)
 	{
@@ -52,11 +51,6 @@ public class Detector {
 	final public int getHeight()
 	{
 		return this.height;
-	}
-
-	final public byte getLastEvaluatedValue()
-	{
-		return this.lastEvaluatedValue;
 	}
 
 	final public void scale(double scalePositions, double scaleDimensions)
