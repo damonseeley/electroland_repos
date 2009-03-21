@@ -2,6 +2,7 @@ package net.electroland.enteractive.core;
 
 import java.applet.Applet;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -105,8 +106,11 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		Raster raster = getRaster();
 		((GUI)gui).setRaster(raster);
 		
+		JPanel lightspanel = new JPanel();
+		lightspanel.setMinimumSize(new Dimension(600,600));
 		lights3D = new Lights3D(600,600);
-		add(lights3D, "west");
+		lightspanel.add(lights3D, "west");
+		add(lightspanel, "west");
 		//add(gui, "wrap");
 		
 		JPanel placeHolder1 = new JPanel();
@@ -127,7 +131,7 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		placeHolder3.add(new JLabel("Audio Levels Go Here"));
 		add(placeHolder3, "wrap");
 		
-		setSize(800, 600);
+		setSize(800, 640);
 		setVisible(true);
 		setResizable(false);
 		lights3D.init();
