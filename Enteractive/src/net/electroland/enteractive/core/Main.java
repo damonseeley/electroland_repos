@@ -1,7 +1,11 @@
 package net.electroland.enteractive.core;
 
+import java.applet.Applet;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -10,7 +14,12 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Properties;
+
+import javax.swing.JApplet;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 import processing.core.PConstants;
 import net.electroland.enteractive.gui.GUI;
 import net.electroland.enteractive.gui.GUIWindow;
@@ -27,6 +36,7 @@ import net.electroland.lighting.detector.animation.Raster;
 import net.electroland.udpUtils.TCUtil;
 import net.electroland.udpUtils.UDPParser;
 import net.electroland.util.OptionException;
+import net.miginfocom.swing.MigLayout;
 
 @SuppressWarnings("serial")
 public class Main extends JFrame implements AnimationListener, ActionListener, TimedEventListener{
@@ -36,15 +46,16 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 	private AnimationManager amr;
 	private SoundManager smr;
 	private Model m;
-	private GUIWindow guiWindow;
+	private GUI gui;
 	private TCUtil tcu;
 	private PersonTracker ptr;
 	private UDPParser udp;
 	private Properties lightProps;
-	private int guiWidth = 348;	// TODO get from properties
-	private int guiHeight = 220;
+	private int guiWidth = 180;	// TODO get from properties
+	private int guiHeight = 110;
 	
 	public Main(String[] args) throws UnknownHostException, OptionException{
+		super("Enteractive Control Panel");
 		try{
 			lightProps = new Properties();
 			lightProps.load(new FileInputStream(new File("lights.properties")));
@@ -55,14 +66,18 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		}
 		int fps = Integer.parseInt(lightProps.getProperty("fps"));
 		
+		MigLayout layout = new MigLayout();
+		setLayout(layout);
+		//JPanel p = new JPanel(new MigLayout("", "[right]"));
+		//add(p);
+		
 		dmr = new DetectorManager(lightProps); 				// requires loading properties
 		dmp = new DetectorManagerJPanel(dmr);				// panel that renders the filters
 		amr = new AnimationManager(dmp, fps);				// animation manager
 		amr.addListener(this);								// let me know when animations are complete
 		//smr = new SoundManager(null);
 		smr = null;
-		this.add(dmp);
-		this.setVisible(true);
+		//add(dmp,"wrap");
 		
 		tcu = new TCUtil();									// tile controller utilities
 		ptr = new PersonTracker(16,11);						// person tracker manages the model (x/y tile dimensions)
@@ -77,11 +92,40 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		}
 		
 		Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){tcu.billyJeanMode();}});
+		
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {		// when the X is hit in the frame
+				System.exit(0);								// closes app
+			}
+		});
 
-		guiWindow = new GUIWindow(guiWidth,guiHeight);
-		guiWindow.setVisible(true);
+		gui = new GUI(guiWidth,guiHeight);
 		Raster raster = getRaster();
-		((GUI)guiWindow.gui).setRaster(raster);
+		((GUI)gui).setRaster(raster);
+		
+		JPanel placeHolder1 = new JPanel();
+		placeHolder1.setSize(100, 100);
+		placeHolder1.setBackground(new Color(0, 150, 200));
+		placeHolder1.add(new JLabel("3d Goes Here"));
+		add(placeHolder1, "west");
+		
+		add(gui, "wrap");
+		
+		JPanel placeHolder2 = new JPanel();
+		placeHolder2.setSize(100, 100);
+		placeHolder2.setBackground(new Color(200, 200, 200));
+		placeHolder2.add(new JLabel("Controls Go Here"));
+		add(placeHolder2, "wrap");
+		
+		JPanel placeHolder3 = new JPanel();
+		placeHolder3.setSize(100, 100);
+		placeHolder3.setBackground(new Color(150, 150, 150));
+		placeHolder3.add(new JLabel("Audio Levels Go Here"));
+		add(placeHolder3, "wrap");
+		
+		setSize(320, 240);
+		setVisible(true);
+		gui.init();
 		
 		Animation a = new ExampleAnimation(ptr.getModel(), raster, smr);
 		Collection<Recipient> fixtures = dmr.getRecipients();
@@ -106,7 +150,7 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		float multiplier = Float.parseFloat(lightProps.getProperty("rasterDimensionScaling"));
 		int width = (int)(Integer.parseInt(dimensions[1]) * multiplier);
 		int height = (int)(Integer.parseInt(dimensions[3]) * multiplier);
-		return new Raster(guiWindow.gui.createGraphics(width, height, PConstants.P3D));
+		return new Raster(gui.createGraphics(width, height, PConstants.P3D));
 	}
 	
 	public Properties loadProperties(String args[]) {

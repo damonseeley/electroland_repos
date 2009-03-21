@@ -65,8 +65,6 @@ public class GUI extends PApplet implements WidgetListener{
 		background(30);
 		noFill();
 		stroke(50);
-		rect(8,8,325,199);
-		translate(10, 10);
 		drawTiles();
 		/*
 		fill(255);
@@ -90,7 +88,7 @@ public class GUI extends PApplet implements WidgetListener{
 		if(raster != null){
 			if(raster.isProcessing()){
 				PImage image = (PImage)raster.getRaster();
-				image(image, 10, 10);
+				image(image, 0, 0);
 				/*
 				for(int y=0; y<image.height; y++){
 					for(int x=0; x<image.width; x++){
