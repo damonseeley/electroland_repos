@@ -1,11 +1,11 @@
 package net.electroland.lighting.detector;
 
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,7 +24,6 @@ import processing.core.PImage;
  */
 public abstract class Recipient 
 {
-
 	static Logger logger = Logger.getLogger(Recipient.class);
 
 	protected InetAddress ip;
@@ -34,7 +33,7 @@ public abstract class Recipient
 	protected Dimension preferredDimensions; // for generating raster properly.
 	protected String patchgroup;
 	protected boolean detectorsOn = true;
-	protected boolean log; 
+	protected boolean log;
 
 	/**
 	 * @param universe - the byte id of this lighting fixtures DMX universe
@@ -68,14 +67,15 @@ public abstract class Recipient
 		this.patchgroup = patchgroup;
 	}
 
-	private void setChannels(int channels){
+	private void setChannels(int channels)
+	{
 		this.channels = channels;
 		this.detectors = Collections.synchronizedList(new ArrayList<Detector>(channels));
 		for (int i = 0; i < channels; i++){
 			detectors.add(null);
 		}
 	}
-	
+
 	/**
 	 * Implement this.
 	 * 
@@ -83,11 +83,13 @@ public abstract class Recipient
 	 */
 	abstract void send(byte[] data);
 
-	final public void setChannelDetector(int channel, Detector detector) throws ArrayIndexOutOfBoundsException, NullPointerException{
-		detectors.add(channel, detector);
+	final public void setChannelDetector(int channel, Detector detector) throws ArrayIndexOutOfBoundsException, NullPointerException
+	{
+		detectors.set(channel, detector);
 	}
 
-	final public void scale(double scaleDimensions){
+	final public void scale(double scaleDimensions)
+	{
 		this.preferredDimensions.width = (int)(this.preferredDimensions.width * scaleDimensions);
 		this.preferredDimensions.height = (int)(this.preferredDimensions.height * scaleDimensions);
 	}
@@ -147,12 +149,10 @@ public abstract class Recipient
 
 			for (int i = 0; i < data.length; i++)
 			{
-				data[i] = 0;// unnecessary?
-
 				if (i < detectors.size())
 				{
 					Detector detector = detectors.get(i);
-					
+
 					if (detector != null)
 					{
 						int pixels[] = new int[detector.width * detector.height];
@@ -163,8 +163,9 @@ public abstract class Recipient
 						}catch(ArrayIndexOutOfBoundsException e){
 							// Coordinate out of bounds! (just ignore)
 						}
-						
+
 						data[i] = (byte)detector.model.getValue(pixels);
+						detector.lastEvaluatedValue = data[i];
 					}
 				}
 			}
@@ -177,16 +178,16 @@ public abstract class Recipient
 		detectorsOn = !detectorsOn;
 	}
 
-	public int getChannels()
+	final public int getChannels()
 	{
 		return channels;
 	}
-	
-	public List<Detector> getDetectors()
+
+	final public List<Detector> getDetectors()
 	{
 		return detectors;
 	}
-	
+
 	final public InetAddress getIp()
 	{
 		return ip;
@@ -212,7 +213,7 @@ public abstract class Recipient
 		return preferredDimensions;
 	}
 
-	public void setLog(boolean log)
+	final public void setLog(boolean log)
 	{
 		this.log = log;
 	}
