@@ -241,6 +241,12 @@ public abstract class Recipient
 		return sb.toString();
 	}
 
+	public static String bytesToHex(byte b)
+	{
+		return Integer.toHexString((b&0xFF) | 0x100).substring(1,3) + " ";
+	}
+
+
 	public static String bytesToHex(byte[] b, int length)
 	{
 		StringBuffer sb = new StringBuffer();
