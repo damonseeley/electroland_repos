@@ -38,16 +38,12 @@ public class Lights3D extends PApplet{
 		rotateY(-radians(rotY));
 		rotateX(-radians(rotX));
 		scale(zoom);
-		pushMatrix();
 		stroke(255,0,0);
 		noFill();
+		translate(-tileSize*floorWidth/2, -tileSize*floorHeight/2);
 		drawFloor();
-		popMatrix();
-		pushMatrix();
-		stroke(255,0,0);
-		noFill();
+		translate(-12,0,24);
 		drawFace();
-		popMatrix();
 		  
 		rotX += velX;
 		rotY += velY;
@@ -67,7 +63,6 @@ public class Lights3D extends PApplet{
 	
 	public void drawFace(){
 		rotateX(radians(90));
-		translate(-tileSize*faceWidth/2, tileSize*faceHeight/2, tileSize*floorHeight/2);
 		for(int y=0; y<faceHeight; y++){
 			for(int x = 0; x<faceWidth; x++){
 				rect(x*12, y*24, 10, 10);
@@ -76,7 +71,6 @@ public class Lights3D extends PApplet{
 	}
 	
 	public void drawFloor(){
-		translate(-tileSize*floorWidth/2, -tileSize*floorHeight/2);
 		for(int y=0; y<floorHeight; y++){
 			for(int x = 0; x<floorWidth; x++){
 				rect(x*12, y*12, 10, 10);
