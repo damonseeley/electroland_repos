@@ -1,6 +1,7 @@
 package net.electroland.enteractive.gui;
 
 import java.util.Iterator;
+import java.util.ListIterator;
 
 import net.electroland.lighting.detector.Detector;
 import net.electroland.lighting.detector.Recipient;
@@ -92,17 +93,24 @@ public class Lights3D extends PApplet{
 	}
 	
 	public void drawFloor(){
-		/*
+		
 		try{
-			Iterator<Detector> i = floor.getDetectors().iterator();
+			ListIterator<Detector> i = floor.getDetectorPatchList();
+			int channel = 0;
 			while(i.hasNext()){
-				int val = floor.getLastEvaluatedValue(i.next()) & 0xFF;
-				//System.out.println(val);
+				Detector d = i.next();
+				System.out.print("value for channel " + (channel++) + "=");
+				if (d != null){
+					int val = floor.getLastEvaluatedValue(i.next()) & 0xFF;
+					System.out.println(val);
+				}else{
+					System.out.println("- no detector -");
+				}
 			}
 		} catch(NullPointerException e){
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
-		*/
+	
 		
 		for(int y=0; y<floorHeight; y++){
 			for(int x = 0; x<floorWidth; x++){

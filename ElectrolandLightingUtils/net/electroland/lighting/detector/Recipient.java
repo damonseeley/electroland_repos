@@ -5,10 +5,10 @@ import java.awt.image.BufferedImage;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import net.electroland.lighting.detector.animation.Raster;
@@ -194,9 +194,9 @@ public abstract class Recipient
 		return channels;
 	}
 
-	final public List<Detector> getDetectors()
+	final public ListIterator<Detector> getDetectorPatchList()
 	{
-		return detectors;
+		return detectors.listIterator();
 	}
 
 	final public InetAddress getIp()
