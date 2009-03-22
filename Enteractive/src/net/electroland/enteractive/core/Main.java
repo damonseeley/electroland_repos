@@ -85,8 +85,7 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-		
-		Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){tcu.billyJeanMode();}});
+		//Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){tcu.billyJeanMode();}});
 		
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {		// when the X is hit in the frame

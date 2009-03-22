@@ -146,10 +146,15 @@ public class TCUtil {
 		}
 	}
 	
-	public void sendOffsetPacket(TileController tc){
-		byte[] buf = HexUtils.hexToBytes(startByte +" "+ offsetByte +" 00 "+ Integer.toHexString(tc.getOffset()-1) +" "+ endByte);	// from 1-based to 0-based
+	public void sendOffsetPacket(TileController tc){		
+		byte[] buf = new byte[5];
+		buf[0] = (byte)255;
+		buf[1] = (byte)128;
+		buf[2] = (byte)(tc.getOffset() - 1); //tc.getOffset() -1 (< 253)
+		buf[3] = (byte)0; // this is wrong.  it should be tc.getOffset() - 1 - 253
+		buf[4] = (byte)254;
+		System.out.println(HexUtils.bytesToHex(buf, buf.length));
 		send(tc.getAddress(), buf);
-		//System.out.println("offset packet sent to TC "+tc.getID());
 	}
 	
 	public void send(String ip, byte[] buf){
