@@ -41,12 +41,12 @@ public class Lights3D extends PApplet{
 	}
 	
 	public void draw(){
-		background(0);
+		background(50);
 		translate(width/2, height/1.5f);
 		rotateY(-radians(rotY));
 		rotateX(-radians(rotX));
 		scale(zoom);
-		stroke(255,0,0);
+		//stroke(255,0,0);
 		noFill();
 		translate(-tileSize*floorWidth/2, -tileSize*floorHeight/2);
 		drawFloor();
@@ -84,11 +84,35 @@ public class Lights3D extends PApplet{
 			translate(-tileSize*floorWidth/4, tileSize*floorWidth/4, 0);
 		}
 		
+		try{
+			ListIterator<Detector> i = face.getDetectorPatchList().listIterator();
+			int channel = 0;
+			while(i.hasNext()){
+				Detector d = i.next();
+				//System.out.print("value for channel " + (channel++) + "=");
+				if (d != null){
+					int val = face.getLastEvaluatedValue(i.next()) & 0xFF;
+					int x = channel % faceWidth;
+					int y = channel / faceWidth;
+					stroke(val,0,0);
+					rect(x*12, y*12, 10, 10);
+					System.out.println(channel +" "+ val);
+				}else{
+					//System.out.println("- no detector -");
+				}
+				channel++;
+			}
+		} catch(NullPointerException e){
+			e.printStackTrace();
+		}
+		
+		/*
 		for(int y=0; y<faceHeight; y++){
 			for(int x = 0; x<faceWidth; x++){
 				rect(x*12, y*24, 10, 10);
 			}
 		}
+		*/
 		
 	}
 	
@@ -99,12 +123,12 @@ public class Lights3D extends PApplet{
 			int channel = 0;
 			while(i.hasNext()){
 				Detector d = i.next();
-				System.out.print("value for channel " + (channel++) + "=");
+				//System.out.print("value for channel " + (channel++) + "=");
 				if (d != null){
 					int val = floor.getLastEvaluatedValue(i.next()) & 0xFF;
-					System.out.println(val);
+					//System.out.println(val);
 				}else{
-					System.out.println("- no detector -");
+					//System.out.println("- no detector -");
 				}
 			}
 		} catch(NullPointerException e){
