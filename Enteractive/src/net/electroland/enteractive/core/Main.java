@@ -125,8 +125,10 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 				lights3D.setVisible(false);
 			} else if(event[1].equals("1")){
 				lights3D.setVisible(true);
+				lights3D.setMode(1);
 			} else if(event[1].equals("2")){
 				lights3D.setVisible(true);
+				lights3D.setMode(2);
 			}
 		}
 		//Animation next = new AnotherAnimation(m, getRaster(), smr); 			// some fake animation

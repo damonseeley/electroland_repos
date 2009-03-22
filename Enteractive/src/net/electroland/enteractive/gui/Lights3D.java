@@ -17,6 +17,7 @@ public class Lights3D extends PApplet{
 	private boolean dampening = true;
 	private int tileSize = 10;
 	private Recipient floor, face;
+	private boolean faceMode = false;
 	
 	public Lights3D(int width, int height, Recipient floor, Recipient face){
 		this.width = width;
@@ -67,8 +68,20 @@ public class Lights3D extends PApplet{
 		  }
 	}
 	
+	public void setMode(int mode){
+		if(mode == 1){
+			faceMode = false;
+		} else if (mode == 2){
+			faceMode = true;
+		}
+	}
+	
 	public void drawFace(){
 		rotateX(radians(90));
+		if(faceMode){
+			rotateY(radians(90));
+			translate(-tileSize*floorWidth/4, tileSize*floorWidth/4, 0);
+		}
 		
 		for(int y=0; y<faceHeight; y++){
 			for(int x = 0; x<faceWidth; x++){
