@@ -50,7 +50,7 @@ public class Lights3D extends PApplet{
 		noFill();
 		translate(-tileSize*floorWidth/2, -tileSize*floorHeight/2);
 		drawFloor();
-		translate(-12,0,24);
+		translate(-12,0,150);
 		drawFace();
 		  
 		rotX += velX;
@@ -78,10 +78,10 @@ public class Lights3D extends PApplet{
 	}
 	
 	public void drawFace(){
-		rotateX(radians(90));
+		rotateX(radians(-90));
 		if(faceMode){
-			rotateY(radians(90));
-			translate(-tileSize*floorWidth/4, tileSize*floorWidth/4, 0);
+			rotateY(radians(-90));
+			translate(-tileSize*floorWidth/4, -tileSize*floorWidth/2, 0);
 		}
 		
 		try{
@@ -91,11 +91,11 @@ public class Lights3D extends PApplet{
 				Detector d = i.next();
 				//System.out.print("value for channel " + (channel++) + "=");
 				if (d != null){
-					int val = face.getLastEvaluatedValue(i.next()) & 0xFF;
+					int val = face.getLastEvaluatedValue(d) & 0xFF;
 					int x = channel % faceWidth;
 					int y = channel / faceWidth;
 					stroke(val,0,0);
-					rect(x*12, y*12, 10, 10);
+					rect(x*12, y*24, 10, 10);
 					System.out.println(channel +" "+ val);
 				}else{
 					//System.out.println("- no detector -");
@@ -125,7 +125,7 @@ public class Lights3D extends PApplet{
 				Detector d = i.next();
 				//System.out.print("value for channel " + (channel++) + "=");
 				if (d != null){
-					int val = floor.getLastEvaluatedValue(i.next()) & 0xFF;
+					int val = floor.getLastEvaluatedValue(d) & 0xFF;
 					//System.out.println(val);
 				}else{
 					//System.out.println("- no detector -");
