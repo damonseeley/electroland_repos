@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import net.electroland.lighting.detector.animation.Raster;
@@ -194,9 +193,9 @@ public abstract class Recipient
 		return channels;
 	}
 
-	final public ListIterator<Detector> getDetectorPatchList()
+	final public List<Detector> getDetectorPatchList()
 	{
-		return detectors.listIterator();
+		return detectors;
 	}
 
 	final public InetAddress getIp()

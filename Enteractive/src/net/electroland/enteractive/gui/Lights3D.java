@@ -95,7 +95,7 @@ public class Lights3D extends PApplet{
 	public void drawFloor(){
 		
 		try{
-			ListIterator<Detector> i = floor.getDetectorPatchList();
+			ListIterator<Detector> i = floor.getDetectorPatchList().listIterator();
 			int channel = 0;
 			while(i.hasNext()){
 				Detector d = i.next();
