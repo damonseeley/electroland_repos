@@ -67,8 +67,6 @@ public class ExampleAnimation implements Animation {
 			*/
 			
 			Cross cross = new Cross(r, 1, 1, 3, 3);		// 3x3 cross
-			cross.moveTo(9,6);
-			cross.draw();
 			boolean[] sensorlist = m.getSensors();
 			for(int i=0; i<sensorlist.length; i++){	// sensorlist is 16x11
 				if(sensorlist[i]){

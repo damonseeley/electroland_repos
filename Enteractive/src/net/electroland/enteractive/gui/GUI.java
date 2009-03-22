@@ -3,6 +3,7 @@ package net.electroland.enteractive.gui;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import net.electroland.enteractive.gui.widgets.Button;
 import net.electroland.enteractive.gui.widgets.RadioList;
@@ -10,6 +11,8 @@ import net.electroland.enteractive.gui.widgets.Slider;
 import net.electroland.enteractive.gui.widgets.Widget;
 import net.electroland.enteractive.gui.widgets.WidgetEvent;
 import net.electroland.enteractive.gui.widgets.WidgetListener;
+import net.electroland.lighting.detector.Detector;
+import net.electroland.lighting.detector.Recipient;
 import net.electroland.lighting.detector.animation.Raster;
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -24,10 +27,14 @@ public class GUI extends PApplet implements WidgetListener{
 	private PFont titlefont;
 	private PFont smallfont;
 	private Raster raster;
+	private Recipient floor, face;
+	private int detectorMode = 1;	// 0 disabled, 1 face, 2 floor
 	
-	public GUI(int width, int height){
+	public GUI(int width, int height, Recipient floor, Recipient face){
 		this.width = width;
 		this.height = height;
+		this.floor = floor;
+		this.face = face;
 		widgets = new ArrayList<Widget>();		
 		
 		for(int i=0; i<3; i++){
@@ -65,7 +72,12 @@ public class GUI extends PApplet implements WidgetListener{
 		background(30);
 		noFill();
 		stroke(50);
-		drawTiles();
+		if(raster.isProcessing()){
+			PImage image = (PImage)raster.getRaster();
+			image(image, 0, 0);
+		}
+		drawDetectors();
+		//drawTiles();
 		/*
 		fill(255);
 		textFont(titlefont, 18);
@@ -81,6 +93,35 @@ public class GUI extends PApplet implements WidgetListener{
 		*/
 	}
 	
+	public void drawDetectors(){
+		stroke(255);
+		if(detectorMode == 1){
+			try{
+				ListIterator<Detector> i = face.getDetectorPatchList().listIterator();
+				while(i.hasNext()){
+					Detector d = i.next();
+					if (d != null){
+						point(d.getX(),d.getY());
+					}
+				}
+			} catch(NullPointerException e){
+				e.printStackTrace();
+			}
+		} else if(detectorMode == 2){
+			try{
+				ListIterator<Detector> i = floor.getDetectorPatchList().listIterator();
+				while(i.hasNext()){
+					Detector d = i.next();
+					if (d != null){
+						point(d.getX(),d.getY());
+					}
+				}
+			} catch(NullPointerException e){
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	public void drawTiles(){
 		// TODO need to read raster or detector values to determine color
 		pushMatrix();
@@ -88,8 +129,6 @@ public class GUI extends PApplet implements WidgetListener{
 		if(raster != null){
 			if(raster.isProcessing()){
 				PImage image = (PImage)raster.getRaster();
-				image(image, 0, 0);
-				/*
 				for(int y=0; y<image.height; y++){
 					for(int x=0; x<image.width; x++){
 						int color = image.pixels[(y*image.width) + x];
@@ -97,7 +136,6 @@ public class GUI extends PApplet implements WidgetListener{
 						rect(x*18, y*18, 15, 15);
 					}
 				}
-				*/
 			}
 		}
 		popMatrix();
@@ -105,6 +143,10 @@ public class GUI extends PApplet implements WidgetListener{
 	
 	public void setRaster(Raster raster){
 		this.raster = raster;
+	}
+	
+	public void setDetectorMode(int detectorMode){
+		this.detectorMode = detectorMode;
 	}
 	
 	public void mouseMoved(){

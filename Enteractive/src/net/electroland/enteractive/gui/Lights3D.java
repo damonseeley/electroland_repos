@@ -1,6 +1,5 @@
 package net.electroland.enteractive.gui;
 
-import java.util.Iterator;
 import java.util.ListIterator;
 
 import net.electroland.lighting.detector.Detector;
@@ -46,7 +45,6 @@ public class Lights3D extends PApplet{
 		rotateY(-radians(rotY));
 		rotateX(-radians(rotX));
 		scale(zoom);
-		//stroke(255,0,0);
 		noFill();
 		translate(-tileSize*floorWidth/2, -tileSize*floorHeight/2);
 		drawFloor();
@@ -96,7 +94,7 @@ public class Lights3D extends PApplet{
 					int y = channel / faceWidth;
 					stroke(val,0,0);
 					rect(x*12, y*24, 10, 10);
-					System.out.println(channel +" "+ val);
+					//System.out.println(channel +" "+ val);
 				}else{
 					//System.out.println("- no detector -");
 				}
@@ -126,21 +124,27 @@ public class Lights3D extends PApplet{
 				//System.out.print("value for channel " + (channel++) + "=");
 				if (d != null){
 					int val = floor.getLastEvaluatedValue(d) & 0xFF;
+					int x = channel % floorWidth;
+					int y = channel / floorWidth;
+					stroke(val,0,0);
+					rect(x*12, y*12, 10, 10);
 					//System.out.println(val);
 				}else{
 					//System.out.println("- no detector -");
 				}
+				channel++;
 			}
 		} catch(NullPointerException e){
 			e.printStackTrace();
 		}
 	
-		
+		/*
 		for(int y=0; y<floorHeight; y++){
 			for(int x = 0; x<floorWidth; x++){
 				rect(x*12, y*12, 10, 10);
 			}
 		}
+		*/
 		
 	}
 	

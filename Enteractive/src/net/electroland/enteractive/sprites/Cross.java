@@ -21,18 +21,13 @@ public class Cross extends Sprite{
 	public void draw() {
 		if(raster.isProcessing()){
 			PGraphics c = (PGraphics)canvas;
-			//c.beginDraw();						// may not be necessary since show is required to do this
 			c.pushMatrix();
 			c.rectMode(PConstants.CENTER);			// centered at sprite's X/Y position
 			c.fill(255,0,0);
-			//c.stroke(255,0,0);
 			c.noStroke();
-			// TODO compensating for 18 x 11 raster
-			c.rect(x-1, y-1, width, tileSize);			// horizontal rectangle
-			c.rect(x-1, y-1, tileSize, height);			// vertical rectangle
-			//System.out.println(x +" "+ y +" "+ width +" "+ height);
+			c.rect(x, y, width, tileSize);			// horizontal rectangle
+			c.rect(x, y, tileSize, height);			// vertical rectangle
 			c.popMatrix();
-			//c.endDraw();							// may not be necessary since show is required to do this
 		}
 	}
 

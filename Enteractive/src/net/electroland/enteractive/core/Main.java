@@ -94,7 +94,9 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 			}
 		});
 
-		gui = new GUI(guiWidth,guiHeight);
+
+		lights3D = new Lights3D(600,600, dmr.getRecipient("floor"),  dmr.getRecipient("face"));
+		gui = new GUI(guiWidth,guiHeight, dmr.getRecipient("floor"),  dmr.getRecipient("face"));
 		Raster raster = getRaster();
 		((GUI)gui).setRaster(raster);
 
@@ -102,8 +104,8 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		lights3D.init();
 		gui.init();
 		
-		//Animation a = new ExampleAnimation(ptr.getModel(), raster, smr);
-		Animation a = new LilyPad(ptr.getModel(), raster, smr);
+		Animation a = new ExampleAnimation(ptr.getModel(), raster, smr);
+		//Animation a = new LilyPad(ptr.getModel(), raster, smr);
 		Collection<Recipient> fixtures = dmr.getRecipients();
 		amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
 		amr.goLive(); 										// the whole system does nothing unless you "start" it.
@@ -118,7 +120,7 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 	public void actionPerformed(ActionEvent e) {
 		// TODO this is temporary; needs a better method for transitioning between shows
 		// TODO how to stop an animation by force???
-		System.out.println(e.getActionCommand());
+		//System.out.println(e.getActionCommand());
 		String[] event = e.getActionCommand().split(":");
 		if(event[0].equals("3dmode")){
 			if(event[1].equals("0")){
@@ -130,6 +132,19 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 				lights3D.setVisible(true);
 				lights3D.setMode(2);
 			}
+		} else if(event[0].equals("raster")){
+			if(event[1].equals("0")){
+				gui.setVisible(true);
+				gui.setDetectorMode(0);
+			} else if(event[1].equals("1")){
+				gui.setVisible(true);
+				gui.setDetectorMode(1);
+			} else if(event[1].equals("2")){
+				gui.setVisible(true);
+				gui.setDetectorMode(2);
+			} else if(event[1].equals("-1")){
+				gui.setVisible(false);
+			}
 		}
 		//Animation next = new AnotherAnimation(m, getRaster(), smr); 			// some fake animation
 		//amr.startAnimation(next, new FadeTransition(5), dmr.getFixtures()); 	// some fake transition with a 5 second fade
@@ -140,7 +155,6 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		setLayout(layout);
 		//JPanel lightspanel = new JPanel();
 		//lightspanel.setMinimumSize(new Dimension(600,600));
-		lights3D = new Lights3D(600,600, dmr.getRecipient("floor"),  dmr.getRecipient("face"));
 		add(lights3D, "cell 0 0 1 3");
 		//lightspanel.add(lights3D, "insets 0 0 0 0");
 		//lightspanel.setBackground(new Color(0, 150, 200));
@@ -160,6 +174,7 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 			animationRadioButtons.add(radio);
 			controlPanel.add(radio, "wrap");
 		}
+		
 		controlPanel.add(new JLabel("3D Mode:"), "wrap");
 		ButtonGroup lights3dgroup = new ButtonGroup();
 		JRadioButton comparisonRadio = new JRadioButton("Comparison");
@@ -178,8 +193,36 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		disabledRadio.setActionCommand("3dmode:0");
 		disabledRadio.addActionListener(this);
 		disabledRadio.setSelected(true);
-		lights3dgroup.add(disabledRadio);
+		lights3dgroup.add(disabledRadio);		
 		controlPanel.add(disabledRadio, "wrap");
+		
+		controlPanel.add(new JLabel("Raster Mode:"), "wrap");
+		ButtonGroup rastergroup = new ButtonGroup();
+		JRadioButton faceRadio = new JRadioButton("Face Detectors");
+		faceRadio.setActionCommand("raster:1");
+		faceRadio.addActionListener(this);
+		faceRadio.setSelected(true);
+		rastergroup.add(faceRadio);
+		controlPanel.add(faceRadio, "wrap");
+		JRadioButton floorRadio = new JRadioButton("Floor Detectors");
+		floorRadio.setActionCommand("raster:2");
+		floorRadio.addActionListener(this);
+		floorRadio.setSelected(true);
+		rastergroup.add(floorRadio);
+		controlPanel.add(floorRadio, "wrap");
+		JRadioButton clearRadio = new JRadioButton("No Detectors");
+		clearRadio.setActionCommand("raster:0");
+		clearRadio.addActionListener(this);
+		clearRadio.setSelected(true);
+		rastergroup.add(clearRadio);
+		controlPanel.add(clearRadio, "wrap");
+		JRadioButton norasterRadio = new JRadioButton("Disabled");
+		norasterRadio.setActionCommand("raster:-1");
+		norasterRadio.addActionListener(this);
+		norasterRadio.setSelected(true);
+		rastergroup.add(norasterRadio);
+		controlPanel.add(norasterRadio, "wrap");
+		
 		add(controlPanel, "cell 1 0, width 200!, height 380!, gap 0! 0! 0! 0!");
 		
 		JPanel rasterPanel = new JPanel();
