@@ -1,6 +1,7 @@
 package net.electroland.enteractive.shows;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -10,11 +11,12 @@ import net.electroland.enteractive.core.Model;
 import net.electroland.enteractive.core.Person;
 import net.electroland.enteractive.core.SoundManager;
 import net.electroland.enteractive.core.Sprite;
+import net.electroland.enteractive.core.SpriteListener;
 import net.electroland.enteractive.sprites.Cross;
 import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.Raster;
 
-public class ExampleAnimation implements Animation {
+public class ExampleAnimation implements Animation, SpriteListener {
 
 	private Model m;
 	private Raster r;
@@ -46,27 +48,29 @@ public class ExampleAnimation implements Animation {
 			// presumes that you instantiated Raster with a PGraphics.
 			PGraphics myRaster = (PGraphics)(r.getRaster());
 			myRaster.beginDraw();
-			myRaster.background(0);		// clear the raster
-			
+		
 			/*
-			// TODO PRETTY SURE THIS IS CAUSING THREAD LOCKING
-			
-			HashMap<Integer,Person> enters = m.getEnters();
-			Iterator<Person> iter = enters.values().iterator();
+			// TODO THIS SHOULD BE THE NORMAL WAY TO FIND NEW PEOPLE/CREATE NEW SPRITES
+			HashMap<Integer,Person> people = m.getPeople();
+			Iterator<Person> iter = people.values().iterator();
 			while(iter.hasNext()){
-				// TODO instantiate new sprites here
+				Person p = iter.next();
+				if(p.isNew()){
+					// TODO instantiate new sprites here
+					Cross cross = new Cross(r, p, 1, 1, 3, 3);		// 3x3 cross
+					int[] loc = p.getLoc();
+					//System.out.println(loc[0]+" "+loc[1]);
+					cross.moveTo(loc[0]*tileSize, loc[1]*tileSize);
+					cross.addListener(this);
+					sprites.add(cross);
+				}
 			}
-			//m.clearEnters();	// always clear to prevent double instances
-			
-			HashMap<Integer,Person> exits = m.getExits();
-			Iterator<Person> exititer = exits.values().iterator();
-			while(exititer.hasNext()){
-				// TODO destroy sprites here
-			}
-			//m.clearExits();	// always clear to prevent double removal attempts
 			*/
 			
-			Cross cross = new Cross(r, 1, 1, 3, 3);		// 3x3 cross
+			
+			
+			myRaster.background(0);		// clear the raster
+			Cross cross = new Cross(r, null, 1, 1, 3, 3);		// 3x3 cross
 			boolean[] sensorlist = m.getSensors();
 			for(int i=0; i<sensorlist.length; i++){	// sensorlist is 16x11
 				if(sensorlist[i]){
@@ -79,14 +83,23 @@ public class ExampleAnimation implements Animation {
 			}
 			
 			
+			
 			/*
-			// this is the normal way to draw all sprites
-			Iterator iter = sprites.iterator();
-			while(iter.hasNext()){
-				Sprite sprite = (Sprite)iter.next();
-				sprite.draw();
+			// TODO THIS SHOULD BE THE NORMAL WAY TO DRAW ALL SPRITES
+			try{
+				myRaster.background(0);		// clear the raster
+				Iterator spriteiter = sprites.iterator();
+				while(spriteiter.hasNext()){
+					Sprite sprite = (Sprite)spriteiter.next();
+					sprite.draw();
+				}
+			}catch(ConcurrentModificationException e){
+				// TODO WHY DOES IT THROW THESE ERRORS?
+				//e.printStackTrace();
 			}
 			*/
+			
+			
 			
 			//myRaster.background(255,0,0); // FULLY ON
 			myRaster.endDraw();
@@ -105,5 +118,9 @@ public class ExampleAnimation implements Animation {
 
 	public boolean isDone() {
 		return false;//cycles-- <= 0; // no timeout for now
+	}
+
+	public void spriteComplete(Sprite sprite) {
+		sprites.remove(sprite);
 	}
 }

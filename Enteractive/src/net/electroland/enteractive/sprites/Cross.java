@@ -2,6 +2,7 @@ package net.electroland.enteractive.sprites;
 
 import processing.core.PConstants;
 import processing.core.PGraphics;
+import net.electroland.enteractive.core.Person;
 import net.electroland.enteractive.core.Sprite;
 import net.electroland.lighting.detector.animation.Raster;
 
@@ -11,8 +12,11 @@ import net.electroland.lighting.detector.animation.Raster;
 
 public class Cross extends Sprite{
 	
-	public Cross(Raster raster, int x, int y, int width, int height){
+	private Person person;
+	
+	public Cross(Raster raster, Person person, int x, int y, int width, int height){
 		super(raster, x, y);
+		this.person = person;
 		this.width = tileSize*width;
 		this.height = tileSize*height;				// using tile size to scale sprite size
 	}
@@ -28,6 +32,9 @@ public class Cross extends Sprite{
 			c.rect(x, y, width, tileSize);			// horizontal rectangle
 			c.rect(x, y, tileSize, height);			// vertical rectangle
 			c.popMatrix();
+			if(person != null && person.isDead()){
+				die();
+			}
 		}
 	}
 

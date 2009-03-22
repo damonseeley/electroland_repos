@@ -7,16 +7,16 @@ public class Model {
 	
 	private int personIndex = 0;
 	private HashMap<Integer,Person> people;	// all active people
-	private HashMap<Integer,Person> enters;	// brand new people
-	private HashMap<Integer,Person> exits;		// people who just left
+	//private HashMap<Integer,Person> enters;	// brand new people
+	//private HashMap<Integer,Person> exits;		// people who just left
 	private boolean[] sensors, pastSensors;
 	private int gridWidth;
 	
 	public Model(int gridWidth, int gridHeight){
 		this.gridWidth = gridWidth;
 		people = new HashMap<Integer,Person>();
-		enters = new HashMap<Integer,Person>();
-		exits = new HashMap<Integer,Person>();
+		//enters = new HashMap<Integer,Person>();
+		//exits = new HashMap<Integer,Person>();
 		sensors = new boolean[gridWidth*gridHeight];
 		pastSensors = new boolean[sensors.length];
 		for(int i=0; i<sensors.length; i++){
@@ -35,11 +35,11 @@ public class Model {
 	public void compareSensorStates(int offset, boolean[] newstates, boolean[] oldstates){
 		for(int i=0; i<newstates.length; i++){							// for each sensor...
 			if(!oldstates[i] && newstates[i]){							// if sensor just turned on...
-				int x = i % gridWidth;
-				int y = i / gridWidth;
+				int x = (i % gridWidth) + (offset % gridWidth);
+				int y = offset / gridWidth;
 				Person newperson = new Person(personIndex, offset+i, x+1, y);	// new person at grid x/y
 				people.put(personIndex, newperson);						// add to master people map
-				enters.put(personIndex, newperson);						// add to new enters map
+				//enters.put(personIndex, newperson);						// add to new enters map
 				//System.out.println(personIndex +" added");
 				personIndex++;
 			} else if(oldstates[i] && !newstates[i]){
@@ -55,7 +55,8 @@ public class Model {
 					}
 				}
 				if(id >= 0){
-					exits.put(person.getID(), person);					// add person to the exits map
+					//exits.put(person.getID(), person);					// add person to the exits map
+					person.die();
 					people.remove(person.getID());						// remove person from active people
 					if(!people.containsKey(person.getID())){
 						//System.out.println(person.getID() +" removed");
@@ -74,6 +75,7 @@ public class Model {
 		return people;
 	}
 	
+	/*
 	public HashMap<Integer,Person> getEnters(){
 		// this is for shows to know when to instantiate a sprite
 		return enters;	// should be cleared by the show that calls it
@@ -91,5 +93,6 @@ public class Model {
 	public void clearExits(){
 		exits.clear();
 	}
+	*/
 
 }

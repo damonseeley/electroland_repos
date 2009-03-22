@@ -1,5 +1,6 @@
 package net.electroland.enteractive.core;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,6 +28,7 @@ public abstract class Sprite {
 			canvas = (PGraphics)raster.getRaster();
 		}
 		this.tileSize = (int)(((PGraphics)canvas).height/11.0);
+		listeners = new ArrayList<SpriteListener>();
 	}
 	
 	abstract public void draw();	// show calls this every frame
