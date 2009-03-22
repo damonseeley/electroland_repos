@@ -55,15 +55,17 @@ public class HaleUDPRecipient extends Recipient {
 				try 
 				{
 					socket = new DatagramSocket(port);
-					DatagramPacket packet = new DatagramPacket(protocolAndData, 
-										protocolAndData.length, ip, port);
-					socket.send(packet);
 				} catch (SocketException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
+			DatagramPacket packet = new DatagramPacket(protocolAndData, 
+					protocolAndData.length, ip, port);
+			try {
+				socket.send(packet);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}				
 		}
 	}
 }
