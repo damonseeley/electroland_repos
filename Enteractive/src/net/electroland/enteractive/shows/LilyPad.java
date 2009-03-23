@@ -31,7 +31,6 @@ public class LilyPad implements Animation, SpriteListener {
 	private ConcurrentHashMap<Integer,Sprite> sprites;
 	private ConcurrentHashMap<Integer,Pad> pads;
 	private int spriteIndex = 0;	// used as ID # for sprite
-	private int padCount = 0;		// current number
 	private int maxPads = 7;		// maximum pads at any time
 	private int padDelay = 5;		// mandatory delay between adding new pads
 	private int delayCount = 0;
@@ -64,7 +63,6 @@ public class LilyPad implements Animation, SpriteListener {
 					sprites.put(spriteIndex, pad);
 					pads.put(spriteIndex, pad);
 					delayCount = 0;
-					padCount++;
 					spriteIndex++;
 				}
 			}
@@ -86,9 +84,10 @@ public class LilyPad implements Animation, SpriteListener {
 						if(pad.getX() == p.getX() && pad.getY() == p.getY()){	// if new person on the pad...
 							pads.remove(pad.getID());
 							// TODO create new action sprite here
-							//ImageSprite ripple = new ImageSprite(spriteIndex, r, pad.getX(), pad.getY(), rippleTexture, 0.1f, 0.1f);
-							//sprites.put(spriteIndex, ripple);
-							//spriteIndex++;
+							ImageSprite ripple = new ImageSprite(spriteIndex, r, pad.getX(), pad.getY(), rippleTexture, 0.1f, 0.1f);
+							ripple.addListener(this);
+							sprites.put(spriteIndex, ripple);
+							spriteIndex++;
 							pad.die();
 						}
 					}
