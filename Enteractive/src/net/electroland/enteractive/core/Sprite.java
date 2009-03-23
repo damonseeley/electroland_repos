@@ -19,8 +19,10 @@ public abstract class Sprite {
 	protected Object canvas;		// PGraphics or Graphics object used to draw on
 	protected float x, y, width, height;
 	protected int tileSize;		// size of tile relative to raster pixel dimensions
+	protected int id;
 	
-	public Sprite(Raster raster, int x, int y){
+	public Sprite(int id, Raster raster, float x, float y){
+		this.id = id;
 		this.raster = raster;
 		this.x = x;
 		this.y = y;
@@ -47,6 +49,18 @@ public abstract class Sprite {
 		while (i.hasNext()){
 			i.next().spriteComplete(this);
 		}
+	}
+	
+	public int getID(){
+		return id;
+	}
+	
+	public float getX(){
+		return x;
+	}
+	
+	public float getY(){
+		return y;
 	}
 	
 	final public void moveTo(int x, int y){

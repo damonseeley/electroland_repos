@@ -1,10 +1,10 @@
 package net.electroland.enteractive.shows;
 
-import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+
 import processing.core.PConstants;
 import processing.core.PGraphics;
 import net.electroland.enteractive.core.Model;
@@ -22,21 +22,19 @@ public class ExampleAnimation implements Animation, SpriteListener {
 	private Raster r;
 	private SoundManager sm;
 	private int tileSize;
-	//private int cycles = 600;
-	private List<Sprite> sprites;
+	private ConcurrentHashMap<Integer,Sprite> sprites;
+	private int spriteIndex = 0;
 	
 	public ExampleAnimation(Model m, Raster r, SoundManager sm){
 		this.m = m;
 		this.r = r;
 		this.sm = sm;
 		this.tileSize = (int)(((PGraphics)(r.getRaster())).height/11.0);
-		sprites = new ArrayList<Sprite>();
-		//System.out.println("instantiated.");
+		sprites = new ConcurrentHashMap<Integer,Sprite>();
 	}
 
 	public void initialize() {
-		// play some sound, clear the raster, etc.
-		//System.out.println("initializing.");
+		// TODO play some sound
 		PGraphics myRaster = (PGraphics)(r.getRaster());
 		myRaster.colorMode(PConstants.RGB, 255, 255, 255, 255);
 	}
@@ -49,7 +47,7 @@ public class ExampleAnimation implements Animation, SpriteListener {
 			PGraphics myRaster = (PGraphics)(r.getRaster());
 			myRaster.beginDraw();
 		
-			/*
+			
 			// TODO THIS SHOULD BE THE NORMAL WAY TO FIND NEW PEOPLE/CREATE NEW SPRITES
 			HashMap<Integer,Person> people = m.getPeople();
 			Iterator<Person> iter = people.values().iterator();
@@ -57,18 +55,19 @@ public class ExampleAnimation implements Animation, SpriteListener {
 				Person p = iter.next();
 				if(p.isNew()){
 					// TODO instantiate new sprites here
-					Cross cross = new Cross(r, p, 1, 1, 3, 3);		// 3x3 cross
+					Cross cross = new Cross(spriteIndex, r, p, 1, 1, 3, 3);		// 3x3 cross
 					int[] loc = p.getLoc();
 					//System.out.println(loc[0]+" "+loc[1]);
 					cross.moveTo(loc[0]*tileSize, loc[1]*tileSize);
 					cross.addListener(this);
-					sprites.add(cross);
+					//sprites.add(cross);
+					sprites.put(spriteIndex, cross);
+					spriteIndex++;
 				}
 			}
-			*/
 			
 			
-			
+			/*
 			myRaster.background(0);		// clear the raster
 			Cross cross = new Cross(r, null, 1, 1, 3, 3);		// 3x3 cross
 			boolean[] sensorlist = m.getSensors();
@@ -81,23 +80,24 @@ public class ExampleAnimation implements Animation, SpriteListener {
 					cross.draw();			// draws instance
 				} 
 			}
+			*/
 			
 			
 			
-			/*
+			
 			// TODO THIS SHOULD BE THE NORMAL WAY TO DRAW ALL SPRITES
 			try{
 				myRaster.background(0);		// clear the raster
-				Iterator spriteiter = sprites.iterator();
+				Iterator<Sprite> spriteiter = sprites.values().iterator();
 				while(spriteiter.hasNext()){
 					Sprite sprite = (Sprite)spriteiter.next();
 					sprite.draw();
 				}
 			}catch(ConcurrentModificationException e){
 				// TODO WHY DOES IT THROW THESE ERRORS?
-				//e.printStackTrace();
+				e.printStackTrace();
 			}
-			*/
+			
 			
 			
 			
@@ -121,6 +121,6 @@ public class ExampleAnimation implements Animation, SpriteListener {
 	}
 
 	public void spriteComplete(Sprite sprite) {
-		sprites.remove(sprite);
+		sprites.remove(sprite.getID());
 	}
 }

@@ -11,8 +11,8 @@ import net.electroland.lighting.detector.animation.Raster;
 
 public class Box extends Sprite{
 	
-	public Box(Raster raster, int x, int y, int width, int height){
-		super(raster, x, y);
+	public Box(int id, Raster raster, int x, int y, int width, int height){
+		super(id, raster, x, y);
 		this.width = tileSize*width;
 		this.height = tileSize*height;					// using tile size to scale sprite size
 	}

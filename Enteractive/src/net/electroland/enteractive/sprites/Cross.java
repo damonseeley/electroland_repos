@@ -14,8 +14,8 @@ public class Cross extends Sprite{
 	
 	private Person person;
 	
-	public Cross(Raster raster, Person person, int x, int y, int width, int height){
-		super(raster, x, y);
+	public Cross(int id, Raster raster, Person person, int x, int y, int width, int height){
+		super(id, raster, x, y);
 		this.person = person;
 		this.width = tileSize*width;
 		this.height = tileSize*height;				// using tile size to scale sprite size

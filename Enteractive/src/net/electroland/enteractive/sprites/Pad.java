@@ -13,8 +13,8 @@ public class Pad extends Sprite {
 	private boolean fadeIn, fadeOut;
 	private long startTime;
 
-	public Pad(Raster raster, int x, int y, int minValue, int maxValue, int duration) {
-		super(raster, x, y);
+	public Pad(int id, Raster raster, int x, int y, int minValue, int maxValue, int duration) {
+		super(id, raster, x, y);
 		this.minValue = minValue;
 		this.maxValue = maxValue;
 		this.duration = duration;
@@ -50,7 +50,7 @@ public class Pad extends Sprite {
 			c.rectMode(PConstants.CENTER);			// centered at sprite's X/Y position
 			c.fill(value,0,0);
 			c.noStroke();
-			c.rect((x*tileSize)-1, (y*tileSize)-1, tileSize, tileSize);	// single tile sized square
+			c.rect(x*tileSize, y*tileSize, tileSize, tileSize);	// single tile sized square
 			c.popMatrix();
 		}
 	}

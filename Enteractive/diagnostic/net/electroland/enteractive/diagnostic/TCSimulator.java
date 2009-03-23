@@ -79,14 +79,14 @@ public class TCSimulator extends Thread {
 					}
 				}
 				
-				double offset = Math.random()*22;
+				double offset = (Math.floor(Math.random()*22))*8;
 				String offsetByteA = Integer.toString((int)Math.round(offset));
 				if (offsetByteA.length() == 1){
 					offsetByteA = "0" + offsetByteA;
 				}
 				logger.info(offsetByteA);
 				
-				String fullPacketString = "FF20" + tileStates + offsetByteA + "00" + "FE";
+				String fullPacketString = "FF20" + tileStates + HexUtils.decimalToHex(Integer.parseInt(offsetByteA)) + "00" + "FE";
 				byte[] b = HexUtils.hexToBytes(fullPacketString);
 				sendPacket(b);
 				logger.info("sent " + fullPacketString);

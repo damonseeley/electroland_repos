@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 import processing.core.PConstants;
+import processing.core.PImage;
 import net.electroland.enteractive.gui.GUI;
 import net.electroland.enteractive.gui.Lights3D;
 import net.electroland.enteractive.scheduler.TimedEvent;
@@ -103,8 +104,11 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		lights3D.init();
 		gui.init();
 		
-		Animation a = new ExampleAnimation(ptr.getModel(), raster, smr);
-		//Animation a = new LilyPad(ptr.getModel(), raster, smr);
+		// LOAD IMAGE SPRITES FOR SHOWS
+		PImage rippleTexture = gui.loadImage("depends//images//ripple.png");
+		
+		//Animation a = new ExampleAnimation(ptr.getModel(), raster, smr);
+		Animation a = new LilyPad(ptr.getModel(), raster, smr, rippleTexture);
 		Collection<Recipient> fixtures = dmr.getRecipients();
 		amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
 		amr.goLive(); 										// the whole system does nothing unless you "start" it.

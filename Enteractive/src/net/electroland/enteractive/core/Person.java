@@ -48,6 +48,14 @@ public class Person {
 		this.y = y;
 	}
 	
+	public int getX(){
+		return x;
+	}
+	
+	public int getY(){
+		return y;
+	}
+	
 	public int[] getLoc(){
 		int[] loc = new int[2];
 		loc[0] = x;
