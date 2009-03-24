@@ -10,21 +10,25 @@ public class ImageSprite extends Sprite {
 	private PImage image;
 	private int imageWidth, imageHeight;
 	private boolean expand, fadeOut;
-	private int expansionSpeed, fadeSpeed;
+	private int duration;
+	private int startSize, endSize;
 	private int alpha = 255;
+	private long startTime;
 
 	public ImageSprite(int id, Raster raster, float x, float y, PImage image, float imageWidth, float imageHeight) {
 		super(id, raster, x, y);
-		this.image = image;
+		this.image = image;			// percent of raster height as a float
 		if(raster.isProcessing()){
 			PGraphics c = (PGraphics)canvas;
 			this.imageWidth = (int)(imageWidth*c.height);		// always compare ratio to canvas HEIGHT
 			this.imageHeight = (int)(imageHeight*c.height);
+			this.startSize = this.imageWidth;
+			this.endSize = c.height*2;
 		}
 		expand = true;
-		expansionSpeed = 4;	// pixel per frame for now
+		duration = 1000;	// milliseconds
 		fadeOut = true;
-		fadeSpeed = 5;		// color units per frame for now
+		startTime = System.currentTimeMillis();
 	}
 
 	@Override
@@ -40,15 +44,14 @@ public class ImageSprite extends Sprite {
 		}
 		
 		if(expand){
-			imageWidth += expansionSpeed;
-			imageHeight += expansionSpeed;
+			imageWidth = imageHeight = startSize + (int)(((System.currentTimeMillis() - startTime) / (float)duration) * (endSize-startSize));
 		}
 		if(fadeOut){
-			alpha -= fadeSpeed;
+			alpha = 255 - (int)(((System.currentTimeMillis() - startTime) / (float)duration) * 255);
 			if(alpha <= 0){
 				die();
 			}
-		}
+		}		
 	}
 
 }

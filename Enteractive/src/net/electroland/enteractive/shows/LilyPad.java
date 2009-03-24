@@ -12,6 +12,7 @@ import net.electroland.enteractive.core.Person;
 import net.electroland.enteractive.core.SoundManager;
 import net.electroland.enteractive.core.Sprite;
 import net.electroland.enteractive.core.SpriteListener;
+import net.electroland.enteractive.sprites.ExplodingCross;
 import net.electroland.enteractive.sprites.ImageSprite;
 import net.electroland.enteractive.sprites.Pad;
 import net.electroland.lighting.detector.animation.Animation;
@@ -72,23 +73,37 @@ public class LilyPad implements Animation, SpriteListener {
 			PGraphics raster = (PGraphics)(r.getRaster());
 			raster.beginDraw();
 			raster.background(0);		// clear the raster
-			
+
 			HashMap<Integer,Person> people = m.getPeople();
-			Iterator<Person> peopleiter = people.values().iterator();
-			while(peopleiter.hasNext()){										// for each person...
-				Person p = peopleiter.next();
-				if(p.isNew()){													// if it's a new person...
-					Iterator<Pad> i = pads.values().iterator();
-					while(i.hasNext()){											// check every active pad
-						Pad pad = i.next();
-						if(pad.getX() == p.getX() && pad.getY() == p.getY()){	// if new person on the pad...
-							pads.remove(pad.getID());
-							// TODO create new action sprite here
-							ImageSprite ripple = new ImageSprite(spriteIndex, r, pad.getX(), pad.getY(), rippleTexture, 0.1f, 0.1f);
-							ripple.addListener(this);
-							sprites.put(spriteIndex, ripple);
-							spriteIndex++;
-							pad.die();
+			synchronized(people){
+				Iterator<Person> peopleiter = people.values().iterator();
+				while(peopleiter.hasNext()){										// for each person...
+					Person p = peopleiter.next();
+					if(p.isNew()){													// if it's a new person...
+						Iterator<Pad> i = pads.values().iterator();
+						while(i.hasNext()){											// check every active pad
+							Pad pad = i.next();
+							if(pad.getX() == p.getX() && pad.getY() == p.getY()){	// if new person on the pad...
+								pads.remove(pad.getID());
+								// create new action sprite here
+								int luckyNumber = (int)(Math.random()*2 - 0.01);
+								//System.out.println(luckyNumber);
+								Sprite sprite = null;
+								switch(luckyNumber){
+									case 0:
+										sprite = new ImageSprite(spriteIndex, r, pad.getX(), pad.getY(), rippleTexture, 0.1f, 0.1f);
+										break;
+									case 1:
+										sprite = new ExplodingCross(spriteIndex, r, (int)pad.getX(), (int)pad.getY(), 1500);
+										break;
+								}
+								if(sprite != null){
+									sprite.addListener(this);
+									sprites.put(spriteIndex, sprite);
+									spriteIndex++;
+								}
+								pad.die();
+							}
 						}
 					}
 				}

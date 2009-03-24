@@ -153,7 +153,7 @@ public class TCUtil {
 		buf[2] = (byte)(tc.getOffset() - 1); //tc.getOffset() -1 (< 253)
 		buf[3] = (byte)0; // this is wrong.  it should be tc.getOffset() - 1 - 253
 		buf[4] = (byte)254;
-		System.out.println(HexUtils.bytesToHex(buf, buf.length));
+		//System.out.println(HexUtils.bytesToHex(buf, buf.length));
 		send(tc.getAddress(), buf);
 	}
 	
