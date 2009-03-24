@@ -106,9 +106,10 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		
 		// LOAD IMAGE SPRITES FOR SHOWS
 		PImage rippleTexture = gui.loadImage("depends//images//ripple.png");
+		PImage sweepTexture = gui.loadImage("depends//images//sweep.png");
 		
 		//Animation a = new ExampleAnimation(ptr.getModel(), raster, smr);
-		Animation a = new LilyPad(ptr.getModel(), raster, smr, rippleTexture);
+		Animation a = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture);
 		Collection<Recipient> fixtures = dmr.getRecipients();
 		amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
 		amr.goLive(); 										// the whole system does nothing unless you "start" it.
