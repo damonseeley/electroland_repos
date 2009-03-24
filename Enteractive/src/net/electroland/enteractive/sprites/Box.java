@@ -2,6 +2,7 @@ package net.electroland.enteractive.sprites;
 
 import processing.core.PConstants;
 import processing.core.PGraphics;
+import net.electroland.enteractive.core.SoundManager;
 import net.electroland.enteractive.core.Sprite;
 import net.electroland.lighting.detector.animation.Raster;
 
@@ -11,8 +12,8 @@ import net.electroland.lighting.detector.animation.Raster;
 
 public class Box extends Sprite{
 	
-	public Box(int id, Raster raster, int x, int y, int width, int height){
-		super(id, raster, x, y);
+	public Box(int id, Raster raster, int x, int y, SoundManager sm, int width, int height){
+		super(id, raster, x, y, sm);
 		this.width = tileSize*width;
 		this.height = tileSize*height;					// using tile size to scale sprite size
 	}

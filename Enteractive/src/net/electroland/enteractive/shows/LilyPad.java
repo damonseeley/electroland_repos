@@ -15,6 +15,7 @@ import net.electroland.enteractive.core.SpriteListener;
 import net.electroland.enteractive.sprites.ExplodingCross;
 import net.electroland.enteractive.sprites.ImageSprite;
 import net.electroland.enteractive.sprites.Pad;
+import net.electroland.enteractive.sprites.TickerBox;
 import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.Raster;
 
@@ -59,7 +60,7 @@ public class LilyPad implements Animation, SpriteListener {
 				delayCount++;
 			} else {
 				if(Math.random() > padOdds){	// chance of creating a new pad
-					Pad pad = new Pad(spriteIndex, r, (int)(Math.random()*15)+1, (int)(Math.random()*10)+1, 0, 150, 1000);
+					Pad pad = new Pad(spriteIndex, r, (int)(Math.random()*15)+1, (int)(Math.random()*10)+1, sm, 0, 150, 1000);
 					pad.addListener(this);
 					sprites.put(spriteIndex, pad);
 					pads.put(spriteIndex, pad);
@@ -86,15 +87,18 @@ public class LilyPad implements Animation, SpriteListener {
 							if(pad.getX() == p.getX() && pad.getY() == p.getY()){	// if new person on the pad...
 								pads.remove(pad.getID());
 								// create new action sprite here
-								int luckyNumber = (int)(Math.random()*2 - 0.01);
+								int luckyNumber = (int)(Math.random()*3 - 0.01);
 								//System.out.println(luckyNumber);
 								Sprite sprite = null;
 								switch(luckyNumber){
 									case 0:
-										sprite = new ImageSprite(spriteIndex, r, pad.getX(), pad.getY(), rippleTexture, 0.1f, 0.1f);
+										sprite = new ImageSprite(spriteIndex, r, pad.getX(), pad.getY(), sm, rippleTexture, 0.1f, 0.1f);
 										break;
 									case 1:
-										sprite = new ExplodingCross(spriteIndex, r, (int)pad.getX(), (int)pad.getY(), 1500);
+										sprite = new ExplodingCross(spriteIndex, r, (int)pad.getX(), (int)pad.getY(), sm, 1500);
+										break;
+									case 2:
+										sprite = new TickerBox(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, 2000);
 										break;
 								}
 								if(sprite != null){

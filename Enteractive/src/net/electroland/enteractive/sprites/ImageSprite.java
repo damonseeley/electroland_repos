@@ -2,6 +2,7 @@ package net.electroland.enteractive.sprites;
 
 import processing.core.PGraphics;
 import processing.core.PImage;
+import net.electroland.enteractive.core.SoundManager;
 import net.electroland.enteractive.core.Sprite;
 import net.electroland.lighting.detector.animation.Raster;
 
@@ -15,8 +16,8 @@ public class ImageSprite extends Sprite {
 	private int alpha = 255;
 	private long startTime;
 
-	public ImageSprite(int id, Raster raster, float x, float y, PImage image, float imageWidth, float imageHeight) {
-		super(id, raster, x, y);
+	public ImageSprite(int id, Raster raster, float x, float y, SoundManager sm, PImage image, float imageWidth, float imageHeight) {
+		super(id, raster, x, y, sm);
 		this.image = image;			// percent of raster height as a float
 		if(raster.isProcessing()){
 			PGraphics c = (PGraphics)canvas;

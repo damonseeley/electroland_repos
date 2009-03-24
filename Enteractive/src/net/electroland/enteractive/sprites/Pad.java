@@ -2,6 +2,7 @@ package net.electroland.enteractive.sprites;
 
 import processing.core.PConstants;
 import processing.core.PGraphics;
+import net.electroland.enteractive.core.SoundManager;
 import net.electroland.enteractive.core.Sprite;
 import net.electroland.lighting.detector.animation.Raster;
 
@@ -13,8 +14,8 @@ public class Pad extends Sprite {
 	private boolean fadeIn, fadeOut;
 	private long startTime;
 
-	public Pad(int id, Raster raster, int x, int y, int minValue, int maxValue, int duration) {
-		super(id, raster, x, y);
+	public Pad(int id, Raster raster, int x, int y, SoundManager sm, int minValue, int maxValue, int duration) {
+		super(id, raster, x, y, sm);
 		this.minValue = minValue;
 		this.maxValue = maxValue;
 		this.duration = duration;

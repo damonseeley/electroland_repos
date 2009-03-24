@@ -2,6 +2,7 @@ package net.electroland.enteractive.sprites;
 
 import processing.core.PConstants;
 import processing.core.PGraphics;
+import net.electroland.enteractive.core.SoundManager;
 import net.electroland.enteractive.core.Sprite;
 import net.electroland.lighting.detector.animation.Raster;
 
@@ -12,8 +13,8 @@ public class ExplodingCross extends Sprite {
 	private boolean expand;
 	private int length;
 
-	public ExplodingCross(int id, Raster raster, int x, int y, int duration) {
-		super(id, raster, x, y);
+	public ExplodingCross(int id, Raster raster, int x, int y, SoundManager sm, int duration) {
+		super(id, raster, x, y, sm);
 		this.duration = duration;
 		startTime = System.currentTimeMillis();
 		expand = true;

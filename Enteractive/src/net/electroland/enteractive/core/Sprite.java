@@ -17,15 +17,17 @@ public abstract class Sprite {
 	private List <SpriteListener> listeners;
 	protected Raster raster;		// Raster passed into sprite
 	protected Object canvas;		// PGraphics or Graphics object used to draw on
+	protected SoundManager sm;
 	protected float x, y, width, height;
 	protected int tileSize;		// size of tile relative to raster pixel dimensions
 	protected int id;
 	
-	public Sprite(int id, Raster raster, float x, float y){
+	public Sprite(int id, Raster raster, float x, float y, SoundManager sm){
 		this.id = id;
 		this.raster = raster;
 		this.x = x;
 		this.y = y;
+		this.sm = sm;
 		if(raster.isProcessing()){
 			canvas = (PGraphics)raster.getRaster();
 		}

@@ -55,7 +55,7 @@ public class ExampleAnimation implements Animation, SpriteListener {
 				Person p = iter.next();
 				if(p.isNew()){
 					// TODO instantiate new sprites here
-					Cross cross = new Cross(spriteIndex, r, p, 1, 1, 3, 3);		// 3x3 cross
+					Cross cross = new Cross(spriteIndex, r, p, 1, 1, sm, 3, 3);		// 3x3 cross
 					int[] loc = p.getLoc();
 					//System.out.println(loc[0]+" "+loc[1]);
 					cross.moveTo(loc[0]*tileSize, loc[1]*tileSize);
