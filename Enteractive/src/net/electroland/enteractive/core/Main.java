@@ -47,6 +47,7 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 	private DetectorManager dmr;
 	private DetectorManagerJPanel dmp;
 	private AnimationManager amr;
+	private Animation currentAnimation;
 	private SoundManager smr;
 	private Lights3D lights3D;
 	private GUI gui;
@@ -110,10 +111,10 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 		rippleTexture = gui.loadImage("depends//images//ripple.png");
 		sweepTexture = gui.loadImage("depends//images//sweep.png");
 		
-		Animation a = new ExampleAnimation(ptr.getModel(), raster, smr);
+		Animation currentAnimation = new ExampleAnimation(ptr.getModel(), raster, smr);
 		//Animation a = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture);
 		Collection<Recipient> fixtures = dmr.getRecipients();
-		amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
+		amr.startAnimation(currentAnimation, fixtures); 					// start a show now, on this list of fixtures.
 		amr.goLive(); 										// the whole system does nothing unless you "start" it.
 	}
 
@@ -127,6 +128,7 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 			Animation next = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture);
 			Collection<Recipient> fixtures = dmr.getRecipients();
 			amr.startAnimation(next, fixtures);
+			currentAnimation = next;
 			//Animation next = ;
 			//amr.startAnimation(new MyOtherAnimation(m, getRaster(), smr), f); 	// some fake animation			
 		}
@@ -286,18 +288,28 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 			System.out.println("Four Corners!");
 		} else if(e.getType() == Model.ModelConstants.OPPOSITE_CORNERS){
 			System.out.println("Corners 1 and 4!");
-			//Raster raster = getRaster();
-			//((GUI)gui).setRaster(raster);
-			//Animation a = new ExampleAnimation(ptr.getModel(), raster, smr);
-			//Collection<Recipient> fixtures = dmr.getRecipients();
-			//amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
+			/*
+			if(currentAnimation instanceof LilyPad){
+				Raster raster = getRaster();
+				((GUI)gui).setRaster(raster);
+				Animation a = new ExampleAnimation(ptr.getModel(), raster, smr);
+				Collection<Recipient> fixtures = dmr.getRecipients();
+				amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
+				currentAnimation = a;
+			}
+			*/
 		} else if(e.getType() == Model.ModelConstants.OPPOSITE_CORNERS2){
 			System.out.println("Corners 2 and 3!");
-			//Raster raster = getRaster();
-			//((GUI)gui).setRaster(raster);
-			//Animation a = new ExampleAnimation(ptr.getModel(), raster, smr);
-			//Collection<Recipient> fixtures = dmr.getRecipients();
-			//amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
+			/*
+			if(currentAnimation instanceof LilyPad){
+				Raster raster = getRaster();
+				((GUI)gui).setRaster(raster);
+				Animation a = new ExampleAnimation(ptr.getModel(), raster, smr);
+				Collection<Recipient> fixtures = dmr.getRecipients();
+				amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
+				currentAnimation = a;
+			}
+			*/
 		}
 	}
 	
