@@ -1,9 +1,6 @@
 package net.electroland.lighting.detector.animation;
 
-public interface Animation 
+public interface Animation extends Completable
 {
 	abstract public Raster getFrame();
-	abstract public void initialize();
-	abstract public void cleanUp();
-	abstract public boolean isDone();
 }

@@ -32,7 +32,8 @@ import net.electroland.lighting.detector.DetectorManagerJPanel;
 import net.electroland.lighting.detector.Recipient;
 import net.electroland.lighting.detector.DetectorManager;
 import net.electroland.lighting.detector.animation.Animation;
-import net.electroland.lighting.detector.animation.AnimationListener;
+import net.electroland.lighting.detector.animation.Completable;
+import net.electroland.lighting.detector.animation.CompletionListener;
 import net.electroland.lighting.detector.animation.AnimationManager;
 import net.electroland.lighting.detector.animation.Raster;
 import net.electroland.udpUtils.TCUtil;
@@ -41,7 +42,7 @@ import net.electroland.util.OptionException;
 import net.miginfocom.swing.MigLayout;
 
 @SuppressWarnings("serial")
-public class Main extends JFrame implements AnimationListener, ActionListener, TimedEventListener{
+public class Main extends JFrame implements CompletionListener, ActionListener, TimedEventListener{
 	
 	private DetectorManager dmr;
 	private DetectorManagerJPanel dmp;
@@ -115,7 +116,7 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		amr.goLive(); 										// the whole system does nothing unless you "start" it.
 	}
 
-	public void animationComplete(Animation a) {
+	public void completed(Completable a) {
 		// TODO Switch to a new animation
 		//Animation next = ;
 		//amr.startAnimation(new MyOtherAnimation(m, getRaster(), smr), f); 	// some fake animation

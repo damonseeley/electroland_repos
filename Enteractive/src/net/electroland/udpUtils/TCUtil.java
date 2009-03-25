@@ -146,12 +146,20 @@ public class TCUtil {
 		}
 	}
 	
-	public void sendOffsetPacket(TileController tc){		
+	public void sendOffsetPacket(TileController tc)
+	{
+		int offset1 = tc.getOffset() - 1;
+		int offset2 = 0;
+		if (offset1 > 253)
+		{
+			offset2 = offset1 - 253;
+			offset1 = 253;
+		}
 		byte[] buf = new byte[5];
 		buf[0] = (byte)255;
 		buf[1] = (byte)128;
-		buf[2] = (byte)(tc.getOffset() - 1); //tc.getOffset() -1 (< 253)
-		buf[3] = (byte)0; // this is wrong.  it should be tc.getOffset() - 1 - 253
+		buf[2] = (byte)offset1;
+		buf[3] = (byte)offset2;
 		buf[4] = (byte)254;
 		//System.out.println(HexUtils.bytesToHex(buf, buf.length));
 		send(tc.getAddress(), buf);
