@@ -119,14 +119,17 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 
 	public void completed(Completable a) {
 		// TODO Switch to a new animation
-		System.out.println("animation completed!");
-		Raster raster = getRaster();
-		((GUI)gui).setRaster(raster);
-		Animation next = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture);
-		Collection<Recipient> fixtures = dmr.getRecipients();
-		amr.startAnimation(next, fixtures);
-		//Animation next = ;
-		//amr.startAnimation(new MyOtherAnimation(m, getRaster(), smr), f); 	// some fake animation
+		System.out.println("animation " + a + " completed!");
+		if (a instanceof ExampleAnimation)
+		{
+			Raster raster = getRaster();
+			((GUI)gui).setRaster(raster);
+			Animation next = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture);
+			Collection<Recipient> fixtures = dmr.getRecipients();
+			amr.startAnimation(next, fixtures);
+			//Animation next = ;
+			//amr.startAnimation(new MyOtherAnimation(m, getRaster(), smr), f); 	// some fake animation			
+		}
 	}
 
 	public void actionPerformed(ActionEvent e) {
