@@ -42,13 +42,12 @@ import net.electroland.util.OptionException;
 import net.miginfocom.swing.MigLayout;
 
 @SuppressWarnings("serial")
-public class Main extends JFrame implements CompletionListener, ActionListener, TimedEventListener{
+public class Main extends JFrame implements CompletionListener, ActionListener, TimedEventListener, ModelListener{
 	
 	private DetectorManager dmr;
 	private DetectorManagerJPanel dmp;
 	private AnimationManager amr;
 	private SoundManager smr;
-	private Model m;
 	private Lights3D lights3D;
 	private GUI gui;
 	private TCUtil tcu;
@@ -79,6 +78,7 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 		
 		tcu = new TCUtil();									// tile controller utilities
 		ptr = new PersonTracker(16,11);						// person tracker manages the model (x/y tile dimensions)
+		ptr.getModel().addListener(this);					// add this as a listener
 		
 		try {
 			udp = new UDPParser(10011, tcu, ptr);			// open our UDP receiver and begin parsing
@@ -279,6 +279,26 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 
 	public void timedEvent(TimedEvent event) {
 		// TODO Trigger a big event periodically
+	}
+
+	public void modelEvent(ModelEvent e) {
+		if(e.getType() == Model.ModelConstants.FOUR_CORNERS){
+			System.out.println("Four Corners!");
+		} else if(e.getType() == Model.ModelConstants.OPPOSITE_CORNERS){
+			System.out.println("Corners 1 and 4!");
+			//Raster raster = getRaster();
+			//((GUI)gui).setRaster(raster);
+			//Animation a = new ExampleAnimation(ptr.getModel(), raster, smr);
+			//Collection<Recipient> fixtures = dmr.getRecipients();
+			//amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
+		} else if(e.getType() == Model.ModelConstants.OPPOSITE_CORNERS2){
+			System.out.println("Corners 2 and 3!");
+			//Raster raster = getRaster();
+			//((GUI)gui).setRaster(raster);
+			//Animation a = new ExampleAnimation(ptr.getModel(), raster, smr);
+			//Collection<Recipient> fixtures = dmr.getRecipients();
+			//amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
+		}
 	}
 	
 	
