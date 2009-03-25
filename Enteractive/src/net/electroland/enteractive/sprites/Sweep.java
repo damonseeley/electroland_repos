@@ -35,7 +35,7 @@ public class Sweep extends Sprite {
 					die();
 				}
 				c.rotate((float)Math.PI);	// flip it
-				c.image(image, x-sweepLength, c.height, sweepLength, c.height);
+				c.image(image, x-sweepLength, 0, sweepLength, c.height);
 			} else {
 				x = (int)(((System.currentTimeMillis() - startTime) / (float)duration) * (c.width+sweepLength));
 				if(x >= c.width+sweepLength){

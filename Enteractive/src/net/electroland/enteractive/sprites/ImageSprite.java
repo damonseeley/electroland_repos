@@ -27,7 +27,7 @@ public class ImageSprite extends Sprite {
 			this.endSize = c.height*2;
 		}
 		expand = true;
-		duration = 1000;	// milliseconds
+		duration = 750;	// milliseconds
 		fadeOut = true;
 		startTime = System.currentTimeMillis();
 	}
