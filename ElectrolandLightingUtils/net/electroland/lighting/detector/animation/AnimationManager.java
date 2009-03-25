@@ -44,7 +44,12 @@ public class AnimationManager implements Runnable {
 		Iterator <CompletableRecipients> liveAnimationRecipients = live.iterator();
 		while (liveAnimationRecipients.hasNext())
 		{
-			liveAnimationRecipients.next().recipients.remove(recipients);
+			CompletableRecipients cr = liveAnimationRecipients.next();
+			cr.recipients.remove(recipients);
+			if (cr.recipients.isEmpty())
+			{
+				this.killOff(cr);
+			}
 		}
 
 		live.add(new CompletableRecipients(c, recipients));
@@ -73,6 +78,16 @@ public class AnimationManager implements Runnable {
 	final public void removeListener(CompletionListener listener)
 	{
 		listeners.remove(listener);
+	}
+	final public void killOff(CompletableRecipients c)
+	{
+		c.completable.cleanUp();
+		live.remove(c);
+		Iterator<CompletionListener> list = listeners.iterator();
+		while (list.hasNext())
+		{
+			list.next().completed(c.completable);
+		}		
 	}
 
 	// start all animation (presuming any Animations are in the set)
@@ -108,13 +123,7 @@ public class AnimationManager implements Runnable {
 				CompletableRecipients ar = animeRecips.next();
 				if (ar.completable.isDone())
 				{	// if the animation is done, cleanup, kill it, and alert all listeners.
-					ar.completable.cleanUp();
-					live.remove(ar);
-					Iterator<CompletionListener> list = listeners.iterator();
-					while (list.hasNext())
-					{
-						list.next().completed(ar.completable);
-					}
+					this.killOff(ar);
 				}else{
 					// otherwise, update the animation and sync the fixtures.
 					if (ar.completable instanceof Animation)
