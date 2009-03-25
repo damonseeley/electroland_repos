@@ -24,6 +24,7 @@ public class ExampleAnimation implements Animation, SpriteListener {
 	private int tileSize;
 	private ConcurrentHashMap<Integer,Sprite> sprites;
 	private int spriteIndex = 0;
+	private int cycles = 90;
 	
 	public ExampleAnimation(Model m, Raster r, SoundManager sm){
 		this.m = m;
@@ -117,7 +118,7 @@ public class ExampleAnimation implements Animation, SpriteListener {
 	}
 
 	public boolean isDone() {
-		return false;//cycles-- <= 0; // no timeout for now
+		return cycles-- <= 0; // no timeout for now
 	}
 
 	public void spriteComplete(Sprite sprite) {

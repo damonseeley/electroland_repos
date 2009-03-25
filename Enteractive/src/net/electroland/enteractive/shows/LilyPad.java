@@ -63,7 +63,7 @@ public class LilyPad implements Animation, SpriteListener {
 				delayCount++;
 			} else {
 				if(Math.random() > padOdds){	// chance of creating a new pad
-					Pad pad = new Pad(spriteIndex, r, (int)(Math.random()*15)+1, (int)(Math.random()*10)+1, sm, 0, 150, 1000);
+					Pad pad = new Pad(spriteIndex, r, (int)Math.floor(Math.random()*15.99f)+1, (int)Math.floor(Math.random()*9.99f)+1, sm, 0, 150, 1000);
 					pad.addListener(this);
 					sprites.put(spriteIndex, pad);
 					pads.put(spriteIndex, pad);

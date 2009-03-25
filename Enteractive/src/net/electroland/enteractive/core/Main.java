@@ -58,6 +58,7 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 	private int guiWidth = 180;	// TODO get from properties
 	private int guiHeight = 110;
 	private String[] animationList;
+	PImage rippleTexture, sweepTexture;
 	
 	public Main(String[] args) throws UnknownHostException, OptionException{
 		super("Enteractive Control Panel");
@@ -106,11 +107,11 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 		gui.init();
 		
 		// LOAD IMAGE SPRITES FOR SHOWS
-		PImage rippleTexture = gui.loadImage("depends//images//ripple.png");
-		PImage sweepTexture = gui.loadImage("depends//images//sweep.png");
+		rippleTexture = gui.loadImage("depends//images//ripple.png");
+		sweepTexture = gui.loadImage("depends//images//sweep.png");
 		
-		//Animation a = new ExampleAnimation(ptr.getModel(), raster, smr);
-		Animation a = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture);
+		Animation a = new ExampleAnimation(ptr.getModel(), raster, smr);
+		//Animation a = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture);
 		Collection<Recipient> fixtures = dmr.getRecipients();
 		amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
 		amr.goLive(); 										// the whole system does nothing unless you "start" it.
@@ -118,6 +119,12 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 
 	public void completed(Completable a) {
 		// TODO Switch to a new animation
+		System.out.println("animation completed!");
+		Raster raster = getRaster();
+		((GUI)gui).setRaster(raster);
+		Animation next = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture);
+		Collection<Recipient> fixtures = dmr.getRecipients();
+		amr.startAnimation(next, fixtures);
 		//Animation next = ;
 		//amr.startAnimation(new MyOtherAnimation(m, getRaster(), smr), f); 	// some fake animation
 	}
