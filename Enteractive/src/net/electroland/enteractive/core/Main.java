@@ -251,7 +251,7 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 		
 		setSize(800, 620);
 		setVisible(true);
-		setResizable(false);
+		setResizable(true);
 	}
 	
 	private Raster getRaster(){
