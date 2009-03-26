@@ -107,6 +107,60 @@ public class AnimationManager implements Runnable {
 		isRunning = false;
 	}
 
+	final public Completable getCurrentAnimation(Recipient r)
+	{
+		Iterator <CompletableRecipients> liveAnimationRecipients = live.iterator();
+		while (liveAnimationRecipients.hasNext())
+		{
+			CompletableRecipients cr = liveAnimationRecipients.next();
+			if (cr.recipients.contains(r))
+			{
+				return cr.completable;
+			}
+		}
+		return null;
+	}
+
+
+	final public void run2()
+	{
+		long startTime;
+		while (isRunning)
+		{
+			startTime = System.currentTimeMillis();
+
+			// temp -----------------------------------------------------------
+			// just iterator through each live show. sync what you have with
+			// each fixture.
+			Iterator<CompletableRecipients> animeRecips = live.iterator();
+			while (animeRecips.hasNext())
+			{
+				// do stuff.
+				
+				
+				
+				
+				
+				
+				
+			}
+			if (dmp != null)
+			{
+				dmp.repaint();
+			}
+
+			try 
+			{
+				long cycleDuration = System.currentTimeMillis() - startTime;
+				Thread.sleep(cycleDuration >= delay ? 0 : delay - cycleDuration);
+			} catch (InterruptedException e) 
+			{
+				e.printStackTrace();
+			}
+		}
+		thread = null;
+	}
+
 	final public void run()
 	{
 		long startTime;
@@ -157,10 +211,18 @@ public class AnimationManager implements Runnable {
 class CompletableRecipients
 {
 	protected Completable completable;
+	protected Completable endAnimation;
 	protected Collection<Recipient> recipients;
+
 	public CompletableRecipients(Completable a, Collection<Recipient>r)
 	{
 		this.completable = a;
 		this.recipients = r;
+	}
+	public CompletableRecipients(Completable a, Collection<Recipient>r, Completable endAnimation)
+	{
+		this.completable = a;
+		this.recipients = r;
+		this.endAnimation = endAnimation;
 	}
 }
