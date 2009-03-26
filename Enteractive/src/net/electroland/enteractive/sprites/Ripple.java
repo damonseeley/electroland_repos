@@ -1,13 +1,13 @@
 package net.electroland.enteractive.sprites;
 
-import processing.core.PGraphics;
-import processing.core.PImage;
 import net.electroland.enteractive.core.SoundManager;
 import net.electroland.enteractive.core.Sprite;
 import net.electroland.lighting.detector.animation.Raster;
+import processing.core.PGraphics;
+import processing.core.PImage;
 
-public class ImageSprite extends Sprite {
-	
+public class Ripple extends Sprite{
+
 	private PImage image;
 	private int imageWidth, imageHeight;
 	private boolean expand, fadeOut;
@@ -15,20 +15,18 @@ public class ImageSprite extends Sprite {
 	private int startSize, endSize;
 	private int alpha = 255;
 	private long startTime;
-
-	public ImageSprite(int id, Raster raster, float x, float y, SoundManager sm, PImage image, float imageWidth, float imageHeight, boolean expand, boolean fadeOut) {
+	
+	public Ripple(int id, Raster raster, float x, float y, SoundManager sm, PImage image){
 		super(id, raster, x, y, sm);
-		this.image = image;			// percent of raster height as a float
+		this.image = image;
 		if(raster.isProcessing()){
 			PGraphics c = (PGraphics)canvas;
-			this.imageWidth = (int)(imageWidth*c.height);		// always compare ratio to canvas HEIGHT
-			this.imageHeight = (int)(imageHeight*c.height);
-			this.startSize = this.imageWidth;
+			this.startSize = this.imageWidth = this.imageHeight = (int)(c.height/11);
 			this.endSize = c.height*2;
 		}
-		this.expand = expand;
+		expand = true;
+		fadeOut = true;
 		duration = 750;	// milliseconds
-		this.fadeOut = fadeOut;
 		startTime = System.currentTimeMillis();
 	}
 
@@ -48,12 +46,12 @@ public class ImageSprite extends Sprite {
 			imageWidth = imageHeight = startSize + (int)(((System.currentTimeMillis() - startTime) / (float)duration) * (endSize-startSize));
 		}
 		if(fadeOut){
-			//alpha = 255 - (int)(((System.currentTimeMillis() - startTime) / (float)duration) * 255);
-			alpha = (int)(255 - Math.sin((Math.PI/2) * ((System.currentTimeMillis() - startTime) / (float)duration))*255);
+			//alpha = 255 - (int)(((System.currentTimeMillis() - startTime) / (float)duration) * 255); // linear fade out
+			alpha = (int)(255 - Math.sin((Math.PI/2) * ((System.currentTimeMillis() - startTime) / (float)duration))*255);	// dampened fade out
 			if(alpha <= 0){
 				die();
 			}
-		}		
+		}
 	}
-
+	
 }

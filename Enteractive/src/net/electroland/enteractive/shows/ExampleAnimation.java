@@ -118,7 +118,7 @@ public class ExampleAnimation implements Animation, SpriteListener {
 	}
 
 	public boolean isDone() {
-		return cycles-- <= 0; // no timeout for now
+		return cycles-- <= 0;
 	}
 
 	public void spriteComplete(Sprite sprite) {

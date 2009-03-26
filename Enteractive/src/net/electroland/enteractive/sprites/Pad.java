@@ -10,8 +10,8 @@ import net.electroland.lighting.detector.animation.Raster;
 
 public class Pad extends Sprite {
 	
-	private int duration, minValue, maxValue, value;
-	private boolean fadeIn, fadeOut;
+	private int duration, minValue, maxValue, value, holdTime;
+	private boolean fadeIn, fadeOut, hold;
 	private long startTime;
 
 	public Pad(int id, Raster raster, int x, int y, SoundManager sm, int minValue, int maxValue, int duration) {
@@ -20,8 +20,10 @@ public class Pad extends Sprite {
 		this.maxValue = maxValue;
 		this.duration = duration;
 		this.value = this.minValue;
+		holdTime = duration*2;
 		fadeIn = true;
 		fadeOut = false;
+		hold = false;
 		startTime = System.currentTimeMillis();
 	}
 
@@ -32,8 +34,9 @@ public class Pad extends Sprite {
 			if(value >= maxValue){
 				value = maxValue;
 				fadeIn = false;
-				fadeOut = true;
+				//fadeOut = true;
 				startTime = System.currentTimeMillis();
+				hold = true;
 			}
 		} else if(fadeOut){
 			value = maxValue - (int)(((System.currentTimeMillis() - startTime) / (float)duration) * (maxValue-minValue));
@@ -43,7 +46,13 @@ public class Pad extends Sprite {
 				fadeOut = false;
 				startTime = System.currentTimeMillis();
 			}
-		}		
+		} else if(hold){
+			if((System.currentTimeMillis() - startTime) > holdTime){
+				hold = false;
+				fadeOut = true;
+				startTime = System.currentTimeMillis();
+			}
+		}
 		
 		if(raster.isProcessing()){
 			PGraphics c = (PGraphics)canvas;

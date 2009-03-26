@@ -13,8 +13,9 @@ import net.electroland.enteractive.core.SoundManager;
 import net.electroland.enteractive.core.Sprite;
 import net.electroland.enteractive.core.SpriteListener;
 import net.electroland.enteractive.sprites.ExplodingCross;
-import net.electroland.enteractive.sprites.ImageSprite;
 import net.electroland.enteractive.sprites.Pad;
+import net.electroland.enteractive.sprites.Ripple;
+import net.electroland.enteractive.sprites.Single;
 import net.electroland.enteractive.sprites.Sweep;
 import net.electroland.enteractive.sprites.TickerBox;
 import net.electroland.lighting.detector.animation.Animation;
@@ -33,6 +34,7 @@ public class LilyPad implements Animation, SpriteListener {
 	private int tileSize;
 	private ConcurrentHashMap<Integer,Sprite> sprites;
 	private ConcurrentHashMap<Integer,Pad> pads;
+	private ConcurrentHashMap<Integer,Single> billiejean;
 	private int spriteIndex = 0;	// used as ID # for sprite
 	private int maxPads = 7;		// maximum pads at any time
 	private int padDelay = 5;		// mandatory delay between adding new pads
@@ -50,6 +52,7 @@ public class LilyPad implements Animation, SpriteListener {
 		this.tileSize = (int)(((PGraphics)(r.getRaster())).height/11.0);
 		sprites = new ConcurrentHashMap<Integer,Sprite>();
 		pads = new ConcurrentHashMap<Integer,Pad>();
+		billiejean = new ConcurrentHashMap<Integer,Single>();
 	}
 
 	public void initialize() {
@@ -63,9 +66,9 @@ public class LilyPad implements Animation, SpriteListener {
 				delayCount++;
 			} else {
 				if(Math.random() > padOdds){	// chance of creating a new pad
-					Pad pad = new Pad(spriteIndex, r, (int)Math.floor(Math.random()*15.99f)+1, (int)Math.floor(Math.random()*9.99f)+1, sm, 0, 150, 1000);
-					pad.addListener(this);
-					sprites.put(spriteIndex, pad);
+					Pad pad = new Pad(spriteIndex, r, (int)Math.floor(Math.random()*15.99f)+1, (int)Math.floor(Math.random()*9.99f)+1, sm, 0, 255, 1000);
+					//pad.addListener(this);
+					//sprites.put(spriteIndex, pad);
 					pads.put(spriteIndex, pad);
 					delayCount = 0;
 					spriteIndex++;
@@ -84,6 +87,11 @@ public class LilyPad implements Animation, SpriteListener {
 				while(peopleiter.hasNext()){										// for each person...
 					Person p = peopleiter.next();
 					if(p.isNew()){													// if it's a new person...
+						int[] loc = p.getLoc();
+						Single single = new Single(spriteIndex, r, p, loc[0]*tileSize, loc[1]*tileSize, sm);	// single tile sprite (billie jean mode)
+						single.addListener(this);
+						billiejean.put(spriteIndex, single);
+						spriteIndex++;
 						Iterator<Pad> i = pads.values().iterator();
 						while(i.hasNext()){											// check every active pad
 							Pad pad = i.next();
@@ -91,12 +99,14 @@ public class LilyPad implements Animation, SpriteListener {
 								pads.remove(pad.getID());
 								// create new action sprite here
 								//System.out.println(luckyNumber);
+								
 								Sprite sprite = null;
 								if(pad.getX() == 1){	// if near entrance
 									int luckyNumber = (int)(Math.random()*2 - 0.01);
 									switch(luckyNumber){
 										case 0:
-											sprite = new ImageSprite(spriteIndex, r, pad.getX(), pad.getY(), sm, rippleTexture, 0.1f, 0.1f);
+											//sprite = new ImageSprite(spriteIndex, r, pad.getX(), pad.getY(), sm, rippleTexture, 0.1f, 0.1f, true, true);
+											sprite = new Ripple(spriteIndex, r, pad.getX(), pad.getY(), sm, rippleTexture);
 											break;
 										case 1:
 											sprite = new Sweep(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, sweepTexture, 1500, false);
@@ -106,7 +116,8 @@ public class LilyPad implements Animation, SpriteListener {
 									int luckyNumber = (int)(Math.random()*2 - 0.01);
 									switch(luckyNumber){
 										case 0:
-											sprite = new ImageSprite(spriteIndex, r, pad.getX(), pad.getY(), sm, rippleTexture, 0.1f, 0.1f);
+											//sprite = new ImageSprite(spriteIndex, r, pad.getX(), pad.getY(), sm, rippleTexture, 0.1f, 0.1f, true, true);
+											sprite = new Ripple(spriteIndex, r, pad.getX(), pad.getY(), sm, rippleTexture);
 											break;
 										case 1:
 											sprite = new Sweep(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, sweepTexture, 1500, true);
@@ -116,13 +127,14 @@ public class LilyPad implements Animation, SpriteListener {
 									int luckyNumber = (int)(Math.random()*3 - 0.01);
 									switch(luckyNumber){
 										case 0:
-											sprite = new ImageSprite(spriteIndex, r, pad.getX(), pad.getY(), sm, rippleTexture, 0.1f, 0.1f);
+											//sprite = new ImageSprite(spriteIndex, r, pad.getX(), pad.getY(), sm, rippleTexture, 0.1f, 0.1f, true, true);
+											sprite = new Ripple(spriteIndex, r, pad.getX(), pad.getY(), sm, rippleTexture);
 											break;
 										case 1:
 											sprite = new ExplodingCross(spriteIndex, r, (int)pad.getX(), (int)pad.getY(), sm, 1500);
 											break;
 										case 2:
-											sprite = new TickerBox(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, 2000);
+											sprite = new TickerBox(spriteIndex, r, p, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, 2000);
 											break;
 									}
 								}
@@ -131,11 +143,23 @@ public class LilyPad implements Animation, SpriteListener {
 									sprites.put(spriteIndex, sprite);
 									spriteIndex++;
 								}
-								pad.die();
+								
 							}
 						}
 					}
 				}
+			}
+			
+			Iterator<Single> singleiter = billiejean.values().iterator();
+			while(singleiter.hasNext()){
+				Sprite sprite = (Sprite)singleiter.next();
+				sprite.draw();
+			}
+			
+			Iterator<Pad> paditer = pads.values().iterator();
+			while(paditer.hasNext()){
+				Sprite sprite = (Sprite)paditer.next();
+				sprite.draw();
 			}
 			
 			Iterator<Sprite> iter = sprites.values().iterator();
@@ -160,7 +184,11 @@ public class LilyPad implements Animation, SpriteListener {
 	}
 
 	public void spriteComplete(Sprite sprite) {
-		sprites.remove(sprite.getID());
+		if(sprite instanceof Single){
+			billiejean.remove(sprite.getID());
+		} else {
+			sprites.remove(sprite.getID());
+		}
 		//System.out.println("sprite "+sprite.getID()+" removed");
 	}
 

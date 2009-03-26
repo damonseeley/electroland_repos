@@ -28,14 +28,15 @@ public class Sweep extends Sprite {
 		if(raster.isProcessing()){
 			PGraphics c = (PGraphics)canvas;
 			c.pushMatrix();
-			c.tint(255,255,255,255);
+			//c.tint(255,255,255,255);
 			if(switchDirection){
 				x = c.width - (int)(((System.currentTimeMillis() - startTime) / (float)duration) * (c.width+sweepLength));
 				if(x <= 0-sweepLength){
 					die();
 				}
+				c.translate(x, 0);
 				c.rotate((float)Math.PI);	// flip it
-				c.image(image, x-sweepLength, 0, sweepLength, c.height);
+				c.image(image, 0-sweepLength, 0-c.height, sweepLength, c.height);
 			} else {
 				x = (int)(((System.currentTimeMillis() - startTime) / (float)duration) * (c.width+sweepLength));
 				if(x >= c.width+sweepLength){

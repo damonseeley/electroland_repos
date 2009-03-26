@@ -28,6 +28,7 @@ import net.electroland.enteractive.scheduler.TimedEvent;
 import net.electroland.enteractive.scheduler.TimedEventListener;
 import net.electroland.enteractive.shows.ExampleAnimation;
 import net.electroland.enteractive.shows.LilyPad;
+import net.electroland.enteractive.shows.Spotlight;
 import net.electroland.lighting.detector.DetectorManagerJPanel;
 import net.electroland.lighting.detector.Recipient;
 import net.electroland.lighting.detector.DetectorManager;
@@ -47,7 +48,7 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 	private DetectorManager dmr;
 	private DetectorManagerJPanel dmp;
 	private AnimationManager amr;
-	private Animation currentAnimation;
+	//private Animation currentAnimation;
 	private SoundManager smr;
 	private Lights3D lights3D;
 	private GUI gui;
@@ -58,7 +59,7 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 	private int guiWidth = 180;	// TODO get from properties
 	private int guiHeight = 110;
 	private String[] animationList;
-	PImage rippleTexture, sweepTexture;
+	PImage rippleTexture, sweepTexture, sphereTexture;
 	
 	public Main(String[] args) throws UnknownHostException, OptionException{
 		super("Enteractive Control Panel");
@@ -110,27 +111,25 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 		// LOAD IMAGE SPRITES FOR SHOWS
 		rippleTexture = gui.loadImage("depends//images//ripple.png");
 		sweepTexture = gui.loadImage("depends//images//sweep.png");
+		sphereTexture = gui.loadImage("depends//images//sphere.png");
 		
-		Animation currentAnimation = new ExampleAnimation(ptr.getModel(), raster, smr);
+		//currentAnimation = new ExampleAnimation(ptr.getModel(), raster, smr);
+		Animation a = new Spotlight(ptr.getModel(), raster, smr, sphereTexture);
 		//Animation a = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture);
 		Collection<Recipient> fixtures = dmr.getRecipients();
-		amr.startAnimation(currentAnimation, fixtures); 					// start a show now, on this list of fixtures.
+		amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
 		amr.goLive(); 										// the whole system does nothing unless you "start" it.
 	}
 
 	public void completed(Completable a) {
 		// TODO Switch to a new animation
 		System.out.println("animation " + a + " completed!");
-		if (a instanceof ExampleAnimation)
-		{
+		if (a instanceof Spotlight){
 			Raster raster = getRaster();
 			((GUI)gui).setRaster(raster);
 			Animation next = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture);
 			Collection<Recipient> fixtures = dmr.getRecipients();
-			amr.startAnimation(next, fixtures);
-			currentAnimation = next;
-			//Animation next = ;
-			//amr.startAnimation(new MyOtherAnimation(m, getRaster(), smr), f); 	// some fake animation			
+			amr.startAnimation(next, fixtures);	
 		}
 	}
 
@@ -288,28 +287,25 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 			System.out.println("Four Corners!");
 		} else if(e.getType() == Model.ModelConstants.OPPOSITE_CORNERS){
 			System.out.println("Corners 1 and 4!");
-			/*
-			if(currentAnimation instanceof LilyPad){
+			Recipient floor = dmr.getRecipient("floor");
+			if(amr.getCurrentAnimation(floor) instanceof LilyPad){
 				Raster raster = getRaster();
 				((GUI)gui).setRaster(raster);
-				Animation a = new ExampleAnimation(ptr.getModel(), raster, smr);
+				Animation a = new Spotlight(ptr.getModel(), raster, smr, sphereTexture);
 				Collection<Recipient> fixtures = dmr.getRecipients();
 				amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
-				currentAnimation = a;
 			}
-			*/
 		} else if(e.getType() == Model.ModelConstants.OPPOSITE_CORNERS2){
 			System.out.println("Corners 2 and 3!");
-			/*
-			if(currentAnimation instanceof LilyPad){
+			// TODO switch this to inverted spotlight mode
+			Recipient floor = dmr.getRecipient("floor");
+			if(amr.getCurrentAnimation(floor) instanceof LilyPad){
 				Raster raster = getRaster();
 				((GUI)gui).setRaster(raster);
-				Animation a = new ExampleAnimation(ptr.getModel(), raster, smr);
+				Animation a = new Spotlight(ptr.getModel(), raster, smr, sphereTexture);
 				Collection<Recipient> fixtures = dmr.getRecipients();
 				amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
-				currentAnimation = a;
 			}
-			*/
 		}
 	}
 	
