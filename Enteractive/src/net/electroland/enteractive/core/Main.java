@@ -26,7 +26,6 @@ import net.electroland.enteractive.gui.GUI;
 import net.electroland.enteractive.gui.Lights3D;
 import net.electroland.enteractive.scheduler.TimedEvent;
 import net.electroland.enteractive.scheduler.TimedEventListener;
-import net.electroland.enteractive.shows.ExampleAnimation;
 import net.electroland.enteractive.shows.LilyPad;
 import net.electroland.enteractive.shows.Spotlight;
 import net.electroland.lighting.detector.DetectorManagerJPanel;
@@ -48,7 +47,6 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 	private DetectorManager dmr;
 	private DetectorManagerJPanel dmp;
 	private AnimationManager amr;
-	//private Animation currentAnimation;
 	private SoundManager smr;
 	private Lights3D lights3D;
 	private GUI gui;
