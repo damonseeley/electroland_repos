@@ -8,8 +8,9 @@ import javax.swing.JTabbedPane;
 
 public class SCSoundControlPanel extends JPanel {
 
-	JTabbedPane _tabPane;
-	StreamedTextArea _scsynthOutputText;
+	private JTabbedPane _tabPane;
+	public StreamedTextArea _scsynthOutputText;
+	public SCSCStatsDisplay _statsDisplay;
 	
 	public SCSoundControlPanel() {
 		//create a box layout.
@@ -19,9 +20,11 @@ public class SCSoundControlPanel extends JPanel {
         this.add(_tabPane);
         
         _scsynthOutputText = new StreamedTextArea(null);
+        _statsDisplay = new SCSCStatsDisplay();
+        _statsDisplay.init();
         
         _tabPane.add("scsynth", _scsynthOutputText);
-        _tabPane.add("stats", new JPanel());
+        _tabPane.add("stats", _statsDisplay);
         
 	}
 

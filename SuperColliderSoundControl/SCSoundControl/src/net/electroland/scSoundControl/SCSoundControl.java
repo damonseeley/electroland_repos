@@ -572,7 +572,11 @@ public class SCSoundControl implements OSCListener, Runnable {
 			synchronized (this) {
 				if (_bufferMap.containsKey(id)) {
 					debugPrintln("Buffer " + id + " was loaded.");
-					_notifyListener.receiveNotification_BufferLoaded(id, _bufferMap.get(id));
+					if (_notifyListener != null) { _notifyListener.receiveNotification_BufferLoaded(id, _bufferMap.get(id)); }
+					if (_controlPanel != null && _controlPanel._statsDisplay != null) {
+						_controlPanel._statsDisplay.receiveNotification_BufferLoaded(id, _bufferMap.get(id));
+					}
+
 				}
 			}
 		}
@@ -725,7 +729,10 @@ public class SCSoundControl implements OSCListener, Runnable {
 		//reinit data.
 		//this.init();
 		//notify client.
-		_notifyListener.receiveNotification_ServerRunning();		
+		if (_notifyListener != null) { _notifyListener.receiveNotification_ServerRunning(); }
+		if (_controlPanel != null && _controlPanel._statsDisplay != null) {
+				_controlPanel._statsDisplay.receiveNotification_ServerRunning();
+		}
 	}
 	
 	protected void handleServerStatusUpdate(float avgCPU, float peakCPU) {
@@ -738,7 +745,11 @@ public class SCSoundControl implements OSCListener, Runnable {
 			this.init();
 		}
 		
-		_notifyListener.receiveNotification_ServerStatus(avgCPU, peakCPU);
+		if (_notifyListener != null) { _notifyListener.receiveNotification_ServerStatus(avgCPU, peakCPU); }
+		if (_controlPanel != null && _controlPanel._statsDisplay != null) {
+			_controlPanel._statsDisplay.receiveNotification_ServerStatus(avgCPU, peakCPU);
+			_controlPanel._statsDisplay.notify_currentPolyphony(_soundNodes.size() / (float)_maxPolyphony);
+		}
 		
 		//debugPrintln("status latency: " + (_prevPingResponseTime.getTime() - _prevPingRequestTime.getTime()));
 	}
@@ -756,7 +767,11 @@ public class SCSoundControl implements OSCListener, Runnable {
 				//Have we timed out?
 				if (curTime.getTime() - _prevPingRequestTime.getTime() > _serverResponseTimeout) {
 					//We've timed out on the previous status request.
-					_notifyListener.receiveNotification_ServerStopped();
+					if (_notifyListener != null) { _notifyListener.receiveNotification_ServerStopped(); }
+					if (_controlPanel != null && _controlPanel._statsDisplay != null) {
+						_controlPanel._statsDisplay.receiveNotification_ServerStopped();
+					}
+
 					_serverLive = false;
 					_serverBooted = false;
 				}

@@ -1,0 +1,99 @@
+<project name="MyProject" default="dist" basedir=".">
+	<description>SCSoundControl build file</description>
+
+	<!-- set global properties for this build -->
+	<property name="src" location="src" />
+	<property name="data" location="data" />
+	<property name="depends" location="depends" />
+
+	<property name="build" location="build" />
+	<property name="dist" location="dist" />
+	<property name="test" location="test" />
+
+	<target name="init">
+		<!-- Create the time stamp -->
+		<tstamp />
+		<!-- Create the build directory structure used by compile -->
+		<mkdir dir="${build}" />
+	</target>
+
+	<target name="compile" depends="init"
+		description="compile the source ">
+		<!-- Compile the java code from ${src} into ${build} -->
+		<javac srcdir="${src}" destdir="${build}">
+			<classpath>
+				<pathelement path="${classpath}" />
+				<pathelement path="${depends}/core.jar" />
+				<pathelement path="${depends}/javaOSC_ELmod.jar" />
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="dist" depends="compile"
+		description="generate the distribution">
+		<!-- Create the distribution directory -->
+		<mkdir dir="${dist}" />
+		<mkdir dir="${dist}/depends" />
+
+		<copy todir="${build}/data">
+			<fileset dir="${data}">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+
+
+		<copy todir="${dist}/depends">
+			<fileset dir="${depends}">
+				<include name="SCSoundControl.properties" />
+			</fileset>
+		</copy>
+
+		<!-- Put everything in ${build} into the SCSoundControl.jar file -->
+		<jar jarfile="${dist}/SCSoundControl.jar" basedir="${build}"
+			excludes="net/electroland/scSoundControl/test/" />
+	</target>
+
+	<target name="SCSC_Test" depends="dist">
+
+		<mkdir dir="${build}/SCSCTestManifest/" />
+		<manifest file="${build}/SCSCTestManifest/MANIFEST.MF">
+			<attribute name="Main-Class"
+				value="net.electroland.scSoundControl.test.TestApp" />
+			<attribute name="Class-Path"
+				value="SCSoundControl.jar core.jar javaOSC_ELmod.jar" />
+		</manifest>
+
+		<copy todir="${test}">
+			<fileset dir="${depends}">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+
+		<mkdir dir="${test}/depends" />
+		<copy todir="${test}/depends">
+			<fileset dir="${depends}">
+				<include name="SCSoundControl.properties" />
+			</fileset>
+		</copy>
+
+		<mkdir dir="${test}/soundfiles" />
+		<copy todir="${test}/soundfiles">
+			<fileset dir="soundfiles" />
+		</copy>
+
+		<copy file="${dist}/SCSoundControl.jar" tofile="${test}/SCSoundControl.jar"
+			overwrite="true" />
+
+		<jar jarfile="${test}/SCSC_Test.jar" basedir="${build}"
+			includes="net/electroland/scSoundControl/test/*"
+			manifest="${build}/SCSCTestManifest/MANIFEST.MF" />
+
+	</target>
+
+	<target name="clean" description="clean up">
+		<!-- Delete the ${build} and ${dist} directory trees -->
+		<delete dir="${build}" />
+		<delete dir="${dist}" />
+		<delete dir="${test}" />
+	</target>
+</project>

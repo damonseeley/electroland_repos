@@ -1,11 +1,9 @@
 package net.electroland.scSoundControl.test;
 
-import net.electroland.scSoundControl.*;
-
 import java.util.Enumeration;
 import java.util.Vector;
-
 import processing.core.*;
+import net.electroland.scSoundControl.*;
 
 public class TestApp extends PApplet implements SCSoundControlNotifiable {
 
@@ -135,14 +133,14 @@ public class TestApp extends PApplet implements SCSoundControlNotifiable {
 		
 				
 		//draw history graphs
-		for (int i=2; i<width; i++) {
-			stroke(polyphonyColor);
-			if (polyphonyHistory.size() >= i) line(i-2, polyphonyHistory.get(i-2), i-1, polyphonyHistory.get(i-1));
-			stroke(avgCpuColor);
-			if (avgCPUhistory.size() >= i) line(i-2, avgCPUhistory.get(i-2), i-1, avgCPUhistory.get(i-1));
-			stroke(peakCpuColor);
-			if (peakCPUhistory.size() >= i) line(i-2, peakCPUhistory.get(i-2), i-1, peakCPUhistory.get(i-1));
-		}
+//		for (int i=2; i<width; i++) {
+//			stroke(polyphonyColor);
+//			if (polyphonyHistory.size() >= i) line(i-2, polyphonyHistory.get(i-2), i-1, polyphonyHistory.get(i-1));
+//			stroke(avgCpuColor);
+//			if (avgCPUhistory.size() >= i) line(i-2, avgCPUhistory.get(i-2), i-1, avgCPUhistory.get(i-1));
+//			stroke(peakCpuColor);
+//			if (peakCPUhistory.size() >= i) line(i-2, peakCPUhistory.get(i-2), i-1, peakCPUhistory.get(i-1));
+//		}
 		
 		//draw text
 		stroke(250);
