@@ -10,9 +10,9 @@ import net.electroland.lighting.detector.animation.Raster;
 public class BullsEye extends Sprite {
 	
 	private Person person;
-	private int ringCount, fadeSpeed, alpha;
+	private int ringCount, fadeSpeed, alpha, timeOut;
 	private long[] startTime;
-	private long fadeStartTime;
+	private long fadeStartTime, trueStartTime;
 	private int[] brightness;
 	private boolean fadeOut;
 
@@ -26,8 +26,10 @@ public class BullsEye extends Sprite {
 		alpha = 255;
 		for(int i=0; i<ringCount; i++){
 			brightness[i] = (i/ringCount)*255;
-			startTime[i] = System.currentTimeMillis() - (long)((i/(float)ringCount)*fadeSpeed);	// offset equally
+			startTime[i] = System.currentTimeMillis() - (long)((i/(float)ringCount)*(fadeSpeed/2));	// offset equally
 		}
+		timeOut = 5000;
+		trueStartTime = System.currentTimeMillis();
 	}
 
 	@Override
@@ -47,7 +49,7 @@ public class BullsEye extends Sprite {
 			}
 			c.popMatrix();
 		}
-		if(person != null && person.isDead() && !fadeOut){
+		if(((person != null && person.isDead()) || System.currentTimeMillis() - trueStartTime > timeOut) && !fadeOut){
 			fadeStartTime = System.currentTimeMillis();
 			fadeOut = true;
 		}

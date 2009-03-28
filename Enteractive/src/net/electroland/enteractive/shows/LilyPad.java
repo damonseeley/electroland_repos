@@ -18,6 +18,7 @@ import net.electroland.enteractive.sprites.Pad;
 import net.electroland.enteractive.sprites.Propeller;
 import net.electroland.enteractive.sprites.Ripple;
 import net.electroland.enteractive.sprites.Single;
+import net.electroland.enteractive.sprites.Spiral;
 import net.electroland.enteractive.sprites.Sweep;
 import net.electroland.enteractive.sprites.TickerBox;
 import net.electroland.lighting.detector.animation.Animation;
@@ -45,14 +46,16 @@ public class LilyPad implements Animation, SpriteListener {
 	private PImage rippleTexture;	// PNG image for ripple sprite
 	private PImage sweepTexture;
 	private PImage propellerTexture;
+	private PImage spiralTexture;
 	
-	public LilyPad(Model m, Raster r, SoundManager sm, PImage rippleTexture, PImage sweepTexture, PImage propellerTexture){
+	public LilyPad(Model m, Raster r, SoundManager sm, PImage rippleTexture, PImage sweepTexture, PImage propellerTexture, PImage spiralTexture){
 		this.m = m;
 		this.r = r;
 		this.sm = sm;
 		this.rippleTexture = rippleTexture;
 		this.sweepTexture = sweepTexture;
 		this.propellerTexture = propellerTexture;
+		this.spiralTexture = spiralTexture;
 		this.tileSize = (int)(((PGraphics)(r.getRaster())).height/11.0);
 		sprites = new ConcurrentHashMap<Integer,Sprite>();
 		pads = new ConcurrentHashMap<Integer,Pad>();
@@ -126,7 +129,7 @@ public class LilyPad implements Animation, SpriteListener {
 											break;
 									}
 								} else {	// anywhere in the middle
-									int luckyNumber = (int)(Math.random()*5 - 0.01);
+									int luckyNumber = (int)(Math.random()*6 - 0.01);
 									switch(luckyNumber){
 										case 0:
 											sprite = new Ripple(spriteIndex, r, pad.getX(), pad.getY(), sm, rippleTexture);
@@ -138,10 +141,13 @@ public class LilyPad implements Animation, SpriteListener {
 											sprite = new TickerBox(spriteIndex, r, p, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, 2000);
 											break;
 										case 3:
-											sprite = new BullsEye(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, 4, 300);
+											sprite = new BullsEye(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, 3, 500);
 											break;
 										case 4:
 											sprite = new Propeller(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, propellerTexture);
+											break;
+										case 5:
+											sprite = new Spiral(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, spiralTexture);
 											break;
 									}
 								}

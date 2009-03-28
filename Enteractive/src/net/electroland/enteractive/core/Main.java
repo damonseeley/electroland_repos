@@ -57,7 +57,7 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 	private int guiWidth = 180;	// TODO get from properties
 	private int guiHeight = 110;
 	private String[] animationList;
-	PImage rippleTexture, sweepTexture, sphereTexture, propellerTexture;
+	PImage rippleTexture, sweepTexture, sphereTexture, propellerTexture, spiralTexture;
 	
 	public Main(String[] args) throws UnknownHostException, OptionException{
 		super("Enteractive Control Panel");
@@ -111,6 +111,7 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 		sweepTexture = gui.loadImage("depends//images//sweep.png");
 		sphereTexture = gui.loadImage("depends//images//sphere.png");
 		propellerTexture = gui.loadImage("depends//images//propeller.png");
+		spiralTexture = gui.loadImage("depends//images//spiral.png");
 		
 		//currentAnimation = new ExampleAnimation(ptr.getModel(), raster, smr);
 		Animation a = new Spotlight(ptr.getModel(), raster, smr, sphereTexture);
@@ -126,7 +127,7 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 		if (a instanceof Spotlight){
 			Raster raster = getRaster();
 			((GUI)gui).setRaster(raster);
-			Animation next = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture);
+			Animation next = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture);
 			Collection<Recipient> fixtures = dmr.getRecipients();
 			amr.startAnimation(next, fixtures);	
 		}

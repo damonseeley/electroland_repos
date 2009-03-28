@@ -7,26 +7,26 @@ import net.electroland.enteractive.core.SoundManager;
 import net.electroland.enteractive.core.Sprite;
 import net.electroland.lighting.detector.animation.Raster;
 
-public class Propeller extends Sprite {
+public class Spiral extends Sprite {
 	
 	private Person person;
 	private PImage image;
 	private int imageWidth, imageHeight;
 	private boolean fadeOut;
-	private int duration, fadeSpeed, rotSpeed, rotation;
+	private int timeOut, fadeSpeed, rotSpeed, rotation;
 	private int alpha = 255;
 	private long startTime, rotTime;
 
-	public Propeller(int id, Raster raster, float x, float y, SoundManager sm, Person person, PImage image) {
+	public Spiral(int id, Raster raster, float x, float y, SoundManager sm, Person person, PImage image) {
 		super(id, raster, x, y, sm);
 		this.person = person;
 		this.image = image;
 		if(raster.isProcessing()){
 			PGraphics c = (PGraphics)canvas;
-			this.imageWidth = this.imageHeight = (int)(c.height/2);
+			this.imageWidth = this.imageHeight = (int)(c.width/2);
 		}
 		fadeOut = false;
-		duration = 10000;	// milliseconds
+		timeOut = 10000;	// milliseconds
 		fadeSpeed = 2000;
 		rotSpeed = 1000;
 		rotTime = System.currentTimeMillis();
@@ -38,7 +38,7 @@ public class Propeller extends Sprite {
 		if(System.currentTimeMillis() - rotTime > rotSpeed){
 			rotTime = System.currentTimeMillis();
 		}
-		rotation = (int)(((System.currentTimeMillis() - rotTime) / (float)rotSpeed) * 360);
+		rotation = (int)(((System.currentTimeMillis() - rotTime) / (float)rotSpeed) * -360);
 		
 		if(raster.isProcessing()){
 			PGraphics c = (PGraphics)canvas;
@@ -57,7 +57,7 @@ public class Propeller extends Sprite {
 			startTime = System.currentTimeMillis();
 		}
 		
-		if(System.currentTimeMillis() - startTime > duration){
+		if(System.currentTimeMillis() - startTime > timeOut){
 			fadeOut = true;
 			startTime = System.currentTimeMillis();
 		}
