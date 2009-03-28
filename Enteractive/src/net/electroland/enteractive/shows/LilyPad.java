@@ -12,8 +12,10 @@ import net.electroland.enteractive.core.Person;
 import net.electroland.enteractive.core.SoundManager;
 import net.electroland.enteractive.core.Sprite;
 import net.electroland.enteractive.core.SpriteListener;
+import net.electroland.enteractive.sprites.BullsEye;
 import net.electroland.enteractive.sprites.ExplodingCross;
 import net.electroland.enteractive.sprites.Pad;
+import net.electroland.enteractive.sprites.Propeller;
 import net.electroland.enteractive.sprites.Ripple;
 import net.electroland.enteractive.sprites.Single;
 import net.electroland.enteractive.sprites.Sweep;
@@ -42,13 +44,15 @@ public class LilyPad implements Animation, SpriteListener {
 	private float padOdds = 0.8f;	// odds of creating a new pad
 	private PImage rippleTexture;	// PNG image for ripple sprite
 	private PImage sweepTexture;
+	private PImage propellerTexture;
 	
-	public LilyPad(Model m, Raster r, SoundManager sm, PImage rippleTexture, PImage sweepTexture){
+	public LilyPad(Model m, Raster r, SoundManager sm, PImage rippleTexture, PImage sweepTexture, PImage propellerTexture){
 		this.m = m;
 		this.r = r;
 		this.sm = sm;
 		this.rippleTexture = rippleTexture;
 		this.sweepTexture = sweepTexture;
+		this.propellerTexture = propellerTexture;
 		this.tileSize = (int)(((PGraphics)(r.getRaster())).height/11.0);
 		sprites = new ConcurrentHashMap<Integer,Sprite>();
 		pads = new ConcurrentHashMap<Integer,Pad>();
@@ -105,7 +109,6 @@ public class LilyPad implements Animation, SpriteListener {
 									int luckyNumber = (int)(Math.random()*2 - 0.01);
 									switch(luckyNumber){
 										case 0:
-											//sprite = new ImageSprite(spriteIndex, r, pad.getX(), pad.getY(), sm, rippleTexture, 0.1f, 0.1f, true, true);
 											sprite = new Ripple(spriteIndex, r, pad.getX(), pad.getY(), sm, rippleTexture);
 											break;
 										case 1:
@@ -116,7 +119,6 @@ public class LilyPad implements Animation, SpriteListener {
 									int luckyNumber = (int)(Math.random()*2 - 0.01);
 									switch(luckyNumber){
 										case 0:
-											//sprite = new ImageSprite(spriteIndex, r, pad.getX(), pad.getY(), sm, rippleTexture, 0.1f, 0.1f, true, true);
 											sprite = new Ripple(spriteIndex, r, pad.getX(), pad.getY(), sm, rippleTexture);
 											break;
 										case 1:
@@ -124,10 +126,9 @@ public class LilyPad implements Animation, SpriteListener {
 											break;
 									}
 								} else {	// anywhere in the middle
-									int luckyNumber = (int)(Math.random()*3 - 0.01);
+									int luckyNumber = (int)(Math.random()*5 - 0.01);
 									switch(luckyNumber){
 										case 0:
-											//sprite = new ImageSprite(spriteIndex, r, pad.getX(), pad.getY(), sm, rippleTexture, 0.1f, 0.1f, true, true);
 											sprite = new Ripple(spriteIndex, r, pad.getX(), pad.getY(), sm, rippleTexture);
 											break;
 										case 1:
@@ -135,6 +136,12 @@ public class LilyPad implements Animation, SpriteListener {
 											break;
 										case 2:
 											sprite = new TickerBox(spriteIndex, r, p, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, 2000);
+											break;
+										case 3:
+											sprite = new BullsEye(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, 4, 300);
+											break;
+										case 4:
+											sprite = new Propeller(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, propellerTexture);
 											break;
 									}
 								}

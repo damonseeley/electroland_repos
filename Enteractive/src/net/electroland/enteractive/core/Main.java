@@ -57,7 +57,7 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 	private int guiWidth = 180;	// TODO get from properties
 	private int guiHeight = 110;
 	private String[] animationList;
-	PImage rippleTexture, sweepTexture, sphereTexture;
+	PImage rippleTexture, sweepTexture, sphereTexture, propellerTexture;
 	
 	public Main(String[] args) throws UnknownHostException, OptionException{
 		super("Enteractive Control Panel");
@@ -110,6 +110,7 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 		rippleTexture = gui.loadImage("depends//images//ripple.png");
 		sweepTexture = gui.loadImage("depends//images//sweep.png");
 		sphereTexture = gui.loadImage("depends//images//sphere.png");
+		propellerTexture = gui.loadImage("depends//images//propeller.png");
 		
 		//currentAnimation = new ExampleAnimation(ptr.getModel(), raster, smr);
 		Animation a = new Spotlight(ptr.getModel(), raster, smr, sphereTexture);
@@ -125,7 +126,7 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 		if (a instanceof Spotlight){
 			Raster raster = getRaster();
 			((GUI)gui).setRaster(raster);
-			Animation next = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture);
+			Animation next = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture);
 			Collection<Recipient> fixtures = dmr.getRecipients();
 			amr.startAnimation(next, fixtures);	
 		}
@@ -285,6 +286,7 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 			System.out.println("Four Corners!");
 		} else if(e.getType() == Model.ModelConstants.OPPOSITE_CORNERS){
 			System.out.println("Corners 1 and 4!");
+			/*
 			Recipient floor = dmr.getRecipient("floor");
 			if(amr.getCurrentAnimation(floor) instanceof LilyPad){
 				Raster raster = getRaster();
@@ -293,8 +295,10 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 				Collection<Recipient> fixtures = dmr.getRecipients();
 				amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
 			}
+			*/
 		} else if(e.getType() == Model.ModelConstants.OPPOSITE_CORNERS2){
 			System.out.println("Corners 2 and 3!");
+			/*
 			// TODO switch this to inverted spotlight mode
 			Recipient floor = dmr.getRecipient("floor");
 			if(amr.getCurrentAnimation(floor) instanceof LilyPad){
@@ -304,6 +308,7 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 				Collection<Recipient> fixtures = dmr.getRecipients();
 				amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
 			}
+			*/
 		}
 	}
 	
