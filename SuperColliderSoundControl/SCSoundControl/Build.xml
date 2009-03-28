@@ -1,4 +1,4 @@
-<project name="MyProject" default="dist" basedir=".">
+<project name="MyProject" default="SCSC_Test" basedir=".">
 	<description>SCSoundControl build file</description>
 
 	<!-- set global properties for this build -->
@@ -10,7 +10,7 @@
 	<property name="dist" location="dist" />
 	<property name="test" location="test" />
 
-	<target name="init">
+	<target name="init" depends="clean">
 		<!-- Create the time stamp -->
 		<tstamp />
 		<!-- Create the build directory structure used by compile -->
