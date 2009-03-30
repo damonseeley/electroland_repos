@@ -17,7 +17,9 @@ import net.electroland.enteractive.sprites.ExplodingCross;
 import net.electroland.enteractive.sprites.Pad;
 import net.electroland.enteractive.sprites.Propeller;
 import net.electroland.enteractive.sprites.Ripple;
+import net.electroland.enteractive.sprites.Shooter;
 import net.electroland.enteractive.sprites.Single;
+import net.electroland.enteractive.sprites.Sparkler;
 import net.electroland.enteractive.sprites.Spiral;
 import net.electroland.enteractive.sprites.Sweep;
 import net.electroland.enteractive.sprites.TickerBox;
@@ -47,8 +49,9 @@ public class LilyPad implements Animation, SpriteListener {
 	private PImage sweepTexture;
 	private PImage propellerTexture;
 	private PImage spiralTexture;
+	private PImage sphereTexture;
 	
-	public LilyPad(Model m, Raster r, SoundManager sm, PImage rippleTexture, PImage sweepTexture, PImage propellerTexture, PImage spiralTexture){
+	public LilyPad(Model m, Raster r, SoundManager sm, PImage rippleTexture, PImage sweepTexture, PImage propellerTexture, PImage spiralTexture, PImage sphereTexture){
 		this.m = m;
 		this.r = r;
 		this.sm = sm;
@@ -56,6 +59,7 @@ public class LilyPad implements Animation, SpriteListener {
 		this.sweepTexture = sweepTexture;
 		this.propellerTexture = propellerTexture;
 		this.spiralTexture = spiralTexture;
+		this.sphereTexture = sphereTexture;
 		this.tileSize = (int)(((PGraphics)(r.getRaster())).height/11.0);
 		sprites = new ConcurrentHashMap<Integer,Sprite>();
 		pads = new ConcurrentHashMap<Integer,Pad>();
@@ -109,7 +113,7 @@ public class LilyPad implements Animation, SpriteListener {
 								
 								Sprite sprite = null;
 								if(pad.getX() == 1){	// if near entrance
-									int luckyNumber = (int)(Math.random()*2 - 0.01);
+									int luckyNumber = (int)(Math.random()*3 - 0.01);
 									switch(luckyNumber){
 										case 0:
 											sprite = new Ripple(spriteIndex, r, pad.getX(), pad.getY(), sm, rippleTexture);
@@ -117,9 +121,12 @@ public class LilyPad implements Animation, SpriteListener {
 										case 1:
 											sprite = new Sweep(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, sweepTexture, 1500, false);
 											break;
+										case 2:
+											sprite = new Shooter(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, sweepTexture, 500, false);
+											break;
 									}
 								} else if(pad.getX() == 16){	// if near the sidewalk
-									int luckyNumber = (int)(Math.random()*2 - 0.01);
+									int luckyNumber = (int)(Math.random()*3 - 0.01);
 									switch(luckyNumber){
 										case 0:
 											sprite = new Ripple(spriteIndex, r, pad.getX(), pad.getY(), sm, rippleTexture);
@@ -127,9 +134,12 @@ public class LilyPad implements Animation, SpriteListener {
 										case 1:
 											sprite = new Sweep(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, sweepTexture, 1500, true);
 											break;
+										case 2:
+											sprite = new Shooter(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, sweepTexture, 500, false);
+											break;
 									}
 								} else {	// anywhere in the middle
-									int luckyNumber = (int)(Math.random()*6 - 0.01);
+									int luckyNumber = (int)(Math.random()*7 - 0.01);
 									switch(luckyNumber){
 										case 0:
 											sprite = new Ripple(spriteIndex, r, pad.getX(), pad.getY(), sm, rippleTexture);
@@ -148,6 +158,9 @@ public class LilyPad implements Animation, SpriteListener {
 											break;
 										case 5:
 											sprite = new Spiral(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, spiralTexture);
+											break;
+										case 6:
+											sprite = new Sparkler(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, sphereTexture);
 											break;
 									}
 								}

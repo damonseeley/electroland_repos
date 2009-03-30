@@ -127,7 +127,7 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 		if (a instanceof Spotlight){
 			Raster raster = getRaster();
 			((GUI)gui).setRaster(raster);
-			Animation next = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture);
+			Animation next = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture, sphereTexture);
 			Collection<Recipient> fixtures = dmr.getRecipients();
 			amr.startAnimation(next, fixtures);	
 		}
