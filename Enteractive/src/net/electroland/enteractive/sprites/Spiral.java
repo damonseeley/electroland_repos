@@ -24,6 +24,7 @@ public class Spiral extends Sprite {
 		if(raster.isProcessing()){
 			PGraphics c = (PGraphics)canvas;
 			this.imageWidth = this.imageHeight = (int)(c.width/2);
+			sm.createMonoSound(sm.soundProps.getProperty("test2"), x, y, c.width, c.height);
 		}
 		fadeOut = false;
 		timeOut = 10000;	// milliseconds

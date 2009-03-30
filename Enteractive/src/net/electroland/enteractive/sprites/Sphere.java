@@ -24,6 +24,7 @@ public class Sphere extends Sprite{
 		if(raster.isProcessing()){
 			PGraphics c = (PGraphics)canvas;
 			this.imageWidth = this.imageHeight = (int)(c.height/2);
+			sm.createMonoSound(sm.soundProps.getProperty("test2"), x, y, c.width, c.height);
 		}
 		fadeOut = false;
 		duration = 750;	// milliseconds

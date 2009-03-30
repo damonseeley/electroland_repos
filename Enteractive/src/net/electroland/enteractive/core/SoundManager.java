@@ -1,7 +1,14 @@
 package net.electroland.enteractive.core;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import net.electroland.scSoundControl.SCSoundControl;
@@ -18,29 +25,68 @@ public class SoundManager implements SCSoundControlNotifiable {
 	private SCSoundControl ss;
 	private boolean serverIsLive;
 	private Hashtable<String, Integer> soundFiles;
+	private List<Speaker> speakers;
 	private String absolutePath;
-	private Properties systemProps;
+	public Properties soundProps;
 	
-	public SoundManager(Properties systemProps){
-		this.systemProps = systemProps;
+	public SoundManager(){
+		
+		try{
+			soundProps = new Properties();
+			soundProps.load(new FileInputStream(new File("depends//sounds.properties")));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		serverIsLive = false;
 		soundFiles = new Hashtable<String, Integer>();
-		absolutePath = "D:\\Programming\\Java\\Enteractive\\soundfiles\\";	// should come from systemProps
+		speakers = new ArrayList<Speaker>();
+		absolutePath = soundProps.getProperty("path");
 		ss = new SCSoundControl(this);
 		ss.init();
 		ss.showDebugOutput(true);
+		parseSpeakers();
 	}
 	
-	public SoundNode createMonoSound(String filename, float gain){
+	public SoundNode createMonoSound(String filename, float x, float y, float width, float height){
 		if(!filename.equals("none") && serverIsLive){
-			// need to look up coordinates here to gauge amplitudes
-			//return ss.createMonoSoundNode(soundFiles.get(absolutePath+filename), false, amplitudes, 1.0f);
+			float[] amplitudes = getAmplitudes(x, y, width, height);
+			//System.out.println(amplitudes.length);
+			for(int i=0; i<amplitudes.length; i++){
+				//System.out.print(amplitudes[i]+" ");
+			}
+			return ss.createMonoSoundNode(soundFiles.get(absolutePath+filename), false, amplitudes, 1.0f);
 		}
 		return null;
 	}
 	
 	public void loadBuffer(String soundFile){
 		ss.readBuf(soundFile);
+	}
+	
+	public float[] getAmplitudes(float x, float y, float width, float height){
+		float[] amplitudes = new float[speakers.size()];
+		Iterator<Speaker> iter = speakers.iterator();
+		int i = 0;
+		while(iter.hasNext()){
+			Speaker s = iter.next();
+			amplitudes[i] = s.getAmplitude(x/width, y/height);	// normalize location
+			i++;
+		}
+		return amplitudes;
+	}
+	
+	public void parseSpeakers(){
+		Iterator<Map.Entry<Object,Object>> iter = soundProps.entrySet().iterator();
+		while(iter.hasNext()){
+			Map.Entry<Object,Object> entry = iter.next();
+			if(entry.getKey().toString().startsWith("speaker")){
+				String[] loc = entry.getValue().toString().split(",");
+				speakers.add(new Speaker(Float.parseFloat(loc[0]), Float.parseFloat(loc[1])));
+			}
+		}
 	}
 	
 	public void parseSoundFiles(Properties sysProps){
@@ -69,7 +115,7 @@ public class SoundManager implements SCSoundControlNotifiable {
 
 	public void receiveNotification_ServerRunning() {
 		serverIsLive = true;
-		parseSoundFiles(systemProps);		
+		parseSoundFiles(soundProps);		
 	}
 
 	public void receiveNotification_ServerStatus(float averageCPU, float peakCPU) {
@@ -78,6 +124,28 @@ public class SoundManager implements SCSoundControlNotifiable {
 
 	public void receiveNotification_ServerStopped() {
 		serverIsLive = false;
+	}
+	
+	
+	
+	
+	
+	public class Speaker{
+		
+		public float x, y;
+		
+		public Speaker(float x, float y){
+			this.x = x;
+			this.y = y;
+		}
+		
+		public float getAmplitude(float targetx, float targety){
+			// takes normalized location values and creates amplitude
+			// from inverted value of hypotenuse distance.
+			float xdiff = x - targetx;
+			float ydiff = y - targety;
+			return 1 - (float)Math.sqrt((xdiff*xdiff) + (ydiff*ydiff));
+		}
 	}
 
 }

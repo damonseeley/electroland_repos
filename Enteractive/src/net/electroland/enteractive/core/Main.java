@@ -72,8 +72,8 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 		dmp = new DetectorManagerJPanel(dmr);				// panel that renders the filters
 		amr = new AnimationManager(dmp, fps);				// animation manager
 		amr.addListener(this);								// let me know when animations are complete
-		//smr = new SoundManager(null);
-		smr = null;
+		smr = new SoundManager();
+		//smr = null;
 		//add(dmp,"wrap");
 		
 		tcu = new TCUtil();									// tile controller utilities

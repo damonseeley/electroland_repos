@@ -21,6 +21,10 @@ public class Shooter extends Sprite {
 		this.switchDirection = switchDirection;
 		sweepLength = 150;
 		startTime = System.currentTimeMillis();
+		if(raster.isProcessing()){
+			PGraphics c = (PGraphics)canvas;
+			sm.createMonoSound(sm.soundProps.getProperty("test3"), x, y, c.width, c.height);
+		}
 	}
 
 	@Override

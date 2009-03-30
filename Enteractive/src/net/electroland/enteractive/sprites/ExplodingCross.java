@@ -19,6 +19,10 @@ public class ExplodingCross extends Sprite {
 		startTime = System.currentTimeMillis();
 		expand = true;
 		length = tileSize/2;
+		if(raster.isProcessing()){
+			PGraphics c = (PGraphics)canvas;
+			sm.createMonoSound(sm.soundProps.getProperty("test1"), x, y, c.width, c.height);
+		}
 	}
 
 	@Override

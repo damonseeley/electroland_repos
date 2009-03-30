@@ -23,6 +23,7 @@ public class Ripple extends Sprite{
 			PGraphics c = (PGraphics)canvas;
 			this.startSize = this.imageWidth = this.imageHeight = (int)(c.height/11);
 			this.endSize = c.height*2;
+			sm.createMonoSound(sm.soundProps.getProperty("test2"), x, y, c.width, c.height);
 		}
 		expand = true;
 		fadeOut = true;

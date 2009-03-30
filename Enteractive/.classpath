@@ -8,5 +8,6 @@
 	<classpathentry kind="src" path="/SCSoundControl"/>
 	<classpathentry kind="src" path="/ElectrolandLightingUtils"/>
 	<classpathentry kind="lib" path="libraries/core.jar"/>
+	<classpathentry kind="lib" path="libraries/javaosc_ELmod.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
