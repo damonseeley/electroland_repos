@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ArtNetBroadcaster"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ArtNetBroadcaster_LAFM"/>
 	<classpathentry kind="lib" path="libraries/controlP5.jar"/>
 	<classpathentry kind="lib" path="libraries/core.jar"/>
 	<classpathentry kind="lib" path="libraries/javaosc.jar"/>
@@ -10,7 +10,7 @@
 	<classpathentry kind="lib" path="libraries/promidi.jar"/>
 	<classpathentry kind="lib" path="libraries/libProMandoMidiJNILib.jar">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="LAFM/libraries"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/Library/Java/Extensions"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
