@@ -73,30 +73,30 @@ public class TickerBox extends Sprite {
 			if(state == 0){
 				c.fill(brightness,0,0);
 				c.rect(x-tileSize, y-tileSize, tileSize, tileSize);	// top left 
-				c.fill((brightness/6.0f)*5,0,0);
+				c.fill((brightness/2.0f),0,0);
 				c.rect(x-tileSize, y, tileSize, tileSize);			// left 
-				c.fill((brightness/6.0f)*4,0,0);
+				c.fill((brightness/4.0f),0,0);
 				c.rect(x-tileSize, y+tileSize, tileSize, tileSize);	// bottom left
-				c.fill((brightness/6.0f)*3,0,0);
+				c.fill((brightness/8.0f),0,0);
 				c.rect(x, y+tileSize, tileSize, tileSize);			// bottom square 
-				c.fill((brightness/6.0f)*2,0,0);
+				c.fill((brightness/16.0f),0,0);
 				c.rect(x+tileSize, y+tileSize, tileSize, tileSize);	// bottom right
-				c.fill((brightness/6.0f)*1,0,0);
+				c.fill((brightness/32.0f),0,0);
 				c.rect(x+tileSize, y, tileSize, tileSize);			// right
 				c.fill(0,0,0);
 				c.rect(x+tileSize, y-tileSize, tileSize, tileSize);	// top right 
 				c.fill(0,0,0);
 				c.rect(x, y-tileSize, tileSize, tileSize);			// top
 			} else if(state == 1){
-				c.fill((brightness/6.0f)*5,0,0); 
+				c.fill((brightness/2.0f),0,0);
 				c.rect(x-tileSize, y-tileSize, tileSize, tileSize);	// top left 
-				c.fill((brightness/6.0f)*4,0,0);
+				c.fill((brightness/4.0f),0,0);
 				c.rect(x-tileSize, y, tileSize, tileSize);			// left
-				c.fill((brightness/6.0f)*3,0,0); 
+				c.fill((brightness/8.0f),0,0);
 				c.rect(x-tileSize, y+tileSize, tileSize, tileSize);	// bottom left
-				c.fill((brightness/6.0f)*2,0,0);
+				c.fill((brightness/16.0f),0,0);
 				c.rect(x, y+tileSize, tileSize, tileSize);			// bottom square
-				c.fill((brightness/6.0f)*1,0,0);
+				c.fill((brightness/32.0f),0,0);
 				c.rect(x+tileSize, y+tileSize, tileSize, tileSize);	// bottom right
 				c.fill(0,0,0); 
 				c.rect(x+tileSize, y, tileSize, tileSize);			// right
@@ -105,13 +105,13 @@ public class TickerBox extends Sprite {
 				c.fill(brightness,0,0);
 				c.rect(x, y-tileSize, tileSize, tileSize);			// top
 			} else if(state == 2){
-				c.fill((brightness/6.0f)*4,0,0);
+				c.fill((brightness/4.0f),0,0);
 				c.rect(x-tileSize, y-tileSize, tileSize, tileSize);	// top left 
-				c.fill((brightness/6.0f)*3,0,0); 
+				c.fill((brightness/8.0f),0,0); 
 				c.rect(x-tileSize, y, tileSize, tileSize);			// left
-				c.fill((brightness/6.0f)*2,0,0);
+				c.fill((brightness/16.0f),0,0);
 				c.rect(x-tileSize, y+tileSize, tileSize, tileSize);	// bottom left
-				c.fill((brightness/6.0f)*1,0,0);
+				c.fill((brightness/32.0f),0,0);
 				c.rect(x, y+tileSize, tileSize, tileSize);			// bottom square
 				c.fill(0,0,0); 
 				c.rect(x+tileSize, y+tileSize, tileSize, tileSize);	// bottom right
@@ -119,14 +119,14 @@ public class TickerBox extends Sprite {
 				c.rect(x+tileSize, y, tileSize, tileSize);			// right
 				c.fill(brightness,0,0);
 				c.rect(x+tileSize, y-tileSize, tileSize, tileSize);	// top right
-				c.fill((brightness/6.0f)*5,0,0); 
+				c.fill((brightness/2.0f),0,0);
 				c.rect(x, y-tileSize, tileSize, tileSize);			// top				
 			} else if(state == 3){
-				c.fill((brightness/6.0f)*3,0,0); 
+				c.fill((brightness/8.0f),0,0);  
 				c.rect(x-tileSize, y-tileSize, tileSize, tileSize);	// top left 
-				c.fill((brightness/6.0f)*2,0,0);
+				c.fill((brightness/16.0f),0,0);
 				c.rect(x-tileSize, y, tileSize, tileSize);			// left
-				c.fill((brightness/6.0f)*1,0,0);
+				c.fill((brightness/32.0f),0,0);
 				c.rect(x-tileSize, y+tileSize, tileSize, tileSize);	// bottom left
 				c.fill(0,0,0); 
 				c.rect(x, y+tileSize, tileSize, tileSize);			// bottom square
@@ -134,14 +134,14 @@ public class TickerBox extends Sprite {
 				c.rect(x+tileSize, y+tileSize, tileSize, tileSize);	// bottom right
 				c.fill(brightness,0,0);
 				c.rect(x+tileSize, y, tileSize, tileSize);			// right
-				c.fill((brightness/6.0f)*5,0,0); 
+				c.fill((brightness/2.0f),0,0);
 				c.rect(x+tileSize, y-tileSize, tileSize, tileSize);	// top right
-				c.fill((brightness/6.0f)*4,0,0);
+				c.fill((brightness/4.0f),0,0);
 				c.rect(x, y-tileSize, tileSize, tileSize);			// top
 			} else if(state == 4){
-				c.fill((brightness/6.0f)*2,0,0);
+				c.fill((brightness/16.0f),0,0);
 				c.rect(x-tileSize, y-tileSize, tileSize, tileSize);	// top left 
-				c.fill((brightness/6.0f)*1,0,0);
+				c.fill((brightness/32.0f),0,0);
 				c.rect(x-tileSize, y, tileSize, tileSize);			// left
 				c.fill(0,0,0); 
 				c.rect(x-tileSize, y+tileSize, tileSize, tileSize);	// bottom left
@@ -149,14 +149,14 @@ public class TickerBox extends Sprite {
 				c.rect(x, y+tileSize, tileSize, tileSize);			// bottom square
 				c.fill(brightness,0,0);
 				c.rect(x+tileSize, y+tileSize, tileSize, tileSize);	// bottom right
-				c.fill((brightness/6.0f)*5,0,0); 
+				c.fill((brightness/2.0f),0,0);
 				c.rect(x+tileSize, y, tileSize, tileSize);			// right
-				c.fill((brightness/6.0f)*4,0,0);
+				c.fill((brightness/4.0f),0,0);
 				c.rect(x+tileSize, y-tileSize, tileSize, tileSize);	// top right
-				c.fill((brightness/6.0f)*3,0,0); 
+				c.fill((brightness/8.0f),0,0); 
 				c.rect(x, y-tileSize, tileSize, tileSize);			// top
 			} else if(state == 5){
-				c.fill((brightness/6.0f)*1,0,0);
+				c.fill((brightness/32.0f),0,0);
 				c.rect(x-tileSize, y-tileSize, tileSize, tileSize);	// top left 
 				c.fill(0,0,0); 
 				c.rect(x-tileSize, y, tileSize, tileSize);			// left
@@ -164,13 +164,13 @@ public class TickerBox extends Sprite {
 				c.rect(x-tileSize, y+tileSize, tileSize, tileSize);	// bottom left
 				c.fill(brightness,0,0);
 				c.rect(x, y+tileSize, tileSize, tileSize);			// bottom square
-				c.fill((brightness/6.0f)*5,0,0); 
+				c.fill((brightness/2.0f),0,0);
 				c.rect(x+tileSize, y+tileSize, tileSize, tileSize);	// bottom right
-				c.fill((brightness/6.0f)*4,0,0);
+				c.fill((brightness/4.0f),0,0);
 				c.rect(x+tileSize, y, tileSize, tileSize);			// right
-				c.fill((brightness/6.0f)*3,0,0); 
+				c.fill((brightness/8.0f),0,0);
 				c.rect(x+tileSize, y-tileSize, tileSize, tileSize);	// top right
-				c.fill((brightness/6.0f)*2,0,0);
+				c.fill((brightness/16.0f),0,0);
 				c.rect(x, y-tileSize, tileSize, tileSize);			// top
 			} else if(state == 6){
 				c.fill(0,0,0); 
@@ -179,30 +179,30 @@ public class TickerBox extends Sprite {
 				c.rect(x-tileSize, y, tileSize, tileSize);			// left
 				c.fill(brightness,0,0);
 				c.rect(x-tileSize, y+tileSize, tileSize, tileSize);	// bottom left
-				c.fill((brightness/6.0f)*5,0,0); 
+				c.fill((brightness/2.0f),0,0); 
 				c.rect(x, y+tileSize, tileSize, tileSize);			// bottom square
-				c.fill((brightness/6.0f)*4,0,0);
+				c.fill((brightness/4.0f),0,0);
 				c.rect(x+tileSize, y+tileSize, tileSize, tileSize);	// bottom right
-				c.fill((brightness/6.0f)*3,0,0); 
+				c.fill((brightness/8.0f),0,0);
 				c.rect(x+tileSize, y, tileSize, tileSize);			// right
-				c.fill((brightness/6.0f)*2,0,0);
+				c.fill((brightness/16.0f),0,0);
 				c.rect(x+tileSize, y-tileSize, tileSize, tileSize);	// top right
-				c.fill((brightness/6.0f)*1,0,0);
+				c.fill((brightness/32.0f),0,0);
 				c.rect(x, y-tileSize, tileSize, tileSize);			// top
 			} else if(state == 7){
 				c.fill(0,0,0);
 				c.rect(x-tileSize, y-tileSize, tileSize, tileSize);	// top left 
 				c.fill(brightness,0,0);
 				c.rect(x-tileSize, y, tileSize, tileSize);			// left
-				c.fill((brightness/6.0f)*5,0,0); 
+				c.fill((brightness/2.0f),0,0);  
 				c.rect(x-tileSize, y+tileSize, tileSize, tileSize);	// bottom left
-				c.fill((brightness/6.0f)*4,0,0);
+				c.fill((brightness/4.0f),0,0);
 				c.rect(x, y+tileSize, tileSize, tileSize);			// bottom square
-				c.fill((brightness/6.0f)*3,0,0); 
+				c.fill((brightness/8.0f),0,0); 
 				c.rect(x+tileSize, y+tileSize, tileSize, tileSize);	// bottom right
-				c.fill((brightness/6.0f)*2,0,0);
+				c.fill((brightness/16.0f),0,0);
 				c.rect(x+tileSize, y, tileSize, tileSize);			// right
-				c.fill((brightness/6.0f)*1,0,0);
+				c.fill((brightness/32.0f),0,0);
 				c.rect(x+tileSize, y-tileSize, tileSize, tileSize);	// top right
 				c.fill(0,0,0); 
 				c.rect(x, y-tileSize, tileSize, tileSize);			// top
