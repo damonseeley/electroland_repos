@@ -48,6 +48,8 @@ public class Main extends JFrame implements CompletionListener, ActionListener{
 			}
 		});
 
+		System.out.println("Hello! I'm running!");
+
 		setResizable(true);
 		setVisible(true);
 	}
