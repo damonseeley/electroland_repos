@@ -97,7 +97,7 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 		});
 
 
-		lights3D = new Lights3D(600,600, dmr.getRecipient("floor"),  dmr.getRecipient("face"));
+		lights3D = new Lights3D(600,600, dmr.getRecipient("floor"),  dmr.getRecipient("face"), ptr.getModel());
 		gui = new GUI(guiWidth,guiHeight, dmr.getRecipient("floor"),  dmr.getRecipient("face"));
 		Raster raster = getRaster();
 		((GUI)gui).setRaster(raster);

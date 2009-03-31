@@ -2,6 +2,7 @@ package net.electroland.enteractive.gui;
 
 import java.util.ListIterator;
 
+import net.electroland.enteractive.core.Model;
 import net.electroland.lighting.detector.Detector;
 import net.electroland.lighting.detector.Recipient;
 import processing.core.PApplet;
@@ -18,12 +19,14 @@ public class Lights3D extends PApplet{
 	private int tileSize = 10;
 	private Recipient floor, face;
 	private boolean faceMode = false;
+	private Model m;
 	
-	public Lights3D(int width, int height, Recipient floor, Recipient face){
+	public Lights3D(int width, int height, Recipient floor, Recipient face, Model m){
 		this.width = width;
 		this.height = height;
 		this.floor = floor;
 		this.face = face;
+		this.m = m;
 		floorWidth = 16;
 		floorHeight = 11;
 		faceWidth = 18;
@@ -40,7 +43,7 @@ public class Lights3D extends PApplet{
 	}
 	
 	public void draw(){
-		background(50);
+		background(0);
 		translate(width/2, height/1.5f);
 		rotateY(-radians(rotY));
 		rotateX(-radians(rotX));
@@ -48,6 +51,7 @@ public class Lights3D extends PApplet{
 		noFill();
 		translate(-tileSize*floorWidth/2, -tileSize*floorHeight/2);
 		drawFloor();
+		drawSensors();
 		translate(-12,0,150);
 		drawFace();
 		  
@@ -85,6 +89,7 @@ public class Lights3D extends PApplet{
 		try{
 			ListIterator<Detector> i = face.getDetectorPatchList().listIterator();
 			int channel = 0;
+			noFill();
 			while(i.hasNext()){
 				Detector d = i.next();
 				//System.out.print("value for channel " + (channel++) + "=");
@@ -119,6 +124,7 @@ public class Lights3D extends PApplet{
 		try{
 			ListIterator<Detector> i = floor.getDetectorPatchList().listIterator();
 			int channel = 0;
+			noFill();
 			while(i.hasNext()){
 				Detector d = i.next();
 				//System.out.print("value for channel " + (channel++) + "=");
@@ -146,6 +152,25 @@ public class Lights3D extends PApplet{
 		}
 		*/
 		
+	}
+	
+	public void drawSensors(){
+		boolean[] sensors;
+		synchronized(m){
+			sensors = m.getSensors();
+		}
+		
+		if(sensors != null){
+			noStroke();
+			for(int i=0; i<sensors.length; i++){
+				if(sensors[i]){
+					fill(255,255,255);
+					int x = i % floorWidth;
+					int y = i / floorWidth;
+					rect(x*12 + 4, y*12 + 4, 2, 2);
+				}
+			}
+		}
 	}
 	
 }
