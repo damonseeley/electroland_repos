@@ -32,7 +32,7 @@ public class Sweep extends Sprite {
 		if(raster.isProcessing()){
 			PGraphics c = (PGraphics)canvas;
 			c.pushMatrix();
-			//c.tint(255,255,255,255);
+			c.tint(255,255,255,255);
 			if(switchDirection){
 				x = c.width - (int)(((System.currentTimeMillis() - startTime) / (float)duration) * (c.width+sweepLength));
 				if(x <= 0-sweepLength){

@@ -23,7 +23,7 @@ public class Shooter extends Sprite {
 		startTime = System.currentTimeMillis();
 		if(raster.isProcessing()){
 			PGraphics c = (PGraphics)canvas;
-			sm.createMonoSound(sm.soundProps.getProperty("test3"), x, y, c.width, c.height);
+			sm.createMonoSound(sm.soundProps.getProperty("test1"), x, y, c.width, c.height);
 		}
 	}
 

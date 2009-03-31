@@ -30,7 +30,7 @@ public class Spotlight implements Animation, SpriteListener{
 	private int spriteIndex = 0;
 	private PImage sphereTexture;
 	private long startTime;
-	private int duration = 20000;	// milliseconds
+	private int duration = 2000;	// milliseconds
 	
 	public Spotlight(Model m, Raster r, SoundManager sm, PImage sphereTexture){
 		this.m = m;

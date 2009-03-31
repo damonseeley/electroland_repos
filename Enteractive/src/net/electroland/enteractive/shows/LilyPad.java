@@ -77,7 +77,8 @@ public class LilyPad implements Animation, SpriteListener {
 				delayCount++;
 			} else {
 				if(Math.random() > padOdds){	// chance of creating a new pad
-					Pad pad = new Pad(spriteIndex, r, (int)Math.floor(Math.random()*15.99f)+1, (int)Math.floor(Math.random()*9.99f)+1, sm, 0, 255, 500);
+					//Pad pad = new Pad(spriteIndex, r, (int)Math.floor(Math.random()*15.99f)+1, (int)Math.floor(Math.random()*9.99f)+1, sm, 0, 255, 500);
+					Pad pad = new Pad(spriteIndex, r, (int)Math.floor(Math.random()*13.99f)+2, (int)Math.floor(Math.random()*7.99f)+2, sm, 0, 255, 500);
 					//pad.addListener(this);
 					//sprites.put(spriteIndex, pad);
 					pads.put(spriteIndex, pad);
@@ -103,6 +104,19 @@ public class LilyPad implements Animation, SpriteListener {
 						single.addListener(this);
 						billiejean.put(spriteIndex, single);
 						spriteIndex++;
+						
+						if(loc[0] == 1){			// near the entrance
+							Shooter shooter = new Shooter(spriteIndex, r, 0, (int)loc[1]*tileSize, sm, sweepTexture, 1000, false);
+							shooter.addListener(this);
+							sprites.put(spriteIndex, shooter);
+							spriteIndex++;
+						} else if(loc[0] == 16){	// near the sidewalk
+							Shooter shooter = new Shooter(spriteIndex, r, 18*tileSize, (int)loc[1]*tileSize, sm, sweepTexture, 1000, true);
+							shooter.addListener(this);
+							sprites.put(spriteIndex, shooter);
+							spriteIndex++;
+						}
+						
 						Iterator<Pad> i = pads.values().iterator();
 						while(i.hasNext()){											// check every active pad
 							Pad pad = i.next();
@@ -113,6 +127,8 @@ public class LilyPad implements Animation, SpriteListener {
 								//System.out.println(luckyNumber);
 								
 								Sprite sprite = null;
+								/*
+								// TODO this conditional needs to be removed
 								if(pad.getX() == 1){	// if near entrance
 									int luckyNumber = (int)(Math.random()*3 - 0.01);
 									if(luckyNumber < 0){
@@ -146,6 +162,7 @@ public class LilyPad implements Animation, SpriteListener {
 											break;
 									}
 								} else {	// anywhere in the middle
+								*/
 									int luckyNumber = (int)(Math.random()*6 - 0.01); // temporarily omitting sparkler
 									if(luckyNumber < 0){
 										luckyNumber = 0;
@@ -173,7 +190,7 @@ public class LilyPad implements Animation, SpriteListener {
 											sprite = new Sparkler(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, sphereTexture);
 											break;
 									}
-								}
+								//}
 								//if(sprite != null){
 								sprite.addListener(this);
 								sprites.put(spriteIndex, sprite);
