@@ -13,6 +13,8 @@ public class Pad extends Sprite {
 	private int duration, minValue, maxValue, value, holdTime;
 	private boolean fadeIn, fadeOut, hold;
 	private long startTime;
+	private long padStartTime;
+	private int timeOut;
 
 	public Pad(int id, Raster raster, int x, int y, SoundManager sm, int minValue, int maxValue, int duration) {
 		super(id, raster, x, y, sm);
@@ -20,11 +22,13 @@ public class Pad extends Sprite {
 		this.maxValue = maxValue;
 		this.duration = duration;
 		this.value = this.minValue;
-		holdTime = duration*2;
+		holdTime = 2000 + (int)(Math.random()*4000);
 		fadeIn = true;
 		fadeOut = false;
 		hold = false;
+		timeOut = 90000 + (int)(Math.random()*30000);
 		startTime = System.currentTimeMillis();
+		padStartTime = System.currentTimeMillis();
 	}
 
 	@Override
@@ -41,6 +45,9 @@ public class Pad extends Sprite {
 		} else if(fadeOut){
 			value = maxValue - (int)(((System.currentTimeMillis() - startTime) / (float)duration) * (maxValue-minValue));
 			if(value <= minValue){
+				if(System.currentTimeMillis() - padStartTime > timeOut){
+					die();
+				}
 				value = minValue;
 				fadeIn = true;
 				fadeOut = false;

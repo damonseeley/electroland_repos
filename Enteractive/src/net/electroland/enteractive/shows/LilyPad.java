@@ -77,7 +77,7 @@ public class LilyPad implements Animation, SpriteListener {
 				delayCount++;
 			} else {
 				if(Math.random() > padOdds){	// chance of creating a new pad
-					Pad pad = new Pad(spriteIndex, r, (int)Math.floor(Math.random()*15.99f)+1, (int)Math.floor(Math.random()*9.99f)+1, sm, 0, 255, 1000);
+					Pad pad = new Pad(spriteIndex, r, (int)Math.floor(Math.random()*15.99f)+1, (int)Math.floor(Math.random()*9.99f)+1, sm, 0, 255, 500);
 					//pad.addListener(this);
 					//sprites.put(spriteIndex, pad);
 					pads.put(spriteIndex, pad);
@@ -107,6 +107,7 @@ public class LilyPad implements Animation, SpriteListener {
 						while(i.hasNext()){											// check every active pad
 							Pad pad = i.next();
 							if(pad.getX() == p.getX() && pad.getY() == p.getY()){	// if new person on the pad...
+								//System.out.println("pad "+ pad.getID() +" activated");
 								pads.remove(pad.getID());
 								// create new action sprite here
 								//System.out.println(luckyNumber);
@@ -114,6 +115,9 @@ public class LilyPad implements Animation, SpriteListener {
 								Sprite sprite = null;
 								if(pad.getX() == 1){	// if near entrance
 									int luckyNumber = (int)(Math.random()*3 - 0.01);
+									if(luckyNumber < 0){
+										luckyNumber = 0;
+									}
 									switch(luckyNumber){
 										case 0:
 											sprite = new Ripple(spriteIndex, r, pad.getX(), pad.getY(), sm, rippleTexture);
@@ -122,11 +126,14 @@ public class LilyPad implements Animation, SpriteListener {
 											sprite = new Sweep(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, sweepTexture, 1500, false);
 											break;
 										case 2:
-											sprite = new Shooter(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, sweepTexture, 500, false);
+											sprite = new Shooter(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, sweepTexture, 1000, false);
 											break;
 									}
 								} else if(pad.getX() == 16){	// if near the sidewalk
 									int luckyNumber = (int)(Math.random()*3 - 0.01);
+									if(luckyNumber < 0){
+										luckyNumber = 0;
+									}
 									switch(luckyNumber){
 										case 0:
 											sprite = new Ripple(spriteIndex, r, pad.getX(), pad.getY(), sm, rippleTexture);
@@ -135,26 +142,29 @@ public class LilyPad implements Animation, SpriteListener {
 											sprite = new Sweep(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, sweepTexture, 1500, true);
 											break;
 										case 2:
-											sprite = new Shooter(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, sweepTexture, 500, false);
+											sprite = new Shooter(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, sweepTexture, 1000, true);
 											break;
 									}
 								} else {	// anywhere in the middle
-									int luckyNumber = (int)(Math.random()*7 - 0.01);
+									int luckyNumber = (int)(Math.random()*6 - 0.01); // temporarily omitting sparkler
+									if(luckyNumber < 0){
+										luckyNumber = 0;
+									}
 									switch(luckyNumber){
 										case 0:
 											sprite = new Ripple(spriteIndex, r, pad.getX(), pad.getY(), sm, rippleTexture);
 											break;
 										case 1:
-											sprite = new ExplodingCross(spriteIndex, r, (int)pad.getX(), (int)pad.getY(), sm, 1500);
+											sprite = new ExplodingCross(spriteIndex, r, (int)pad.getX(), (int)pad.getY(), sm, 2250);
 											break;
 										case 2:
 											sprite = new TickerBox(spriteIndex, r, p, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, 2000);
 											break;
 										case 3:
-											sprite = new BullsEye(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, 3, 500);
+											sprite = new Propeller(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, propellerTexture);
 											break;
 										case 4:
-											sprite = new Propeller(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, propellerTexture);
+											sprite = new BullsEye(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, 3, 2000);
 											break;
 										case 5:
 											sprite = new Spiral(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, spiralTexture);
@@ -164,11 +174,11 @@ public class LilyPad implements Animation, SpriteListener {
 											break;
 									}
 								}
-								if(sprite != null){
-									sprite.addListener(this);
-									sprites.put(spriteIndex, sprite);
-									spriteIndex++;
-								}
+								//if(sprite != null){
+								sprite.addListener(this);
+								sprites.put(spriteIndex, sprite);
+								spriteIndex++;
+								//}
 								
 							}
 						}
@@ -215,7 +225,10 @@ public class LilyPad implements Animation, SpriteListener {
 		} else {
 			sprites.remove(sprite.getID());
 		}
-		//System.out.println("sprite "+sprite.getID()+" removed");
+		
+		//if(!sprites.containsKey(sprite.getID())){
+			//System.out.println("sprite "+sprite.getID()+" removed");
+		//}
 	}
 
 }

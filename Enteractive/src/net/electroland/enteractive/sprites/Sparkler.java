@@ -31,6 +31,7 @@ public class Sparkler extends Sprite implements SpriteListener{
 		timeOut = 10000;
 		timeToDie = false;
 		startTime = System.currentTimeMillis();
+		System.out.println("sparkler");
 	}
 
 	@Override
@@ -75,7 +76,7 @@ public class Sparkler extends Sprite implements SpriteListener{
 		private int imageWidth, imageHeight;
 		private long sparkStartTime;
 		private float xdest, ydest, xstart, ystart;
-		private float sparkLife = 300;	// milliseconds
+		private float sparkLife = 2000;	// milliseconds
 		private PImage sparkImage;
 
 		public Spark(int id, Raster raster, float x, float y, SoundManager sm, PImage sparkImage) {

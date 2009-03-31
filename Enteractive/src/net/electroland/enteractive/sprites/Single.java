@@ -10,13 +10,14 @@ import net.electroland.lighting.detector.animation.Raster;
 public class Single extends Sprite {
 	
 	private Person person;
-	private int minVal, maxVal;
+	private int minVal, maxVal, brightness;
 
 	public Single(int id, Raster raster, Person person, float x, float y, SoundManager sm) {
 		super(id, raster, x, y, sm);
 		this.person = person;
-		minVal = 50;
-		maxVal = 150;
+		minVal = 10;
+		maxVal = 48;
+		brightness = maxVal;
 	}
 
 	@Override
@@ -26,7 +27,13 @@ public class Single extends Sprite {
 			c.pushMatrix();
 			c.rectMode(PConstants.CENTER);			// centered at sprite's X/Y position
 			//c.fill(150,0,0);						// dimmed
-			c.fill((float)(Math.random()*maxVal)+minVal,0,0);
+			//c.fill((float)(Math.random()*(maxVal-minVal))+minVal,0,0);
+			if(brightness == minVal){
+				brightness = maxVal;
+			} else {
+				brightness = minVal;
+			}
+			c.fill(brightness, 0, 0);
 			c.noStroke();
 			c.rect(x, y, tileSize, tileSize);		// single tile
 			c.popMatrix();

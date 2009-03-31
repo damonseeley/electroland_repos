@@ -26,7 +26,7 @@ public class TickerBox extends Sprite {
 		timeToDie = false;
 		if(raster.isProcessing()){
 			PGraphics c = (PGraphics)canvas;
-			sm.createMonoSound(sm.soundProps.getProperty("test3"), x, y, c.width, c.height);
+			sm.createMonoSound(sm.soundProps.getProperty("test2"), x, y, c.width, c.height);
 		}
 	}
 	
@@ -46,7 +46,7 @@ public class TickerBox extends Sprite {
 	@Override
 	public void draw() {
 		if(person == null || timeToDie){
-			brightness = 255 - (int)(((System.currentTimeMillis() - startTime) / (float)duration) * 255);
+			brightness = 255 - (int)(((System.currentTimeMillis() - startTime) / 1000) * 255);
 			if(brightness <= 0){
 				die();
 			}

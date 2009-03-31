@@ -28,7 +28,7 @@ public class Propeller extends Sprite {
 		}
 		fadeOut = false;
 		duration = 10000;	// milliseconds
-		fadeSpeed = 2000;
+		fadeSpeed = 1000;
 		rotSpeed = 1000;
 		rotTime = System.currentTimeMillis();
 		startTime = System.currentTimeMillis();
@@ -44,9 +44,7 @@ public class Propeller extends Sprite {
 		if(raster.isProcessing()){
 			PGraphics c = (PGraphics)canvas;
 			c.pushMatrix();
-			if(alpha < 255){
-				c.tint(255,255,255,alpha);
-			}
+			c.tint(255,255,255,alpha);
 			c.translate(x, y);
 			c.rotate((float)(rotation*(Math.PI/180)));
 			c.image(image, 0-(imageWidth/2), 0-(imageHeight/2), imageWidth, imageHeight);

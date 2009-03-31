@@ -66,6 +66,19 @@ public class SoundManager implements SCSoundControlNotifiable {
 		ss.readBuf(soundFile);
 	}
 	
+	public float[] getAmplitudes(float x, float width){
+		// one-dimensional, ie: stereo panning of amplitude values
+		float[] amplitudes = new float[speakers.size()];
+		Iterator<Speaker> iter = speakers.iterator();
+		int i = 0;
+		while(iter.hasNext()){
+			Speaker s = iter.next();
+			amplitudes[i] = s.getAmplitude(x/width);	// normalize location
+			i++;
+		}
+		return amplitudes;
+	}
+	
 	public float[] getAmplitudes(float x, float y, float width, float height){
 		float[] amplitudes = new float[speakers.size()];
 		Iterator<Speaker> iter = speakers.iterator();
@@ -137,6 +150,10 @@ public class SoundManager implements SCSoundControlNotifiable {
 		public Speaker(float x, float y){
 			this.x = x;
 			this.y = y;
+		}
+		
+		public float getAmplitude(float targetx){
+			return 1 - Math.abs(x - targetx);
 		}
 		
 		public float getAmplitude(float targetx, float targety){

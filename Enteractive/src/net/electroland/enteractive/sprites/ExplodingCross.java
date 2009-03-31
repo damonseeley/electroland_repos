@@ -10,7 +10,7 @@ public class ExplodingCross extends Sprite {
 	
 	private int duration;
 	private long startTime;
-	private boolean expand;
+	private boolean expand, hold;
 	private int length;
 
 	public ExplodingCross(int id, Raster raster, int x, int y, SoundManager sm, int duration) {
@@ -35,16 +35,21 @@ public class ExplodingCross extends Sprite {
 			c.noStroke();
 			
 			if(expand){
-				length = (int)(((System.currentTimeMillis() - startTime) / ((float)duration/2)) * c.width);
+				length = (int)(((System.currentTimeMillis() - startTime) / ((float)duration/3)) * c.width);
 				if(length >= c.width){
 					expand = false;
+					hold = true;
 				}
 				c.rect(x*tileSize - tileSize/2, y*tileSize - tileSize/2, tileSize, length);			// expanding down
 				c.rect(x*tileSize - tileSize/2, y*tileSize-length - tileSize/2, tileSize, length);	// moving up
 				c.rect(x*tileSize - tileSize/2, y*tileSize - tileSize/2, length, tileSize);			// expanding right
 				c.rect(x*tileSize-length - tileSize/2, y*tileSize - tileSize/2, length, tileSize);	// moving left
+			} else if(hold){
+				if(System.currentTimeMillis() - startTime > ((float)duration/3)){
+					hold = false;
+				}
 			} else {
-				length = c.width - ((int)(((System.currentTimeMillis() - startTime) / ((float)duration/2)) * c.width) - c.width);
+				length = c.width - ((int)(((System.currentTimeMillis() - startTime) / ((float)duration/3)) * c.width) - c.width);
 				if(length <= 0){
 					die();
 				}
