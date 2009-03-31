@@ -181,7 +181,7 @@ public class LilyPad implements Animation, SpriteListener {
 											sprite = new Propeller(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, propellerTexture);
 											break;
 										case 4:
-											sprite = new BullsEye(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, 3, 2000);
+											sprite = new BullsEye(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, 3, 500);
 											break;
 										case 5:
 											sprite = new Spiral(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, spiralTexture);
