@@ -16,6 +16,8 @@ import javax.swing.JFrame;
 import processing.core.PConstants;
 import net.electroland.laface.gui.ControlPanel;
 import net.electroland.laface.gui.RasterPanel;
+import net.electroland.laface.shows.DrawTest;
+import net.electroland.laface.shows.TraceTest;
 import net.electroland.laface.shows.Wave;
 import net.electroland.lighting.detector.DetectorManager;
 import net.electroland.lighting.detector.DetectorManagerJPanel;
@@ -58,14 +60,16 @@ public class LAFACEMain extends JFrame implements CompletionListener, ActionList
 			}
 		});
 
-		rasterPanel = new RasterPanel(dmr.getRecipients());
+		rasterPanel = new RasterPanel(this, dmr.getRecipients(), 174, 7);
 		Raster raster = getRaster();
 		rasterPanel.setRaster(raster);
 		add(rasterPanel, "wrap");
 		controlPanel = new ControlPanel(this);
 		add(controlPanel, "wrap");
 		
-		Animation a = new Wave(raster);
+		//Animation a = new Wave(raster);
+		//Animation a = new TraceTest(raster, 174, 7, 10);	// light grid width + gaps
+		Animation a = new DrawTest(raster, 174, 7);			// light grid width + gaps
 		Collection<Recipient> fixtures = dmr.getRecipients();
 		amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
 		amr.goLive(); 
@@ -110,6 +114,13 @@ public class LAFACEMain extends JFrame implements CompletionListener, ActionList
 				((Wave) a).setDX(Integer.parseInt(event[1])/100.0);
 			} else if(event[0].equals("c")){
 				((Wave) a).setC(Integer.parseInt(event[1])/100.0);
+			}
+		} else if(a instanceof DrawTest){
+			String[] event = e.getActionCommand().split(":");
+			if(event[0].equals("turnOn")){
+				((DrawTest)a).turnOn(Integer.parseInt(event[1]));
+			} else if(event[0].equals("turnOff")){
+				((DrawTest)a).turnOff(Integer.parseInt(event[1]));
 			}
 		}
 	}

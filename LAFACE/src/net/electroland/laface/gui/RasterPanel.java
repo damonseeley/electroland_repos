@@ -1,14 +1,19 @@
 package net.electroland.laface.gui;
 
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
 
+import net.electroland.laface.core.LAFACEMain;
 import net.electroland.lighting.detector.Detector;
 import net.electroland.lighting.detector.Recipient;
 import net.electroland.lighting.detector.animation.Raster;
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PGraphics;
 import processing.core.PImage;
 
 /**
@@ -19,19 +24,34 @@ import processing.core.PImage;
 @SuppressWarnings("serial")
 public class RasterPanel extends PApplet {
 	
+	private LAFACEMain main;
 	private Raster raster;
 	private Collection<Recipient> recipients;
 	private int guiWidth, guiHeight;
-	private int faceWidth, faceHeight;		// light grid
+	private int faceWidth, faceHeight, lightWidth, lightHeight;		// light grid
+	private List<Light> lights;
 	
-	public RasterPanel(Collection<Recipient> recipients){
+	public RasterPanel(LAFACEMain main, Collection<Recipient> recipients, int faceWidth, int faceHeight){
+		this.main = main;
 		this.recipients = recipients;
+		this.faceWidth = faceWidth;
+		this.faceHeight = faceHeight;
+		lights = new ArrayList<Light>();
 		guiWidth = 1048;
 		guiHeight = 133;
 	}
 	
 	public void setRaster(Raster raster){
 		this.raster = raster;
+		if(raster.isProcessing()){
+			PGraphics c = (PGraphics)(raster.getRaster());
+			lightWidth = c.width/faceWidth;
+			lightHeight = c.height/faceHeight;
+		}
+		lights.clear();
+		for(int i=0; i<faceWidth*faceHeight; i++){
+			lights.add(new Light(i, i%faceWidth, i/faceWidth, lightWidth, lightHeight));
+		}
 	}
 	
 	public void setup(){
@@ -82,27 +102,70 @@ public class RasterPanel extends PApplet {
 	}
 	
 	public void mouseDragged(){
-		// check for light object over raster to turn on/off
+		if(lights.size() > 0){
+			int x = (mouseX / lightWidth);		// grid location
+			int y = (mouseY / lightHeight);
+			int id = x + y*faceWidth;
+			if(id < lights.size()){
+				if(mouseButton == LEFT){
+					if(keyPressed && keyCode == SHIFT){
+						lights.get(id).turnOff();
+					} else {
+						lights.get(id).turnOn();
+					}
+				} else if(mouseButton == RIGHT){
+					lights.get(id).turnOff();
+				}
+			}
+		}
 	}
 	
 	public void mousePressed(){
-		// check for light object over raster to turn on/off
+		if(lights.size() > 0){
+			int x = (mouseX / lightWidth);		// grid location
+			int y = (mouseY / lightHeight);
+			int id = x + y*faceWidth;
+			if(id < lights.size()){
+				if(mouseButton == LEFT){
+					if(keyPressed && keyCode == SHIFT){
+						lights.get(id).turnOff();
+					} else {
+						lights.get(id).turnOn();
+					}
+				} else if(mouseButton == RIGHT){
+					lights.get(id).turnOff();
+				}
+			}
+		}
 	}
 	
 	
 	
 	
 	
-	public class Light{
+	private class Light{
 		
-		private int x, y, width, height, brightness;
+		private int id, x, y, width, height, brightness;
 		
-		public Light(int x, int y, int width, int height){
+		private Light(int id, int x, int y, int width, int height){
+			this.id = id;
 			this.x = x;
 			this.y = y;
 			this.width = width;
 			this.height = height;
 			brightness = 0;
+		}
+		
+		public void turnOn(){
+			brightness = 255;
+			ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "turnOn:"+String.valueOf(id));
+			main.actionPerformed(event);
+		}
+		
+		public void turnOff(){
+			brightness = 0;
+			ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "turnOff:"+String.valueOf(id));
+			main.actionPerformed(event);
 		}
 	}
 
