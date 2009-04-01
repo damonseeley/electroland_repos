@@ -56,7 +56,7 @@ public class Wave implements Animation {
 				//c.line(px, py, x, y);
 				// top of rectangle is between x and px
 				c.fill(0,150,255,255);
-				c.rect(px, py+((y-py)/2), x-px, c.height-py+((y-py)/2));
+				c.rect(px, py+((y-py)/2), x-px, c.height);
 				px = x;
 				py = y;
 			}
