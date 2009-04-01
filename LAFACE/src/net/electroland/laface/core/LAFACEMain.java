@@ -55,7 +55,7 @@ public class LAFACEMain extends JFrame implements CompletionListener, ActionList
 			}
 		});
 
-		rasterPanel = new RasterPanel();
+		rasterPanel = new RasterPanel(dmr.getRecipients());
 		Raster raster = getRaster();
 		rasterPanel.setRaster(raster);
 		add(rasterPanel, "wrap");
