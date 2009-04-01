@@ -16,16 +16,13 @@ public class RasterPanel extends PApplet {
 	private Raster raster;
 	private int guiWidth, guiHeight;
 	
-	public RasterPanel(int width, int height, Raster raster){
+	public RasterPanel(){
+		guiWidth = 1048;
+		guiHeight = 133;
+	}
+	
+	public void setRaster(Raster raster){
 		this.raster = raster;
-		if(raster.isProcessing()){
-			PImage c = (PImage)raster.getRaster();
-			guiWidth = c.width;
-			guiHeight = c.height;
-		} else {
-			guiWidth = 320;
-			guiHeight = 240;
-		}
 	}
 	
 	public void setup(){
@@ -36,10 +33,10 @@ public class RasterPanel extends PApplet {
 	}
 	
 	public void draw(){
-		background(0);
+		background(0,0,0);
 		noFill();
 		stroke(50);
-		if(raster.isProcessing()){
+		if(raster != null && raster.isProcessing()){
 			PImage image = (PImage)raster.getRaster();
 			image(image, 0, 0);
 		}

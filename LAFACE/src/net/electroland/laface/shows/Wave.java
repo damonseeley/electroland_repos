@@ -33,8 +33,9 @@ public class Wave implements Animation {
 		HEIGHT = c.height;
 		xscale = WIDTH/GRIDLENGTH;
 		yscale = HEIGHT/5.4;
-		xoffs = (int)(0.5 + xscale/2);
+		xoffs = 0;
 		yoffs = HEIGHT/2;
+		initshape();
 	}
 
 	public Raster getFrame() {
@@ -51,9 +52,10 @@ public class Wave implements Animation {
 			for(int i=1; i<GRIDLENGTH; i++) {
 				x = (int)(i*xscale) + xoffs;
 				y = (int)(Y[i][curT]*yscale + yoffs);
+				//c.stroke(255);
 				//c.line(px, py, x, y);
-				c.fill(255,255,255,255);
 				// top of rectangle is between x and px
+				c.fill(0,150,255,255);
 				c.rect(px, py+((y-py)/2), x-px, c.height-py+((y-py)/2));
 				px = x;
 				py = y;
