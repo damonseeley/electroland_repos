@@ -31,11 +31,11 @@ public class Wave implements Animation {
 		c.colorMode(PConstants.RGB, 255, 255, 255, 255);
 		WIDTH = c.width;
 		HEIGHT = c.height;
-		xscale = WIDTH/GRIDLENGTH;
+		xscale = c.width/(float)(GRIDLENGTH-1);
 		yscale = HEIGHT/5.4;
 		xoffs = 0;
 		yoffs = HEIGHT/2;
-		initshape();
+		initshape();	// starts the initial wave motion
 	}
 
 	public Raster getFrame() {
@@ -55,6 +55,7 @@ public class Wave implements Animation {
 				//c.stroke(255);
 				//c.line(px, py, x, y);
 				// top of rectangle is between x and px
+				c.noStroke();
 				c.fill(0,150,255,255);
 				c.rect(px, py+((y-py)/2), x-px, c.height);
 				px = x;
