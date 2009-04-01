@@ -12,7 +12,9 @@ import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Properties;
 import javax.swing.JFrame;
+
 import processing.core.PConstants;
+import net.electroland.laface.gui.ControlPanel;
 import net.electroland.laface.gui.RasterPanel;
 import net.electroland.laface.shows.Wave;
 import net.electroland.lighting.detector.DetectorManager;
@@ -34,8 +36,9 @@ public class LAFACEMain extends JFrame implements CompletionListener, ActionList
 	private AnimationManager amr;
 	private Properties lightProps;
 	private RasterPanel rasterPanel;
-	private int guiWidth = 1060;	// TODO get from properties
-	private int guiHeight = 180;
+	private ControlPanel controlPanel;
+	private int guiWidth = 1056;	// TODO get from properties
+	private int guiHeight = 300;
 
 	public LAFACEMain() throws UnknownHostException, OptionException{
 		super("LAFACE Control Panel");
@@ -59,6 +62,8 @@ public class LAFACEMain extends JFrame implements CompletionListener, ActionList
 		Raster raster = getRaster();
 		rasterPanel.setRaster(raster);
 		add(rasterPanel, "wrap");
+		controlPanel = new ControlPanel(this);
+		add(controlPanel, "wrap");
 		
 		Animation a = new Wave(raster);
 		Collection<Recipient> fixtures = dmr.getRecipients();
@@ -92,7 +97,17 @@ public class LAFACEMain extends JFrame implements CompletionListener, ActionList
 	
 	public void actionPerformed(ActionEvent e) {
 		// TODO Respond to JFrame event
-		System.out.println(e.getActionCommand());
+		Completable a = amr.getCurrentAnimation(dmr.getRecipient("face0"));
+		if(a instanceof Wave){
+			String[] event = e.getActionCommand().split(":");
+			if(event[0].equals("damping")){
+				((Wave) a).setDamping(Integer.parseInt(event[1])/100.0);
+			} else if(event[0].equals("nonlinearity")){
+				((Wave) a).setNonlinearity(Integer.parseInt(event[1])/100.0);
+			} else if(event[0].equals("yoffset")){
+				((Wave) a).setYoffset(Integer.parseInt(event[1])/100.0);
+			}
+		}
 	}
 
 	public void completed(Completable a) {

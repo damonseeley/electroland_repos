@@ -20,7 +20,7 @@ public class Wave implements Animation {
 	//static private final int xoffs = (int)(0.5 + xscale/2), yoffs = HEIGHT/2;
 	static private final double MAXDAMP = 1., MAXFPU = 1.;	// for use with sliders
 	static private int WIDTH, HEIGHT, xoffs, yoffs;
-	static private double xscale, yscale, dampScale = 100. ,fpuScale = 100.;	// for use with sliders
+	static private double xscale, yscale;
 	
 	public Wave(Raster r){
 		this.r = r;
@@ -77,6 +77,29 @@ public class Wave implements Animation {
 
 	public boolean isDone() {
 		return false;
+	}
+	
+	
+	
+	
+	
+	/**
+	 * THESE ALLOW YOU TO SET PROPERTIES FROM THE CONTROL PANEL
+	 */
+	
+	public void setDamping(double d){
+		damp = d;
+	}
+	
+	public void setNonlinearity(double nl){
+		fpu = nl;
+	}
+	
+	public void setYoffset(double yoffset){
+		if(r.isProcessing()){
+			PGraphics c = (PGraphics)(r.getRaster());
+			yoffs = (int)(yoffset*c.height);
+		}
 	}
 	
 	
