@@ -2,9 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="libraries/core.jar"/>
-	<classpathentry kind="lib" path="libraries/log4j-1.2.15.jar"/>
-	<classpathentry kind="lib" path="libraries/miglayout15-swing.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ElectrolandLightingUtils"/>
+	<classpathentry kind="lib" path="core.jar"/>
+	<classpathentry kind="lib" path="log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="miglayout15-swing.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
