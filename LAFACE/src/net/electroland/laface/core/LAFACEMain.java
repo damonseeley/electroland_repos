@@ -6,11 +6,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.UnknownHostException;
 import java.util.Properties;
-
 import javax.swing.JFrame;
-
 import processing.core.PConstants;
-
 import net.electroland.lighting.detector.DetectorManager;
 import net.electroland.lighting.detector.DetectorManagerJPanel;
 import net.electroland.lighting.detector.animation.AnimationManager;
@@ -21,7 +18,7 @@ import net.electroland.util.OptionException;
 import net.miginfocom.swing.MigLayout;
 
 @SuppressWarnings("serial")
-public class Main extends JFrame implements CompletionListener, ActionListener{
+public class LAFACEMain extends JFrame implements CompletionListener, ActionListener{
 	
 	private DetectorManager dmr;
 	private DetectorManagerJPanel dmp;
@@ -30,13 +27,14 @@ public class Main extends JFrame implements CompletionListener, ActionListener{
 	private int guiWidth = 320;	// TODO get from properties
 	private int guiHeight = 240;
 
-	public Main() throws UnknownHostException, OptionException{
+	public LAFACEMain() throws UnknownHostException, OptionException{
 		super("LAFACE Control Panel");
 		setLayout(new MigLayout(""));
 		setSize(guiWidth, guiHeight);
 		
 		lightProps = loadProperties("depends//lights.properties");
-		int fps = Integer.parseInt(lightProps.getProperty("fps"));
+		//int fps = Integer.parseInt(lightProps.getProperty("fps"));
+		int fps = 30;
 		dmr = new DetectorManager(lightProps); 				// requires loading properties
 		dmp = new DetectorManagerJPanel(dmr);				// panel that renders the filters
 		amr = new AnimationManager(dmp, fps);				// animation manager
@@ -82,7 +80,7 @@ public class Main extends JFrame implements CompletionListener, ActionListener{
 	
 	public static void main(String[] args){
 		try {
-			new Main();
+			new LAFACEMain();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (OptionException e) {
