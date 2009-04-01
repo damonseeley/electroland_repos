@@ -83,9 +83,8 @@ public class Wave implements Animation {
 	
 	
 	
-	/**
-	 * THESE ALLOW YOU TO SET PROPERTIES FROM THE CONTROL PANEL
-	 */
+
+	// THESE ALLOW YOU TO SET PROPERTIES FROM THE CONTROL PANEL
 	
 	public void setDamping(double d){
 		damp = d;
@@ -102,12 +101,19 @@ public class Wave implements Animation {
 		}
 	}
 	
+	public void setDX(double dx){	// TODO find out what this does
+		this.dx = dx;
+	}
+	
+	public void setC(double c){	// TODO find out what this does
+		this.c = c;
+	}
 	
 	
-	/**
-	 * THESE ARE ALL WAVE PHYSICS FUNCTIONS
-	 */
 	
+
+	 // THESE ARE ALL WAVE PHYSICS FUNCTIONS
+
 	public void createImpact(float x, float y){
 		// TODO this will be the function where a force is 
 		// specified on the raster to create a new wave.

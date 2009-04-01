@@ -106,6 +106,10 @@ public class LAFACEMain extends JFrame implements CompletionListener, ActionList
 				((Wave) a).setNonlinearity(Integer.parseInt(event[1])/100.0);
 			} else if(event[0].equals("yoffset")){
 				((Wave) a).setYoffset(Integer.parseInt(event[1])/100.0);
+			} else if(event[0].equals("dx")){
+				((Wave) a).setDX(Integer.parseInt(event[1])/100.0);
+			} else if(event[0].equals("c")){
+				((Wave) a).setC(Integer.parseInt(event[1])/100.0);
 			}
 		}
 	}
