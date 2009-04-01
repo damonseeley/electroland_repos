@@ -13,7 +13,7 @@ public class Wave implements Animation {
 	static private final double PI = 3.14159265358979323846264338327950;
 	private double Y[][] = new double[GRIDLENGTH][3];  // numerical grid
 	private int prevT = 0, curT = 1, nextT = 2;
-	private double dt = .1, dx = .02, c = .04, damp = 0., fpu = 0.;
+	private double dt = .1, dx = .02, c = .12, damp = 0., fpu = 0.;
 	static private final int GRIDLENGTH = 174;//64;	// TODO should be equivalent to light width + gaps
 	//static private final int WIDTH = 580, HEIGHT = 220;
 	//static private final double xscale = WIDTH/GRIDLENGTH, yscale = HEIGHT/5.4, dampScale = 100., fpuScale = 100.;
@@ -32,9 +32,10 @@ public class Wave implements Animation {
 		WIDTH = c.width;
 		HEIGHT = c.height;
 		xscale = c.width/(float)(GRIDLENGTH-1);
-		yscale = HEIGHT/5.4;
+		//yscale = HEIGHT/5.4;
+		yscale = HEIGHT/3;
 		xoffs = 0;
-		yoffs = HEIGHT/2;
+		yoffs = HEIGHT/2 + (HEIGHT/10);
 		initshape();	// starts the initial wave motion
 	}
 
