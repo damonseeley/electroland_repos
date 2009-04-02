@@ -1,13 +1,88 @@
 package net.electroland.laface.shows;
 
+import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
+
 import processing.core.PConstants;
 import processing.core.PGraphics;
+import net.electroland.laface.core.Sprite;
+import net.electroland.laface.core.SpriteListener;
+import net.electroland.laface.sprites.Wave;
 import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.Raster;
 
-public class Wave implements Animation {
+public class WaveShow implements Animation, SpriteListener{
 	
 	private Raster r;
+	private ConcurrentHashMap<Integer,Sprite> sprites;		// used for drawing all sprites
+	private ConcurrentHashMap<Integer,Wave> waves;			// used to manage properties of waves from control panel
+	private int spriteIndex = 0;
+	private int waveCount = 3;
+
+	public WaveShow(Raster r){
+		this.r = r;
+		sprites = new ConcurrentHashMap<Integer,Sprite>();
+		waves = new ConcurrentHashMap<Integer,Wave>();
+		for(int i=0; i<waveCount; i++){
+			Wave wave = new Wave(spriteIndex, r, 0, 0);
+			wave.addListener(this);
+			wave.setAlpha(100);
+			sprites.put(spriteIndex, wave);
+			waves.put(spriteIndex, wave);
+			spriteIndex++;
+		}
+	}
+
+	public void initialize() {
+		PGraphics c = (PGraphics)(r.getRaster());
+		c.colorMode(PConstants.RGB, 255, 255, 255, 255);
+	}
+	
+	public Raster getFrame() {
+		if(r.isProcessing()){
+			PGraphics c = (PGraphics)(r.getRaster());
+			c.beginDraw();
+			c.background(0);
+			Iterator<Sprite> iter = sprites.values().iterator();
+			while(iter.hasNext()){
+				Sprite sprite = (Sprite)iter.next();
+				sprite.draw();
+			}
+			c.endDraw();
+		}
+		return r;
+	}
+
+	public void cleanUp() {
+		PGraphics myRaster = (PGraphics)(r.getRaster());
+		myRaster.beginDraw();
+		myRaster.background(0);
+		myRaster.endDraw();
+	}
+
+	public boolean isDone() {
+		return false;
+	}
+
+	public void spriteComplete(Sprite sprite) {
+		sprites.remove(sprite.getID());
+		if(sprite instanceof Wave){
+			waves.remove(sprite.getID());
+		}
+	}
+	
+	public ConcurrentHashMap<Integer,Wave> getWaves(){
+		return waves;
+	}
+	
+	
+	
+	
+	
+	
+	/*
+	
+	// THIS IS ALL THE ORIGINAL 'ANIMATION' BASED WAVE SHOW 
 	
 	// solution of wave equation with damping and the FPU cubic nonlinearity
 	static private final double PI = 3.14159265358979323846264338327950;
@@ -22,7 +97,7 @@ public class Wave implements Animation {
 	static private int WIDTH, HEIGHT, xoffs, yoffs;
 	static private double xscale, yscale;
 	
-	public Wave(Raster r){
+	public WaveShow(Raster r){
 		this.r = r;
 	}
 
@@ -117,12 +192,12 @@ public class Wave implements Animation {
 	public void createImpact(float x, float y){
 		// TODO this will be the function where a force is 
 		// specified on the raster to create a new wave.
-		/*
-		int i = (int)((x - xoffs)/xscale);
-		double a = (y - yoffs)/yscale;
-		if (0 < i && i < GRIDLENGTH-1)
-			Y[i][prevT] = Y[i][curT] = a;
-		 */
+		
+//		int i = (int)((x - xoffs)/xscale);
+//		double a = (y - yoffs)/yscale;
+//		if (0 < i && i < GRIDLENGTH-1)
+//			Y[i][prevT] = Y[i][curT] = a;
+		 
 	}
 	
 	protected double sech(double x)
@@ -161,5 +236,7 @@ public class Wave implements Animation {
 		}
 		switchgrid();
 	}
+	
+	*/
 
 }

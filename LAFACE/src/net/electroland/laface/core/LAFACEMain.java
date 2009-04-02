@@ -18,7 +18,7 @@ import net.electroland.laface.gui.ControlPanel;
 import net.electroland.laface.gui.RasterPanel;
 import net.electroland.laface.shows.DrawTest;
 import net.electroland.laface.shows.TraceTest;
-import net.electroland.laface.shows.Wave;
+import net.electroland.laface.shows.WaveShow;
 import net.electroland.lighting.detector.DetectorManager;
 import net.electroland.lighting.detector.DetectorManagerJPanel;
 import net.electroland.lighting.detector.Recipient;
@@ -37,10 +37,10 @@ public class LAFACEMain extends JFrame implements CompletionListener, ActionList
 	private DetectorManagerJPanel dmp;
 	private AnimationManager amr;
 	private Properties lightProps;
-	private RasterPanel rasterPanel;
+	public RasterPanel rasterPanel;
 	private ControlPanel controlPanel;
 	private int guiWidth = 1056;	// TODO get from properties
-	private int guiHeight = 300;
+	private int guiHeight = 380;
 
 	public LAFACEMain() throws UnknownHostException, OptionException{
 		super("LAFACE Control Panel");
@@ -67,9 +67,9 @@ public class LAFACEMain extends JFrame implements CompletionListener, ActionList
 		controlPanel = new ControlPanel(this);
 		add(controlPanel, "wrap");
 		
-		//Animation a = new Wave(raster);
+		Animation a = new WaveShow(raster);
 		//Animation a = new TraceTest(raster, 174, 7, 10);	// light grid width + gaps
-		Animation a = new DrawTest(raster, 174, 7);			// light grid width + gaps
+		//Animation a = new DrawTest(raster, 174, 7);			// light grid width + gaps
 		Collection<Recipient> fixtures = dmr.getRecipients();
 		amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
 		amr.goLive(); 
@@ -99,22 +99,28 @@ public class LAFACEMain extends JFrame implements CompletionListener, ActionList
 		return new Raster(rasterPanel.createGraphics(width, height, PConstants.P3D));
 	}
 	
+	public Completable getCurrentAnimation(){
+		return amr.getCurrentAnimation(dmr.getRecipient("face0"));
+	}
+	
 	public void actionPerformed(ActionEvent e) {
 		// TODO Respond to JFrame event
 		Completable a = amr.getCurrentAnimation(dmr.getRecipient("face0"));
-		if(a instanceof Wave){
+		if(a instanceof WaveShow){
 			String[] event = e.getActionCommand().split(":");
+			/*
 			if(event[0].equals("damping")){
-				((Wave) a).setDamping(Integer.parseInt(event[1])/100.0);
+				((WaveShow) a).setDamping(Integer.parseInt(event[1])/100.0);
 			} else if(event[0].equals("nonlinearity")){
-				((Wave) a).setNonlinearity(Integer.parseInt(event[1])/100.0);
+				((WaveShow) a).setNonlinearity(Integer.parseInt(event[1])/100.0);
 			} else if(event[0].equals("yoffset")){
-				((Wave) a).setYoffset(Integer.parseInt(event[1])/100.0);
+				((WaveShow) a).setYoffset(Integer.parseInt(event[1])/100.0);
 			} else if(event[0].equals("dx")){
-				((Wave) a).setDX(Integer.parseInt(event[1])/100.0);
+				((WaveShow) a).setDX(Integer.parseInt(event[1])/100.0);
 			} else if(event[0].equals("c")){
-				((Wave) a).setC(Integer.parseInt(event[1])/100.0);
+				((WaveShow) a).setC(Integer.parseInt(event[1])/100.0);
 			}
+			*/
 		} else if(a instanceof DrawTest){
 			String[] event = e.getActionCommand().split(":");
 			if(event[0].equals("turnOn")){

@@ -30,6 +30,7 @@ public class RasterPanel extends PApplet {
 	private int guiWidth, guiHeight;
 	private int faceWidth, faceHeight, lightWidth, lightHeight;		// light grid
 	private List<Light> lights;
+	private int displayMode = 1;	// 0 = raster, 1 = raster w/ detectors, 2 = detector values
 	
 	public RasterPanel(LAFACEMain main, Collection<Recipient> recipients, int faceWidth, int faceHeight){
 		this.main = main;
@@ -56,7 +57,7 @@ public class RasterPanel extends PApplet {
 	
 	public void setup(){
 		size(guiWidth, guiHeight);
-		frameRate(30);
+		frameRate(60);
 		noStroke();
 		colorMode(PConstants.RGB, 255, 255, 255, 255);
 	}
@@ -65,11 +66,18 @@ public class RasterPanel extends PApplet {
 		background(0,0,0);
 		noFill();
 		noStroke();
-		if(raster != null && raster.isProcessing()){
-			PImage image = (PImage)raster.getRaster();
-			image(image, 0, 0);
+		if(displayMode == 0 || displayMode == 1){
+			if(raster != null && raster.isProcessing()){
+				PImage image = (PImage)raster.getRaster();
+				image(image, 0, 0);
+			}
 		}
-		drawDetectors();
+		if(displayMode == 1){
+			drawDetectors();
+		}
+		if(displayMode == 2){
+			drawDetectorValues();
+		}
 	}
 	
 	public void drawDetectors(){
@@ -79,21 +87,31 @@ public class RasterPanel extends PApplet {
 			Recipient r = iter.next();
 			try{
 				ListIterator<Detector> i = r.getDetectorPatchList().listIterator();
-				int channel = 0;
 				while(i.hasNext()){
 					Detector d = i.next();
 					if (d != null){
 						point(d.getX(), d.getY());
-//						int val = face.getLastEvaluatedValue(d) & 0xFF;
-//						int x = channel % faceWidth;
-//						int y = channel / faceWidth;
-//						stroke(val,0,0);
-//						rect(x*12, y*24, 10, 10);
-						//System.out.println(channel +" "+ val);
-					}else{
-						//System.out.println("- no detector -");
 					}
-					channel++;
+				}
+			} catch(NullPointerException e){
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void drawDetectorValues(){
+		Iterator<Recipient> iter = recipients.iterator();
+		while(iter.hasNext()){
+			Recipient r = iter.next();
+			try{
+				ListIterator<Detector> i = r.getDetectorPatchList().listIterator();
+				while(i.hasNext()){
+					Detector d = i.next();
+					if (d != null){
+						int val = r.getLastEvaluatedValue(d) & 0xFF;
+						fill(val);
+						rect(d.getX()-1, d.getY()-1, 2, 2);
+					}
 				}
 			} catch(NullPointerException e){
 				e.printStackTrace();
@@ -137,6 +155,10 @@ public class RasterPanel extends PApplet {
 				}
 			}
 		}
+	}
+	
+	public void setDisplayMode(int mode){
+		displayMode = mode;
 	}
 	
 	
