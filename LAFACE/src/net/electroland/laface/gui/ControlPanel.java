@@ -175,7 +175,7 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 
 
 	public void actionPerformed(ActionEvent e) {
-		System.out.println(e.getActionCommand());
+		//System.out.println(e.getActionCommand());
 		if(e.getActionCommand().equals("Reset Wave")){
 			if(currentWaveID != -1){					// if a wave sprite has been selected in the wave list...
 				Completable a  = main.getCurrentAnimation();
