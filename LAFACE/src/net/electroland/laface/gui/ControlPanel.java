@@ -63,10 +63,10 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		
 		tabbedPane.setMinimumSize(new Dimension(width/2,height));
 		tabbedPane.addChangeListener(this);
-		add(tabbedPane);
+		add(tabbedPane, "west");
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		
-		add(makeDisplayModePanel());
+		add(makeDisplayModePanel(), "west");
 
 	}
 	
@@ -94,69 +94,80 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		waveList.setMinimumSize(new Dimension(100,150));
 		waveList.addListSelectionListener(this);
 		panel.add(waveList, "west");
+		
+		// sub-panel to hold sliders
+		JPanel sliderpanel = new JPanel(false);
+		sliderpanel.setLayout(new MigLayout(""));
 
 		
 		// slider for adjusting damping value
-		panel.add(new Label("Damping", Label.RIGHT));
+		sliderpanel.add(new Label("Damping", Label.RIGHT));
 		dampingSlider = new Scrollbar(Scrollbar.HORIZONTAL, 0, 1, 0, 100);
 		dampingSlider.setForeground(Color.black);
 		dampingSlider.setBackground(Color.white);
-		dampingSlider.setMinimumSize(new Dimension(100, 16));
-		panel.add(dampingSlider, "wrap");
+		dampingSlider.setMinimumSize(new Dimension(200, 16));
+		sliderpanel.add(dampingSlider, "wrap");
 		
 		// slider for adjusting nonlinearity value
-		panel.add(new Label("Nonlinearity", Label.RIGHT));
+		sliderpanel.add(new Label("Nonlinearity", Label.RIGHT));
 		fpuSlider = new Scrollbar(Scrollbar.HORIZONTAL, 0, 1, 0, 100);
 		fpuSlider.setForeground(Color.black);
 		fpuSlider.setBackground(Color.white);
-		fpuSlider.setMinimumSize(new Dimension(100, 16));
-		panel.add(fpuSlider, "wrap");
+		fpuSlider.setMinimumSize(new Dimension(200, 16));
+		sliderpanel.add(fpuSlider, "wrap");
 		
 		// slider for adjusting y offset of wave surface
-		panel.add(new Label("Y-Offset", Label.RIGHT));
+		sliderpanel.add(new Label("Y-Offset", Label.RIGHT));
 		yoffsetSlider = new Scrollbar(Scrollbar.HORIZONTAL, 60, 1, 0, 100);
 		yoffsetSlider.setForeground(Color.black);
 		yoffsetSlider.setBackground(Color.white);
-		yoffsetSlider.setMinimumSize(new Dimension(100, 16));
-		panel.add(yoffsetSlider, "wrap");
+		yoffsetSlider.setMinimumSize(new Dimension(200, 16));
+		sliderpanel.add(yoffsetSlider, "wrap");
 		
 		// slider for adjusting mysterious dx value (relates to horizontal wave speed)
-		panel.add(new Label("DX value", Label.RIGHT));
+		sliderpanel.add(new Label("DX value", Label.RIGHT));
 		dxSlider = new Scrollbar(Scrollbar.HORIZONTAL, 2, 1, 0, 100);
 		dxSlider.setForeground(Color.black);
 		dxSlider.setBackground(Color.white);
-		dxSlider.setMinimumSize(new Dimension(100, 16));
-		panel.add(dxSlider, "wrap");
+		dxSlider.setMinimumSize(new Dimension(200, 16));
+		sliderpanel.add(dxSlider, "wrap");
 		
 		// slider for adjusting mysterious c value (relates to wave speed)
-		panel.add(new Label("C value", Label.RIGHT));
+		sliderpanel.add(new Label("C value", Label.RIGHT));
 		cSlider = new Scrollbar(Scrollbar.HORIZONTAL, 12, 1, 0, 100);
 		cSlider.setForeground(Color.black);
 		cSlider.setBackground(Color.white);
-		cSlider.setMinimumSize(new Dimension(100, 16));
-		panel.add(cSlider, "wrap");
+		cSlider.setMinimumSize(new Dimension(200, 16));
+		sliderpanel.add(cSlider, "wrap");
 		
 		// slider for adjusting brightness
-		panel.add(new Label("Brightness", Label.RIGHT));
+		sliderpanel.add(new Label("Brightness", Label.RIGHT));
 		brightnessSlider = new Scrollbar(Scrollbar.HORIZONTAL, 255, 1, 0, 255);
 		brightnessSlider.setForeground(Color.black);
 		brightnessSlider.setBackground(Color.white);
-		brightnessSlider.setMinimumSize(new Dimension(100, 16));
-		panel.add(brightnessSlider, "wrap");
+		brightnessSlider.setMinimumSize(new Dimension(200, 16));
+		sliderpanel.add(brightnessSlider, "wrap");
 		
 		// slider for adjusting alpha
-		panel.add(new Label("Alpha", Label.RIGHT));
+		sliderpanel.add(new Label("Alpha", Label.RIGHT));
 		alphaSlider = new Scrollbar(Scrollbar.HORIZONTAL, 255, 1, 0, 255);
 		alphaSlider.setForeground(Color.black);
 		alphaSlider.setBackground(Color.white);
-		alphaSlider.setMinimumSize(new Dimension(100, 16));
-		panel.add(alphaSlider);
+		alphaSlider.setMinimumSize(new Dimension(200, 16));
+		sliderpanel.add(alphaSlider);
+		
+		panel.add(sliderpanel, "west");
+		
+		JPanel buttonPanel = new JPanel(false);
+		buttonPanel.setLayout(new MigLayout(""));
 		
 		// button for resetting wave after it goes haywire
 		resetWaveButton = new JButton("Reset Wave");
 		resetWaveButton.addActionListener(this);
-		panel.add(resetWaveButton);
+		resetWaveButton.setMaximumSize(new Dimension(120, 20));
+		buttonPanel.add(resetWaveButton, "wrap");
 		
+		panel.add(buttonPanel, "west");
 		
 		return panel;
 	}
