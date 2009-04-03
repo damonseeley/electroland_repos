@@ -35,6 +35,7 @@ public class RasterPanel extends PApplet {
 	private int faceWidth, faceHeight, lightWidth, lightHeight;		// light grid
 	private List<Light> lights;
 	private int displayMode = 1;	// 0 = raster, 1 = raster w/ detectors, 2 = detector values
+	private boolean tintMode = true;
 	
 	public RasterPanel(LAFACEMain main, Collection<Recipient> recipients, int faceWidth, int faceHeight){
 		this.main = main;
@@ -70,6 +71,11 @@ public class RasterPanel extends PApplet {
 		background(0,0,0);
 		noFill();
 		noStroke();
+		if(tintMode){
+			tint(0,150,255);
+		} else {
+			tint(255,255,255);
+		}
 		if(displayMode == 0 || displayMode == 1){
 			if(raster != null && raster.isProcessing()){
 				PImage image = (PImage)raster.getRaster();
@@ -113,7 +119,11 @@ public class RasterPanel extends PApplet {
 					Detector d = i.next();
 					if (d != null){
 						int val = r.getLastEvaluatedValue(d) & 0xFF;
-						fill(val);
+						if(tintMode){
+							fill(0, (val/255.0f)*150, val);
+						} else {
+							fill(val);
+						}
 						rect(d.getX()-1, d.getY()-1, 2, 2);
 					}
 				}
@@ -181,6 +191,10 @@ public class RasterPanel extends PApplet {
 	
 	public void setDisplayMode(int mode){
 		displayMode = mode;
+	}
+	
+	public void enableTint(boolean tintMode){
+		this.tintMode = tintMode;
 	}
 	
 	

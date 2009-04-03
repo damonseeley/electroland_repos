@@ -7,6 +7,8 @@ import java.awt.Label;
 import java.awt.Scrollbar;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.Iterator;
@@ -14,6 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JList;
@@ -36,12 +39,13 @@ import net.miginfocom.swing.MigLayout;
  */
 
 @SuppressWarnings("serial")
-public class ControlPanel extends JPanel implements ActionListener, ChangeListener, ListSelectionListener{
+public class ControlPanel extends JPanel implements ActionListener, ChangeListener, ListSelectionListener, ItemListener{
 	
 	private LAFACEMain main;
 	private Scrollbar dampingSlider, fpuSlider, yoffsetSlider, dxSlider, cSlider, brightnessSlider, alphaSlider;
 	private Scrollbar traceSpeedSlider;
 	private JButton resetWaveButton, saveWavesButton, clearDrawTestButton;
+	private JCheckBox tintBlueButton;
 	private DefaultListModel waveListModel;
 	private JList waveList;
 	private int currentWaveID = -1;
@@ -206,9 +210,15 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		panel.add(new Label("Display Mode:"), "wrap");
 		JComboBox displayModeList = new JComboBox(new String[] {"Raster","Raster + Detectors", "Detector Values"});
 		displayModeList.setSelectedIndex(1);
-		displayModeList.addActionListener(this);
-		
+		displayModeList.addActionListener(this);		
 		panel.add(displayModeList);
+		
+		// check box to tint raster display blue
+		tintBlueButton = new JCheckBox("Tint Blue");
+		tintBlueButton.setSelected(true);
+		tintBlueButton.addItemListener(this);
+		panel.add(tintBlueButton, "wrap");
+		
 		return panel;
 	}
 	
@@ -366,6 +376,16 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 	        }
 	    }
 
+	}
+
+	public void itemStateChanged(ItemEvent e) {
+		if(e.getItemSelectable() == tintBlueButton){
+			if(e.getStateChange() == ItemEvent.DESELECTED){
+				main.rasterPanel.enableTint(false);
+			} else {
+				main.rasterPanel.enableTint(true);
+			}
+		}
 	}
 	
 	public int getCurrentWaveID(){
