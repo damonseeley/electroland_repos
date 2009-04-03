@@ -1,6 +1,7 @@
 package net.electroland.enteractive.core;
 
 import java.awt.Color;
+import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -15,6 +16,7 @@ import java.util.Collection;
 import java.util.Properties;
 
 import javax.swing.ButtonGroup;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -57,6 +59,7 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 	private int guiWidth = 180;	// TODO get from properties
 	private int guiHeight = 110;
 	private String[] animationList;
+	private JComboBox animationDropDown, displayDropDown, rasterDropDown;
 	PImage rippleTexture, sweepTexture, sphereTexture, propellerTexture, spiralTexture;
 	
 	public Main(String[] args) throws UnknownHostException, OptionException{
@@ -137,6 +140,42 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 		// TODO this is temporary; needs a better method for transitioning between shows
 		// TODO how to stop an animation by force???
 		//System.out.println(e.getActionCommand());
+		
+		if(e.getActionCommand().equals("comboBoxChanged")){
+			if((JComboBox)e.getSource() == animationDropDown){
+				if(animationDropDown.getSelectedItem() == "LilyPad"){
+				    
+			    } else if(animationDropDown.getSelectedItem() == "ExampleAnimation"){
+			    
+			    }
+			} else if((JComboBox)e.getSource() == displayDropDown){
+				if(displayDropDown.getSelectedItem() == "Comparison"){
+					lights3D.setVisible(true);
+					lights3D.setMode(1);
+			    } else if(displayDropDown.getSelectedItem() == "Real World"){
+			    	lights3D.setVisible(true);
+					lights3D.setMode(2);
+			    } else if(displayDropDown.getSelectedItem() == "Disabled"){
+			    	lights3D.setVisible(false);
+			    }
+			} else if((JComboBox)e.getSource() == rasterDropDown){
+				if(rasterDropDown.getSelectedItem() == "Face Detectors"){
+					gui.setVisible(true);
+					gui.setDetectorMode(1);
+				} else if(rasterDropDown.getSelectedItem() == "Floor Detectors"){
+					gui.setVisible(true);
+					gui.setDetectorMode(2);
+				} else if(rasterDropDown.getSelectedItem() == "No Detectors"){
+					gui.setVisible(true);
+					gui.setDetectorMode(0);
+				} else if(rasterDropDown.getSelectedItem() == "Disabled"){
+					gui.setVisible(false);
+				}
+			}
+		    
+		
+		}
+		/*
 		String[] event = e.getActionCommand().split(":");
 		if(event[0].equals("3dmode")){
 			if(event[1].equals("0")){
@@ -162,13 +201,16 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 				gui.setVisible(false);
 			}
 		}
+		*/
 		//Animation next = new AnotherAnimation(m, getRaster(), smr); 			// some fake animation
 		//amr.startAnimation(next, new FadeTransition(5), dmr.getFixtures()); 	// some fake transition with a 5 second fade
 	}
 	
 	private void drawLayout(){
-		MigLayout layout = new MigLayout("insets 0 0 0 0");
+		MigLayout layout = new MigLayout("insets 0 0 0 0, gap 1!");
 		setLayout(layout);
+		setBackground(Color.black);
+		setForeground(Color.white);
 		//JPanel lightspanel = new JPanel();
 		//lightspanel.setMinimumSize(new Dimension(600,600));
 		add(lights3D, "cell 0 0 1 3");
@@ -177,12 +219,16 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 		//add(lightspanel, "cell 0 0 1 3");
 		
 		JPanel controlPanel = new JPanel(new MigLayout());
-		//controlPanel.setBackground(new Color(200, 200, 200));
+		controlPanel.setBackground(Color.black);
+		controlPanel.setForeground(Color.white);
 		controlPanel.add(new JLabel("Current Animation:"), "wrap");
+		/*
 		ButtonGroup animationRadioButtons = new ButtonGroup();
 		for(int i=0; i<animationList.length; i++){
 			JRadioButton radio = new JRadioButton(animationList[i]);
 			radio.setActionCommand("animation:"+i);
+			radio.setBackground(Color.black);
+			radio.setForeground(Color.white);
 			radio.addActionListener(this);
 			if(i == 0){
 				radio.setSelected(true);
@@ -190,8 +236,17 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 			animationRadioButtons.add(radio);
 			controlPanel.add(radio, "wrap");
 		}
+		*/
+		
+		// drop down list to select current animation
+		animationDropDown = new JComboBox(animationList);
+		animationDropDown.setBackground(Color.black);
+		animationDropDown.setForeground(Color.white);
+		animationDropDown.addActionListener(this);		
+		controlPanel.add(animationDropDown, "wrap");
 		
 		controlPanel.add(new JLabel("3D Mode:"), "wrap");
+		/*
 		ButtonGroup lights3dgroup = new ButtonGroup();
 		JRadioButton comparisonRadio = new JRadioButton("Comparison");
 		comparisonRadio.setActionCommand("3dmode:1");
@@ -211,8 +266,17 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 		disabledRadio.setSelected(true);
 		lights3dgroup.add(disabledRadio);		
 		controlPanel.add(disabledRadio, "wrap");
+		*/
+		
+		// drop down list to select 3d mode
+		displayDropDown = new JComboBox(new String[] {"Comparison", "Real World", "Disabled"});
+		displayDropDown.setBackground(Color.black);
+		displayDropDown.setForeground(Color.white);
+		displayDropDown.addActionListener(this);		
+		controlPanel.add(displayDropDown, "wrap");
 		
 		controlPanel.add(new JLabel("Raster Mode:"), "wrap");
+		/*
 		ButtonGroup rastergroup = new ButtonGroup();
 		JRadioButton faceRadio = new JRadioButton("Face Detectors");
 		faceRadio.setActionCommand("raster:1");
@@ -238,20 +302,28 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 		norasterRadio.setSelected(true);
 		rastergroup.add(norasterRadio);
 		controlPanel.add(norasterRadio, "wrap");
+		*/
 		
-		add(controlPanel, "cell 1 0, width 200!, height 380!, gap 0! 0! 0! 0!");
+		// drop down list to select raster mode
+		rasterDropDown = new JComboBox(new String[] {"Face Detectors", "Floor Detectors", "No Detectors", "Disabled"});
+		rasterDropDown.setBackground(Color.black);
+		rasterDropDown.setForeground(Color.white);
+		rasterDropDown.addActionListener(this);		
+		controlPanel.add(rasterDropDown, "wrap");
+		
+		add(controlPanel, "cell 1 0, width 200!, height 380!, gap 0!");
 		
 		JPanel rasterPanel = new JPanel();
-		rasterPanel.setBackground(new Color(175, 175, 175));
+		rasterPanel.setBackground(Color.black);
+		rasterPanel.setForeground(Color.white);
 		rasterPanel.add(gui);
-		add(rasterPanel, "cell 1 1, width 200!, height 120!, gap 0! 0! 0! 0!");
-		
-		//add(gui, "cell 1 1, width 200!, height 100!, gap 0! 0! 0! 0!");
+		add(rasterPanel, "cell 1 1, width 200!, height 120!, gap 0!");
 		
 		JPanel placeHolder3 = new JPanel();
-		placeHolder3.setBackground(new Color(150, 150, 150));
+		placeHolder3.setBackground(Color.black);
+		placeHolder3.setForeground(Color.white);
 		placeHolder3.add(new JLabel("Audio Levels Go Here"));
-		add(placeHolder3, "cell 1 2, width 200!, height 80!, gap 0! 0! 0! 0!");
+		add(placeHolder3, "cell 1 2, width 200!, height 90!, gap 0!");
 		
 		setSize(800, 620);
 		setVisible(true);
