@@ -38,7 +38,8 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 	
 	private LAFACEMain main;
 	private Scrollbar dampingSlider, fpuSlider, yoffsetSlider, dxSlider, cSlider, brightnessSlider, alphaSlider;
-	private JButton resetWaveButton;
+	private Scrollbar traceSpeedSlider;
+	private JButton resetWaveButton, saveWavesButton, clearDrawTestButton;
 	private DefaultListModel waveListModel;
 	private JList waveList;
 	private int currentWaveID = -1;
@@ -74,6 +75,13 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		JPanel panel = new JPanel(false);
         panel.setLayout(new MigLayout(""));
 		panel.setMinimumSize(new Dimension(width/2,height));
+		
+		// button for clearing show (turn off all lights)
+		clearDrawTestButton = new JButton("Clear");
+		clearDrawTestButton.addActionListener(this);
+		clearDrawTestButton.setMaximumSize(new Dimension(120, 20));
+		panel.add(clearDrawTestButton, "wrap");
+		
 		return panel;
 	}
 	
@@ -81,6 +89,15 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		JPanel panel = new JPanel(false);
         panel.setLayout(new MigLayout(""));
 		panel.setMinimumSize(new Dimension(width/2,height));
+		
+		// slider to adjust speed of tracer
+		panel.add(new Label("Tracer Speed", Label.RIGHT));
+		traceSpeedSlider = new Scrollbar(Scrollbar.HORIZONTAL, 0, 1, 0, 100);
+		traceSpeedSlider.setForeground(Color.black);
+		traceSpeedSlider.setBackground(Color.white);
+		traceSpeedSlider.setMinimumSize(new Dimension(200, 16));
+		panel.add(traceSpeedSlider, "wrap");
+		
 		return panel;
 	}
 	
@@ -167,6 +184,12 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		resetWaveButton.setMaximumSize(new Dimension(120, 20));
 		buttonPanel.add(resetWaveButton, "wrap");
 		
+		// button for saving sprite properties for future loading
+		saveWavesButton = new JButton("Save Waves");
+		saveWavesButton.addActionListener(this);
+		saveWavesButton.setMaximumSize(new Dimension(120, 20));
+		buttonPanel.add(saveWavesButton, "wrap");
+		
 		panel.add(buttonPanel, "west");
 		
 		return panel;
@@ -176,10 +199,13 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		JPanel panel = new JPanel(false);
         panel.setLayout(new MigLayout(""));
 		panel.setMinimumSize(new Dimension(width/2,height));
+		
+		// drop down list to select raster display mode
 		panel.add(new Label("Display Mode:"), "wrap");
 		JComboBox displayModeList = new JComboBox(new String[] {"Raster","Raster + Detectors", "Detector Values"});
 		displayModeList.setSelectedIndex(1);
 		displayModeList.addActionListener(this);
+		
 		panel.add(displayModeList);
 		return panel;
 	}
@@ -196,6 +222,8 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 					wave.reset();
 				}
 			}
+		} else if(e.getActionCommand().equals("Save Waves")){
+			// TODO save each sprite instance's properties to a file
 		} else if(e.getActionCommand().equals("comboBoxChanged")){
 			JComboBox cb = (JComboBox)e.getSource();
 		    if((String)cb.getSelectedItem() == "Raster"){
@@ -209,10 +237,8 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 	}
 	
 	public boolean handleEvent(Event e){
-		//System.out.println(e);
-		// TODO MUST specify a Wave sprite instance to modify
 		if(e.target instanceof Scrollbar){
-			if(currentWaveID != -1){	// if a wave sprite has been selected in the wave list...
+			if(currentWaveID != -1){					// if a wave sprite has been selected in the wave list...
 				Completable a  = main.getCurrentAnimation();
 				if(a instanceof WaveShow){			// confirm show is WaveShow
 					ConcurrentHashMap<Integer, Wave> waves = ((WaveShow) a).getWaves();
@@ -239,7 +265,6 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 	}
 
 	public void stateChanged(ChangeEvent e) {
-		//System.out.println(((JTabbedPane)e.getSource()).getSelectedIndex());
 		if(((JTabbedPane)e.getSource()).getSelectedIndex() == 0){
 			// TODO switch to Draw Test
 		} else if(((JTabbedPane)e.getSource()).getSelectedIndex() == 1){
@@ -251,10 +276,10 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 				waveListModel.clear();
 				ConcurrentHashMap<Integer, Wave> waves = ((WaveShow) a).getWaves();
 				Iterator<Wave> iter = waves.values().iterator();
-				int counter = 0;
+				int counter = 1;
 				while(iter.hasNext()){
 					Wave wave = iter.next();
-					waveListModel.addElement("wave "+counter);
+					waveListModel.addElement("Wave "+wave.getID());
 					counter++;
 				}
 			}
@@ -264,7 +289,6 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 	public void valueChanged(ListSelectionEvent e) {
 		if (e.getValueIsAdjusting() == false) {		// done adjusting
 	        if(waveList.getSelectedIndex() >= 0){		// if mouse event
-	        	// TODO populate controls with current waves properties
 	        	currentWaveID = waveList.getSelectedIndex();
 	        	Completable a  = main.getCurrentAnimation();
 				if(a instanceof WaveShow){			// confirm show is WaveShow
@@ -281,6 +305,10 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 	        }
 	    }
 
+	}
+	
+	public int getCurrentWaveID(){
+		return currentWaveID;
 	}
 	
 }

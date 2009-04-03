@@ -8,8 +8,12 @@ import java.util.List;
 import java.util.ListIterator;
 
 import net.electroland.laface.core.LAFACEMain;
+import net.electroland.laface.shows.DrawTest;
+import net.electroland.laface.shows.WaveShow;
+import net.electroland.laface.sprites.Wave;
 import net.electroland.lighting.detector.Detector;
 import net.electroland.lighting.detector.Recipient;
+import net.electroland.lighting.detector.animation.Completable;
 import net.electroland.lighting.detector.animation.Raster;
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -120,38 +124,56 @@ public class RasterPanel extends PApplet {
 	}
 	
 	public void mouseDragged(){
-		if(lights.size() > 0){
-			int x = (mouseX / lightWidth);		// grid location
-			int y = (mouseY / lightHeight);
-			int id = x + y*faceWidth;
-			if(id < lights.size()){
-				if(mouseButton == LEFT){
-					if(keyPressed && keyCode == SHIFT){
+		Completable a = main.getCurrentAnimation();
+		if(a instanceof WaveShow){
+			int waveid = main.getCurrentWaveID();
+			if(waveid >= 0){
+				Wave wave = ((WaveShow)a).getWave(waveid);
+				wave.createImpact(mouseX, mouseY);
+			}
+		} else if(a instanceof DrawTest){
+			if(lights.size() > 0){
+				int x = (mouseX / lightWidth);		// grid location
+				int y = (mouseY / lightHeight);
+				int id = x + y*faceWidth;
+				if(id < lights.size()){
+					if(mouseButton == LEFT){
+						if(keyPressed && keyCode == SHIFT){
+							lights.get(id).turnOff();
+						} else {
+							lights.get(id).turnOn();
+						}
+					} else if(mouseButton == RIGHT){
 						lights.get(id).turnOff();
-					} else {
-						lights.get(id).turnOn();
 					}
-				} else if(mouseButton == RIGHT){
-					lights.get(id).turnOff();
 				}
 			}
 		}
 	}
 	
 	public void mousePressed(){
-		if(lights.size() > 0){
-			int x = (mouseX / lightWidth);		// grid location
-			int y = (mouseY / lightHeight);
-			int id = x + y*faceWidth;
-			if(id < lights.size()){
-				if(mouseButton == LEFT){
-					if(keyPressed && keyCode == SHIFT){
+		Completable a = main.getCurrentAnimation();
+		if(a instanceof WaveShow){
+			int waveid = main.getCurrentWaveID();
+			if(waveid >= 0){
+				Wave wave = ((WaveShow)a).getWave(waveid);
+				wave.createImpact(mouseX, mouseY);
+			}
+		} else if(a instanceof DrawTest){
+			if(lights.size() > 0){
+				int x = (mouseX / lightWidth);		// grid location
+				int y = (mouseY / lightHeight);
+				int id = x + y*faceWidth;
+				if(id < lights.size()){
+					if(mouseButton == LEFT){
+						if(keyPressed && keyCode == SHIFT){
+							lights.get(id).turnOff();
+						} else {
+							lights.get(id).turnOn();
+						}
+					} else if(mouseButton == RIGHT){
 						lights.get(id).turnOff();
-					} else {
-						lights.get(id).turnOn();
 					}
-				} else if(mouseButton == RIGHT){
-					lights.get(id).turnOff();
 				}
 			}
 		}

@@ -75,6 +75,10 @@ public class WaveShow implements Animation, SpriteListener{
 		return waves;
 	}
 	
+	public Wave getWave(int id){
+		return waves.get(id);
+	}
+	
 	
 	
 	

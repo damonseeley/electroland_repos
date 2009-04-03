@@ -47,7 +47,7 @@ public class LAFACEMain extends JFrame implements CompletionListener, ActionList
 		setLayout(new MigLayout("insets 0 0 0 0"));
 		setSize(guiWidth, guiHeight);
 		
-		lightProps = loadProperties("lights.properties");
+		lightProps = loadProperties("depends//lights.properties");
 		int fps = Integer.parseInt(lightProps.getProperty("fps"));
 		dmr = new DetectorManager(lightProps); 				// requires loading properties
 		dmp = new DetectorManagerJPanel(dmr);				// panel that renders the filters
@@ -103,24 +103,16 @@ public class LAFACEMain extends JFrame implements CompletionListener, ActionList
 		return amr.getCurrentAnimation(dmr.getRecipient("face0"));
 	}
 	
+	public int getCurrentWaveID(){
+		return controlPanel.getCurrentWaveID();
+	}
+	
 	public void actionPerformed(ActionEvent e) {
 		// TODO Respond to JFrame event
 		Completable a = amr.getCurrentAnimation(dmr.getRecipient("face0"));
 		if(a instanceof WaveShow){
 			String[] event = e.getActionCommand().split(":");
-			/*
-			if(event[0].equals("damping")){
-				((WaveShow) a).setDamping(Integer.parseInt(event[1])/100.0);
-			} else if(event[0].equals("nonlinearity")){
-				((WaveShow) a).setNonlinearity(Integer.parseInt(event[1])/100.0);
-			} else if(event[0].equals("yoffset")){
-				((WaveShow) a).setYoffset(Integer.parseInt(event[1])/100.0);
-			} else if(event[0].equals("dx")){
-				((WaveShow) a).setDX(Integer.parseInt(event[1])/100.0);
-			} else if(event[0].equals("c")){
-				((WaveShow) a).setC(Integer.parseInt(event[1])/100.0);
-			}
-			*/
+			
 		} else if(a instanceof DrawTest){
 			String[] event = e.getActionCommand().split(":");
 			if(event[0].equals("turnOn")){

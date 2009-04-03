@@ -1,5 +1,6 @@
 package net.electroland.laface.sprites;
 
+import processing.core.PConstants;
 import processing.core.PGraphics;
 import net.electroland.laface.core.Sprite;
 import net.electroland.lighting.detector.animation.Raster;
@@ -10,8 +11,8 @@ public class Wave extends Sprite {
 	static private final double PI = 3.14159265358979323846264338327950;
 	private double Y[][] = new double[GRIDLENGTH][3];  // numerical grid
 	private int prevT = 0, curT = 1, nextT = 2;
-	private double dt = .1, dx = .02, c = .12, damp = 0., fpu = 0.;
-	static private final int GRIDLENGTH = 174;//64;	// TODO should be equivalent to light width + gaps
+	private double dt = .1, dx = .02, c = .08, damp = 0., fpu = 0.;
+	static private final int GRIDLENGTH = 64;	// TODO should be equivalent to light width + gaps
 	static private final double MAXDAMP = 1., MAXFPU = 1.;	// for use with sliders
 	private int WIDTH, HEIGHT, xoffs, yoffs;
 	static private double xscale, yscale;
@@ -38,19 +39,28 @@ public class Wave extends Sprite {
 		iterate();	// THIS IS WHERE THE MAGIC HAPPENS
 		if(raster.isProcessing()){
 			PGraphics c = (PGraphics)(raster.getRaster());
+			c.noStroke();
+			c.fill(brightness,brightness,brightness,alpha);
+			c.beginShape();
+			int lowest = c.height;	// lowest point (highest value) in wave
 			int px, py, x, y;
 			px = xoffs;
 			py = (int)(Y[0][curT]*yscale + yoffs);
+			c.vertex(px,py);
 			for(int i=1; i<GRIDLENGTH; i++) {
 				x = (int)(i*xscale) + xoffs;
 				y = (int)(Y[i][curT]*yscale + yoffs);
-				c.noStroke();
-				c.fill(brightness,brightness,brightness,alpha);
-				//c.rect(px, py+((y-py)/2), x-px, c.height);
-				c.rect(px, py+((y-py)/2), x-px, c.height-(py+((y-py)/2)));
+				//c.rect(px, py+((y-py)/2), x-px, c.height-(py+((y-py)/2)));	// vertical bar for each point
+				c.vertex(x,y);
+				if(y > lowest){
+					lowest = y;
+				}
 				px = x;
 				py = y;
 			}
+			c.vertex(c.width,lowest);
+			c.vertex(0,lowest);
+			c.endShape(PConstants.CLOSE);
 		}
 	}
 	
@@ -146,12 +156,12 @@ public class Wave extends Sprite {
 	public void createImpact(float x, float y){
 		// TODO this will be the function where a force is 
 		// specified on the raster to create a new wave.
-		/*
+		
 		int i = (int)((x - xoffs)/xscale);
 		double a = (y - yoffs)/yscale;
 		if (0 < i && i < GRIDLENGTH-1)
 			Y[i][prevT] = Y[i][curT] = a;
-		 */
+		 
 	}
 	
 	protected double sech(double x)
