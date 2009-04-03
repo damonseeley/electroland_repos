@@ -40,7 +40,7 @@ public class LAFACEMain extends JFrame implements CompletionListener, ActionList
 	public RasterPanel rasterPanel;
 	private ControlPanel controlPanel;
 	private int guiWidth = 1056;	// TODO get from properties
-	private int guiHeight = 380;
+	private int guiHeight = 385;
 
 	public LAFACEMain() throws UnknownHostException, OptionException{
 		super("LAFACE Control Panel");

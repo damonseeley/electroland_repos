@@ -1,7 +1,16 @@
 package net.electroland.laface.shows;
 
+import java.io.File;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import processing.core.PConstants;
 import processing.core.PGraphics;
@@ -23,15 +32,62 @@ public class WaveShow implements Animation, SpriteListener{
 		this.r = r;
 		sprites = new ConcurrentHashMap<Integer,Sprite>();
 		waves = new ConcurrentHashMap<Integer,Wave>();
-		for(int i=0; i<waveCount; i++){
-			Wave wave = new Wave(spriteIndex, r, 0, 0);
-			wave.addListener(this);
-			wave.setAlpha(100);
-			sprites.put(spriteIndex, wave);
-			waves.put(spriteIndex, wave);
-			spriteIndex++;
+		try{
+			loadSprites();	// attempt to load waves from file
+		} catch (Exception e) {
+			for(int i=0; i<waveCount; i++){
+				Wave wave = new Wave(spriteIndex, r, 0, 0);
+				wave.addListener(this);
+				wave.setAlpha(100);
+				sprites.put(spriteIndex, wave);
+				waves.put(spriteIndex, wave);
+				spriteIndex++;
+			}
 		}
 	}
+	
+	private void loadSprites() throws Exception{
+		File spriteFile = new File("depends//waves.properties");
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+		Document doc = dBuilder.parse(spriteFile);
+		doc.getDocumentElement().normalize();
+		NodeList nList = doc.getElementsByTagName("wave");
+		for(int i=0; i<nList.getLength(); i++){
+			Node nNode = nList.item(i);
+			if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+				Element element = (Element) nNode;
+				Wave wave = new Wave(spriteIndex, r, 0, 0);
+				wave.addListener(this);
+				wave.setDamping(Double.parseDouble(getTagValue("damping",element)));
+				wave.setNonlinearity(Double.parseDouble(getTagValue("nonlinearity",element)));
+				wave.setYoffset(Double.parseDouble(getTagValue("yoffset",element)));
+				wave.setDX(Double.parseDouble(getTagValue("dx",element)));
+				wave.setC(Double.parseDouble(getTagValue("c",element)));
+				wave.setBrightness(Integer.parseInt(getTagValue("brightness",element)));
+				wave.setAlpha(Integer.parseInt(getTagValue("alpha",element)));
+				String[] points = getTagValue("points",element).split(",");
+				double[][] doublepoints = new double[points.length][3];
+				for(int n=0; n<points.length; n++){
+					String[] vertex = points[n].split(":");
+					doublepoints[n][0] = Double.parseDouble(vertex[0]);
+					doublepoints[n][1] = Double.parseDouble(vertex[1]);
+					doublepoints[n][2] = Double.parseDouble(vertex[2]);
+				}
+				wave.setPoints(doublepoints);
+				sprites.put(spriteIndex, wave);
+				waves.put(spriteIndex, wave);
+				spriteIndex++;
+			}
+		}
+	}
+	
+	 private static String getTagValue(String sTag, Element eElement){
+		  NodeList nlList= eElement.getElementsByTagName(sTag).item(0).getChildNodes();
+		  Node nValue = (Node) nlList.item(0); 
+		  return nValue.getNodeValue(); 
+	 }
+
 
 	public void initialize() {
 		PGraphics c = (PGraphics)(r.getRaster());

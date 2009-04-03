@@ -7,6 +7,8 @@ import java.awt.Label;
 import java.awt.Scrollbar;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -209,6 +211,65 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		panel.add(displayModeList);
 		return panel;
 	}
+	
+	public void saveWaves(){
+		Completable a  = main.getCurrentAnimation();
+		if(a instanceof WaveShow){			// confirm show is WaveShow
+			try{ 
+			    FileWriter fstream = new FileWriter("depends//waves.properties");	// create file
+			    BufferedWriter out = new BufferedWriter(fstream);
+			    out.write("<?xml version=\"1.0\"?>\n");
+			    out.write("<waves>\n");
+		   
+				ConcurrentHashMap<Integer, Wave> waves = ((WaveShow) a).getWaves();
+				Iterator<Wave> iter = waves.values().iterator();
+				while(iter.hasNext()){
+					Wave wave = iter.next();
+					out.write("<wave>\n");
+					out.write("\t<damping>");
+					out.write(String.valueOf(wave.getDamping()));
+					out.write("</damping>\n");
+					out.write("\t<nonlinearity>");
+					out.write(String.valueOf(wave.getNonlinearity()));
+					out.write("</nonlinearity>\n");
+					out.write("\t<yoffset>");
+					out.write(String.valueOf(wave.getYoffset()));
+					out.write("</yoffset>\n");
+					out.write("\t<dx>");
+					out.write(String.valueOf(wave.getDX()));
+					out.write("</dx>\n");
+					out.write("\t<c>");
+					out.write(String.valueOf(wave.getC()));
+					out.write("</c>\n");
+					out.write("\t<brightness>");
+					out.write(String.valueOf(wave.getBrightness()));
+					out.write("</brightness>\n");
+					out.write("\t<alpha>");
+					out.write(String.valueOf(wave.getAlpha()));
+					out.write("</alpha>\n");
+					out.write("\t<points>");
+					double[][] points = wave.getPoints();
+					for(int i=0; i<points.length; i++){
+						for(int n=0; n<points[i].length; n++){
+							out.write(String.valueOf(points[i][n]));
+							if(n < points[i].length-1){
+								out.write(":");
+							}
+						}
+						if(i < points.length - 1){
+							out.write(",");
+						}
+					}
+					out.write("</points>\n");
+					out.write("</wave>\n");
+				}
+				out.write("</waves>\n");
+			    out.close();	// close the output stream
+			 } catch (Exception e){
+			   	System.err.println("Error: " + e.getMessage());
+			 }
+		}
+	}
 
 
 	public void actionPerformed(ActionEvent e) {
@@ -223,7 +284,7 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 				}
 			}
 		} else if(e.getActionCommand().equals("Save Waves")){
-			// TODO save each sprite instance's properties to a file
+			saveWaves();
 		} else if(e.getActionCommand().equals("comboBoxChanged")){
 			JComboBox cb = (JComboBox)e.getSource();
 		    if((String)cb.getSelectedItem() == "Raster"){

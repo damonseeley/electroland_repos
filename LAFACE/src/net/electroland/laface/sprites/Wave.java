@@ -108,6 +108,10 @@ public class Wave extends Sprite {
 		this.c = c;
 	}
 	
+	public void setPoints(double[][] points){
+		Y = points;
+	}
+	
 	public void reset(){
 		initshape();
 	}
@@ -145,6 +149,10 @@ public class Wave extends Sprite {
 	
 	public double getC(){
 		return c;
+	}
+	
+	public double[][] getPoints(){
+		return Y;
 	}
 	
 	
