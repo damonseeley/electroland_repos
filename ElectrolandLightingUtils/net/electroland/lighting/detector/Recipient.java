@@ -178,6 +178,50 @@ public abstract class Recipient
 		}
 	}
 
+	/**
+	 * sync two rasters transitioning
+	 * @param current
+	 * @param transition
+	 * @param target
+	 */
+	final public void sync(Raster current, Raster transition, Raster target)
+	{
+		if (current.isJava2d())
+		{
+			sync((BufferedImage)current.getRaster(),
+					(BufferedImage)transition.getRaster(),
+					(BufferedImage)target.getRaster());
+		}else{
+			sync((PImage)current.getRaster(),
+					(PImage)transition.getRaster(),
+					(PImage)target.getRaster());
+		}
+	}
+
+	final public void sync(BufferedImage current, BufferedImage transition, BufferedImage target)
+	{
+			// TO BE IMPLEMENTED.
+	}
+
+	final public void sync(PImage current, PImage transition, PImage target)
+	{
+		// throw exception if all rasters aren't the same dimension.
+		// if (detectorsOn)
+		// iterator through every detector...
+			if (current == null)
+			{
+				// treat every pixel as black.  e.g., fade in the target.
+			}else
+			{
+				// get a detector value from the current.
+			}
+			// get a detector value from the transition.
+			// get a detector value from the target.
+			// blend
+			// store
+		// send
+	}
+
 	final public Byte getLastEvaluatedValue(Detector detector)
 	{
 		return this.lastEvals.get(detector);

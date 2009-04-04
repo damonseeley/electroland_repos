@@ -1,7 +1,6 @@
 package net.electroland.enteractive.core;
 
 import java.awt.Color;
-import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -15,36 +14,33 @@ import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Properties;
 
-import javax.swing.ButtonGroup;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 
-import processing.core.PConstants;
-import processing.core.PImage;
 import net.electroland.enteractive.gui.GUI;
 import net.electroland.enteractive.gui.Lights3D;
 import net.electroland.enteractive.scheduler.TimedEvent;
 import net.electroland.enteractive.scheduler.TimedEventListener;
 import net.electroland.enteractive.shows.LilyPad;
 import net.electroland.enteractive.shows.Spotlight;
+import net.electroland.lighting.detector.DetectorManager;
 import net.electroland.lighting.detector.DetectorManagerJPanel;
 import net.electroland.lighting.detector.Recipient;
-import net.electroland.lighting.detector.DetectorManager;
 import net.electroland.lighting.detector.animation.Animation;
-import net.electroland.lighting.detector.animation.Completable;
-import net.electroland.lighting.detector.animation.CompletionListener;
+import net.electroland.lighting.detector.animation.AnimationListener;
 import net.electroland.lighting.detector.animation.AnimationManager;
 import net.electroland.lighting.detector.animation.Raster;
 import net.electroland.udpUtils.TCUtil;
 import net.electroland.udpUtils.UDPParser;
 import net.electroland.util.OptionException;
 import net.miginfocom.swing.MigLayout;
+import processing.core.PConstants;
+import processing.core.PImage;
 
 @SuppressWarnings("serial")
-public class Main extends JFrame implements CompletionListener, ActionListener, TimedEventListener, ModelListener{
+public class Main extends JFrame implements AnimationListener, ActionListener, TimedEventListener, ModelListener{
 	
 	private DetectorManager dmr;
 	private DetectorManagerJPanel dmp;
@@ -124,7 +120,7 @@ public class Main extends JFrame implements CompletionListener, ActionListener, 
 		amr.goLive(); 										// the whole system does nothing unless you "start" it.
 	}
 
-	public void completed(Completable a) {
+	public void completed(Animation a) {
 		// TODO Switch to a new animation
 		System.out.println("animation " + a + " completed!");
 		if (a instanceof Spotlight){

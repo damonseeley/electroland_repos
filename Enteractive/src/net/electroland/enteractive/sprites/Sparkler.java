@@ -59,7 +59,6 @@ public class Sparkler extends Sprite implements SpriteListener{
 		}
 	}
 	
-	@Override
 	public void spriteComplete(Sprite sprite) {
 		sparks.remove(sprite.getID());
 	}

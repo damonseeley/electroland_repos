@@ -47,7 +47,7 @@ public class ArtNetRecipient extends Recipient {
 			
 			ByteBuffer b = dmx.getBytes();
 
-			if (log){
+			if (true){
 				System.out.println(this.id + ", universe " + universe + " at IP " + this.ipStr + ":" + bytesToHex(b.array(), b.position()));			
 			}
 

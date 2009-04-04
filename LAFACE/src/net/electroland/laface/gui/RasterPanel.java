@@ -13,7 +13,7 @@ import net.electroland.laface.shows.WaveShow;
 import net.electroland.laface.sprites.Wave;
 import net.electroland.lighting.detector.Detector;
 import net.electroland.lighting.detector.Recipient;
-import net.electroland.lighting.detector.animation.Completable;
+import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.Raster;
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -134,7 +134,7 @@ public class RasterPanel extends PApplet {
 	}
 	
 	public void mouseDragged(){
-		Completable a = main.getCurrentAnimation();
+		Animation a = main.getCurrentAnimation();
 		if(a instanceof WaveShow){
 			int waveid = main.getCurrentWaveID();
 			if(waveid >= 0){
@@ -162,7 +162,7 @@ public class RasterPanel extends PApplet {
 	}
 	
 	public void mousePressed(){
-		Completable a = main.getCurrentAnimation();
+		Animation a = main.getCurrentAnimation();
 		if(a instanceof WaveShow){
 			int waveid = main.getCurrentWaveID();
 			if(waveid >= 0){

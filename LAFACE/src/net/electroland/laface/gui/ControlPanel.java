@@ -30,7 +30,7 @@ import javax.swing.event.ListSelectionListener;
 import net.electroland.laface.core.LAFACEMain;
 import net.electroland.laface.shows.WaveShow;
 import net.electroland.laface.sprites.Wave;
-import net.electroland.lighting.detector.animation.Completable;
+import net.electroland.lighting.detector.animation.Animation;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -225,7 +225,7 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 	}
 	
 	public void saveWaves(){
-		Completable a  = main.getCurrentAnimation();
+		Animation a  = main.getCurrentAnimation();
 		if(a instanceof WaveShow){			// confirm show is WaveShow
 			try{ 
 			    FileWriter fstream = new FileWriter("depends//waves.properties");	// create file
@@ -288,7 +288,7 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		//System.out.println(e.getActionCommand());
 		if(e.getActionCommand().equals("Reset Wave")){
 			if(currentWaveID != -1){					// if a wave sprite has been selected in the wave list...
-				Completable a  = main.getCurrentAnimation();
+				Animation a  = main.getCurrentAnimation();
 				if(a instanceof WaveShow){			// confirm show is WaveShow
 					ConcurrentHashMap<Integer, Wave> waves = ((WaveShow) a).getWaves();
 					Wave wave = waves.get(currentWaveID);
@@ -312,7 +312,7 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 	public boolean handleEvent(Event e){
 		if(e.target instanceof Scrollbar){
 			if(currentWaveID != -1){					// if a wave sprite has been selected in the wave list...
-				Completable a  = main.getCurrentAnimation();
+				Animation a  = main.getCurrentAnimation();
 				if(a instanceof WaveShow){			// confirm show is WaveShow
 					ConcurrentHashMap<Integer, Wave> waves = ((WaveShow) a).getWaves();
 					Wave wave = waves.get(currentWaveID);
@@ -344,7 +344,7 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 			// TODO switch to Trace Test
 		} else if(((JTabbedPane)e.getSource()).getSelectedIndex() == 2){
 			// TODO switch to Wave Show
-			Completable a  = main.getCurrentAnimation();
+			Animation a  = main.getCurrentAnimation();
 			if(a instanceof WaveShow){	// confirm show has been switched over
 				waveListModel.clear();
 				ConcurrentHashMap<Integer, Wave> waves = ((WaveShow) a).getWaves();
@@ -363,7 +363,7 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		if (e.getValueIsAdjusting() == false) {		// done adjusting
 	        if(waveList.getSelectedIndex() >= 0){		// if mouse event
 	        	currentWaveID = waveList.getSelectedIndex();
-	        	Completable a  = main.getCurrentAnimation();
+	        	Animation a  = main.getCurrentAnimation();
 				if(a instanceof WaveShow){			// confirm show is WaveShow
 					ConcurrentHashMap<Integer, Wave> waves = ((WaveShow) a).getWaves();
 					Wave wave = waves.get(currentWaveID);

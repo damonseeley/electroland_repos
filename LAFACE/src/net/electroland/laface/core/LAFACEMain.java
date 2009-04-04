@@ -24,14 +24,13 @@ import net.electroland.lighting.detector.DetectorManagerJPanel;
 import net.electroland.lighting.detector.Recipient;
 import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.AnimationManager;
-import net.electroland.lighting.detector.animation.Completable;
-import net.electroland.lighting.detector.animation.CompletionListener;
+import net.electroland.lighting.detector.animation.AnimationListener;
 import net.electroland.lighting.detector.animation.Raster;
 import net.electroland.util.OptionException;
 import net.miginfocom.swing.MigLayout;
 
 @SuppressWarnings("serial")
-public class LAFACEMain extends JFrame implements CompletionListener, ActionListener{
+public class LAFACEMain extends JFrame implements AnimationListener, ActionListener{
 	
 	private DetectorManager dmr;
 	private DetectorManagerJPanel dmp;
@@ -99,7 +98,7 @@ public class LAFACEMain extends JFrame implements CompletionListener, ActionList
 		return new Raster(rasterPanel.createGraphics(width, height, PConstants.P3D));
 	}
 	
-	public Completable getCurrentAnimation(){
+	public Animation getCurrentAnimation(){
 		return amr.getCurrentAnimation(dmr.getRecipient("face0"));
 	}
 	
@@ -109,7 +108,7 @@ public class LAFACEMain extends JFrame implements CompletionListener, ActionList
 	
 	public void actionPerformed(ActionEvent e) {
 		// TODO Respond to JFrame event
-		Completable a = amr.getCurrentAnimation(dmr.getRecipient("face0"));
+		Animation a = amr.getCurrentAnimation(dmr.getRecipient("face0"));
 		if(a instanceof WaveShow){
 			String[] event = e.getActionCommand().split(":");
 			
@@ -123,7 +122,7 @@ public class LAFACEMain extends JFrame implements CompletionListener, ActionList
 		}
 	}
 
-	public void completed(Completable a) {
+	public void completed(Animation a) {
 		// TODO Respond to animation ending
 		System.out.println("animation " + a + " completed!");
 	}
