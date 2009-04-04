@@ -54,7 +54,7 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 	public ControlPanel(LAFACEMain main){
 		this.main = main;
 		width = 1048;
-		height = 150;
+		height = 80;
 		setMinimumSize(new Dimension(width,height));
 		//setBackground(Color.black);
 		//setForeground(Color.white);
@@ -68,7 +68,7 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		tabbedPane.addTab("Trace Test", makeTraceTestPanel());
 		tabbedPane.addTab("Wave Show", makeWaveShowPanel());
 		
-		tabbedPane.setMinimumSize(new Dimension(width/2,height));
+		tabbedPane.setMinimumSize(new Dimension((width/4)*3,height));
 		tabbedPane.addChangeListener(this);
 		add(tabbedPane, "west");
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -80,7 +80,7 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 	public JComponent makeDrawTestPanel(){
 		JPanel panel = new JPanel(false);
         panel.setLayout(new MigLayout(""));
-		panel.setMinimumSize(new Dimension(width/2,height));
+		panel.setMinimumSize(new Dimension((width/4)*3,height));
 		
 		// button for clearing show (turn off all lights)
 		clearDrawTestButton = new JButton("Clear");
@@ -94,7 +94,7 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 	public JComponent makeTraceTestPanel(){
 		JPanel panel = new JPanel(false);
         panel.setLayout(new MigLayout(""));
-		panel.setMinimumSize(new Dimension(width/2,height));
+		panel.setMinimumSize(new Dimension((width/4)*3,height));
 		
 		// slider to adjust speed of tracer
 		panel.add(new Label("Tracer Speed", Label.RIGHT));
@@ -110,11 +110,11 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 	public JComponent makeWaveShowPanel(){
 		JPanel panel = new JPanel(false);
         panel.setLayout(new MigLayout(""));
-		panel.setMinimumSize(new Dimension(width/2,height));
+		panel.setMinimumSize(new Dimension((width/4)*3,height));
 		
 		waveListModel = new DefaultListModel();
 		waveList = new JList(waveListModel);
-		waveList.setMinimumSize(new Dimension(100,150));
+		waveList.setMinimumSize(new Dimension(100,height));
 		waveList.addListSelectionListener(this);
 		panel.add(waveList, "west");
 		
@@ -155,40 +155,42 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		dxSlider.setMinimumSize(new Dimension(200, 16));
 		sliderpanel.add(dxSlider, "wrap");
 		
-		// slider for adjusting mysterious c value (relates to wave speed)
-		sliderpanel.add(new Label("C value", Label.RIGHT));
-		cSlider = new Scrollbar(Scrollbar.HORIZONTAL, 12, 1, 0, 100);
-		cSlider.setForeground(Color.black);
-		cSlider.setBackground(Color.white);
-		cSlider.setMinimumSize(new Dimension(200, 16));
-		sliderpanel.add(cSlider, "wrap");
-		
-		// slider for adjusting brightness
-		sliderpanel.add(new Label("Brightness", Label.RIGHT));
-		brightnessSlider = new Scrollbar(Scrollbar.HORIZONTAL, 255, 1, 0, 255);
-		brightnessSlider.setForeground(Color.black);
-		brightnessSlider.setBackground(Color.white);
-		brightnessSlider.setMinimumSize(new Dimension(200, 16));
-		sliderpanel.add(brightnessSlider, "wrap");
-		
-		// slider for adjusting alpha
-		sliderpanel.add(new Label("Alpha", Label.RIGHT));
-		alphaSlider = new Scrollbar(Scrollbar.HORIZONTAL, 255, 1, 0, 255);
-		alphaSlider.setForeground(Color.black);
-		alphaSlider.setBackground(Color.white);
-		alphaSlider.setMinimumSize(new Dimension(200, 16));
-		sliderpanel.add(alphaSlider);
-		
 		panel.add(sliderpanel, "west");
 		
 		JPanel buttonPanel = new JPanel(false);
 		buttonPanel.setLayout(new MigLayout(""));
 		
+
+		// slider for adjusting mysterious c value (relates to wave speed)
+		buttonPanel.add(new Label("C value", Label.RIGHT));
+		cSlider = new Scrollbar(Scrollbar.HORIZONTAL, 12, 1, 0, 100);
+		cSlider.setForeground(Color.black);
+		cSlider.setBackground(Color.white);
+		cSlider.setMinimumSize(new Dimension(200, 16));
+		buttonPanel.add(cSlider, "wrap, span 2");
+		
+		// slider for adjusting brightness
+		buttonPanel.add(new Label("Brightness", Label.RIGHT));
+		brightnessSlider = new Scrollbar(Scrollbar.HORIZONTAL, 255, 1, 0, 255);
+		brightnessSlider.setForeground(Color.black);
+		brightnessSlider.setBackground(Color.white);
+		brightnessSlider.setMinimumSize(new Dimension(200, 16));
+		buttonPanel.add(brightnessSlider, "wrap, span 2");
+		
+		// slider for adjusting alpha
+		buttonPanel.add(new Label("Alpha", Label.RIGHT));
+		alphaSlider = new Scrollbar(Scrollbar.HORIZONTAL, 255, 1, 0, 255);
+		alphaSlider.setForeground(Color.black);
+		alphaSlider.setBackground(Color.white);
+		alphaSlider.setMinimumSize(new Dimension(200, 16));
+		buttonPanel.add(alphaSlider, "wrap, span 2");
+		
+		buttonPanel.add(new Label("", Label.RIGHT));
 		// button for resetting wave after it goes haywire
 		resetWaveButton = new JButton("Reset Wave");
 		resetWaveButton.addActionListener(this);
 		resetWaveButton.setMaximumSize(new Dimension(120, 20));
-		buttonPanel.add(resetWaveButton, "wrap");
+		buttonPanel.add(resetWaveButton);
 		
 		// button for saving sprite properties for future loading
 		saveWavesButton = new JButton("Save Waves");
@@ -203,8 +205,8 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 	
 	public JComponent makeDisplayModePanel(){
 		JPanel panel = new JPanel(false);
-        panel.setLayout(new MigLayout(""));
-		panel.setMinimumSize(new Dimension(width/2,height));
+        panel.setLayout(new MigLayout("insets 0 5 0 0"));
+		panel.setMinimumSize(new Dimension(width/4,height));
 		
 		// drop down list to select raster display mode
 		panel.add(new Label("Display Mode:"), "wrap");
