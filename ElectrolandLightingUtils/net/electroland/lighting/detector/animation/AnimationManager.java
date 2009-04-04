@@ -1,5 +1,6 @@
 package net.electroland.lighting.detector.animation;
 
+import java.io.PrintStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -72,7 +73,8 @@ public class AnimationManager implements Runnable {
 			}			
 		}
 
-		System.out.println("starting animation or transition " + a);
+		System.out.println("starting animation " + a);
+		this.printState(System.out);
 	}
 
 	final public void startAnimation(Animation c, Recipient r)
@@ -113,6 +115,8 @@ public class AnimationManager implements Runnable {
 				}
 			}
 		}
+		System.out.println("transition to animation " + a + " using transition " + t);
+		this.printState(System.out);
 	}
 
 	final public void startAnimation(Animation c, Animation t, Recipient r)
@@ -261,6 +265,29 @@ public class AnimationManager implements Runnable {
 		}
 		thread = null;
 	}
+
+	public void printState(PrintStream os)
+	{
+		os.println("Live animations and there assigned recipients:");
+		os.println("==============================================");
+
+		Iterator<Animation> animations = animationRecipients.keySet().iterator();
+		while (animations.hasNext())
+		{
+			Animation a = animations.next();
+			os.println("Animation: " + a + "\t" + animationRecipients.get(a));
+		}
+		
+		os.println("Recipients running shows, and their transition states:");
+		os.println("======================================================");
+		
+		Iterator<Recipient> recipients = recipientStates.keySet().iterator();
+		while (recipients.hasNext())
+		{
+			Recipient r = recipients.next();
+			os.println("Recipient: " + r.getID() + "\t" + recipientStates.get(r));
+		}
+	}
 }
 /**
  * Stores all recipients that require the next frame from this animation, 
@@ -284,6 +311,10 @@ class AnimationRecipients
 		this.recipients = r;
 		this.isTransition = isTransition;
 	}
+	public String toString()
+	{
+		return "AnimationRecipients[isTransition=" + isTransition + ", " + recipients + "]";
+	}
 }
 /**
  * Stores what animation and optionally what transition and target animation
@@ -306,5 +337,9 @@ class RecipientState
 		this.current = current;
 		this.transition = transition;
 		this.target = target;
+	}
+	public String toString()
+	{
+		return "RecipientState [current=" + current + ", transition=" + transition + ", target=" + target + "]";
 	}
 }
