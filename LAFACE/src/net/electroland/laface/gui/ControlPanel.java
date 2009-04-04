@@ -11,6 +11,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,9 +29,13 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import net.electroland.laface.core.LAFACEMain;
+import net.electroland.laface.shows.DrawTest;
+import net.electroland.laface.shows.TraceTest;
 import net.electroland.laface.shows.WaveShow;
 import net.electroland.laface.sprites.Wave;
+import net.electroland.lighting.detector.Recipient;
 import net.electroland.lighting.detector.animation.Animation;
+import net.electroland.lighting.detector.animation.Raster;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -340,11 +345,33 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 	public void stateChanged(ChangeEvent e) {
 		if(((JTabbedPane)e.getSource()).getSelectedIndex() == 0){
 			// TODO switch to Draw Test
+			//Animation a  = main.getCurrentAnimation();
+			//main.amr.killOff(a);
+			Raster raster = main.getRaster();
+			main.rasterPanel.setRaster(raster);
+			Animation newa = new DrawTest(raster, 174, 7);			// light grid width + gaps
+			Collection<Recipient> fixtures = main.dmr.getRecipients();
+			main.amr.startAnimation(newa, fixtures); 					// start a show now, on this list of fixtures.
 		} else if(((JTabbedPane)e.getSource()).getSelectedIndex() == 1){
 			// TODO switch to Trace Test
+			//Animation a  = main.getCurrentAnimation();
+			//main.amr.killOff(a);
+			Raster raster = main.getRaster();
+			main.rasterPanel.setRaster(raster);
+			Animation newa = new TraceTest(raster, 174, 7, 10);			// light grid width + gaps
+			Collection<Recipient> fixtures = main.dmr.getRecipients();
+			main.amr.startAnimation(newa, fixtures); 					// start a show now, on this list of fixtures.
 		} else if(((JTabbedPane)e.getSource()).getSelectedIndex() == 2){
 			// TODO switch to Wave Show
-			Animation a  = main.getCurrentAnimation();
+			//Animation olda  = main.getCurrentAnimation();
+			//main.amr.killOff(olda);
+			Raster raster = main.getRaster();
+			main.rasterPanel.setRaster(raster);
+			Animation a = new WaveShow(raster);
+			Collection<Recipient> fixtures = main.dmr.getRecipients();
+			main.amr.startAnimation(a, fixtures); 			
+			
+			//Animation a  = main.getCurrentAnimation();
 			if(a instanceof WaveShow){	// confirm show has been switched over
 				waveListModel.clear();
 				ConcurrentHashMap<Integer, Wave> waves = ((WaveShow) a).getWaves();

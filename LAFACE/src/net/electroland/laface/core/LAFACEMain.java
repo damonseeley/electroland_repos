@@ -32,9 +32,9 @@ import net.miginfocom.swing.MigLayout;
 @SuppressWarnings("serial")
 public class LAFACEMain extends JFrame implements AnimationListener, ActionListener{
 	
-	private DetectorManager dmr;
+	public DetectorManager dmr;
 	private DetectorManagerJPanel dmp;
-	private AnimationManager amr;
+	public AnimationManager amr;
 	private Properties lightProps;
 	public RasterPanel rasterPanel;
 	private ControlPanel controlPanel;
@@ -90,7 +90,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		return lightProps;
 	}
 	
-	private Raster getRaster(){
+	public Raster getRaster(){
 		String[] dimensions = lightProps.getProperty("raster.faceRaster").split(" ");
 		float multiplier = Float.parseFloat(lightProps.getProperty("rasterDimensionScaling"));
 		int width = (int)(Integer.parseInt(dimensions[1]) * multiplier);
