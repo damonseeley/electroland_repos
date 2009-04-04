@@ -200,7 +200,7 @@ public class AnimationManager implements Runnable {
 						while (recipients.hasNext())
 						{
 							Recipient recipient = recipients.next();
-							RecipientState rState = recipientStates.get(recipients);
+							RecipientState rState = recipientStates.get(recipient);
 							if (ar.isTransition){
 								// kill off the animation we transitioned from.
 								rState.current.cleanUp();
@@ -233,7 +233,14 @@ public class AnimationManager implements Runnable {
 					RecipientState state = recipientStates.get(recipient);
 					if (state.transition == null)
 					{
-						recipient.sync(animationRecipients.get(state.current).latestFrame);
+						
+						
+						
+						////// WHY IS THIS EVERY NULL?
+						if (animationRecipients.get(state.current).latestFrame != null)
+						{
+							recipient.sync(animationRecipients.get(state.current).latestFrame);	
+						}
 					}else
 					{
 						// THIS WILL BREAK if the animation you were transitioning to
