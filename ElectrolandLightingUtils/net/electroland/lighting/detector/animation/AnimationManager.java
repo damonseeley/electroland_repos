@@ -277,7 +277,7 @@ public class AnimationManager implements Runnable {
 			Animation a = animations.next();
 			os.println("Animation: " + a + "\t" + animationRecipients.get(a));
 		}
-		
+		os.println();
 		os.println("Recipients running shows, and their transition states:");
 		os.println("======================================================");
 		
