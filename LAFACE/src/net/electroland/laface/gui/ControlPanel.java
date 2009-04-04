@@ -74,6 +74,7 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		tabbedPane.addTab("Wave Show", makeWaveShowPanel());
 		
 		tabbedPane.setMinimumSize(new Dimension((width/4)*3,height));
+		tabbedPane.setSelectedIndex(2);
 		tabbedPane.addChangeListener(this);
 		add(tabbedPane, "west");
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
