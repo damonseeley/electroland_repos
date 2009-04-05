@@ -189,7 +189,19 @@ public class DetectorManager {
 	{
 		Map<String,Object> options = OptionParser.parse(str);
 		String protocol = getOption(options, "-protocol", id, true);
-		if ("ARTNET".equalsIgnoreCase(protocol)){
+		if ("ARTNET_DOUBLE".equalsIgnoreCase(protocol))
+		{
+			//	recipient.id = -protocol ARTNET_DOUBLE -channels int -address string -universe int -defaultRaster raster.id [-patchgroup string]
+			int channels = Integer.parseInt(getOption(options, "-channels", id, true));
+			String address = getOption(options, "-address", id, true);
+			byte universe = (byte)Integer.parseInt(getOption(options, "-universe", id, true));
+			Dimension d = rasters.get(getOption(options, "-defaultRaster", id, true));
+			String patchgroup = getOption(options, "-patchgroup", id, false);
+
+			return new ArtNetDoubleByteRecipient(id, universe, address, channels, d, patchgroup);
+
+		}else if ("ARTNET".equalsIgnoreCase(protocol))
+		{
 			//	recipient.id = -protocol ARTNET -channels int -address string -universe int -defaultRaster raster.id [-patchgroup string]
 			int channels = Integer.parseInt(getOption(options, "-channels", id, true));
 			String address = getOption(options, "-address", id, true);
