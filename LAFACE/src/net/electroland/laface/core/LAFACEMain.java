@@ -83,6 +83,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		Animation highlighter = new Highlighter(getRaster());
 		amr.startAnimation(newa, highlighter, fixtures);
 		amr.goLive(); 
+		controlPanel.refreshWaveList();
 
 		setResizable(true);
 		setVisible(true);

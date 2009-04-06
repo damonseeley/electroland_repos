@@ -424,4 +424,19 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		return currentWaveID;
 	}
 	
+	public void refreshWaveList(){
+		Animation a  = main.getCurrentAnimation();
+		if(a instanceof WaveShow){	// confirm show has been switched over
+			waveListModel.clear();
+			ConcurrentHashMap<Integer, Wave> waves = ((WaveShow) a).getWaves();
+			Iterator<Wave> iter = waves.values().iterator();
+			int counter = 1;
+			while(iter.hasNext()){
+				Wave wave = iter.next();
+				waveListModel.addElement("Wave "+wave.getID());
+				counter++;
+			}
+		}
+	}
+	
 }
