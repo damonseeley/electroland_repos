@@ -28,6 +28,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import net.electroland.laface.core.Impulse;
 import net.electroland.laface.core.LAFACEMain;
 import net.electroland.laface.shows.DrawTest;
 import net.electroland.laface.shows.TraceTest;
@@ -49,7 +50,7 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 	private LAFACEMain main;
 	private Scrollbar dampingSlider, fpuSlider, yoffsetSlider, dxSlider, cSlider, brightnessSlider, alphaSlider;
 	private Scrollbar traceSpeedSlider;
-	private JButton resetWaveButton, saveWavesButton, clearDrawTestButton;
+	private JButton resetWaveButton, saveWavesButton, clearDrawTestButton, leftImpulse, rightImpulse;
 	private JCheckBox tintBlueButton;
 	private DefaultListModel waveListModel;
 	private JList waveList;
@@ -227,6 +228,16 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		tintBlueButton.addItemListener(this);
 		panel.add(tintBlueButton, "wrap");
 		
+		leftImpulse = new JButton("Left Impulse");
+		leftImpulse.addActionListener(this);
+		leftImpulse.setMaximumSize(new Dimension(120, 20));
+		panel.add(leftImpulse);
+		
+		rightImpulse = new JButton("Right Impulse");
+		rightImpulse.addActionListener(this);
+		rightImpulse.setMaximumSize(new Dimension(120, 20));
+		panel.add(rightImpulse, "wrap");
+		
 		return panel;
 	}
 	
@@ -312,6 +323,12 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		    } else if((String)cb.getSelectedItem() == "Detector Values"){
 		    	main.rasterPanel.setDisplayMode(2);
 		    }
+		} else if(e.getActionCommand().equals("Left Impulse")){
+			Impulse impulse = new Impulse(main, currentWaveID, 300, true);
+			impulse.start();
+		} else if(e.getActionCommand().equals("Right Impulse")){
+			Impulse impulse = new Impulse(main, currentWaveID, 300, false);
+			impulse.start();
 		}
 	}
 	
