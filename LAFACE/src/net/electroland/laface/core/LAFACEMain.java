@@ -17,8 +17,10 @@ import processing.core.PConstants;
 import net.electroland.laface.gui.ControlPanel;
 import net.electroland.laface.gui.RasterPanel;
 import net.electroland.laface.shows.DrawTest;
+import net.electroland.laface.shows.Highlighter;
 import net.electroland.laface.shows.TraceTest;
 import net.electroland.laface.shows.WaveShow;
+import net.electroland.laface.sprites.Wave;
 import net.electroland.lighting.detector.DetectorManager;
 import net.electroland.lighting.detector.DetectorManagerJPanel;
 import net.electroland.lighting.detector.Recipient;
@@ -67,10 +69,19 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		add(controlPanel, "wrap");
 		
 		Animation a = new WaveShow(raster);
+		Wave wave = new Wave(0, raster, 0, 0);
+		((WaveShow)a).addWave(0, wave);
+		((WaveShow)a).setTint(150);
+		((WaveShow)a).mirror();
+		
 		//Animation a = new TraceTest(raster, 174, 7, 10);	// light grid width + gaps
 		//Animation a = new DrawTest(raster, 174, 7);			// light grid width + gaps
 		Collection<Recipient> fixtures = dmr.getRecipients();
 		amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
+		Animation newa = new WaveShow(getRaster());
+		((WaveShow)newa).addWave(0, wave);
+		Animation highlighter = new Highlighter(getRaster());
+		amr.startAnimation(newa, highlighter, fixtures);
 		amr.goLive(); 
 
 		setResizable(true);

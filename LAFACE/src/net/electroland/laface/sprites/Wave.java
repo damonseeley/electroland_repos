@@ -64,6 +64,35 @@ public class Wave extends Sprite {
 		}
 	}
 	
+	public void draw(int brightnessValue) {
+		// THIS DOES NOT ITERATE OVER THE WAVE FUNCTION, SIMPLY DRAWS CURRENT STATE
+		if(raster.isProcessing()){
+			PGraphics c = (PGraphics)(raster.getRaster());
+			c.noStroke();
+			c.fill(brightnessValue,brightnessValue,brightnessValue,alpha);
+			c.beginShape();
+			int lowest = c.height;	// lowest point (highest value) in wave
+			int px, py, x, y;
+			px = xoffs;
+			py = (int)(Y[0][curT]*yscale + yoffs);
+			c.vertex(px,py);
+			for(int i=1; i<GRIDLENGTH; i++) {
+				x = (int)(i*xscale) + xoffs;
+				y = (int)(Y[i][curT]*yscale + yoffs);
+				//c.rect(px, py+((y-py)/2), x-px, c.height-(py+((y-py)/2)));	// vertical bar for each point
+				c.vertex(x,y);
+				if(y > lowest){
+					lowest = y;
+				}
+				px = x;
+				py = y;
+			}
+			c.vertex(c.width,lowest);
+			c.vertex(0,lowest);
+			c.endShape(PConstants.CLOSE);
+		}
+	}
+	
 	
 	
 	

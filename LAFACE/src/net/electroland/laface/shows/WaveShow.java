@@ -27,11 +27,15 @@ public class WaveShow implements Animation, SpriteListener{
 	private ConcurrentHashMap<Integer,Wave> waves;			// used to manage properties of waves from control panel
 	private int spriteIndex = 0;
 	private int waveCount = 3;
+	private int brightness = 255;		// used for tinting waves
+	private boolean mirror = false;	// set to true when simply mirroring activity in another show
 
 	public WaveShow(Raster r){
 		this.r = r;
 		sprites = new ConcurrentHashMap<Integer,Sprite>();
 		waves = new ConcurrentHashMap<Integer,Wave>();
+		// TODO getting shared wave sprite for now
+		/*
 		try{
 			loadSprites();	// attempt to load waves from file
 		} catch (Exception e) {
@@ -44,6 +48,7 @@ public class WaveShow implements Animation, SpriteListener{
 				spriteIndex++;
 			}
 		}
+		*/
 	}
 	
 	private void loadSprites() throws Exception{
@@ -102,7 +107,11 @@ public class WaveShow implements Animation, SpriteListener{
 			Iterator<Sprite> iter = sprites.values().iterator();
 			while(iter.hasNext()){
 				Sprite sprite = (Sprite)iter.next();
-				sprite.draw();
+				if(mirror){
+					((Wave)sprite).draw(brightness);
+				} else {
+					sprite.draw();
+				}
 			}
 			c.endDraw();
 		}
@@ -133,6 +142,20 @@ public class WaveShow implements Animation, SpriteListener{
 	
 	public Wave getWave(int id){
 		return waves.get(id);
+	}
+	
+	public void addWave(int id, Wave wave){
+		wave.addListener(this);
+		sprites.put(id, wave);
+		waves.put(id, wave);
+	}
+	
+	public void setTint(int brightness){
+		this.brightness = brightness;
+	}
+	
+	public void mirror(){
+		mirror = true;
 	}
 	
 	

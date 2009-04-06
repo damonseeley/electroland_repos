@@ -369,6 +369,8 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 			Raster raster = main.getRaster();
 			main.rasterPanel.setRaster(raster);
 			Animation a = new WaveShow(raster);
+			Wave newwave = new Wave(0, raster, 0, 0);	// TODO for shared wave sprite on multiple shows
+			((WaveShow)a).addWave(0, newwave);
 			Collection<Recipient> fixtures = main.dmr.getRecipients();
 			main.amr.startAnimation(a, fixtures); 			
 			

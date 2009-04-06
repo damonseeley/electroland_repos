@@ -100,7 +100,8 @@ public class RasterPanel extends PApplet {
 				while(i.hasNext()){
 					Detector d = i.next();
 					if (d != null){
-						point(d.getX(), d.getY());
+						//point(d.getX(), d.getY());
+						rect(d.getX(), d.getY(), d.getWidth(), d.getHeight());
 					}
 				}
 			} catch(NullPointerException e){
@@ -124,7 +125,8 @@ public class RasterPanel extends PApplet {
 						} else {
 							fill(val);
 						}
-						rect(d.getX()-1, d.getY()-1, 2, 2);
+						//rect(d.getX()-1, d.getY()-1, 2, 2);
+						rect(d.getX(), d.getY(), d.getWidth(), d.getHeight());
 					}
 				}
 			} catch(NullPointerException e){
