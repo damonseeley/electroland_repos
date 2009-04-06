@@ -1,5 +1,6 @@
 package net.electroland.laface.core;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -64,6 +65,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		rasterPanel = new RasterPanel(this, dmr.getRecipients(), 174, 7);
 		Raster raster = getRaster();
 		rasterPanel.setRaster(raster);
+		rasterPanel.setMinimumSize(new Dimension(1048,133));
 		add(rasterPanel, "wrap");
 		controlPanel = new ControlPanel(this);
 		add(controlPanel, "wrap");
@@ -76,6 +78,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		
 		//Animation a = new TraceTest(raster, 174, 7, 10);	// light grid width + gaps
 		//Animation a = new DrawTest(raster, 174, 7);			// light grid width + gaps
+		
 		Collection<Recipient> fixtures = dmr.getRecipients();
 		amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
 		Animation newa = new WaveShow(getRaster());

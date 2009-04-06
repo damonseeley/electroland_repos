@@ -385,6 +385,7 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 					waveListModel.addElement("Wave "+wave.getID());
 					counter++;
 				}
+				waveList.setSelectedIndex(0);
 			}
 		}
 	}
@@ -436,6 +437,7 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 				waveListModel.addElement("Wave "+wave.getID());
 				counter++;
 			}
+			waveList.setSelectedIndex(0);
 		}
 	}
 	

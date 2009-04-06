@@ -111,6 +111,7 @@ public class WaveShow implements Animation, SpriteListener{
 					((Wave)sprite).draw(brightness);
 				} else {
 					sprite.draw();
+					//((Wave)sprite).invertedDraw();
 				}
 			}
 			c.endDraw();
