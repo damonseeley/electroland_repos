@@ -1,6 +1,7 @@
 package net.electroland.enteractive.core;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -97,6 +98,7 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 
 
 		lights3D = new Lights3D(600,600, dmr.getRecipient("floor"),  dmr.getRecipient("face"), ptr.getModel());
+		lights3D.setMinimumSize(new Dimension(600,600));
 		gui = new GUI(guiWidth,guiHeight, dmr.getRecipient("floor"),  dmr.getRecipient("face"));
 		Raster raster = getRaster();
 		((GUI)gui).setRaster(raster);
