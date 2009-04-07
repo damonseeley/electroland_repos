@@ -232,9 +232,6 @@ public class AnimationManager implements Runnable {
 					RecipientState state = recipientStates.get(recipient);
 					if (state.transition == null)
 					{
-						
-						
-						
 						////// WHY IS THIS EVER NULL? is the thread improperly synched?
 						////// it seems like it's a new show.
 						if (animationRecipients.get(state.current).latestFrame != null)
@@ -243,11 +240,9 @@ public class AnimationManager implements Runnable {
 						}
 					}else
 					{
-
 						recipient.sync(state.current == null ? null : animationRecipients.get(state.current).latestFrame,
 								state.transition == null ? null : animationRecipients.get(state.transition).latestFrame,
 								state.target == null ? null : animationRecipients.get(state.target).latestFrame);
-						
 					}
 				}
 			}
