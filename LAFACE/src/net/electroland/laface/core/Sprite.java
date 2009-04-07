@@ -33,7 +33,7 @@ public abstract class Sprite {
 		listeners = new ArrayList<SpriteListener>();
 	}
 	
-	abstract public void draw();	// show calls this every frame
+	abstract public void draw(Raster r);	// show calls this every frame
 	
 	final public void addListener(SpriteListener listener){
 		listeners.add(listener);

@@ -108,10 +108,9 @@ public class WaveShow implements Animation, SpriteListener{
 			while(iter.hasNext()){
 				Sprite sprite = (Sprite)iter.next();
 				if(mirror){
-					((Wave)sprite).draw(brightness);
+					((Wave)sprite).draw(r, brightness);
 				} else {
-					sprite.draw();
-					//((Wave)sprite).invertedDraw();
+					sprite.draw(r);
 				}
 			}
 			c.endDraw();

@@ -238,6 +238,13 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		rightImpulse.setMaximumSize(new Dimension(120, 20));
 		panel.add(rightImpulse, "wrap");
 		
+		// drop down list to select raster to be displayed within the raster panel
+		panel.add(new Label("Raster:"), "wrap");
+		JComboBox rasterList = new JComboBox(new String[] {"First Wave","Second Wave", "Transition"});
+		rasterList.setSelectedIndex(0);
+		rasterList.addActionListener(this);		
+		panel.add(rasterList);
+		
 		return panel;
 	}
 	
@@ -322,6 +329,12 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		    	main.rasterPanel.setDisplayMode(1);
 		    } else if((String)cb.getSelectedItem() == "Detector Values"){
 		    	main.rasterPanel.setDisplayMode(2);
+		    } else if((String)cb.getSelectedItem() == "First Wave"){
+		    	main.rasterPanel.setRaster(main.firstRaster);
+		    } else if((String)cb.getSelectedItem() == "Second Wave"){
+		    	main.rasterPanel.setRaster(main.secondRaster);
+		    } else if((String)cb.getSelectedItem() == "Transition"){
+		    	main.rasterPanel.setRaster(main.thirdRaster);
 		    }
 		} else if(e.getActionCommand().equals("Left Impulse")){
 			Impulse impulse = new Impulse(main, currentWaveID, 300, true);
