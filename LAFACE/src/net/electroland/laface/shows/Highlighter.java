@@ -29,7 +29,7 @@ public class Highlighter implements Animation {
 			}
 			c.endDraw();
 		}
-		return null;
+		return r;
 	}
 	
 	public void cleanUp() {
