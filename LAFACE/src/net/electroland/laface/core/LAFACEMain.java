@@ -81,7 +81,10 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		
 		Collection<Recipient> fixtures = dmr.getRecipients();
 		amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
-		Animation newa = new WaveShow(getRaster());
+
+		Raster newraster = getRaster();
+		rasterPanel.setRaster(newraster);
+		Animation newa = new WaveShow(newraster);
 		((WaveShow)newa).addWave(0, wave);
 		Animation highlighter = new Highlighter(getRaster());
 		amr.startAnimation(newa, highlighter, fixtures);
