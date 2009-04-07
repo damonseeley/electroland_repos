@@ -12,6 +12,8 @@ import java.util.Iterator;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
+import net.electroland.lighting.detector.animation.Raster;
+
 
 @SuppressWarnings("serial")
 public class DetectorManagerJPanel extends JPanel implements ActionListener {
@@ -101,6 +103,6 @@ public class DetectorManagerJPanel extends JPanel implements ActionListener {
 		}
 */
 		// do the shit!
-		fixture.sync(raster);
+		fixture.sync(new Raster(raster));
 	}
 }

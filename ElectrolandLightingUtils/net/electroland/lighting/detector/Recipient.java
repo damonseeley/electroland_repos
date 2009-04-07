@@ -98,58 +98,25 @@ public abstract class Recipient
 		this.preferredDimensions.height = (int)(this.preferredDimensions.height * scaleDimensions);
 	}
 
+	/**
+	 * @param raster
+	 */
 	final public void sync(Raster raster)
 	{
-		if (raster.isJava2d())
-		{
-			sync((BufferedImage)raster.getRaster());
-		}else{
-			sync((PImage)raster.getRaster());
-		}
+		this.sync(raster, null, null);
 	}
 
 	/**
 	 * 
-	 * @param PImage
+	 * @param currentRaster
+	 * @param transitionRaster
+	 * @param targetRaster
 	 */
-	final public void sync(PImage raster)
+	final public void sync(Raster currentRaster, Raster transitionRaster, Raster targetRaster)
 	{
 		if(detectorsOn)
 		{
-			byte[] data = new byte[channels];
-
-			for (int i = 0; i < data.length; i++)
-			{
-				data[i] = 0;
-				
-				if (i < detectors.size())
-				{					
-					Detector detector = detectors.get(i);
-
-					if (detector != null)
-					{
-						PImage subraster = raster.get(detector.x, 
-														detector.y, 
-														detector.width, 
-														detector.height);
-						subraster.updatePixels();
-						subraster.loadPixels();
-						data[i] = (byte)detector.model.getValue(subraster.pixels);
-						lastEvals.put(detector, new Byte(data[i]));
-					}
-				}
-			}
-			send(data);
-		}
-	}
-
-	/**
-	 * @param image
-	 */
-	final public void sync(BufferedImage raster)
-	{
-		if(detectorsOn)
-		{
+			boolean isSingle = transitionRaster == null && targetRaster == null;
 			byte[] data = new byte[channels];
 
 			for (int i = 0; i < data.length; i++)
@@ -160,16 +127,15 @@ public abstract class Recipient
 
 					if (detector != null)
 					{
-						int pixels[] = new int[detector.width * detector.height];
-						try{
-							raster.getRGB(detector.x, detector.y, 
-										detector.width, detector.height, pixels, 
-										0, detector.width);
-						}catch(ArrayIndexOutOfBoundsException e){
-							// Coordinate out of bounds! (just ignore)
+						if (isSingle)
+						{
+							data[i]  = detect(currentRaster, detector);
+						}else
+						{
+							data[i] = alphaMerge(detect(currentRaster, detector),
+									detect(transitionRaster, detector),
+									detect(targetRaster, detector));
 						}
-
-						data[i] = (byte)detector.model.getValue(pixels);
 						lastEvals.put(detector, new Byte(data[i]));
 					}
 				}
@@ -179,47 +145,70 @@ public abstract class Recipient
 	}
 
 	/**
-	 * sync two rasters transitioning
-	 * @param current
-	 * @param transition
-	 * @param target
+	 * 
+	 * @param raster
+	 * @param detector
+	 * @return
 	 */
-	final public void sync(Raster current, Raster transition, Raster target)
+	final private static byte detect(Raster raster, Detector detector)
 	{
-		if (current.isJava2d())
+		if (raster == null)		
 		{
-			sync((BufferedImage)current.getRaster(),
-					(BufferedImage)transition.getRaster(),
-					(BufferedImage)target.getRaster());
-		}else{
-			sync((PImage)current.getRaster(),
-					(PImage)transition.getRaster(),
-					(PImage)target.getRaster());
+			return (byte)0;
+		}else
+		{
+			if (raster.isJava2d())
+			{
+				// Java2D
+				int pixels[] = new int[detector.width * detector.height];
+				try{
+					((BufferedImage)raster.getRaster()).getRGB(
+								detector.x, detector.y, 
+								detector.width, detector.height, pixels, 
+								0, detector.width);
+				}catch(ArrayIndexOutOfBoundsException e){
+					// Coordinate out of bounds! (just ignore)
+				}
+				return (byte)detector.model.getValue(pixels);
+
+			}else
+			{
+				// PROCESSING
+				PImage subraster = ((PImage)raster.getRaster()).get(detector.x, 
+																	detector.y, 
+																	detector.width, 
+																	detector.height);
+				subraster.updatePixels();
+				subraster.loadPixels();
+				
+				return (byte)detector.model.getValue(subraster.pixels);
+			}
 		}
 	}
 
-	final public void sync(BufferedImage current, BufferedImage transition, BufferedImage target)
+	/**
+	 * alpha: if alpha == 0, current image shows.  if alpha == 255, target
+	 * image shows.  anything else is a gradient in between.
+	 * 
+	 * @param current
+	 * @param alpha
+	 * @param target
+	 * @return
+	 */
+	final private static byte alphaMerge(byte current, byte alpha, byte target)
 	{
-			// TO BE IMPLEMENTED.
-	}
+		if (((int)alpha) == 0)
+		{
+			return current;
+		}else
+		{
+			int currentInt = (int)current;
+			double alphaPer = (255.0 / (int)alpha);
+			int targetInt = (int)target;
 
-	final public void sync(PImage current, PImage transition, PImage target)
-	{
-		// throw exception if all rasters aren't the same dimension.
-		// if (detectorsOn)
-		// iterator through every detector...
-			if (current == null)
-			{
-				// treat every pixel as black.  e.g., fade in the target.
-			}else
-			{
-				// get a detector value from the current.
-			}
-			// get a detector value from the transition.
-			// get a detector value from the target.
-			// blend
-			// store
-		// send
+			return	(byte)((((1.0 - alphaPer)*currentInt) +
+							((alphaPer*targetInt))) / 2.0);
+		}
 	}
 
 	final public Byte getLastEvaluatedValue(Detector detector)

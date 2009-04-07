@@ -186,7 +186,6 @@ public class AnimationManager implements Runnable {
 			startTime = System.currentTimeMillis();
 
 			synchronized (animationRecipients){
-	
 				// see which animations and transitions are done.
 				Iterator<Animation> doneItr = animationRecipients.keySet().iterator();
 				while (doneItr.hasNext())
@@ -236,23 +235,19 @@ public class AnimationManager implements Runnable {
 						
 						
 						
-						////// WHY IS THIS EVERY NULL?
+						////// WHY IS THIS EVER NULL? is the thread improperly synched?
+						////// it seems like it's a new show.
 						if (animationRecipients.get(state.current).latestFrame != null)
 						{
 							recipient.sync(animationRecipients.get(state.current).latestFrame);	
 						}
 					}else
 					{
-						// THIS WILL BREAK if the animation you were transitioning to
-						// ended before the transition did!
-	//					recipient.sync(state.current == null ? null : showRecipients.get(state.current).latestFrame,
-	//									showRecipients.get(state.transition).latestFrame,
-	//									showRecipients.get(state.target).latestFrame);
 
-						// haven't implemented the actual transition yet.  instead, show the target.
-						// THIS WILL ALSO BREAK if the animation you were transitioning to
-						// ended before the transition did!
-						recipient.sync(animationRecipients.get(state.target).latestFrame);
+						recipient.sync(state.current == null ? null : animationRecipients.get(state.current).latestFrame,
+								state.transition == null ? null : animationRecipients.get(state.transition).latestFrame,
+								state.target == null ? null : animationRecipients.get(state.target).latestFrame);
+						
 					}
 				}
 			}
