@@ -28,7 +28,7 @@ public class ArtNetDoubleByteRecipient extends ArtNetRecipient {
 		for (int i = 0; i < doubledData.length; i+=2)
 		{
 			doubledData[i] = (byte)255;
-			doubledData[i + 1] = data[i];
+			doubledData[i + 1] = data[i/2];
 		}
 
 		super.send(doubledData);
