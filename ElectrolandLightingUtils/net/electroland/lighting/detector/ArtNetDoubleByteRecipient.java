@@ -25,10 +25,10 @@ public class ArtNetDoubleByteRecipient extends ArtNetRecipient {
 		// The data will be Bytes = color,brightness per pixel.
 		// Color is FF all the time.
 		byte[] doubledData = new byte[data.length * 2];
-		for (int i = 0; i < data.length; i++)
+		for (int i = 0; i < doubledData.length; i+=2)
 		{
-			doubledData[i * 2] = (byte)255;
-			doubledData[(i * 2) + 1] = data[i];
+			doubledData[i] = (byte)255;
+			doubledData[i + 1] = data[i];
 		}
 
 		super.send(doubledData);
