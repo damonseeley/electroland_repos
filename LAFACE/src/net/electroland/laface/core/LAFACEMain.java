@@ -15,6 +15,9 @@ import java.util.Properties;
 import javax.swing.JFrame;
 
 import processing.core.PConstants;
+import net.electroland.elvis.imaging.PresenceDetector;
+import net.electroland.elvis.imaging.acquisition.axisCamera.AxisCamera;
+import net.electroland.elvis.imaging.acquisition.axisCamera.NoHoNorthCam;
 import net.electroland.laface.gui.ControlPanel;
 import net.electroland.laface.gui.RasterPanel;
 import net.electroland.laface.shows.DrawTest;
@@ -44,6 +47,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 	private int guiWidth = 1056;	// TODO get from properties
 	private int guiHeight = 310;
 	public Raster firstRaster, secondRaster, thirdRaster;
+	private SensorThread sensorThread;
 
 	public LAFACEMain() throws UnknownHostException, OptionException{
 		super("LAFACE Control Panel");
@@ -92,6 +96,13 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		amr.startAnimation(newa, highlighter, fixtures);
 		amr.goLive(); 
 		controlPanel.refreshWaveList();
+		
+		Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){amr.getCurrentAnimation(dmr.getRecipient("face0")).cleanUp();}});
+		
+		//PresenceDetector pdet = PresenceDetector.createFromFile(new File(LAFACEConfig.CAMERA_ELV_FNAME));
+		//AxisCamera cam = new NoHoNorthCam(160,120, pdet, false);
+		//sensorThread = new SensorThread(pdet, cam, new LAFACEConfig().NORTH_SENSOR_PAIRS);
+		//sensorThread.start();
 
 		setResizable(true);
 		setVisible(true);
@@ -130,7 +141,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		// TODO Respond to JFrame event
 		Animation a = amr.getCurrentAnimation(dmr.getRecipient("face0"));
 		if(a instanceof WaveShow){
-			String[] event = e.getActionCommand().split(":");
+			//String[] event = e.getActionCommand().split(":");
 			
 		} else if(a instanceof DrawTest){
 			String[] event = e.getActionCommand().split(":");

@@ -6,5 +6,6 @@
 	<classpathentry kind="lib" path="libraries/core.jar"/>
 	<classpathentry kind="lib" path="libraries/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="libraries/miglayout15-swing.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ElVis"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
