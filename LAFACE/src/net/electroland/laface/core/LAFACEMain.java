@@ -15,6 +15,7 @@ import java.util.Properties;
 import javax.swing.JFrame;
 
 import processing.core.PConstants;
+import processing.core.PImage;
 import net.electroland.blobDetection.match.TrackListener;
 import net.electroland.elvis.imaging.PresenceDetector;
 import net.electroland.elvis.imaging.acquisition.axisCamera.AxisCamera;
@@ -50,6 +51,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 	public Raster firstRaster, secondRaster, thirdRaster;
 	private SensorThread sensorThread;
 	private CarTracker carTracker;
+	private PImage highlight;
 
 	public LAFACEMain() throws UnknownHostException, OptionException{
 		super("LAFACE Control Panel");
@@ -71,6 +73,8 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		
 		rasterPanel = new RasterPanel(this, dmr.getRecipients(), 174, 7);
 		//Raster raster = getRaster();
+		
+		highlight = rasterPanel.loadImage("depends//images//highlight.png");
 
 		firstRaster = getRaster();	// first wave show
 		secondRaster = getRaster();	// second wave show
@@ -94,7 +98,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
 		Animation newa = new WaveShow(secondRaster);
 		((WaveShow)newa).addWave(0, wave);
-		Animation highlighter = new Highlighter(thirdRaster);
+		Animation highlighter = new Highlighter(thirdRaster, highlight);
 		amr.startAnimation(newa, highlighter, fixtures);
 		amr.goLive(); 
 		controlPanel.refreshWaveList();

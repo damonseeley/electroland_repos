@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import processing.core.PConstants;
 import processing.core.PGraphics;
+import processing.core.PImage;
 import net.electroland.blobDetection.match.Track;
 import net.electroland.blobDetection.match.TrackListener;
 import net.electroland.blobDetection.match.TrackResults;
@@ -16,10 +17,12 @@ public class Highlighter implements Animation, TrackListener {
 	private Raster r;
 	private Vector<Track> tracks;
 	private int camWidth = 240;
+	private PImage texture;
 	
-	public Highlighter(Raster r){
+	public Highlighter(Raster r, PImage texture){
 		this.r = r;
 		this.tracks = new Vector<Track>();
+		this.texture = texture;
 	}
 
 	public void initialize() {
@@ -37,7 +40,8 @@ public class Highlighter implements Animation, TrackListener {
 			c.fill(255);
 			for(Track t: tracks){
 				// TODO iterate over blobs and draw highlighted areas
-				c.rect((t.x/Integer.parseInt(ElProps.THE_PROPS.get("srcWidth").toString()))*c.width, 0, 30, c.height);
+				//c.rect((t.x/Integer.parseInt(ElProps.THE_PROPS.get("srcWidth").toString()))*c.width, 0, 30, c.height);
+				c.image(texture, ((t.x/Integer.parseInt(ElProps.THE_PROPS.get("srcWidth").toString()))*c.width) - 25, 0, 50, c.height);
 			}
 			c.endDraw();
 		}
