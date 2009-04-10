@@ -1,16 +1,25 @@
 package net.electroland.laface.shows;
 
+import java.util.Vector;
+
 import processing.core.PConstants;
 import processing.core.PGraphics;
+import net.electroland.blobDetection.match.Track;
+import net.electroland.blobDetection.match.TrackListener;
+import net.electroland.blobDetection.match.TrackResults;
+import net.electroland.blobTracker.util.ElProps;
 import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.Raster;
 
-public class Highlighter implements Animation {
+public class Highlighter implements Animation, TrackListener {
 
 	private Raster r;
+	private Vector<Track> tracks;
+	private int camWidth = 240;
 	
 	public Highlighter(Raster r){
 		this.r = r;
+		this.tracks = new Vector<Track>();
 	}
 
 	public void initialize() {
@@ -23,9 +32,12 @@ public class Highlighter implements Animation {
 			PGraphics c = (PGraphics)(r.getRaster());
 			c.beginDraw();
 			c.background(0);
-			for(int i=0; i<c.width; i+=50){
-				c.fill(255);
-				c.rect(i, 0, 25, c.height);	// TODO test the transition effect
+			//System.out.println(tracks.size());
+			c.noStroke();
+			c.fill(255);
+			for(Track t: tracks){
+				// TODO iterate over blobs and draw highlighted areas
+				c.rect((t.x/Integer.parseInt(ElProps.THE_PROPS.get("srcWidth").toString()))*c.width, 0, 30, c.height);
 			}
 			c.endDraw();
 		}
@@ -41,6 +53,10 @@ public class Highlighter implements Animation {
 
 	public boolean isDone() {
 		return false;
+	}
+
+	public void updateTracks(TrackResults results) {
+		this.tracks = results.existing;		
 	}
 
 }
