@@ -14,8 +14,10 @@ public class CarTracker extends Thread implements TrackListener{
 	LinkedBlockingQueue<TrackResults> resultsQueue;
 	ConcurrentHashMap<Integer,Track> cars;
 	BlobTrackerServer bts;
+	LAFACEMain main;
 	
-	public CarTracker(){
+	public CarTracker(LAFACEMain main){
+		this.main = main;
 		resultsQueue = new LinkedBlockingQueue<TrackResults>();		// used to get info on active blobs
 		cars = new ConcurrentHashMap<Integer,Track>();				// stores active blob data (position history, speed, etc)
 		ElProps.init("depends//blobTracker.props");
@@ -25,16 +27,21 @@ public class CarTracker extends Thread implements TrackListener{
 
 	public void run(){
 		while(true) {
-			/*
 			try {
 				
 				TrackResults result = resultsQueue.take(); // will block until something is on the que
-				System.out.println(result.created.size() + " tracks created");
+				//System.out.println(result.created.size() + " tracks created");
 				if(result.created.size() > 0){
 					Iterator<Track> iter = result.created.iterator();
 					while(iter.hasNext()){
 						Track newtrack = iter.next();
-						
+						if(newtrack.x < Integer.parseInt(ElProps.THE_PROPS.get("srcWidth").toString())/2){
+							Impulse impulse = new Impulse(main, 0, 300, true);		// left side
+							impulse.start();
+						} else {
+							Impulse impulse = new Impulse(main, 0, 300, false);	// right side
+							impulse.start();
+						}
 					}
 				}
 				//System.out.println(result.existing.size() + " tracks");
@@ -42,7 +49,6 @@ public class CarTracker extends Thread implements TrackListener{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			*/
 			try {
 				sleep(33);
 			} catch (InterruptedException e) {

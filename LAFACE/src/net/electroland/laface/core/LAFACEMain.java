@@ -106,8 +106,8 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){amr.getCurrentAnimation(dmr.getRecipient("face0")).cleanUp();}});
 		
 		// TODO start CarTracker here
-		carTracker = new CarTracker();
-		carTracker.addTrackListener((TrackListener) highlighter);
+		carTracker = new CarTracker(this);
+		carTracker.addTrackListener((TrackListener) highlighter);	// highlighter displays locations
 		carTracker.start();
 
 		setResizable(true);

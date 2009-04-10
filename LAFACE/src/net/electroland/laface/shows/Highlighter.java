@@ -16,7 +16,6 @@ public class Highlighter implements Animation, TrackListener {
 
 	private Raster r;
 	private Vector<Track> tracks;
-	private int camWidth = 240;
 	private PImage texture;
 	
 	public Highlighter(Raster r, PImage texture){
