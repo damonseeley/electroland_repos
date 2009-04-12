@@ -11,7 +11,7 @@ public class Wave extends Sprite {
 	static private final double PI = 3.14159265358979323846264338327950;
 	private double Y[][] = new double[GRIDLENGTH][3];  // numerical grid
 	private int prevT = 0, curT = 1, nextT = 2;
-	private double dt = .1, dx = .02, c = .08, damp = 0., fpu = 0.;
+	private double dt = .1, dx = .03, c = .06, damp = 0., fpu = 0.;
 	static private final int GRIDLENGTH = 64;	// TODO should be equivalent to light width + gaps
 	static private final double MAXDAMP = 1., MAXFPU = 1.;	// for use with sliders
 	private int WIDTH, HEIGHT, xoffs, yoffs;

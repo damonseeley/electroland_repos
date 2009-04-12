@@ -9,6 +9,8 @@ import net.electroland.blobDetection.match.TrackListener;
 import net.electroland.blobDetection.match.TrackResults;
 import net.electroland.blobTracker.core.BlobTrackerServer;
 import net.electroland.blobTracker.util.ElProps;
+import net.electroland.laface.shows.WaveShow;
+import net.electroland.laface.sprites.Wave;
 
 public class CarTracker extends Thread implements TrackListener{
 	LinkedBlockingQueue<TrackResults> resultsQueue;
@@ -43,6 +45,21 @@ public class CarTracker extends Thread implements TrackListener{
 							impulse.start();
 						}
 					}
+				}
+				
+				if(result.existing.size() > 0){
+					// set damping based on population size
+					Wave wave = ((WaveShow)(main.getCurrentAnimation())).getWaves().get(0);	// set specifically for single wave sprite instance
+					// TODO set a min/max damping value in properties based on population sizes
+					if(result.existing.size() < 9){
+						wave.setDamping(result.existing.size()/40);
+					} else {
+						wave.setDamping(0.2);	// max damping cap
+					}
+				} else {
+					// set damping to 0
+					Wave wave = ((WaveShow)(main.getCurrentAnimation())).getWaves().get(0);	// set specifically for single wave sprite instance
+					wave.setDamping(0);	// allows the existing wave action to continue infinitely if no new traffic comes
 				}
 				//System.out.println(result.existing.size() + " tracks");
 			} catch (InterruptedException e) {
