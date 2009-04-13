@@ -37,11 +37,12 @@ public class CarTracker extends Thread implements TrackListener{
 					Iterator<Track> iter = result.created.iterator();
 					while(iter.hasNext()){
 						Track newtrack = iter.next();
+						// REMEMBER: the camera is mirroring the display
 						if(newtrack.x < Integer.parseInt(ElProps.THE_PROPS.get("srcWidth").toString())/2){
-							Impulse impulse = new Impulse(main, 0, 300, true);		// left side
+							Impulse impulse = new Impulse(main, 0, 300, false);	// left side
 							impulse.start();
 						} else {
-							Impulse impulse = new Impulse(main, 0, 300, false);	// right side
+							Impulse impulse = new Impulse(main, 0, 300, true);		// right side
 							impulse.start();
 						}
 					}

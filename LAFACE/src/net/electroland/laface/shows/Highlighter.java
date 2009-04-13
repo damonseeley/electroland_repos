@@ -33,7 +33,7 @@ public class Highlighter implements Animation, TrackListener {
 		if(r.isProcessing()){
 			PGraphics c = (PGraphics)(r.getRaster());
 			c.beginDraw();
-			c.background(255);	// fully bright during the day
+			c.background(0);	// fully bright during the day
 			//System.out.println(tracks.size());
 			/*
 			// TODO only do this when it's dark enough to see (dusk till dawn)

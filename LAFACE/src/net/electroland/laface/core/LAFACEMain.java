@@ -49,7 +49,6 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 	private int guiWidth = 1056;	// TODO get from properties
 	private int guiHeight = 310;
 	public Raster firstRaster, secondRaster, thirdRaster;
-	private SensorThread sensorThread;
 	private CarTracker carTracker;
 	private PImage highlight;
 
@@ -88,7 +87,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		Animation a = new WaveShow(firstRaster);
 		Wave wave = new Wave(0, firstRaster, 0, 0);
 		((WaveShow)a).addWave(0, wave);
-		((WaveShow)a).setTint(250);
+		((WaveShow)a).setTint(255);
 		((WaveShow)a).mirror();
 		
 		//Animation a = new TraceTest(raster, 174, 7, 10);	// light grid width + gaps
