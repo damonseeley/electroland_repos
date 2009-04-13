@@ -48,7 +48,7 @@ public class BullsEye extends Sprite {
 					startTime[i] = System.currentTimeMillis();
 				}
 				brightness[i] = (int)(Math.sin(((System.currentTimeMillis() - startTime[i]) / (float)fadeSpeed)*Math.PI)*255);
-				System.out.println("bullseye ring"+i+" "+brightness[i]);
+				//System.out.println("bullseye ring"+i+" "+brightness[i]);
 				c.fill(brightness[i],0,0,alpha);
 				c.rect(x, y, ((ringCount-i)*(tileSize*2) - tileSize), ((ringCount-i)*(tileSize*2) - tileSize));
 			}

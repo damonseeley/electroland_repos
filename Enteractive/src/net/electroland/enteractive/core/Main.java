@@ -173,33 +173,6 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		    
 		
 		}
-		/*
-		String[] event = e.getActionCommand().split(":");
-		if(event[0].equals("3dmode")){
-			if(event[1].equals("0")){
-				lights3D.setVisible(false);
-			} else if(event[1].equals("1")){
-				lights3D.setVisible(true);
-				lights3D.setMode(1);
-			} else if(event[1].equals("2")){
-				lights3D.setVisible(true);
-				lights3D.setMode(2);
-			}
-		} else if(event[0].equals("raster")){
-			if(event[1].equals("0")){
-				gui.setVisible(true);
-				gui.setDetectorMode(0);
-			} else if(event[1].equals("1")){
-				gui.setVisible(true);
-				gui.setDetectorMode(1);
-			} else if(event[1].equals("2")){
-				gui.setVisible(true);
-				gui.setDetectorMode(2);
-			} else if(event[1].equals("-1")){
-				gui.setVisible(false);
-			}
-		}
-		*/
 		//Animation next = new AnotherAnimation(m, getRaster(), smr); 			// some fake animation
 		//amr.startAnimation(next, new FadeTransition(5), dmr.getFixtures()); 	// some fake transition with a 5 second fade
 	}
@@ -209,32 +182,12 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		setLayout(layout);
 		setBackground(Color.black);
 		setForeground(Color.white);
-		//JPanel lightspanel = new JPanel();
-		//lightspanel.setMinimumSize(new Dimension(600,600));
 		add(lights3D, "cell 0 0 1 3");
-		//lightspanel.add(lights3D, "insets 0 0 0 0");
-		//lightspanel.setBackground(new Color(0, 150, 200));
-		//add(lightspanel, "cell 0 0 1 3");
 		
 		JPanel controlPanel = new JPanel(new MigLayout());
 		controlPanel.setBackground(Color.black);
 		controlPanel.setForeground(Color.white);
 		controlPanel.add(new JLabel("Current Animation:"), "wrap");
-		/*
-		ButtonGroup animationRadioButtons = new ButtonGroup();
-		for(int i=0; i<animationList.length; i++){
-			JRadioButton radio = new JRadioButton(animationList[i]);
-			radio.setActionCommand("animation:"+i);
-			radio.setBackground(Color.black);
-			radio.setForeground(Color.white);
-			radio.addActionListener(this);
-			if(i == 0){
-				radio.setSelected(true);
-			}
-			animationRadioButtons.add(radio);
-			controlPanel.add(radio, "wrap");
-		}
-		*/
 		
 		// drop down list to select current animation
 		animationDropDown = new JComboBox(animationList);
@@ -244,27 +197,6 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		controlPanel.add(animationDropDown, "wrap");
 		
 		controlPanel.add(new JLabel("3D Mode:"), "wrap");
-		/*
-		ButtonGroup lights3dgroup = new ButtonGroup();
-		JRadioButton comparisonRadio = new JRadioButton("Comparison");
-		comparisonRadio.setActionCommand("3dmode:1");
-		comparisonRadio.addActionListener(this);
-		comparisonRadio.setSelected(true);
-		lights3dgroup.add(comparisonRadio);
-		controlPanel.add(comparisonRadio, "wrap");
-		JRadioButton realWorldRadio = new JRadioButton("Real World");
-		realWorldRadio.setActionCommand("3dmode:2");
-		realWorldRadio.addActionListener(this);
-		realWorldRadio.setSelected(true);
-		lights3dgroup.add(realWorldRadio);
-		controlPanel.add(realWorldRadio, "wrap");
-		JRadioButton disabledRadio = new JRadioButton("Disabled");
-		disabledRadio.setActionCommand("3dmode:0");
-		disabledRadio.addActionListener(this);
-		disabledRadio.setSelected(true);
-		lights3dgroup.add(disabledRadio);		
-		controlPanel.add(disabledRadio, "wrap");
-		*/
 		
 		// drop down list to select 3d mode
 		displayDropDown = new JComboBox(new String[] {"Comparison", "Real World", "Disabled"});
@@ -274,33 +206,6 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		controlPanel.add(displayDropDown, "wrap");
 		
 		controlPanel.add(new JLabel("Raster Mode:"), "wrap");
-		/*
-		ButtonGroup rastergroup = new ButtonGroup();
-		JRadioButton faceRadio = new JRadioButton("Face Detectors");
-		faceRadio.setActionCommand("raster:1");
-		faceRadio.addActionListener(this);
-		faceRadio.setSelected(true);
-		rastergroup.add(faceRadio);
-		controlPanel.add(faceRadio, "wrap");
-		JRadioButton floorRadio = new JRadioButton("Floor Detectors");
-		floorRadio.setActionCommand("raster:2");
-		floorRadio.addActionListener(this);
-		floorRadio.setSelected(true);
-		rastergroup.add(floorRadio);
-		controlPanel.add(floorRadio, "wrap");
-		JRadioButton clearRadio = new JRadioButton("No Detectors");
-		clearRadio.setActionCommand("raster:0");
-		clearRadio.addActionListener(this);
-		clearRadio.setSelected(true);
-		rastergroup.add(clearRadio);
-		controlPanel.add(clearRadio, "wrap");
-		JRadioButton norasterRadio = new JRadioButton("Disabled");
-		norasterRadio.setActionCommand("raster:-1");
-		norasterRadio.addActionListener(this);
-		norasterRadio.setSelected(true);
-		rastergroup.add(norasterRadio);
-		controlPanel.add(norasterRadio, "wrap");
-		*/
 		
 		// drop down list to select raster mode
 		rasterDropDown = new JComboBox(new String[] {"Face Detectors", "Floor Detectors", "No Detectors", "Disabled"});
@@ -357,7 +262,8 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 			System.out.println("Four Corners!");
 		} else if(e.getType() == Model.ModelConstants.OPPOSITE_CORNERS){
 			System.out.println("Corners 1 and 4!");
-			/*
+			
+			// TODO CRAZY STUFF HAPPENS HERE
 			Recipient floor = dmr.getRecipient("floor");
 			if(amr.getCurrentAnimation(floor) instanceof LilyPad){
 				Raster raster = getRaster();
@@ -366,11 +272,11 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 				Collection<Recipient> fixtures = dmr.getRecipients();
 				amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
 			}
-			*/
+			
 		} else if(e.getType() == Model.ModelConstants.OPPOSITE_CORNERS2){
 			System.out.println("Corners 2 and 3!");
-			/*
-			// TODO switch this to inverted spotlight mode
+			
+			// TODO CRAZY STUFF HAPPENS HERE
 			Recipient floor = dmr.getRecipient("floor");
 			if(amr.getCurrentAnimation(floor) instanceof LilyPad){
 				Raster raster = getRaster();
@@ -379,7 +285,7 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 				Collection<Recipient> fixtures = dmr.getRecipients();
 				amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
 			}
-			*/
+			
 		}
 	}
 	
