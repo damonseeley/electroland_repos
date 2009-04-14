@@ -33,6 +33,7 @@ import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.AnimationListener;
 import net.electroland.lighting.detector.animation.AnimationManager;
 import net.electroland.lighting.detector.animation.Raster;
+import net.electroland.lighting.detector.animation.transitions.LinearFade;
 import net.electroland.udpUtils.TCUtil;
 import net.electroland.udpUtils.UDPParser;
 import net.electroland.util.OptionException;
@@ -66,7 +67,7 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		
 		animationList = new String[2];
 		animationList[0] = "LilyPad";
-		animationList[1] = "ExampleAnimation";
+		animationList[1] = "Spotlight";
 		
 		dmr = new DetectorManager(lightProps); 				// requires loading properties
 		dmp = new DetectorManagerJPanel(dmr);				// panel that renders the filters
@@ -88,6 +89,7 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
+		Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){amr.getCurrentAnimation(dmr.getRecipient("floor")).cleanUp();}});
 		//Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){tcu.billyJeanMode();}});
 		
 		addWindowListener(new WindowAdapter() {
@@ -143,7 +145,7 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 			if((JComboBox)e.getSource() == animationDropDown){
 				if(animationDropDown.getSelectedItem() == "LilyPad"){
 				    
-			    } else if(animationDropDown.getSelectedItem() == "ExampleAnimation"){
+			    } else if(animationDropDown.getSelectedItem() == "Spotlight"){
 			    
 			    }
 			} else if((JComboBox)e.getSource() == displayDropDown){
@@ -270,7 +272,8 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 				((GUI)gui).setRaster(raster);
 				Animation a = new Spotlight(ptr.getModel(), raster, smr, sphereTexture);
 				Collection<Recipient> fixtures = dmr.getRecipients();
-				amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
+				Animation transition = new LinearFade(5, getRaster());
+				amr.startAnimation(a, transition, fixtures); 					// start a show now, on this list of fixtures.
 			}
 			
 		} else if(e.getType() == Model.ModelConstants.OPPOSITE_CORNERS2){
@@ -283,7 +286,8 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 				((GUI)gui).setRaster(raster);
 				Animation a = new Spotlight(ptr.getModel(), raster, smr, sphereTexture);
 				Collection<Recipient> fixtures = dmr.getRecipients();
-				amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
+				Animation transition = new LinearFade(5, getRaster());
+				amr.startAnimation(a, transition, fixtures); 					// start a show now, on this list of fixtures.
 			}
 			
 		}
