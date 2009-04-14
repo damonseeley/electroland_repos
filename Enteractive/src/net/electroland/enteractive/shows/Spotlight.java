@@ -30,7 +30,7 @@ public class Spotlight implements Animation, SpriteListener{
 	private int spriteIndex = 0;
 	private PImage sphereTexture;
 	private long startTime;
-	private int duration = 2000;	// milliseconds
+	private int duration = 30000;	// milliseconds
 	
 	public Spotlight(Model m, Raster r, SoundManager sm, PImage sphereTexture){
 		this.m = m;
@@ -45,6 +45,19 @@ public class Spotlight implements Animation, SpriteListener{
 		PGraphics raster = (PGraphics)(r.getRaster());
 		raster.colorMode(PConstants.RGB, 255, 255, 255, 255);
 		startTime = System.currentTimeMillis();
+		// must check for people already on tiles!
+		synchronized (m){
+			HashMap<Integer,Person> people = m.getPeople();
+			Iterator<Person> iter = people.values().iterator();
+			while(iter.hasNext()){
+				Person p = iter.next();
+				int[] loc = p.getLoc();
+				Sphere sphere = new Sphere(spriteIndex, r, loc[0]*tileSize, loc[1]*tileSize, sm, p, sphereTexture);
+				sphere.addListener(this);
+				sprites.put(spriteIndex, sphere);
+				spriteIndex++;
+			}
+		}
 	}
 
 	public Raster getFrame() {

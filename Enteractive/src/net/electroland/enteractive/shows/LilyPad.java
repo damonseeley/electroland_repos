@@ -21,7 +21,6 @@ import net.electroland.enteractive.sprites.Shooter;
 import net.electroland.enteractive.sprites.Single;
 import net.electroland.enteractive.sprites.Sparkler;
 import net.electroland.enteractive.sprites.Spiral;
-import net.electroland.enteractive.sprites.Sweep;
 import net.electroland.enteractive.sprites.TickerBox;
 import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.Raster;
@@ -69,6 +68,21 @@ public class LilyPad implements Animation, SpriteListener {
 	public void initialize() {
 		PGraphics raster = (PGraphics)(r.getRaster());
 		raster.colorMode(PConstants.RGB, 255, 255, 255, 255);
+		// must check for people already on tiles!
+		synchronized (m){
+			HashMap<Integer,Person> people = m.getPeople();
+			synchronized(people){
+				Iterator<Person> peopleiter = people.values().iterator();
+				while(peopleiter.hasNext()){										// for each person...
+					Person p = peopleiter.next();
+					int[] loc = p.getLoc();
+					Single single = new Single(spriteIndex, r, p, loc[0]*tileSize, loc[1]*tileSize, sm);	// single tile sprite (billie jean mode)
+					single.addListener(this);
+					billiejean.put(spriteIndex, single);
+					spriteIndex++;
+				}
+			}
+		}
 	}
 
 	public Raster getFrame() {
@@ -127,42 +141,6 @@ public class LilyPad implements Animation, SpriteListener {
 								//System.out.println(luckyNumber);
 								
 								Sprite sprite = null;
-								/*
-								// TODO this conditional needs to be removed
-								if(pad.getX() == 1){	// if near entrance
-									int luckyNumber = (int)(Math.random()*3 - 0.01);
-									if(luckyNumber < 0){
-										luckyNumber = 0;
-									}
-									switch(luckyNumber){
-										case 0:
-											sprite = new Ripple(spriteIndex, r, pad.getX(), pad.getY(), sm, rippleTexture);
-											break;
-										case 1:
-											sprite = new Sweep(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, sweepTexture, 1500, false);
-											break;
-										case 2:
-											sprite = new Shooter(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, sweepTexture, 1000, false);
-											break;
-									}
-								} else if(pad.getX() == 16){	// if near the sidewalk
-									int luckyNumber = (int)(Math.random()*3 - 0.01);
-									if(luckyNumber < 0){
-										luckyNumber = 0;
-									}
-									switch(luckyNumber){
-										case 0:
-											sprite = new Ripple(spriteIndex, r, pad.getX(), pad.getY(), sm, rippleTexture);
-											break;
-										case 1:
-											sprite = new Sweep(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, sweepTexture, 1500, true);
-											break;
-										case 2:
-											sprite = new Shooter(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, sweepTexture, 1000, true);
-											break;
-									}
-								} else {	// anywhere in the middle
-								*/
 									int luckyNumber = (int)(Math.random()*6 - 0.01); // temporarily omitting sparkler
 									if(luckyNumber < 0){
 										luckyNumber = 0;

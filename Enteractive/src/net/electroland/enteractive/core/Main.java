@@ -25,6 +25,7 @@ import net.electroland.enteractive.gui.Lights3D;
 import net.electroland.enteractive.scheduler.TimedEvent;
 import net.electroland.enteractive.scheduler.TimedEventListener;
 import net.electroland.enteractive.shows.LilyPad;
+import net.electroland.enteractive.shows.Pong;
 import net.electroland.enteractive.shows.Spotlight;
 import net.electroland.lighting.detector.DetectorManager;
 import net.electroland.lighting.detector.DetectorManagerJPanel;
@@ -59,6 +60,7 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 	private String[] animationList;
 	private JComboBox animationDropDown, displayDropDown, rasterDropDown;
 	PImage rippleTexture, sweepTexture, sphereTexture, propellerTexture, spiralTexture;
+	PImage ballTexture, pongTitle;	// pong textures
 	
 	public Main(String[] args) throws UnknownHostException, OptionException{
 		super("Enteractive Control Panel");
@@ -115,6 +117,8 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		sphereTexture = gui.loadImage("depends//images//sphere.png");
 		propellerTexture = gui.loadImage("depends//images//propeller.png");
 		spiralTexture = gui.loadImage("depends//images//spiral.png");
+		ballTexture = gui.loadImage("depends//images//ball.png");
+		pongTitle = gui.loadImage("depends//images//pongtitle.png");
 		
 		//currentAnimation = new ExampleAnimation(ptr.getModel(), raster, smr);
 		Animation a = new Spotlight(ptr.getModel(), raster, smr, sphereTexture);
@@ -144,9 +148,25 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 		if(e.getActionCommand().equals("comboBoxChanged")){
 			if((JComboBox)e.getSource() == animationDropDown){
 				if(animationDropDown.getSelectedItem() == "LilyPad"){
-				    
-			    } else if(animationDropDown.getSelectedItem() == "Spotlight"){
-			    
+					Recipient floor = dmr.getRecipient("floor");
+					if(!(amr.getCurrentAnimation(floor) instanceof LilyPad)){			// if not already lilypad
+						Raster raster = getRaster();
+						((GUI)gui).setRaster(raster);
+						Animation a = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture, sphereTexture);
+						Collection<Recipient> fixtures = dmr.getRecipients();
+						Animation transition = new LinearFade(2, getRaster());
+						amr.startAnimation(a, transition, fixtures); 					// START LILYPAD
+					}
+			    } else if(animationDropDown.getSelectedItem() == "Spotlight"){			// if not already spotlight
+			    	Recipient floor = dmr.getRecipient("floor");
+					if(!(amr.getCurrentAnimation(floor) instanceof Spotlight)){
+						Raster raster = getRaster();
+						((GUI)gui).setRaster(raster);
+						Animation a = new Spotlight(ptr.getModel(), raster, smr, sphereTexture);
+						Collection<Recipient> fixtures = dmr.getRecipients();
+						Animation transition = new LinearFade(2, getRaster());
+						amr.startAnimation(a, transition, fixtures); 					// START SPOTLIGHT (30 secs)
+					}
 			    }
 			} else if((JComboBox)e.getSource() == displayDropDown){
 				if(displayDropDown.getSelectedItem() == "Comparison"){
@@ -264,32 +284,31 @@ public class Main extends JFrame implements AnimationListener, ActionListener, T
 			System.out.println("Four Corners!");
 		} else if(e.getType() == Model.ModelConstants.OPPOSITE_CORNERS){
 			System.out.println("Corners 1 and 4!");
-			
-			// TODO CRAZY STUFF HAPPENS HERE
+			// switch to SPOTLIGHT show
 			Recipient floor = dmr.getRecipient("floor");
 			if(amr.getCurrentAnimation(floor) instanceof LilyPad){
 				Raster raster = getRaster();
 				((GUI)gui).setRaster(raster);
 				Animation a = new Spotlight(ptr.getModel(), raster, smr, sphereTexture);
 				Collection<Recipient> fixtures = dmr.getRecipients();
-				Animation transition = new LinearFade(5, getRaster());
-				amr.startAnimation(a, transition, fixtures); 					// start a show now, on this list of fixtures.
+				//Animation transition = new LinearFade(2, getRaster());
+				amr.startAnimation(a, fixtures); 					// START SPOTLIGHT (30 secs)
 			}
 			
 		} else if(e.getType() == Model.ModelConstants.OPPOSITE_CORNERS2){
 			System.out.println("Corners 2 and 3!");
-			
-			// TODO CRAZY STUFF HAPPENS HERE
+			// switch to PONG game
+			/*
 			Recipient floor = dmr.getRecipient("floor");
 			if(amr.getCurrentAnimation(floor) instanceof LilyPad){
 				Raster raster = getRaster();
 				((GUI)gui).setRaster(raster);
-				Animation a = new Spotlight(ptr.getModel(), raster, smr, sphereTexture);
+				Animation a = new Pong(ptr.getModel(), raster, smr, pongTitle, ballTexture);
 				Collection<Recipient> fixtures = dmr.getRecipients();
-				Animation transition = new LinearFade(5, getRaster());
-				amr.startAnimation(a, transition, fixtures); 					// start a show now, on this list of fixtures.
+				//Animation transition = new LinearFade(2, getRaster());
+				amr.startAnimation(a, fixtures); 					// START PONG (3 points)
 			}
-			
+			*/
 		}
 	}
 	
