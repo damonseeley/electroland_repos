@@ -2,9 +2,9 @@ package net.electroland.lighting.detector.animation;
 
 import java.io.PrintStream;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import net.electroland.lighting.detector.DetectorManagerJPanel;
@@ -14,8 +14,8 @@ public class AnimationManager implements Runnable {
 
 	private DetectorManagerJPanel dmp;
 	private Thread thread;
-	private HashMap<Animation, AnimationRecipients>animationRecipients;
-	private HashMap<Recipient, RecipientState>recipientStates;
+	private ConcurrentHashMap<Animation, AnimationRecipients>animationRecipients;
+	private ConcurrentHashMap<Recipient, RecipientState>recipientStates;
 	private CopyOnWriteArrayList<AnimationListener>listeners;	
 	private boolean isRunning = false;
 	private long delay;
@@ -35,8 +35,8 @@ public class AnimationManager implements Runnable {
 	public void init(int fps)
 	{
 		this.delay = (long)(1000 / (double)fps);
-		animationRecipients = new HashMap<Animation, AnimationRecipients>();
-		recipientStates = new HashMap<Recipient, RecipientState>();
+		animationRecipients = new ConcurrentHashMap<Animation, AnimationRecipients>();
+		recipientStates = new ConcurrentHashMap<Recipient, RecipientState>();
 		listeners = new CopyOnWriteArrayList<AnimationListener>();
 	}
 
