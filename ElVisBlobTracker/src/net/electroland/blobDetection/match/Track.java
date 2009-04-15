@@ -9,7 +9,7 @@ import net.electroland.blobDetection.Blob;
 public class Track {
 	public float x;
 	public float y;	
-	int id;
+	public int id;
 	String idStr = null;
 	public static int nextId = 0;
 
