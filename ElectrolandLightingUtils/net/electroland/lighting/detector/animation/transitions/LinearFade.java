@@ -4,11 +4,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
-import processing.core.PGraphics;
-import processing.core.PImage;
-
 import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.Raster;
+import processing.core.PGraphics;
 
 public class LinearFade implements Animation {
 
@@ -28,10 +26,11 @@ public class LinearFade implements Animation {
 
 	public Raster getFrame() {
 
-		// calculate color
+		// we've agreed on the convention that 0 = all first show, 255 = all second show.
 		double percentDone = (System.currentTimeMillis() - startTime) / 
-							(double)(finishTime - startTime);
-		int color = 255 - (int)(255 * percentDone);
+								(double)(finishTime - startTime);
+
+		int color = (int)(255 * (percentDone > 1.0 ? 1.0 : percentDone));
 
 		if (raster.isJava2d())
 		{
