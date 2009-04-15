@@ -74,12 +74,14 @@ public class CarTracker extends Thread implements TrackListener{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			/*
 			try {
 				sleep(33);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			*/
 		}
 	}
 	
