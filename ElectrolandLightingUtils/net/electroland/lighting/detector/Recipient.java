@@ -202,9 +202,9 @@ public abstract class Recipient
 			return current;
 		}else
 		{
-			int currentInt = (int)current;
-			double alphaPer = (255.0 / (int)alpha);
-			int targetInt = (int)target;
+			int currentInt = unsignedByteToInt(current);
+			double alphaPer = (255.0 / unsignedByteToInt(alpha));
+			int targetInt = unsignedByteToInt(target);
 
 			return	(byte)((((1.0 - alphaPer)*currentInt) +
 							((alphaPer*targetInt))) / 2.0);
@@ -271,6 +271,11 @@ public abstract class Recipient
 		sb.append(",patchgroup=").append(patchgroup);
 		sb.append(',').append(detectors).append(']');
 		return sb.toString();
+	}
+
+	public static int unsignedByteToInt(byte b) 
+	{
+		return (int) b & 0xFF;
 	}
 
 	public static String bytesToHex(byte b)
