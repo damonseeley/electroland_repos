@@ -11,7 +11,7 @@ public class Wave extends Sprite {
 	static private final double PI = 3.14159265358979323846264338327950;
 	private double Y[][] = new double[GRIDLENGTH][3];  // numerical grid
 	private int prevT = 0, curT = 1, nextT = 2;
-	private double dt = .1, dx = .03, c = .06, damp = 0., fpu = 0.;
+	private double dt = .1, dx = .03, c = .06, damp = 0.1, fpu = 0.;
 	static private final int GRIDLENGTH = 64;	// TODO should be equivalent to light width + gaps
 	static private final double MAXDAMP = 1., MAXFPU = 1.;	// for use with sliders
 	private int WIDTH, HEIGHT, xoffs, yoffs;
@@ -31,7 +31,7 @@ public class Wave extends Sprite {
 		yoffs = HEIGHT/2 + (HEIGHT/10);
 		brightness = 255;
 		alpha = 255;
-		initshape();	// starts the initial wave motion
+		//initshape();	// starts the initial wave motion
 	}
 
 	@Override
@@ -189,6 +189,13 @@ public class Wave extends Sprite {
 	
 
 	// THESE ARE ALL WAVE PHYSICS FUNCTIONS
+	
+	public void autoImpact(float x, float y){
+		int i = (int)((x - xoffs)/xscale);
+		double a = y/yscale;
+		if (0 < i && i < GRIDLENGTH-1)
+			Y[i][prevT] = Y[i][curT] = a;
+	}
 
 	public void createImpact(float x, float y){
 		// TODO this will be the function where a force is 

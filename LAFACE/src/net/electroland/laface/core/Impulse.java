@@ -7,7 +7,7 @@ import net.electroland.lighting.detector.animation.Animation;
 public class Impulse extends Thread{
 	
 	private long duration, startTime, dampDuration, dampStartTime;
-	private int startx, starty, targetx, targety;
+	private int x, starty, targety;
 	private double dampingTarget;
 	private boolean impulseMode = true;
 	private Wave wave;
@@ -18,18 +18,14 @@ public class Impulse extends Thread{
 		if(a instanceof WaveShow){
 			if(waveID >= 0){
 				wave = ((WaveShow)a).getWave(waveID);
-				wave.setDamping(0);
+				//wave.setDamping(0);
 				dampingTarget = 0.1;
-				if(leftSide){		// TODO this is totally kludge
-					startx = 0;
-					starty = 133;
-					targetx = 133;
-					targety = -100;	// amplitude based on speed
+				starty = 100;
+				targety = 0;	// amplitude based on speed
+				if(leftSide){
+					x = 20;
 				} else {
-					startx = 1048;
-					starty = 133;
-					targetx = 915;
-					targety = -100;	// amplitude based on speed
+					x = 1040;
 				}
 			}
 		}
@@ -39,22 +35,24 @@ public class Impulse extends Thread{
 	public void run(){
 		// this will loop continually while sending impact events to the wave
 		while(impulseMode){
-			int x = (int)(((System.currentTimeMillis() - startTime)/(float)duration) * (targetx-startx)) + startx;
 			int y = (int)(((System.currentTimeMillis() - startTime)/(float)duration) * (targety-starty)) + starty;
-			//System.out.println((System.currentTimeMillis() - startTime)/(float)duration);
-			wave.createImpact(x, y);
+			//wave.createImpact(x, y);
+			wave.autoImpact(x, 0-y);
 			if(System.currentTimeMillis() - startTime > duration){
 				impulseMode = false;
 				dampDuration = 3000;
 			}
+			
 			try {
-				sleep(33);
+				sleep(5);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
 		}
 		
+		/*
 		try {
 			sleep(dampDuration);
 			//dampStartTime = System.currentTimeMillis();
@@ -63,6 +61,7 @@ public class Impulse extends Thread{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		*/
 		
 		// after sending a bunch of impact events, it will gradually adjust the damping
 		//while(System.currentTimeMillis() - dampStartTime < dampDuration){

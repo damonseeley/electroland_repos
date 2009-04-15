@@ -24,6 +24,7 @@ import net.electroland.laface.gui.ControlPanel;
 import net.electroland.laface.gui.RasterPanel;
 import net.electroland.laface.shows.DrawTest;
 import net.electroland.laface.shows.Highlighter;
+import net.electroland.laface.shows.Reflection;
 import net.electroland.laface.shows.TraceTest;
 import net.electroland.laface.shows.WaveShow;
 import net.electroland.laface.sprites.Wave;
@@ -49,7 +50,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 	private int guiWidth = 1056;	// TODO get from properties
 	private int guiHeight = 310;
 	public Raster firstRaster, secondRaster, thirdRaster;
-	private CarTracker carTracker;
+	public CarTracker carTracker;
 	private PImage highlight;
 
 	public LAFACEMain() throws UnknownHostException, OptionException{
@@ -84,21 +85,22 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		controlPanel = new ControlPanel(this);
 		add(controlPanel, "wrap");
 		
-		Animation a = new WaveShow(firstRaster);
-		Wave wave = new Wave(0, firstRaster, 0, 0);
-		((WaveShow)a).addWave(0, wave);
-		((WaveShow)a).setTint(250);
-		((WaveShow)a).mirror();
+		//Animation a = new WaveShow(firstRaster);
+		//Wave wave = new Wave(0, firstRaster, 0, 0);
+		//((WaveShow)a).addWave(0, wave);
+		//((WaveShow)a).setTint(255);
+		//((WaveShow)a).mirror();
 		
 		//Animation a = new TraceTest(raster, 174, 7, 10);	// light grid width + gaps
 		//Animation a = new DrawTest(raster, 174, 7);			// light grid width + gaps
 		
+		Animation a = new Reflection(firstRaster);
 		Collection<Recipient> fixtures = dmr.getRecipients();
 		amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
-		Animation newa = new WaveShow(secondRaster);
-		((WaveShow)newa).addWave(0, wave);
-		Animation highlighter = new Highlighter(thirdRaster, highlight);
-		amr.startAnimation(newa, highlighter, fixtures);
+		//Animation newa = new WaveShow(secondRaster);
+		//((WaveShow)newa).addWave(0, wave);
+		//Animation highlighter = new Highlighter(thirdRaster, highlight);
+		//amr.startAnimation(newa, highlighter, fixtures);
 		amr.goLive(); 
 		controlPanel.refreshWaveList();
 		
@@ -106,7 +108,8 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		
 		// TODO start CarTracker here
 		carTracker = new CarTracker(this);
-		carTracker.addTrackListener((TrackListener) highlighter);	// highlighter displays locations
+		//carTracker.addTrackListener((TrackListener) highlighter);	// highlighter displays locations
+		carTracker.addTrackListener((TrackListener) a);
 		carTracker.start();
 
 		setResizable(true);

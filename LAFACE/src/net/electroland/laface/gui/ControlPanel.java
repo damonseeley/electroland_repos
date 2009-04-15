@@ -28,9 +28,11 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import net.electroland.blobDetection.match.TrackListener;
 import net.electroland.laface.core.Impulse;
 import net.electroland.laface.core.LAFACEMain;
 import net.electroland.laface.shows.DrawTest;
+import net.electroland.laface.shows.Reflection;
 import net.electroland.laface.shows.TraceTest;
 import net.electroland.laface.shows.WaveShow;
 import net.electroland.laface.sprites.Wave;
@@ -73,9 +75,10 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		tabbedPane.addTab("Draw Test", makeDrawTestPanel());
 		tabbedPane.addTab("Trace Test", makeTraceTestPanel());
 		tabbedPane.addTab("Wave Show", makeWaveShowPanel());
+		tabbedPane.addTab("Reflection Show", makeReflectionPanel());
 		
 		tabbedPane.setMinimumSize(new Dimension((width/4)*3,height));
-		tabbedPane.setSelectedIndex(2);
+		tabbedPane.setSelectedIndex(3);
 		tabbedPane.addChangeListener(this);
 		add(tabbedPane, "west");
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -207,6 +210,13 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		
 		panel.add(buttonPanel, "west");
 		
+		return panel;
+	}
+	
+	public JComponent makeReflectionPanel(){
+		JPanel panel = new JPanel(false);
+        panel.setLayout(new MigLayout(""));
+		panel.setMinimumSize(new Dimension((width/4)*3,height));
 		return panel;
 	}
 	
@@ -417,6 +427,14 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 				}
 				waveList.setSelectedIndex(0);
 			}
+		} else if(((JTabbedPane)e.getSource()).getSelectedIndex() == 3){
+			// switch to Reflection Show
+			Raster raster = main.getRaster();
+			main.rasterPanel.setRaster(raster);
+			Animation a = new Reflection(raster);
+			main.carTracker.addTrackListener((TrackListener) a);
+			Collection<Recipient> fixtures = main.dmr.getRecipients();
+			main.amr.startAnimation(a, fixtures); 
 		}
 	}
 

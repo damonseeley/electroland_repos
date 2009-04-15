@@ -9,6 +9,7 @@ import net.electroland.blobDetection.match.TrackListener;
 import net.electroland.blobDetection.match.TrackResults;
 import net.electroland.blobTracker.core.BlobTrackerServer;
 import net.electroland.blobTracker.util.ElProps;
+import net.electroland.laface.shows.Reflection;
 import net.electroland.laface.shows.WaveShow;
 import net.electroland.laface.sprites.Wave;
 
@@ -40,10 +41,10 @@ public class CarTracker extends Thread implements TrackListener{
 							Track newtrack = iter.next();
 							// REMEMBER: the camera is mirroring the display
 							if(newtrack.x < Integer.parseInt(ElProps.THE_PROPS.get("srcWidth").toString())/2){
-								Impulse impulse = new Impulse(main, 0, 300, false);	// left side
+								Impulse impulse = new Impulse(main, 0, 2000, false);	// left side
 								impulse.start();
 							} else {
-								Impulse impulse = new Impulse(main, 0, 300, true);		// right side
+								Impulse impulse = new Impulse(main, 0, 2000, true);	// right side
 								impulse.start();
 							}
 						}
@@ -64,6 +65,9 @@ public class CarTracker extends Thread implements TrackListener{
 						Wave wave = ((WaveShow)(main.getCurrentAnimation())).getWaves().get(0);	// set specifically for single wave sprite instance
 						wave.setDamping(0);	// allows the existing wave action to continue infinitely if no new traffic comes
 					}
+				} else if(main.getCurrentAnimation() instanceof Reflection){
+					// TODO do anything in here?
+					
 				}
 				//System.out.println(result.existing.size() + " tracks");
 			} catch (InterruptedException e) {
