@@ -12,6 +12,9 @@ import net.electroland.lighting.detector.Recipient;
 
 public class AnimationManager implements Runnable {
 
+	public static final int ALL_START_ANIMATION = 0;
+	public static final int ALL_TARGET_ANIMATION = 255;
+
 	private DetectorManagerJPanel dmp;
 	private Thread thread;
 	private ConcurrentHashMap<Animation, AnimationRecipients>animationRecipients;
