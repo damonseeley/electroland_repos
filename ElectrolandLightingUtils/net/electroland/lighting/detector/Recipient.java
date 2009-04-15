@@ -132,9 +132,9 @@ public abstract class Recipient
 							data[i]  = detect(currentRaster, detector);
 						}else
 						{
-							data[i] = alphaMerge(detect(currentRaster, detector),
-									detect(transitionRaster, detector),
-									detect(targetRaster, detector));
+							data[i] = transition(detect(currentRaster, detector),
+													detect(transitionRaster, detector),
+													detect(targetRaster, detector));
 						}
 						lastEvals.put(detector, new Byte(data[i]));
 					}
@@ -191,25 +191,29 @@ public abstract class Recipient
 	 * image shows.  anything else is a gradient in between.
 	 * 
 	 * @param current
-	 * @param alpha
+	 * @param targetAmount
 	 * @param target
 	 * @return
 	 */
-	final private static byte alphaMerge(byte current, byte alpha, byte target)
+	final private static byte transition(byte current, byte targetAmount, byte target)
 	{
-		if (((int)alpha) == 0)
+		if (((int)targetAmount) == 0)
 		{
 			return current;
 		}else
 		{
 			int currentInt = unsignedByteToInt(current);
-			double alphaPer = (255.0 / unsignedByteToInt(alpha));
+			double percentOfTargetShown = (unsignedByteToInt(targetAmount) / 255.0);
 			int targetInt = unsignedByteToInt(target);
 
-			return	(byte)((((1.0 - alphaPer)*currentInt) +
-							((alphaPer*targetInt))) / 2.0);
+			int composite = (int)(((1.0 - percentOfTargetShown)*currentInt) 
+										+ (percentOfTargetShown * targetInt));
+
+			return composite > 255 ? (byte)255 : (byte)composite;
 		}
 	}
+
+
 
 	final public Byte getLastEvaluatedValue(Detector detector)
 	{
