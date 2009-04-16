@@ -35,6 +35,15 @@ public class Candidate {
 		times.add(System.currentTimeMillis());
 	}
 	
+	public boolean isStatic(){
+		float xdiff = locations.get(locations.size()-1).get(0) - locations.get(0).get(0);	// distance between first and last sample.
+		float ydiff = locations.get(locations.size()-1).get(1) - locations.get(0).get(1);
+		if(xdiff == 0 && ydiff == 0){
+			return true;
+		}
+		return false;
+	}
+	
 	// this function returns [0] X unit vector, [1] Y unit vector, [2] X duration to edge, [3] Y duration to edge
 	public Vector<Float> getSpeed(){
 		// TODO evaluate all sample points for acceleration/deceleration trend and rate

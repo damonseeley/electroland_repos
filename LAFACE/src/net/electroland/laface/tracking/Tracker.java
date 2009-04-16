@@ -56,11 +56,13 @@ public class Tracker extends Thread implements TrackListener, MoverListener {
 							Candidate candidate = candidates.get(track.id);		// get the candidate that matches this track
 							candidate.addLocation(track.x, track.y);			// add the new location to history...
 							if(candidate.getLocations().size() >= sampleSize){	// if it meets the sample size...
-								Mover m = new Mover(candidate);
-								m.addListener(this);							// needed to remove from CHM
-								movers.put(track.id, m);						// make a mover from this candidate
-								candidates.remove(track.id);					// remove candidate
-								//System.out.println("new MOVER! "+track.id);
+								if(!candidate.isStatic()){
+									Mover m = new Mover(candidate);
+									m.addListener(this);							// needed to remove from CHM
+									movers.put(track.id, m);						// make a mover from this candidate
+									candidates.remove(track.id);					// remove candidate
+									//System.out.println("new MOVER! "+track.id);
+								}
 							}
 						}
 					}
