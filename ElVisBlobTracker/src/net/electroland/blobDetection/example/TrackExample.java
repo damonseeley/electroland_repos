@@ -26,7 +26,7 @@ public class TrackExample extends Thread implements TrackListener {
 				ElProps.THE_PROPS
 		);
 		TrackExample example = new TrackExample();
-		bts.addTrackListener(0, example);
+		bts.addTrackListener(1, example);
 		example.start();
 	}
 	
@@ -35,7 +35,9 @@ public class TrackExample extends Thread implements TrackListener {
 			try {
 				TrackResults result = resultsQueue.take(); // will block until someting is on the que
 				//System.out.println(result.created.size() + " tracks created");
-				System.out.println(result.existing.size() + " tracks");
+				if (result.created.size() > 0 || result.deleted.size() > 0) {
+					System.out.println(result.existing.size() + " tracks");
+				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
