@@ -18,7 +18,7 @@ import net.electroland.blobTracker.util.ElProps;
  * @author Aaron Siegel
  */
 
-public class Tracker extends Thread implements TrackListener {
+public class Tracker extends Thread implements TrackListener, MoverListener {
 	
 	private int sampleSize;
 	private ConcurrentHashMap<Integer,Mover> movers;
@@ -45,29 +45,26 @@ public class Tracker extends Thread implements TrackListener {
 					Iterator<Track> iter = result.created.iterator();
 					while(iter.hasNext()){
 						Track newtrack = iter.next();
-						candidates.put(newtrack.id, new Candidate());
+						candidates.put(newtrack.id, new Candidate(newtrack.id));
+						//System.out.println("new candidate! "+newtrack.id);
 					}
 				} else if(result.existing.size() > 0){				// EXISTING
 					Iterator<Track> iter = result.existing.iterator();
 					while(iter.hasNext()){
 						Track track = iter.next();
-						Candidate candidate = candidates.get(track.id);		// get the candidate that matches this track
-						candidate.addLocation(track.x, track.y);			// add the new location to history...
-						if(candidate.getLocations().size() == sampleSize){	// if it meets the sample size...
-							movers.put(track.id, new Mover(candidate));		// make a mover from this candidate
-							candidates.remove(track.id);					// remove candidate
+						if(candidates.containsKey(track.id)){
+							Candidate candidate = candidates.get(track.id);		// get the candidate that matches this track
+							candidate.addLocation(track.x, track.y);			// add the new location to history...
+							if(candidate.getLocations().size() >= sampleSize){	// if it meets the sample size...
+								Mover m = new Mover(candidate);
+								m.addListener(this);							// needed to remove from CHM
+								movers.put(track.id, m);						// make a mover from this candidate
+								candidates.remove(track.id);					// remove candidate
+								//System.out.println("new MOVER! "+track.id);
+							}
 						}
 					}
 				}
-//				} else if(result.deleted.size() > 0){				// DELETED
-//					Iterator<Track> iter = result.deleted.iterator();
-//					while(iter.hasNext()){
-//						Track deadtrack = iter.next();
-//						if(movers.containsKey(deadtrack.id)){
-//							movers.remove(deadtrack.id);
-//						}
-//					}
-//				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} 
@@ -76,6 +73,16 @@ public class Tracker extends Thread implements TrackListener {
 	
 	public void updateTracks(TrackResults results) {
 		resultsQueue.offer(results);
+	}
+
+	public void moverEvent(Mover mover) {
+		if(mover.isDead()){
+			movers.remove(mover.getID());
+		}
+	}
+	
+	public ConcurrentHashMap<Integer,Mover> getMovers(){
+		return movers;
 	}
 
 }

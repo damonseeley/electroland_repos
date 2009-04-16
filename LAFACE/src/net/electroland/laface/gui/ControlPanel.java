@@ -151,7 +151,7 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		
 		// slider for adjusting y offset of wave surface
 		sliderpanel.add(new Label("Y-Offset", Label.RIGHT));
-		yoffsetSlider = new Scrollbar(Scrollbar.HORIZONTAL, 60, 1, 0, 100);
+		yoffsetSlider = new Scrollbar(Scrollbar.HORIZONTAL, 60, 1, 0, 120);
 		yoffsetSlider.setForeground(Color.black);
 		yoffsetSlider.setBackground(Color.white);
 		yoffsetSlider.setMinimumSize(new Dimension(200, 16));

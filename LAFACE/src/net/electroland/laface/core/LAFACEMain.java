@@ -25,9 +25,11 @@ import net.electroland.laface.gui.RasterPanel;
 import net.electroland.laface.shows.DrawTest;
 import net.electroland.laface.shows.Highlighter;
 import net.electroland.laface.shows.Reflection;
+import net.electroland.laface.shows.Reflection2;
 import net.electroland.laface.shows.TraceTest;
 import net.electroland.laface.shows.WaveShow;
 import net.electroland.laface.sprites.Wave;
+import net.electroland.laface.tracking.Tracker;
 import net.electroland.lighting.detector.DetectorManager;
 import net.electroland.lighting.detector.DetectorManagerJPanel;
 import net.electroland.lighting.detector.Recipient;
@@ -52,6 +54,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 	public Raster firstRaster, secondRaster, thirdRaster;
 	public CarTracker carTracker;
 	private PImage highlight;
+	public Tracker tracker;
 
 	public LAFACEMain() throws UnknownHostException, OptionException{
 		super("LAFACE Control Panel");
@@ -84,6 +87,9 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		add(rasterPanel, "wrap");
 		controlPanel = new ControlPanel(this);
 		add(controlPanel, "wrap");
+
+		tracker = new Tracker(3);
+		tracker.start();
 		
 		//Animation a = new WaveShow(firstRaster);
 		//Wave wave = new Wave(0, firstRaster, 0, 0);
@@ -94,7 +100,8 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		//Animation a = new TraceTest(raster, 174, 7, 10);	// light grid width + gaps
 		//Animation a = new DrawTest(raster, 174, 7);			// light grid width + gaps
 		
-		Animation a = new Reflection(firstRaster);
+		//Animation a = new Reflection(firstRaster);
+		Animation a = new Reflection2(this, firstRaster);
 		Collection<Recipient> fixtures = dmr.getRecipients();
 		amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
 		//Animation newa = new WaveShow(secondRaster);
@@ -107,10 +114,10 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){amr.getCurrentAnimation(dmr.getRecipient("face0")).cleanUp();}});
 		
 		// TODO start CarTracker here
-		carTracker = new CarTracker(this);
+		//carTracker = new CarTracker(this);
 		//carTracker.addTrackListener((TrackListener) highlighter);	// highlighter displays locations
-		carTracker.addTrackListener((TrackListener) a);
-		carTracker.start();
+		//carTracker.addTrackListener((TrackListener) a);
+		//carTracker.start();
 
 		setResizable(true);
 		setVisible(true);
