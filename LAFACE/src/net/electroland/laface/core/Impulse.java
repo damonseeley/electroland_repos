@@ -21,11 +21,11 @@ public class Impulse extends Thread{
 				//wave.setDamping(0);
 				dampingTarget = 0.1;
 				starty = 100;
-				targety = 0;	// amplitude based on speed
+				targety = -80;	// amplitude based on speed
 				if(leftSide){
-					x = 20;
+					x = 0;
 				} else {
-					x = 1040;
+					x = 1048;
 				}
 			}
 		}

@@ -17,18 +17,19 @@ public class Wave extends Sprite {
 	private int WIDTH, HEIGHT, xoffs, yoffs;
 	static private double xscale, yscale;
 	private int brightness, alpha;
+	private int margin = 50;	// pixels on each side
 
 	public Wave(int id, Raster raster, float x, float y) {
 		super(id, raster, x, y);
 		if(raster.isProcessing()){
 			PGraphics c = (PGraphics)(raster.getRaster());
-			WIDTH = c.width;
+			WIDTH = c.width + (margin*2);
 			HEIGHT = c.height;
-			xscale = c.width/(float)(GRIDLENGTH-1);
+			xscale = WIDTH/(float)(GRIDLENGTH-1);
 		}
 		yscale = HEIGHT/3;
-		xoffs = 0;
-		yoffs = HEIGHT/2 + (HEIGHT/10);
+		xoffs = 0-margin;
+		yoffs = HEIGHT - 10;
 		brightness = 255;
 		alpha = 255;
 		//initshape();	// starts the initial wave motion
@@ -58,8 +59,8 @@ public class Wave extends Sprite {
 				px = x;
 				py = y;
 			}
-			c.vertex(c.width,lowest);
-			c.vertex(0,lowest);
+			c.vertex(WIDTH-margin,lowest);
+			c.vertex(0-margin,lowest);
 			c.endShape(PConstants.CLOSE);
 		}
 	}
