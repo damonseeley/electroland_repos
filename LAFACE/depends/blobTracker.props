@@ -1,14 +1,14 @@
 #
-#Sat Mar 21 01:15:32 PDT 2009
+#Wed Apr 15 18:09:55 PDT 2009
 maxTrackMove0=25
 minBlobSize0=200
 nonMatchPenalty0=50.0
-threshold=3000
-axisIP=targetrock.dyndns.org
-adaptation=0.021799999999999924
+threshold=8600.0
+axisIP=192.168.2.70
+adaptation=0.0010
 framesUntilDeleteTrack0=10
 axisPassword=r
-regionMap=regionMap.png
+regionMap=regionMap_240x180.png
 srcWidth=240
 axisUsername=r
 framesUntilCertainTrack0=20
