@@ -158,7 +158,8 @@ public class CSP {
 				score += blob.dist(track.x, track.y);
 
 				if(track.isProvisional) {
-					score += region.provisionalPentaly;
+					//score += region.provisionalPentaly;
+					score += region.provisionalPenalty;
 				}
 			}
 		}

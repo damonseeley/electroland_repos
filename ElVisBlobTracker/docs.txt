@@ -87,7 +87,7 @@ This may not result in an optimal match so the tracker continues to try to optim
 Optimality is defined by the sum of the distances between each track and blob.
 Blobs matched to provisional tracks have an added penalty in order to bias the matching towards non-provisional tracks.
 The provisional penalty is defined with the property
-	nonMatchPenalty0=25.0
+	provisionalPentaly0=25.0
 New tracks are created for all unmatched blobs.  A non match penalty is added for each unmatched blob and track (Again to bias the match to make as many matches as possible).  It is defined as
 	nonMatchPenalty0=50.0
 

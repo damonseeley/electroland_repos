@@ -1,18 +1,18 @@
 #
-#Sat Mar 21 01:15:32 PDT 2009
+#Thu Apr 09 16:40:36 PDT 2009
 maxTrackMove0=25
 minBlobSize0=200
 nonMatchPenalty0=50.0
-threshold=3000
+threshold=13400.0
 axisIP=192.168.2.70
-adaptation=0.021799999999999924
+adaptation=0.05250000000000048
 framesUntilDeleteTrack0=150
-axisPassword=e
-regionMap=regionMap.png
+axisPassword=r
+regionMap=regionMap_240x180.png
 srcWidth=240
-axisUsername=e
+axisUsername=r
 framesUntilCertainTrack0=20
-provisionalPentaly0=25.0
+provisionalPenalty0=25.0
 showConsole=true
 maxBlobSize0=1200
 showGraphics=true
