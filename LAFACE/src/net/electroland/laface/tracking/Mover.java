@@ -37,7 +37,7 @@ public class Mover {
 			yvec = movement.get(1);
 			xduration = (long)movement.get(2).longValue();
 			yduration = (long)movement.get(3).longValue();
-			//System.out.println(xduration +" "+ movement.get(2));
+			//System.out.println("xduration: "+xduration);
 			if(xduration < yduration){
 				minduration = xduration;
 				maxduration = yduration;
@@ -53,19 +53,20 @@ public class Mover {
 	
 	public float getX(){
 		checkIfDead();
+		//System.out.println((System.currentTimeMillis() - startTime)+" "+xduration+" "+(float)(System.currentTimeMillis() - startTime)/xduration);
 		if(xvec >= 0){
-			return ((System.currentTimeMillis() - startTime)/xduration) * (1-startx);			// return normalized X position
+			return ((float)(System.currentTimeMillis() - startTime)/xduration) * (1-startx);			// return normalized X position
 		} else {
-			return startx - (((System.currentTimeMillis() - startTime)/xduration) * startx);	// return normalized X position
+			return startx - (((float)(System.currentTimeMillis() - startTime)/xduration) * startx);	// return normalized X position
 		}
 	}
 	
 	public float getY(){
 		checkIfDead();
 		if(yvec >= 0){
-			return ((System.currentTimeMillis() - startTime)/yduration) * (1-starty);			// return normalized X position
+			return ((float)(System.currentTimeMillis() - startTime)/yduration) * (1-starty);			// return normalized X position
 		} else {
-			return startx - (((System.currentTimeMillis() - startTime)/yduration) * starty);	// return normalized X position
+			return startx - (((float)(System.currentTimeMillis() - startTime)/yduration) * starty);	// return normalized X position
 		}
 	}
 	

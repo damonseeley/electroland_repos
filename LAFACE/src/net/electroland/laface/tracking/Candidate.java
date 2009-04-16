@@ -28,9 +28,11 @@ public class Candidate {
 	}
 	
 	public void addLocation(float x, float y){
+		this.x = x;
+		this.y = y;
 		Vector<Float> loc = new Vector<Float>();
-		loc.add(x);
-		loc.add(y);
+		loc.add(this.x);
+		loc.add(this.y);
 		locations.add(loc);
 		times.add(System.currentTimeMillis());
 	}
@@ -50,7 +52,7 @@ public class Candidate {
 		long samplediff = System.currentTimeMillis() - times.get(0);						// time in between first and last sample.
 		float xdiff = locations.get(locations.size()-1).get(0) - locations.get(0).get(0);	// distance between first and last sample.
 		float ydiff = locations.get(locations.size()-1).get(1) - locations.get(0).get(1);
-		System.out.println(xdiff);
+		//System.out.println(xdiff);
 		if(xdiff == 0){
 			return null;
 		}
@@ -61,13 +63,14 @@ public class Candidate {
 		if(xdiff >= 0){
 			xscale = (1-Math.abs(locations.get(locations.size()-1).get(0)))/xdiff;		// multiple of how much longer it will take to 
 		} else {																		// complete the remaining distance at this speed.
-			xscale = Math.abs(locations.get(locations.size()-1).get(0))/xdiff;
+			xscale = Math.abs(locations.get(locations.size()-1).get(0)/xdiff);
+			//System.out.println("xduration: "+ (samplediff * xscale) +" "+xscale);
 			//System.out.println(Math.abs(locations.get(locations.size()-1).get(0)) +" "+ xdiff);
 		}
 		if(ydiff >= 0){
 			yscale = (1-Math.abs(locations.get(locations.size()-1).get(1)))/ydiff;		
 		} else {
-			yscale = Math.abs(locations.get(locations.size()-1).get(1))/ydiff;
+			yscale = Math.abs(locations.get(locations.size()-1).get(1)/ydiff);
 		}
 		
 		Vector<Float> moverVec = new Vector<Float>();

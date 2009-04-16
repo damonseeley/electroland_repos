@@ -47,8 +47,8 @@ public class Reflection2 implements Animation {
 				while(iter.hasNext()){
 					Mover m = iter.next();
 					// TODO width based on blob size
+					//System.out.println(m.getX()*c.width);
 					c.rect(m.getX()*c.width, 0, 50, c.height);
-					//System.out.println(m.getID() +" "+ m.getX());
 				}
 			}
 			

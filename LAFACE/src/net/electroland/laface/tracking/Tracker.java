@@ -54,7 +54,9 @@ public class Tracker extends Thread implements TrackListener, MoverListener {
 						Track track = iter.next();
 						if(candidates.containsKey(track.id)){
 							Candidate candidate = candidates.get(track.id);		// get the candidate that matches this track
-							candidate.addLocation(track.x, track.y);			// add the new location to history...
+							int srcWidth = Integer.parseInt(ElProps.THE_PROPS.get("srcWidth").toString());
+							int srcHeight = Integer.parseInt(ElProps.THE_PROPS.get("srcHeight").toString());
+							candidate.addLocation(track.x/srcWidth, track.y/srcHeight);			// add the new location to history...
 							if(candidate.getLocations().size() >= sampleSize){	// if it meets the sample size...
 								if(!candidate.isStatic()){
 									Mover m = new Mover(candidate);
