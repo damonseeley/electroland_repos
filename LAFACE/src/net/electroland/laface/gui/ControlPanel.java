@@ -347,10 +347,10 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		    	main.rasterPanel.setRaster(main.thirdRaster);
 		    }
 		} else if(e.getActionCommand().equals("Left Impulse")){
-			Impulse impulse = new Impulse(main, currentWaveID, 300, true);
+			Impulse impulse = new Impulse(main, currentWaveID, 2000, true);
 			impulse.start();
 		} else if(e.getActionCommand().equals("Right Impulse")){
-			Impulse impulse = new Impulse(main, currentWaveID, 300, false);
+			Impulse impulse = new Impulse(main, currentWaveID, 2000, false);
 			impulse.start();
 		}
 	}

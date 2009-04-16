@@ -88,7 +88,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		controlPanel = new ControlPanel(this);
 		add(controlPanel, "wrap");
 
-		tracker = new Tracker(3);
+		tracker = new Tracker(this, 3);
 		tracker.start();
 		
 		//Animation a = new WaveShow(firstRaster);
@@ -101,7 +101,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		//Animation a = new DrawTest(raster, 174, 7);			// light grid width + gaps
 		
 		//Animation a = new Reflection(firstRaster);
-		Animation a = new Reflection2(this, firstRaster);
+		Animation a = new Reflection2(this, firstRaster, highlight);
 		Collection<Recipient> fixtures = dmr.getRecipients();
 		amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
 		//Animation newa = new WaveShow(secondRaster);

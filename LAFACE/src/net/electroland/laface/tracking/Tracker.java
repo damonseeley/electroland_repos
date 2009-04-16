@@ -9,6 +9,9 @@ import net.electroland.blobDetection.match.TrackListener;
 import net.electroland.blobDetection.match.TrackResults;
 import net.electroland.blobTracker.core.BlobTrackerServer;
 import net.electroland.blobTracker.util.ElProps;
+import net.electroland.laface.core.Impulse;
+import net.electroland.laface.core.LAFACEMain;
+import net.electroland.laface.shows.WaveShow;
 
 /**
  * Measures track locations and creates a Mover object with location, velocity,
@@ -20,6 +23,7 @@ import net.electroland.blobTracker.util.ElProps;
 
 public class Tracker extends Thread implements TrackListener, MoverListener {
 	
+	private LAFACEMain main;
 	private int sampleSize;
 	private ConcurrentHashMap<Integer,Mover> movers;
 	private ConcurrentHashMap<Integer,Candidate> candidates;
@@ -27,7 +31,8 @@ public class Tracker extends Thread implements TrackListener, MoverListener {
 	private BlobTrackerServer bts;
 	private boolean running = true;
 	
-	public Tracker(int sampleSize){
+	public Tracker(LAFACEMain main, int sampleSize){
+		this.main = main;
 		this.sampleSize = sampleSize;								// minimum number of location/time samples to create a mover
 		movers = new ConcurrentHashMap<Integer,Mover>();
 		candidates = new ConcurrentHashMap<Integer,Candidate>();
@@ -63,6 +68,15 @@ public class Tracker extends Thread implements TrackListener, MoverListener {
 									m.addListener(this);							// needed to remove from CHM
 									movers.put(track.id, m);						// make a mover from this candidate
 									candidates.remove(track.id);					// remove candidate
+									if(main.getCurrentAnimation() instanceof WaveShow){
+										Impulse impulse;
+										if(track.x < Integer.parseInt(ElProps.THE_PROPS.get("srcWidth").toString())/2){
+											impulse = new Impulse(main, 0, 2000, false);
+										} else {
+											impulse = new Impulse(main, 0, 2000, true);
+										}
+										impulse.start();
+									}
 									//System.out.println("new MOVER! "+track.id);
 								}
 							}

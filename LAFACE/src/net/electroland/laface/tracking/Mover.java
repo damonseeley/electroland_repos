@@ -75,7 +75,7 @@ public class Mover {
 	}
 	
 	private void checkIfDead(){
-		if(System.currentTimeMillis() - startTime >= maxduration){								// if outside X and Y constraints...
+		if(System.currentTimeMillis() - startTime >= xduration){								// if outside X constraints...
 			dead = true;
 			Iterator<MoverListener> iter = listeners.iterator();
 			while(iter.hasNext()){

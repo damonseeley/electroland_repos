@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import processing.core.PConstants;
 import processing.core.PGraphics;
+import processing.core.PImage;
 
 import net.electroland.laface.core.LAFACEMain;
 //import net.electroland.laface.core.Sprite;
@@ -20,10 +21,12 @@ public class Reflection2 implements Animation {
 	//private int spriteIndex = 0;
 	//private Bars bars;
 	private LAFACEMain main;
+	private PImage texture;
 	
-	public Reflection2(LAFACEMain main, Raster r){
+	public Reflection2(LAFACEMain main, Raster r, PImage texture){
 		this.main = main;
 		this.r = r;
+		this.texture = texture;
 		//sprites = new ConcurrentHashMap<Integer,Sprite>();
 		//bars = new Bars(spriteIndex, r, 0, 0);
 		//sprites.put(spriteIndex, bars);
@@ -48,7 +51,8 @@ public class Reflection2 implements Animation {
 					Mover m = iter.next();
 					// TODO width based on blob size
 					//System.out.println(m.getX()*c.width);
-					c.rect(m.getX()*c.width, 0, 50, c.height);
+					//c.rect(m.getX()*c.width, 0, 50, c.height);
+					c.image(texture, (m.getX()*c.width) - 25, 0, 50, c.height);
 				}
 			}
 			
