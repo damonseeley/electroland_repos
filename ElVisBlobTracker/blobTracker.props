@@ -27,11 +27,3 @@ maxBlobSize1=1200
 maxTrackMove1=25
 minBlobSize1=200
 nonMatchPenalty1=50.0
-#
-framesUntilDeleteTrack2=150
-framesUntilCertainTrack2=20
-provisionalPenalty2=25.0
-maxBlobSize2=1200
-maxTrackMove2=25
-minBlobSize2=200
-nonMatchPenalty2=50.0

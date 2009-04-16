@@ -26,6 +26,7 @@ public class TrackExample extends Thread implements TrackListener {
 				ElProps.THE_PROPS
 		);
 		TrackExample example = new TrackExample();
+		//adding to region 1, not 0
 		bts.addTrackListener(1, example);
 		example.start();
 	}
