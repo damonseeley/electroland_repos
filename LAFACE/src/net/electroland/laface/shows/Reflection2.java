@@ -8,8 +8,6 @@ import processing.core.PGraphics;
 import processing.core.PImage;
 
 import net.electroland.laface.core.LAFACEMain;
-//import net.electroland.laface.core.Sprite;
-//import net.electroland.laface.sprites.Bars;
 import net.electroland.laface.tracking.Mover;
 import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.Raster;
@@ -38,6 +36,7 @@ public class Reflection2 implements Animation {
 		c.colorMode(PConstants.RGB, 255, 255, 255, 255);	
 	}
 
+	@Override
 	public Raster getFrame() {
 		if(r.isProcessing()){
 			PGraphics c = (PGraphics)(r.getRaster());
@@ -62,11 +61,11 @@ public class Reflection2 implements Animation {
 				}
 			}
 			
-			//Iterator<Sprite> iter = sprites.values().iterator();
-			//while(iter.hasNext()){
-			//	Sprite sprite = (Sprite)iter.next();
-			//	sprite.draw(r);
-			//}
+//			Iterator<Sprite> iter = sprites.values().iterator();
+//			while(iter.hasNext()){
+//				Sprite sprite = (Sprite)iter.next();
+//				sprite.draw(r);
+//			}
 			c.endDraw();
 		}
 		return r;

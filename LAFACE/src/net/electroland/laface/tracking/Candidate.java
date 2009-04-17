@@ -24,6 +24,7 @@ public class Candidate {
 	private Vector<Vector<Float>> locations;	// past locations (normalized)
 	private Vector<Long> times;				// sample times (milliseconds)
 	private float minimumXSpeed = 0.05f;
+	private float endZoneMargin = 0.2f;
 
 	public Candidate(Track track){
 		this.track = track;
@@ -54,6 +55,16 @@ public class Candidate {
 		float xdiff = locations.get(locations.size()-1).get(0) - locations.get(0).get(0);	// distance between first and last sample.
 		//float ydiff = locations.get(locations.size()-1).get(1) - locations.get(0).get(1);
 		if(Math.abs(xdiff) < minimumXSpeed){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean endZone(){
+		Vector<Float> speed = getSpeed();
+		if(speed.get(0) < 0 && x < endZoneMargin){
+			return true;
+		} else if(speed.get(0) > 0 && x > 1-endZoneMargin) {
 			return true;
 		}
 		return false;

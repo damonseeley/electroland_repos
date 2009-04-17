@@ -88,23 +88,14 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		tracker = new Tracker(this, 3);
 		tracker.start();
 		
-		//Animation a = new WaveShow(firstRaster);
-		//Wave wave = new Wave(0, firstRaster, 0, 0);
-		//((WaveShow)a).addWave(0, wave);
-		//((WaveShow)a).setTint(255);
-		//((WaveShow)a).mirror();
-		
-		//Animation a = new TraceTest(raster, 174, 7, 10);	// light grid width + gaps
-		//Animation a = new DrawTest(raster, 174, 7);			// light grid width + gaps
-		
-		//Animation a = new Reflection(firstRaster);
-		Animation a = new Reflection2(this, firstRaster, linearGradient);
+		Animation a = new WaveShow(firstRaster);
+		Wave wave = new Wave(0, firstRaster, 0, 0);
+		((WaveShow)a).addWave(0, wave);
 		Collection<Recipient> fixtures = dmr.getRecipients();
-		amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
-		//Animation newa = new WaveShow(secondRaster);
-		//((WaveShow)newa).addWave(0, wave);
-		//Animation highlighter = new Highlighter(thirdRaster, highlight);
-		//amr.startAnimation(newa, highlighter, fixtures);
+		amr.startAnimation(a, fixtures); 					// start the wave show
+		Animation highlighter = new Highlighter(secondRaster, highlight);
+		Animation newa = new Reflection2(this, thirdRaster, linearGradient);
+		amr.startAnimation(highlighter, newa, fixtures);	// start a fully bright show with reflection to highlight areas
 		amr.goLive(); 
 		controlPanel.refreshWaveList();
 		

@@ -249,7 +249,7 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		
 		// drop down list to select raster to be displayed within the raster panel
 		panel.add(new Label("Raster:"), "wrap");
-		JComboBox rasterList = new JComboBox(new String[] {"First Wave","Second Wave", "Transition"});
+		JComboBox rasterList = new JComboBox(new String[] {"Show A", "Show B", "Transition"});
 		rasterList.setSelectedIndex(0);
 		rasterList.addActionListener(this);		
 		panel.add(rasterList);
@@ -338,9 +338,9 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		    	main.rasterPanel.setDisplayMode(1);
 		    } else if((String)cb.getSelectedItem() == "Detector Values"){
 		    	main.rasterPanel.setDisplayMode(2);
-		    } else if((String)cb.getSelectedItem() == "First Wave"){
+		    } else if((String)cb.getSelectedItem() == "Show A"){
 		    	main.rasterPanel.setRaster(main.firstRaster);
-		    } else if((String)cb.getSelectedItem() == "Second Wave"){
+		    } else if((String)cb.getSelectedItem() == "Show B"){
 		    	main.rasterPanel.setRaster(main.secondRaster);
 		    } else if((String)cb.getSelectedItem() == "Transition"){
 		    	main.rasterPanel.setRaster(main.thirdRaster);

@@ -28,16 +28,20 @@ public class Mover {
 	public Mover(Candidate successor){
 		this.successor = successor;
 		id = successor.getID();
-		x = successor.x;
-		y = successor.y;
-		startx = x;
-		starty = y;
 		Vector<Float> movement = successor.getSpeed();
 		if(movement == null){
 			dead = true;
 		} else {
 			xvec = movement.get(0);
 			yvec = movement.get(1);
+			if(xvec < 0){
+				x = 1;
+			} else {
+				x = 0;
+			}
+			y = successor.y;
+			startx = x;
+			starty = y;
 			xduration = (long)movement.get(2).longValue();
 			yduration = (long)movement.get(3).longValue();
 			//System.out.println("xduration: "+xduration);
