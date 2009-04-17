@@ -27,7 +27,7 @@ public class Spiral extends Sprite {
 			//this.imageWidth = this.imageHeight = this.startDiameter = ((int)(c.width/11)) * 3;
 			this.imageWidth = this.imageHeight = this.startDiameter = c.width;
 			maxDiameter = ((int)(c.width/11)) * 32;
-			sm.createMonoSound(sm.soundProps.getProperty("test2"), x, y, c.width, c.height);
+			sm.createMonoSound(sm.soundProps.getProperty("spiral"), x, y, c.width, c.height);
 		}
 		fadeOut = false;
 		expand = false;

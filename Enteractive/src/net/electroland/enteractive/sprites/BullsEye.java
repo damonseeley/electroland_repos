@@ -32,7 +32,7 @@ public class BullsEye extends Sprite {
 		trueStartTime = System.currentTimeMillis();
 		if(raster.isProcessing()){
 			PGraphics c = (PGraphics)canvas;
-			sm.createMonoSound(sm.soundProps.getProperty("test2"), x, y, c.width, c.height);
+			sm.createMonoSound(sm.soundProps.getProperty("bullseye"), x, y, c.width, c.height);
 		}
 	}
 

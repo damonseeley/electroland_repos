@@ -22,7 +22,7 @@ public class Cross extends Sprite{
 		this.height = tileSize*height;				// using tile size to scale sprite size
 		if(raster.isProcessing()){
 			PGraphics c = (PGraphics)canvas;
-			sm.createMonoSound(sm.soundProps.getProperty("test3"), x, y, c.width, c.height);
+			sm.createMonoSound(sm.soundProps.getProperty("cross"), x, y, c.width, c.height);
 		}
 	}
 
