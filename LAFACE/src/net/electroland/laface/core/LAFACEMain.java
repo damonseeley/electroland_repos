@@ -111,7 +111,10 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		amr.goLive(); 
 		controlPanel.refreshWaveList();
 		
-		Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){amr.getCurrentAnimation(dmr.getRecipient("face0")).cleanUp();}});
+		//Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){amr.getCurrentAnimation(dmr.getRecipient("face0")).cleanUp();}});
+		
+		// this gets rid of exception for not using native acceleration
+		System.setProperty("com.sun.media.jai.disableMediaLib", "true");
 		
 		// TODO start CarTracker here
 		//carTracker = new CarTracker(this);
@@ -188,3 +191,5 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 	}
 	
 }
+
+
