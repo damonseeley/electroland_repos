@@ -52,7 +52,13 @@ public class Reflection2 implements Animation {
 					// TODO width based on blob size
 					//System.out.println(m.getX()*c.width);
 					//c.rect(m.getX()*c.width, 0, 50, c.height);
-					c.image(texture, (m.getX()*c.width) - 25, 0, 50, c.height);
+					if(m.getXvec() < 0){
+						c.image(texture, (int)(m.getX()*c.width) - 25, 0, 50, c.height);
+					} else {
+						c.rotate((float) Math.PI);
+						c.image(texture, 0 - (int)((m.getX()*c.width) - 25), 0-c.height, 50, c.height);
+						c.rotate((float) Math.PI);
+					}
 				}
 			}
 			

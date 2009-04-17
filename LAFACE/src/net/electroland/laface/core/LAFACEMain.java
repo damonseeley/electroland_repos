@@ -16,10 +16,6 @@ import javax.swing.JFrame;
 
 import processing.core.PConstants;
 import processing.core.PImage;
-import net.electroland.blobDetection.match.TrackListener;
-import net.electroland.elvis.imaging.PresenceDetector;
-import net.electroland.elvis.imaging.acquisition.axisCamera.AxisCamera;
-import net.electroland.elvis.imaging.acquisition.axisCamera.NoHoNorthCam;
 import net.electroland.laface.gui.ControlPanel;
 import net.electroland.laface.gui.RasterPanel;
 import net.electroland.laface.shows.DrawTest;
@@ -53,7 +49,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 	private int guiHeight = 310;
 	public Raster firstRaster, secondRaster, thirdRaster;
 	public CarTracker carTracker;
-	private PImage highlight;
+	public PImage highlight, linearGradient;
 	public Tracker tracker;
 
 	public LAFACEMain() throws UnknownHostException, OptionException{
@@ -78,6 +74,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		//Raster raster = getRaster();
 		
 		highlight = rasterPanel.loadImage("depends//images//highlight.png");
+		linearGradient = rasterPanel.loadImage("depends//images//linear.png");
 
 		firstRaster = getRaster();	// first wave show
 		secondRaster = getRaster();	// second wave show
@@ -101,7 +98,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		//Animation a = new DrawTest(raster, 174, 7);			// light grid width + gaps
 		
 		//Animation a = new Reflection(firstRaster);
-		Animation a = new Reflection2(this, firstRaster, highlight);
+		Animation a = new Reflection2(this, firstRaster, linearGradient);
 		Collection<Recipient> fixtures = dmr.getRecipients();
 		amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
 		//Animation newa = new WaveShow(secondRaster);
@@ -116,7 +113,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		// this gets rid of exception for not using native acceleration
 		System.setProperty("com.sun.media.jai.disableMediaLib", "true");
 		
-		// TODO start CarTracker here
+		// start CarTracker here
 		//carTracker = new CarTracker(this);
 		//carTracker.addTrackListener((TrackListener) highlighter);	// highlighter displays locations
 		//carTracker.addTrackListener((TrackListener) a);

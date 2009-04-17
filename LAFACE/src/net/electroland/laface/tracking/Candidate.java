@@ -2,6 +2,8 @@ package net.electroland.laface.tracking;
 
 import java.util.Vector;
 
+import net.electroland.blobDetection.match.Track;
+
 /**
  * A Candidate is associated with a Track, and is used to retain a history of the
  * tracks location in order to assess the velocity and direction of the Track, as
@@ -16,13 +18,16 @@ import java.util.Vector;
 
 public class Candidate {
 	
+	private Track track;
 	private int id;
 	public float x, y;							// current location (normalized)
 	private Vector<Vector<Float>> locations;	// past locations (normalized)
 	private Vector<Long> times;				// sample times (milliseconds)
+	private float minimumXSpeed = 0.05f;
 
-	public Candidate(int id){
-		this.id = id;
+	public Candidate(Track track){
+		this.track = track;
+		this.id = track.id;
 		locations = new Vector<Vector<Float>>();
 		times = new Vector<Long>();
 	}
@@ -37,10 +42,18 @@ public class Candidate {
 		times.add(System.currentTimeMillis());
 	}
 	
+	public float getX(){
+		return x = track.x;
+	}
+	
+	public float getY(){
+		return y = track.y;
+	}
+	
 	public boolean isStatic(){
 		float xdiff = locations.get(locations.size()-1).get(0) - locations.get(0).get(0);	// distance between first and last sample.
-		float ydiff = locations.get(locations.size()-1).get(1) - locations.get(0).get(1);
-		if(xdiff == 0 && ydiff == 0){
+		//float ydiff = locations.get(locations.size()-1).get(1) - locations.get(0).get(1);
+		if(Math.abs(xdiff) < minimumXSpeed){
 			return true;
 		}
 		return false;

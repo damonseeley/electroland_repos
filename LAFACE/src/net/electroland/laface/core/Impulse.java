@@ -20,8 +20,8 @@ public class Impulse extends Thread{
 				wave = ((WaveShow)a).getWave(waveID);
 				//wave.setDamping(0);
 				dampingTarget = 0.1;
-				starty = 100;
-				targety = -80;	// amplitude based on speed
+				starty = 80;
+				targety = 0;	// amplitude based on speed
 				if(leftSide){
 					x = 0;
 				} else {
@@ -36,8 +36,8 @@ public class Impulse extends Thread{
 		// this will loop continually while sending impact events to the wave
 		while(impulseMode){
 			int y = (int)(((System.currentTimeMillis() - startTime)/(float)duration) * (targety-starty)) + starty;
-			//wave.createImpact(x, y);
-			wave.autoImpact(x, 0-y);
+			wave.createImpact(x, y);
+			//wave.autoImpact(x, 0-y);
 			if(System.currentTimeMillis() - startTime > duration){
 				impulseMode = false;
 				dampDuration = 3000;

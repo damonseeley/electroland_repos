@@ -50,7 +50,7 @@ public class Tracker extends Thread implements TrackListener, MoverListener {
 					Iterator<Track> iter = result.created.iterator();
 					while(iter.hasNext()){
 						Track newtrack = iter.next();
-						candidates.put(newtrack.id, new Candidate(newtrack.id));
+						candidates.put(newtrack.id, new Candidate(newtrack));
 						//System.out.println("new candidate! "+newtrack.id);
 					}
 				} else if(result.existing.size() > 0){				// EXISTING
@@ -71,9 +71,9 @@ public class Tracker extends Thread implements TrackListener, MoverListener {
 									if(main.getCurrentAnimation() instanceof WaveShow){
 										Impulse impulse;
 										if(track.x < Integer.parseInt(ElProps.THE_PROPS.get("srcWidth").toString())/2){
-											impulse = new Impulse(main, 0, 2000, false);
+											impulse = new Impulse(main, 0, 1000, false);
 										} else {
-											impulse = new Impulse(main, 0, 2000, true);
+											impulse = new Impulse(main, 0, 1000, true);
 										}
 										impulse.start();
 									}
@@ -82,6 +82,13 @@ public class Tracker extends Thread implements TrackListener, MoverListener {
 							}
 						}
 					}
+				} else if(result.deleted.size() > 0){				// DELETED
+					//Iterator<Track> iter = result.deleted.iterator();
+					//while(iter.hasNext()){
+						//Track track = iter.next();
+						//Mover mover = movers.get(track.id);
+						//mover.trackDied();	// TODO this causes NPE
+					//}
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();

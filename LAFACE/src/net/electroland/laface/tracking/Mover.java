@@ -14,6 +14,7 @@ import java.util.Vector;
 
 public class Mover {
 	
+	private Candidate successor;
 	private int id;
 	private float x, y;			// current position (normalized)
 	private float startx, starty;
@@ -22,8 +23,10 @@ public class Mover {
 	private float xvec, yvec;
 	private List<MoverListener> listeners;
 	private boolean dead;
+	private boolean trackAlive = false;
 	
 	public Mover(Candidate successor){
+		this.successor = successor;
 		id = successor.getID();
 		x = successor.x;
 		y = successor.y;
@@ -54,20 +57,38 @@ public class Mover {
 	public float getX(){
 		checkIfDead();
 		//System.out.println((System.currentTimeMillis() - startTime)+" "+xduration+" "+(float)(System.currentTimeMillis() - startTime)/xduration);
-		if(xvec >= 0){
-			return ((float)(System.currentTimeMillis() - startTime)/xduration) * (1-startx);			// return normalized X position
+		if(trackAlive){
+			x = successor.x;
 		} else {
-			return startx - (((float)(System.currentTimeMillis() - startTime)/xduration) * startx);	// return normalized X position
+			if(xvec >= 0){
+				x = (((float)(System.currentTimeMillis() - startTime)/xduration) * (1-startx)) + startx;	// return normalized X position
+			} else {
+				x = startx - (((float)(System.currentTimeMillis() - startTime)/xduration) * startx);		// return normalized X position
+			}
 		}
+		return x;
+	}
+	
+	public float getXvec(){
+		return xvec;
+	}
+	
+	public float getYvec(){
+		return yvec;
 	}
 	
 	public float getY(){
 		checkIfDead();
-		if(yvec >= 0){
-			return ((float)(System.currentTimeMillis() - startTime)/yduration) * (1-starty);			// return normalized X position
+		if(trackAlive){
+			y = successor.y;
 		} else {
-			return startx - (((float)(System.currentTimeMillis() - startTime)/yduration) * starty);	// return normalized X position
+			if(yvec >= 0){
+				y = (((float)(System.currentTimeMillis() - startTime)/yduration) * (1-starty)) + starty;	// return normalized X position
+			} else {
+				y = starty - (((float)(System.currentTimeMillis() - startTime)/yduration) * starty);		// return normalized X position
+			}
 		}
+		return y;
 	}
 	
 	public int getID(){
@@ -75,12 +96,12 @@ public class Mover {
 	}
 	
 	private void checkIfDead(){
-		if(System.currentTimeMillis() - startTime >= xduration){								// if outside X constraints...
+		if((xvec < 0 && x < -0.1) || (xvec > 0 && x > 1.1)){			// if outside X constraints + margin...
 			dead = true;
 			Iterator<MoverListener> iter = listeners.iterator();
 			while(iter.hasNext()){
 				MoverListener ml = iter.next();
-				ml.moverEvent(this);															// notify listeners of death
+				ml.moverEvent(this);									// notify listeners of death
 			}
 		}
 	}
@@ -90,6 +111,10 @@ public class Mover {
 			return true;
 		}
 		return false;
+	}
+	
+	public void trackDied(){
+		trackAlive = false;
 	}
 	
 	public void addListener(MoverListener l){

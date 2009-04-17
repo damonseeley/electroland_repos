@@ -28,11 +28,10 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import net.electroland.blobDetection.match.TrackListener;
 import net.electroland.laface.core.Impulse;
 import net.electroland.laface.core.LAFACEMain;
 import net.electroland.laface.shows.DrawTest;
-import net.electroland.laface.shows.Reflection;
+import net.electroland.laface.shows.Reflection2;
 import net.electroland.laface.shows.TraceTest;
 import net.electroland.laface.shows.WaveShow;
 import net.electroland.laface.sprites.Wave;
@@ -431,8 +430,7 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 			// switch to Reflection Show
 			Raster raster = main.getRaster();
 			main.rasterPanel.setRaster(raster);
-			Animation a = new Reflection(raster);
-			main.carTracker.addTrackListener((TrackListener) a);
+			Animation a = new Reflection2(main, raster, main.linearGradient);
 			Collection<Recipient> fixtures = main.dmr.getRecipients();
 			main.amr.startAnimation(a, fixtures); 
 		}
