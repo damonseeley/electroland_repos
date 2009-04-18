@@ -179,7 +179,7 @@ public class IndyControllerDiagnostic extends JFrame {
 		multicastPanel.add(ascending, "growx, wrap");
 		buttonGroup.add(ascending);
 
-		oscillating = new JRadioButton("Oscillate 00/20", false);
+		oscillating = new JRadioButton("Oscillate 00/FD", false);
 		multicastPanel.add(oscillating, "growx");
 		buttonGroup.add(oscillating);
 
