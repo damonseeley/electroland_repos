@@ -46,7 +46,7 @@ public class TickerBox extends Sprite {
 		
 		if(raster.isProcessing()){
 			PGraphics c = (PGraphics)canvas;
-			sm.createMonoSound(sm.soundProps.getProperty("test1"), x, y, c.width, c.height);
+			sm.createMonoSound(sm.soundProps.getProperty("tickerBox"), x, y, c.width, c.height);
 			//System.out.println("tickerbox sound "+x*tileSize+" "+y*tileSize+" "+c.width+" "+c.height);
 		}
 	}
