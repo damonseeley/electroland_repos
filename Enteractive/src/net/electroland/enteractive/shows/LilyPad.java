@@ -92,7 +92,7 @@ public class LilyPad implements Animation, SpriteListener {
 	}
 	
 	public void addRipple(int x, int y){
-		Sprite sprite = new Ripple(spriteIndex, r, x, y, sm, rippleTexture);
+		Sprite sprite = new Ripple(spriteIndex, r, x, y, sm, rippleTexture, 1.0f, "collision");
 		sprite.addListener(this);
 		sprites.put(spriteIndex, sprite);
 		spriteIndex++;

@@ -30,6 +30,21 @@ public class Ripple extends Sprite{
 		duration = 750;	// milliseconds
 		startTime = System.currentTimeMillis();
 	}
+	
+	public Ripple(int id, Raster raster, float x, float y, SoundManager sm, PImage image, float endSize, String soundCue){
+		super(id, raster, x, y, sm);
+		this.image = image;
+		if(raster.isProcessing()){
+			PGraphics c = (PGraphics)canvas;
+			this.startSize = this.imageWidth = this.imageHeight = (int)(c.height/11);
+			this.endSize = (int)(c.height*endSize);
+			sm.createMonoSound(sm.soundProps.getProperty(soundCue), x, y, c.width, c.height);
+		}
+		expand = true;
+		fadeOut = true;
+		duration = 750;	// milliseconds
+		startTime = System.currentTimeMillis();
+	}
 
 	@Override
 	public void draw() {
