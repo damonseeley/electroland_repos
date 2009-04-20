@@ -28,25 +28,33 @@ public class UDPParser extends Thread {
 	public void parseMsg(String msg) {
 		//logger.debug("msg: " + msg);
 		byte[] line = HexUtils.hexToBytes(msg);
-		int offset = (int)(line[line.length-3] & 0xFF) + (int)(line[line.length-2] & 0xFF);	// determines starting position of payload values
-		byte[] data = new byte[line.length - 5];												// everything but start/end/offset/command bytes
-		String commandByte = Integer.toHexString(line[1]);
-		System.arraycopy(line, 2, data, 0, line.length-5);
-		if(tcUtils != null){
-			if(commandByte.equals(tcUtils.tileProps.getProperty("updateByte"))){				// direct response of light values
-				lightValues(offset, data);
-			} else if(commandByte.equals(tcUtils.tileProps.getProperty("feedbackByte"))){	// direct response of sensor states
-				sensorValues(offset, data);
-			} else if(commandByte.equals(tcUtils.tileProps.getProperty("powerByte"))){		// direct response from tiles being powered on/off
-				tilePowerState(offset, data);
-			} else if(commandByte.equals(tcUtils.tileProps.getProperty("reportByte"))){		// continuous sensor state reporting on change
-				sensorValues(offset, data);
-			} else if(commandByte.equals(tcUtils.tileProps.getProperty("offsetByte"))){
-				// TODO direct response from setting offset value
-			} else if(commandByte.equals(tcUtils.tileProps.getProperty("mcResetByte"))){
-				// TODO direct response from resetting microcontroller on tile controller
-			} 
-		} 
+		if((int)(line[0] & 0xFF) == 255 && (int)(line[line.length-1] & 0xFF) == 255){				// if it has start and end bytes...
+			if(line.length >= 5){																	// packet should be at least 5 bytes long...
+				int offset = (int)(line[line.length-3] & 0xFF) + (int)(line[line.length-2] & 0xFF);	// determines starting position of payload values
+				byte[] data = new byte[line.length - 5];												// everything but start/end/offset/command bytes
+				String commandByte = Integer.toHexString(line[1]);
+				System.arraycopy(line, 2, data, 0, line.length-5);
+				if(tcUtils != null){
+					if(commandByte.equals(tcUtils.tileProps.getProperty("updateByte"))){				// direct response of light values
+						lightValues(offset, data);
+					} else if(commandByte.equals(tcUtils.tileProps.getProperty("feedbackByte"))){		// direct response of sensor states
+						if(data.length == 8){
+							sensorValues(offset, data);
+						}
+					} else if(commandByte.equals(tcUtils.tileProps.getProperty("powerByte"))){			// direct response from tiles being powered on/off
+						tilePowerState(offset, data);
+					} else if(commandByte.equals(tcUtils.tileProps.getProperty("reportByte"))){		// continuous sensor state reporting on change
+						if(data.length == 8){
+							sensorValues(offset, data);
+						}
+					} else if(commandByte.equals(tcUtils.tileProps.getProperty("offsetByte"))){
+						// TODO direct response from setting offset value
+					} else if(commandByte.equals(tcUtils.tileProps.getProperty("mcResetByte"))){
+						// TODO direct response from resetting microcontroller on tile controller
+					} 
+				} 
+			}
+		}
 	}
 	
 	public void lightValues(int offset, byte[] data){
