@@ -38,7 +38,7 @@ public class LilyPad implements Animation, SpriteListener {
 	private int tileSize;
 	private ConcurrentHashMap<Integer,Sprite> sprites;
 	private ConcurrentHashMap<Integer,Pad> pads;
-	private ConcurrentHashMap<Integer,Single> billiejean;
+	public ConcurrentHashMap<Integer,Single> billiejean;
 	private int spriteIndex = 0;	// used as ID # for sprite
 	private int maxPads = 7;		// maximum pads at any time
 	private int padDelay = 5;		// mandatory delay between adding new pads
@@ -84,6 +84,19 @@ public class LilyPad implements Animation, SpriteListener {
 			}
 		}
 	}
+	
+	public void addSprite(Sprite sprite){
+		sprite.addListener(this);
+		sprites.put(spriteIndex, sprite);
+		spriteIndex++;
+	}
+	
+	public void addRipple(int x, int y){
+		Sprite sprite = new Ripple(spriteIndex, r, x, y, sm, rippleTexture);
+		sprite.addListener(this);
+		sprites.put(spriteIndex, sprite);
+		spriteIndex++;
+	}
 
 	public Raster getFrame() {
 		if(pads.size() < maxPads){			// if not maxed out on pads...
@@ -120,12 +133,12 @@ public class LilyPad implements Animation, SpriteListener {
 						spriteIndex++;
 						
 						if(loc[0] == 1){			// near the entrance
-							Shooter shooter = new Shooter(spriteIndex, r, 0, (int)loc[1]*tileSize, sm, sweepTexture, 1000, false);
+							Shooter shooter = new Shooter(spriteIndex, r, 0, (int)loc[1]*tileSize, sm, sweepTexture, 1000, false, this);
 							shooter.addListener(this);
 							sprites.put(spriteIndex, shooter);
 							spriteIndex++;
 						} else if(loc[0] == 16){	// near the sidewalk
-							Shooter shooter = new Shooter(spriteIndex, r, 18*tileSize, (int)loc[1]*tileSize, sm, sweepTexture, 1000, true);
+							Shooter shooter = new Shooter(spriteIndex, r, 18*tileSize, (int)loc[1]*tileSize, sm, sweepTexture, 1000, true, this);
 							shooter.addListener(this);
 							sprites.put(spriteIndex, shooter);
 							spriteIndex++;
