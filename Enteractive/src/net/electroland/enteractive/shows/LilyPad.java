@@ -148,7 +148,7 @@ public class LilyPad implements Animation, SpriteListener {
 						Iterator<Pad> i = pads.values().iterator();
 						while(i.hasNext()){											// check every active pad
 							Pad pad = i.next();
-							if(pad.getX() == p.getX() && pad.getY() == p.getY() && !pad.activated){		// if new person on the pad and pad not activated...
+							if(pad.getX() == p.getX() && pad.getY() == p.getY()){		// if new person on the pad and pad not activated...
 								// create new action sprite here
 								int luckyNumber = (int)(Math.random()*8 - 0.01);
 								Sprite sprite = null;
@@ -176,7 +176,7 @@ public class LilyPad implements Animation, SpriteListener {
 										break;
 									case 6:
 										sprite = new Noise(spriteIndex, r, 0, 0, sm, 2000, 3000);
-										pad.fadeOut(2000);
+										//pad.fadeOut(2000);
 										break;
 									case 7:
 										sprite = new Sparkler(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, sphereTexture);

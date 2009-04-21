@@ -123,6 +123,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		//currentAnimation = new ExampleAnimation(ptr.getModel(), raster, smr);
 		//Animation a = new Spotlight(ptr.getModel(), raster, smr, sphereTexture);
 		Animation a = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture, sphereTexture);
+		//Animation a = new Pong(ptr.getModel(), raster, smr, sphereTexture, pongTitle);
 		Collection<Recipient> fixtures = dmr.getRecipients();
 		amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
 		amr.goLive(); 										// the whole system does nothing unless you "start" it.
@@ -131,7 +132,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 	public void completed(Animation a) {
 		// TODO Switch to a new animation
 		System.out.println("animation " + a + " completed!");
-		if (a instanceof Spotlight){
+		if (a instanceof Spotlight || a instanceof Pong){
 			Raster raster = getRaster();
 			((GUI)gui).setRaster(raster);
 			Animation next = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture, sphereTexture);
@@ -298,7 +299,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		} else if(e.getType() == Model.ModelConstants.OPPOSITE_CORNERS2){
 			System.out.println("Corners 2 and 3!");
 			// switch to PONG game
-			/*
+			
 			Recipient floor = dmr.getRecipient("floor");
 			if(amr.getCurrentAnimation(floor) instanceof LilyPad){
 				Raster raster = getRaster();
@@ -308,7 +309,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 				//Animation transition = new LinearFade(2, getRaster());
 				amr.startAnimation(a, fixtures); 					// START PONG (3 points)
 			}
-			*/
+			
 		}
 	}
 	

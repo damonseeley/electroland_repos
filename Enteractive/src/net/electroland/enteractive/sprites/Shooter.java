@@ -76,11 +76,13 @@ public class Shooter extends Sprite {
 			Iterator<Single> singleiter = show.billiejean.values().iterator();
 			while(singleiter.hasNext()){
 				Sprite sprite = (Sprite)singleiter.next();
-				if((int)Math.floor(sprite.getX()/tileSize) == (int)Math.floor(x/tileSize)){		// if sharing the same X pos...
-					if((int)Math.floor(sprite.getY()/tileSize) == (int)Math.floor(y/tileSize)){	// and sharing same Y pos...
-						fadeStartTime = System.currentTimeMillis();
-						fadeOut = true;
-						show.addRipple((int)Math.floor(x/tileSize), (int)Math.floor(y/tileSize));	// explosion effect
+				if(System.currentTimeMillis() - startTime > duration/4){
+					if((int)Math.floor(sprite.getX()/tileSize) == (int)Math.floor(x/tileSize)){		// if sharing the same X pos...
+						if((int)Math.floor(sprite.getY()/tileSize) == (int)Math.floor(y/tileSize)){	// and sharing same Y pos...
+							fadeStartTime = System.currentTimeMillis();
+							fadeOut = true;
+							show.addRipple((int)Math.floor(x/tileSize), (int)Math.floor(y/tileSize));	// explosion effect
+						}
 					}
 				}
 			}
