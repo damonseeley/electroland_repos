@@ -122,8 +122,8 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		
 		//currentAnimation = new ExampleAnimation(ptr.getModel(), raster, smr);
 		//Animation a = new Spotlight(ptr.getModel(), raster, smr, sphereTexture);
-		Animation a = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture, sphereTexture);
-		//Animation a = new Pong(ptr.getModel(), raster, smr, sphereTexture, pongTitle);
+		//Animation a = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture, sphereTexture);
+		Animation a = new Pong(ptr.getModel(), raster, smr, sphereTexture, pongTitle);
 		Collection<Recipient> fixtures = dmr.getRecipients();
 		amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
 		amr.goLive(); 										// the whole system does nothing unless you "start" it.

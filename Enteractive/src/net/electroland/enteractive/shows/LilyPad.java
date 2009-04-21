@@ -50,6 +50,7 @@ public class LilyPad implements Animation, SpriteListener {
 	private PImage propellerTexture;
 	private PImage spiralTexture;
 	private PImage sphereTexture;
+	private boolean[] availableTiles;	// eliminates tiles next to other pads
 	
 	public LilyPad(Model m, Raster r, SoundManager sm, PImage rippleTexture, PImage sweepTexture, PImage propellerTexture, PImage spiralTexture, PImage sphereTexture){
 		this.m = m;
@@ -64,6 +65,7 @@ public class LilyPad implements Animation, SpriteListener {
 		sprites = new ConcurrentHashMap<Integer,Sprite>();
 		pads = new ConcurrentHashMap<Integer,Pad>();
 		billiejean = new ConcurrentHashMap<Integer,Single>();
+		availableTiles = new boolean[11*16];
 	}
 
 	public void initialize() {
@@ -106,7 +108,15 @@ public class LilyPad implements Animation, SpriteListener {
 			} else {
 				if(Math.random() > padOdds){	// chance of creating a new pad
 					//Pad pad = new Pad(spriteIndex, r, (int)Math.floor(Math.random()*15.99f)+1, (int)Math.floor(Math.random()*9.99f)+1, sm, 0, 255, 500);
-					Pad pad = new Pad(spriteIndex, r, (int)Math.floor(Math.random()*13.99f)+2, (int)Math.floor(Math.random()*7.99f)+2, sm, 0, 255, 500);
+					int xpos = (int)Math.floor(Math.random()*13.99f)+2;
+					int ypos = (int)Math.floor(Math.random()*7.99f)+2;
+					//while(!availableTiles[ypos*16 + xpos]){		// if not available...
+						//xpos = (int)Math.floor(Math.random()*13.99f)+2;
+						//ypos = (int)Math.floor(Math.random()*7.99f)+2;
+					//}
+					//availableTiles[ypos*16 + xpos] = false;
+					// TODO set surrounding tiles to false as well
+					Pad pad = new Pad(spriteIndex, r, xpos, ypos, sm, 0, 255, 500);
 					//pad.addListener(this);
 					//sprites.put(spriteIndex, pad);
 					pads.put(spriteIndex, pad);

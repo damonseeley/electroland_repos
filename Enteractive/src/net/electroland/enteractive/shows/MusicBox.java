@@ -116,6 +116,9 @@ public class MusicBox implements Animation{
 		public void update(){
 			if(person.isDead()){
 				// TODO check if this is supposed to loop
+				if(!looping){
+					//soundPlayers.remove
+				}
 				// TODO check if this is the second contact (loop disable)
 			}
 		}
