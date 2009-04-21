@@ -20,8 +20,8 @@ public class Sparkler extends Sprite implements SpriteListener{
 	private long startTime;
 	private boolean timeToDie;
 	private int sparkIndex = 0;	// used as ID # for spark
-	private float sparkOdds = 0.9f;
-	private int maxSparks = 5;
+	private float sparkOdds = 0.8f;
+	private int maxSparks = 10;
 
 	public Sparkler(int id, Raster raster, float x, float y, SoundManager sm, Person person, PImage image) {
 		super(id, raster, x, y, sm);
@@ -31,7 +31,7 @@ public class Sparkler extends Sprite implements SpriteListener{
 		timeOut = 10000;
 		timeToDie = false;
 		startTime = System.currentTimeMillis();
-		System.out.println("sparkler");
+		//System.out.println("sparkler "+id);
 	}
 
 	@Override
@@ -41,6 +41,7 @@ public class Sparkler extends Sprite implements SpriteListener{
 				Spark spark = new Spark(sparkIndex, raster, x, y, sm, image);
 				spark.addListener(this);
 				sparks.put(sparkIndex, spark);
+				//System.out.println("spark "+sparkIndex);
 				sparkIndex++;
 			}
 		} else if (sparks.size() == 0 && timeToDie){
@@ -71,11 +72,11 @@ public class Sparkler extends Sprite implements SpriteListener{
 	public class Spark extends Sprite{
 		
 		private int alpha = 255;
-		private boolean fadeOut = false;
+		private boolean fadeOut = true;
 		private int imageWidth, imageHeight;
 		private long sparkStartTime;
 		private float xdest, ydest, xstart, ystart;
-		private float sparkLife = 2000;	// milliseconds
+		private float sparkLife = 1000;	// milliseconds
 		private PImage sparkImage;
 
 		public Spark(int id, Raster raster, float x, float y, SoundManager sm, PImage sparkImage) {
@@ -98,15 +99,13 @@ public class Sparkler extends Sprite implements SpriteListener{
 			if(raster.isProcessing()){
 				PGraphics c = (PGraphics)canvas;
 				c.pushMatrix();
-				if(alpha < 255){
-					c.tint(255,255,255,alpha);
-				}
+				c.tint(255,255,255,alpha);
 				c.image(sparkImage, x-(imageWidth/2), y-(imageHeight/2), imageWidth, imageHeight);
 				c.popMatrix();
 			}
 			
-			x = (int)(((System.currentTimeMillis() - sparkStartTime) / (float)sparkLife) * (xdest-xstart));
-			y = (int)(((System.currentTimeMillis() - sparkStartTime) / (float)sparkLife) * (ydest-ystart));
+			x = xstart + (int)(((System.currentTimeMillis() - sparkStartTime) / (float)sparkLife) * (xdest-xstart));
+			y = ystart + (int)(((System.currentTimeMillis() - sparkStartTime) / (float)sparkLife) * (ydest-ystart));
 			
 			if(fadeOut){
 				//alpha = 255 - (int)(((System.currentTimeMillis() - startTime) / (float)duration) * 255); // linear fade out

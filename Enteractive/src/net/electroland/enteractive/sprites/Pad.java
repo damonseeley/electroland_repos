@@ -15,6 +15,7 @@ public class Pad extends Sprite {
 	private long startTime;
 	private long padStartTime;
 	private int timeOut;
+	public boolean activated = false;
 
 	public Pad(int id, Raster raster, int x, int y, SoundManager sm, int minValue, int maxValue, int duration) {
 		super(id, raster, x, y, sm);
@@ -70,6 +71,14 @@ public class Pad extends Sprite {
 			c.rect(x*tileSize, y*tileSize, tileSize, tileSize);	// single tile sized square
 			c.popMatrix();
 		}
+	}
+	
+	public void fadeOut(int duration){
+		this.duration = duration;		// set fade speed to whatever to match sound
+		activated = true;
+		value = 255;					// start at full brightness
+		timeOut = 0;					// die when this has faded out
+		startTime = System.currentTimeMillis();	// start now
 	}
 
 }

@@ -14,6 +14,7 @@ import net.electroland.enteractive.core.Sprite;
 import net.electroland.enteractive.core.SpriteListener;
 import net.electroland.enteractive.sprites.BullsEye;
 import net.electroland.enteractive.sprites.ExplodingCross;
+import net.electroland.enteractive.sprites.Noise;
 import net.electroland.enteractive.sprites.Pad;
 import net.electroland.enteractive.sprites.Propeller;
 import net.electroland.enteractive.sprites.Ripple;
@@ -147,46 +148,48 @@ public class LilyPad implements Animation, SpriteListener {
 						Iterator<Pad> i = pads.values().iterator();
 						while(i.hasNext()){											// check every active pad
 							Pad pad = i.next();
-							if(pad.getX() == p.getX() && pad.getY() == p.getY()){	// if new person on the pad...
-								//System.out.println("pad "+ pad.getID() +" activated");
-								pads.remove(pad.getID());
+							if(pad.getX() == p.getX() && pad.getY() == p.getY() && !pad.activated){		// if new person on the pad and pad not activated...
 								// create new action sprite here
-								//System.out.println(luckyNumber);
-								
+								int luckyNumber = (int)(Math.random()*8 - 0.01);
 								Sprite sprite = null;
-									int luckyNumber = (int)(Math.random()*6 - 0.01); // temporarily omitting sparkler
-									if(luckyNumber < 0){
-										luckyNumber = 0;
-									}
-									switch(luckyNumber){
-										case 0:
-											sprite = new Ripple(spriteIndex, r, pad.getX(), pad.getY(), sm, rippleTexture);
-											break;
-										case 1:
-											sprite = new ExplodingCross(spriteIndex, r, (int)pad.getX(), (int)pad.getY(), sm, 2250);
-											break;
-										case 2:
-											sprite = new TickerBox(spriteIndex, r, p, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, 2000);
-											break;
-										case 3:
-											sprite = new Propeller(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, propellerTexture);
-											break;
-										case 4:
-											sprite = new BullsEye(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, 3, 500);
-											break;
-										case 5:
-											sprite = new Spiral(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, spiralTexture);
-											break;
-										case 6:
-											sprite = new Sparkler(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, sphereTexture);
-											break;
-									}
-								//}
-								//if(sprite != null){
+								if(luckyNumber < 0){
+									luckyNumber = 0;
+								}
+								switch(luckyNumber){
+									case 0:
+										sprite = new Ripple(spriteIndex, r, pad.getX(), pad.getY(), sm, rippleTexture);
+										break;
+									case 1:
+										sprite = new ExplodingCross(spriteIndex, r, (int)pad.getX(), (int)pad.getY(), sm, 2250);
+										break;
+									case 2:
+										sprite = new TickerBox(spriteIndex, r, p, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, 2000);
+										break;
+									case 3:
+										sprite = new Propeller(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, propellerTexture);
+										break;
+									case 4:
+										sprite = new BullsEye(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, 3, 500);
+										break;
+									case 5:
+										sprite = new Spiral(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, spiralTexture);
+										break;
+									case 6:
+										sprite = new Noise(spriteIndex, r, 0, 0, sm, 2000, 3000);
+										pad.fadeOut(2000);
+										break;
+									case 7:
+										sprite = new Sparkler(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, sphereTexture);
+										break;
+								}
+								
+								if(!pad.activated){		// activated pads must kill themselves off
+									pads.remove(pad.getID());	// not activated get killed here
+								}
+
 								sprite.addListener(this);
 								sprites.put(spriteIndex, sprite);
 								spriteIndex++;
-								//}
 								
 							}
 						}
