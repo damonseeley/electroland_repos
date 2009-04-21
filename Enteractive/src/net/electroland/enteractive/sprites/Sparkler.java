@@ -90,7 +90,7 @@ public class Sparkler extends Sprite implements SpriteListener{
 				xstart = x;
 				ystart = y;
 				sparkStartTime = System.currentTimeMillis();
-				sm.createMonoSound(sm.soundProps.getProperty("sparkler"), x, y, c.width, c.height);
+				sm.createMonoSound(sm.soundProps.getProperty("sparkler"), c.width/2, y, c.width, c.height);
 			}
 		}
 
