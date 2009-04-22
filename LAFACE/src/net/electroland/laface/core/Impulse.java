@@ -6,9 +6,8 @@ import net.electroland.lighting.detector.animation.Animation;
 
 public class Impulse extends Thread{
 	
-	private long duration, startTime, dampDuration, dampStartTime;
+	private long duration, startTime;
 	private int x, starty, targety;
-	private double dampingTarget;
 	private boolean impulseMode = true;
 	private Wave wave;
 	
@@ -19,9 +18,29 @@ public class Impulse extends Thread{
 			if(waveID >= 0){
 				wave = ((WaveShow)a).getWave(waveID);
 				//wave.setDamping(0);
-				dampingTarget = 0.1;
+				//dampingTarget = 0.1;
 				starty = 80;
 				targety = 0;	// amplitude based on speed
+				if(leftSide){
+					x = 0;
+				} else {
+					x = 1048;
+				}
+			}
+		}
+		startTime = System.currentTimeMillis();
+	}
+	
+	public Impulse(LAFACEMain main, int waveID, long duration, boolean leftSide, int starty, int targety){
+		this.duration = duration;
+		Animation a = main.getCurrentAnimation();
+		if(a instanceof WaveShow){
+			if(waveID >= 0){
+				wave = ((WaveShow)a).getWave(waveID);
+				//wave.setDamping(0);
+				//dampingTarget = 0.1;
+				this.starty = starty;
+				this.targety = targety;	// amplitude based on speed
 				if(leftSide){
 					x = 0;
 				} else {
@@ -40,33 +59,8 @@ public class Impulse extends Thread{
 			//wave.autoImpact(x, 0-y);
 			if(System.currentTimeMillis() - startTime > duration){
 				impulseMode = false;
-				dampDuration = 3000;
 			}
-			
-			try {
-				sleep(5);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
 		}
-		
-		/*
-		try {
-			sleep(dampDuration);
-			//dampStartTime = System.currentTimeMillis();
-			wave.setDamping(dampingTarget);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
-		
-		// after sending a bunch of impact events, it will gradually adjust the damping
-		//while(System.currentTimeMillis() - dampStartTime < dampDuration){
-			//wave.setDamping((((System.currentTimeMillis() - startTime)/(float)duration) * dampingTarget));	// what happens during two impulses?
-		//}
 	}
 	
 }

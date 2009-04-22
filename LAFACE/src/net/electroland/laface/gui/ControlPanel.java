@@ -74,7 +74,8 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		tabbedPane.addTab("Draw Test", makeDrawTestPanel());
 		tabbedPane.addTab("Trace Test", makeTraceTestPanel());
 		tabbedPane.addTab("Wave Show", makeWaveShowPanel());
-		tabbedPane.addTab("Reflection Show", makeReflectionPanel());
+		//tabbedPane.addTab("Reflection Show", makeReflectionPanel());
+		tabbedPane.addTab("Reflection Show", makeWaveShowPanel());
 		
 		tabbedPane.setMinimumSize(new Dimension((width/4)*3,height));
 		tabbedPane.setSelectedIndex(3);

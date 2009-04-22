@@ -29,6 +29,8 @@ public class Tracker extends Thread implements TrackListener, MoverListener {
 	private ConcurrentHashMap<Integer,Candidate> candidates;
 	private LinkedBlockingQueue<TrackResults> resultsQueue;
 	private BlobTrackerServer bts;
+	private long idleImpulseStart;
+	private int idleImpulsePeriod;
 	private boolean running = true;
 	
 	public Tracker(LAFACEMain main, int sampleSize){
@@ -40,6 +42,8 @@ public class Tracker extends Thread implements TrackListener, MoverListener {
 		ElProps.init("depends//blobTracker.props");					// load tracking properties
 		bts = new BlobTrackerServer(ElProps.THE_PROPS);				// launch the blob tracker
 		bts.addTrackListener(0, this);
+		idleImpulseStart = System.currentTimeMillis();
+		idleImpulsePeriod = 10000;
 	}
 	
 	public void run(){
@@ -82,13 +86,16 @@ public class Tracker extends Thread implements TrackListener, MoverListener {
 							}
 						}
 					}
-				} else if(result.deleted.size() > 0){				// DELETED
-					//Iterator<Track> iter = result.deleted.iterator();
-					//while(iter.hasNext()){
-						//Track track = iter.next();
-						//Mover mover = movers.get(track.id);
-						//mover.trackDied();	// TODO this causes NPE
-					//}
+				} else if(result.existing.size() == 0){	// no cars around, so keep the wave active
+					if(System.currentTimeMillis() - idleImpulseStart >= idleImpulsePeriod){		// every impulse period
+						boolean direction = false;
+						if(Math.random() > 0.5){
+							direction = true;
+						}
+						Impulse impulse = new Impulse(main, 0, 2000, direction, 80, 70);			// create a mild wave
+						impulse.start();
+						idleImpulseStart = System.currentTimeMillis();
+					}
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();

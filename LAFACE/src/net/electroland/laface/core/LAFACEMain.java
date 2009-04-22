@@ -20,9 +20,7 @@ import net.electroland.laface.gui.ControlPanel;
 import net.electroland.laface.gui.RasterPanel;
 import net.electroland.laface.shows.DrawTest;
 import net.electroland.laface.shows.Highlighter;
-import net.electroland.laface.shows.Reflection;
 import net.electroland.laface.shows.Reflection2;
-import net.electroland.laface.shows.TraceTest;
 import net.electroland.laface.shows.WaveShow;
 import net.electroland.laface.sprites.Wave;
 import net.electroland.laface.tracking.Tracker;
@@ -91,6 +89,11 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		Animation a = new WaveShow(firstRaster);
 		Wave wave = new Wave(0, firstRaster, 0, 0);
 		((WaveShow)a).addWave(0, wave);
+		Wave newwave = new Wave(1, firstRaster, 0, 0);
+		newwave.setAlpha(0);	// start second wave invisible
+		((WaveShow)a).addWave(1, newwave);
+		// ADD ANY ADDITIONAL WAVES HERE
+		
 		Collection<Recipient> fixtures = dmr.getRecipients();
 		amr.startAnimation(a, fixtures); 					// start the wave show
 		Animation highlighter = new Highlighter(secondRaster, highlight);
@@ -143,8 +146,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		return controlPanel.getCurrentWaveID();
 	}
 	
-	public void actionPerformed(ActionEvent e) {
-		// TODO Respond to JFrame event
+	public void actionPerformed(ActionEvent e) {	// Respond to JFrame event
 		Animation a = amr.getCurrentAnimation(dmr.getRecipient("face0"));
 		if(a instanceof WaveShow){
 			//String[] event = e.getActionCommand().split(":");
@@ -159,8 +161,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		}
 	}
 
-	public void completed(Animation a) {
-		// TODO Respond to animation ending
+	public void completed(Animation a) {	// Respond to animation ending
 		System.out.println("animation " + a + " completed!");
 	}
 	

@@ -12,8 +12,8 @@ public class Wave extends Sprite {
 	private double Y[][] = new double[GRIDLENGTH][3];  // numerical grid
 	private int prevT = 0, curT = 1, nextT = 2;
 	private double dt = .1, dx = .03, c = .06, damp = 0.1, fpu = 0.;
-	static private final int GRIDLENGTH = 64;	// TODO should be equivalent to light width + gaps
-	static private final double MAXDAMP = 1., MAXFPU = 1.;	// for use with sliders
+	static private final int GRIDLENGTH = 64;
+	//static private final double MAXDAMP = 1., MAXFPU = 1.;	// for use with sliders
 	private int WIDTH, HEIGHT, xoffs, yoffs;
 	static private double xscale, yscale;
 	private int brightness, alpha;
@@ -130,11 +130,11 @@ public class Wave extends Sprite {
 		}
 	}
 	
-	public void setDX(double dx){	// TODO find out what this does
+	public void setDX(double dx){		// affects choppiness between springs
 		this.dx = dx;
 	}
 	
-	public void setC(double c){	// TODO find out what this does
+	public void setC(double c){		// speeds/slows spring reactions
 		this.c = c;
 	}
 	
@@ -199,8 +199,7 @@ public class Wave extends Sprite {
 	}
 
 	public void createImpact(float x, float y){
-		// TODO this will be the function where a force is 
-		// specified on the raster to create a new wave.
+		// this uses a force specified on the raster to create a new wave.
 		
 		int i = (int)((x - xoffs)/xscale);
 		double a = (y - yoffs)/yscale;
