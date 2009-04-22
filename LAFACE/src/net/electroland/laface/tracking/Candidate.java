@@ -21,6 +21,7 @@ public class Candidate {
 	private Track track;
 	private int id;
 	public float x, y;							// current location (normalized)
+	public float width, height;
 	private Vector<Vector<Float>> locations;	// past locations (normalized)
 	private Vector<Long> times;				// sample times (milliseconds)
 	private float minimumXSpeed = 0.05f;
@@ -49,6 +50,14 @@ public class Candidate {
 	
 	public float getY(){
 		return y = track.y;
+	}
+	
+	public float getWidth(){
+		return width = track.width;
+	}
+	
+	public float getHeight(){
+		return height = track.height;
 	}
 	
 	public boolean isStatic(){

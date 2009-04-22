@@ -20,6 +20,7 @@ public class Reflection2 implements Animation {
 	//private Bars bars;
 	private LAFACEMain main;
 	private PImage texture;
+	private boolean blobSizeMode = false;	// TODO toggle this to make sprite size dynamic
 	
 	public Reflection2(LAFACEMain main, Raster r, PImage texture){
 		this.main = main;
@@ -51,11 +52,15 @@ public class Reflection2 implements Animation {
 					// TODO width based on blob size
 					//System.out.println(m.getX()*c.width);
 					//c.rect(m.getX()*c.width, 0, 50, c.height);
+					int width = 50;
+					if(blobSizeMode){
+						width = (int)m.getWidth();
+					}
 					if(m.getXvec() < 0){
-						c.image(texture, (int)(m.getX()*c.width) - 25, 0, 50, c.height);
+						c.image(texture, (int)((m.getX()*c.width) - (width/2)), 0, width, c.height);
 					} else {
 						c.rotate((float) Math.PI);
-						c.image(texture, 0 - (int)((m.getX()*c.width) - 25), 0-c.height, 50, c.height);
+						c.image(texture, 0 - (int)((m.getX()*c.width) - (width/2)), 0-c.height, width, c.height);
 						c.rotate((float) Math.PI);
 					}
 				}

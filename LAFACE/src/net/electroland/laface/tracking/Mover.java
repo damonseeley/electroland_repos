@@ -17,6 +17,7 @@ public class Mover {
 	private Candidate successor;
 	private int id;
 	private float x, y;			// current position (normalized)
+	private float width, height;
 	private float startx, starty;
 	private long startTime;
 	private long xduration, yduration, minduration, maxduration;
@@ -28,6 +29,8 @@ public class Mover {
 	public Mover(Candidate successor){
 		this.successor = successor;
 		id = successor.getID();
+		width = successor.width;
+		height = successor.height;
 		Vector<Float> movement = successor.getSpeed();
 		if(movement == null){
 			dead = true;
@@ -73,14 +76,6 @@ public class Mover {
 		return x;
 	}
 	
-	public float getXvec(){
-		return xvec;
-	}
-	
-	public float getYvec(){
-		return yvec;
-	}
-	
 	public float getY(){
 		checkIfDead();
 		if(trackAlive){
@@ -93,6 +88,22 @@ public class Mover {
 			}
 		}
 		return y;
+	}
+	
+	public float getXvec(){
+		return xvec;
+	}
+	
+	public float getYvec(){
+		return yvec;
+	}
+	
+	public float getWidth(){
+		return width;
+	}
+	
+	public float getHeight(){
+		return height;
 	}
 	
 	public int getID(){
