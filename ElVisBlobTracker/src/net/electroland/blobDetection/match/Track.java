@@ -8,7 +8,8 @@ import net.electroland.blobDetection.Blob;
 
 public class Track {
 	public float x;
-	public float y;	
+	public float y;
+	public float width, height;
 	public int id;
 	String idStr = null;
 	public static int nextId = 0;
@@ -65,9 +66,11 @@ public class Track {
 //			System.out.println(certianCnt);
 			isProvisional = (certianCnt-- >= 0);
 			deleteCnt = frameUntilDeleted;
-			// might want to cal velocity in future of look at color or size to improve matchs
+			// might want to calculate velocity in the future of look at color or size to improve matches
 			x = b.centerX;
 			y = b.centerY;
+			height = b.maxY - b.minY;
+			width = b.maxX - b.minX;
 		}
 
 
