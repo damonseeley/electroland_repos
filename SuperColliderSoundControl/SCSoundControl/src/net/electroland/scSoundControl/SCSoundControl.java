@@ -96,7 +96,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 	 */
 	public SCSoundControl(SCSoundControlNotifiable listener, String propertiesFilename) {
 		_propertiesFilename = propertiesFilename;
-		showDebugOutput(true);
+		showDebugOutput(false);
 
 		//load properties from a file
 		loadPropertiesFile(_propertiesFilename);
