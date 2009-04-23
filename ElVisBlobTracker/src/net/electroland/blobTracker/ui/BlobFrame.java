@@ -144,7 +144,33 @@ public class BlobFrame extends JFrame implements  KeyListener, MouseListener, Mo
 			System.out.println("background adaptation decreased to " + blobPanel.blobTracker.getAdaptation());
 			ElProps.THE_PROPS.setProperty("adaptation", blobPanel.blobTracker.getAdaptation());			
 			break;
-		}		
+			
+		// ds additions	
+		case KeyEvent.VK_P:
+			blobPanel.blobTracker.regionMap.incProvisionalPenalty0();
+			System.out.println("provisionalPenalty0 increased to " + blobPanel.blobTracker.regionMap.getProvisionalPenalty0());
+			break;
+		case KeyEvent.VK_O:
+			blobPanel.blobTracker.regionMap.decProvisionalPenalty0();
+			System.out.println("provisionalPenalty0 decreased to " + blobPanel.blobTracker.regionMap.getProvisionalPenalty0());
+			break;
+		case KeyEvent.VK_T:
+			blobPanel.blobTracker.regionMap.decMaxTrackMove0();
+			System.out.println("maxTrackMove0 decreased to " + blobPanel.blobTracker.regionMap.getMaxTrackMove0());
+			break;
+		case KeyEvent.VK_Y:
+			blobPanel.blobTracker.regionMap.incMaxTrackMove0();
+			System.out.println("maxTrackMove0 increased to " + blobPanel.blobTracker.regionMap.getMaxTrackMove0());
+			break;
+		case KeyEvent.VK_U:
+			blobPanel.blobTracker.regionMap.decNonMatchPenalty0();
+			System.out.println("nonMatchPenalty0 decreased to " + blobPanel.blobTracker.regionMap.getNonMatchPenalty0());
+			break;
+		case KeyEvent.VK_I:
+			blobPanel.blobTracker.regionMap.incNonMatchPenalty0();
+			System.out.println("nonMatchPenalty0 increased to " + blobPanel.blobTracker.regionMap.getNonMatchPenalty0());
+			break;
+		}	
 	}
 
 	public void keyReleased(KeyEvent e) {
@@ -160,6 +186,13 @@ public class BlobFrame extends JFrame implements  KeyListener, MouseListener, Mo
 			System.out.println("x - increase background adaption rate");
 			System.out.println("z - decrease background adaption rate");
 			System.out.println("r - reset background model");
+			System.out.println("t - decrease maxTrackMove for region0");
+			System.out.println("y - increase maxTrackMove for region0");
+			System.out.println("u - decrease nonMatchPenalty for region0");
+			System.out.println("i - increase nonMatchPenalty for region0");
+			System.out.println("o - decrease provisionalPenalty for region0");
+			System.out.println("p - increase provisionalPenalty for region0");
+			
 			break;
 		case 's':
 			ElProps.THE_PROPS.store();

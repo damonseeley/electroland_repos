@@ -54,5 +54,37 @@ public class RegionMap {
 		return region[i];
 	}
 	
+	//ds additions
+	
+	public void incProvisionalPenalty0() {
+		region[0].provisionalPenalty+=1.0;
+	}
+	public void decProvisionalPenalty0() {
+		region[0].provisionalPenalty-=1.0;
+	}
+	public void incNonMatchPenalty0() {
+		region[0].nonMatchPenalty+=1.0;
+	}
+	public void decNonMatchPenalty0() {
+		region[0].nonMatchPenalty-=1.0;
+	}
+	public void incMaxTrackMove0() {
+		region[0].maxTrackMove+=1.0;
+	}
+	public void decMaxTrackMove0() {
+		region[0].maxTrackMove--;
+	}
+	
+	
+	public float getProvisionalPenalty0() {
+		return region[0].provisionalPenalty;
+	}
+	public float getNonMatchPenalty0() {
+		return region[0].nonMatchPenalty;
+	}
+	public float getMaxTrackMove0() {
+		return region[0].maxTrackMove;
+	}
+	
 
 }
