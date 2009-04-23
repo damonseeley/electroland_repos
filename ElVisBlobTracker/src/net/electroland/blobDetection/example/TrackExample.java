@@ -27,7 +27,7 @@ public class TrackExample extends Thread implements TrackListener {
 		);
 		TrackExample example = new TrackExample();
 		//adding to region 1, not 0
-		bts.addTrackListener(1, example);
+		bts.addTrackListener(0, example);
 		example.start();
 	}
 	
