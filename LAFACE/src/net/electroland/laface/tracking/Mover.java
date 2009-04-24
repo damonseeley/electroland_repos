@@ -24,7 +24,7 @@ public class Mover {
 	private float xvec, yvec;
 	private List<MoverListener> listeners;
 	private boolean dead;
-	private boolean trackAlive = false;
+	private boolean trackAlive = true;
 	
 	public Mover(Candidate successor){
 		this.successor = successor;
@@ -66,6 +66,7 @@ public class Mover {
 		//System.out.println((System.currentTimeMillis() - startTime)+" "+xduration+" "+(float)(System.currentTimeMillis() - startTime)/xduration);
 		if(trackAlive){
 			x = successor.x;
+			//System.out.println(x);
 		} else {
 			if(xvec >= 0){
 				x = (((float)(System.currentTimeMillis() - startTime)/xduration) * (1-startx)) + startx;	// return normalized X position

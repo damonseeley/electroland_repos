@@ -33,19 +33,19 @@ public class Highlighter implements Animation, TrackListener {
 		if(r.isProcessing()){
 			PGraphics c = (PGraphics)(r.getRaster());
 			c.beginDraw();
-			c.background(255);	// fully bright during the day
+			c.background(0);	// fully bright during the day
 			//System.out.println(tracks.size());
-			/*
+			
 			// TODO only do this when it's dark enough to see (dusk till dawn)
 			c.background(0);
 			c.noStroke();
 			c.fill(255);
 			for(Track t: tracks){
 				// iterate over blobs and draw highlighted areas
-				//c.rect((t.x/Integer.parseInt(ElProps.THE_PROPS.get("srcWidth").toString()))*c.width, 0, 30, c.height);
-				c.image(texture, c.width-(((t.x/Integer.parseInt(ElProps.THE_PROPS.get("srcWidth").toString()))*c.width) - 50), 0, 100, c.height);
+				c.rect((t.x/Integer.parseInt(ElProps.THE_PROPS.get("srcWidth").toString()))*c.width, 0, 30, c.height);
+				//c.image(texture, c.width-(((t.x/Integer.parseInt(ElProps.THE_PROPS.get("srcWidth").toString()))*c.width) - 50), 0, 100, c.height);
 			}
-			*/
+			
 			c.endDraw();
 		}
 		return r;

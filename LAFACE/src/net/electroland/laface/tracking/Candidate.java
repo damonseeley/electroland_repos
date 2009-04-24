@@ -71,9 +71,9 @@ public class Candidate {
 	
 	public boolean endZone(){
 		Vector<Float> speed = getSpeed();
-		if(speed.get(0) < 0 && x < endZoneMargin){
+		if(speed.get(0) < 0 && x > 1-endZoneMargin){
 			return true;
-		} else if(speed.get(0) > 0 && x > 1-endZoneMargin) {
+		} else if(speed.get(0) > 0 && x < endZoneMargin) {
 			return true;
 		}
 		return false;

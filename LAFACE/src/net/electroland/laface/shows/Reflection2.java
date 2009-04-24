@@ -8,7 +8,7 @@ import processing.core.PGraphics;
 import processing.core.PImage;
 
 import net.electroland.laface.core.LAFACEMain;
-import net.electroland.laface.tracking.Mover;
+import net.electroland.laface.tracking.Target;
 import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.Raster;
 
@@ -20,7 +20,9 @@ public class Reflection2 implements Animation {
 	//private Bars bars;
 	private LAFACEMain main;
 	private PImage texture;
-	private boolean blobSizeMode = false;	// TODO toggle this to make sprite size dynamic
+	private int xscale;	// canvas width + margins where camera image is not in front of lighting grid
+	private int xoffset;	// compensating for margin
+	private boolean blobSizeMode = true;	// TODO toggle this to make sprite size dynamic
 	
 	public Reflection2(LAFACEMain main, Raster r, PImage texture){
 		this.main = main;
@@ -34,6 +36,8 @@ public class Reflection2 implements Animation {
 	
 	public void initialize() {
 		PGraphics c = (PGraphics)(r.getRaster());
+		xoffset = 100;
+		xscale = c.width + (xoffset*2);
 		c.colorMode(PConstants.RGB, 255, 255, 255, 255);	
 	}
 
@@ -44,24 +48,16 @@ public class Reflection2 implements Animation {
 			c.background(0);
 			
 			synchronized(main.tracker){	// TODO is this safe?
-				ConcurrentHashMap<Integer,Mover> movers = main.tracker.getMovers();
-				Iterator<Mover> iter = movers.values().iterator();
+				ConcurrentHashMap<Integer,Target> targets = main.tracker.getTargets();
+				Iterator<Target> iter = targets.values().iterator();
 				while(iter.hasNext()){
-					Mover m = iter.next();
-					// TODO width based on blob size
-					//System.out.println(m.getX()*c.width);
-					//c.rect(m.getX()*c.width, 0, 50, c.height);
+					Target t = iter.next();
 					int width = 50;
 					if(blobSizeMode){
-						width = (int)m.getWidth();
+						width = (int)(t.getWidth()*xscale);
 					}
-					if(m.getXvec() < 0){
-						c.image(texture, (int)((m.getX()*c.width) - (width/2)), 0, width, c.height);
-					} else {
-						c.rotate((float) Math.PI);
-						c.image(texture, 0 - (int)((m.getX()*c.width) - (width/2)), 0-c.height, width, c.height);
-						c.rotate((float) Math.PI);
-					}
+					//c.image(texture, ((int)((t.getX()*xscale) - (width/2))) - xoffset, 0, width, c.height);	// for testing via gui
+					c.image(texture, (xscale - ((int)((t.getX()*xscale) - (width/2)))) - xoffset , 0, width, c.height);		// must mirror output for lights
 				}
 			}
 			

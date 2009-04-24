@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 
 import processing.core.PConstants;
 import processing.core.PImage;
+import net.electroland.blobDetection.match.TrackListener;
 import net.electroland.laface.gui.ControlPanel;
 import net.electroland.laface.gui.RasterPanel;
 import net.electroland.laface.shows.DrawTest;
@@ -86,21 +87,22 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		tracker = new Tracker(this, 3);
 		tracker.start();
 		
-		Animation a = new WaveShow(firstRaster);
-		Wave wave = new Wave(0, firstRaster, 0, 0);
-		((WaveShow)a).addWave(0, wave);
-		Wave newwave = new Wave(1, firstRaster, 0, 0);
-		newwave.setAlpha(0);	// start second wave invisible
-		((WaveShow)a).addWave(1, newwave);
+		//Animation a = new WaveShow(firstRaster);
+		//Wave wave = new Wave(0, firstRaster, 0, 0);
+		//((WaveShow)a).addWave(0, wave);
+		//Wave newwave = new Wave(1, firstRaster, 0, 0);
+		//newwave.setAlpha(0);	// start second wave invisible
+		//((WaveShow)a).addWave(1, newwave);
 		// ADD ANY ADDITIONAL WAVES HERE
 		
 		Collection<Recipient> fixtures = dmr.getRecipients();
-		amr.startAnimation(a, fixtures); 					// start the wave show
-		Animation highlighter = new Highlighter(secondRaster, highlight);
-		Animation newa = new Reflection2(this, thirdRaster, linearGradient);
-		amr.startAnimation(highlighter, newa, fixtures);	// start a fully bright show with reflection to highlight areas
+		//amr.startAnimation(a, fixtures); 					// start the wave show
+		//Animation highlighter = new Highlighter(secondRaster, highlight);
+		Animation newa = new Reflection2(this, firstRaster, highlight);
+		amr.startAnimation(newa, fixtures);
 		amr.goLive(); 
 		controlPanel.refreshWaveList();
+		//tracker.addTrackListener((TrackListener) highlighter);	// highlighter displays locations
 		
 		//Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){amr.getCurrentAnimation(dmr.getRecipient("face0")).cleanUp();}});
 		

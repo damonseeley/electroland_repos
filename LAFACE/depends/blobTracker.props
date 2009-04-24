@@ -1,13 +1,13 @@
 #
 #Wed Apr 15 18:09:55 PDT 2009
 threshold=8000.0
-axisIP=192.168.2.70
+axisIP=192.168.1.70
 adaptation=0.0001
 axisPassword=r
 regionMap=regionMap_240x180.png
 srcWidth=240
 axisUsername=r
-showConsole=true
+showConsole=false
 showGraphics=true
 camera=axis
 srcHeight=180
@@ -15,15 +15,15 @@ srcHeight=180
 framesUntilDeleteTrack0=20
 framesUntilCertainTrack0=10
 provisionalPenalty0=25.0
-maxBlobSize0=600
+maxBlobSize0=1200
 maxTrackMove0=25
-minBlobSize0=200
+minBlobSize0=60
 nonMatchPenalty0=50.0
 #
 framesUntilDeleteTrack1=45
 framesUntilCertainTrack1=20
 provisionalPenalty1=25.0
-maxBlobSize1=400
+maxBlobSize1=1200
 maxTrackMove1=25
-minBlobSize1=200
+minBlobSize1=60
 nonMatchPenalty1=50.0
