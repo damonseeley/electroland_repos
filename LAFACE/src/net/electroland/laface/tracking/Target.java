@@ -2,6 +2,7 @@ package net.electroland.laface.tracking;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import net.electroland.blobDetection.match.Track;
@@ -23,6 +24,9 @@ public class Target {
 	private float width, height;		// width and height
 	private float startx, starty;
 	private float lasttrackx, lasttracky;
+	private LinkedList<Float> xpositions;
+	private LinkedList<Float> ypositions;
+	private int sampleCount;
 	private long startTime;
 	private float xvec, yvec;
 	private boolean trackAlive;
@@ -38,6 +42,9 @@ public class Target {
 		starty = pasty = y = track.y / (float)Integer.parseInt(ElProps.THE_PROPS.get("srcHeight").toString());
 		trackAlive = true;
 		dead = false;
+		sampleCount = 5;
+		xpositions = new LinkedList<Float>();
+		ypositions = new LinkedList<Float>();
 		listeners = new ArrayList<TargetListener>();
 		startTime = System.currentTimeMillis();
 	}
@@ -55,6 +62,10 @@ public class Target {
 				trackAlive = false;			// track must be dead, stuck, or stopped
 			} else {						// track still alive...
 				pastx = x;					// store last X position
+				if(xpositions.size() > sampleCount){	// prevent queue from getting too long
+					xpositions.getFirst();	// pop off the oldest location
+				}
+				xpositions.addLast(pastx);	// append the newest location
 				x = newx;
 			}			
 		} else {							// if track NOT alive
@@ -62,7 +73,19 @@ public class Target {
 			if(lasttrackx != newx){			// check track location to see if it's still dead
 				trackAlive = true;			// if not, set alive again
 			} else {						// if still dead...
-				float xdiff = x - pastx;	// TODO change this to an average speed based on ALL past points
+				//float xdiff = x - pastx;	// TODO change this to an average speed based on multiple past points
+				Iterator<Float> iter = xpositions.iterator();
+				float lastpos = 0;
+				if(iter.hasNext()){			// grab first one
+					lastpos = iter.next();
+				}
+				float totaldiff = 0;
+				while(iter.hasNext()){
+					Float xpos = iter.next();
+					totaldiff += xpos - lastpos;
+					lastpos = xpos;
+				}
+				float xdiff = totaldiff/xpositions.size();
 				pastx = x;
 				x += xdiff;
 			}
