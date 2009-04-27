@@ -39,7 +39,10 @@ public class CSP {
 		possibleTracks.clear();
 		possibleBlobs.clear();
 
+//		System.out.println(singlePass);
+		
 		for(Track t : tracks) {
+			t.move();
 			HashSet<Blob> blobs = g.getPossibleMatchs(t.x, t.y);
 			for(Blob b : blobs) {
 				HashSet<Track> pTracks= possibleBlobs.get(b);
