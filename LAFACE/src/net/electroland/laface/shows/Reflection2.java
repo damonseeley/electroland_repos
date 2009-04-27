@@ -8,16 +8,17 @@ import processing.core.PGraphics;
 import processing.core.PImage;
 
 import net.electroland.laface.core.LAFACEMain;
+import net.electroland.laface.core.Sprite;
+import net.electroland.laface.core.SpriteListener;
+import net.electroland.laface.sprites.Reflector;
 import net.electroland.laface.tracking.Target;
 import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.Raster;
 
-public class Reflection2 implements Animation {
+public class Reflection2 implements Animation, SpriteListener {
 	
 	private Raster r;
-	//private ConcurrentHashMap<Integer,Sprite> sprites;		// used for drawing all sprites
-	//private int spriteIndex = 0;
-	//private Bars bars;
+	private ConcurrentHashMap<Integer,Sprite> sprites;		// used for drawing all sprites
 	private LAFACEMain main;
 	private PImage texture;
 	private int xscale;	// canvas width + margins where camera image is not in front of lighting grid
@@ -28,10 +29,7 @@ public class Reflection2 implements Animation {
 		this.main = main;
 		this.r = r;
 		this.texture = texture;
-		//sprites = new ConcurrentHashMap<Integer,Sprite>();
-		//bars = new Bars(spriteIndex, r, 0, 0);
-		//sprites.put(spriteIndex, bars);
-		//spriteIndex++;
+		sprites = new ConcurrentHashMap<Integer,Sprite>();
 	}
 	
 	public void initialize() {
@@ -56,21 +54,33 @@ public class Reflection2 implements Animation {
 					if(t.isTrackAlive()){
 						alive++;
 					}
+
 					int width = 50;
 					if(blobSizeMode){
 						width = (int)(t.getWidth()*xscale);
 					}
+					if(!sprites.containsKey(t.getID())){
+						Reflector reflector = new Reflector(t.getID(), r, (xscale - ((int)((t.getX()*xscale) - (width/2)))) - xoffset, 0, texture, t);
+						reflector.setWidth(width);
+						reflector.addListener(this);
+						sprites.put(t.getID(), reflector);
+					} else {
+						Reflector reflector = (Reflector)sprites.get(t.getID());
+						reflector.setWidth(width);
+						reflector.moveTo((xscale - ((int)((t.getX()*xscale) - (width/2)))) - xoffset, 0);
+					}
+					
 					//c.image(texture, ((int)((t.getX()*xscale) - (width/2))) - xoffset, 0, width, c.height);	// for testing via gui
-					c.image(texture, (xscale - ((int)((t.getX()*xscale) - (width/2)))) - xoffset , 0, width, c.height);		// must mirror output for lights
+					//c.image(texture, (xscale - ((int)((t.getX()*xscale) - (width/2)))) - xoffset , 0, width, c.height);		// must mirror output for lights
 				}
-				//System.out.println("targets: "+ targets.size() + " alive: "+alive);
+				System.out.println("sprites: " + sprites.size() + " targets: "+ targets.size() + " alive: "+alive);
 			//}
 			
-//			Iterator<Sprite> iter = sprites.values().iterator();
-//			while(iter.hasNext()){
-//				Sprite sprite = (Sprite)iter.next();
-//				sprite.draw(r);
-//			}
+			Iterator<Sprite> spriteiter = sprites.values().iterator();
+			while(spriteiter.hasNext()){
+				Sprite sprite = (Sprite)spriteiter.next();
+				sprite.draw(r);
+			}
 			c.endDraw();
 		}
 		return r;
@@ -89,6 +99,10 @@ public class Reflection2 implements Animation {
 	
 	public void setXscale(int xscale){
 		this.xscale = xscale;
+	}
+
+	public void spriteComplete(Sprite sprite) {
+		sprites.remove(sprite.getID());
 	}
 
 }
