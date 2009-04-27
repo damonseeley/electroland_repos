@@ -10,21 +10,38 @@ public class Reflector extends Sprite {
 	
 	private PImage texture;
 	private Target target;
+	private int alpha;
+	private long startTime;
+	private int fadeDuration;
+	private boolean fadeOut;
 
 	public Reflector(int id, Raster raster, float x, float y, PImage texture, Target target) {
 		super(id, raster, x, y);
 		this.texture = texture;
 		this.target = target;
+		alpha = 255;
+		fadeDuration = 1000;
+		fadeOut = false;
 	}
 
 	@Override
 	public void draw(Raster r) {
 		if(r.isProcessing()){
 			PGraphics c = (PGraphics)(r.getRaster());
+			c.tint(255,255,255,alpha);
 			c.image(texture, x, y, width, c.height);
 		}
-		if(target.isDead()){	// if fully dead, and removed from targets list...
-			die();				// kill off the sprite // TODO make this into a fade-out effect
+		if(target.isDead() && !fadeOut){	// if fully dead, and removed from targets list...
+			startTime = System.currentTimeMillis();
+			fadeOut = true;
+			//die();
+		}
+		if(fadeOut){
+			if(System.currentTimeMillis() - startTime < fadeDuration){
+				alpha = (int)(255 - (((System.currentTimeMillis() - startTime)/(float)fadeDuration) * 255));
+			} else {
+				die();
+			}
 		}
 	}
 	

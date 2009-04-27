@@ -73,7 +73,7 @@ public class Reflection2 implements Animation, SpriteListener {
 					//c.image(texture, ((int)((t.getX()*xscale) - (width/2))) - xoffset, 0, width, c.height);	// for testing via gui
 					//c.image(texture, (xscale - ((int)((t.getX()*xscale) - (width/2)))) - xoffset , 0, width, c.height);		// must mirror output for lights
 				}
-				//System.out.println("sprites: " + sprites.size() + " targets: "+ targets.size() + " alive: "+alive);
+				System.out.println("sprites: " + sprites.size() + " targets: "+ targets.size() + " alive: "+alive);
 			//}
 			
 			Iterator<Sprite> spriteiter = sprites.values().iterator();
