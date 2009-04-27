@@ -23,18 +23,31 @@ public class Tracker extends Thread {
 
 	CSP csp;
 	Grid grid;
+	Grid clusterGrid;
+
 
 	Region region;
 
 	public Tracker(ElProps props, Region region) {
 		this.props = props;
 		this.region = region;
-		
+
 		csp = new CSP(region);
+		if(region.maxClusteringSize > 0) {
+
+			clusterGrid = new Grid(
+					props.getProperty("srcWidth", 320),
+					props.getProperty("srcWidth", 240),
+					region.maxClusteringDist);
+			clusterGrid.setClusterSize(region.maxClusteringSize);
+		}
+
+
 		grid = new Grid(
 				props.getProperty("srcWidth", 320),
 				props.getProperty("srcWidth", 240),
 				region.maxTrackMove);
+
 	}
 
 	public void addListener(TrackListener l) {
@@ -53,11 +66,11 @@ public class Tracker extends Thread {
 	}
 
 	public void updateTracks(Solution solution) {
-		
+
 		Vector<Track> existingTracks = new Vector<Track>(tracks.size() + solution.unmachedBlobs.size());
 		Vector<Track> deletedTracks = new Vector<Track>();
 		Vector<Track> createdTracks = new Vector<Track>();
-		
+
 		for(Map.Entry<Track, Blob> assignment : solution.assigned.entrySet()) {
 			Track t=assignment.getKey();
 			t.setBlobLoc(assignment.getValue());
@@ -75,7 +88,7 @@ public class Tracker extends Thread {
 			}
 		}
 		for(Blob b : solution.unmachedBlobs) {
-			Track t = new Track(region.framesUntilCertainTrack, region.framesUntilDeleteTrack);
+			Track t = new Track(region.framesUntilCertainTrack, region.framesUntilDeleteTrack, region.velocityMatchPercentage);
 			t.setBlobLoc(b);
 			existingTracks.add(t);
 			createdTracks.add(t);
@@ -92,9 +105,18 @@ public class Tracker extends Thread {
 		while(isRunning) {
 			try {
 				Vector<Blob> blobs = blobsQueue.take();
-				grid.clear();
-				grid.addBlobs(blobs);
-				updateTracks(csp.solve(grid, tracks, ! blobs.isEmpty())); 
+				if(region.maxClusteringSize > 0) {
+					clusterGrid.clear();
+					clusterGrid.addBlobs(blobs);
+					grid.clear();
+					grid.addBlobs(clusterGrid.mergedBlobs());
+				} else {
+					grid.clear();
+					grid.addBlobs(blobs);					
+				}
+
+
+				updateTracks(csp.solve(grid, tracks, ! blobsQueue.isEmpty())); 
 				// if the queue not empty perform a single pass 
 				// else search for a good solution until the next frame comes in
 
