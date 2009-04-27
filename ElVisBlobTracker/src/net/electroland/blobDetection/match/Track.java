@@ -7,6 +7,9 @@ import net.electroland.blobDetection.Blob;
 
 
 public class Track {
+	public float vx=0;
+	public float vy=0;
+
 	public float x;
 	public float y;
 	public float width, height;
@@ -23,14 +26,15 @@ public class Track {
 	public  int framesUntilCertian;
 	public  int frameUntilDeleted;
 
+	public float velocityMatchPercentage;
 
-
-	public Track(int framesUntilCertian, int frameUntilDeleted) {
+	public Track(int framesUntilCertian, int frameUntilDeleted, float velocityMatchPercentage) {
 		id= nextId++;
 		this.framesUntilCertian = framesUntilCertian;
 		this.frameUntilDeleted = frameUntilDeleted;
 		certianCnt = framesUntilCertian;
 		deleteCnt = frameUntilDeleted;
+		this.velocityMatchPercentage = velocityMatchPercentage;
 	}
 
 	public String toString() {
@@ -53,7 +57,12 @@ public class Track {
 		}
 		g.drawString(idStr, x+centerDotRadius, y+centerDotRadius);
 		g.fillOval((int)x - centerDotRadius, (int)y - centerDotRadius, centerDotDiameter, centerDotDiameter);
+		
+	}
 
+	public void move() {
+		x += vx;
+		y += vy;
 	}
 
 	public void setBlobLoc(Blob b) {
@@ -63,10 +72,25 @@ public class Track {
 				isRemoved = true;
 			}
 		} else {
-//			System.out.println(certianCnt);
+			
+			// if velocityMatchPercentage and the track has been around for a frame
+			// calculate velocity using a running average
+			if((velocityMatchPercentage >= 0) && (certianCnt < framesUntilCertian)){
+				
+				vx *= velocityMatchPercentage;
+				vx += (1-velocityMatchPercentage) * (b.centerX - x);
+				
+				vy *= velocityMatchPercentage;
+				vy += (1-velocityMatchPercentage) * (b.centerY - y);
+				
+				
+			}
+			
 			isProvisional = (certianCnt-- >= 0);
 			deleteCnt = frameUntilDeleted;
-			// might want to calculate velocity in the future of look at color or size to improve matches
+
+			
+			
 			x = b.centerX;
 			y = b.centerY;
 			height = b.maxY - b.minY;
@@ -74,5 +98,9 @@ public class Track {
 		}
 
 
+	}
+
+	public boolean isProvisional() {
+		return isProvisional;
 	}
 }
