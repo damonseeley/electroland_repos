@@ -8,6 +8,8 @@ public class Blob {
 	boolean centerIsCalculated = false;
 
 	HashSet<Integer> ids = new HashSet<Integer>();
+	
+	public HashSet<Blob> cluster = null;
 
 	public int minX = Integer.MAX_VALUE;
 	public int maxX = -1;
@@ -23,7 +25,7 @@ public class Blob {
 	
 	public int id;
 	public static int nextId = 0;
-
+	
 	public Blob() {
 		id = nextId++;
 	}
@@ -38,10 +40,16 @@ public class Blob {
 		return size;
 	}
 
+	public void setAndUpdateCluster(HashSet<Blob> cluster) {
+		if(this.cluster != null) {
+			cluster.addAll(this.cluster);
+		}
+		this.cluster = cluster;
+	}
+	
 	public void addPoint(int x, int y) {
 
 		
-		long beforeSize = size;
 
 		centerX += x;
 		centerY += y;
@@ -104,6 +112,32 @@ public class Blob {
 		maxY = (blob.maxY > maxY) ? blob.maxY : maxY;
 
 	}
+	
+	// like merger but works but both blobs shold have center calclated
+	public void cluster(Blob blob) {
+		ids.addAll(blob.ids);
+		
+		centerX = ((centerX * size) + (blob.centerX * blob.size)) ;
+		centerY = ((centerY * size) + (blob.centerY * blob.size)) ;
+		
+		size += blob.size;
+		
+		float sizeInv = 1.0f/ (float) size;
+		
+		centerX *= sizeInv;
+		centerY *= sizeInv;
+		
+		
+		//System.out.println(" = " + size);
+
+		minX = (blob.minX < minX) ? blob.minX : minX;
+		minY = (blob.minY < minY) ? blob.minY : minY;
+
+		maxX = (blob.maxX > maxX) ? blob.maxX : maxX;
+		maxY = (blob.maxY > maxY) ? blob.maxY : maxY;
+
+	}
+	
 
 	public String toString() {
 		return "Blob:" + id + " (" + centerX + ", " +centerY + ")";
@@ -112,9 +146,9 @@ public class Blob {
 	public static final int centerDotDiameter = centerDotRadius+centerDotRadius;
 
 	public void paint(Graphics2D g) {
-		g.setColor(Color.BLUE);
+		g.setColor(Color.DARK_GRAY);
 		g.fillOval((int)centerX - centerDotRadius, (int)centerY - centerDotRadius, centerDotDiameter, centerDotDiameter);
-		g.setColor(Color.RED);
+		g.setColor(Color.DARK_GRAY);
 		g.drawRect(minX, minY, maxX - minX, maxY - minY);
 	}
 
