@@ -1,7 +1,9 @@
 package net.electroland.blobDetection.match;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Vector;
 
 import net.electroland.blobDetection.Blob;
@@ -9,8 +11,10 @@ import net.electroland.blobDetection.Blob;
 public class Grid {
 
 
-	float maxBlobMoveDist;
-	float maxBlobMoveDistSqr;
+	float maxDist;
+	float maxBlobDistSqr;
+
+	int clusterSize = -1;
 
 	float gridCellSize;
 	float gridCellScaler;
@@ -28,16 +32,18 @@ public class Grid {
 	 * 
 	 * @param width - world width
 	 * @param height - world height
-	 * @param maxBlobMoveDist - max distance a track can move and be considered same object
+	 * @param maxBlobDist - max distance a track can move and be considered same object
 	 */	
-	public Grid(float width, float height, float maxBlobMoveDist) {
-		this.maxBlobMoveDist = maxBlobMoveDist;
-		this.maxBlobMoveDistSqr = maxBlobMoveDist * maxBlobMoveDist;
-		gridCellSize = maxBlobMoveDist * .5f;
+	public Grid(float width, float height, float maxBlobDist) {
+		this.maxDist = maxBlobDist;
+		this.maxBlobDistSqr = maxBlobDist * maxBlobDist;
+		gridCellSize = maxBlobDist * .5f;
 		gridCellScaler = 1.0f /gridCellSize;
 		gridWidth = (int) Math.ceil( width * gridCellScaler);
 		gridHeight = (int) Math.ceil( height * gridCellScaler);
 		cells = new Cell[ gridWidth ][gridHeight];
+		
+		
 		for(int x = 0; x < gridWidth; x++) {
 			Cell[] col = cells[x];
 			for(int y = 0; y < col.length; y++) {
@@ -59,14 +65,47 @@ public class Grid {
 	public Cell getCell(float x, float y) {
 		return cells[(int) Math.floor(x * gridCellScaler)][(int) Math.floor(y * gridCellScaler)];		
 	}
-	
-	public void addBlobs(Vector<Blob> blobs) {
-		for(Blob b : blobs) {
-			addBlob(b);
-		}
-		
-	}
 
+	
+	public void addBlobs(Collection<Blob> blobs) {
+		for(Blob b : blobs) {
+			if(b.getSize() < clusterSize) {
+				HashSet<Blob> neighbors = this.getPossibleMatchs(b.centerX, b.centerY);
+				HashSet<Blob> cluster = new HashSet<Blob>(neighbors);
+				b.setAndUpdateCluster(cluster);
+				for(Blob clusterBlob : neighbors) {
+					clusterBlob.setAndUpdateCluster(cluster);
+				}
+			}
+			addBlob(b);				
+			
+		}
+	}
+	
+	public HashSet<Blob> mergedBlobs() {
+		HashSet<Blob> newBlobs = new HashSet<Blob>(allBlobs.size());
+		HashSet<Blob> discardedBlobs = new HashSet<Blob>(allBlobs.size());
+		for(Blob b : allBlobs) {
+			if(! discardedBlobs.contains(b)) {
+				if(b.cluster != null) {
+					Blob newBlob = new Blob();
+					for(Blob clusterBlob : b.cluster) {
+						newBlob.cluster(clusterBlob);
+						discardedBlobs.add(clusterBlob);
+					}
+					discardedBlobs.add(b);
+					newBlobs.add(newBlob);
+				} else {
+					newBlobs.add(b);
+				}
+			}
+		}
+		return newBlobs;
+	}
+	
+
+	
+	
 	public void addBlob(Blob b) {
 		getCell(b.centerX, b.centerY).blobs.add(b);
 		allBlobs.add(b);
@@ -84,15 +123,22 @@ public class Grid {
 
 
 	// 1,0  ends up doing left hand having a problem (should be top)
- 	
+
 	public HashSet<Blob> getPossibleMatchs(float x, float y) {
 		HashSet<Blob> blobs = new HashSet<Blob>();
 
 		int gridX = (int) Math.floor(x * gridCellScaler);
 		int gridY = (int) Math.floor(y * gridCellScaler);
-
-//		System.out.println("getPossibleMatchs" + x + "," + y + "->" + gridX + "," + gridY);
 		
+		gridX = (gridX < 0) ? 0 : gridX;
+		gridX = (gridX >= gridWidth) ? gridWidth -1 : gridX;
+		
+		gridY = (gridY < 0) ? 0 : gridY;
+		gridY = (gridY >= gridHeight) ? gridHeight -1 : gridY;
+		
+
+		
+
 
 		blobs.addAll(cells[gridX][gridY].blobs);
 
@@ -108,66 +154,66 @@ public class Grid {
 		}
 		try {
 
-		switch(location) {
-		case ALL:
-			blobs.addAll(cells[gridX-1][gridY].blobs);
-			blobs.addAll(cells[gridX+1][gridY].blobs);
-			blobs.addAll(cells[gridX][gridY-1].blobs);
-			blobs.addAll(cells[gridX][gridY+1].blobs);
-			addWithinRange(x,y, cells[gridX-1][gridY-1], blobs);
-			addWithinRange(x,y, cells[gridX+1][gridY-1], blobs);
-			addWithinRange(x,y, cells[gridX-1][gridY+1], blobs);
-			addWithinRange(x,y, cells[gridX+1][gridY+1], blobs);
-			break;
-		case TOP:
-			blobs.addAll(cells[gridX-1][gridY].blobs);
-			blobs.addAll(cells[gridX+1][gridY].blobs);
-			blobs.addAll(cells[gridX][gridY+1].blobs);
-			addWithinRange(x,y, cells[gridX-1][gridY+1], blobs);
-			addWithinRange(x,y, cells[gridX+1][gridY+1], blobs);
-			break;
-		case BOTTOM:
-			blobs.addAll(cells[gridX-1][gridY].blobs);
-			blobs.addAll(cells[gridX+1][gridY].blobs);
-			blobs.addAll(cells[gridX][gridY-1].blobs);
-			addWithinRange(x,y, cells[gridX-1][gridY-1], blobs);
-			addWithinRange(x,y, cells[gridX+1][gridY-1], blobs);
-			break;
-		case LEFT:
-			blobs.addAll(cells[gridX+1][gridY].blobs);
-			blobs.addAll(cells[gridX][gridY-1].blobs);
-			blobs.addAll(cells[gridX][gridY+1].blobs);
-			addWithinRange(x,y, cells[gridX+1][gridY-1], blobs);
-			addWithinRange(x,y, cells[gridX+1][gridY+1], blobs);
-			break;
-		case RIGHT:
-			blobs.addAll(cells[gridX-1][gridY].blobs);
-			blobs.addAll(cells[gridX][gridY-1].blobs);
-			blobs.addAll(cells[gridX][gridY+1].blobs);
-			addWithinRange(x,y, cells[gridX-1][gridY-1], blobs);
-			addWithinRange(x,y, cells[gridX-1][gridY+1], blobs);
-			break;
-		case TOP_LEFT:
-			blobs.addAll(cells[gridX+1][gridY].blobs);
-			blobs.addAll(cells[gridX][gridY+1].blobs);
-			addWithinRange(x,y, cells[gridX+1][gridY+1], blobs);
-			break;
-		case TOP_RIGHT:
-			blobs.addAll(cells[gridX-1][gridY].blobs);
-			blobs.addAll(cells[gridX][gridY+1].blobs);
-			addWithinRange(x,y, cells[gridX-1][gridY+1], blobs);
-			break;
-		case BOTTOM_LEFT:
-			blobs.addAll(cells[gridX+1][gridY].blobs);
-			blobs.addAll(cells[gridX][gridY-1].blobs);
-			addWithinRange(x,y, cells[gridX+1][gridY-1], blobs);
-			break;
-		case BOTTOM_RIGHT:
-			blobs.addAll(cells[gridX-1][gridY].blobs);
-			blobs.addAll(cells[gridX][gridY-1].blobs);
-			addWithinRange(x,y, cells[gridX-1][gridY-1], blobs);
-			break;
-		}
+			switch(location) {
+			case ALL:
+				blobs.addAll(cells[gridX-1][gridY].blobs);
+				blobs.addAll(cells[gridX+1][gridY].blobs);
+				blobs.addAll(cells[gridX][gridY-1].blobs);
+				blobs.addAll(cells[gridX][gridY+1].blobs);
+				addWithinRangeAndSize(x,y, cells[gridX-1][gridY-1], blobs);
+				addWithinRangeAndSize(x,y, cells[gridX+1][gridY-1], blobs);
+				addWithinRangeAndSize(x,y, cells[gridX-1][gridY+1], blobs);
+				addWithinRangeAndSize(x,y, cells[gridX+1][gridY+1], blobs);
+				break;
+			case TOP:
+				blobs.addAll(cells[gridX-1][gridY].blobs);
+				blobs.addAll(cells[gridX+1][gridY].blobs);
+				blobs.addAll(cells[gridX][gridY+1].blobs);
+				addWithinRangeAndSize(x,y, cells[gridX-1][gridY+1], blobs);
+				addWithinRangeAndSize(x,y, cells[gridX+1][gridY+1], blobs);
+				break;
+			case BOTTOM:
+				blobs.addAll(cells[gridX-1][gridY].blobs);
+				blobs.addAll(cells[gridX+1][gridY].blobs);
+				blobs.addAll(cells[gridX][gridY-1].blobs);
+				addWithinRangeAndSize(x,y, cells[gridX-1][gridY-1], blobs);
+				addWithinRangeAndSize(x,y, cells[gridX+1][gridY-1], blobs);
+				break;
+			case LEFT:
+				blobs.addAll(cells[gridX+1][gridY].blobs);
+				blobs.addAll(cells[gridX][gridY-1].blobs);
+				blobs.addAll(cells[gridX][gridY+1].blobs);
+				addWithinRangeAndSize(x,y, cells[gridX+1][gridY-1], blobs);
+				addWithinRangeAndSize(x,y, cells[gridX+1][gridY+1], blobs);
+				break;
+			case RIGHT:
+				blobs.addAll(cells[gridX-1][gridY].blobs);
+				blobs.addAll(cells[gridX][gridY-1].blobs);
+				blobs.addAll(cells[gridX][gridY+1].blobs);
+				addWithinRangeAndSize(x,y, cells[gridX-1][gridY-1], blobs);
+				addWithinRangeAndSize(x,y, cells[gridX-1][gridY+1], blobs);
+				break;
+			case TOP_LEFT:
+				blobs.addAll(cells[gridX+1][gridY].blobs);
+				blobs.addAll(cells[gridX][gridY+1].blobs);
+				addWithinRangeAndSize(x,y, cells[gridX+1][gridY+1], blobs);
+				break;
+			case TOP_RIGHT:
+				blobs.addAll(cells[gridX-1][gridY].blobs);
+				blobs.addAll(cells[gridX][gridY+1].blobs);
+				addWithinRangeAndSize(x,y, cells[gridX-1][gridY+1], blobs);
+				break;
+			case BOTTOM_LEFT:
+				blobs.addAll(cells[gridX+1][gridY].blobs);
+				blobs.addAll(cells[gridX][gridY-1].blobs);
+				addWithinRangeAndSize(x,y, cells[gridX+1][gridY-1], blobs);
+				break;
+			case BOTTOM_RIGHT:
+				blobs.addAll(cells[gridX-1][gridY].blobs);
+				blobs.addAll(cells[gridX][gridY-1].blobs);
+				addWithinRangeAndSize(x,y, cells[gridX-1][gridY-1], blobs);
+				break;
+			}
 
 		} catch (RuntimeException e) {
 			System.out.println("(" + x + ", " + y + ") -> [" + gridX + "][" + gridY + "]   LOC:" + location );
@@ -179,17 +225,18 @@ public class Grid {
 
 	}
 
+	public void setClusterSize(int size) {
+		this.clusterSize = size;
+	}
 
-	private void addWithinRange(float x, float y, Cell cell, Collection<Blob> blobs) {
+	private void addWithinRangeAndSize(float x, float y, Cell cell, Collection<Blob> blobs) {
 		for(Blob b : cell.blobs) {
-			if(b.distSqr(x, y) <= maxBlobMoveDistSqr) {
+			if((b.getSize() < this.clusterSize) && (b.distSqr(x, y) <= maxBlobDistSqr)) {
 				blobs.add(b);
 			}
 		}
-
-
 	}
-	
+
 //	ALL          15
 //	TOP          11
 //	BOTTOM       7
@@ -202,15 +249,15 @@ public class Grid {
 
 
 //	public static void main(String arg[]) {
-//		System.out.println("ALL          "  + (1 | 2 | 4| 8));
-//		System.out.println("TOP          "  + (1 | 2 | 8));
-//		System.out.println("BOTTOM       "  + (1 | 2 | 4));
-//		System.out.println("RIGHT        "  + (1 |   4| 8));
-//		System.out.println("LEFT         "  + ( 2 | 4| 8));
-//		System.out.println("TOP_RIGHT    "  + (1 |  8));
-//		System.out.println("TOP_LEFT     "  + (2| 8));
-//		System.out.println("BOTTOM_RIGHT "  + (1|4));
-//		System.out.println("BOTTOM_LEFT  "  + (2 | 4));
+//	System.out.println("ALL          "  + (1 | 2 | 4| 8));
+//	System.out.println("TOP          "  + (1 | 2 | 8));
+//	System.out.println("BOTTOM       "  + (1 | 2 | 4));
+//	System.out.println("RIGHT        "  + (1 |   4| 8));
+//	System.out.println("LEFT         "  + ( 2 | 4| 8));
+//	System.out.println("TOP_RIGHT    "  + (1 |  8));
+//	System.out.println("TOP_LEFT     "  + (2| 8));
+//	System.out.println("BOTTOM_RIGHT "  + (1|4));
+//	System.out.println("BOTTOM_LEFT  "  + (2 | 4));
 //	}
 
 }
