@@ -50,7 +50,7 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 	
 	private LAFACEMain main;
 	private Scrollbar dampingSlider, fpuSlider, yoffsetSlider, dxSlider, cSlider, brightnessSlider, alphaSlider;
-	private Scrollbar traceSpeedSlider;
+	private Scrollbar traceSpeedSlider, xOffsetSlider, xScaleSlider;
 	private JButton resetWaveButton, saveWavesButton, clearDrawTestButton, leftImpulse, rightImpulse;
 	private JCheckBox tintBlueButton;
 	private DefaultListModel waveListModel;
@@ -74,8 +74,7 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		tabbedPane.addTab("Draw Test", makeDrawTestPanel());
 		tabbedPane.addTab("Trace Test", makeTraceTestPanel());
 		tabbedPane.addTab("Wave Show", makeWaveShowPanel());
-		//tabbedPane.addTab("Reflection Show", makeReflectionPanel());
-		tabbedPane.addTab("Reflection Show", makeWaveShowPanel());
+		tabbedPane.addTab("Reflection Show", makeReflectionPanel());
 		
 		tabbedPane.setMinimumSize(new Dimension((width/4)*3,height));
 		tabbedPane.setSelectedIndex(3);
@@ -217,6 +216,26 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		JPanel panel = new JPanel(false);
         panel.setLayout(new MigLayout(""));
 		panel.setMinimumSize(new Dimension((width/4)*3,height));
+		
+		JPanel sliderPanel = new JPanel(false);
+		sliderPanel.setLayout(new MigLayout(""));
+		
+		sliderPanel.add(new Label("X-Offset", Label.RIGHT));
+		xOffsetSlider = new Scrollbar(Scrollbar.HORIZONTAL, 50, 1, -300, 300);
+		xOffsetSlider.setForeground(Color.black);
+		xOffsetSlider.setBackground(Color.white);
+		xOffsetSlider.setMinimumSize(new Dimension(200, 16));
+		sliderPanel.add(xOffsetSlider, "wrap");
+		
+		sliderPanel.add(new Label("X-Scale", Label.RIGHT));
+		xScaleSlider = new Scrollbar(Scrollbar.HORIZONTAL, 1100, 1, 1048, 1500);
+		xScaleSlider.setForeground(Color.black);
+		xScaleSlider.setBackground(Color.white);
+		xScaleSlider.setMinimumSize(new Dimension(200, 16));
+		sliderPanel.add(xScaleSlider, "wrap");
+		
+		panel.add(sliderPanel);
+		
 		return panel;
 	}
 	
@@ -357,8 +376,16 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 	
 	public boolean handleEvent(Event e){
 		if(e.target instanceof Scrollbar){
+			Animation a  = main.getCurrentAnimation();
+			if(a instanceof Reflection2){
+				if(e.target.equals(xOffsetSlider)){
+					((Reflection2)a).setXoffset(xOffsetSlider.getValue());
+				} else if(e.target.equals(xScaleSlider)){
+					((Reflection2)a).setXscale(xScaleSlider.getValue());
+				}
+			}
+			
 			if(currentWaveID != -1){					// if a wave sprite has been selected in the wave list...
-				Animation a  = main.getCurrentAnimation();
 				if(a instanceof WaveShow){			// confirm show is WaveShow
 					ConcurrentHashMap<Integer, Wave> waves = ((WaveShow) a).getWaves();
 					Wave wave = waves.get(currentWaveID);

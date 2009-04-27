@@ -181,10 +181,10 @@ public class Tracker extends Thread implements TrackListener, MoverListener, Tar
 
 	public void targetEvent(Target target) {
 		//System.out.println("target "+target.getID() + " event");
-		if(target.isDead()){
+		//if(target.isDead()){
 			targets.remove(target.getID());
 			//System.out.println("target "+target.getID() + " removed");
-		}
+		//}
 	}
 
 }

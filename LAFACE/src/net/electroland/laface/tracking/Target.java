@@ -28,10 +28,11 @@ public class Target {
 	private LinkedList<Float> ypositions;
 	private int sampleCount;
 	private long startTime;
+	private int timeOut;
 	private float xvec, yvec;
 	private boolean trackAlive;
 	private boolean dead;
-	private List<TargetListener> listeners;	// TODO should be changed to TargetListener
+	private List<TargetListener> listeners;
 
 	public Target(Track track){
 		this.track = track;
@@ -46,6 +47,7 @@ public class Target {
 		xpositions = new LinkedList<Float>();
 		ypositions = new LinkedList<Float>();
 		listeners = new ArrayList<TargetListener>();
+		timeOut = 10000;	// 10 seconds MAX before forced removal
 		startTime = System.currentTimeMillis();
 	}
 	
@@ -73,7 +75,6 @@ public class Target {
 			if(lasttrackx != newx){			// check track location to see if it's still dead
 				trackAlive = true;			// if not, set alive again
 			} else {						// if still dead...
-				//float xdiff = x - pastx;	// TODO change this to an average speed based on multiple past points
 				Iterator<Float> iter = xpositions.iterator();
 				float lastpos = 0;
 				if(iter.hasNext()){			// grab first one
@@ -139,6 +140,10 @@ public class Target {
 		return dead;
 	}
 	
+	public boolean isTrackAlive(){
+		return trackAlive;
+	}
+	
 	public void addListener(TargetListener l){
 		listeners.add(l);
 	}
@@ -146,6 +151,10 @@ public class Target {
 	private void checkIfDead(){
 		//System.out.println(id+" "+x);
 		if((getXvec() > 0 && x > 1) || (getXvec() < 0 && x < 0)){	// wait till they move off screen to die
+			dead = true;
+			die();
+		}
+		if(System.currentTimeMillis() - startTime > timeOut){
 			dead = true;
 			die();
 		}

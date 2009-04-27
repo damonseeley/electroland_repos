@@ -47,11 +47,15 @@ public class Reflection2 implements Animation {
 			c.beginDraw();
 			c.background(0);
 			
-			synchronized(main.tracker){	// TODO is this safe?
+			//synchronized(main.tracker){	// TODO is this safe?
 				ConcurrentHashMap<Integer,Target> targets = main.tracker.getTargets();
+				int alive = 0;
 				Iterator<Target> iter = targets.values().iterator();
 				while(iter.hasNext()){
 					Target t = iter.next();
+					if(t.isTrackAlive()){
+						alive++;
+					}
 					int width = 50;
 					if(blobSizeMode){
 						width = (int)(t.getWidth()*xscale);
@@ -59,7 +63,8 @@ public class Reflection2 implements Animation {
 					//c.image(texture, ((int)((t.getX()*xscale) - (width/2))) - xoffset, 0, width, c.height);	// for testing via gui
 					c.image(texture, (xscale - ((int)((t.getX()*xscale) - (width/2)))) - xoffset , 0, width, c.height);		// must mirror output for lights
 				}
-			}
+				//System.out.println("targets: "+ targets.size() + " alive: "+alive);
+			//}
 			
 //			Iterator<Sprite> iter = sprites.values().iterator();
 //			while(iter.hasNext()){
@@ -76,6 +81,14 @@ public class Reflection2 implements Animation {
 
 	public boolean isDone() {
 		return false;
+	}
+	
+	public void setXoffset(int xoffset){
+		this.xoffset = xoffset;
+	}
+	
+	public void setXscale(int xscale){
+		this.xscale = xscale;
 	}
 
 }
