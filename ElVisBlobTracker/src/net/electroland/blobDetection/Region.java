@@ -15,6 +15,12 @@ public class Region {
 	public int framesUntilCertainTrack;
 	public int framesUntilDeleteTrack; // persistance
 	
+	public int maxClusteringSize;
+	public float maxClusteringDist;
+	
+	public float velocityMatchPercentage;
+
+	
 	public Region(int i) {
 		id = i;
 		minBlobSize = ElProps.THE_PROPS.getProperty("minBlobSize" + i, 50);
@@ -25,6 +31,12 @@ public class Region {
 		provisionalPenalty = ElProps.THE_PROPS.getProperty("provisionalPenalty" + i, maxTrackMove);
 		framesUntilCertainTrack = ElProps.THE_PROPS.getProperty("framesUntilCertainTrack" + i, 20);
 		framesUntilDeleteTrack = ElProps.THE_PROPS.getProperty("framesUntilDeleteTrack" + i, 40);
+		
+		
+		maxClusteringSize = ElProps.THE_PROPS.getProperty("maxClusteringSize" + i, -1);
+		maxClusteringDist = ElProps.THE_PROPS.getProperty("maxClusteringDist" + i, 0);
+		velocityMatchPercentage = ElProps.THE_PROPS.getProperty("velocityMatchPercentage" + i, -1);
+		
 	}
 
 }
