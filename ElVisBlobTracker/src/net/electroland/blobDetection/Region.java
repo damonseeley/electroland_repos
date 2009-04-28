@@ -35,7 +35,7 @@ public class Region {
 		
 		maxClusteringSize = ElProps.THE_PROPS.getProperty("maxClusteringSize" + i, -1);
 		maxClusteringDist = ElProps.THE_PROPS.getProperty("maxClusteringDist" + i, 0);
-		velocityMatchPercentage = ElProps.THE_PROPS.getProperty("velocityMatchPercentage" + i, -1);
+		velocityMatchPercentage = ElProps.THE_PROPS.getProperty("velocityMatchPercentage" + i, -1.0f);
 		
 	}
 
