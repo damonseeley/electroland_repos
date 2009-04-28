@@ -24,8 +24,8 @@ public class Target {
 	private float width, height;		// width and height
 	private float startx, starty;
 	private float lasttrackx, lasttracky;
-	private LinkedList<Float> xpositions;
-	private LinkedList<Float> ypositions;
+	public LinkedList<Float> xpositions;
+	public LinkedList<Float> ypositions;
 	private int sampleCount;
 	private long startTime;
 	private int timeOut;
@@ -142,6 +142,10 @@ public class Target {
 	
 	public boolean isTrackAlive(){
 		return trackAlive;
+	}
+	
+	public boolean isTrackProvisional(){
+		return track.isProvisional();
 	}
 	
 	public void addListener(TargetListener l){

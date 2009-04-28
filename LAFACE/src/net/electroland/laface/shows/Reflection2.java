@@ -20,15 +20,16 @@ public class Reflection2 implements Animation, SpriteListener {
 	private Raster r;
 	private ConcurrentHashMap<Integer,Sprite> sprites;		// used for drawing all sprites
 	private LAFACEMain main;
-	private PImage texture;
+	private PImage leftarrow, rightarrow;
 	private int xscale;	// canvas width + margins where camera image is not in front of lighting grid
 	private int xoffset;	// compensating for margin
-	private boolean blobSizeMode = true;	// TODO toggle this to make sprite size dynamic
+	private boolean blobSizeMode = false;	// TODO toggle this to make sprite size dynamic
 	
-	public Reflection2(LAFACEMain main, Raster r, PImage texture){
+	public Reflection2(LAFACEMain main, Raster r, PImage leftarrow, PImage rightarrow){
 		this.main = main;
 		this.r = r;
-		this.texture = texture;
+		this.leftarrow = leftarrow;
+		this.rightarrow = rightarrow;
 		sprites = new ConcurrentHashMap<Integer,Sprite>();
 	}
 	
@@ -55,12 +56,12 @@ public class Reflection2 implements Animation, SpriteListener {
 						alive++;
 					}
 
-					int width = 50;
+					int width = c.height;
 					if(blobSizeMode){
 						width = (int)(t.getWidth()*xscale);
 					}
 					if(!sprites.containsKey(t.getID())){
-						Reflector reflector = new Reflector(t.getID(), r, (xscale - ((int)((t.getX()*xscale) - (width/2)))) - xoffset, 0, texture, t);
+						Reflector reflector = new Reflector(t.getID(), r, (xscale - ((int)((t.getX()*xscale) - (width/2)))) - xoffset, 0, leftarrow, rightarrow, t);
 						reflector.setWidth(width);
 						reflector.addListener(this);
 						sprites.put(t.getID(), reflector);
@@ -69,9 +70,6 @@ public class Reflection2 implements Animation, SpriteListener {
 						reflector.setWidth(width);
 						reflector.moveTo((xscale - ((int)((t.getX()*xscale) - (width/2)))) - xoffset, 0);
 					}
-					
-					//c.image(texture, ((int)((t.getX()*xscale) - (width/2))) - xoffset, 0, width, c.height);	// for testing via gui
-					//c.image(texture, (xscale - ((int)((t.getX()*xscale) - (width/2)))) - xoffset , 0, width, c.height);		// must mirror output for lights
 				}
 				//System.out.println("sprites: " + sprites.size() + " targets: "+ targets.size() + " alive: "+alive);
 			//}

@@ -458,7 +458,7 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 			// switch to Reflection Show
 			Raster raster = main.getRaster();
 			main.rasterPanel.setRaster(raster);
-			Animation a = new Reflection2(main, raster, main.linearGradient);
+			Animation a = new Reflection2(main, raster, main.leftarrow, main.rightarrow);
 			Collection<Recipient> fixtures = main.dmr.getRecipients();
 			main.amr.startAnimation(a, fixtures); 
 		}

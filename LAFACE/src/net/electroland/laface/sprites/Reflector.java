@@ -8,16 +8,17 @@ import net.electroland.lighting.detector.animation.Raster;
 
 public class Reflector extends Sprite {
 	
-	private PImage texture;
+	private PImage leftarrow, rightarrow;
 	private Target target;
 	private int alpha;
 	private long startTime;
 	private int fadeDuration;
 	private boolean fadeOut;
 
-	public Reflector(int id, Raster raster, float x, float y, PImage texture, Target target) {
+	public Reflector(int id, Raster raster, float x, float y, PImage leftarrow, PImage rightarrow, Target target) {
 		super(id, raster, x, y);
-		this.texture = texture;
+		this.leftarrow = leftarrow;
+		this.rightarrow = rightarrow;
 		this.target = target;
 		alpha = 255;
 		fadeDuration = 1000;
@@ -28,13 +29,18 @@ public class Reflector extends Sprite {
 	public void draw(Raster r) {
 		if(r.isProcessing()){
 			PGraphics c = (PGraphics)(r.getRaster());
-			c.tint(255,255,255,alpha);
-			c.image(texture, x, y, width, c.height);
+			if(!target.isTrackProvisional() && target.xpositions.size() > 1){
+				c.tint(255,255,255,alpha);
+				if(target.getXvec() < 0){
+					c.image(rightarrow, x, y, width, c.height);
+				} else {
+					c.image(leftarrow, x, y, width, c.height);
+				}
+			}
 		}
 		if(target.isDead() && !fadeOut){	// if fully dead, and removed from targets list...
 			startTime = System.currentTimeMillis();
 			fadeOut = true;
-			//die();
 		}
 		if(fadeOut){
 			if(System.currentTimeMillis() - startTime < fadeDuration){

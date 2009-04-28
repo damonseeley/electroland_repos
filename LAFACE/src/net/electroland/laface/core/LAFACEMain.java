@@ -48,7 +48,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 	private int guiHeight = 310;
 	public Raster firstRaster, secondRaster, thirdRaster;
 	public CarTracker carTracker;
-	public PImage highlight, linearGradient;
+	public PImage highlight, linearGradient, leftarrow, rightarrow, verticalGradient;
 	public Tracker tracker;
 
 	public LAFACEMain() throws UnknownHostException, OptionException{
@@ -74,6 +74,9 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		
 		highlight = rasterPanel.loadImage("depends//images//highlight.png");
 		linearGradient = rasterPanel.loadImage("depends//images//linear.png");
+		leftarrow = rasterPanel.loadImage("depends//images//leftarrow.png");
+		rightarrow = rasterPanel.loadImage("depends//images//rightarrow.png");
+		verticalGradient = rasterPanel.loadImage("depends//images//vertical_linear.png");
 
 		firstRaster = getRaster();	// first wave show
 		secondRaster = getRaster();	// second wave show
@@ -84,6 +87,10 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		controlPanel = new ControlPanel(this);
 		add(controlPanel, "wrap");
 
+		// this gets rid of exception for not using native acceleration
+		System.setProperty("com.sun.media.jai.disableMediaLib", "true");
+		
+		// this is running the blob tracker server
 		tracker = new Tracker(this, 3);
 		tracker.start();
 		
@@ -98,7 +105,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		Collection<Recipient> fixtures = dmr.getRecipients();
 		//amr.startAnimation(a, fixtures); 					// start the wave show
 		//Animation highlighter = new Highlighter(secondRaster, highlight);
-		Animation newa = new Reflection2(this, firstRaster, highlight);
+		Animation newa = new Reflection2(this, firstRaster, leftarrow, rightarrow);
 		amr.startAnimation(newa, fixtures);
 		amr.goLive(); 
 		controlPanel.refreshWaveList();
@@ -106,15 +113,6 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		
 		//Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){amr.getCurrentAnimation(dmr.getRecipient("face0")).cleanUp();}});
 		
-		// this gets rid of exception for not using native acceleration
-		System.setProperty("com.sun.media.jai.disableMediaLib", "true");
-		
-		// start CarTracker here
-		//carTracker = new CarTracker(this);
-		//carTracker.addTrackListener((TrackListener) highlighter);	// highlighter displays locations
-		//carTracker.addTrackListener((TrackListener) a);
-		//carTracker.start();
-
 		setResizable(true);
 		setVisible(true);
 		rasterPanel.init();
