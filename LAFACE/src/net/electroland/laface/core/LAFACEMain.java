@@ -20,6 +20,7 @@ import net.electroland.blobDetection.match.TrackListener;
 import net.electroland.laface.gui.ControlPanel;
 import net.electroland.laface.gui.RasterPanel;
 import net.electroland.laface.shows.DrawTest;
+import net.electroland.laface.shows.Floaters;
 import net.electroland.laface.shows.Highlighter;
 import net.electroland.laface.shows.Reflection2;
 import net.electroland.laface.shows.WaveShow;
@@ -76,7 +77,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		linearGradient = rasterPanel.loadImage("depends//images//linear.png");
 		leftarrow = rasterPanel.loadImage("depends//images//leftarrow.png");
 		rightarrow = rasterPanel.loadImage("depends//images//rightarrow.png");
-		verticalGradient = rasterPanel.loadImage("depends//images//vertical_linear.png");
+		verticalGradient = rasterPanel.loadImage("depends//images//linear_vertical.png");
 
 		firstRaster = getRaster();	// first wave show
 		secondRaster = getRaster();	// second wave show
@@ -106,6 +107,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		//amr.startAnimation(a, fixtures); 					// start the wave show
 		//Animation highlighter = new Highlighter(secondRaster, highlight);
 		Animation newa = new Reflection2(this, firstRaster, leftarrow, rightarrow);
+		//Animation newa = new Floaters(this, firstRaster, verticalGradient);
 		amr.startAnimation(newa, fixtures);
 		amr.goLive(); 
 		controlPanel.refreshWaveList();
