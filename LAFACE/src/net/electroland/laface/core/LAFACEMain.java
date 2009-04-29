@@ -22,6 +22,7 @@ import net.electroland.laface.gui.RasterPanel;
 import net.electroland.laface.shows.DrawTest;
 import net.electroland.laface.shows.Floaters;
 import net.electroland.laface.shows.Highlighter;
+import net.electroland.laface.shows.ImageSequence;
 import net.electroland.laface.shows.Reflection2;
 import net.electroland.laface.shows.WaveShow;
 import net.electroland.laface.sprites.Wave;
@@ -51,6 +52,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 	public CarTracker carTracker;
 	public PImage highlight, linearGradient, leftarrow, rightarrow, verticalGradient;
 	public Tracker tracker;
+	public ImageSequenceCache imageCache;	// only needed for testing
 
 	public LAFACEMain() throws UnknownHostException, OptionException{
 		super("LAFACE Control Panel");
@@ -108,6 +110,19 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		//Animation highlighter = new Highlighter(secondRaster, highlight);
 		Animation newa = new Reflection2(this, firstRaster, leftarrow, rightarrow);
 		//Animation newa = new Floaters(this, firstRaster, verticalGradient);
+		
+		try {
+			Properties imageProps = new Properties();
+			imageProps.load(new FileInputStream(new File("depends//images.properties")));
+			imageCache = new ImageSequenceCache(imageProps, rasterPanel);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		// TODO uncomment this to test direct tracking video
+		//Animation newa = new ImageSequence(firstRaster, imageCache.getSequence("test"));
+		
 		amr.startAnimation(newa, fixtures);
 		amr.goLive(); 
 		controlPanel.refreshWaveList();
