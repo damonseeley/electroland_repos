@@ -65,9 +65,6 @@ public class LilyPad implements Animation, SpriteListener {
 		this.sphereTexture = sphereTexture;
 		this.tileSize = (int)(((PGraphics)(r.getRaster())).height/11.0);
 		availableTiles = new ArrayList<Integer>();		// blank list of available tiles
-		for(int i=0; i<16*11; i++){					// for every tile...
-			availableTiles.add(i);						// every tile available at start
-		}
 		sprites = new ConcurrentHashMap<Integer,Sprite>();
 		pads = new ConcurrentHashMap<Integer,Pad>();
 		billiejean = new ConcurrentHashMap<Integer,Single>();
@@ -91,6 +88,7 @@ public class LilyPad implements Animation, SpriteListener {
 				}
 			}
 		}
+		processAvailableTiles();
 	}
 	
 	public void addSprite(Sprite sprite){

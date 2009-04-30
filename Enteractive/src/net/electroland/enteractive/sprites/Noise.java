@@ -30,7 +30,14 @@ public class Noise extends Sprite {
 	@Override
 	public void draw() {
 		if(wait && System.currentTimeMillis() - startTime < delay){
-			// waiting before animation begins
+			// slowly fill graphic with black
+			if(raster.isProcessing()){
+				PGraphics c = (PGraphics)canvas;
+				c.pushMatrix();
+				c.fill(0,0,0,(int)(((System.currentTimeMillis() - startTime) / (float)delay) * 255));
+				c.rect(0,0,c.width,c.height);
+				c.popMatrix();
+			}
 		} else if (wait && System.currentTimeMillis() - startTime >= delay){
 			startTime = System.currentTimeMillis();
 			wait = false;
