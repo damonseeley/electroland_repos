@@ -122,8 +122,8 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		
 		//currentAnimation = new ExampleAnimation(ptr.getModel(), raster, smr);
 		//Animation a = new Spotlight(ptr.getModel(), raster, smr, sphereTexture);
-		//Animation a = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture, sphereTexture);
-		Animation a = new Pong(ptr.getModel(), raster, smr, sphereTexture, pongTitle);
+		Animation a = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture, sphereTexture);
+		//Animation a = new Pong(ptr.getModel(), raster, smr, sphereTexture, pongTitle);
 		Collection<Recipient> fixtures = dmr.getRecipients();
 		amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
 		amr.goLive(); 										// the whole system does nothing unless you "start" it.
@@ -304,7 +304,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 			if(amr.getCurrentAnimation(floor) instanceof LilyPad){
 				Raster raster = getRaster();
 				((GUI)gui).setRaster(raster);
-				Animation a = new Pong(ptr.getModel(), raster, smr, pongTitle, ballTexture);
+				Animation a = new Pong(ptr.getModel(), raster, smr, ballTexture, pongTitle);
 				Collection<Recipient> fixtures = dmr.getRecipients();
 				//Animation transition = new LinearFade(2, getRaster());
 				amr.startAnimation(a, fixtures); 					// START PONG (3 points)

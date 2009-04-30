@@ -1,7 +1,9 @@
 package net.electroland.enteractive.shows;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import processing.core.PConstants;
@@ -50,7 +52,7 @@ public class LilyPad implements Animation, SpriteListener {
 	private PImage propellerTexture;
 	private PImage spiralTexture;
 	private PImage sphereTexture;
-	private boolean[] availableTiles;	// eliminates tiles next to other pads
+	private List<Integer> availableTiles;	// eliminates tiles next to other pads
 	
 	public LilyPad(Model m, Raster r, SoundManager sm, PImage rippleTexture, PImage sweepTexture, PImage propellerTexture, PImage spiralTexture, PImage sphereTexture){
 		this.m = m;
@@ -62,10 +64,13 @@ public class LilyPad implements Animation, SpriteListener {
 		this.spiralTexture = spiralTexture;
 		this.sphereTexture = sphereTexture;
 		this.tileSize = (int)(((PGraphics)(r.getRaster())).height/11.0);
+		availableTiles = new ArrayList<Integer>();		// blank list of available tiles
+		for(int i=0; i<16*11; i++){					// for every tile...
+			availableTiles.add(i);						// every tile available at start
+		}
 		sprites = new ConcurrentHashMap<Integer,Sprite>();
 		pads = new ConcurrentHashMap<Integer,Pad>();
 		billiejean = new ConcurrentHashMap<Integer,Single>();
-		availableTiles = new boolean[11*16];
 	}
 
 	public void initialize() {
@@ -100,6 +105,47 @@ public class LilyPad implements Animation, SpriteListener {
 		sprites.put(spriteIndex, sprite);
 		spriteIndex++;
 	}
+	
+	public void processAvailableTiles(){
+		boolean[] tileStates = new boolean[16*11];	// create fresh array of tile states
+		for(int i=0; i<tileStates.length; i++){		// for every tile...
+			tileStates[i] = true;						// set to available
+		}
+		// these loops prevent pads from being placed near the edges
+		for(int i=0; i<16; i++){						// set top row to false
+			tileStates[i] = false;
+		}
+		for(int i=tileStates.length-16; i<tileStates.length; i++){	// set bottom row to false
+			tileStates[i] = false;
+		}
+		for(int i=0; i<tileStates.length; i+=16){		// set left column to false
+			tileStates[i] = false;
+		}
+		for(int i=15; i<tileStates.length; i+=16){		// set right column to false
+			tileStates[i] = false;
+		}
+		
+		Iterator<Pad> paditer = pads.values().iterator();
+		while(paditer.hasNext()){						// for each pad...
+			Pad pad = paditer.next();
+			// since pads are always one tile away from edge, no need to check the position
+			tileStates[(int)pad.getY()*16 + (int)pad.getX()] = false;	// set pad tile to false
+			tileStates[(int)(pad.getY()-1)*16 + (int)pad.getX()-1] = false;	// top left
+			tileStates[(int)(pad.getY()-1)*16 + (int)pad.getX()] = false;		// top
+			tileStates[(int)(pad.getY()-1)*16 + (int)pad.getX()+1] = false;	// top right
+			tileStates[(int)pad.getY()*16 + (int)pad.getX()-1] = false;		// left
+			tileStates[(int)pad.getY()*16 + (int)pad.getX()+1] = false;		// right
+			tileStates[(int)(pad.getY()+1)*16 + (int)pad.getX()-1] = false;	// bottom left
+			tileStates[(int)(pad.getY()+1)*16 + (int)pad.getX()] = false;		// bottom
+			tileStates[(int)(pad.getY()+1)*16 + (int)pad.getX()+1] = false;	// bottom right
+		}
+		availableTiles.clear();							// blank list of available tiles
+		for(int i=0; i<tileStates.length; i++){		// for every tile...
+			if(tileStates[i]){							// if available...
+				availableTiles.add(i);					// add to available list...
+			}
+		}
+	}
 
 	public Raster getFrame() {
 		if(pads.size() < maxPads){			// if not maxed out on pads...
@@ -108,20 +154,18 @@ public class LilyPad implements Animation, SpriteListener {
 			} else {
 				if(Math.random() > padOdds){	// chance of creating a new pad
 					//Pad pad = new Pad(spriteIndex, r, (int)Math.floor(Math.random()*15.99f)+1, (int)Math.floor(Math.random()*9.99f)+1, sm, 0, 255, 500);
-					int xpos = (int)Math.floor(Math.random()*13.99f)+2;
-					int ypos = (int)Math.floor(Math.random()*7.99f)+2;
-					//while(!availableTiles[ypos*16 + xpos]){		// if not available...
-						//xpos = (int)Math.floor(Math.random()*13.99f)+2;
-						//ypos = (int)Math.floor(Math.random()*7.99f)+2;
-					//}
-					//availableTiles[ypos*16 + xpos] = false;
-					// TODO set surrounding tiles to false as well
+					//int xpos = (int)Math.floor(Math.random()*13.99f)+2;
+					//int ypos = (int)Math.floor(Math.random()*7.99f)+2;
+					int loc = availableTiles.get((int)(Math.random()*availableTiles.size()));
+					int xpos = loc % 16;
+					int ypos = loc / 16;					
 					Pad pad = new Pad(spriteIndex, r, xpos, ypos, sm, 0, 255, 500);
 					//pad.addListener(this);
 					//sprites.put(spriteIndex, pad);
 					pads.put(spriteIndex, pad);
 					delayCount = 0;
 					spriteIndex++;
+					processAvailableTiles();
 				}
 			}
 		}
