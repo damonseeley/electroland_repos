@@ -25,6 +25,7 @@ import net.electroland.enteractive.gui.Lights3D;
 import net.electroland.enteractive.scheduler.TimedEvent;
 import net.electroland.enteractive.scheduler.TimedEventListener;
 import net.electroland.enteractive.shows.LilyPad;
+import net.electroland.enteractive.shows.Plasma;
 import net.electroland.enteractive.shows.Pong;
 import net.electroland.enteractive.shows.Spotlight;
 import net.electroland.lighting.detector.DetectorManager;
@@ -124,6 +125,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		//Animation a = new Spotlight(ptr.getModel(), raster, smr, sphereTexture);
 		Animation a = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture, sphereTexture);
 		//Animation a = new Pong(ptr.getModel(), raster, smr, sphereTexture, pongTitle);
+		//Animation a = new Plasma(raster);
 		Collection<Recipient> fixtures = dmr.getRecipients();
 		amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
 		amr.goLive(); 										// the whole system does nothing unless you "start" it.
