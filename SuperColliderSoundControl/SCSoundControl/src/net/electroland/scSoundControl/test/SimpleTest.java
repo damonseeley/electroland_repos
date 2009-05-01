@@ -118,7 +118,7 @@ public class SimpleTest extends PApplet implements SCSoundControlNotifiable {
 		println("Server stopped.");
 	}
 
-	public void receiveNotification_ServerStatus(float averageCPUload, float peakCPUload) {
+	public void receiveNotification_ServerStatus(float averageCPUload, float peakCPUload, int numSynths) {
 		//simple test doesn't care how hard the computer is working.
 	}
 	

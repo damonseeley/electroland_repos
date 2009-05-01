@@ -247,7 +247,7 @@ public class TestApp extends PApplet implements SCSoundControlNotifiable {
 		println("Server stopped.");
 	}
 
-	public void receiveNotification_ServerStatus(float averageCPUload, float peakCPUload) {
+	public void receiveNotification_ServerStatus(float averageCPUload, float peakCPUload, int numSynths) {
 		avgCPU = averageCPUload;
 		peakCPU = peakCPUload;
 

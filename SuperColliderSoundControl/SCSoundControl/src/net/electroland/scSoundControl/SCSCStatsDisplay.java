@@ -15,6 +15,8 @@ public class SCSCStatsDisplay extends PApplet implements SCSoundControlNotifiabl
 	int avgCpuColor = 0xff23B476;
 	int peakCpuColor = 0xffA8B423;
 	int polyphonyColor = 0xff237BB4;
+	int numSynthsColor = 0xffC6662A;
+	int numSynths = 0;
 	
 	public void setup() {
 		avgCPUhistory = new Vector<Float>();
@@ -57,6 +59,8 @@ public class SCSCStatsDisplay extends PApplet implements SCSoundControlNotifiabl
 		if (peakCPUhistory.size() > 0) { text("% PeakCPU: " + nf(peakCPUhistory.get(0)*100f, 2, 1), 6, 40); }
 		fill(polyphonyColor);
 		if (polyphonyHistory.size() > 0) { text("% MaxPolyphony: " + nf(polyphonyHistory.get(0)*100f, 2, 1), 6, 60); }
+		fill(numSynthsColor);
+		text("NumSynths: " + numSynths, 6, 80);
 	}
 	
 
@@ -70,11 +74,12 @@ public class SCSCStatsDisplay extends PApplet implements SCSoundControlNotifiabl
 	}
 
 	//get server load update
-	public void receiveNotification_ServerStatus(float averageCPU, float peakCPU) {
+	public void receiveNotification_ServerStatus(float averageCPU, float peakCPU, int numCurSynths) {
 		avgCPUhistory.add(0, averageCPU/ 100f);
 		if (avgCPUhistory.size() > width) avgCPUhistory.removeElementAt(avgCPUhistory.size()-1);
 		peakCPUhistory.add(0, peakCPU/ 100f);
 		if (peakCPUhistory.size() > width) peakCPUhistory.removeElementAt(peakCPUhistory.size()-1);
+		numSynths = numCurSynths;
 		redraw();
 	}
 

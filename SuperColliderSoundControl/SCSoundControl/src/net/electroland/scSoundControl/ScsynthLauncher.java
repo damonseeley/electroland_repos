@@ -65,14 +65,14 @@ public class ScsynthLauncher {
 			{"SuperCollider_NumberOfOutputChannels", "-o", "8"},
 			{"SuperCollider_RealTimeRamAllocation", "-m", "8192"},
 			{"SuperCollider_UDPportNumber", "-u", "57110"}, 
-			{"SuperCollider_LoadSynthDefs", "-D", "1"},
-			{"SuperCollider_InputStreamsEnabled", "-I", "00000000"},
-			{"SuperCollider_OutputStreamsEnabled", "-O", "11111111"},
-			{"SuperCollider_AudioHardwareDeviceName", "-H", ""}
+			{"SuperCollider_LoadSynthDefs", "-D", "1"}
 	};
+	//{"SuperCollider_AudioHardwareDeviceName", "-H", ""},
+	//{"SuperCollider_InputStreamsEnabled", "-I", "00000000"},
+	//{"SuperCollider_OutputStreamsEnabled", "-O", "11111111"},
 
 	private String _execPath_string = "SuperCollider_Path";
-	private String _execPath = "/Applications/SuperCollider/scsyth"; //on a mac
+	private String _execPath = "";//"/Applications/SuperCollider/scsyth"; //on a mac
 
 	private String _maxPolyphony_string = "SCSoundControl_MaxPolyphony";
 	private String _maxPolyphony = "64";
@@ -95,6 +95,9 @@ public class ScsynthLauncher {
 	 * Make sure launch properties are properly set!
 	 */
 	public void launch() {
+		//don't launch if the path is empty
+		if (_execPath.compareTo("") == 0) return;
+		
 		if (_scsynthProcess != null) killScsynth();
 
 		/* Calculate values based on max polyphony:
@@ -108,6 +111,8 @@ public class ScsynthLauncher {
 		*  The ELenv nodes then connect directly to the hardware output busses. 
 		*  Plus there are input and output channel busses...
 		*/
+		
+		//These should not have hardcoded subscripts. Should be searching the array for a string match:
 		int maxNodes = 3 + (Integer.valueOf(_maxPolyphony) * (2 + Integer.valueOf(_scsynthParams[1][2])));
 		int numAudioBusses = Integer.valueOf(_scsynthParams[0][2]) 
 							+ Integer.valueOf(_scsynthParams[1][2]) 
@@ -131,6 +136,9 @@ public class ScsynthLauncher {
 		//we use no control busses, so leave 'em off.
 		args.add("-c");
 		args.add("0");
+		
+		System.out.println("launching scsynth:");
+		System.out.println(args);
 		
 		_builder.command(args);
 		_builder.directory(new File(_execPath).getParentFile());
@@ -174,7 +182,7 @@ public class ScsynthLauncher {
 	public void killScsynth() {
 		if (_scsynthProcess != null) _scsynthProcess.destroy();
 	}
-
+	
 	/**
 	 * Return the standard output of the scsynth process.
 	 * Used to feed a UI element to display output.

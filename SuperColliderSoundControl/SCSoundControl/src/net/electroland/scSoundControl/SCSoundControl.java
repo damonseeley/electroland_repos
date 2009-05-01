@@ -72,10 +72,10 @@ public class SCSoundControl implements OSCListener, Runnable {
 	
 	//load properties from a file
 	private Properties _props;
-	private String _propertiesFilename;
-	
+	private String _propertiesFilename;	
 	//the max polyphony, set in the properties file:
 	private int _maxPolyphony = 64;
+	
 	
 	/**
 	 * Create an instance of SCSoundControl, using the default properties file.
@@ -256,8 +256,8 @@ public class SCSoundControl implements OSCListener, Runnable {
 
 	public void shutdown() {
 		cleanup();
-		quitScsynth();
 		savePropertiesFile(_propertiesFilename);
+		quitScsynth();
 		//TODO if the quit message fails, need to kill scsynth
 		//_scsynthLauncher.killScsynth();
 	}
@@ -620,9 +620,13 @@ public class SCSoundControl implements OSCListener, Runnable {
 		//handle /status responses (status.reply)
 		else if (message.getAddress().matches("status.*")) {
 			//TODO update control panel display with status data
+			Integer numUgens = (Integer)(message.getArguments()[1]);
+			Integer numSynths = (Integer)(message.getArguments()[2]);
+			Integer numGroups = (Integer)(message.getArguments()[3]);
+			Integer numSynthdefs = (Integer)(message.getArguments()[4]);
 			Float avgCPU = (Float)(message.getArguments()[5]);
 			Float peakCPU = (Float)(message.getArguments()[6]);
-			handleServerStatusUpdate(avgCPU, peakCPU);
+			handleServerStatusUpdate(numUgens, numSynths, numGroups, numSynthdefs, avgCPU, peakCPU);
 		}
 		
 	}
@@ -735,7 +739,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 		}
 	}
 	
-	protected void handleServerStatusUpdate(float avgCPU, float peakCPU) {
+	protected void handleServerStatusUpdate(int numUgens, int numSynths, int numGroups, int numSynthdefs, float avgCPU, float peakCPU) {
 		_prevPingResponseTime = new Date();
 		
 		//if (!_serverLive || !_serverBooted) {
@@ -745,9 +749,9 @@ public class SCSoundControl implements OSCListener, Runnable {
 			this.init();
 		}
 		
-		if (_notifyListener != null) { _notifyListener.receiveNotification_ServerStatus(avgCPU, peakCPU); }
+		if (_notifyListener != null) { _notifyListener.receiveNotification_ServerStatus(avgCPU, peakCPU, numSynths); }
 		if (_controlPanel != null && _controlPanel._statsDisplay != null) {
-			_controlPanel._statsDisplay.receiveNotification_ServerStatus(avgCPU, peakCPU);
+			_controlPanel._statsDisplay.receiveNotification_ServerStatus(avgCPU, peakCPU, numSynths);
 			_controlPanel._statsDisplay.notify_currentPolyphony(_soundNodes.size() / (float)_maxPolyphony);
 		}
 		
