@@ -108,7 +108,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		Collection<Recipient> fixtures = dmr.getRecipients();
 		//amr.startAnimation(a, fixtures); 					// start the wave show
 		//Animation highlighter = new Highlighter(secondRaster, highlight);
-		Animation newa = new Reflection2(this, firstRaster, leftarrow, rightarrow);
+		//Animation newa = new Reflection2(this, firstRaster, leftarrow, rightarrow);
 		//Animation newa = new Floaters(this, firstRaster, verticalGradient);
 		
 		try {
@@ -121,7 +121,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 			e.printStackTrace();
 		}
 		// TODO uncomment this to test direct tracking video
-		//Animation newa = new ImageSequence(firstRaster, imageCache.getSequence("test"));
+		Animation newa = new ImageSequence(firstRaster, imageCache.getSequence("test"));
 		
 		amr.startAnimation(newa, fixtures);
 		amr.goLive(); 

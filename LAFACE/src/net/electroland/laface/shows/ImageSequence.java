@@ -27,8 +27,11 @@ public class ImageSequence implements Animation {
 			PGraphics c = (PGraphics)(r.getRaster());
 			c.beginDraw();
 			c.background(0);
-			c.image(sequence[index++], 0, 0);
+			c.image(sequence[index++], 0, 0, c.width, c.height);
 			c.endDraw();
+		}
+		if (index == sequence.length){
+			index = 0;
 		}
 		return r;
 	}
@@ -37,9 +40,9 @@ public class ImageSequence implements Animation {
 	}
 
 	public boolean isDone() {
-		if (index == sequence.length){
-			return true;
-		}
+		//if (index == sequence.length){
+			//return true;
+		//}
 		return false;
 	}
 
