@@ -6,6 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.electroland.udpUtils.UDPParser;
+import net.electroland.util.NoDataException;
+import net.electroland.util.RunningAverage;
+
 import org.apache.log4j.Logger;
 
 public class Model {
@@ -19,6 +22,9 @@ public class Model {
 	private boolean fourCornersOn = false;
 	private boolean oppositeCornersOn = false;
 	private boolean oppositeCorners2On = false;
+	private boolean empty = false;
+	private RunningAverage average;
+	private int numSamples, sampleRate;
 	
 	public Model(int gridWidth, int gridHeight){
 		this.gridWidth = gridWidth;
@@ -29,6 +35,11 @@ public class Model {
 		for(int i=0; i<sensors.length; i++){
 			sensors[i] = false;
 		}
+
+		// This will store and calculate running averages.
+		numSamples = 10;
+		sampleRate = 33;	// millis
+		average = new RunningAverage(numSamples);
 	}
 	
 	public void updateSensors(int offset, boolean[] data){
@@ -111,6 +122,20 @@ public class Model {
 				oppositeCorners2On = false;
 			}
 		}
+		
+		try {
+			if(average.getAvg() == 0 && !empty){
+				ModelEvent event = new ModelEvent(ModelConstants.EMPTY);
+				empty = true;
+				notifyListeners(event);
+			} else if(average.getAvg() > 0 && empty){
+				ModelEvent event = new ModelEvent(ModelConstants.NOT_EMPTY);
+				empty = false;
+				notifyListeners(event);
+			}
+		} catch (NoDataException e) {
+			//e.printStackTrace();
+		}
 	}
 	
 	public void addListener(ModelListener listener){
@@ -135,6 +160,14 @@ public class Model {
 	public HashMap<Integer,Person> getPeople(){
 		return people;
 	}
+
+	public void updateAverage(double averageSample){
+		average.addValue(averageSample, sampleRate);
+	}
+	
+	public double getAverage() throws NoDataException{
+		return average.getAvg();
+	}
 	
 	
 	
@@ -145,6 +178,8 @@ public class Model {
 		static public final int FOUR_CORNERS = 1;
 		static public final int OPPOSITE_CORNERS = 2;
 		static public final int OPPOSITE_CORNERS2 = 3;
+		static public final int EMPTY = 10;		// sent when average drops to 0
+		static public final int NOT_EMPTY = 11;	// sent when average goes from 0 to anything
 	}
 	
 

@@ -1,11 +1,10 @@
 package net.electroland.udpUtils;
+
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
-
 import net.electroland.enteractive.core.PersonTracker;
 import net.electroland.enteractive.utils.HexUtils;
-
 import org.apache.log4j.Logger;
 
 
@@ -81,6 +80,7 @@ public class UDPParser extends Thread {
 	}
 
 	public void run() {
+		
 		receiver.start();
 		while (isRunning) {
 			try {
@@ -91,6 +91,7 @@ public class UDPParser extends Thread {
 			} catch (InterruptedException e) {
 				logger.error(e.getMessage(), e);
 			}
+			personTracker.updateAverage((double)personTracker.getModel().getPeople().size());
 		}
 	}
 

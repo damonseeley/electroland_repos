@@ -132,7 +132,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 	}
 
 	public void completed(Animation a) {
-		// TODO Switch to a new animation
+		// switch to a new animation
 		System.out.println("animation " + a + " completed!");
 		if (a instanceof Spotlight || a instanceof Pong){
 			Raster raster = getRaster();
@@ -144,8 +144,6 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		// TODO this is temporary; needs a better method for transitioning between shows
-		// TODO how to stop an animation by force???
 		//System.out.println(e.getActionCommand());
 		
 		if(e.getActionCommand().equals("comboBoxChanged")){
@@ -312,6 +310,26 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 				amr.startAnimation(a, fixtures); 					// START PONG (3 points)
 			}
 			
+		} else if(e.getType() == Model.ModelConstants.EMPTY){
+			System.out.println("area empty");
+			// switch to SCREENSAVER
+			
+			Raster raster = getRaster();
+			((GUI)gui).setRaster(raster);
+			Animation a = new Plasma(raster);
+			Collection<Recipient> fixtures = dmr.getRecipients();
+			Animation transition = new LinearFade(5, getRaster());
+			amr.startAnimation(a, transition, fixtures);			// START SCREENSAVER
+		} else if(e.getType() == Model.ModelConstants.NOT_EMPTY){
+			System.out.println("area re-activated");
+			// switch back to LILYPAD
+			
+			Raster raster = getRaster();
+			((GUI)gui).setRaster(raster);
+			Animation next = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture, sphereTexture);
+			Collection<Recipient> fixtures = dmr.getRecipients();
+			Animation transition = new LinearFade(1, getRaster());
+			amr.startAnimation(next, transition, fixtures);			// START LILYPAD
 		}
 	}
 	

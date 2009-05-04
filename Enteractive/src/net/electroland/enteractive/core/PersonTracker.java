@@ -29,4 +29,8 @@ public class PersonTracker {
 		model.updateSensors(offset, newdata);
 	}
 	
+	public void updateAverage(double average){
+		model.updateAverage(average);
+	}
+	
 }
