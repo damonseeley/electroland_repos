@@ -85,6 +85,11 @@ public class Lights3D extends PApplet{
 			rotateY(radians(-90));
 			translate(-tileSize*floorWidth/4, -tileSize*floorWidth/2, 0);
 		}
+
+		fill(255,255,255,20);
+		translate(0,0,-1);
+		rect(-1, -1, faceWidth*12, faceHeight*24 - 12);
+		translate(0,0,1);
 		
 		try{
 			ListIterator<Detector> i = face.getDetectorPatchList().listIterator();
@@ -124,6 +129,10 @@ public class Lights3D extends PApplet{
 		try{
 			ListIterator<Detector> i = floor.getDetectorPatchList().listIterator();
 			int channel = 0;
+			fill(255,255,255,20);
+			translate(0,0,-1);
+			rect(-1, -1, floorWidth*12, floorHeight*12);
+			translate(0,0,1);
 			noFill();
 			while(i.hasNext()){
 				Detector d = i.next();

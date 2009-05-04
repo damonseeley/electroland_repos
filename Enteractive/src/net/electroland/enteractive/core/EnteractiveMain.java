@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Properties;
 
@@ -24,10 +25,14 @@ import net.electroland.enteractive.gui.GUI;
 import net.electroland.enteractive.gui.Lights3D;
 import net.electroland.enteractive.scheduler.TimedEvent;
 import net.electroland.enteractive.scheduler.TimedEventListener;
+import net.electroland.enteractive.shows.Blackout;
 import net.electroland.enteractive.shows.LilyPad;
 import net.electroland.enteractive.shows.Plasma;
 import net.electroland.enteractive.shows.Pong;
 import net.electroland.enteractive.shows.Spotlight;
+import net.electroland.enteractive.weather.WeatherChangeListener;
+import net.electroland.enteractive.weather.WeatherChangedEvent;
+import net.electroland.enteractive.weather.WeatherChecker;
 import net.electroland.lighting.detector.DetectorManager;
 import net.electroland.lighting.detector.DetectorManagerJPanel;
 import net.electroland.lighting.detector.Recipient;
@@ -44,7 +49,7 @@ import processing.core.PConstants;
 import processing.core.PImage;
 
 @SuppressWarnings("serial")
-public class EnteractiveMain extends JFrame implements AnimationListener, ActionListener, TimedEventListener, ModelListener{
+public class EnteractiveMain extends JFrame implements AnimationListener, ActionListener, TimedEventListener, ModelListener, WeatherChangeListener{
 	
 	private DetectorManager dmr;
 	private DetectorManagerJPanel dmp;
@@ -56,8 +61,13 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 	private PersonTracker ptr;
 	private UDPParser udp;
 	private Properties lightProps;
+	private WeatherChecker weatherChecker;
 	private int guiWidth = 180;	// TODO get from properties
 	private int guiHeight = 110;
+	private TimedEvent sunriseOn = new TimedEvent(5,00,00, this); // on at sunrise-1 based on weather
+	private TimedEvent middayOff = new TimedEvent(11,00,00, this); // off at 11 AM for sun reasons
+	private TimedEvent sunsetOn = new TimedEvent(16,00,00, this); // on at sunset-1 based on weather
+	private TimedEvent nightOff = new TimedEvent(1,00,00, this); // off at 1 AM
 	private String[] animationList;
 	private JComboBox animationDropDown, displayDropDown, rasterDropDown;
 	PImage rippleTexture, sweepTexture, sphereTexture, propellerTexture, spiralTexture;
@@ -92,7 +102,8 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-		Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){amr.getCurrentAnimation(dmr.getRecipient("floor")).cleanUp();}});
+		
+		Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){amr.startAnimation(new Blackout(getRaster(), 1000, null, false), dmr.getRecipients());}});
 		//Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){tcu.billyJeanMode();}});
 		
 		addWindowListener(new WindowAdapter() {
@@ -112,6 +123,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		lights3D.init();
 		gui.init();
 		
+		
 		// LOAD IMAGE SPRITES FOR SHOWS
 		rippleTexture = gui.loadImage("depends//images//ripple.png");
 		sweepTexture = gui.loadImage("depends//images//sweep.png");
@@ -129,6 +141,11 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		Collection<Recipient> fixtures = dmr.getRecipients();
 		amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
 		amr.goLive(); 										// the whole system does nothing unless you "start" it.
+
+		// wait 6 secs (for things to get started up) then check weather once a day
+		weatherChecker = new WeatherChecker(6000, 24 * 60 * 60 * 1000);
+		weatherChecker.addListener(this);
+		weatherChecker.start();
 	}
 
 	public void completed(Animation a) {
@@ -277,7 +294,28 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 	}
 
 	public void timedEvent(TimedEvent event) {
-		// TODO Trigger a big event periodically
+		// TODO activate/deactivate the face of the building
+		System.out.println("timed event");
+		if(event == sunriseOn) {
+			// activate
+			Recipient face = dmr.getRecipient("face");
+			//face.toggleDetectors();
+		} else if (event == middayOff) {
+			// deactivate
+			Recipient face = dmr.getRecipient("face");
+			
+			//Animation a = new Blackout(getRaster(), 1000, face, false);
+			//amr.startAnimation(a, face);
+			//face.toggleDetectors();
+		} else if (event == sunsetOn){
+			// activate
+			Recipient face = dmr.getRecipient("face");
+			//face.toggleDetectors();
+		} else if (event == nightOff){
+			// deactivate
+			Recipient face = dmr.getRecipient("face");
+			//face.toggleDetectors();
+		}
 	}
 
 	public void modelEvent(ModelEvent e) {
@@ -341,6 +379,29 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 			e.printStackTrace();
 		} catch (OptionException e) {
 			e.printStackTrace();
+		}
+	}
+
+	public void tempUpdate(float tu) {
+		// TODO used for monitoring temp of system
+	}
+
+	public void weatherChanged(WeatherChangedEvent wce) {
+		if(wce.hasSunriseChanged()) {
+			Calendar sunrise = wce.getRecord().getSunrise();
+			int h = sunrise.get(Calendar.HOUR_OF_DAY);
+			int m = sunrise.get(Calendar.MINUTE);
+			int s = sunrise.get(Calendar.SECOND);
+			System.out.println("Sunrise at " + h + ":" + m + ":" + s);
+			sunriseOn.reschedule(h-1, m, s); // turn on an hour before sunrise
+		}
+		if(wce.hasSunsetChanged()) {
+			Calendar sunset = wce.getRecord().getSunset();
+			int h = sunset.get(Calendar.HOUR_OF_DAY);
+			int m = sunset.get(Calendar.MINUTE);
+			int s = sunset.get(Calendar.SECOND);
+			System.out.println("Sunset at " + h + ":" + m + ":" + s);
+			sunsetOn.reschedule(h - 1, m, s); // turn on 1 hour before sunset
 		}
 	}
 }

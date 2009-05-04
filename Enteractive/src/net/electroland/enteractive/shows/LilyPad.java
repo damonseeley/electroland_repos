@@ -158,7 +158,7 @@ public class LilyPad implements Animation, SpriteListener {
 					int xpos = loc % 16;
 					int ypos = loc / 16;					
 					Pad pad = new Pad(spriteIndex, r, xpos, ypos, sm, 0, 255, 500);
-					//pad.addListener(this);
+					pad.addListener(this);
 					//sprites.put(spriteIndex, pad);
 					pads.put(spriteIndex, pad);
 					delayCount = 0;
@@ -285,6 +285,8 @@ public class LilyPad implements Animation, SpriteListener {
 	public void spriteComplete(Sprite sprite) {
 		if(sprite instanceof Single){
 			billiejean.remove(sprite.getID());
+		} else if(sprite instanceof Pad){
+			pads.remove(sprite.getID());
 		} else {
 			sprites.remove(sprite.getID());
 		}
