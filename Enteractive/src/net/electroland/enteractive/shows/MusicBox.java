@@ -41,9 +41,10 @@ public class MusicBox implements Animation{
 		this.sm = sm;
 		samples = new Properties();
 		tileSize = (int)(((PGraphics)(r.getRaster())).height/11.0);
+		soundPlayers = new ConcurrentHashMap<Integer,SoundPlayer>();
 		
 		try {
-			samples.load(new FileInputStream(new File("//depends//musicbox.properties")));
+			samples.load(new FileInputStream(new File("./depends/musicbox.properties")));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -55,11 +56,12 @@ public class MusicBox implements Animation{
 	}
 
 	public Raster getFrame() {
+		PGraphics raster = (PGraphics)(r.getRaster());
+		raster.beginDraw();
+		raster.rectMode(PConstants.CENTER);
+		raster.background(0);		// clear the raster
+		
 		synchronized (m){
-			PGraphics raster = (PGraphics)(r.getRaster());
-			raster.beginDraw();
-			raster.background(0);		// clear the raster
-
 			HashMap<Integer,Person> people = m.getPeople();
 			synchronized(people){
 				Iterator<Person> peopleiter = people.values().iterator();
@@ -67,14 +69,30 @@ public class MusicBox implements Animation{
 					Person p = peopleiter.next();
 					if(p.isNew()){													// if it's a new person...
 						if(samples.containsKey("tile"+p.getLinearLoc())){			// if a sound event is assigned to this tile
-							// create a new soundNode related to this location
-							SoundPlayer sp = new SoundPlayer(p);
-							soundPlayers.put(p.getLinearLoc(), sp);
+							if(soundPlayers.containsKey(p.getLinearLoc())){
+								// turn off currently playing loop
+								soundPlayers.get(p.getLinearLoc()).sound.die();		// kill sound
+								soundPlayers.remove(p.getLinearLoc());
+							} else {
+								// create a new soundNode related to this location
+								SoundPlayer sp = new SoundPlayer(p);
+								soundPlayers.put(p.getLinearLoc(), sp);
+							}
 						}
 					}
 				}
 			}
 		}
+		
+		raster.fill(255,0,0,255);
+		raster.noStroke();
+		Iterator<SoundPlayer> iter = soundPlayers.values().iterator();
+		while(iter.hasNext()){
+			SoundPlayer sp = iter.next();
+			raster.rect(sp.person.getX()*tileSize, sp.person.getY()*tileSize, tileSize, tileSize);
+			sp.update();
+		}
+		raster.endDraw();
 		return r;
 	}
 
@@ -115,11 +133,11 @@ public class MusicBox implements Animation{
 		
 		public void update(){
 			if(person.isDead()){
-				// TODO check if this is supposed to loop
 				if(!looping){
-					//soundPlayers.remove
+					soundPlayers.remove(person.getLinearLoc());
 				}
-				// TODO check if this is the second contact (loop disable)
+			} else if(!sound.isAlive()){
+				soundPlayers.remove(person.getLinearLoc());
 			}
 		}
 	}

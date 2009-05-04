@@ -27,6 +27,7 @@ import net.electroland.enteractive.scheduler.TimedEvent;
 import net.electroland.enteractive.scheduler.TimedEventListener;
 import net.electroland.enteractive.shows.Blackout;
 import net.electroland.enteractive.shows.LilyPad;
+import net.electroland.enteractive.shows.MusicBox;
 import net.electroland.enteractive.shows.Plasma;
 import net.electroland.enteractive.shows.Pong;
 import net.electroland.enteractive.shows.Spotlight;
@@ -136,6 +137,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		//currentAnimation = new ExampleAnimation(ptr.getModel(), raster, smr);
 		//Animation a = new Spotlight(ptr.getModel(), raster, smr, sphereTexture);
 		Animation a = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture, sphereTexture);
+		//Animation a = new MusicBox(ptr.getModel(), raster, smr);
 		//Animation a = new Pong(ptr.getModel(), raster, smr, sphereTexture, pongTitle);
 		//Animation a = new Plasma(raster);
 		Collection<Recipient> fixtures = dmr.getRecipients();
@@ -352,22 +354,28 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 			System.out.println("area empty");
 			// switch to SCREENSAVER
 			
-			Raster raster = getRaster();
-			((GUI)gui).setRaster(raster);
-			Animation a = new Plasma(raster);
-			Collection<Recipient> fixtures = dmr.getRecipients();
-			Animation transition = new LinearFade(5, getRaster());
-			amr.startAnimation(a, transition, fixtures);			// START SCREENSAVER
+			Recipient floor = dmr.getRecipient("floor");
+			if(amr.getCurrentAnimation(floor) instanceof LilyPad){
+				Raster raster = getRaster();
+				((GUI)gui).setRaster(raster);
+				Animation a = new Plasma(raster);
+				Collection<Recipient> fixtures = dmr.getRecipients();
+				Animation transition = new LinearFade(5, getRaster());
+				amr.startAnimation(a, transition, fixtures);		// START SCREENSAVER
+			}
 		} else if(e.getType() == Model.ModelConstants.NOT_EMPTY){
 			System.out.println("area re-activated");
 			// switch back to LILYPAD
 			
-			Raster raster = getRaster();
-			((GUI)gui).setRaster(raster);
-			Animation next = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture, sphereTexture);
-			Collection<Recipient> fixtures = dmr.getRecipients();
-			Animation transition = new LinearFade(1, getRaster());
-			amr.startAnimation(next, transition, fixtures);			// START LILYPAD
+			Recipient floor = dmr.getRecipient("floor");
+			if(amr.getCurrentAnimation(floor) instanceof Plasma){
+				Raster raster = getRaster();
+				((GUI)gui).setRaster(raster);
+				Animation next = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture, sphereTexture);
+				Collection<Recipient> fixtures = dmr.getRecipients();
+				Animation transition = new LinearFade(1, getRaster());
+				amr.startAnimation(next, transition, fixtures);		// START LILYPAD
+			}
 		}
 	}
 	

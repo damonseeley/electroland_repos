@@ -22,7 +22,7 @@ public class Model {
 	private boolean fourCornersOn = false;
 	private boolean oppositeCornersOn = false;
 	private boolean oppositeCorners2On = false;
-	private boolean empty = false;
+	private boolean empty = true;
 	private RunningAverage average;
 	private int numSamples, sampleRate;
 	
@@ -37,7 +37,7 @@ public class Model {
 		}
 
 		// This will store and calculate running averages.
-		numSamples = 10;
+		numSamples = 30;
 		sampleRate = 33;	// millis
 		average = new RunningAverage(numSamples);
 	}
