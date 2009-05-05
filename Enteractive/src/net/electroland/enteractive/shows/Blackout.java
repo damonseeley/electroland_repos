@@ -24,6 +24,7 @@ public class Blackout implements Animation {
 		this.duration = duration;
 		this.recipient = recipient;
 		this.toggleDetectors = toggleDetectors;
+		startTime = System.currentTimeMillis();
 	}
 
 

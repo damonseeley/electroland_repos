@@ -104,7 +104,13 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 			e.printStackTrace();
 		}
 		
-		Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){amr.startAnimation(new Blackout(getRaster(), 1000, null, false), dmr.getRecipients());}});
+		Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){
+			amr.startAnimation(new Blackout(getRaster(), 1000, null, false), dmr.getRecipients());
+			try {
+				sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}}});
 		//Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){tcu.billyJeanMode();}});
 		
 		addWindowListener(new WindowAdapter() {
@@ -301,22 +307,21 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		if(event == sunriseOn) {
 			// activate
 			Recipient face = dmr.getRecipient("face");
-			//face.toggleDetectors();
+			// TODO add "face" recipient to currently running "floor" show
 		} else if (event == middayOff) {
 			// deactivate
 			Recipient face = dmr.getRecipient("face");
-			
-			//Animation a = new Blackout(getRaster(), 1000, face, false);
-			//amr.startAnimation(a, face);
-			//face.toggleDetectors();
+			Animation a = new Blackout(getRaster(), 1000, face, false);
+			amr.startAnimation(a, face);
 		} else if (event == sunsetOn){
 			// activate
 			Recipient face = dmr.getRecipient("face");
-			//face.toggleDetectors();
+			// TODO add "face" recipient to currently running "floor" show
 		} else if (event == nightOff){
 			// deactivate
 			Recipient face = dmr.getRecipient("face");
-			//face.toggleDetectors();
+			Animation a = new Blackout(getRaster(), 1000, face, false);
+			amr.startAnimation(a, face);
 		}
 	}
 
