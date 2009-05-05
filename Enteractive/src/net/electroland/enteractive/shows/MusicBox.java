@@ -136,7 +136,7 @@ public class MusicBox implements Animation{
 				if(!looping){
 					soundPlayers.remove(person.getLinearLoc());
 				}
-			} else if(!sound.isAlive()){
+			} else if(sound != null && !sound.isAlive()){
 				soundPlayers.remove(person.getLinearLoc());
 			}
 		}
