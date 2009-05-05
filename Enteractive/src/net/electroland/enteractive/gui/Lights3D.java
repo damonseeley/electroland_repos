@@ -87,6 +87,7 @@ public class Lights3D extends PApplet{
 		}
 
 		fill(255,255,255,20);
+		noStroke();
 		translate(0,0,-1);
 		rect(-1, -1, faceWidth*12, faceHeight*24 - 12);
 		translate(0,0,1);
@@ -130,6 +131,7 @@ public class Lights3D extends PApplet{
 			ListIterator<Detector> i = floor.getDetectorPatchList().listIterator();
 			int channel = 0;
 			fill(255,255,255,20);
+			noStroke();
 			translate(0,0,-1);
 			rect(-1, -1, floorWidth*12, floorHeight*12);
 			translate(0,0,1);

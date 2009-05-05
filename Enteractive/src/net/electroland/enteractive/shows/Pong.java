@@ -11,6 +11,7 @@ import net.electroland.enteractive.core.Model;
 import net.electroland.enteractive.core.SoundManager;
 import net.electroland.enteractive.core.Sprite;
 import net.electroland.enteractive.core.SpriteListener;
+import net.electroland.enteractive.sprites.Sparkler;
 import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.Raster;
 
@@ -32,6 +33,8 @@ public class Pong implements Animation, SpriteListener {
 	private int gameMode = 0;			// 0 = start, 1 = game play, 2 = score, 3 = end
 	private boolean gameOver = false;
 	private boolean playingIntro = false;
+	private boolean playingScore = false;
+	private boolean playingEnding = false;
 	
 	public Pong(Model m, Raster r, SoundManager sm, PImage ballTexture, PImage pongTitle){
 		this.m = m;
@@ -46,13 +49,12 @@ public class Pong implements Animation, SpriteListener {
 		playerB = new Player(false);
 		ball = new Ball();
 		startTime = System.currentTimeMillis();
+		PGraphics raster = (PGraphics)(r.getRaster());
+		raster.colorMode(PConstants.RGB, 255, 255, 255, 255);
 	}
 	
 
 	public void initialize() {
-		PGraphics raster = (PGraphics)(r.getRaster());
-		raster.colorMode(PConstants.RGB, 255, 255, 255, 255);
-		//raster.rectMode(PConstants.CENTER);
 	}
 
 	public Raster getFrame() {
@@ -64,7 +66,7 @@ public class Pong implements Animation, SpriteListener {
 			
 			switch(gameMode){
 			case 0:
-				// TODO play start animation and sound
+				// play start animation and sound
 				if(!playingIntro){
 					sm.createMonoSound(sm.soundProps.getProperty("pongStartSound"), 0.5f, 0.5f, 1, 1);
 					playingIntro = true;
@@ -80,12 +82,26 @@ public class Pong implements Animation, SpriteListener {
 				break;
 			case 2:
 				// TODO play goal animation and sound, then go back to playing
-				sm.createMonoSound(sm.soundProps.getProperty("pongScoreSound"), 0.5f, 0.5f, 1, 1);
-				gameMode = 1;
-				ball.reset();
+				if(!playingScore){
+					//sm.createMonoSound(sm.soundProps.getProperty("pongScoreSound"), 0.5f, 0.5f, 1, 1);
+					Sprite s = new Sparkler(spriteIndex, r, ball.x, ball.y, sm, null, ballTexture);
+					s.addListener(this);
+					sprites.put(spriteIndex, s);
+					spriteIndex++;
+					playingScore = true;
+				}
+				if(sprites.size() == 0){
+					playingScore = false;
+					gameMode = 1;
+					ball.reset();
+				}
 				break;
 			case 3:
 				// TODO play win/end animation and sound, then exit
+				if(!playingEnding){
+					sm.createMonoSound(sm.soundProps.getProperty("pongEndSound"), 0.5f, 0.5f, 1, 1);
+					playingEnding = true;
+				}
 				gameOver = true;
 				break;
 			}
@@ -183,6 +199,7 @@ public class Pong implements Animation, SpriteListener {
 		}
 		
 		// draw ball
+		raster.tint(255,255,255,255);
 		raster.image(ballTexture, ball.x-(ball.width/2), ball.y-(ball.height/2), ball.width, ball.height);
 		
 		// move ball for next frame

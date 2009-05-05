@@ -202,7 +202,8 @@ public class LilyPad implements Animation, SpriteListener {
 							Pad pad = i.next();
 							if(pad.getX() == p.getX() && pad.getY() == p.getY()){		// if new person on the pad and pad not activated...
 								// create new action sprite here
-								int luckyNumber = (int)(Math.random()*8 - 0.01);
+								//int luckyNumber = (int)(Math.random()*8 - 0.01);
+								int luckyNumber = 6;
 								Sprite sprite = null;
 								if(luckyNumber < 0){
 									luckyNumber = 0;

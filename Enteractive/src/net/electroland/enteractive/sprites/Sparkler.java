@@ -22,6 +22,7 @@ public class Sparkler extends Sprite implements SpriteListener{
 	private int sparkIndex = 0;	// used as ID # for spark
 	private float sparkOdds = 0.8f;
 	private int maxSparks = 10;
+	private int minLife;
 
 	public Sparkler(int id, Raster raster, float x, float y, SoundManager sm, Person person, PImage image) {
 		super(id, raster, x, y, sm);
@@ -29,7 +30,12 @@ public class Sparkler extends Sprite implements SpriteListener{
 		this.image = image;
 		sparks = new ConcurrentHashMap<Integer,Spark>();
 		timeOut = 10000;
+		minLife = 2000;
 		timeToDie = false;
+		if(raster.isProcessing()){
+			PGraphics c = (PGraphics)canvas;
+			sm.createMonoSound(sm.soundProps.getProperty("sparkler"), c.width/2, y, c.width, c.height);
+		}
 		startTime = System.currentTimeMillis();
 		//System.out.println("sparkler "+id);
 	}
@@ -48,7 +54,10 @@ public class Sparkler extends Sprite implements SpriteListener{
 			die();
 		}
 		
-		if(((person != null && person.isDead()) || System.currentTimeMillis() - startTime > timeOut) && !timeToDie){
+		if(person == null && System.currentTimeMillis() - startTime > minLife){
+			startTime = System.currentTimeMillis();
+			timeToDie = true;
+		} else if (((person != null && person.isDead()) || System.currentTimeMillis() - startTime > timeOut) && !timeToDie){
 			startTime = System.currentTimeMillis();
 			timeToDie = true;
 		}
@@ -90,7 +99,6 @@ public class Sparkler extends Sprite implements SpriteListener{
 				xstart = x;
 				ystart = y;
 				sparkStartTime = System.currentTimeMillis();
-				sm.createMonoSound(sm.soundProps.getProperty("sparkler"), c.width/2, y, c.width, c.height);
 			}
 		}
 
