@@ -19,6 +19,7 @@ import processing.core.PImage;
 import net.electroland.blobDetection.match.TrackListener;
 import net.electroland.laface.gui.ControlPanel;
 import net.electroland.laface.gui.RasterPanel;
+import net.electroland.laface.shows.Blackout;
 import net.electroland.laface.shows.DrawTest;
 import net.electroland.laface.shows.Floaters;
 import net.electroland.laface.shows.Highlighter;
@@ -128,7 +129,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		controlPanel.refreshWaveList();
 		//tracker.addTrackListener((TrackListener) highlighter);	// highlighter displays locations
 		
-		//Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){amr.getCurrentAnimation(dmr.getRecipient("face0")).cleanUp();}});
+		Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){amr.startAnimation(new Blackout(getRaster(), 1000, null, false), dmr.getRecipients());}});
 		
 		setResizable(true);
 		setVisible(true);
