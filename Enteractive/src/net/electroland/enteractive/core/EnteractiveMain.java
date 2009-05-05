@@ -71,7 +71,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 	private TimedEvent nightOff = new TimedEvent(1,00,00, this); // off at 1 AM
 	private String[] animationList;
 	private JComboBox animationDropDown, displayDropDown, rasterDropDown;
-	PImage rippleTexture, sweepTexture, sphereTexture, propellerTexture, spiralTexture;
+	PImage rippleTexture, sweepTexture, sphereTexture, propellerTexture, spiralTexture, radarTexture;
 	PImage ballTexture, pongTitle;	// pong textures
 	
 	public EnteractiveMain(String[] args) throws UnknownHostException, OptionException{
@@ -139,12 +139,13 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		spiralTexture = gui.loadImage("depends//images//spiral.png");
 		ballTexture = gui.loadImage("depends//images//ball.png");
 		pongTitle = gui.loadImage("depends//images//pongtitle.png");
+		radarTexture = gui.loadImage("depends//images//radar.png");
 		
 		//currentAnimation = new ExampleAnimation(ptr.getModel(), raster, smr);
 		//Animation a = new Spotlight(ptr.getModel(), raster, smr, sphereTexture);
-		//Animation a = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture, sphereTexture);
+		Animation a = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture, sphereTexture, radarTexture);
 		//Animation a = new MusicBox(ptr.getModel(), raster, smr);
-		Animation a = new Pong(ptr.getModel(), raster, smr, sphereTexture, pongTitle);
+		//Animation a = new Pong(ptr.getModel(), raster, smr, sphereTexture, pongTitle);
 		//Animation a = new Plasma(raster);
 		Collection<Recipient> fixtures = dmr.getRecipients();
 		amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
@@ -162,7 +163,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		if (a instanceof Spotlight || a instanceof Pong){
 			Raster raster = getRaster();
 			((GUI)gui).setRaster(raster);
-			Animation next = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture, sphereTexture);
+			Animation next = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture, sphereTexture, radarTexture);
 			Collection<Recipient> fixtures = dmr.getRecipients();
 			amr.startAnimation(next, fixtures);	
 		}
@@ -178,7 +179,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 					if(!(amr.getCurrentAnimation(floor) instanceof LilyPad)){			// if not already lilypad
 						Raster raster = getRaster();
 						((GUI)gui).setRaster(raster);
-						Animation a = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture, sphereTexture);
+						Animation a = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture, sphereTexture, radarTexture);
 						Collection<Recipient> fixtures = dmr.getRecipients();
 						Animation transition = new LinearFade(2, getRaster());
 						amr.startAnimation(a, transition, fixtures); 					// START LILYPAD
@@ -376,7 +377,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 			if(amr.getCurrentAnimation(floor) instanceof Plasma){
 				Raster raster = getRaster();
 				((GUI)gui).setRaster(raster);
-				Animation next = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture, sphereTexture);
+				Animation next = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture, sphereTexture, radarTexture);
 				Collection<Recipient> fixtures = dmr.getRecipients();
 				Animation transition = new LinearFade(1, getRaster());
 				amr.startAnimation(next, transition, fixtures);		// START LILYPAD

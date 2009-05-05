@@ -19,6 +19,7 @@ import net.electroland.enteractive.sprites.ExplodingCross;
 import net.electroland.enteractive.sprites.Noise;
 import net.electroland.enteractive.sprites.Pad;
 import net.electroland.enteractive.sprites.Propeller;
+import net.electroland.enteractive.sprites.Radar;
 import net.electroland.enteractive.sprites.Ripple;
 import net.electroland.enteractive.sprites.Shooter;
 import net.electroland.enteractive.sprites.Single;
@@ -35,7 +36,7 @@ import net.electroland.lighting.detector.animation.Raster;
 
 public class LilyPad implements Animation, SpriteListener {
 	
-	private Model m;
+	public Model m;
 	private Raster r;
 	private SoundManager sm;
 	private int tileSize;
@@ -52,9 +53,10 @@ public class LilyPad implements Animation, SpriteListener {
 	private PImage propellerTexture;
 	private PImage spiralTexture;
 	private PImage sphereTexture;
+	private PImage radarTexture;	
 	private List<Integer> availableTiles;	// eliminates tiles next to other pads
 	
-	public LilyPad(Model m, Raster r, SoundManager sm, PImage rippleTexture, PImage sweepTexture, PImage propellerTexture, PImage spiralTexture, PImage sphereTexture){
+	public LilyPad(Model m, Raster r, SoundManager sm, PImage rippleTexture, PImage sweepTexture, PImage propellerTexture, PImage spiralTexture, PImage sphereTexture, PImage radarTexture){
 		this.m = m;
 		this.r = r;
 		this.sm = sm;
@@ -63,6 +65,7 @@ public class LilyPad implements Animation, SpriteListener {
 		this.propellerTexture = propellerTexture;
 		this.spiralTexture = spiralTexture;
 		this.sphereTexture = sphereTexture;
+		this.radarTexture = radarTexture;
 		this.tileSize = (int)(((PGraphics)(r.getRaster())).height/11.0);
 		availableTiles = new ArrayList<Integer>();		// blank list of available tiles
 		sprites = new ConcurrentHashMap<Integer,Sprite>();
@@ -202,8 +205,7 @@ public class LilyPad implements Animation, SpriteListener {
 							Pad pad = i.next();
 							if(pad.getX() == p.getX() && pad.getY() == p.getY()){		// if new person on the pad and pad not activated...
 								// create new action sprite here
-								//int luckyNumber = (int)(Math.random()*8 - 0.01);
-								int luckyNumber = 6;
+								int luckyNumber = (int)(Math.random()*9 - 0.01);
 								Sprite sprite = null;
 								if(luckyNumber < 0){
 									luckyNumber = 0;
@@ -233,6 +235,9 @@ public class LilyPad implements Animation, SpriteListener {
 										break;
 									case 7:
 										sprite = new Sparkler(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, sphereTexture);
+										break;
+									case 8:
+										sprite = new Radar(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, this, p, radarTexture, 4, 5000);
 										break;
 								}
 								
