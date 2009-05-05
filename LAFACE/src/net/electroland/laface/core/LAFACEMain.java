@@ -129,7 +129,13 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		controlPanel.refreshWaveList();
 		//tracker.addTrackListener((TrackListener) highlighter);	// highlighter displays locations
 		
-		Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){amr.startAnimation(new Blackout(getRaster(), 1000, null, false), dmr.getRecipients());}});
+		Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){
+			amr.startAnimation(new Blackout(getRaster(), 1000, null, false), dmr.getRecipients());
+			try {
+				sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}}});
 		
 		setResizable(true);
 		setVisible(true);
