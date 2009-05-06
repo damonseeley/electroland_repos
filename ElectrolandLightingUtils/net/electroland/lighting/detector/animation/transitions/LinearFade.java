@@ -12,6 +12,7 @@ public class LinearFade implements Animation {
 
 	private long finishTime, startTime;
 	private Raster raster;
+	private boolean isNew = true;
 
 	// should throw some kind of IllegalArgument exception if seconds <= 0;
 	public LinearFade(double seconds, Raster raster)
@@ -19,12 +20,15 @@ public class LinearFade implements Animation {
 		this.finishTime = (long)(seconds * 1000);
 		this.raster = raster;
 	}
-	
-	public void cleanUp() {
-		//  do nothing.
-	}
 
 	public Raster getFrame() {
+
+		if (isNew)
+		{
+			startTime = System.currentTimeMillis();
+			finishTime += startTime;
+			isNew = false;
+		}
 
 		// we've agreed on the convention that 0 = all first show, 255 = all second show.
 		double percentDone = (System.currentTimeMillis() - startTime) / 
@@ -49,8 +53,6 @@ public class LinearFade implements Animation {
 	}
 
 	public void initialize() {
-		startTime = System.currentTimeMillis();
-		finishTime += startTime;
 	}
 
 	public boolean isDone() {

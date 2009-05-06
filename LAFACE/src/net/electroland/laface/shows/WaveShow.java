@@ -34,6 +34,8 @@ public class WaveShow implements Animation, SpriteListener{
 		this.r = r;
 		sprites = new ConcurrentHashMap<Integer,Sprite>();
 		waves = new ConcurrentHashMap<Integer,Wave>();
+		PGraphics c = (PGraphics)(r.getRaster());
+		c.colorMode(PConstants.RGB, 255, 255, 255, 255);
 		// TODO getting shared wave sprite for now
 		/*
 		try{
@@ -93,12 +95,6 @@ public class WaveShow implements Animation, SpriteListener{
 		  return nValue.getNodeValue(); 
 	 }
 
-
-	public void initialize() {
-		PGraphics c = (PGraphics)(r.getRaster());
-		c.colorMode(PConstants.RGB, 255, 255, 255, 255);
-	}
-	
 	public Raster getFrame() {
 		if(r.isProcessing()){
 			PGraphics c = (PGraphics)(r.getRaster());
@@ -116,13 +112,6 @@ public class WaveShow implements Animation, SpriteListener{
 			c.endDraw();
 		}
 		return r;
-	}
-
-	public void cleanUp() {
-		PGraphics myRaster = (PGraphics)(r.getRaster());
-		myRaster.beginDraw();
-		myRaster.background(0);
-		myRaster.endDraw();
 	}
 
 	public boolean isDone() {

@@ -21,16 +21,12 @@ public class Blackout implements Animation {
 	
 	public Blackout(Raster r, int duration, Recipient recipient, boolean toggleDetectors){
 		this.r = r;
+		PGraphics raster = (PGraphics)(r.getRaster());
+		raster.colorMode(PConstants.RGB, 255, 255, 255, 255);
 		this.duration = duration;
 		this.recipient = recipient;
 		this.toggleDetectors = toggleDetectors;
 		startTime = System.currentTimeMillis();
-	}
-
-
-	public void initialize() {
-		PGraphics raster = (PGraphics)(r.getRaster());
-		raster.colorMode(PConstants.RGB, 255, 255, 255, 255);
 	}
 
 	public Raster getFrame() {
@@ -40,10 +36,6 @@ public class Blackout implements Animation {
 		raster.endDraw();
 		return r;
 	}
-
-	public void cleanUp() {
-	}
-
 
 	public boolean isDone() {
 		if(System.currentTimeMillis() - startTime > duration){

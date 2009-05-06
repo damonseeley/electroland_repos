@@ -49,11 +49,4 @@ public class Throb implements Animation {
 		
 		return raster;
 	}
-
-	public void cleanUp() {
-		// do nothing.
-	}
-	public void initialize() {
-		// do nothing.
-	}	
 }

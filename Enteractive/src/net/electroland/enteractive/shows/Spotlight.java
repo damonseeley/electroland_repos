@@ -31,6 +31,7 @@ public class Spotlight implements Animation, SpriteListener{
 	private PImage sphereTexture;
 	private long startTime;
 	private int duration = 30000;	// milliseconds
+	private boolean isNew = true;
 	
 	public Spotlight(Model m, Raster r, SoundManager sm, PImage sphereTexture){
 		this.m = m;
@@ -41,27 +42,25 @@ public class Spotlight implements Animation, SpriteListener{
 		sprites = new ConcurrentHashMap<Integer,Sprite>();
 	}
 
-	public void initialize() {
-		PGraphics raster = (PGraphics)(r.getRaster());
-		raster.colorMode(PConstants.RGB, 255, 255, 255, 255);
-		startTime = System.currentTimeMillis();
-		// must check for people already on tiles!
-		synchronized (m){
-			HashMap<Integer,Person> people = m.getPeople();
-			Iterator<Person> iter = people.values().iterator();
-			while(iter.hasNext()){
-				Person p = iter.next();
-				int[] loc = p.getLoc();
-				Sphere sphere = new Sphere(spriteIndex, r, loc[0]*tileSize, loc[1]*tileSize, sm, p, sphereTexture);
-				sphere.addListener(this);
-				sprites.put(spriteIndex, sphere);
-				spriteIndex++;
-			}
-		}
-	}
-
 	public Raster getFrame() {
 		synchronized (m){
+			if (isNew)
+			{
+				PGraphics raster = (PGraphics)(r.getRaster());
+				raster.colorMode(PConstants.RGB, 255, 255, 255, 255);
+				startTime = System.currentTimeMillis();
+				
+				HashMap<Integer,Person> people = m.getPeople();
+				Iterator<Person> iter = people.values().iterator();
+				while(iter.hasNext()){
+					Person p = iter.next();
+					int[] loc = p.getLoc();
+					Sphere sphere = new Sphere(spriteIndex, r, loc[0]*tileSize, loc[1]*tileSize, sm, p, sphereTexture);
+					sphere.addListener(this);
+					sprites.put(spriteIndex, sphere);
+					spriteIndex++;
+				}
+			}
 			// presumes that you instantiated Raster with a PGraphics.
 			PGraphics raster = (PGraphics)(r.getRaster());
 			raster.beginDraw();
@@ -88,13 +87,6 @@ public class Spotlight implements Animation, SpriteListener{
 			raster.endDraw();
 		}
 		return r;
-	}
-
-	public void cleanUp() {
-		PGraphics raster = (PGraphics)(r.getRaster());
-		raster.beginDraw();
-		raster.background(0);
-		raster.endDraw();
 	}
 
 	public boolean isDone() {

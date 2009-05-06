@@ -15,17 +15,13 @@ public class StripeAnimation implements Animation {
 
 	public StripeAnimation(BufferedImage image, int width)
 	{
+		x = 0;
 		raster = new Raster(image);
 		this.width = width;
 	}
 
 	public void stop(){
 		isDone = true;
-	}
-	
-	public void cleanUp()
-	{
-		// nothing to do.
 	}
 
 	public Raster getFrame()
@@ -37,11 +33,6 @@ public class StripeAnimation implements Animation {
 		g.setColor(Color.WHITE);
 		g.fillRect(i.getWidth()%(x++), 0, width, i.getHeight());
 		return raster;
-	}
-
-	public void initialize()
-	{
-		x = 0;
 	}
 
 	public boolean isDone()

@@ -7,10 +7,14 @@ import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.apache.log4j.Logger;
+
 import net.electroland.lighting.detector.DetectorManagerJPanel;
 import net.electroland.lighting.detector.Recipient;
 
-public class AnimationManager implements Runnable {
+public class AnimationManager implements Runnable 
+{
+	static Logger logger = Logger.getLogger(AnimationManager.class);
 
 	public static final int ALL_START_ANIMATION = 0;
 	public static final int ALL_TARGET_ANIMATION = 255;
@@ -46,9 +50,6 @@ public class AnimationManager implements Runnable {
 	// no transition = kill existing show on any overlapping recipient
 	final public void startAnimation(Animation a, Collection <Recipient> recipients)
 	{
-		// initialize the new animation.
-		a.initialize();
-
 		synchronized (animationRecipients)
 		{
 			Iterator <Animation> currentItr = animationRecipients.keySet().iterator();
@@ -73,10 +74,10 @@ public class AnimationManager implements Runnable {
 			while (recipientsItr.hasNext())
 			{
 				recipientStates.put(recipientsItr.next(), new RecipientState(a));
-			}			
+			}
 		}
 
-		System.out.println("starting animation " + a);
+		logger.info("starting animation " + a);
 		this.printState(System.out);
 	}
 
@@ -89,9 +90,6 @@ public class AnimationManager implements Runnable {
 
 	final public void startAnimation(Animation a, Animation t, Collection <Recipient> r)
 	{
-		// initialize the new animation.
-		a.initialize();
-
 		synchronized (animationRecipients)
 		{
 		
@@ -108,8 +106,6 @@ public class AnimationManager implements Runnable {
 					recipientStates.put(rItr.next(), new RecipientState(a));
 				}else
 				{
-					// initialize the transition
-					t.initialize();
 					// store the transitions in CompletableRecipients.
 					animationRecipients.put(t, new AnimationRecipients(r, true));
 					// update the state of the recipient to "transitioning"
@@ -140,7 +136,6 @@ public class AnimationManager implements Runnable {
 	}
 	final public void killOff(Animation a)
 	{
-		a.cleanUp();
 		synchronized (animationRecipients)
 		{
 			boolean isTransition = animationRecipients.get(a).isTransition;
@@ -205,7 +200,6 @@ public class AnimationManager implements Runnable {
 							RecipientState rState = recipientStates.get(recipient);
 							if (ar.isTransition){
 								// kill off the animation we transitioned from.
-								rState.current.cleanUp();
 								killOff(rState.current);
 								// set their state to current = target and transition = null.
 								rState.transition = null;
@@ -260,7 +254,7 @@ public class AnimationManager implements Runnable {
 				Thread.sleep(cycleDuration >= delay ? 0 : delay - cycleDuration);
 			} catch (InterruptedException e) 
 			{
-				e.printStackTrace();
+				logger.error("error attempting to put animation manager to sleep", e);
 			}
 		}
 		thread = null;

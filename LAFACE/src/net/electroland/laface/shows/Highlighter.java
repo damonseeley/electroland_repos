@@ -20,13 +20,10 @@ public class Highlighter implements Animation, TrackListener {
 	
 	public Highlighter(Raster r, PImage texture){
 		this.r = r;
-		this.tracks = new Vector<Track>();
-		this.texture = texture;
-	}
-
-	public void initialize() {
 		PGraphics c = (PGraphics)(r.getRaster());
 		c.colorMode(PConstants.RGB, 255, 255, 255, 255);
+		this.tracks = new Vector<Track>();
+		this.texture = texture;
 	}
 
 	public Raster getFrame() {
@@ -49,13 +46,6 @@ public class Highlighter implements Animation, TrackListener {
 			c.endDraw();
 		}
 		return r;
-	}
-	
-	public void cleanUp() {
-		PGraphics myRaster = (PGraphics)(r.getRaster());
-		myRaster.beginDraw();
-		myRaster.background(0);
-		myRaster.endDraw();
 	}
 
 	public boolean isDone() {

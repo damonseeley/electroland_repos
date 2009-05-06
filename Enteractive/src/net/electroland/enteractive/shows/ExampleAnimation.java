@@ -29,18 +29,15 @@ public class ExampleAnimation implements Animation, SpriteListener {
 	public ExampleAnimation(Model m, Raster r, SoundManager sm){
 		this.m = m;
 		this.r = r;
+		PGraphics myRaster = (PGraphics)(r.getRaster());
+		myRaster.colorMode(PConstants.RGB, 255, 255, 255, 255);
 		this.sm = sm;
 		this.tileSize = (int)(((PGraphics)(r.getRaster())).height/11.0);
 		sprites = new ConcurrentHashMap<Integer,Sprite>();
 	}
 
-	public void initialize() {
-		// TODO play some sound
-		PGraphics myRaster = (PGraphics)(r.getRaster());
-		myRaster.colorMode(PConstants.RGB, 255, 255, 255, 255);
-	}
-	
 	public Raster getFrame() {
+
 		// lock the model so other people don't modify it while we do paint
 		// calls based on it.
 		synchronized (m){
@@ -106,15 +103,6 @@ public class ExampleAnimation implements Animation, SpriteListener {
 			myRaster.endDraw();
 		}
 		return r;
-	}
-
-	public void cleanUp() {
-		// play some sound, clear the raster, etc.
-		//System.out.println("cleaning up.");
-		PGraphics myRaster = (PGraphics)(r.getRaster());
-		myRaster.beginDraw();
-		myRaster.background(0);
-		myRaster.endDraw();
 	}
 
 	public boolean isDone() {

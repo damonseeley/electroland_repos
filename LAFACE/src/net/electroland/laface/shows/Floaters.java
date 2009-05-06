@@ -25,15 +25,11 @@ public class Floaters implements Animation {
 		sprites = new ConcurrentHashMap<Integer,Sprite>();
 		if(r.isProcessing()){
 			PGraphics c = (PGraphics)(r.getRaster());
+			c.colorMode(PConstants.RGB, 255, 255, 255, 255);	
 			for(int i=0; i<174; i++){
 				sprites.put(i, new Buoy(i, r, (int)(i * (c.width/174.0f)), c.height, texture));
 			}
 		}
-	}
-
-	public void initialize() {
-		PGraphics c = (PGraphics)(r.getRaster());
-		c.colorMode(PConstants.RGB, 255, 255, 255, 255);	
 	}
 
 	public Raster getFrame() {
@@ -50,9 +46,6 @@ public class Floaters implements Animation {
 		}
 		
 		return r;
-	}
-	
-	public void cleanUp() {
 	}
 
 	public boolean isDone() {

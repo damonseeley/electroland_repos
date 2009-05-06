@@ -26,17 +26,14 @@ public class Reflection implements Animation, TrackListener {
 	
 	public Reflection(Raster r){
 		this.r = r;
+		PGraphics c = (PGraphics)(r.getRaster());
+		c.colorMode(PConstants.RGB, 255, 255, 255, 255);
 		tracks = new Vector<Track>();
 		oldtracks = new Vector<Track>();
 		sprites = new ConcurrentHashMap<Integer,Sprite>();
 		bars = new Bars(spriteIndex, r, 0, 0);
 		sprites.put(spriteIndex, bars);
 		spriteIndex++;
-	}
-	
-	public void initialize() {
-		PGraphics c = (PGraphics)(r.getRaster());
-		c.colorMode(PConstants.RGB, 255, 255, 255, 255);
 	}
 
 	public Raster getFrame() {
@@ -67,10 +64,6 @@ public class Reflection implements Animation, TrackListener {
 			c.endDraw();
 		}
 		return r;
-	}
-
-	public void cleanUp() {
-		// does nothing
 	}
 
 	public boolean isDone() {

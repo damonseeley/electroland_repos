@@ -15,16 +15,12 @@ public class Plasma implements Animation {
 	public Plasma(Raster r){
 		this.r = r;
 		PGraphics raster = (PGraphics)(r.getRaster());
+		raster.colorMode(PConstants.HSB, 255, 255, 255, 255);
 		gridx = raster.width;
 		gridy = raster.height;
 		frameCount = 0;
 		xsize = 5;
 		ysize = 5;
-	}
-
-	public void initialize() {
-		PGraphics raster = (PGraphics)(r.getRaster());
-		raster.colorMode(PConstants.HSB, 255, 255, 255, 255);
 	}
 
 	public Raster getFrame() {
@@ -54,9 +50,6 @@ public class Plasma implements Animation {
 		raster.updatePixels();
 		raster.endDraw();
 		return r;
-	}
-
-	public void cleanUp() {
 	}
 
 	public boolean isDone() {

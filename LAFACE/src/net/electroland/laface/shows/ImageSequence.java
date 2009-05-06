@@ -21,9 +21,6 @@ public class ImageSequence implements Animation {
 		c.colorMode(PConstants.RGB, 255, 255, 255, 255);
 	}
 
-	public void initialize() {		
-	}	
-
 	public Raster getFrame() {
 		if(r.isProcessing()){
 			PGraphics c = (PGraphics)(r.getRaster());
@@ -52,9 +49,6 @@ public class ImageSequence implements Animation {
 			index = 0;
 		}
 		return r;
-	}
-	
-	public void cleanUp() {
 	}
 
 	public boolean isDone() {

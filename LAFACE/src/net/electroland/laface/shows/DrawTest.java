@@ -21,6 +21,8 @@ public class DrawTest implements Animation{
 		this.gridHeight = gridHeight;
 		if(r.isProcessing()){
 			PGraphics c = (PGraphics)(r.getRaster());
+			c.colorMode(PConstants.RGB, 255, 255, 255, 255);
+			c.rectMode(PConstants.CENTER);
 			lightWidth = c.width/gridWidth;
 			lightHeight = c.height/gridHeight;
 		}
@@ -28,12 +30,6 @@ public class DrawTest implements Animation{
 		for(int i=0; i<gridWidth*gridHeight; i++){
 			lights.add(new Light(i, i%gridWidth, i/gridWidth, lightWidth, lightHeight));
 		}
-	}
-
-	public void initialize() {
-		PGraphics c = (PGraphics)(r.getRaster());
-		c.colorMode(PConstants.RGB, 255, 255, 255, 255);
-		c.rectMode(PConstants.CENTER);
 	}
 
 	public Raster getFrame() {
@@ -51,13 +47,6 @@ public class DrawTest implements Animation{
 			c.endDraw();
 		}
 		return r;
-	}
-
-	public void cleanUp() {
-		PGraphics myRaster = (PGraphics)(r.getRaster());
-		myRaster.beginDraw();
-		myRaster.background(0);
-		myRaster.endDraw();
 	}
 
 	public boolean isDone() {

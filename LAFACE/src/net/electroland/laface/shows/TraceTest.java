@@ -20,17 +20,13 @@ public class TraceTest implements Animation {
 			PGraphics c = (PGraphics)(r.getRaster());
 			lightWidth = c.width/gridWidth;
 			lightHeight = c.height/gridHeight;
+			c.colorMode(PConstants.RGB, 255, 255, 255, 255);
+			c.rectMode(PConstants.CENTER);
 		}
 		tracerPos = 0;
 		startTime = System.currentTimeMillis();
 	}
 
-	public void initialize() {
-		PGraphics c = (PGraphics)(r.getRaster());
-		c.colorMode(PConstants.RGB, 255, 255, 255, 255);
-		c.rectMode(PConstants.CENTER);
-	}
-	
 	public Raster getFrame() {
 		if(r.isProcessing()){
 			PGraphics c = (PGraphics)(r.getRaster());
@@ -56,13 +52,6 @@ public class TraceTest implements Animation {
 			c.endDraw();
 		}
 		return r;
-	}
-
-	public void cleanUp() {
-		PGraphics myRaster = (PGraphics)(r.getRaster());
-		myRaster.beginDraw();
-		myRaster.background(0);
-		myRaster.endDraw();
 	}
 
 	public boolean isDone() {

@@ -31,9 +31,6 @@ public class Reflection2 implements Animation, SpriteListener {
 		this.leftarrow = leftarrow;
 		this.rightarrow = rightarrow;
 		sprites = new ConcurrentHashMap<Integer,Sprite>();
-	}
-	
-	public void initialize() {
 		PGraphics c = (PGraphics)(r.getRaster());
 		xoffset = 100;
 		xscale = c.width + (xoffset*2);

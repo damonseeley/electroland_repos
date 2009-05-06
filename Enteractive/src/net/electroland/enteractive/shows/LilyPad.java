@@ -55,6 +55,7 @@ public class LilyPad implements Animation, SpriteListener {
 	private PImage sphereTexture;
 	private PImage radarTexture;	
 	private List<Integer> availableTiles;	// eliminates tiles next to other pads
+	private boolean isNew = true;
 	
 	public LilyPad(Model m, Raster r, SoundManager sm, PImage rippleTexture, PImage sweepTexture, PImage propellerTexture, PImage spiralTexture, PImage sphereTexture, PImage radarTexture){
 		this.m = m;
@@ -74,24 +75,6 @@ public class LilyPad implements Animation, SpriteListener {
 	}
 
 	public void initialize() {
-		PGraphics raster = (PGraphics)(r.getRaster());
-		raster.colorMode(PConstants.RGB, 255, 255, 255, 255);
-		// must check for people already on tiles!
-		synchronized (m){
-			HashMap<Integer,Person> people = m.getPeople();
-			synchronized(people){
-				Iterator<Person> peopleiter = people.values().iterator();
-				while(peopleiter.hasNext()){										// for each person...
-					Person p = peopleiter.next();
-					int[] loc = p.getLoc();
-					Single single = new Single(spriteIndex, r, p, loc[0]*tileSize, loc[1]*tileSize, sm);	// single tile sprite (billie jean mode)
-					single.addListener(this);
-					billiejean.put(spriteIndex, single);
-					spriteIndex++;
-				}
-			}
-		}
-		processAvailableTiles();
 	}
 	
 	public void addSprite(Sprite sprite){
@@ -149,6 +132,31 @@ public class LilyPad implements Animation, SpriteListener {
 	}
 
 	public Raster getFrame() {
+
+		if (isNew)
+		{
+			PGraphics raster = (PGraphics)(r.getRaster());
+			raster.colorMode(PConstants.RGB, 255, 255, 255, 255);
+			// must check for people already on tiles!
+			synchronized (m){
+				HashMap<Integer,Person> people = m.getPeople();
+				synchronized(people){
+					Iterator<Person> peopleiter = people.values().iterator();
+					while(peopleiter.hasNext()){										// for each person...
+						Person p = peopleiter.next();
+						int[] loc = p.getLoc();
+						Single single = new Single(spriteIndex, r, p, loc[0]*tileSize, loc[1]*tileSize, sm);	// single tile sprite (billie jean mode)
+						single.addListener(this);
+						billiejean.put(spriteIndex, single);
+						spriteIndex++;
+					}
+				}
+			}
+			processAvailableTiles();
+			isNew = false;
+		}
+
+
 		if(pads.size() < maxPads){			// if not maxed out on pads...
 			if(delayCount < padDelay){			// must reach mandatory delay (in frames)
 				delayCount++;
@@ -275,13 +283,6 @@ public class LilyPad implements Animation, SpriteListener {
 			raster.endDraw();
 		}
 		return r;
-	}
-
-	public void cleanUp() {
-		PGraphics raster = (PGraphics)(r.getRaster());
-		raster.beginDraw();
-		raster.background(0);			// clear the raster
-		raster.endDraw();
 	}
 
 	public boolean isDone() {

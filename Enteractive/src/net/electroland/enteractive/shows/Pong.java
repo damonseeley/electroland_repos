@@ -54,9 +54,6 @@ public class Pong implements Animation, SpriteListener {
 	}
 	
 
-	public void initialize() {
-	}
-
 	public Raster getFrame() {
 		synchronized (m){
 			// presumes that you instantiated Raster with a PGraphics.
@@ -204,13 +201,6 @@ public class Pong implements Animation, SpriteListener {
 		
 		// move ball for next frame
 		ball.move();
-	}
-
-	public void cleanUp() {
-		PGraphics raster = (PGraphics)(r.getRaster());
-		raster.beginDraw();
-		raster.background(0);
-		raster.endDraw();
 	}
 
 	public boolean isDone() {

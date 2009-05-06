@@ -25,10 +25,6 @@ public class Blackout implements Animation {
 		this.recipient = recipient;
 		this.toggleDetectors = toggleDetectors;
 		startTime = System.currentTimeMillis();
-	}
-
-
-	public void initialize() {
 		PGraphics raster = (PGraphics)(r.getRaster());
 		raster.colorMode(PConstants.RGB, 255, 255, 255, 255);
 	}
@@ -40,10 +36,6 @@ public class Blackout implements Animation {
 		raster.endDraw();
 		return r;
 	}
-
-	public void cleanUp() {
-	}
-
 
 	public boolean isDone() {
 		if(System.currentTimeMillis() - startTime > duration){

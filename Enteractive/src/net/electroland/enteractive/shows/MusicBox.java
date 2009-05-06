@@ -38,6 +38,8 @@ public class MusicBox implements Animation{
 	public MusicBox(Model m, Raster r, SoundManager sm){
 		this.m = m;
 		this.r = r;
+		PGraphics raster = (PGraphics)(r.getRaster());
+		raster.colorMode(PConstants.RGB, 255, 255, 255, 255);
 		this.sm = sm;
 		samples = new Properties();
 		tileSize = (int)(((PGraphics)(r.getRaster())).height/11.0);
@@ -48,11 +50,6 @@ public class MusicBox implements Animation{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	public void initialize() {
-		PGraphics raster = (PGraphics)(r.getRaster());
-		raster.colorMode(PConstants.RGB, 255, 255, 255, 255);
 	}
 
 	public Raster getFrame() {
@@ -94,9 +91,6 @@ public class MusicBox implements Animation{
 		}
 		raster.endDraw();
 		return r;
-	}
-
-	public void cleanUp() {
 	}
 
 	public boolean isDone() {
