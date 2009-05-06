@@ -139,6 +139,11 @@ public class SoundManager implements SCSoundControlNotifiable {
 		serverIsLive = false;
 	}
 	
+	public void receiveNotification_ServerStatus(float averageCPU,
+			float peakCPU, int numSynths) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 	
