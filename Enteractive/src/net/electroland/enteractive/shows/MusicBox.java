@@ -60,7 +60,7 @@ public class MusicBox implements Animation{
 		
 		synchronized (m){
 			HashMap<Integer,Person> people = m.getPeople();
-			synchronized(people){
+			//synchronized(people){
 				Iterator<Person> peopleiter = people.values().iterator();
 				while(peopleiter.hasNext()){										// for each person...
 					Person p = peopleiter.next();
@@ -78,7 +78,7 @@ public class MusicBox implements Animation{
 						}
 					}
 				}
-			}
+			//}
 		}
 		
 		raster.fill(255,0,0,255);
