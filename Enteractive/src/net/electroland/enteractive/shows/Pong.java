@@ -11,6 +11,7 @@ import net.electroland.enteractive.core.Model;
 import net.electroland.enteractive.core.SoundManager;
 import net.electroland.enteractive.core.Sprite;
 import net.electroland.enteractive.core.SpriteListener;
+import net.electroland.enteractive.sprites.GameOver;
 import net.electroland.enteractive.sprites.Sparkler;
 import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.Raster;
@@ -78,7 +79,7 @@ public class Pong implements Animation, SpriteListener {
 				gameFrame(raster);			// called when in play
 				break;
 			case 2:
-				// TODO play goal animation and sound, then go back to playing
+				// play goal animation and sound, then go back to playing
 				if(!playingScore){
 					//sm.createMonoSound(sm.soundProps.getProperty("pongScoreSound"), 0.5f, 0.5f, 1, 1);
 					Sprite s = new Sparkler(spriteIndex, r, ball.x, ball.y, sm, null, ballTexture);
@@ -87,6 +88,15 @@ public class Pong implements Animation, SpriteListener {
 					spriteIndex++;
 					playingScore = true;
 				}
+				
+				raster.fill(255,0,0,255);
+				for(int i=0; i<playerA.points; i++){
+					raster.rect((2+(i*2))*tileSize - tileSize/2, 0 - tileSize/2, tileSize, tileSize*3);
+				}
+				for(int i=0; i<playerB.points; i++){
+					raster.rect((15-(i*2))*tileSize - tileSize/2, 0 - tileSize/2, tileSize, tileSize*3);
+				}
+
 				if(sprites.size() == 0){
 					playingScore = false;
 					gameMode = 1;
@@ -97,9 +107,15 @@ public class Pong implements Animation, SpriteListener {
 				// TODO play win/end animation and sound, then exit
 				if(!playingEnding){
 					sm.createMonoSound(sm.soundProps.getProperty("pongEndSound"), 0.5f, 0.5f, 1, 1);
+					Sprite s = new GameOver(spriteIndex, r, ball.x, ball.y, sm);
+					s.addListener(this);
+					sprites.put(spriteIndex, s);
+					spriteIndex++;
 					playingEnding = true;
 				}
-				gameOver = true;
+				if(sprites.size() == 0){
+					gameOver = true;
+				}
 				break;
 			}
 			
@@ -227,7 +243,7 @@ public class Pong implements Animation, SpriteListener {
 	
 	
 	private class Player{
-		private int points;		// points earned this game
+		public int points;		// points earned this game
 		private int loc1, loc2;	// linear location in sensor grid
 		private int y1, y2;		// position of feet determines bar length
 		private int x;				// x and y both based on sensor grid, not raster
@@ -280,7 +296,7 @@ public class Pong implements Animation, SpriteListener {
 		public void reset(){
 			x = tileSize * 8;
 			y = tileSize * 5.5f;
-			xvec = (float)Math.random()*1 - 0.5f;
+			xvec = (float)Math.random()*2 - 0.5f;
 			if(xvec > 0){
 				xvec += 0.5;
 			} else {
