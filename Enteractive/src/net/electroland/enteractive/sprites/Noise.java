@@ -1,5 +1,6 @@
 package net.electroland.enteractive.sprites;
 
+import processing.core.PConstants;
 import processing.core.PGraphics;
 import net.electroland.enteractive.core.SoundManager;
 import net.electroland.enteractive.core.Sprite;
@@ -23,6 +24,7 @@ public class Noise extends Sprite {
 		gridHeight = 11;
 		if(raster.isProcessing()){
 			PGraphics c = (PGraphics)canvas;
+			c.rectMode(PConstants.CENTER);
 			sm.createMonoSound(sm.soundProps.getProperty("noise"), x, y, c.width, c.height);
 		}
 	}
@@ -34,8 +36,9 @@ public class Noise extends Sprite {
 			if(raster.isProcessing()){
 				PGraphics c = (PGraphics)canvas;
 				c.pushMatrix();
-				c.fill(0,0,0,(int)(((System.currentTimeMillis() - startTime) / (float)delay) * 255));
-				c.rect(0,0,c.width,c.height);
+				alpha = (int)(((System.currentTimeMillis() - startTime) / (float)delay) * 255);
+				c.fill(0,0,0,alpha);
+				c.rect(c.width/2,c.height/2,c.width,c.height);
 				c.popMatrix();
 			}
 		} else if (wait && System.currentTimeMillis() - startTime >= delay){

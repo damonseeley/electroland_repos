@@ -73,9 +73,6 @@ public class LilyPad implements Animation, SpriteListener {
 		pads = new ConcurrentHashMap<Integer,Pad>();
 		billiejean = new ConcurrentHashMap<Integer,Single>();
 	}
-
-	public void initialize() {
-	}
 	
 	public void addSprite(Sprite sprite){
 		sprite.addListener(this);
