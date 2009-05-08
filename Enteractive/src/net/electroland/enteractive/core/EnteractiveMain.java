@@ -106,11 +106,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		
 		Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){
 			amr.startAnimation(new Blackout(getRaster(), 1000, null, false), dmr.getRecipients());
-			try {
-				sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}}});
+			}});
 		//Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){tcu.billyJeanMode();}});
 		
 		addWindowListener(new WindowAdapter() {

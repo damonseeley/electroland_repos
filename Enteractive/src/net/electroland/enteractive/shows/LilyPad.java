@@ -176,13 +176,13 @@ public class LilyPad implements Animation, SpriteListener {
 			}
 		}
 		
-		synchronized (m){
+		//synchronized (m){
 			PGraphics raster = (PGraphics)(r.getRaster());
 			raster.beginDraw();
 			raster.background(0);		// clear the raster
 
 			HashMap<Integer,Person> people = m.getPeople();
-			//synchronized(people){
+			synchronized(people){
 				Iterator<Person> peopleiter = people.values().iterator();
 				while(peopleiter.hasNext()){										// for each person...
 					Person p = peopleiter.next();
@@ -258,7 +258,7 @@ public class LilyPad implements Animation, SpriteListener {
 						}
 					}
 				}
-			//}
+			}
 			
 			Iterator<Single> singleiter = billiejean.values().iterator();
 			while(singleiter.hasNext()){
@@ -278,7 +278,7 @@ public class LilyPad implements Animation, SpriteListener {
 				sprite.draw();
 			}
 			raster.endDraw();
-		}
+		//}
 		return r;
 	}
 

@@ -46,7 +46,7 @@ public class SoundManager implements SCSoundControlNotifiable {
 		absolutePath = soundProps.getProperty("path");
 		ss = new SCSoundControl(this);
 		ss.init();
-		ss.showDebugOutput(true);
+		ss.showDebugOutput(false);
 		parseSpeakers();
 	}
 	
