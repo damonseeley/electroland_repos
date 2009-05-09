@@ -65,6 +65,8 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 	private WeatherChecker weatherChecker;
 	private int guiWidth = 180;	// TODO get from properties
 	private int guiHeight = 110;
+	private int lowCondition = 29;
+	private float lowVisibility = 8.0f;
 	private TimedEvent sunriseOn = new TimedEvent(5,00,00, this); // on at sunrise-1 based on weather
 	private TimedEvent middayOff = new TimedEvent(11,00,00, this); // off at 11 AM for sun reasons
 	private TimedEvent sunsetOn = new TimedEvent(16,00,00, this); // on at sunset-1 based on weather
@@ -405,6 +407,17 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 			int s = sunset.get(Calendar.SECOND);
 			System.out.println("Sunset at " + h + ":" + m + ":" + s);
 			sunsetOn.reschedule(h - 1, m, s); // turn on 1 hour before sunset
+		}
+		
+		// if conditions are lower than 29 (mostly cloudy or worse) and vis is less than 10 miles, startup
+		if (wce.getRecord().getCondition() < lowCondition && wce.getRecord().getVisibility() < lowVisibility) {
+			// check if it's during the mid-day off gap
+			if(Calendar.HOUR_OF_DAY >= middayOff.hour && Calendar.MINUTE >= middayOff.minute && Calendar.SECOND >= middayOff.sec){
+				if(Calendar.HOUR_OF_DAY <= sunsetOn.hour && Calendar.MINUTE <= sunsetOn.minute && Calendar.SECOND <= sunsetOn.sec){
+					Recipient floor = dmr.getRecipient("floor");
+					amr.startAnimation(amr.getCurrentAnimation(floor), dmr.getRecipients());
+				}
+			}
 		}
 	}
 }
