@@ -2,7 +2,6 @@ package net.electroland.lighting.detector.animation;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -49,8 +48,8 @@ public class AnimationManager implements Runnable
 	// no transition = kill existing show on any overlapping recipient
 	final public void startAnimation(Animation a, Collection <Recipient> recipients)
 	{
-		synchronized (animationRecipients)
-		{
+//		synchronized (animationRecipients)
+//		{
 			Iterator <Animation> currentItr = animationRecipients.keySet().iterator();
 			while (currentItr.hasNext())
 			{
@@ -74,7 +73,7 @@ public class AnimationManager implements Runnable
 			{
 				recipientStates.put(recipientsItr.next(), new RecipientState(a));
 			}
-		}
+//		}
 
 		logger.info("starting animation " + a);
 		this.printState();
@@ -82,15 +81,15 @@ public class AnimationManager implements Runnable
 
 	final public void startAnimation(Animation c, Recipient r)
 	{
-		Vector<Recipient> v = new Vector<Recipient>();
+		CopyOnWriteArrayList<Recipient> v = new CopyOnWriteArrayList<Recipient>();
 		v.add(r);
 		startAnimation(c, v);
 	}
 
 	final public void startAnimation(Animation a, Animation t, Collection <Recipient> r)
 	{
-		synchronized (animationRecipients)
-		{
+//		synchronized (animationRecipients)
+//		{
 		
 			// store the new animations in CompletableRecipients
 			animationRecipients.put(a, new AnimationRecipients(r));
@@ -112,14 +111,14 @@ public class AnimationManager implements Runnable
 					rState.target = a;
 				}
 			}
-		}
+//		}
 		logger.info("transition to animation " + a + " using transition " + t);
 		this.printState();
 	}
 
 	final public void startAnimation(Animation c, Animation t, Recipient r)
 	{
-		Vector<Recipient> v = new Vector<Recipient>();
+		CopyOnWriteArrayList<Recipient> v = new CopyOnWriteArrayList<Recipient>();
 		v.add(r);
 		startAnimation(c, t, v);
 	}
@@ -135,8 +134,8 @@ public class AnimationManager implements Runnable
 	}
 	final public void killOff(Animation a)
 	{
-		synchronized (animationRecipients)
-		{
+//		synchronized (animationRecipients)
+//		{
 			boolean isTransition = animationRecipients.get(a).isTransition;
 			animationRecipients.remove(a);
 			if (!isTransition)
@@ -147,7 +146,7 @@ public class AnimationManager implements Runnable
 					list.next().completed(a);
 				}
 			}
-		}
+//		}
 	}
 
 	// start all animation (presuming any Animations are in the set)
@@ -160,7 +159,11 @@ public class AnimationManager implements Runnable
 			thread.start();
 		}
 	}
-
+	// for now, same as pause.
+	final public void stop()
+	{
+		isRunning = false;
+	}
 	// stop all animation
 	final public void pause()
 	{
@@ -169,13 +172,10 @@ public class AnimationManager implements Runnable
 
 	final public Animation getCurrentAnimation(Recipient r)
 	{
-		if (r == null){
-			System.out.println("no recipient specified");
-		}
-		synchronized (animationRecipients){
+//		synchronized (animationRecipients){
 			RecipientState rs = recipientStates.get(r);
 			return rs == null ? null : rs.current;
-		}
+//		}
 	}
 
 
@@ -186,7 +186,7 @@ public class AnimationManager implements Runnable
 		{
 			startTime = System.currentTimeMillis();
 
-			synchronized (animationRecipients){
+//			synchronized (animationRecipients){
 				// see which animations and transitions are done.
 				Iterator<Animation> doneItr = animationRecipients.keySet().iterator();
 				while (doneItr.hasNext())
@@ -240,7 +240,7 @@ public class AnimationManager implements Runnable
 								state.target == null ? null : animationRecipients.get(state.target).latestFrame);
 					}
 				}
-			}
+//			}
 			if (dmp != null)
 			{
 				dmp.repaint();
@@ -295,7 +295,7 @@ class AnimationRecipients
 
 	public AnimationRecipients(Collection<Recipient>r)
 	{
-		this.recipients = new Vector<Recipient>();
+		this.recipients = new CopyOnWriteArrayList<Recipient>();
 		this.recipients.addAll(r);
 	}
 
