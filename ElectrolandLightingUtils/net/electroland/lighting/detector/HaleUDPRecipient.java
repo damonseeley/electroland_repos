@@ -7,8 +7,11 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import org.apache.log4j.Logger;
+
 public class HaleUDPRecipient extends Recipient {
 
+	private static Logger logger = Logger.getLogger(HaleUDPRecipient.class);
 	private static DatagramSocket socket;
 
 	public HaleUDPRecipient(String id,
@@ -41,13 +44,10 @@ public class HaleUDPRecipient extends Recipient {
 		protocolAndData[1] = (byte)0;
 		protocolAndData[protocolAndData.length - 1] = (byte)254;
 
-		if (log)
-		{
-			System.out.println(this.id + " at IP " + 
+			logger.debug(this.id + " at IP " + 
 								this.ipStr + ":" + 
 								bytesToHex(protocolAndData, protocolAndData.length));			
-		}		
-		
+
 		synchronized (this)
 		{
 			if (socket == null || socket.isClosed())
@@ -56,7 +56,7 @@ public class HaleUDPRecipient extends Recipient {
 				{
 					socket = new DatagramSocket(port);
 				} catch (SocketException e) {
-					e.printStackTrace();
+					logger.error(e);
 				}
 			}
 			DatagramPacket packet = new DatagramPacket(protocolAndData, 
@@ -64,7 +64,7 @@ public class HaleUDPRecipient extends Recipient {
 			try {
 				socket.send(packet);
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(e);
 			}				
 		}
 	}

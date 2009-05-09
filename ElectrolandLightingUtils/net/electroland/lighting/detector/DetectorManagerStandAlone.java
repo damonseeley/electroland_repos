@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,18 +20,20 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.apache.log4j.Logger;
+
 import net.electroland.util.OptionException;
 import net.miginfocom.swing.MigLayout;
 
 @SuppressWarnings("serial")
 public class DetectorManagerStandAlone extends JFrame implements ChangeListener, ActionListener {
 
+	private static Logger logger = Logger.getLogger(DetectorManagerStandAlone.class);
 	private DetectorManagerJPanel fixture;
 	private JSlider fpsSlider;
 	private JLabel fps;
 	private JComboBox testAlgorithmsNames;
 	private JButton sendOne, stream;
-	private JCheckBox isLogging;
 	private int seed = 0;
 	
 	private static String ON = "All ON";
@@ -84,11 +85,6 @@ public class DetectorManagerStandAlone extends JFrame implements ChangeListener,
 		stream = new JButton(START_STREAM);
 		stream.addActionListener(this);
 		testControls.add(stream, "span 2, wrap");
-
-		/* toggle for logging */
-		isLogging = new JCheckBox("log to console");
-		isLogging.addActionListener(this);
-		testControls.add(isLogging, "span 7, wrap");
 
 		/* show the test controls */
 		testControls.setVisible(true);
@@ -146,8 +142,6 @@ public class DetectorManagerStandAlone extends JFrame implements ChangeListener,
 				stream.setText(START_STREAM);
 				sendOne.setEnabled(true);
 			}
-		}else if (e.getSource() == isLogging){
-			fixture.setLog(isLogging.isSelected());
 		}
 	}
 
@@ -161,7 +155,7 @@ public class DetectorManagerStandAlone extends JFrame implements ChangeListener,
 		stopThread();
 
 		// set the type of thread
-		System.out.println("setting: " + testAlgorithmsNames.getSelectedItem());
+		logger.info("setting: " + testAlgorithmsNames.getSelectedItem());
 		// start thread (remember to give it a link to this so it can get FPS)
 
 		if (testAlgorithmsNames.getSelectedItem().equals(ON))
@@ -201,11 +195,11 @@ public class DetectorManagerStandAlone extends JFrame implements ChangeListener,
 			new DetectorManagerStandAlone(new DetectorManager(p));
 
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			logger.error(e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e);
 		} catch (OptionException e) {
-			e.printStackTrace();
+			logger.error(e);
 		}
 	}
 }

@@ -35,7 +35,6 @@ public abstract class Recipient
 	protected Dimension preferredDimensions; // for generating raster properly.
 	protected String patchgroup;
 	protected boolean detectorsOn = true;
-	protected boolean log;
 
 	/**
 	 * @param universe - the byte id of this lighting fixtures DMX universe
@@ -260,11 +259,6 @@ public abstract class Recipient
 		return preferredDimensions;
 	}
 
-	final public void setLog(boolean log)
-	{
-		this.log = log;
-	}
-
 	public String toString()
 	{
 		StringBuffer sb = new StringBuffer(id);
@@ -273,7 +267,8 @@ public abstract class Recipient
 		sb.append(",channels=").append(channels);
 		sb.append(",preferredDimensions=").append(preferredDimensions);
 		sb.append(",patchgroup=").append(patchgroup);
-		sb.append(',').append(detectors).append(']');
+		//sb.append(',').append(detectors).append(']');
+		sb.append(']');
 		return sb.toString();
 	}
 

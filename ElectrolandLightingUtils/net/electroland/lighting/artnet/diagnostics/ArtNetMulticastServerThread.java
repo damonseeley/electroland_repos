@@ -6,13 +6,16 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 
+import org.apache.log4j.Logger;
+
 import net.electroland.lighting.artnet.ArtNetDMXData;
 
 public class ArtNetMulticastServerThread extends Thread{
 	
-	long delay;
-	int listenPort, sendPort;
-	String ipaddress;
+	private static Logger logger = Logger.getLogger(ArtNetMulticastServerThread.class);
+	private long delay;
+	private int listenPort, sendPort;
+	private String ipaddress;
 	
 	public ArtNetMulticastServerThread(String ipaddress, int listenPort, 
 										int sendPort, long delay){
@@ -69,11 +72,11 @@ public class ArtNetMulticastServerThread extends Thread{
 				try{
 					sleep(delay);
 				}catch(InterruptedException e){
-					e.printStackTrace();
+					logger.error(e);
 				}
 			}
 		}catch(IOException f){
-            f.printStackTrace();				
+			logger.error(f);
 		}
 	}
 }

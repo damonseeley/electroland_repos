@@ -47,12 +47,6 @@ public class DetectorManagerJPanel extends JPanel implements ActionListener {
 		return dm;
 	}
 
-	public void setLog(boolean isLogging)
-	{
-		System.out.println("is logging=" + isLogging);
-		dm.getRecipient((String)fixtureList.getSelectedItem()).setLog(isLogging);
-	}
-
 	private void newRaster()
 	{
 		Recipient fixture = dm.getRecipient((String)fixtureList.getSelectedItem());

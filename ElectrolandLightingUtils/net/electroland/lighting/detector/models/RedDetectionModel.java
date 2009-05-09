@@ -13,16 +13,10 @@ import net.electroland.lighting.detector.DetectionModel;
 public class RedDetectionModel implements DetectionModel {
 
 	final public byte getValue(int[] pixels) {
-//		System.out.print("red check -> ");
 		float r = 0;
 		for (int i = 0; i < pixels.length; i++){
-//			System.out.print("pxl=" + pixels[i]);
-//			System.out.print(", shft=");
-//			System.out.print((pixels[i] >> 16 & 0xFF));
 			r += (pixels[i] >> 16) & 0xFF;
-//			System.out.print(", ");
 		}
-//		System.out.println("");
 		return (byte)(r / pixels.length);
 	}
 }
