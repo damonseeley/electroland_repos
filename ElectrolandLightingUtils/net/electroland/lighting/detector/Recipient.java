@@ -34,7 +34,6 @@ public abstract class Recipient
 	protected Map <Detector, Byte> lastEvals;
 	protected Dimension preferredDimensions; // for generating raster properly.
 	protected String patchgroup;
-	protected boolean detectorsOn = true;
 
 	/**
 	 * @param universe - the byte id of this lighting fixtures DMX universe
@@ -105,6 +104,11 @@ public abstract class Recipient
 		this.sync(raster, null, null);
 	}
 
+	final public void blackOut()
+	{
+		send(new byte[channels]);
+	}
+
 	/**
 	 * 
 	 * @param currentRaster
@@ -113,34 +117,31 @@ public abstract class Recipient
 	 */
 	final public void sync(Raster currentRaster, Raster transitionRaster, Raster targetRaster)
 	{
-		if(detectorsOn)
+		boolean isSingle = transitionRaster == null && targetRaster == null;
+		byte[] data = new byte[channels];
+
+		for (int i = 0; i < data.length; i++)
 		{
-			boolean isSingle = transitionRaster == null && targetRaster == null;
-			byte[] data = new byte[channels];
-
-			for (int i = 0; i < data.length; i++)
+			if (i < detectors.size())
 			{
-				if (i < detectors.size())
-				{
-					Detector detector = detectors.get(i);
+				Detector detector = detectors.get(i);
 
-					if (detector != null)
+				if (detector != null)
+				{
+					if (isSingle)
 					{
-						if (isSingle)
-						{
-							data[i]  = detect(currentRaster, detector);
-						}else
-						{
-							data[i] = transition(detect(currentRaster, detector),
-													detect(transitionRaster, detector),
-													detect(targetRaster, detector));
-						}
-						lastEvals.put(detector, new Byte(data[i]));
+						data[i]  = detect(currentRaster, detector);
+					}else
+					{
+						data[i] = transition(detect(currentRaster, detector),
+												detect(transitionRaster, detector),
+												detect(targetRaster, detector));
 					}
+					lastEvals.put(detector, new Byte(data[i]));
 				}
 			}
-			send(data);
 		}
+		send(data);
 	}
 
 	/**
@@ -217,11 +218,6 @@ public abstract class Recipient
 	final public Byte getLastEvaluatedValue(Detector detector)
 	{
 		return this.lastEvals.get(detector);
-	}
-
-	final public void toggleDetectors()
-	{
-		detectorsOn = !detectorsOn;
 	}
 
 	final public int getChannels()
