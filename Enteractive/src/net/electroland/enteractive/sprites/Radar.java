@@ -29,7 +29,7 @@ public class Radar extends Sprite{
 		this.radius = radius*tileSize;
 		this.rotSpeed = rotSpeed;
 		alpha = 255;
-		timeOut = rotSpeed*3;	// 3 sweeps before dying
+		timeOut = rotSpeed;	// 1 sweep before dying
 		fadeSpeed = rotSpeed/2;
 		targets = new ConcurrentHashMap<Integer,RadarTarget>();
 		radarStartTime = startTime = System.currentTimeMillis();
@@ -72,16 +72,19 @@ public class Radar extends Sprite{
 			float xdiff = x - rt.person.getX()*tileSize;
 			float ydiff = y - rt.person.getY()*tileSize;
 			float angle = (float)(Math.atan(xdiff/ydiff)/(Math.PI/180));
-			if(ydiff < 0){
-				angle += 180;
-			}
-			if(xdiff >=0 && ydiff<0){
-				angle += 360;
-			}
+			angle += 180;
+//			if(ydiff < 0){
+//				angle += 180;
+//			}
+//			if(xdiff >=0 && ydiff<0){
+//				angle += 360;
+//			}
+			//System.out.println(rotation +" "+ angle);
 			// play sound if they match up
 			if(rotation >= angle && !rt.played){
 				if(raster.isProcessing()){
 					PGraphics c = (PGraphics)canvas;
+					//System.out.println("radar sound "+rt.person.getID());
 					sm.createMonoSound(sm.soundProps.getProperty("radar"), c.width/2, y, c.width, c.height);
 				}
 				rt.played = true;
