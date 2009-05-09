@@ -597,7 +597,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 		else if (message.getAddress().matches("/n_end")) {
 			// take message.getArguments()[0] (the node id that was freed)
 			// and free up any resources associated with it.
-			debugPrintln("node " + message.getArguments()[0].toString() + " was freed.");
+			//debugPrintln("node " + message.getArguments()[0].toString() + " was freed.");
 			Integer id = (Integer) (message.getArguments()[0]);
 			if (id > _motherGroupID) {
 				// it's a group node. a SoundNode has died.
