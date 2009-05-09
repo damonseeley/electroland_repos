@@ -127,10 +127,10 @@ public class SoundManager implements SCSoundControlNotifiable {
 	}
 
 	public void receiveNotification_ServerRunning() {
-		if(!serverIsLive){
+		//if(!serverIsLive){
 			serverIsLive = true;
 			parseSoundFiles(soundProps);
-		}
+		//}
 	}
 
 	public void receiveNotification_ServerStatus(float averageCPU, float peakCPU) {
@@ -138,7 +138,7 @@ public class SoundManager implements SCSoundControlNotifiable {
 	}
 
 	public void receiveNotification_ServerStopped() {
-		serverIsLive = false;
+		//serverIsLive = false;
 	}
 	
 	public void receiveNotification_ServerStatus(float averageCPU,

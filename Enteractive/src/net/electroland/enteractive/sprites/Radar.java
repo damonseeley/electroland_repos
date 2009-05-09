@@ -54,16 +54,20 @@ public class Radar extends Sprite{
 			while(iter.hasNext()){
 				Person newperson = iter.next();
 				// if not already a target and not the person activating the radar...
-				if(!targets.containsKey(newperson.getID()) && newperson.getID() != person.getID()){
+				if(!targets.containsKey(newperson.getLinearLoc()) && newperson.getLinearLoc() != person.getLinearLoc()){
+					//System.out.println(targets.size() +" "+ newperson.getLinearLoc());
 					float xdiff = x - newperson.getX()*tileSize;
 					float ydiff = y - newperson.getY()*tileSize;
 					float hypo = (float)Math.sqrt(xdiff*xdiff + ydiff*ydiff);
 					if(hypo < radius){		// check if distance to indicator is less than radius
-						targets.put(newperson.getID(), new RadarTarget(newperson));
+						targets.put(newperson.getLinearLoc(), new RadarTarget(newperson));
 					}
 				}
+				
 			}
 		}
+		
+		//System.out.println(targets.size());
 		
 		Iterator<RadarTarget> targetiter = targets.values().iterator();
 		while(targetiter.hasNext()){
@@ -81,10 +85,10 @@ public class Radar extends Sprite{
 //			}
 			//System.out.println(rotation +" "+ angle);
 			// play sound if they match up
-			if(rotation >= angle && !rt.played){
+			if((rotation >= angle-5 && rotation <= angle+5)  && !rt.played){
 				if(raster.isProcessing()){
 					PGraphics c = (PGraphics)canvas;
-					//System.out.println("radar sound "+rt.person.getID());
+					//System.out.println("radar sound "+rt.person.getLinearLoc());
 					sm.createMonoSound(sm.soundProps.getProperty("radar"), c.width/2, y, c.width, c.height);
 				}
 				rt.played = true;
@@ -98,11 +102,7 @@ public class Radar extends Sprite{
 		} else {
 			// reset rotation and reset radar targets to allow them to play sounds again
 			startTime = System.currentTimeMillis();
-			Iterator<RadarTarget> newiter = targets.values().iterator();
-			while(newiter.hasNext()){
-				RadarTarget rt = newiter.next();
-				rt.played = false;
-			}
+			targets.clear();
 		}
 		
 		if(System.currentTimeMillis() - radarStartTime > timeOut || person.isDead()){
@@ -137,7 +137,7 @@ public class Radar extends Sprite{
 		
 		public void update(){
 			if(person.isDead()){
-				targets.remove(person.getID());
+				targets.remove(person.getLinearLoc());
 			}
 		}
 	}
