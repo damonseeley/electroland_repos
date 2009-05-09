@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Properties;
 import javax.swing.JFrame;
@@ -17,6 +18,8 @@ import javax.swing.JFrame;
 import processing.core.PConstants;
 import processing.core.PImage;
 import net.electroland.blobDetection.match.TrackListener;
+import net.electroland.laface.scheduler.TimedEvent;
+import net.electroland.laface.scheduler.TimedEventListener;
 import net.electroland.laface.gui.ControlPanel;
 import net.electroland.laface.gui.RasterPanel;
 import net.electroland.laface.shows.Blackout;
@@ -28,6 +31,8 @@ import net.electroland.laface.shows.Reflection2;
 import net.electroland.laface.shows.WaveShow;
 import net.electroland.laface.sprites.Wave;
 import net.electroland.laface.tracking.Tracker;
+import net.electroland.laface.weather.WeatherChangeListener;
+import net.electroland.laface.weather.WeatherChangedEvent;
 import net.electroland.lighting.detector.DetectorManager;
 import net.electroland.lighting.detector.DetectorManagerJPanel;
 import net.electroland.lighting.detector.Recipient;
@@ -35,11 +40,12 @@ import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.AnimationManager;
 import net.electroland.lighting.detector.animation.AnimationListener;
 import net.electroland.lighting.detector.animation.Raster;
+import net.electroland.laface.weather.WeatherChecker;
 import net.electroland.util.OptionException;
 import net.miginfocom.swing.MigLayout;
 
 @SuppressWarnings("serial")
-public class LAFACEMain extends JFrame implements AnimationListener, ActionListener{
+public class LAFACEMain extends JFrame implements AnimationListener, ActionListener, TimedEventListener, WeatherChangeListener {
 	
 	public DetectorManager dmr;
 	private DetectorManagerJPanel dmp;
@@ -49,12 +55,19 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 	private ControlPanel controlPanel;
 	private int guiWidth = 1056;	// TODO get from properties
 	private int guiHeight = 310;
+	private int lowCondition = 29;
+	private float lowVisibility = 8.0f;
 	public Raster firstRaster, secondRaster, thirdRaster;
 	public CarTracker carTracker;
 	public PImage highlight, linearGradient, leftarrow, rightarrow, verticalGradient;
 	public Tracker tracker;
 	public ImageSequenceCache imageCache;	// only needed for testing
-
+	private WeatherChecker weatherChecker;
+	private TimedEvent sunriseOn = new TimedEvent(5,00,00, this); // on at sunrise-1 based on weather
+	private TimedEvent middayOff = new TimedEvent(10,00,00, this); // off at 10 AM for sun reasons
+	private TimedEvent sunsetOn = new TimedEvent(16,00,00, this); // on at sunset-1 based on weather
+	private TimedEvent nightOff = new TimedEvent(1,00,00, this); // off at 1 AM
+	
 	public LAFACEMain() throws UnknownHostException, OptionException{
 		super("LAFACE Control Panel");
 		setLayout(new MigLayout("insets 0 0 0 0"));
@@ -129,6 +142,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		controlPanel.refreshWaveList();
 		//tracker.addTrackListener((TrackListener) highlighter);	// highlighter displays locations
 		
+		/*
 		Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){
 			amr.startAnimation(new Blackout(getRaster(), 1000, null, false), dmr.getRecipients());
 			try {
@@ -136,10 +150,16 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}}});
+			*/
+		Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){dmr.blackOutAll();}});
 		
 		setResizable(true);
 		setVisible(true);
 		rasterPanel.init();
+		
+		// wait 6 secs (for things to get started up) then check weather every half hour
+		weatherChecker = new WeatherChecker(6000, 60 * 30 * 1000);
+		weatherChecker.addListener(this);
 	}
 	
 	public Properties loadProperties(String filename){
@@ -188,7 +208,54 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 	public void completed(Animation a) {	// Respond to animation ending
 		System.out.println("animation " + a + " completed!");
 	}
+
+	public void timedEvent(TimedEvent event) {
+		if(event == sunriseOn) {			// activate
+			amr.goLive();
+		} else if (event == middayOff) {	// deactivate
+			amr.stop();
+			dmr.blackOutAll();
+		} else if (event == sunsetOn){		// activate
+			amr.goLive();
+		} else if (event == nightOff){		// deactivate
+			amr.stop();
+			dmr.blackOutAll();
+		}
+	}
 	
+	public void tempUpdate(float tu) {
+		// check temperature of the system enclosure
+	}
+
+	public void weatherChanged(WeatherChangedEvent wce) {
+		if(wce.hasSunriseChanged()) {
+			Calendar sunrise = wce.getRecord().getSunrise();
+			int h = sunrise.get(Calendar.HOUR_OF_DAY);
+			int m = sunrise.get(Calendar.MINUTE);
+			int s = sunrise.get(Calendar.SECOND);
+			System.out.println("Sunrise at " + h + ":" + m + ":" + s);
+			sunriseOn.reschedule(h-1, m, s); // turn on an hour before sunrise
+			middayOff.reschedule(h+2, m, s); // turn off an hour after sunrise
+		}
+		if(wce.hasSunsetChanged()) {
+			Calendar sunset = wce.getRecord().getSunset();
+			int h = sunset.get(Calendar.HOUR_OF_DAY);
+			int m = sunset.get(Calendar.MINUTE);
+			int s = sunset.get(Calendar.SECOND);
+			System.out.println("Sunset at " + h + ":" + m + ":" + s);
+			sunsetOn.reschedule(h - 1, m, s); // turn on 1 hour before sunset
+		}
+		
+		// if conditions are lower than 29 (mostly cloudy or worse) and vis is less than 10 miles, startup
+		if (wce.getRecord().getCondition() < lowCondition && wce.getRecord().getVisibility() < lowVisibility) {
+			// check if it's during the mid-day off gap
+			if(Calendar.HOUR_OF_DAY >= middayOff.hour && Calendar.MINUTE >= middayOff.minute && Calendar.SECOND >= middayOff.sec){
+				if(Calendar.HOUR_OF_DAY <= sunsetOn.hour && Calendar.MINUTE <= sunsetOn.minute && Calendar.SECOND <= sunsetOn.sec){
+					amr.goLive();	// assumes a show had been started on application start
+				}
+			}
+		}
+	}
 	
 	
 	
