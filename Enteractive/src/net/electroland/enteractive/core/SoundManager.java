@@ -127,8 +127,10 @@ public class SoundManager implements SCSoundControlNotifiable {
 	}
 
 	public void receiveNotification_ServerRunning() {
-		serverIsLive = true;
-		parseSoundFiles(soundProps);		
+		if(!serverIsLive){
+			serverIsLive = true;
+			parseSoundFiles(soundProps);
+		}
 	}
 
 	public void receiveNotification_ServerStatus(float averageCPU, float peakCPU) {

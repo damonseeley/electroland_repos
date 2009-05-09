@@ -104,9 +104,8 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 			e.printStackTrace();
 		}
 		
-		Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){
-			amr.startAnimation(new Blackout(getRaster(), 1000, null, false), dmr.getRecipients());
-			}});
+		Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){dmr.blackOutAll();}});
+		//Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){amr.startAnimation(new Blackout(getRaster(), 1000, null, false), dmr.getRecipients());}});
 		//Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){tcu.billyJeanMode();}});
 		
 		addWindowListener(new WindowAdapter() {
@@ -301,24 +300,18 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 	public void timedEvent(TimedEvent event) {
 		// TODO activate/deactivate the face of the building
 		System.out.println("timed event");
-		if(event == sunriseOn) {
-			// activate
+		if(event == sunriseOn) {			// activate
+			Recipient floor = dmr.getRecipient("floor");
+			amr.startAnimation(amr.getCurrentAnimation(floor), dmr.getRecipients());
+		} else if (event == middayOff) {	// deactivate
 			Recipient face = dmr.getRecipient("face");
-			// TODO add "face" recipient to currently running "floor" show
-		} else if (event == middayOff) {
-			// deactivate
+			amr.reapRecipient(face).blackOut();
+		} else if (event == sunsetOn){		// activate
+			Recipient floor = dmr.getRecipient("floor");
+			amr.startAnimation(amr.getCurrentAnimation(floor), dmr.getRecipients());
+		} else if (event == nightOff){		// deactivate
 			Recipient face = dmr.getRecipient("face");
-			Animation a = new Blackout(getRaster(), 1000, face, false);
-			amr.startAnimation(a, face);
-		} else if (event == sunsetOn){
-			// activate
-			Recipient face = dmr.getRecipient("face");
-			// TODO add "face" recipient to currently running "floor" show
-		} else if (event == nightOff){
-			// deactivate
-			Recipient face = dmr.getRecipient("face");
-			Animation a = new Blackout(getRaster(), 1000, face, false);
-			amr.startAnimation(a, face);
+			amr.reapRecipient(face).blackOut();
 		}
 	}
 
