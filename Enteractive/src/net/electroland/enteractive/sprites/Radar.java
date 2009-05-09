@@ -48,16 +48,19 @@ public class Radar extends Sprite{
 		}
 
 		// check for collision against a person
-		Iterator<Person> iter = show.m.getPeople().values().iterator();
-		while(iter.hasNext()){
-			Person newperson = iter.next();
-			// if not already a target and not the person activating the radar...
-			if(!targets.containsKey(newperson.getID()) && newperson.getID() != person.getID()){
-				float xdiff = x - newperson.getX()*tileSize;
-				float ydiff = y - newperson.getY()*tileSize;
-				float hypo = (float)Math.sqrt(xdiff*xdiff + ydiff*ydiff);
-				if(hypo < radius){		// check if distance to indicator is less than radius
-					targets.put(newperson.getID(), new RadarTarget(newperson));
+		ConcurrentHashMap<Integer,Person> people = show.m.getPeople();
+		synchronized(people){
+			Iterator<Person> iter = people.values().iterator();
+			while(iter.hasNext()){
+				Person newperson = iter.next();
+				// if not already a target and not the person activating the radar...
+				if(!targets.containsKey(newperson.getID()) && newperson.getID() != person.getID()){
+					float xdiff = x - newperson.getX()*tileSize;
+					float ydiff = y - newperson.getY()*tileSize;
+					float hypo = (float)Math.sqrt(xdiff*xdiff + ydiff*ydiff);
+					if(hypo < radius){		// check if distance to indicator is less than radius
+						targets.put(newperson.getID(), new RadarTarget(newperson));
+					}
 				}
 			}
 		}

@@ -1,7 +1,6 @@
 package net.electroland.enteractive.shows;
 
 import java.util.ConcurrentModificationException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -47,7 +46,7 @@ public class ExampleAnimation implements Animation, SpriteListener {
 		
 			
 			// TODO THIS SHOULD BE THE NORMAL WAY TO FIND NEW PEOPLE/CREATE NEW SPRITES
-			HashMap<Integer,Person> people = m.getPeople();
+			ConcurrentHashMap<Integer,Person> people = m.getPeople();
 			Iterator<Person> iter = people.values().iterator();
 			while(iter.hasNext()){
 				Person p = iter.next();

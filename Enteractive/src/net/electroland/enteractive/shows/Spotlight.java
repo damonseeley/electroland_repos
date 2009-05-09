@@ -1,6 +1,5 @@
 package net.electroland.enteractive.shows;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 import processing.core.PConstants;
@@ -50,7 +49,7 @@ public class Spotlight implements Animation, SpriteListener{
 				raster.colorMode(PConstants.RGB, 255, 255, 255, 255);
 				startTime = System.currentTimeMillis();
 				
-				HashMap<Integer,Person> people = m.getPeople();
+				ConcurrentHashMap<Integer,Person> people = m.getPeople();
 				Iterator<Person> iter = people.values().iterator();
 				while(iter.hasNext()){
 					Person p = iter.next();
@@ -65,7 +64,7 @@ public class Spotlight implements Animation, SpriteListener{
 			PGraphics raster = (PGraphics)(r.getRaster());
 			raster.beginDraw();
 			raster.background(0);		// clear the raster
-			HashMap<Integer,Person> people = m.getPeople();
+			ConcurrentHashMap<Integer,Person> people = m.getPeople();
 			Iterator<Person> iter = people.values().iterator();
 			while(iter.hasNext()){
 				Person p = iter.next();

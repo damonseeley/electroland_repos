@@ -2,7 +2,6 @@ package net.electroland.enteractive.shows;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -59,7 +58,7 @@ public class MusicBox implements Animation{
 		raster.background(0);		// clear the raster
 		
 		synchronized (m){
-			HashMap<Integer,Person> people = m.getPeople();
+			ConcurrentHashMap<Integer,Person> people = m.getPeople();
 			//synchronized(people){
 				Iterator<Person> peopleiter = people.values().iterator();
 				while(peopleiter.hasNext()){										// for each person...

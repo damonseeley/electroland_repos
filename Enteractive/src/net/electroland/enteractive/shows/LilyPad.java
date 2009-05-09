@@ -1,7 +1,6 @@
 package net.electroland.enteractive.shows;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -136,7 +135,7 @@ public class LilyPad implements Animation, SpriteListener {
 			raster.colorMode(PConstants.RGB, 255, 255, 255, 255);
 			// must check for people already on tiles!
 			synchronized (m){
-				HashMap<Integer,Person> people = m.getPeople();
+				ConcurrentHashMap<Integer,Person> people = m.getPeople();
 				//synchronized(people){
 					Iterator<Person> peopleiter = people.values().iterator();
 					while(peopleiter.hasNext()){										// for each person...
@@ -181,7 +180,7 @@ public class LilyPad implements Animation, SpriteListener {
 			raster.beginDraw();
 			raster.background(0);		// clear the raster
 
-			HashMap<Integer,Person> people = m.getPeople();
+			ConcurrentHashMap<Integer,Person> people = m.getPeople();
 			synchronized(people){
 				Iterator<Person> peopleiter = people.values().iterator();
 				while(peopleiter.hasNext()){										// for each person...

@@ -1,9 +1,9 @@
 package net.electroland.enteractive.core;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.electroland.udpUtils.UDPParser;
 import net.electroland.util.NoDataException;
@@ -15,7 +15,7 @@ public class Model {
 	
 	static Logger logger = Logger.getLogger(UDPParser.class);
 	private int personIndex = 0;
-	private HashMap<Integer,Person> people;	// all active people
+	private ConcurrentHashMap<Integer,Person> people;	// all active people
 	private List <ModelListener> listeners;
 	private boolean[] sensors, pastSensors;
 	private int gridWidth;
@@ -28,7 +28,7 @@ public class Model {
 	
 	public Model(int gridWidth, int gridHeight){
 		this.gridWidth = gridWidth;
-		people = new HashMap<Integer,Person>();
+		people = new ConcurrentHashMap<Integer,Person>();
 		listeners = new ArrayList<ModelListener>();
 		sensors = new boolean[gridWidth*gridHeight];
 		pastSensors = new boolean[sensors.length];
@@ -157,7 +157,7 @@ public class Model {
 		return sensors;
 	}
 	
-	public HashMap<Integer,Person> getPeople(){
+	public ConcurrentHashMap<Integer,Person> getPeople(){
 		return people;
 	}
 
