@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
@@ -314,15 +315,16 @@ public class DetectorManager {
 		return recipients.get(id);
 	}
 
+	// returns a point in time copy of the detectors
 	public Collection<Detector> getDetectors()
 	{
-		return detectors.values();
+		return new Vector<Detector>(detectors.values());
 	}
 
-	// returning the array instead of the hashmap, so the user can't monkey with the hashmap.
+	// returns a point in time copy of the recipients
 	public Collection<Recipient> getRecipients()
 	{
-		return recipients.values();
+		return new Vector<Recipient>(recipients.values());
 	}
 
 	public String[] getRecipientIds()

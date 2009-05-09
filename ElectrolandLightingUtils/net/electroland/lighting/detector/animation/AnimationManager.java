@@ -1,6 +1,5 @@
 package net.electroland.lighting.detector.animation;
 
-import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Vector;
@@ -14,16 +13,16 @@ import net.electroland.lighting.detector.Recipient;
 
 public class AnimationManager implements Runnable 
 {
-	static Logger logger = Logger.getLogger(AnimationManager.class);
+	private static Logger logger = Logger.getLogger(AnimationManager.class);
 
 	public static final int ALL_START_ANIMATION = 0;
 	public static final int ALL_TARGET_ANIMATION = 255;
 
 	private DetectorManagerJPanel dmp;
 	private Thread thread;
-	private ConcurrentHashMap<Animation, AnimationRecipients>animationRecipients;
+	private ConcurrentHashMap<Animation, AnimationRecipients>animationRecipients; // Hashtable?
 	private ConcurrentHashMap<Recipient, RecipientState>recipientStates;
-	private CopyOnWriteArrayList<AnimationListener>listeners;	
+	private CopyOnWriteArrayList<AnimationListener>listeners;	// why not just Vector?
 	private boolean isRunning = false;
 	private long delay;
 
@@ -59,7 +58,7 @@ public class AnimationManager implements Runnable
 				AnimationRecipients ar = animationRecipients.get(currentAnimation);
 				// if any of the recipients we are targetting currently is allocated
 				// to another animation, take it from the other animation.
-				ar.recipients.remove(recipients);
+				ar.recipients.removeAll(recipients);
 				// if the other animation has no recipients left, kill it off.
 				if (ar.recipients.isEmpty())
 				{
@@ -78,7 +77,7 @@ public class AnimationManager implements Runnable
 		}
 
 		logger.info("starting animation " + a);
-		this.printState(System.out);
+		this.printState();
 	}
 
 	final public void startAnimation(Animation c, Recipient r)
@@ -114,8 +113,8 @@ public class AnimationManager implements Runnable
 				}
 			}
 		}
-		System.out.println("transition to animation " + a + " using transition " + t);
-		this.printState(System.out);
+		logger.info("transition to animation " + a + " using transition " + t);
+		this.printState();
 	}
 
 	final public void startAnimation(Animation c, Animation t, Recipient r)
@@ -170,8 +169,12 @@ public class AnimationManager implements Runnable
 
 	final public Animation getCurrentAnimation(Recipient r)
 	{
+		if (r == null){
+			System.out.println("no recipient specified");
+		}
 		synchronized (animationRecipients){
-			return recipientStates.get(r).current;
+			RecipientState rs = recipientStates.get(r);
+			return rs == null ? null : rs.current;
 		}
 	}
 
@@ -229,12 +232,7 @@ public class AnimationManager implements Runnable
 					RecipientState state = recipientStates.get(recipient);
 					if (state.transition == null)
 					{
-						////// WHY IS THIS EVER NULL? is the thread improperly synched?
-						////// it seems like it's a new show.
-						if (animationRecipients.get(state.current).latestFrame != null)
-						{
-							recipient.sync(animationRecipients.get(state.current).latestFrame);	
-						}
+						recipient.sync(animationRecipients.get(state.current).latestFrame);	
 					}else
 					{
 						recipient.sync(state.current == null ? null : animationRecipients.get(state.current).latestFrame,
@@ -260,26 +258,26 @@ public class AnimationManager implements Runnable
 		thread = null;
 	}
 
-	public void printState(PrintStream os)
+	public void printState()
 	{
-		os.println("Live animations and there assigned recipients:");
-		os.println("==============================================");
+		logger.info("Live animations and there assigned recipients:");
+		logger.info("==============================================");
 
 		Iterator<Animation> animations = animationRecipients.keySet().iterator();
 		while (animations.hasNext())
 		{
 			Animation a = animations.next();
-			os.println("Animation: " + a + "\t" + animationRecipients.get(a));
+			logger.info("Animation: " + a + "\t" + animationRecipients.get(a));
 		}
-		os.println();
-		os.println("Recipients running shows, and their transition states:");
-		os.println("======================================================");
+		logger.info("");
+		logger.info("Recipients running shows, and their transition states:");
+		logger.info("======================================================");
 		
 		Iterator<Recipient> recipients = recipientStates.keySet().iterator();
 		while (recipients.hasNext())
 		{
 			Recipient r = recipients.next();
-			os.println("Recipient: " + r.getID() + "\t" + recipientStates.get(r));
+			logger.info("Recipient: " + r.getID() + "\t" + recipientStates.get(r));
 		}
 	}
 }
@@ -297,12 +295,13 @@ class AnimationRecipients
 
 	public AnimationRecipients(Collection<Recipient>r)
 	{
-		this.recipients = r;
+		this.recipients = new Vector<Recipient>();
+		this.recipients.addAll(r);
 	}
 
 	public AnimationRecipients(Collection<Recipient>r, boolean isTransition)
 	{
-		this.recipients = r;
+		this.recipients.addAll(r);
 		this.isTransition = isTransition;
 	}
 	public String toString()
