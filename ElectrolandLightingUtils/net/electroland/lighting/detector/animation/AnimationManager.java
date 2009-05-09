@@ -45,11 +45,40 @@ public class AnimationManager implements Runnable
 		listeners = new CopyOnWriteArrayList<AnimationListener>();
 	}
 
+	final public void reapRecipient(Collection <Recipient> recipients)
+	{
+		synchronized (animationRecipients)
+		{
+			Iterator <Animation> currentItr = animationRecipients.keySet().iterator();
+			while (currentItr.hasNext())
+			{
+				Animation currentAnimation = currentItr.next();
+				AnimationRecipients ar = animationRecipients.get(currentAnimation);
+				// if any of the recipient we are targetting currently is allocated
+				// to another animation, take it from the other animation.
+				ar.recipients.remove(recipients);
+				// if the other animation has no recipients left, kill it off.
+				if (ar.recipients.isEmpty())
+				{
+					this.killOff(currentAnimation);
+				}
+			}
+		}
+	}
+
+	final public Recipient reapRecipient(Recipient r)
+	{
+		CopyOnWriteArrayList<Recipient> v = new CopyOnWriteArrayList<Recipient>();
+		v.add(r);
+		reapRecipient(v);
+		return r;
+	}
+	
 	// no transition = kill existing show on any overlapping recipient
 	final public void startAnimation(Animation a, Collection <Recipient> recipients)
 	{
-//		synchronized (animationRecipients)
-//		{
+		synchronized (animationRecipients)
+		{
 			Iterator <Animation> currentItr = animationRecipients.keySet().iterator();
 			while (currentItr.hasNext())
 			{
@@ -73,7 +102,7 @@ public class AnimationManager implements Runnable
 			{
 				recipientStates.put(recipientsItr.next(), new RecipientState(a));
 			}
-//		}
+		}
 
 		logger.info("starting animation " + a);
 		this.printState();
@@ -88,8 +117,8 @@ public class AnimationManager implements Runnable
 
 	final public void startAnimation(Animation a, Animation t, Collection <Recipient> r)
 	{
-//		synchronized (animationRecipients)
-//		{
+		synchronized (animationRecipients)
+		{
 		
 			// store the new animations in CompletableRecipients
 			animationRecipients.put(a, new AnimationRecipients(r));
@@ -111,7 +140,7 @@ public class AnimationManager implements Runnable
 					rState.target = a;
 				}
 			}
-//		}
+		}
 		logger.info("transition to animation " + a + " using transition " + t);
 		this.printState();
 	}
@@ -132,10 +161,10 @@ public class AnimationManager implements Runnable
 	{
 		listeners.remove(listener);
 	}
-	final public void killOff(Animation a)
+	final private void killOff(Animation a)
 	{
-//		synchronized (animationRecipients)
-//		{
+		synchronized (animationRecipients)
+		{
 			boolean isTransition = animationRecipients.get(a).isTransition;
 			animationRecipients.remove(a);
 			if (!isTransition)
@@ -146,7 +175,7 @@ public class AnimationManager implements Runnable
 					list.next().completed(a);
 				}
 			}
-//		}
+		}
 	}
 
 	// start all animation (presuming any Animations are in the set)
@@ -172,10 +201,10 @@ public class AnimationManager implements Runnable
 
 	final public Animation getCurrentAnimation(Recipient r)
 	{
-//		synchronized (animationRecipients){
+		synchronized (animationRecipients){
 			RecipientState rs = recipientStates.get(r);
 			return rs == null ? null : rs.current;
-//		}
+		}
 	}
 
 
@@ -186,7 +215,7 @@ public class AnimationManager implements Runnable
 		{
 			startTime = System.currentTimeMillis();
 
-//			synchronized (animationRecipients){
+			synchronized (animationRecipients){
 				// see which animations and transitions are done.
 				Iterator<Animation> doneItr = animationRecipients.keySet().iterator();
 				while (doneItr.hasNext())
@@ -240,7 +269,7 @@ public class AnimationManager implements Runnable
 								state.target == null ? null : animationRecipients.get(state.target).latestFrame);
 					}
 				}
-//			}
+			}
 			if (dmp != null)
 			{
 				dmp.repaint();
