@@ -333,6 +333,15 @@ public class DetectorManager {
 		recipients.keySet().toArray(k);
 		return k;
 	}
+
+	public void blackOutAll()
+	{
+		Iterator<Recipient> i = recipients.values().iterator();
+		while (i.hasNext())
+		{
+			i.next().blackOut();
+		}
+	}
 }
 class Patch{
 	public Patch(int channel, String detector, String recipient)
