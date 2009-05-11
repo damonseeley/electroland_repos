@@ -16,6 +16,7 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 
 import net.electroland.lighting.detector.models.BlueDetectionModel;
+import net.electroland.lighting.detector.models.BrightRedDetectionModel;
 import net.electroland.lighting.detector.models.GreenDetectionModel;
 import net.electroland.lighting.detector.models.RedDetectionModel;
 import net.electroland.lighting.detector.models.ThresholdDetectionModel;
@@ -221,6 +222,14 @@ public class DetectorManager {
 			String patchgroup = getOption(options, "-patchgroup", id, false);
 
 			return new HaleUDPRecipient(id, address, port, channels, d, patchgroup);
+		} else if ("FlexXML".equalsIgnoreCase(protocol)){
+			//	recipient.id = -protocol FLEXXML -channels int -port int -defaultRaster raster.id [-patchgroup string]
+			int channels = Integer.parseInt(getOption(options, "-channels", id, true));
+			int port = Integer.parseInt(getOption(options, "-port", id, true));
+			Dimension d = rasters.get(getOption(options, "-defaultRaster", id, true));
+			String patchgroup = getOption(options, "-patchgroup", id, false);
+
+			return new FlexXMLRecipient(id, null, port, channels, d, patchgroup);
 
 		}else {
 			throw new OptionException("no such protocol " + protocol + " in recipient " + id);
@@ -243,6 +252,8 @@ public class DetectorManager {
 			model = new BlueDetectionModel();
 		}else if (modelStr.equalsIgnoreCase("net.electroland.lighting.detector.models.ThresholdDetectionModel")){
 			model = new ThresholdDetectionModel();
+		}else if (modelStr.equalsIgnoreCase("net.electroland.lighting.detector.models.BrightRedDetectionModel")){
+			model = new BrightRedDetectionModel();
 		}
 
 		String patchgroupStr = getOption(options, "-patchgroup", id, false);
