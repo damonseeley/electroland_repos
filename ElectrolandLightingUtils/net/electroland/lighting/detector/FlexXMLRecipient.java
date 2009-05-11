@@ -4,12 +4,15 @@ import java.awt.Dimension;
 import java.net.UnknownHostException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.apache.log4j.Logger;
+
 import net.electroland.broadcast.server.XMLSocketBroadcaster;
 import net.electroland.broadcast.server.XMLSocketMessage;
 import net.electroland.util.Util;
 
 public class FlexXMLRecipient extends Recipient {
 
+	private static Logger logger = Logger.getLogger(FlexXMLRecipient.class);
 	private XMLSocketBroadcaster xmlsb;
 	private ConcurrentLinkedQueue <String>q;
 
@@ -17,7 +20,7 @@ public class FlexXMLRecipient extends Recipient {
 							Dimension preferredDimensions) throws UnknownHostException 
 	{
 		super(id, ipStr, port, channels, preferredDimensions);
-		ConcurrentLinkedQueue <String>q = new ConcurrentLinkedQueue<String>();
+		q = new ConcurrentLinkedQueue<String>();
         xmlsb = new XMLSocketBroadcaster(port);
 		xmlsb.start();
 	}
@@ -25,7 +28,7 @@ public class FlexXMLRecipient extends Recipient {
 						Dimension preferredDimensions, String patchgroup) throws UnknownHostException
 	{
 		super(id, ipStr, port, channels, preferredDimensions, patchgroup);
-		ConcurrentLinkedQueue <String>q = new ConcurrentLinkedQueue<String>();
+		q = new ConcurrentLinkedQueue<String>();
         xmlsb = new XMLSocketBroadcaster(port);
 		xmlsb.start();
 	}
@@ -74,7 +77,10 @@ public class FlexXMLRecipient extends Recipient {
 
 		sb.append("</xml>");
 
-		xmlsb.send(new FlexRecipientXMLSocketMessage(sb.toString()));
+		String message = sb.toString();
+
+		logger.debug("sending flex xml message: " + message);
+		xmlsb.send(new FlexRecipientXMLSocketMessage(message));
 	}
 }
 class FlexRecipientXMLSocketMessage implements XMLSocketMessage
