@@ -70,7 +70,7 @@ public class FlexXMLRecipient extends Recipient {
 		while (q.size() > 0)
 		{
 			sb.append("<message id=\"").append(count++).append("\">");
-			sb.append(q.remove());
+			sb.append(q.poll());
 			sb.append("</message>");
 		}
 		sb.append("</messages>");
@@ -79,7 +79,6 @@ public class FlexXMLRecipient extends Recipient {
 
 		String message = sb.toString();
 
-		logger.debug("sending flex xml message: " + message);
 		xmlsb.send(new FlexRecipientXMLSocketMessage(message));
 	}
 }
