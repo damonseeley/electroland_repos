@@ -229,7 +229,7 @@ public class DetectorManager {
 			Dimension d = rasters.get(getOption(options, "-defaultRaster", id, true));
 			String patchgroup = getOption(options, "-patchgroup", id, false);
 
-			return new FlexXMLRecipient(id, null, port, channels, d, patchgroup);
+			return new FlexXMLRecipient(id, port, channels, d, patchgroup);
 
 		}else {
 			throw new OptionException("no such protocol " + protocol + " in recipient " + id);
