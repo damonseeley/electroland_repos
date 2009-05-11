@@ -85,7 +85,7 @@ public class FlexXMLRecipient extends Recipient {
 		sb.append("</xml>");
 
 		String message = sb.toString();
-		//System.out.println(message);
+		logger.debug(message);
 		xmlsb.send(new FlexRecipientXMLSocketMessage(message));
 	}
 }
