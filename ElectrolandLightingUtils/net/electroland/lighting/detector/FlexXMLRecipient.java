@@ -16,18 +16,18 @@ public class FlexXMLRecipient extends Recipient {
 	private XMLSocketBroadcaster xmlsb;
 	private ConcurrentLinkedQueue <String>q;
 
-	public FlexXMLRecipient(String id, String ipStr, int port, int channels, 
+	public FlexXMLRecipient(String id, int port, int channels, 
 							Dimension preferredDimensions) throws UnknownHostException 
 	{
-		super(id, ipStr, port, channels, preferredDimensions);
+		super(id, null, port, channels, preferredDimensions);
 		q = new ConcurrentLinkedQueue<String>();
         xmlsb = new XMLSocketBroadcaster(port);
 		xmlsb.start();
 	}
-	public FlexXMLRecipient(String id, String ipStr, int port, int channels, 
+	public FlexXMLRecipient(String id, int port, int channels, 
 						Dimension preferredDimensions, String patchgroup) throws UnknownHostException
 	{
-		super(id, ipStr, port, channels, preferredDimensions, patchgroup);
+		super(id, null, port, channels, preferredDimensions, patchgroup);
 		q = new ConcurrentLinkedQueue<String>();
         xmlsb = new XMLSocketBroadcaster(port);
 		xmlsb.start();
@@ -54,31 +54,38 @@ public class FlexXMLRecipient extends Recipient {
 		 */
 		StringBuffer sb = new StringBuffer("<xml>");
 
-		// lights
-		sb.append("<lights>");
-		for (int i = 0; i < data.length; i++)
+		if (data.length > 0)
 		{
-			sb.append("<light id=\"").append(i).append("\">");
-			sb.append(Util.unsignedByteToInt(data[i]));
-			sb.append("</light>");
+			// lights
+			sb.append("<lights>");
+			for (int i = 0; i < data.length; i++)
+			{
+				sb.append("<light id=\"").append(i).append("\">");
+				sb.append(Util.unsignedByteToInt(data[i]));
+				sb.append("</light>");
+			}
+			sb.append("</lights>");			
 		}
-		sb.append("</lights>");
 
-		int count = 0;
-		// messages
-		sb.append("<messages>");
-		while (q.size() > 0)
+		if (q.size() > 0)
 		{
-			sb.append("<message id=\"").append(count++).append("\">");
-			sb.append(q.poll());
-			sb.append("</message>");
+			int count = 0;
+			// messages
+			sb.append("<messages>");
+			while (q.size() > 0)
+			{
+				sb.append("<message id=\"").append(count++).append("\">");
+				sb.append(q.poll());
+				sb.append("</message>");
+			}
+			sb.append("</messages>");
+			
 		}
-		sb.append("</messages>");
 
 		sb.append("</xml>");
 
 		String message = sb.toString();
-
+		System.out.println(message);
 		xmlsb.send(new FlexRecipientXMLSocketMessage(message));
 	}
 }
