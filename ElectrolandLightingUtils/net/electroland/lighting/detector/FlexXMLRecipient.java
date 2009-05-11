@@ -58,13 +58,13 @@ public class FlexXMLRecipient extends Recipient {
 		sb.append("<lights>");
 		for (int i = 0; i < data.length; i++)
 		{
-			sb.append("<light id=\"").append(i+1).append("\">");
+			sb.append("<light id=\"").append(i).append("\">");
 			sb.append(Util.unsignedByteToInt(data[i]));
 			sb.append("</light>");
 		}
 		sb.append("</lights>");
 
-		int count = 1;
+		int count = 0;
 		// messages
 		sb.append("<messages>");
 		while (q.size() > 0)
