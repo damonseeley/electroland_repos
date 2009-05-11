@@ -90,7 +90,7 @@ public class DetectorManager {
 				}else{
 					String id = key.substring(idStart + 1, key.length());
 					Dimension raster = parseRaster(id, "" + props.get(key));
-					logger.info(id + "=" + raster);
+					logger.info("raster." + id + "=" + raster);
 					rasters.put(id, raster);
 				}
 			}
@@ -131,6 +131,7 @@ public class DetectorManager {
 					String id = key.substring(idStart + 1, key.length());
 					Detector detector = parseDetector(id, "" + props.get(key));
 					detector.scale(scalePositions, scaleDimensions);
+					logger.info("detector." + id + "=" + detector);
 					detectors.put(id, detector);
 
 					// add this detector to any fixture that belongs to this light group
@@ -173,7 +174,7 @@ public class DetectorManager {
 
 		Iterator<Recipient> itr = recipients.values().iterator();
 		while (itr.hasNext()){
-			logger.info(itr.next());
+			logger.info("recipient." + itr.next());
 		}
 	
 	}
