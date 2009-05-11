@@ -31,6 +31,7 @@ import javax.swing.event.ListSelectionListener;
 import net.electroland.laface.core.Impulse;
 import net.electroland.laface.core.LAFACEMain;
 import net.electroland.laface.shows.DrawTest;
+import net.electroland.laface.shows.ImageSequence;
 import net.electroland.laface.shows.Reflection2;
 import net.electroland.laface.shows.TraceTest;
 import net.electroland.laface.shows.WaveShow;
@@ -458,7 +459,8 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 			// switch to Reflection Show
 			Raster raster = main.getRaster();
 			main.rasterPanel.setRaster(raster);
-			Animation a = new Reflection2(main, raster, main.leftarrow, main.rightarrow);
+			//Animation a = new Reflection2(main, raster, main.leftarrow, main.rightarrow);
+			Animation a = new ImageSequence(raster, main.imageCache.getSequence("test"), false);
 			Collection<Recipient> fixtures = main.dmr.getRecipients();
 			main.amr.startAnimation(a, fixtures); 
 		}

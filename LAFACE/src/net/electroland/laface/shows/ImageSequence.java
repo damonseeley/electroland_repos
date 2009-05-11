@@ -11,7 +11,10 @@ public class ImageSequence implements Animation {
 	private Raster r;
 	private int index = 0;
 	private PImage[] sequence;
+	private int[] pixeldata;
 	private boolean mirror;
+	private int imageWidth;
+	private int imageHeight;
 	
 	public ImageSequence(Raster r, PImage[] sequence, boolean mirror){
 		this.r = r;
@@ -19,6 +22,9 @@ public class ImageSequence implements Animation {
 		this.mirror = mirror;
 		PGraphics c = (PGraphics)(r.getRaster());
 		c.colorMode(PConstants.RGB, 255, 255, 255, 255);
+		imageWidth = sequence[index].width;
+		imageHeight = sequence[index].height;
+		pixeldata = new int[sequence[index].pixels.length];
 	}
 
 	public Raster getFrame() {
@@ -27,10 +33,7 @@ public class ImageSequence implements Animation {
 			c.beginDraw();
 			c.background(0);
 			if(mirror){
-				int imageWidth = sequence[index].width;
-				int imageHeight = sequence[index].height;
 				sequence[index].loadPixels();
-				int[] pixeldata = new int[sequence[index].pixels.length];
 				System.arraycopy(sequence[index].pixels, 0, pixeldata, 0, sequence[index].pixels.length);
 				for(int w=0; w<imageWidth; w++){
 					for(int h=0; h<imageHeight; h++){
