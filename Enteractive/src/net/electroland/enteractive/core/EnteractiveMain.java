@@ -61,7 +61,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 	private TCUtil tcu;
 	private PersonTracker ptr;
 	private UDPParser udp;
-	private Properties lightProps;
+	private Properties lightProps, systemProps;
 	private WeatherChecker weatherChecker;
 	private int guiWidth = 180;	// TODO get from properties
 	private int guiHeight = 110;
@@ -78,6 +78,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 	
 	public EnteractiveMain(String[] args) throws UnknownHostException, OptionException{
 		super("Enteractive Control Panel");
+		systemProps = loadProperties("depends\\enteractive.properties");
 		lightProps = loadProperties("lights.properties");
 		int fps = Integer.parseInt(lightProps.getProperty("fps"));
 		
@@ -271,7 +272,11 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		add(placeHolder3, "cell 1 2, width 200!, height 90!, gap 0!");
 		
 		setSize(800, 620);
-		setVisible(true);
+		if(Boolean.parseBoolean(systemProps.getProperty("headless"))){
+			setVisible(false);
+		} else {
+			setVisible(true);
+		}
 		setResizable(true);
 	}
 	
@@ -284,15 +289,16 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 	}
 	
 	public Properties loadProperties(String file) {
+		Properties newprops = new Properties();
 		try{
-			lightProps = new Properties();
-			lightProps.load(new FileInputStream(new File(file)));
+			newprops = new Properties();
+			newprops.load(new FileInputStream(new File(file)));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return lightProps;
+		return newprops;
 	}
 
 	public void timedEvent(TimedEvent event) {
