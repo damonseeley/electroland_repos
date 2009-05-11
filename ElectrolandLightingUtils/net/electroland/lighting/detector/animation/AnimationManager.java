@@ -330,6 +330,7 @@ class AnimationRecipients
 
 	public AnimationRecipients(Collection<Recipient>r, boolean isTransition)
 	{
+		this.recipients = new CopyOnWriteArrayList<Recipient>();
 		this.recipients.addAll(r);
 		this.isTransition = isTransition;
 	}
