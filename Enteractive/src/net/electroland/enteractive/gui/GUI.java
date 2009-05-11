@@ -101,7 +101,8 @@ public class GUI extends PApplet implements WidgetListener{
 				while(i.hasNext()){
 					Detector d = i.next();
 					if (d != null){
-						point(d.getX(),d.getY());
+						//point(d.getX(),d.getY());
+						rect(d.getX()-1, d.getY()-1, d.getWidth()+1, d.getHeight()+1);
 					}
 				}
 			} catch(NullPointerException e){
@@ -113,7 +114,8 @@ public class GUI extends PApplet implements WidgetListener{
 				while(i.hasNext()){
 					Detector d = i.next();
 					if (d != null){
-						point(d.getX(),d.getY());
+						//point(d.getX(),d.getY());
+						rect(d.getX()-1, d.getY()-1, d.getWidth()+1, d.getHeight()+1);
 					}
 				}
 			} catch(NullPointerException e){
