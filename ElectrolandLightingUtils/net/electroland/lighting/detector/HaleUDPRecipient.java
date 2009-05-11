@@ -16,16 +16,27 @@ public class HaleUDPRecipient extends Recipient {
 	private static Logger logger = Logger.getLogger(HaleUDPRecipient.class);
 	private static DatagramSocket socket;
 
+	// for regularly interspersed optional command bytes
+	private int interPeriod;	// number of frames between interspersal
+	private Byte interCmdByte;	// the optional byte
+	private int count = 0;		// our internal count
+
 	public HaleUDPRecipient(String id,
-			String ipStr, int port, int channels, Dimension preferredDimensions)
+			String ipStr, int port, int channels, Dimension preferredDimensions, 
+			Byte interCmdByte, Integer interPeriod)
 			throws UnknownHostException {
 		super(id, ipStr, port, channels, preferredDimensions);
+		this.interCmdByte = interCmdByte;
+		this.interPeriod = interPeriod == null ? 1 : interPeriod.intValue();
 	}
 
 	public HaleUDPRecipient(String id,
-			String ipStr, int port, int channels, Dimension preferredDimensions, String patchgroup)
+			String ipStr, int port, int channels, Dimension preferredDimensions, 
+			String patchgroup, Byte interCmdByte, Integer interPeriod)
 			throws UnknownHostException {
 		super(id, ipStr, port, channels, preferredDimensions, patchgroup);
+		this.interCmdByte = interCmdByte;
+		this.interPeriod = interPeriod == null ? 1 : interPeriod.intValue();
 	}
 
 	@Override
@@ -41,14 +52,25 @@ public class HaleUDPRecipient extends Recipient {
 		}
 
 		System.arraycopy(data, 0, protocolAndData, 2, data.length);
-		
+
+		// start byte
 		protocolAndData[0] = (byte)255;
-		protocolAndData[1] = (byte)0;
+
+		// command byte
+		if (interCmdByte != null && count++ % interPeriod == 0)
+		{
+			// if an interspersed command byte was specified (and it's time)...
+			protocolAndData[1] = interCmdByte.byteValue();
+		}else
+		{
+			protocolAndData[1] = (byte)0; // default command byte
+		}
+
 		protocolAndData[protocolAndData.length - 1] = (byte)254;
 
 			logger.debug(this.id + " at IP " + 
 								this.ipStr + ":" + 
-								Util.bytesToHex(protocolAndData, protocolAndData.length));			
+								Util.bytesToHex(protocolAndData, protocolAndData.length));
 
 		synchronized (this)
 		{
@@ -67,7 +89,7 @@ public class HaleUDPRecipient extends Recipient {
 				socket.send(packet);
 			} catch (IOException e) {
 				logger.error(e);
-			}				
+			}
 		}
 	}
 }

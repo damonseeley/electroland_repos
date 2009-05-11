@@ -221,8 +221,11 @@ public class DetectorManager {
 			int port = Integer.parseInt(getOption(options, "-port", id, true));
 			Dimension d = rasters.get(getOption(options, "-defaultRaster", id, true));
 			String patchgroup = getOption(options, "-patchgroup", id, false);
+			String interCmdStr = getOption(options, "-interCmdByte", id, false);
+			Byte intrCmdByte = interCmdStr == null ? null : new Byte((byte)(Integer.parseInt(interCmdStr, 16)));
+			Integer interPeriod = Integer.parseInt(getOption(options, "-interPeriod", id, false));
 
-			return new HaleUDPRecipient(id, address, port, channels, d, patchgroup);
+			return new HaleUDPRecipient(id, address, port, channels, d, patchgroup, intrCmdByte, interPeriod);
 		} else if ("FlexXML".equalsIgnoreCase(protocol)){
 			//	recipient.id = -protocol FLEXXML -channels int -port int -defaultRaster raster.id [-patchgroup string]
 			int channels = Integer.parseInt(getOption(options, "-channels", id, true));
