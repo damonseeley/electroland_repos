@@ -7,6 +7,8 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import net.electroland.util.Util;
+
 import org.apache.log4j.Logger;
 
 public class HaleUDPRecipient extends Recipient {
@@ -46,7 +48,7 @@ public class HaleUDPRecipient extends Recipient {
 
 			logger.debug(this.id + " at IP " + 
 								this.ipStr + ":" + 
-								bytesToHex(protocolAndData, protocolAndData.length));			
+								Util.bytesToHex(protocolAndData, protocolAndData.length));			
 
 		synchronized (this)
 		{

@@ -11,6 +11,7 @@ import java.nio.ByteBuffer;
 import org.apache.log4j.Logger;
 
 import net.electroland.lighting.artnet.ArtNetDMXData;
+import net.electroland.util.Util;
 
 public class ArtNetRecipient extends Recipient {
 
@@ -50,7 +51,7 @@ public class ArtNetRecipient extends Recipient {
 
 			ByteBuffer b = dmx.getBytes();
 
-			logger.debug(this.id + ", universe " + universe + " at IP " + this.ipStr + ":" + bytesToHex(b.array(), b.position()));			
+			logger.debug(this.id + ", universe " + universe + " at IP " + this.ipStr + ":" + Util.bytesToHex(b.array(), b.position()));			
 
 			synchronized (this){
 				if (socket == null || socket.isClosed()){

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.electroland.lighting.detector.animation.Raster;
+import net.electroland.util.Util;
 
 import org.apache.log4j.Logger;
 
@@ -202,9 +203,9 @@ public abstract class Recipient
 			return current;
 		}else
 		{
-			int currentInt = unsignedByteToInt(current);
-			double percentOfTargetShown = (unsignedByteToInt(targetAmount) / 255.0);
-			int targetInt = unsignedByteToInt(target);
+			int currentInt = Util.unsignedByteToInt(current);
+			double percentOfTargetShown = (Util.unsignedByteToInt(targetAmount) / 255.0);
+			int targetInt = Util.unsignedByteToInt(target);
 
 			int composite = (int)(((1.0 - percentOfTargetShown)*currentInt) 
 										+ (percentOfTargetShown * targetInt));
@@ -265,26 +266,6 @@ public abstract class Recipient
 		sb.append(",patchgroup=").append(patchgroup);
 		//sb.append(',').append(detectors).append(']');
 		sb.append(']');
-		return sb.toString();
-	}
-
-	public static int unsignedByteToInt(byte b) 
-	{
-		return (int) b & 0xFF;
-	}
-
-	public static String bytesToHex(byte b)
-	{
-		return Integer.toHexString((b&0xFF) | 0x100).substring(1,3) + " ";
-	}
-
-
-	public static String bytesToHex(byte[] b, int length)
-	{
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i< length; i++){
-			sb.append(Integer.toHexString((b[i]&0xFF) | 0x100).substring(1,3) + " ");
-		}
 		return sb.toString();
 	}
 }
