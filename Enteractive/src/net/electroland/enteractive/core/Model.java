@@ -22,7 +22,7 @@ public class Model {
 	private boolean fourCornersOn = false;
 	private boolean oppositeCornersOn = false;
 	private boolean oppositeCorners2On = false;
-	private boolean empty = true;
+	private boolean empty = false;
 	private RunningAverage average;
 	private int numSamples, sampleRate;
 	
@@ -37,7 +37,7 @@ public class Model {
 		}
 
 		// This will store and calculate running averages.
-		numSamples = 30;
+		numSamples = 10;
 		sampleRate = 33;	// millis
 		average = new RunningAverage(numSamples);
 	}
@@ -123,6 +123,9 @@ public class Model {
 			}
 		}
 		
+		/*
+		// TODO this for some reason is triggering empty only after someone
+		// enters the space.
 		try {
 			if(average.getAvg() == 0 && !empty){
 				ModelEvent event = new ModelEvent(ModelConstants.EMPTY);
@@ -136,6 +139,7 @@ public class Model {
 		} catch (NoDataException e) {
 			//e.printStackTrace();
 		}
+		*/
 	}
 	
 	public void addListener(ModelListener listener){
@@ -163,6 +167,13 @@ public class Model {
 
 	public void updateAverage(double averageSample){
 		average.addValue(averageSample, sampleRate);
+		/*
+		try {
+			System.out.println("pop avg: "+ average.getAvg());
+		} catch (NoDataException e) {
+			//e.printStackTrace();
+		}
+		*/
 	}
 	
 	public double getAverage() throws NoDataException{

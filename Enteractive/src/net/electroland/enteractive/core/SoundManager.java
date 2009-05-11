@@ -50,6 +50,14 @@ public class SoundManager implements SCSoundControlNotifiable {
 		parseSpeakers();
 	}
 	
+	public SoundNode createLoopingSound(String filename, float x, float y, float width, float height){
+		if(!filename.equals("none") && serverIsLive){
+			float[] amplitudes = getAmplitudes(x, y, width, height);
+			return ss.createMonoSoundNode(soundFiles.get(absolutePath+filename), true, amplitudes, 1.0f);
+		}
+		return null;
+	}
+	
 	public SoundNode createMonoSound(String filename, float x, float y, float width, float height){
 		if(!filename.equals("none") && serverIsLive){
 			float[] amplitudes = getAmplitudes(x, y, width, height);

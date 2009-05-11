@@ -105,7 +105,7 @@ public class Radar extends Sprite{
 			targets.clear();
 		}
 		
-		if(System.currentTimeMillis() - radarStartTime > timeOut || person.isDead()){
+		if((System.currentTimeMillis() - radarStartTime > timeOut || person.isDead()) && !fadeOut){
 			fadeOut = true;
 			fadeStart = System.currentTimeMillis();
 		}

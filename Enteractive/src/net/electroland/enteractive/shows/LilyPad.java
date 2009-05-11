@@ -234,8 +234,7 @@ public class LilyPad implements Animation, SpriteListener {
 										sprite = new Spiral(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, spiralTexture);
 										break;
 									case 6:
-										sprite = new Noise(spriteIndex, r, 0, 0, sm, 2000, 3000);
-										//pad.fadeOut(2000);
+										sprite = new Noise(spriteIndex, r, 0, 0, sm, 2200, 3000);
 										break;
 									case 7:
 										sprite = new Sparkler(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, sphereTexture);

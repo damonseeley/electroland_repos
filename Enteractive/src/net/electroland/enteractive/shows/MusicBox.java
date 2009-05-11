@@ -67,7 +67,9 @@ public class MusicBox implements Animation{
 						if(samples.containsKey("tile"+p.getLinearLoc())){			// if a sound event is assigned to this tile
 							if(soundPlayers.containsKey(p.getLinearLoc())){
 								// turn off currently playing loop
-								soundPlayers.get(p.getLinearLoc()).sound.die();		// kill sound
+								if(soundPlayers.get(p.getLinearLoc()).sound != null){
+									soundPlayers.get(p.getLinearLoc()).sound.die();		// kill sound
+								}
 								soundPlayers.remove(p.getLinearLoc());
 							} else {
 								// create a new soundNode related to this location
@@ -118,9 +120,12 @@ public class MusicBox implements Animation{
 			this.id = person.getLinearLoc();
 			this.person = person;
 			String[] props = samples.getProperty("tile"+id).split(",");
-			sound = sm.createMonoSound(props[0], 0.5f, 0, 1, 1);
 			if(Boolean.parseBoolean(props[1])){
-				sound.set_looping(true);
+				looping = true;
+				sound = sm.createLoopingSound(props[0], 0.5f, 0, 1, 1);				
+			} else {
+				looping = false;
+				sound = sm.createMonoSound(props[0], 0.5f, 0, 1, 1);				
 			}
 		}
 		
@@ -128,6 +133,9 @@ public class MusicBox implements Animation{
 			if(person.isDead()){
 				if(!looping){
 					soundPlayers.remove(person.getLinearLoc());
+					if(sound != null){
+						sound.die();
+					}
 				}
 			} else if(sound != null && !sound.isAlive()){
 				soundPlayers.remove(person.getLinearLoc());

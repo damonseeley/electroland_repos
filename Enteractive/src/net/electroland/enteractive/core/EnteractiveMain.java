@@ -357,8 +357,8 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 				((GUI)gui).setRaster(raster);
 				Animation a = new Plasma(raster);
 				Collection<Recipient> fixtures = dmr.getRecipients();
-				Animation transition = new LinearFade(5, getRaster());
-				amr.startAnimation(a, transition, fixtures);		// START SCREENSAVER
+				//Animation transition = new LinearFade(5, getRaster());
+				amr.startAnimation(a, fixtures);		// START SCREENSAVER
 			}
 		} else if(e.getType() == Model.ModelConstants.NOT_EMPTY){
 			System.out.println("area re-activated");
@@ -370,8 +370,8 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 				((GUI)gui).setRaster(raster);
 				Animation next = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture, sphereTexture, radarTexture);
 				Collection<Recipient> fixtures = dmr.getRecipients();
-				Animation transition = new LinearFade(1, getRaster());
-				amr.startAnimation(next, transition, fixtures);		// START LILYPAD
+				//Animation transition = new LinearFade(1, getRaster());
+				amr.startAnimation(next, fixtures);		// START LILYPAD
 			}
 		}
 	}
