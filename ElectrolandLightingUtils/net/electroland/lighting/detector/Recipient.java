@@ -49,7 +49,7 @@ public abstract class Recipient
 		this.ipStr = ipStr;
 		this.port = port;
 		this.id = id;
-		this.preferredDimensions = preferredDimensions;
+		this.preferredDimensions = new Dimension(preferredDimensions);
 		this.ip = InetAddress.getByName(ipStr);
 
 		this.setChannels(channels);
@@ -61,7 +61,7 @@ public abstract class Recipient
 		this.ipStr = ipStr;
 		this.port = port;
 		this.id = id;
-		this.preferredDimensions = preferredDimensions;
+		this.preferredDimensions = new Dimension(preferredDimensions);
 		this.ip = InetAddress.getByName(ipStr);
 		this.setChannels(channels);
 
