@@ -149,7 +149,6 @@ public class DetectorManager {
 			}
 		}
 
-		
 		// load patches
 		Enumeration <Object> h = props.keys();
 		while (h.hasMoreElements())
@@ -176,7 +175,8 @@ public class DetectorManager {
 		while (itr.hasNext()){
 			logger.info("recipient." + itr.next());
 		}
-	
+
+		Runtime.getRuntime().addShutdownHook(new BlackOutThread(this));
 	}
 
 	final private static Dimension parseRaster(String id, String str) throws OptionException
@@ -356,6 +356,17 @@ public class DetectorManager {
 		{
 			i.next().blackOut();
 		}
+	}
+}
+class BlackOutThread extends Thread{
+	private DetectorManager dmr;
+	public BlackOutThread(DetectorManager dmr)
+	{
+		this.dmr = dmr;
+	}
+	public void run()
+	{
+		dmr.blackOutAll();
 	}
 }
 class Patch{
