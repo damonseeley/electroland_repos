@@ -105,11 +105,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-		
-		Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){dmr.blackOutAll();}});
-		//Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){amr.startAnimation(new Blackout(getRaster(), 1000, null, false), dmr.getRecipients());}});
-		//Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){tcu.billyJeanMode();}});
-		
+
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {		// when the X is hit in the frame
 				System.exit(0);								// closes app
