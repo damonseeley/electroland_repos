@@ -1,5 +1,7 @@
 package net.electroland.laface.shows;
 
+import java.sql.Timestamp;
+
 import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PImage;
@@ -50,6 +52,7 @@ public class ImageSequence implements Animation {
 		}
 		if (index == sequence.length){
 			index = 0;
+			System.out.println(new Timestamp(System.currentTimeMillis()).toString());
 		}
 		return r;
 	}
