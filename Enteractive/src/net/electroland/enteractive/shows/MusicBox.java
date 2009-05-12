@@ -68,10 +68,24 @@ public class MusicBox implements Animation{
 							if(soundPlayers.containsKey(p.getLinearLoc())){
 								// turn off currently playing loop
 								if(soundPlayers.get(p.getLinearLoc()).sound != null){
-									soundPlayers.get(p.getLinearLoc()).sound.die();		// kill sound
+									soundPlayers.get(p.getLinearLoc()).sound.die();	// kill sound
 								}
 								soundPlayers.remove(p.getLinearLoc());
 							} else {
+								String[] props = samples.getProperty("tile"+p.getLinearLoc()).split(",");
+								if(Boolean.parseBoolean(props[1])){			// if new sound is a loop...
+									// check existing sound players for one in the same column
+									Iterator<SoundPlayer> iter = soundPlayers.values().iterator();
+									while(iter.hasNext()){
+										SoundPlayer sp = iter.next();
+										if(sp.person.getY() == p.getY()){	// remove existing one
+											if(sp.sound != null){
+												sp.sound.die();				// kill sound
+											}
+											soundPlayers.remove(sp.id);
+										}
+									}
+								}
 								// create a new soundNode related to this location
 								SoundPlayer sp = new SoundPlayer(p);
 								soundPlayers.put(p.getLinearLoc(), sp);

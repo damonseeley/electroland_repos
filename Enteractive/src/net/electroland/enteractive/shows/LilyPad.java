@@ -108,7 +108,7 @@ public class LilyPad implements Animation, SpriteListener {
 		Iterator<Pad> paditer = pads.values().iterator();
 		while(paditer.hasNext()){						// for each pad...
 			Pad pad = paditer.next();
-			// since pads are always one tile away from edge, no need to check the position
+			// since pads are always one tile away from edge, no need to check the position EXCEPT THE LAST ONE
 			tileStates[(int)pad.getY()*16 + (int)pad.getX()] = false;	// set pad tile to false
 			tileStates[(int)(pad.getY()-1)*16 + (int)pad.getX()-1] = false;	// top left
 			tileStates[(int)(pad.getY()-1)*16 + (int)pad.getX()] = false;		// top
@@ -117,7 +117,9 @@ public class LilyPad implements Animation, SpriteListener {
 			tileStates[(int)pad.getY()*16 + (int)pad.getX()+1] = false;		// right
 			tileStates[(int)(pad.getY()+1)*16 + (int)pad.getX()-1] = false;	// bottom left
 			tileStates[(int)(pad.getY()+1)*16 + (int)pad.getX()] = false;		// bottom
-			tileStates[(int)(pad.getY()+1)*16 + (int)pad.getX()+1] = false;	// bottom right
+			if((int)(pad.getY()+1)*16 + (int)pad.getX()+1 < tileStates.length){
+				tileStates[(int)(pad.getY()+1)*16 + (int)pad.getX()+1] = false;	// bottom right
+			}
 		}
 		availableTiles.clear();							// blank list of available tiles
 		for(int i=0; i<tileStates.length; i++){		// for every tile...
@@ -164,7 +166,7 @@ public class LilyPad implements Animation, SpriteListener {
 					int loc = availableTiles.get((int)(Math.random()*availableTiles.size()));
 					int xpos = loc % 16;
 					int ypos = loc / 16;					
-					Pad pad = new Pad(spriteIndex, r, xpos, ypos, sm, 0, 255, 500);
+					Pad pad = new Pad(spriteIndex, r, xpos+1, ypos, sm, 0, 255, 500);
 					pad.addListener(this);
 					//sprites.put(spriteIndex, pad);
 					pads.put(spriteIndex, pad);
