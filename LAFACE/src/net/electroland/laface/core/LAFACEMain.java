@@ -203,14 +203,18 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 	public void timedEvent(TimedEvent event) {
 		if(event == sunriseOn) {			// activate
 			amr.goLive();
+			System.out.println(new Timestamp(System.currentTimeMillis()).toString() + " ImageSequence Show Playing");
 		} else if (event == middayOff) {	// deactivate
 			amr.stop();
 			dmr.blackOutAll();
+			System.out.println(new Timestamp(System.currentTimeMillis()).toString() + " ImageSequence Show Stopped");
 		} else if (event == sunsetOn){		// activate
 			amr.goLive();
+			System.out.println(new Timestamp(System.currentTimeMillis()).toString() + " ImageSequence Show Playing");
 		} else if (event == nightOff){		// deactivate
 			amr.stop();
 			dmr.blackOutAll();
+			System.out.println(new Timestamp(System.currentTimeMillis()).toString() + " ImageSequence Show Stopped");
 		}
 	}
 	
