@@ -73,14 +73,17 @@ public class BlobPanel extends JPanel implements ActionListener {
 
 	public void renderDrawing(Graphics2D g2d) {
 		for(Blob b :blobTracker.newFrameBlobs) {
-			b.paint(g2d);
-
+			if (props.getProperty("drawTracks", true)) {
+				b.paint(g2d);
+			}
 		}
 
 		for(SimpleTrackListener tl: trackListeners) {
 			Vector<Track> trackCache = tl.tracks;
 			for(Track t : trackCache) {
-				t.paint(g2d);
+				if (props.getProperty("drawTracks", true)) {
+					t.paint(g2d);
+				}
 			}			
 		}
 	}

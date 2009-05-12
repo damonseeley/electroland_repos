@@ -1,8 +1,9 @@
 #
 #Thu Apr 09 16:40:36 PDT 2009
 threshold=6000.0
-axisIP=192.168.1.70
-adaptation=0.003
+axisIP=192.168.247.4
+#adaptation=0.003
+adaptation=0.03
 axisPassword=r
 regionMap=regionMap_320x240_oneregion.png
 srcWidth=320
@@ -11,6 +12,7 @@ showConsole=true
 showGraphics=true
 camera=axis
 srcHeight=240
+drawTracks=false
 #
 framesUntilDeleteTrack0=5
 framesUntilCertainTrack0=10
