@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Properties;
@@ -67,6 +68,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 	private TimedEvent middayOff = new TimedEvent(10,00,00, this); // off at 10 AM for sun reasons
 	private TimedEvent sunsetOn = new TimedEvent(16,00,00, this); // on at sunset-1 based on weather
 	private TimedEvent nightOff = new TimedEvent(1,00,00, this); // off at 1 AM
+	private TimedEvent clockEvents[];		// used for periodic status output to console
 	
 	public LAFACEMain() throws UnknownHostException, OptionException{
 		super("LAFACE Control Panel");
@@ -103,6 +105,13 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		add(rasterPanel, "wrap");
 		controlPanel = new ControlPanel(this);
 		add(controlPanel, "wrap");
+		
+		clockEvents = new TimedEvent[24*60];	// event every minute just for testing
+		for(int h=0; h<24; h++){
+			for(int m=0; m<60; m++){
+				clockEvents[(h+1)*m] = new TimedEvent(h,m,0,this);
+			}
+		}
 
 		// this gets rid of exception for not using native acceleration
 		System.setProperty("com.sun.media.jai.disableMediaLib", "true");
@@ -141,17 +150,6 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		amr.goLive(); 
 		controlPanel.refreshWaveList();
 		//tracker.addTrackListener((TrackListener) highlighter);	// highlighter displays locations
-		
-		/*
-		Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){
-			amr.startAnimation(new Blackout(getRaster(), 1000, null, false), dmr.getRecipients());
-			try {
-				sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}}});
-			*/
-		Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){dmr.blackOutAll();}});
 		
 		setResizable(true);
 		setVisible(true);
@@ -220,6 +218,8 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		} else if (event == nightOff){		// deactivate
 			amr.stop();
 			dmr.blackOutAll();
+		} else {
+			System.out.println(new Timestamp(System.currentTimeMillis()).toString());
 		}
 	}
 	
