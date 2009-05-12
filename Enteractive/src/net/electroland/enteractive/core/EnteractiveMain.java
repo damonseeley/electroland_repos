@@ -113,7 +113,6 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 			}
 		});
 		
-		Runtime.getRuntime().addShutdownHook(new Thread(){public void run(){dmr.blackOutAll();}});
 
 		lights3D = new Lights3D(600,600, dmr.getRecipient("floor"),  dmr.getRecipient("face"), ptr.getModel());
 		lights3D.setMinimumSize(new Dimension(600,600));
