@@ -108,8 +108,8 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		System.setProperty("com.sun.media.jai.disableMediaLib", "true");
 		
 		// this is running the blob tracker server
-		tracker = new Tracker(this, 3);
-		tracker.start();
+		//tracker = new Tracker(this, 3);
+		//tracker.start();
 		
 		//Animation a = new WaveShow(firstRaster);
 		//Wave wave = new Wave(0, firstRaster, 0, 0);
