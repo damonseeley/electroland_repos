@@ -121,25 +121,7 @@ public class Model {
 			} else {
 				oppositeCorners2On = false;
 			}
-		}
-		
-		/*
-		// TODO this for some reason is triggering empty only after someone
-		// enters the space.
-		try {
-			if(average.getAvg() == 0 && !empty){
-				ModelEvent event = new ModelEvent(ModelConstants.EMPTY);
-				empty = true;
-				notifyListeners(event);
-			} else if(average.getAvg() > 0 && empty){
-				ModelEvent event = new ModelEvent(ModelConstants.NOT_EMPTY);
-				empty = false;
-				notifyListeners(event);
-			}
-		} catch (NoDataException e) {
-			//e.printStackTrace();
-		}
-		*/
+		}		
 	}
 	
 	public void addListener(ModelListener listener){
@@ -167,13 +149,20 @@ public class Model {
 
 	public void updateAverage(double averageSample){
 		average.addValue(averageSample, sampleRate);
-		/*
+		
 		try {
-			System.out.println("pop avg: "+ average.getAvg());
+			if(average.getAvg() == 0.0 && !empty){
+				ModelEvent event = new ModelEvent(ModelConstants.EMPTY);
+				empty = true;
+				notifyListeners(event);
+			} else if(average.getAvg() > 0.0 && empty){
+				ModelEvent event = new ModelEvent(ModelConstants.NOT_EMPTY);
+				empty = false;
+				notifyListeners(event);
+			}
 		} catch (NoDataException e) {
 			//e.printStackTrace();
 		}
-		*/
 	}
 	
 	public double getAverage() throws NoDataException{

@@ -43,7 +43,7 @@ public class Plasma implements Animation {
 				s3 = (float)(128 + 128 * Math.sin(Math.toRadians((xc + yc + frameCount * 10)/2)));
 				s = (s1 + s2 + s3) / 3;
 				element = x+y*gridx;
-				raster.pixels[element] = raster.color((int)s, 255 - (int)s / 2.0f, 255);
+				raster.pixels[element] = raster.color((int)s, 255 - (int)s / 2.0f, (int)s / 2.0f);
 				//raster.pixels[element] = (int)s2;
 			}
 		}

@@ -354,7 +354,9 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 			// switch to SCREENSAVER
 			
 			Recipient floor = dmr.getRecipient("floor");
-			if(amr.getCurrentAnimation(floor) instanceof LilyPad){
+			if(amr.getCurrentAnimation(floor) instanceof LilyPad ||
+					amr.getCurrentAnimation(floor) instanceof MusicBox ||
+					amr.getCurrentAnimation(floor) instanceof Spotlight){
 				Raster raster = getRaster();
 				((GUI)gui).setRaster(raster);
 				Animation a = new Plasma(raster);
