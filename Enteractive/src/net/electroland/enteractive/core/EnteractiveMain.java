@@ -81,7 +81,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 	public EnteractiveMain(String[] args) throws UnknownHostException, OptionException{
 		super("Enteractive Control Panel");
 		systemProps = loadProperties("depends\\enteractive.properties");
-		lightProps = loadProperties("lights.properties");
+		lightProps = loadProperties("depends\\lights.properties");
 		int fps = Integer.parseInt(lightProps.getProperty("fps"));
 		
 		animationList = new String[2];
