@@ -68,6 +68,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 	private TimedEvent middayOff = new TimedEvent(10,00,00, this); // off at 10 AM for sun reasons
 	private TimedEvent sunsetOn = new TimedEvent(16,00,00, this); // on at sunset-1 based on weather
 	private TimedEvent nightOff = new TimedEvent(1,00,00, this); // off at 1 AM
+	private Timestamp sunrise,midday,sunset,night;	// these get updated whenever the weather checker updates timed events
 	
 	public LAFACEMain() throws UnknownHostException, OptionException{
 		super("LAFACE Control Panel");
@@ -140,7 +141,21 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		Animation newa = new ImageSequence(firstRaster, imageCache.getSequence("test"), true);
 		
 		amr.startAnimation(newa, fixtures);
-		amr.goLive(); 
+
+		Timestamp now = new Timestamp(System.currentTimeMillis());
+		sunrise = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), sunriseOn.hour, sunriseOn.minute, sunriseOn.sec, 0);
+		midday = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), middayOff.hour, middayOff.minute, middayOff.sec, 0);
+		sunset = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), sunsetOn.hour, sunsetOn.minute, sunsetOn.sec, 0);
+		night = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), nightOff.hour, nightOff.minute, nightOff.sec, 0);
+		
+		// animation manager only started if it's between the reasonable periods
+		if((now.after(sunset) && now.before(night)) || (now.after(sunrise) && now.before(midday))){
+			amr.goLive(); 	// START ANIMATION MANAGER
+			System.out.println(new Timestamp(System.currentTimeMillis()).toString() + " ImageSequence Show Started");
+		} else {
+			System.out.println(new Timestamp(System.currentTimeMillis()).toString() + " Waiting for appropriate display time");
+		}
+
 		controlPanel.refreshWaveList();
 		//tracker.addTrackListener((TrackListener) highlighter);	// highlighter displays locations
 		
@@ -239,6 +254,23 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 			int s = sunset.get(Calendar.SECOND);
 			System.out.println("Sunset at " + h + ":" + m + ":" + s);
 			sunsetOn.reschedule(h - 1, m, s); // turn on 1 hour before sunset
+		}
+		
+		Timestamp now = new Timestamp(System.currentTimeMillis());
+		sunrise = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), sunriseOn.hour, sunriseOn.minute, sunriseOn.sec, 0);
+		midday = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), middayOff.hour, middayOff.minute, middayOff.sec, 0);
+		sunset = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), sunsetOn.hour, sunsetOn.minute, sunsetOn.sec, 0);
+		night = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), nightOff.hour, nightOff.minute, nightOff.sec, 0);
+		
+		// black out and pause the animation manager if during a black out period
+		if(now.after(midday) && now.before(sunset)){
+			amr.stop();
+			dmr.blackOutAll();
+			System.out.println(new Timestamp(System.currentTimeMillis()).toString() + " ImageSequence Show Stopped");
+		} else if(now.after(night) && now.before(sunrise)){
+			amr.stop();
+			dmr.blackOutAll();
+			System.out.println(new Timestamp(System.currentTimeMillis()).toString() + " ImageSequence Show Stopped");
 		}
 		
 		// if conditions are lower than 29 (mostly cloudy or worse) and vis is less than 10 miles, startup
