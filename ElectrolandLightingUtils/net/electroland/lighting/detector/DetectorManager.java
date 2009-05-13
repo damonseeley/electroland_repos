@@ -354,7 +354,9 @@ public class DetectorManager {
 		Iterator<Recipient> i = recipients.values().iterator();
 		while (i.hasNext())
 		{
-			i.next().blackOut();
+			Recipient r = i.next();
+			logger.info("black out " + r.id);
+			r.blackOut();
 		}
 	}
 }
