@@ -65,6 +65,7 @@ public class Pong implements Animation, SpriteListener {
 			switch(gameMode){
 			case 0:
 				// play start animation and sound
+				// TODO send flex message to plasma to display start instructions
 				if(!playingIntro){
 					sm.createMonoSound(sm.soundProps.getProperty("pongStartSound"), 0.5f, 0.5f, 1, 1);
 					playingIntro = true;
@@ -89,6 +90,9 @@ public class Pong implements Animation, SpriteListener {
 					playingScore = true;
 				}
 				
+				// TODO send a flex message to plasma to display the score
+				
+				/*
 				raster.fill(255,0,0,255);
 				for(int i=0; i<playerA.points; i++){
 					raster.rect((2+(i*2))*tileSize - tileSize/2, 0 - tileSize/2, tileSize, tileSize*3);
@@ -96,6 +100,7 @@ public class Pong implements Animation, SpriteListener {
 				for(int i=0; i<playerB.points; i++){
 					raster.rect((15-(i*2))*tileSize - tileSize/2, 0 - tileSize/2, tileSize, tileSize*3);
 				}
+				*/
 
 				if(sprites.size() == 0){
 					playingScore = false;

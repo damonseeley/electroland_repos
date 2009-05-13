@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Properties;
@@ -67,10 +68,11 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 	private int guiHeight = 110;
 	private int lowCondition = 29;
 	private float lowVisibility = 8.0f;
-	private TimedEvent sunriseOn = new TimedEvent(5,00,00, this); // on at sunrise-1 based on weather
-	private TimedEvent middayOff = new TimedEvent(11,00,00, this); // off at 11 AM for sun reasons
-	private TimedEvent sunsetOn = new TimedEvent(16,00,00, this); // on at sunset-1 based on weather
-	private TimedEvent nightOff = new TimedEvent(1,00,00, this); // off at 1 AM
+	private TimedEvent sunriseOn = new TimedEvent(5,00,00, this); 	// on at sunrise-1 based on weather
+	private TimedEvent middayOff = new TimedEvent(11,00,00, this); 	// off at 11 AM for sun reasons
+	private TimedEvent sunsetOn = new TimedEvent(16,00,00, this); 	// on at sunset-1 based on weather
+	private TimedEvent nightOff = new TimedEvent(1,00,00, this); 		// off at 1 AM
+	private Timestamp sunrise,midday,sunset,night;	// these get updated whenever the weather checker updates timed events
 	private String[] animationList;
 	private JComboBox animationDropDown, displayDropDown, rasterDropDown;
 	PImage rippleTexture, sweepTexture, sphereTexture, propellerTexture, spiralTexture, radarTexture;
@@ -142,6 +144,20 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		//Animation a = new Pong(ptr.getModel(), raster, smr, sphereTexture, pongTitle);
 		//Animation a = new Plasma(raster);
 		Collection<Recipient> fixtures = dmr.getRecipients();
+		
+		Timestamp now = new Timestamp(System.currentTimeMillis());
+		sunrise = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), sunriseOn.hour, sunriseOn.minute, sunriseOn.sec, 0);
+		midday = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), middayOff.hour, middayOff.minute, middayOff.sec, 0);
+		sunset = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), sunsetOn.hour, sunsetOn.minute, sunsetOn.sec, 0);
+		night = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), nightOff.hour, nightOff.minute, nightOff.sec, 0);
+		//System.out.println(now.toString() +" "+ midday.toString() +" "+ sunset.toString());
+		
+		if((now.after(night) && now.before(sunrise)) || (now.after(midday) && now.before(sunset))){
+			// if it is during an off period, remove the face recipient from fixtures
+			fixtures.remove(dmr.getRecipient("face"));
+			//System.out.println("DON'T TURN ON THE FACE!");
+		}
+		
 		amr.startAnimation(a, fixtures); 					// start a show now, on this list of fixtures.
 		amr.goLive(); 										// the whole system does nothing unless you "start" it.
 
@@ -152,6 +168,8 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 	}
 
 	public void completed(Animation a) {
+		Timestamp now = new Timestamp(System.currentTimeMillis());
+		
 		// switch to a new animation
 		System.out.println("animation " + a + " completed!");
 		if (a instanceof Spotlight || a instanceof Pong){
@@ -159,6 +177,10 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 			((GUI)gui).setRaster(raster);
 			Animation next = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture, sphereTexture, radarTexture);
 			Collection<Recipient> fixtures = dmr.getRecipients();
+			if((now.after(night) && now.before(sunrise)) || (now.after(midday) && now.before(sunset))){
+				// if it is during an off period, remove the face recipient from fixtures
+				fixtures.remove(dmr.getRecipient("face"));
+			}
 			amr.startAnimation(next, fixtures);	
 		}
 	}
@@ -320,6 +342,9 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 	}
 
 	public void modelEvent(ModelEvent e) {
+		// check current time so we know if we should activate the face or not
+		Timestamp now = new Timestamp(System.currentTimeMillis());
+		
 		if(e.getType() == Model.ModelConstants.FOUR_CORNERS){
 			System.out.println("Four Corners!");
 		} else if(e.getType() == Model.ModelConstants.OPPOSITE_CORNERS){
@@ -329,10 +354,14 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 			if(amr.getCurrentAnimation(floor) instanceof LilyPad){
 				Raster raster = getRaster();
 				((GUI)gui).setRaster(raster);
-				Animation a = new Spotlight(ptr.getModel(), raster, smr, sphereTexture);
+				Animation a = new MusicBox(ptr.getModel(), raster, smr, sweepTexture);
 				Collection<Recipient> fixtures = dmr.getRecipients();
+				if((now.after(night) && now.before(sunrise)) || (now.after(midday) && now.before(sunset))){
+					// if it is during an off period, remove the face recipient from fixtures
+					fixtures.remove(dmr.getRecipient("face"));
+				}
 				//Animation transition = new LinearFade(2, getRaster());
-				amr.startAnimation(a, fixtures); 					// START SPOTLIGHT (30 secs)
+				amr.startAnimation(a, fixtures); 					// START MUSICBOX
 			}
 			
 		} else if(e.getType() == Model.ModelConstants.OPPOSITE_CORNERS2){
@@ -345,6 +374,10 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 				((GUI)gui).setRaster(raster);
 				Animation a = new Pong(ptr.getModel(), raster, smr, ballTexture, pongTitle);
 				Collection<Recipient> fixtures = dmr.getRecipients();
+				if((now.after(night) && now.before(sunrise)) || (now.after(midday) && now.before(sunset))){
+					// if it is during an off period, remove the face recipient from fixtures
+					fixtures.remove(dmr.getRecipient("face"));
+				}
 				//Animation transition = new LinearFade(2, getRaster());
 				amr.startAnimation(a, fixtures); 					// START PONG (3 points)
 			}
@@ -354,13 +387,18 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 			// switch to SCREENSAVER
 			
 			Recipient floor = dmr.getRecipient("floor");
-			if(amr.getCurrentAnimation(floor) instanceof LilyPad ||
-					amr.getCurrentAnimation(floor) instanceof MusicBox ||
-					amr.getCurrentAnimation(floor) instanceof Spotlight){
+			if(amr.getCurrentAnimation(floor) instanceof LilyPad || amr.getCurrentAnimation(floor) instanceof MusicBox || amr.getCurrentAnimation(floor) instanceof Spotlight){
+				if(amr.getCurrentAnimation(floor) instanceof MusicBox){
+					smr.killAll();
+				}
 				Raster raster = getRaster();
 				((GUI)gui).setRaster(raster);
 				Animation a = new Plasma(raster);
 				Collection<Recipient> fixtures = dmr.getRecipients();
+				if((now.after(night) && now.before(sunrise)) || (now.after(midday) && now.before(sunset))){
+					// if it is during an off period, remove the face recipient from fixtures
+					fixtures.remove(dmr.getRecipient("face"));
+				}
 				//Animation transition = new LinearFade(5, getRaster());
 				amr.startAnimation(a, fixtures);		// START SCREENSAVER
 			}
@@ -374,6 +412,10 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 				((GUI)gui).setRaster(raster);
 				Animation next = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture, sphereTexture, radarTexture);
 				Collection<Recipient> fixtures = dmr.getRecipients();
+				if((now.after(night) && now.before(sunrise)) || (now.after(midday) && now.before(sunset))){
+					// if it is during an off period, remove the face recipient from fixtures
+					fixtures.remove(dmr.getRecipient("face"));
+				}
 				//Animation transition = new LinearFade(1, getRaster());
 				amr.startAnimation(next, fixtures);		// START LILYPAD
 			}
@@ -413,15 +455,18 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 			sunsetOn.reschedule(h - 1, m, s); // turn on 1 hour before sunset
 		}
 		
+		Timestamp now = new Timestamp(System.currentTimeMillis());
+		sunrise = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), sunriseOn.hour, sunriseOn.minute, sunriseOn.sec, 0);
+		midday = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), middayOff.hour, middayOff.minute, middayOff.sec, 0);
+		sunset = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), sunsetOn.hour, sunsetOn.minute, sunsetOn.sec, 0);
+		night = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), nightOff.hour, nightOff.minute, nightOff.sec, 0);
+		
 		// if conditions are lower than 29 (mostly cloudy or worse) and vis is less than 10 miles, startup
 		if (wce.getRecord().getCondition() < lowCondition && wce.getRecord().getVisibility() < lowVisibility) {
 			// check if it's during the mid-day off gap
-			if(Calendar.HOUR_OF_DAY >= middayOff.hour && Calendar.MINUTE >= middayOff.minute && Calendar.SECOND >= middayOff.sec){
-				if(Calendar.HOUR_OF_DAY <= sunsetOn.hour && Calendar.MINUTE <= sunsetOn.minute && Calendar.SECOND <= sunsetOn.sec){
-					Recipient floor = dmr.getRecipient("floor");
-					amr.startAnimation(amr.getCurrentAnimation(floor), dmr.getRecipients());
-				}
-			}
+			//Recipient floor = dmr.getRecipient("floor");
+			//amr.startAnimation(amr.getCurrentAnimation(floor), dmr.getRecipients());
+			
 		}
 	}
 }

@@ -8,11 +8,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import processing.core.PConstants;
 import processing.core.PGraphics;
+import processing.core.PImage;
 
 import net.electroland.enteractive.core.Model;
 import net.electroland.enteractive.core.Person;
 import net.electroland.enteractive.core.SoundManager;
 import net.electroland.enteractive.core.Sprite;
+import net.electroland.enteractive.core.SpriteListener;
+import net.electroland.enteractive.sprites.Sweep;
 import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.Raster;
 import net.electroland.scSoundControl.SoundNode;
@@ -23,7 +26,7 @@ import net.electroland.scSoundControl.SoundNode;
  * @author Aaron Siegel
  */
 
-public class MusicBox implements Animation{
+public class MusicBox implements Animation, SpriteListener{
 	
 	private Model m;
 	private Raster r;
@@ -33,16 +36,23 @@ public class MusicBox implements Animation{
 	private ConcurrentHashMap<Integer,SoundPlayer> soundPlayers;
 	private ConcurrentHashMap<Integer,Sprite> sprites;
 	private int spriteIndex = 0;	// used as ID # for sprite
+	private PImage sweepTexture;
 	
-	public MusicBox(Model m, Raster r, SoundManager sm){
+	public MusicBox(Model m, Raster r, SoundManager sm, PImage sweepTexture){
 		this.m = m;
 		this.r = r;
 		PGraphics raster = (PGraphics)(r.getRaster());
 		raster.colorMode(PConstants.RGB, 255, 255, 255, 255);
 		this.sm = sm;
+		this.sweepTexture = sweepTexture;
 		samples = new Properties();
 		tileSize = (int)(((PGraphics)(r.getRaster())).height/11.0);
 		soundPlayers = new ConcurrentHashMap<Integer,SoundPlayer>();
+		sprites = new ConcurrentHashMap<Integer,Sprite>();
+		
+		Sweep sweep = new Sweep(spriteIndex, r, 0, 0, sm, sweepTexture, 2000, false);
+		sweep.addListener(this);
+		sprites.put(spriteIndex, sweep);
 		
 		try {
 			samples.load(new FileInputStream(new File("./depends/musicbox.properties")));
@@ -104,12 +114,22 @@ public class MusicBox implements Animation{
 			raster.rect(sp.person.getX()*tileSize, sp.person.getY()*tileSize, tileSize, tileSize);
 			sp.update();
 		}
+		
+		Iterator<Sprite> spriteiter = sprites.values().iterator();
+		while(spriteiter.hasNext()){
+			Sprite sprite = (Sprite)spriteiter.next();
+			sprite.draw();
+		}
 		raster.endDraw();
 		return r;
 	}
 
 	public boolean isDone() {
 		return false;
+	}
+	
+	public void spriteComplete(Sprite sprite) {
+		sprites.remove(sprite.getID());
 	}
 	
 	
@@ -156,5 +176,6 @@ public class MusicBox implements Animation{
 			}
 		}
 	}
+
 
 }
