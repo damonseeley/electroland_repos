@@ -119,25 +119,23 @@ public class AnimationManager implements Runnable
 	{
 		synchronized (animationRecipients)
 		{
-		
-			// store the new animations in CompletableRecipients
 			animationRecipients.put(a, new AnimationRecipients(r));
+			animationRecipients.put(t, new AnimationRecipients(r, true));
 			// store each transition in the RecipientCompletable
 			Iterator <Recipient>rItr = r.iterator();
 			while (rItr.hasNext())
 			{
-				RecipientState rState = recipientStates.get(rItr.next());
+				Recipient recip = rItr.next();
+				System.out.println("currrent state of recipient " + recip);
+				RecipientState rState = recipientStates.get(recip);
 				if (rState == null)
 				{
 					// if there was no animation, no transition is required.
 					recipientStates.put(rItr.next(), new RecipientState(a));
 				}else
 				{
-					// store the transitions in CompletableRecipients.
-					animationRecipients.put(t, new AnimationRecipients(r, true));
-					// update the state of the recipient to "transitioning"
 					rState.transition = t;
-					rState.target = a;
+					rState.target = a;//<-- does this need to go in animationRecipients??
 				}
 			}
 		}
@@ -161,6 +159,8 @@ public class AnimationManager implements Runnable
 	{
 		listeners.remove(listener);
 	}
+
+	// this is the problem.
 	final private void killOff(Animation a)
 	{
 		synchronized (animationRecipients)
@@ -232,7 +232,11 @@ public class AnimationManager implements Runnable
 							RecipientState rState = recipientStates.get(recipient);
 							if (ar.isTransition){
 								// kill off the animation we transitioned from.
-								killOff(rState.current);
+								
+								// should ONLY kill of the animation if no other recipient is using it.
+								
+								killOff(rState.current); // THIS IS WRONG. what if another recipient was using the animation?!
+								
 								// set their state to current = target and transition = null.
 								rState.transition = null;
 								rState.current = rState.target;
