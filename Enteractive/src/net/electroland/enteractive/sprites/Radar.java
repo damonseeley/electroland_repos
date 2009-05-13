@@ -85,7 +85,7 @@ public class Radar extends Sprite{
 //			}
 			//System.out.println(rotation +" "+ angle);
 			// play sound if they match up
-			if((rotation >= angle-5 && rotation <= angle+5)  && !rt.played){
+			if((rotation >= angle-10 && rotation <= angle+10)  && !rt.played){
 				if(raster.isProcessing()){
 					PGraphics c = (PGraphics)canvas;
 					//System.out.println("radar sound "+rt.person.getLinearLoc());

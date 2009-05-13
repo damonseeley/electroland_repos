@@ -36,6 +36,8 @@ public class Pong implements Animation, SpriteListener {
 	private boolean playingIntro = false;
 	private boolean playingScore = false;
 	private boolean playingEnding = false;
+	private boolean ballDelay = false;
+	private int ballDelayDuration = 3000;
 	
 	public Pong(Model m, Raster r, SoundManager sm, PImage ballTexture, PImage pongTitle){
 		this.m = m;
@@ -73,7 +75,11 @@ public class Pong implements Animation, SpriteListener {
 				raster.image(pongTitle, 0, 0, raster.width, raster.height);
 				if(System.currentTimeMillis() - startTime > introDuration){
 					gameMode = 1;
+					startTime = System.currentTimeMillis();
+					sm.createMonoSound(sm.soundProps.getProperty("pongCountdown"), 0.5f, 0.5f, 1, 1);
+					ballDelay = true;
 					playingIntro = false;
+					
 				}
 				break;
 			case 1:
@@ -105,11 +111,14 @@ public class Pong implements Animation, SpriteListener {
 				if(sprites.size() == 0){
 					playingScore = false;
 					gameMode = 1;
+					startTime = System.currentTimeMillis();
+					sm.createMonoSound(sm.soundProps.getProperty("pongCountdown"), 0.5f, 0.5f, 1, 1);
+					ballDelay = true;
 					ball.reset();
 				}
 				break;
 			case 3:
-				// TODO play win/end animation and sound, then exit
+				// play win/end animation and sound, then exit
 				if(!playingEnding){
 					sm.createMonoSound(sm.soundProps.getProperty("pongEndSound"), 0.5f, 0.5f, 1, 1);
 					Sprite s = new GameOver(spriteIndex, r, ball.x, ball.y, sm);
@@ -135,7 +144,7 @@ public class Pong implements Animation, SpriteListener {
 		return r;
 	}
 	
-	public void gameFrame(PGraphics raster){	// called when it's in game play mode (ie: ball is bouncing)
+	public void gameFrame(PGraphics raster){	// called when it's in game play mode (ie: ball is bouncing)		
 		boolean[] sensors = m.getSensors();
 		// check all of player A's sensors
 		playerA.resetLoc();
@@ -181,8 +190,9 @@ public class Pong implements Animation, SpriteListener {
 		// check ball position against active paddles and scoring zone
 		if(ball.x-(ball.width/2) <= playerA.x*tileSize){			// in scoring zone, so check against playerA's paddle
 			if(playerA.paddle){						// if paddle exists
-				if(ball.y < playerA.y2*tileSize && ball.y > playerA.y1*tileSize){	// if inside paddle zone...
-					ball.xvec = 0-ball.xvec;		// bounce
+				if(ball.y <= playerA.y2*tileSize && ball.y >= playerA.y1*tileSize){	// if inside paddle zone...
+					//ball.xvec = 0-ball.xvec;		// bounce
+					ball.bounceOffPaddle();
 					//System.out.println("collision player A");
 					// play paddle sound
 					sm.createMonoSound(sm.soundProps.getProperty("pongPaddleSound"), 0, 0.5f, 1, 1);
@@ -194,8 +204,9 @@ public class Pong implements Animation, SpriteListener {
 			}
 		} else if(ball.x+(ball.width/2) >= playerB.x*tileSize){	// check against playerB's paddle
 			if(playerB.paddle){						// if paddle exists
-				if(ball.y < playerB.y2*tileSize && ball.y > playerB.y1*tileSize){	// if inside paddle zone...
-					ball.xvec = 0-ball.xvec;		// bounce
+				if(ball.y <= playerB.y2*tileSize && ball.y >= playerB.y1*tileSize){	// if inside paddle zone...
+					//ball.xvec = 0-ball.xvec;		// bounce
+					ball.bounceOffPaddle();
 					//System.out.println("collision player B");
 					// play paddle sound
 					sm.createMonoSound(sm.soundProps.getProperty("pongPaddleSound"), 1, 0.5f, 1, 1);
@@ -209,19 +220,26 @@ public class Pong implements Animation, SpriteListener {
 		
 		// check ball position against walls
 		if(ball.y <= ball.width/2){					// if colliding with top...
-			ball.yvec = 0-ball.yvec;				// switch directions
+			//ball.yvec = 0-ball.yvec;				// switch directions
+			ball.bounceOffWall();
 			sm.createMonoSound(sm.soundProps.getProperty("pongWallSound"), 0.5f, 0, 1, 1);
 		} else if(ball.y >= raster.height-(ball.width/2)){		// if colliding with bottom...
-			ball.yvec = 0-ball.yvec;				// switch directions
+			//ball.yvec = 0-ball.yvec;				// switch directions
+			ball.bounceOffWall();
 			sm.createMonoSound(sm.soundProps.getProperty("pongWallSound"), 0.5f, 1, 1, 1);
 		}
-		
+
 		// draw ball
 		raster.tint(255,255,255,255);
 		raster.image(ballTexture, ball.x-(ball.width/2), ball.y-(ball.height/2), ball.width, ball.height);
 		
-		// move ball for next frame
-		ball.move();
+		if(ballDelay){
+			if(System.currentTimeMillis() - startTime > ballDelayDuration){
+				ballDelay = false;
+			}
+		} else {
+			ball.move();		// move ball for next frame
+		}
 	}
 
 	public boolean isDone() {
@@ -287,6 +305,8 @@ public class Pong implements Animation, SpriteListener {
 	private class Ball{
 		private float x, y, xvec, yvec;	// all based on raster, not sensor grid
 		private int width, height;
+		private float velocity;			// increases over time
+		private float acceleration;
 		
 		private Ball(){
 			reset();
@@ -294,13 +314,23 @@ public class Pong implements Animation, SpriteListener {
 		}
 		
 		public void move(){
-			x += xvec;
-			y += yvec;
+			x += xvec*velocity;
+			y += yvec*velocity;
+		}
+		
+		public void bounceOffPaddle(){
+			xvec = 0 - xvec;
+			velocity += acceleration;	// get faster with each volley
+		}
+		
+		public void bounceOffWall(){
+			yvec = 0 - yvec;
 		}
 		
 		public void reset(){
-			x = tileSize * 8;
-			y = tileSize * 5.5f;
+			x = tileSize * 8;		// start in the center
+			y = tileSize * 6;
+			
 			xvec = (float)Math.random()*2 - 0.5f;
 			if(xvec > 0){
 				xvec += 0.5;
@@ -313,6 +343,14 @@ public class Pong implements Animation, SpriteListener {
 			} else {
 				yvec -= 0.25;
 			}
+			
+			// create a unit vector (normalized for multiplication against velocity value)
+			float hypo = (float)Math.sqrt(xvec*xvec + yvec*yvec);
+			xvec = xvec/hypo;
+			yvec = yvec/hypo;
+			
+			velocity = 1;			// set initial speed
+			acceleration = 0.1f;
 		}
 	}
 
