@@ -15,7 +15,7 @@ import net.electroland.enteractive.core.Sprite;
 import net.electroland.enteractive.core.SpriteListener;
 import net.electroland.enteractive.sprites.BullsEye;
 import net.electroland.enteractive.sprites.ExplodingCross;
-import net.electroland.enteractive.sprites.Noise;
+import net.electroland.enteractive.sprites.BombDrop;
 import net.electroland.enteractive.sprites.Pad;
 import net.electroland.enteractive.sprites.Propeller;
 import net.electroland.enteractive.sprites.Radar;
@@ -98,25 +98,41 @@ public class LilyPad implements Animation, SpriteListener {
 		for(int i=tileStates.length-16; i<tileStates.length; i++){	// set bottom row to false
 			tileStates[i] = false;
 		}
-		for(int i=0; i<tileStates.length; i+=16){		// set left column to false
+		for(int i=0; i<tileStates.length; i+=16){		// set left column to false (off edge of raster)
 			tileStates[i] = false;
 		}
-		for(int i=15; i<tileStates.length; i+=16){		// set right column to false
+		for(int i=1; i<tileStates.length; i+=16){		// set left column to false (edge of entrance)
 			tileStates[i] = false;
 		}
 		
 		Iterator<Pad> paditer = pads.values().iterator();
 		while(paditer.hasNext()){						// for each pad...
 			Pad pad = paditer.next();
-			// since pads are always one tile away from edge, no need to check the position EXCEPT THE LAST ONE
-			tileStates[(int)pad.getY()*16 + (int)pad.getX()] = false;	// set pad tile to false
-			tileStates[(int)(pad.getY()-1)*16 + (int)pad.getX()-1] = false;	// top left
-			tileStates[(int)(pad.getY()-1)*16 + (int)pad.getX()] = false;		// top
-			tileStates[(int)(pad.getY()-1)*16 + (int)pad.getX()+1] = false;	// top right
-			tileStates[(int)pad.getY()*16 + (int)pad.getX()-1] = false;		// left
-			tileStates[(int)pad.getY()*16 + (int)pad.getX()+1] = false;		// right
-			tileStates[(int)(pad.getY()+1)*16 + (int)pad.getX()-1] = false;	// bottom left
-			tileStates[(int)(pad.getY()+1)*16 + (int)pad.getX()] = false;		// bottom
+			// check every single one JUST IN CASE
+			if((int)pad.getY()*16 + (int)pad.getX() < tileStates.length){
+				tileStates[(int)pad.getY()*16 + (int)pad.getX()] = false;	// set pad tile to false
+			}
+			if((int)(pad.getY()-1)*16 + (int)pad.getX()-1 < tileStates.length){
+				tileStates[(int)(pad.getY()-1)*16 + (int)pad.getX()-1] = false;	// top left
+			}
+			if((int)(pad.getY()-1)*16 + (int)pad.getX() < tileStates.length){
+				tileStates[(int)(pad.getY()-1)*16 + (int)pad.getX()] = false;		// top
+			}
+			if((int)(pad.getY()-1)*16 + (int)pad.getX()+1 < tileStates.length){
+				tileStates[(int)(pad.getY()-1)*16 + (int)pad.getX()+1] = false;	// top right
+			}
+			if((int)pad.getY()*16 + (int)pad.getX()-1 < tileStates.length){
+				tileStates[(int)pad.getY()*16 + (int)pad.getX()-1] = false;		// left
+			}
+			if((int)pad.getY()*16 + (int)pad.getX()+1 < tileStates.length){
+				tileStates[(int)pad.getY()*16 + (int)pad.getX()+1] = false;		// right				
+			}
+			if((int)(pad.getY()+1)*16 + (int)pad.getX()-1 < tileStates.length){
+				tileStates[(int)(pad.getY()+1)*16 + (int)pad.getX()-1] = false;	// bottom left
+			}
+			if((int)(pad.getY()+1)*16 + (int)pad.getX() < tileStates.length){
+				tileStates[(int)(pad.getY()+1)*16 + (int)pad.getX()] = false;		// bottom
+			}
 			if((int)(pad.getY()+1)*16 + (int)pad.getX()+1 < tileStates.length){
 				tileStates[(int)(pad.getY()+1)*16 + (int)pad.getX()+1] = false;	// bottom right
 			}
@@ -166,7 +182,7 @@ public class LilyPad implements Animation, SpriteListener {
 					int loc = availableTiles.get((int)(Math.random()*availableTiles.size()));
 					int xpos = loc % 16;
 					int ypos = loc / 16;					
-					Pad pad = new Pad(spriteIndex, r, xpos+1, ypos, sm, 0, 255, 500);
+					Pad pad = new Pad(spriteIndex, r, xpos, ypos, sm, 0, 255, 500);
 					pad.addListener(this);
 					//sprites.put(spriteIndex, pad);
 					pads.put(spriteIndex, pad);
@@ -236,13 +252,13 @@ public class LilyPad implements Animation, SpriteListener {
 										sprite = new Spiral(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, spiralTexture);
 										break;
 									case 6:
-										sprite = new Noise(spriteIndex, r, 0, 0, sm, 2200, 3000);
+										sprite = new BombDrop(spriteIndex, r, 0, 0, sm, p, 2200, 3000);
 										break;
 									case 7:
 										sprite = new Sparkler(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, p, sphereTexture);
 										break;
 									case 8:
-										sprite = new Radar(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, this, p, radarTexture, 4, 5000);
+										sprite = new Radar(spriteIndex, r, (int)pad.getX()*tileSize, (int)pad.getY()*tileSize, sm, this, p, radarTexture, 11, 5000);
 										break;
 								}
 								

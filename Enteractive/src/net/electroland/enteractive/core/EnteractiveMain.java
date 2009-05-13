@@ -349,7 +349,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 			System.out.println("Four Corners!");
 		} else if(e.getType() == Model.ModelConstants.OPPOSITE_CORNERS){
 			System.out.println("Corners 1 and 4!");
-			// switch to SPOTLIGHT show
+			// switch to MUSICBOX show
 			Recipient floor = dmr.getRecipient("floor");
 			if(amr.getCurrentAnimation(floor) instanceof LilyPad){
 				Raster raster = getRaster();
