@@ -156,7 +156,7 @@ public class SoundManager implements SCSoundControlNotifiable {
 	}
 	
 	public void killAll(){
-		ss.cleanup();
+		ss.init();
 	}
 	
 	
