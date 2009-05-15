@@ -14,9 +14,6 @@ public class AnimationManager implements Runnable
 {
 	private static Logger logger = Logger.getLogger(AnimationManager.class);
 
-	public static final int ALL_START_ANIMATION = 0;
-	public static final int ALL_TARGET_ANIMATION = 255;
-
 	private DetectorManagerJPanel dmp;
 	private Thread thread;
 
@@ -35,7 +32,7 @@ public class AnimationManager implements Runnable
 	private ConcurrentHashMap<Recipient, RecipientState>recipientStates;
 	private CopyOnWriteArrayList<AnimationListener>listeners;
 	private boolean isRunning = false;
-	private long delay;
+	private long delay; // frame delay to achieve optimal fps
 
 	public AnimationManager(int fps)
 	{
@@ -85,12 +82,17 @@ public class AnimationManager implements Runnable
 		reapRecipient(v);
 		return r;
 	}
-	
-	// no transition = kill existing show on any overlapping recipient
-	final public void startAnimation(Animation a, Collection <Recipient> recipients)
-	{
 
-		// should throw an exception here if a, t, or r are null.
+	// no transition = kill existing show on any overlapping recipient
+	final public void startAnimation(Animation a, Collection <Recipient> r)
+	{
+		if (a == null)
+		{
+			throw new RuntimeException("Animation object is null.");
+		}else if (r == null || r.isEmpty())
+		{
+			throw new RuntimeException("Recipient list is null or empty.");
+		}
 
 		synchronized (animationRecipients)
 		{
@@ -101,7 +103,7 @@ public class AnimationManager implements Runnable
 				AnimationRecipients ar = animationRecipients.get(currentAnimation);
 				// if any of the recipients we are targetting currently is allocated
 				// to another animation, take it from the other animation.
-				ar.recipients.removeAll(recipients);
+				ar.recipients.removeAll(r);
 				// if the other animation has no recipients left, kill it off.
 				if (ar.recipients.isEmpty())
 				{
@@ -109,10 +111,10 @@ public class AnimationManager implements Runnable
 				}
 			}
 			// store the show to recipient mappings
-			animationRecipients.put(a, new AnimationRecipients(recipients));
+			animationRecipients.put(a, new AnimationRecipients(r));
 
 			// set the current states
-			Iterator <Recipient> recipientsItr = recipients.iterator();
+			Iterator <Recipient> recipientsItr = r.iterator();
 			while (recipientsItr.hasNext())
 			{
 				recipientStates.put(recipientsItr.next(), new RecipientState(a));
@@ -133,8 +135,16 @@ public class AnimationManager implements Runnable
 
 	final public void startAnimation(Animation a, Animation t, Collection <Recipient> r)
 	{
-
-		// should throw an exception here if a, t, or r are null.
+		if (a == null)
+		{
+			throw new RuntimeException("Animation object is null.");
+		}else if (t == null)
+		{
+			throw new RuntimeException("Transition object is null.");
+		}else if (r == null || r.isEmpty())
+		{
+			throw new RuntimeException("Recipient list is null or empty.");
+		}
 
 		synchronized (animationRecipients)
 		{
@@ -210,13 +220,8 @@ public class AnimationManager implements Runnable
 			thread.start();
 		}
 	}
-	// for now, same as pause.
-	final public void stop()
-	{
-		isRunning = false;
-	}
 	// stop all animation
-	final public void pause()
+	final public void stop()
 	{
 		isRunning = false;
 	}
