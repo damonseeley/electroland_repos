@@ -19,9 +19,21 @@ public class AnimationManager implements Runnable
 
 	private DetectorManagerJPanel dmp;
 	private Thread thread;
-	private ConcurrentHashMap<Animation, AnimationRecipients>animationRecipients; // Hashtable?
+
+	// This object contains all live animations and transitions.  That includes
+	// animations that are being transitioned to.
+	// animationRecipients hashes all the recipients that are playing an Animation
+	// to the Animation. Each AnimationRecipients object lets you know the list of
+	// recipients, whether or not the Animation is being used as a transition, and
+	// also buffers the latest frame from that Animation.
+	private ConcurrentHashMap<Animation, AnimationRecipients>animationRecipients;
+
+	// recipientStates stores the state of every Recipient that is running an
+	// Animation.  It does NOT include Recipients that are not running anything.
+	// the RecipientState object keeps track of whether or not the object is
+	// transitioning.
 	private ConcurrentHashMap<Recipient, RecipientState>recipientStates;
-	private CopyOnWriteArrayList<AnimationListener>listeners;	// why not just Vector?
+	private CopyOnWriteArrayList<AnimationListener>listeners;
 	private boolean isRunning = false;
 	private long delay;
 
@@ -60,7 +72,7 @@ public class AnimationManager implements Runnable
 				// if the other animation has no recipients left, kill it off.
 				if (ar.recipients.isEmpty())
 				{
-					this.killOff(currentAnimation);
+					animationRecipients.remove(currentAnimation);
 				}
 			}
 		}
@@ -77,6 +89,9 @@ public class AnimationManager implements Runnable
 	// no transition = kill existing show on any overlapping recipient
 	final public void startAnimation(Animation a, Collection <Recipient> recipients)
 	{
+
+		// should throw an exception here if a, t, or r are null.
+
 		synchronized (animationRecipients)
 		{
 			Iterator <Animation> currentItr = animationRecipients.keySet().iterator();
@@ -90,7 +105,7 @@ public class AnimationManager implements Runnable
 				// if the other animation has no recipients left, kill it off.
 				if (ar.recipients.isEmpty())
 				{
-					this.killOff(currentAnimation);
+					animationRecipients.remove(currentAnimation);
 				}
 			}
 			// store the show to recipient mappings
@@ -105,6 +120,7 @@ public class AnimationManager implements Runnable
 		}
 
 		logger.info("starting animation " + a);
+		a.getFrame();
 		this.printState();
 	}
 
@@ -117,6 +133,9 @@ public class AnimationManager implements Runnable
 
 	final public void startAnimation(Animation a, Animation t, Collection <Recipient> r)
 	{
+
+		// should throw an exception here if a, t, or r are null.
+
 		synchronized (animationRecipients)
 		{
 			animationRecipients.put(a, new AnimationRecipients(r));
@@ -126,7 +145,6 @@ public class AnimationManager implements Runnable
 			while (rItr.hasNext())
 			{
 				Recipient recip = rItr.next();
-				System.out.println("currrent state of recipient " + recip);
 				RecipientState rState = recipientStates.get(recip);
 				if (rState == null)
 				{
@@ -140,6 +158,7 @@ public class AnimationManager implements Runnable
 			}
 		}
 		logger.info("transition to animation " + a + " using transition " + t);
+		a.getFrame();
 		this.printState();
 	}
 
@@ -160,20 +179,23 @@ public class AnimationManager implements Runnable
 		listeners.remove(listener);
 	}
 
-	// this is the problem.
-	final private void killOff(Animation a)
+	// this is the problem:
+	// this method sees if the animation is in transition, then removes it
+	// for all recipients that are currently showing it, and alerts any
+	// listeners that it is done.  it should ONLY every be called once
+	// per animation.  however, we call it in a couple loops.
+
+	// more importantly, there's a design problem here.  an animation could
+	// end for one recipient, but not for others.  for instance, if you start
+	// an animation up on one of those recipients, but not others.
+	final private void notifyCompletionListeners(Animation a)
 	{
 		synchronized (animationRecipients)
 		{
-			boolean isTransition = animationRecipients.get(a).isTransition;
-			animationRecipients.remove(a);
-			if (!isTransition)
+			Iterator<AnimationListener> list = listeners.iterator();
+			while (list.hasNext())
 			{
-				Iterator<AnimationListener> list = listeners.iterator();
-				while (list.hasNext())
-				{
-					list.next().completed(a);
-				}
+				list.next().completed(a);
 			}
 		}
 	}
@@ -222,39 +244,65 @@ public class AnimationManager implements Runnable
 				{
 					Animation animation = doneItr.next();
 					AnimationRecipients ar = animationRecipients.get(animation);
-					if (animation.isDone())
+
+					// the AnimationRecipient may have been removed in a prior
+					// execution of this loop.
+					if (ar != null)
 					{
-						// find all recipients that were using this transition.
-						Iterator<Recipient> recipients = ar.recipients.iterator();
-						while (recipients.hasNext())
+						if (animation.isDone())
 						{
-							Recipient recipient = recipients.next();
-							RecipientState rState = recipientStates.get(recipient);
-							if (ar.isTransition){
-								// kill off the animation we transitioned from.
-								
-								// should ONLY kill of the animation if no other recipient is using it.
-								
-								killOff(rState.current); // THIS IS WRONG. what if another recipient was using the animation?!
-								
-								// set their state to current = target and transition = null.
-								rState.transition = null;
-								rState.current = rState.target;
+							if (ar.isTransition)
+							{
+								// if an animation used as a transition just ended
+								// check each recipient that the animation was running on:
+								Iterator<Recipient> recipients = ar.recipients.iterator();
+								while (recipients.hasNext())
+								{
+									Recipient recipient = recipients.next();
+									RecipientState rState = recipientStates.get(recipient);
+									// for each recipient
+									// 1.) remove the Recipient from the list of recipients
+									//		that Animation is playing on
+									ar.recipients.remove(recipient);
+									// 2.) if the Animation you transitioned from isn't playing for anyone else, kill it.
+									if (ar.recipients.isEmpty())
+									{
+										animationRecipients.remove(ar);
+									}
+									// 3.) set the Recipient's current state to it's target and forget the transition
+									rState.transition = null;
+									rState.current = rState.target;
+								}
 							}else
 							{
-								// any recipient using this animation (and not transitioning)
-								// needs to change it's state to either removed from the state list
-								if (rState.transition == null)
+								// if a standard animation just ended on it's own,
+								// check each recipient that the animation was running on:
+								Iterator<Recipient> recipients = ar.recipients.iterator();
+								while (recipients.hasNext())
 								{
-									recipientStates.remove(recipient);
+									Recipient recipient = recipients.next();
+									RecipientState rState = recipientStates.get(recipient);
+									// for each recipient that was transitioning:
+									if (rState.target != null){
+										// 1.) jump straight to the new Animation
+										rState.transition = null;
+										rState.current = rState.target;
+									}else
+									// for each animation that was not transitioning:
+									{
+										// 1.) remove the recipient from the state list.
+										recipientStates.remove(recipient);
+									}
 								}
+								// 2.) remove the Animation from the list of running animations
+								animationRecipients.remove(ar);
+								// 3.) notify listeners.
+								this.notifyCompletionListeners(animation);
 							}
+						}else
+						{
+							ar.latestFrame = animation.getFrame();
 						}
-						// kill off the animation.
-						killOff(animation);
-					}else
-					{
-						ar.latestFrame = animation.getFrame();
 					}
 				}
 	
