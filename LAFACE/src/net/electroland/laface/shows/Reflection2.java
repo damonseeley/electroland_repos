@@ -80,9 +80,6 @@ public class Reflection2 implements Animation, SpriteListener {
 		}
 		return r;
 	}
-	
-	public void cleanUp() {
-	}
 
 	public boolean isDone() {
 		return false;

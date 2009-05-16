@@ -36,7 +36,6 @@ public class AnimationManager implements Runnable
 
 	public AnimationManager(int fps)
 	{
-		this.delay = (long)(1000 / (double)fps);
 		this.init(fps);
 	}
 
@@ -122,7 +121,6 @@ public class AnimationManager implements Runnable
 		}
 
 		logger.info("starting animation " + a);
-		a.getFrame();
 		this.printState();
 	}
 
@@ -168,7 +166,6 @@ public class AnimationManager implements Runnable
 			}
 		}
 		logger.info("transition to animation " + a + " using transition " + t);
-		a.getFrame();
 		this.printState();
 	}
 
@@ -233,7 +230,6 @@ public class AnimationManager implements Runnable
 			return rs == null ? null : rs.current;
 		}
 	}
-
 
 	final public void run()
 	{

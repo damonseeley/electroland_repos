@@ -30,7 +30,6 @@ public class Spotlight implements Animation, SpriteListener{
 	private PImage sphereTexture;
 	private long startTime;
 	private int duration = 30000;	// milliseconds
-	private boolean isNew = true;
 	
 	public Spotlight(Model m, Raster r, SoundManager sm, PImage sphereTexture){
 		this.m = m;
@@ -39,27 +38,24 @@ public class Spotlight implements Animation, SpriteListener{
 		this.sphereTexture = sphereTexture;
 		this.tileSize = (int)(((PGraphics)(r.getRaster())).height/11.0);
 		sprites = new ConcurrentHashMap<Integer,Sprite>();
+		PGraphics raster = (PGraphics)(r.getRaster());
+		raster.colorMode(PConstants.RGB, 255, 255, 255, 255);
+		startTime = System.currentTimeMillis();
+		
+		ConcurrentHashMap<Integer,Person> people = m.getPeople();
+		Iterator<Person> iter = people.values().iterator();
+		while(iter.hasNext()){
+			Person p = iter.next();
+			int[] loc = p.getLoc();
+			Sphere sphere = new Sphere(spriteIndex, r, loc[0]*tileSize, loc[1]*tileSize, sm, p, sphereTexture);
+			sphere.addListener(this);
+			sprites.put(spriteIndex, sphere);
+			spriteIndex++;
+		}
 	}
 
 	public Raster getFrame() {
 		synchronized (m){
-			if (isNew)
-			{
-				PGraphics raster = (PGraphics)(r.getRaster());
-				raster.colorMode(PConstants.RGB, 255, 255, 255, 255);
-				startTime = System.currentTimeMillis();
-				
-				ConcurrentHashMap<Integer,Person> people = m.getPeople();
-				Iterator<Person> iter = people.values().iterator();
-				while(iter.hasNext()){
-					Person p = iter.next();
-					int[] loc = p.getLoc();
-					Sphere sphere = new Sphere(spriteIndex, r, loc[0]*tileSize, loc[1]*tileSize, sm, p, sphereTexture);
-					sphere.addListener(this);
-					sprites.put(spriteIndex, sphere);
-					spriteIndex++;
-				}
-			}
 			// presumes that you instantiated Raster with a PGraphics.
 			PGraphics raster = (PGraphics)(r.getRaster());
 			raster.beginDraw();
@@ -89,6 +85,10 @@ public class Spotlight implements Animation, SpriteListener{
 	}
 
 	public boolean isDone() {
+		if ((System.currentTimeMillis() - startTime) >= duration)
+		{
+			System.out.println("SPOTLIGHT IS DONE" + (System.currentTimeMillis() - startTime));
+		}
 		return (System.currentTimeMillis() - startTime) >= duration;
 	}
 
