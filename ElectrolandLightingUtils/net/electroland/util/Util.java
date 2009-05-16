@@ -1,5 +1,7 @@
 package net.electroland.util;
 
+import java.awt.Point;
+
 public class Util {
 
 	public static byte getHiByte(short s){
@@ -24,5 +26,10 @@ public class Util {
 	public static int unsignedByteToInt(byte b) 
 	{
 		return (int) b & 0xFF;
+	}
+	public static int[] fitCurve(int[] in)
+	{
+		// doesn't do jack shit yet.
+		return in;
 	}
 }

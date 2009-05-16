@@ -35,6 +35,7 @@ public abstract class Recipient
 	protected Map <Detector, Byte> lastEvals;
 	protected Dimension preferredDimensions; // for generating raster properly.
 	protected String patchgroup;
+	protected ByteMap bytemap;
 
 	/**
 	 * @param universe - the byte id of this lighting fixtures DMX universe
@@ -67,7 +68,10 @@ public abstract class Recipient
 
 		this.patchgroup = patchgroup;
 	}
-
+	public void setByteMap(ByteMap bytemap)
+	{
+		this.bytemap = bytemap;
+	}
 	private void setChannels(int channels)
 	{
 		this.channels = channels;
@@ -141,6 +145,10 @@ public abstract class Recipient
 					lastEvals.put(detector, new Byte(data[i]));
 				}
 			}
+		}
+		if (bytemap != null)
+		{
+			data = bytemap.map(data);
 		}
 		send(data);
 	}

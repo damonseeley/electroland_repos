@@ -1,6 +1,7 @@
 package net.electroland.lighting.detector;
 
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.net.UnknownHostException;
 import java.util.Collection;
@@ -13,8 +14,6 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
-
 import net.electroland.lighting.detector.models.BlueDetectionModel;
 import net.electroland.lighting.detector.models.BrightRedDetectionModel;
 import net.electroland.lighting.detector.models.GreenDetectionModel;
@@ -22,6 +21,9 @@ import net.electroland.lighting.detector.models.RedDetectionModel;
 import net.electroland.lighting.detector.models.ThresholdDetectionModel;
 import net.electroland.util.OptionException;
 import net.electroland.util.OptionParser;
+import net.electroland.util.Util;
+
+import org.apache.log4j.Logger;
 
 /**
  * loads detectors and fixtures from a lighting properties file.
@@ -35,10 +37,12 @@ public class DetectorManager {
 	private Map <String, Dimension> rasters;
 	private Map <String, Recipient> recipients;
 	private Map <String, Detector> detectors;
+	private Map <String, ByteMap> bytemaps;
 	private int fps;
 
 	public DetectorManager(Properties props) throws UnknownHostException, OptionException
 	{
+		bytemaps = Collections.synchronizedMap(new HashMap<String, ByteMap>());
 		rasters = Collections.synchronizedMap(new HashMap<String, Dimension>());
 		recipients = Collections.synchronizedMap(new HashMap<String, Recipient>());
 		detectors = Collections.synchronizedMap(new HashMap<String, Detector>());
@@ -96,6 +100,27 @@ public class DetectorManager {
 			}
 		}
 
+		// load bytemaps
+		Enumeration <Object> b = props.keys();
+		while (e.hasMoreElements())
+		{
+			String key = ("" + b.nextElement()).trim();
+			if (key.toLowerCase().startsWith("bytemap."))
+			{
+				int idStart = key.indexOf('.');
+				if (idStart == -1 || idStart == key.length() - 1)
+				{
+					throw new OptionException("no id specified in property " + key);
+				}else{
+					String id = key.substring(idStart + 1, key.length());
+					ByteMap map = parseByteMap(id, "" + props.get(key));
+					logger.info("bytemap." + id + "=" + map);
+					bytemaps.put(id, map);
+				}
+			}
+		}
+
+
 		// load recipient
 		Enumeration <Object> f = props.keys();
 		while (f.hasMoreElements())
@@ -109,7 +134,7 @@ public class DetectorManager {
 					throw new OptionException("no id specified in property " + key);
 				}else{
 					String id = key.substring(idStart + 1, key.length());
-					Recipient recipient = parseRecipient(id, "" + props.get(key), rasters);
+					Recipient recipient = parseRecipient(id, "" + props.get(key), this);
 					recipient.scale(scaleRaster);
 					recipients.put(id, recipient);
 				}
@@ -179,6 +204,46 @@ public class DetectorManager {
 		Runtime.getRuntime().addShutdownHook(new BlackOutThread(this));
 	}
 
+	// maps any given byte map to a different value.
+	final private static ByteMap parseByteMap(String id, String str) throws OptionException
+	{
+		byte[] bytes = new byte[256];
+
+		Map<String,Object> options = OptionParser.parse(str);
+		String strCurve = getOption(options, "-curve", id, false);
+		if (strCurve == null)
+		{
+			// parse 256 values
+			String strFullMap = getOption(options, "-fullmap", id, true);
+			StringTokenizer st = new StringTokenizer(strFullMap, ",[] \t"); // bullshit parsing.
+			int ptr = 0;
+			while (st.hasMoreTokens())
+			{
+				if (ptr == 256)
+				{
+					throw new OptionException(id + ": -fullmap contains more than 256 values");
+				}
+				bytes[ptr++] = (byte)(Integer.parseInt(st.nextToken()));
+			}
+		}else{
+
+			int[] vals = new int[256];
+			StringTokenizer st = new StringTokenizer(strCurve, ",[] \t()"); // bullshit parsing.
+			int x = Integer.parseInt(st.nextToken());
+			int y = Integer.parseInt(st.nextToken());
+			vals[x] = y;
+			vals = Util.fitCurve(vals);
+			for (int foo = 0; foo < vals.length; foo++)
+			{
+				bytes[foo] = (byte)vals[foo];
+			}
+
+			throw new OptionException(id + ": The -curve feature is not yet supported.  Please use -fullmap.");
+		}
+
+		return new ByteMap(bytes);
+	}
+
 	final private static Dimension parseRaster(String id, String str) throws OptionException
 	{
 		Map<String,Object> options = OptionParser.parse(str);
@@ -188,56 +253,54 @@ public class DetectorManager {
 		return new Dimension(width, height);
 	}
 
-	final private static Recipient parseRecipient(String id, String str, Map<String, Dimension> rasters) throws OptionException, UnknownHostException
+	final private static Recipient parseRecipient(String id, String str, DetectorManager dmr) throws OptionException, UnknownHostException
 	{
+		Recipient r;
 		Map<String,Object> options = OptionParser.parse(str);
 		String protocol = getOption(options, "-protocol", id, true);
+		int channels = Integer.parseInt(getOption(options, "-channels", id, true));
+		Dimension d = dmr.rasters.get(getOption(options, "-defaultRaster", id, true));
+		String patchgroup = getOption(options, "-patchgroup", id, false);
+		ByteMap map = dmr.bytemaps.get(getOption(options, "-bytemap", id, false));
+
 		if ("ARTNET_DOUBLE".equalsIgnoreCase(protocol))
 		{
 			//	recipient.id = -protocol ARTNET_DOUBLE -channels int -address string -universe int -defaultRaster raster.id [-patchgroup string]
-			int channels = Integer.parseInt(getOption(options, "-channels", id, true));
 			String address = getOption(options, "-address", id, true);
 			byte universe = (byte)Integer.parseInt(getOption(options, "-universe", id, true));
-			Dimension d = rasters.get(getOption(options, "-defaultRaster", id, true));
-			String patchgroup = getOption(options, "-patchgroup", id, false);
 
-			return new ArtNetDoubleByteRecipient(id, universe, address, channels, d, patchgroup);
+			r = new ArtNetDoubleByteRecipient(id, universe, address, channels, d, patchgroup);
 
 		}else if ("ARTNET".equalsIgnoreCase(protocol))
 		{
 			//	recipient.id = -protocol ARTNET -channels int -address string -universe int -defaultRaster raster.id [-patchgroup string]
-			int channels = Integer.parseInt(getOption(options, "-channels", id, true));
 			String address = getOption(options, "-address", id, true);
 			byte universe = (byte)Integer.parseInt(getOption(options, "-universe", id, true));
-			Dimension d = rasters.get(getOption(options, "-defaultRaster", id, true));
-			String patchgroup = getOption(options, "-patchgroup", id, false);
 
-			return new ArtNetRecipient(id, universe, address, channels, d, patchgroup);
+			r = new ArtNetRecipient(id, universe, address, channels, d, patchgroup);
 
 		}else if ("HaleUDP".equalsIgnoreCase(protocol)){
 			//	recipient.id = -protocol HALEUDP -channels int -address string -port int -defaultRaster raster.id [-patchgroup string]
-			int channels = Integer.parseInt(getOption(options, "-channels", id, true));
 			String address = getOption(options, "-address", id, true);
 			int port = Integer.parseInt(getOption(options, "-port", id, true));
-			Dimension d = rasters.get(getOption(options, "-defaultRaster", id, true));
-			String patchgroup = getOption(options, "-patchgroup", id, false);
 			String interCmdStr = getOption(options, "-interCmdByte", id, false);
 			Byte intrCmdByte = interCmdStr == null ? null : new Byte((byte)(Integer.parseInt(interCmdStr, 16)));
 			Integer interPeriod = Integer.parseInt(getOption(options, "-interPeriod", id, false));
 
-			return new HaleUDPRecipient(id, address, port, channels, d, patchgroup, intrCmdByte, interPeriod);
+			r = new HaleUDPRecipient(id, address, port, channels, d, patchgroup, intrCmdByte, interPeriod);
+
 		} else if ("FlexXML".equalsIgnoreCase(protocol)){
 			//	recipient.id = -protocol FLEXXML -channels int -port int -defaultRaster raster.id [-patchgroup string]
-			int channels = Integer.parseInt(getOption(options, "-channels", id, true));
 			int port = Integer.parseInt(getOption(options, "-port", id, true));
-			Dimension d = rasters.get(getOption(options, "-defaultRaster", id, true));
-			String patchgroup = getOption(options, "-patchgroup", id, false);
 
-			return new FlexXMLRecipient(id, port, channels, d, patchgroup);
+			r = new FlexXMLRecipient(id, port, channels, d, patchgroup);
 
 		}else {
 			throw new OptionException("no such protocol " + protocol + " in recipient " + id);
 		}
+
+		r.setByteMap(map);
+		return r;
 	}
 
 	final private static Detector parseDetector(String id, String str) throws OptionException
