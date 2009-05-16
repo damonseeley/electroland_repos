@@ -24,7 +24,7 @@ public class Throb implements Animation {
 		return isDone;
 	}
 
-	public void done()
+	public void stop()
 	{
 		isDone = true;
 	}

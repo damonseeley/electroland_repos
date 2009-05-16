@@ -13,7 +13,6 @@ public class LinearFade implements Animation {
 	private long finishTime, startTime;
 	private Raster raster;
 
-	// should throw some kind of IllegalArgument exception if seconds <= 0;
 	public LinearFade(double seconds, Raster raster)
 	{
 		this.raster = raster;
@@ -43,9 +42,6 @@ public class LinearFade implements Animation {
 			image.endDraw();
 		}
 		return raster;
-	}
-
-	public void initialize() {
 	}
 
 	public boolean isDone() {
