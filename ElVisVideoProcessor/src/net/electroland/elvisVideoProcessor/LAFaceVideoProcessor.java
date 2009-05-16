@@ -1,5 +1,6 @@
 package net.electroland.elvisVideoProcessor;
 
+import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -48,6 +49,7 @@ public class LAFaceVideoProcessor extends ImageProcessor {
 	RenderedOp cropOp;
 	RenderedOp warpOp;
 	RenderedOp lookupOp;
+//	RenderedOp colorConvertOp;
 
 	AffineTransform cropTranslate;
 
@@ -63,6 +65,7 @@ public class LAFaceVideoProcessor extends ImageProcessor {
 	public LAFaceVideoProcessor(ElProps props) {
 		super(props.getProperty("srcWidth", 640), props.getProperty("srcHeight", 480));
 		this.props = props;
+		
 
 
 		/*
