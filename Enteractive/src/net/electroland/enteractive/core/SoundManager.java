@@ -47,6 +47,7 @@ public class SoundManager implements SCSoundControlNotifiable {
 		ss = new SCSoundControl(this);
 		ss.init();
 		ss.showDebugOutput(false);
+		ss.set_serverResponseTimeout(5000);
 		parseSpeakers();
 	}
 	
