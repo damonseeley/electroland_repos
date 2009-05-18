@@ -399,8 +399,8 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 					// if it is during an off period, remove the face recipient from fixtures
 					fixtures.remove(dmr.getRecipient("face"));
 				}
-				//Animation transition = new LinearFade(5, getRaster());
-				amr.startAnimation(a, fixtures);		// START SCREENSAVER
+				Animation transition = new LinearFade(3, getRaster());
+				amr.startAnimation(a, transition, fixtures);		// START SCREENSAVER
 			}
 		} else if(e.getType() == Model.ModelConstants.NOT_EMPTY){
 			System.out.println("area re-activated");
