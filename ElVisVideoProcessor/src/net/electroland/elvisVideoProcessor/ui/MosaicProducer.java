@@ -13,7 +13,6 @@ public class MosaicProducer implements ImageProducer {
 		this.rect = rect;
 	}
 	
-	public void setSource()
 
 	public void addConsumer(ImageConsumer ic) {
 		consumers.add(ic);
