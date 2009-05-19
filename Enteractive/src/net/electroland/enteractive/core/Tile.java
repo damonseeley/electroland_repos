@@ -6,12 +6,17 @@ public class Tile {
 	private int id, x, y;
 	private boolean sensorState;
 	private int lightValue;
+	private long lastActivated;
+	private long turnedOff;
+	public boolean rebooting;
 	
 	public Tile(TileController parent, int id, int x, int y){
 		this.parent = parent;
 		this.id = id;
 		this.x = x;
 		this.y = y;
+		lastActivated = 0;
+		rebooting = false;
 		//System.out.println("tile:\t"+id+"\t x: "+x+"\t y:"+y);
 	}
 	
@@ -21,7 +26,15 @@ public class Tile {
 	
 	public void setSensorState(boolean sensorState){
 		this.sensorState = sensorState;
+		if(sensorState){
+			lastActivated = System.currentTimeMillis();
+		}
 		//System.out.println("sensor state "+sensorState+" tile "+id);
+	}
+	
+	public void reboot(){
+		rebooting = true;
+		turnedOff = System.currentTimeMillis();
 	}
 	
 	public int getLightValue(){
@@ -31,6 +44,14 @@ public class Tile {
 	public void setLightValue(int lightValue){
 		this.lightValue = lightValue;
 		System.out.println("light value "+lightValue+" tile "+id);
+	}
+	
+	public long getAge(){
+		return System.currentTimeMillis() - lastActivated;
+	}
+	
+	public long offPeriod(){
+		return System.currentTimeMillis() - turnedOff;
 	}
 	
 	public int getID(){

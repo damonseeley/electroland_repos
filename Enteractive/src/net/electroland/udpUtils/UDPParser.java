@@ -17,11 +17,14 @@ public class UDPParser extends Thread {
 	boolean isRunning = true;
 	TCUtil tcUtils;
 	PersonTracker personTracker;
+	long lastTileCheck;
+	int tileCheckDuration = 33;
 
 	public UDPParser(int port, TCUtil tcUtils, PersonTracker personTracker) throws SocketException, UnknownHostException {
 		receiver = new UDPReceiver(port);
 		this.tcUtils = tcUtils;
 		this.personTracker = personTracker;
+		lastTileCheck = System.currentTimeMillis();
 	}
 
 	public void parseMsg(String msg) {
@@ -92,6 +95,10 @@ public class UDPParser extends Thread {
 				logger.error(e.getMessage(), e);
 			}
 			personTracker.updateAverage((double)personTracker.getModel().getPeople().size());
+			if(System.currentTimeMillis() - lastTileCheck > tileCheckDuration){
+				tcUtils.checkTileStates();
+				lastTileCheck = System.currentTimeMillis();
+			}
 		}
 	}
 
