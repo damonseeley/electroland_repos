@@ -1,6 +1,5 @@
 package net.electroland.elvisVideoProcessor;
 
-import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -18,6 +17,7 @@ import net.electroland.elvis.imaging.acquisition.jmyron.WebCam;
 import net.electroland.elvisVideoProcessor.curveEditor.CurveEditor;
 import net.electroland.elvisVideoProcessor.ui.LAFaceFrame;
 import net.electroland.elvisVideoProcessor.ui.LookupTable;
+import net.electroland.elvisVideoProcessor.ui.MosaicConstructor;
 import net.electroland.elvisVideoProcessor.ui.WarpGridConstructor;
 
 public class LAFaceVideoProcessor extends ImageProcessor {
@@ -44,6 +44,8 @@ public class LAFaceVideoProcessor extends ImageProcessor {
 	LookupTable lookupTalbe;
 
 	ElProps props;
+	
+	MosaicConstructor mosaic;
 
 
 	RenderedOp cropOp;
@@ -59,7 +61,7 @@ public class LAFaceVideoProcessor extends ImageProcessor {
 
 
 
-	public static enum MODE { raw, setWarp, viewWarp, background, diff, colorAdjust,running };
+	public static enum MODE { raw, setWarp, viewWarp, background, diff, colorAdjust, mosaic, running };
 	protected MODE mode = MODE.running;
 
 	public LAFaceVideoProcessor(ElProps props) {
@@ -83,6 +85,7 @@ public class LAFaceVideoProcessor extends ImageProcessor {
 		} else {		
 			warpGrid = new WarpGridConstructor(warpGridStr, w, h);
 		}
+		
 
 		resetWarpAndROI();
 
@@ -134,6 +137,15 @@ public class LAFaceVideoProcessor extends ImageProcessor {
 		diffImage = new BufferedImage(warpGrid.getCropW(),warpGrid.getCropH(), BufferedImage.TYPE_USHORT_GRAY);
 
 		warpOp = warpGrid.getWarpOp(cropOp);
+		
+		
+		String mosaicString = props.getProperty("mosaicRects", "");
+		if(mosaicString.length() == 0) {
+			mosaic = new MosaicConstructor(warpGrid.getCropW(),warpGrid.getCropH(), 2);			
+		} else {
+			mosaic = new MosaicConstructor(warpGrid.getCropW(),warpGrid.getCropH(),mosaicString);
+
+		}
 
 
 
@@ -204,7 +216,7 @@ public class LAFaceVideoProcessor extends ImageProcessor {
 		
 
 		cropOp.setSource(img, 0);
-		warpOp.setSource(cropOp.getAsBufferedImage(), 0);
+//		warpOp.setSource(cropOp.getAsBufferedImage(), 0);
 		
 		BufferedImage warped = warpOp.getAsBufferedImage();
 		if((warped.getWidth() != grayImage.getWidth()) || (warped.getHeight() != grayImage.getHeight())) {
@@ -241,62 +253,24 @@ public class LAFaceVideoProcessor extends ImageProcessor {
 		case setWarp:
 			return img;
 		case viewWarp:
-			return warpOp.getAsBufferedImage();
+			return warpOp.getAsBufferedImage().;
 		case background:
 			return bkImage;
 		case diff:
 			return diffImage;
 		case colorAdjust:
 			return lookupOp.getAsBufferedImage();
+		case mosaic:
+			BufferedImage bi = lookupOp.getAsBufferedImage();
+			mosaic.renderDrawing(bi.createGraphics());
+			return bi;
 		case running:
 		default:
 			return lookupOp.getAsBufferedImage();
 
 		}
 
-		//	grayImage.createGraphics().drawLine(0, 0, warpGrid.getCropW(), warpGrid.getCropH());
-
-
-		//	warpOp.getNewRendering();
-
-//		return bkImage;
-		/*
-
-
-
-
-		warpOp.setSource(img, 0);
-//		lookupOp.setSource(img, 0);
-
-		warpedImage.createGraphics().drawRenderedImage(lookupOp,new AffineTransform());
-
-
-
-		BufferedImage bkImage = background.update(grayImage);
-		if(bkImage == null) return warpedImage;
-
-
-		ImageDifference.apply(bkImage, grayImage, diffImage);
-
-
-
-		switch(mode) {
-		case raw:
-		case setWarp:
-			return img;
-		case viewWarp:
-			return warpedImage;
-		case background:
-			return bkImage;
-		case diff:
-			return diffImage;
-		case running:
-			return diffImage;
-		default:
-			return img;
-
-		}
-		 */
+	
 
 
 	}
@@ -349,6 +323,9 @@ public class LAFaceVideoProcessor extends ImageProcessor {
 
 	public WarpGridConstructor getROIConstructor() {
 		return warpGrid;
+	}
+	public MosaicConstructor getMosaicConstructor() {
+		return mosaic;
 	}
 
 }
