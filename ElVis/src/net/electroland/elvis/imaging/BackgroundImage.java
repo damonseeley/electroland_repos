@@ -28,6 +28,7 @@ public class BackgroundImage {
 
 	public BackgroundImage() {		
 	}
+	
 
 	public BackgroundImage(double adaptation, int frameSkip) {
 		this.adaptation[0] = adaptation;
@@ -42,6 +43,14 @@ public class BackgroundImage {
 		initialFrameSkip = frameSkip;
 		background = null;
 	}
+	
+	
+	public int getRemainingFrameSkip() {
+		return initialFrameSkip;
+	}
+
+	
+	
 	/**
 	 * 
 	 * @param bi - should be assumes BufferedImage is of type TYPE_USHORT_GRAY
