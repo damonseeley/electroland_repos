@@ -148,6 +148,8 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		sunset = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), sunsetOn.hour, sunsetOn.minute, sunsetOn.sec, 0);
 		night = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), nightOff.hour, nightOff.minute, nightOff.sec, 0);
 		
+		// TODO uncomment this to have the display turn off during the day
+		/*
 		// animation manager only started if it's between the reasonable periods
 		if((now.after(sunset) && now.before(night)) || (now.after(sunrise) && now.before(midday))){
 			amr.goLive(); 	// START ANIMATION MANAGER
@@ -155,6 +157,8 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		} else {
 			System.out.println(new Timestamp(System.currentTimeMillis()).toString() + " Waiting for appropriate display time");
 		}
+		*/
+		amr.goLive();
 
 		controlPanel.refreshWaveList();
 		//tracker.addTrackListener((TrackListener) highlighter);	// highlighter displays locations
@@ -216,6 +220,8 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 	}
 
 	public void timedEvent(TimedEvent event) {
+		// TODO uncomment this to have the display go blank during the day
+		/*
 		if(event == sunriseOn) {			// activate
 			amr.goLive();
 			System.out.println(new Timestamp(System.currentTimeMillis()).toString() + " ImageSequence Show Playing");
@@ -231,6 +237,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 			dmr.blackOutAll();
 			System.out.println(new Timestamp(System.currentTimeMillis()).toString() + " ImageSequence Show Stopped");
 		}
+		*/
 	}
 	
 	public void tempUpdate(float tu) {
@@ -262,6 +269,8 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		sunset = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), sunsetOn.hour, sunsetOn.minute, sunsetOn.sec, 0);
 		night = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), nightOff.hour, nightOff.minute, nightOff.sec, 0);
 		
+		/*
+		// TODO uncomment this to have the display go blank during the day
 		// black out and pause the animation manager if during a black out period
 		if(now.after(midday) && now.before(sunset)){
 			amr.stop();
@@ -272,6 +281,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 			dmr.blackOutAll();
 			System.out.println(new Timestamp(System.currentTimeMillis()).toString() + " ImageSequence Show Stopped");
 		}
+		*/
 		
 		// if conditions are lower than 29 (mostly cloudy or worse) and vis is less than 10 miles, startup
 		if (wce.getRecord().getCondition() < lowCondition && wce.getRecord().getVisibility() < lowVisibility) {
