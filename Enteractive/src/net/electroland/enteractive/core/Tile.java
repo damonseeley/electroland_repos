@@ -27,6 +27,7 @@ public class Tile {
 	public void setSensorState(boolean sensorState){
 		this.sensorState = sensorState;
 		if(sensorState){
+			//System.out.println("tile "+id+ " activated ");
 			lastActivated = System.currentTimeMillis();
 		}
 		//System.out.println("sensor state "+sensorState+" tile "+id);
@@ -35,6 +36,7 @@ public class Tile {
 	public void reboot(){
 		rebooting = true;
 		turnedOff = System.currentTimeMillis();
+		System.out.println("tile "+id+ " rebooting ");
 	}
 	
 	public int getLightValue(){

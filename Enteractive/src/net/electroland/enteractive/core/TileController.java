@@ -35,6 +35,7 @@ public class TileController {
 	}
 	
 	public void setSensorStates(boolean[] states){
+		//System.out.println("updating sensor states");
 		Iterator<Tile> iter = tiles.iterator();
 		int n = 0;
 		while(iter.hasNext()){
