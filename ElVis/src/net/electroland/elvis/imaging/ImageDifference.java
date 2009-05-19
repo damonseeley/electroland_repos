@@ -8,37 +8,49 @@ import javax.media.jai.JAI;
 import javax.media.jai.RenderedOp;
 
 public class ImageDifference {
-	
-	public static ParameterBlock pb = new ParameterBlock();
+
+	public static ParameterBlock pbSub1 = new ParameterBlock();
+	public static ParameterBlock pbSub2 = new ParameterBlock();
+	public static ParameterBlock pbSum = new ParameterBlock();
+
+	public static RenderedOp sub1 =  null;
+	public static RenderedOp sub2 =  null;
+	public static RenderedOp sum =  null;
+
 
 
 	public static void apply(RenderedImage a, RenderedImage b, BufferedImage dest) {
-	
-		
-		 dest.setData(apply(a,b).getData());
+
+
+		dest.setData(apply(a,b).getData());
 	}
-	
 
-		
+
+
 	public  static RenderedOp apply(RenderedImage a, RenderedImage b) {
-		
-		pb.setSource(a, 0);
-		pb.setSource(b, 1);
-		RenderedOp sub1 = JAI.create("subtract", pb);
+		if (sub1 == null) {
+			pbSub1.addSource(a);
+			pbSub1.addSource(b);
+			pbSub2.addSource(b);
+			pbSub2.addSource(a);
 
-		
-		pb.setSource(b, 0);
-		pb.setSource(a, 1);
-		RenderedOp sub2 = JAI.create("subtract", pb);
+			sub1 = JAI.create("subtract", pbSub1);
+			sub2 = JAI.create("subtract", pbSub2);
+			sum = JAI.create("add", sub1, sub2);
+
+			return sum;
+		} else {
+			sub1.setSource(a, 0);
+			sub1.setSource(b, 1);
+			sub2.setSource(b, 0);
+			sub2.setSource(a, 1);
+			sub1.getNewRendering();
+			sub2.getNewRendering();
+//			sum.getNewRendering();
 
 
-		pb.setSource(sub1, 0);
-		pb.setSource(sub2, 1);
-		RenderedOp sum= JAI.create("add", sub1, sub2);
-		
-		
-		return sum;
+			return sum;
+		}
 
-		
 	}
 }
