@@ -26,7 +26,7 @@ public class TCUtil {
 	private DatagramSocket socket;
 	private String startByte, endByte, updateByte, feedbackByte;
 	private String onChangeByte, powerByte, reportByte, offsetByte, mcResetByte;
-	private int tileTimeout = 60000;		// tiles are rebooted after this duration of being on
+	private int tileTimeout = 30000;		// tiles are rebooted after this duration of being on
 	private int powerCycleDuration = 300;	// duration to keep tile off when cycled
 	
 	public TCUtil(){
@@ -80,12 +80,14 @@ public class TCUtil {
 			while(tileiter.hasNext()){
 				Tile tile = tileiter.next();
 				if(tile.getSensorState() && tile.getAge() > tileTimeout && !tile.rebooting){
+					//System.out.println("tile "+tile.getID()+" on too long");
 					triggerStateChange = true; 		// turn power off for this one tile
 					tile.reboot();
 					powerStates[i] = false;
 				} else if(tile.rebooting && tile.offPeriod() > powerCycleDuration){
 					triggerStateChange = true;		// turn power back on
 					powerStates[i] = true;
+					tile.rebooting = false;
 				} else if(tile.rebooting){
 					powerStates[i] = false;			// leave power off for this one tile
 				} else {
@@ -94,6 +96,7 @@ public class TCUtil {
 				i++;
 			}
 			if(triggerStateChange){					// cause the actual power cycle here
+				//System.out.println("triggering a state change");
 				String payload = " ";
 				for(int n=0; n<powerStates.length; n++){
 					if(powerStates[n]){
@@ -103,7 +106,7 @@ public class TCUtil {
 					}
 				}
 				byte[] buf = HexUtils.hexToBytes(startByte +" "+ powerByte + payload + "00 " + Integer.toHexString(tc.getOffset()-1) +" "+ endByte);
-				HexUtils.printHex(buf);
+				//HexUtils.printHex(buf);		// for debugging
 				send(tc.getAddress(), buf);
 			}
 		}
@@ -132,10 +135,12 @@ public class TCUtil {
 				newdata[i] = false;
 			}
 		}
+		//System.out.println("update sensors at "+ offset);
 		Iterator<TileController> iter = tileControllers.iterator();
 		while(iter.hasNext()){
 			TileController tc = iter.next();
-			if(tc.getOffset() == offset){
+			//System.out.println(tc.getOffset() +" "+ offset);
+			if(tc.getOffset()-1 == offset){
 				tc.setSensorStates(newdata);
 			}
 		}
