@@ -187,7 +187,11 @@ public class LAFaceFrame extends JFrame implements  KeyListener, MouseListener, 
 		if(vidProcessor.getMode() == LAFaceVideoProcessor.MODE.setWarp) {
 			facePanel.removeMouseListener(vidProcessor.getROIConstructor());
 			facePanel.removeMouseMotionListener(vidProcessor.getROIConstructor());
-		}				
+		} else if 		(vidProcessor.getMode() == LAFaceVideoProcessor.MODE.mosaic) {
+			facePanel.removeMouseListener(vidProcessor.getMosaicConstructor());
+			facePanel.removeMouseMotionListener(vidProcessor.getMosaicConstructor());
+		}
+		
 	}
 	public void postModeChange(LAFaceVideoProcessor.MODE prevMode) {
 		if(vidProcessor.getMode() == LAFaceVideoProcessor.MODE.setWarp) {
@@ -196,7 +200,15 @@ public class LAFaceFrame extends JFrame implements  KeyListener, MouseListener, 
 		}	else if (prevMode == LAFaceVideoProcessor.MODE.setWarp) {
 			vidProcessor.resetWarpAndROI();
 			ElProps.THE_PROPS.setProperty("warpGrid", vidProcessor.getROIConstructor().toString());
+		} 
+		
+		if(vidProcessor.getMode() == LAFaceVideoProcessor.MODE.mosaic) {
+			facePanel.addMouseListener(vidProcessor.getMosaicConstructor());
+			facePanel.addMouseMotionListener(vidProcessor.getMosaicConstructor());
+		} else if (prevMode == LAFaceVideoProcessor.MODE.mosaic) {
+			ElProps.THE_PROPS.setProperty("mosaicRects", vidProcessor.getMosaicConstructor().toString());			
 		}
+		
 		
 		/*
 		

@@ -65,17 +65,17 @@ public class WarpGridConstructor implements MouseListener, MouseMotionListener {
 
 
 	public WarpGridConstructor(String s,int imgWidth, int imgHeight) {
-		System.out.println("constructing warp grid for " + imgWidth +"x"+ imgHeight);
+//		System.out.println("constructing warp grid for " + imgWidth +"x"+ imgHeight);
 		srcWidth = imgWidth;
 		srcHeight =imgHeight;
 		String[] rows = s.split(LINE_BREAK);
 		String[] fistCol = rows[0].split(PNT_BREAK);
 		grid = new Point[fistCol.length][rows.length];
 		for(int i = 0; i < rows.length; i++) {
-			System.out.println("row:"  + rows[0]);
+//			System.out.println("row:"  + rows[0]);
 			String[] cols = rows[i].split(PNT_BREAK);
 			for(int j = 0; j < cols.length; j++) {
-				System.out.println("col:"  + cols[j]);
+//				System.out.println("col:"  + cols[j]);
 				String[] pt = cols[j].split(",");
 				int x = Integer.parseInt(pt[0]);
 				int y = Integer.parseInt(pt[1]);
