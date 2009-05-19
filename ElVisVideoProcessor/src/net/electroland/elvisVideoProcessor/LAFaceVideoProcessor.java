@@ -253,7 +253,7 @@ public class LAFaceVideoProcessor extends ImageProcessor {
 		case setWarp:
 			return img;
 		case viewWarp:
-			return warpOp.getAsBufferedImage().;
+			return warpOp.getAsBufferedImage();
 		case background:
 			return bkImage;
 		case diff:
