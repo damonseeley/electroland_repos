@@ -26,6 +26,8 @@ public class TCUtil {
 	private DatagramSocket socket;
 	private String startByte, endByte, updateByte, feedbackByte;
 	private String onChangeByte, powerByte, reportByte, offsetByte, mcResetByte;
+	private int tileTimeout = 60000;		// tiles are rebooted after this duration of being on
+	private int powerCycleDuration = 300;	// duration to keep tile off when cycled
 	
 	public TCUtil(){
 		try{
@@ -47,9 +49,9 @@ public class TCUtil {
 		offsetByte = tileProps.getProperty("offsetByte");
 		mcResetByte = tileProps.getProperty("mcResetByte");
 		
-		tileControllers = new ArrayList<TileController>();			// instantiate tileControllers list
+		tileControllers = new ArrayList<TileController>();						// instantiate tileControllers list
 		Iterator<Map.Entry<Object, Object>> iter = tileProps.entrySet().iterator();			
-		while(iter.hasNext()){										// for each property...
+		while(iter.hasNext()){													// for each property...
 			Map.Entry<Object, Object> pair = (Map.Entry<Object, Object>)iter.next();
 			if(pair.getKey().toString().startsWith("TileController")){			// if it's a tile controller...
 				String[] values = pair.getValue().toString().split(",");		// add new TileController object with arguments
@@ -64,6 +66,47 @@ public class TCUtil {
 		}
 		
 		sendOffsetPackets();
+	}
+	
+	public void checkTileStates(){
+		Iterator<TileController> iter = tileControllers.iterator();
+		while(iter.hasNext()){						// check every tile controller
+			TileController tc = iter.next();
+			List<Tile> tiles = tc.getTiles();
+			Iterator<Tile> tileiter = tiles.iterator();
+			boolean[] powerStates = new boolean[tiles.size()];
+			boolean triggerStateChange = false;
+			int i=0;
+			while(tileiter.hasNext()){
+				Tile tile = tileiter.next();
+				if(tile.getSensorState() && tile.getAge() > tileTimeout && !tile.rebooting){
+					triggerStateChange = true; 		// turn power off for this one tile
+					tile.reboot();
+					powerStates[i] = false;
+				} else if(tile.rebooting && tile.offPeriod() > powerCycleDuration){
+					triggerStateChange = true;		// turn power back on
+					powerStates[i] = true;
+				} else if(tile.rebooting){
+					powerStates[i] = false;			// leave power off for this one tile
+				} else {
+					powerStates[i] = true;			// leave power on for this one tile
+				}
+				i++;
+			}
+			if(triggerStateChange){					// cause the actual power cycle here
+				String payload = " ";
+				for(int n=0; n<powerStates.length; n++){
+					if(powerStates[n]){
+						payload += "FD ";
+					} else {
+						payload += "00 ";
+					}
+				}
+				byte[] buf = HexUtils.hexToBytes(startByte +" "+ powerByte + payload + "00 " + Integer.toHexString(tc.getOffset()-1) +" "+ endByte);
+				HexUtils.printHex(buf);
+				send(tc.getAddress(), buf);
+			}
+		}
 	}
 	
 	public void updateLights(int offset, byte[] data){
@@ -96,14 +139,6 @@ public class TCUtil {
 				tc.setSensorStates(newdata);
 			}
 		}
-	}
-	
-	public void turnOffTile(Tile tile){
-		// TODO cycle power off
-	}
-	
-	public void turnOnTile(Tile tile){
-		// TODO cycle power on
 	}
 	
 	public void turnOffAllTiles(){
