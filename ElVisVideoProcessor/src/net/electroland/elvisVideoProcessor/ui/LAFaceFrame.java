@@ -180,7 +180,7 @@ public class LAFaceFrame extends JFrame implements  KeyListener, MouseListener, 
 			vidProcessor.resetBackground(3);
 			break;
 		case 'c':
-			vidProcessor.loadLutFile("defaul.elc");
+			vidProcessor.loadLutFile("default.elc");
 			break;
 		};
 	}
