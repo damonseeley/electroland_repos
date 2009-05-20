@@ -185,15 +185,19 @@ public class LAFaceFrame extends JFrame implements  KeyListener, MouseListener, 
 
 	public void preModeChange() {
 		if(vidProcessor.getMode() == LAFaceVideoProcessor.MODE.setWarp) {
+			facePanel.removeMouseListener(vidProcessor.crop);
+			facePanel.removeMouseMotionListener(vidProcessor.crop);
 			facePanel.removeMouseListener(vidProcessor.getROIConstructor());
 			facePanel.removeMouseMotionListener(vidProcessor.getROIConstructor());
-		} else if 		(vidProcessor.getMode() == LAFaceVideoProcessor.MODE.mosaic) {
+		} else if 		(vidProcessor.getMode() == LAFaceVideoProcessor.MODE.setMosiac) {
 			facePanel.removeMouseListener(vidProcessor.getMosaicConstructor());
 			facePanel.removeMouseMotionListener(vidProcessor.getMosaicConstructor());
 		}
 		
 	}
+	
 	public void postModeChange(LAFaceVideoProcessor.MODE prevMode) {
+		
 		if(vidProcessor.getMode() == LAFaceVideoProcessor.MODE.setWarp) {
 			facePanel.addMouseListener(vidProcessor.getROIConstructor());
 			facePanel.addMouseMotionListener(vidProcessor.getROIConstructor());
@@ -201,11 +205,19 @@ public class LAFaceFrame extends JFrame implements  KeyListener, MouseListener, 
 			vidProcessor.resetWarpAndROI();
 			ElProps.THE_PROPS.setProperty("warpGrid", vidProcessor.getROIConstructor().toString());
 		} 
-		
-		if(vidProcessor.getMode() == LAFaceVideoProcessor.MODE.mosaic) {
+
+		if(vidProcessor.getMode() == LAFaceVideoProcessor.MODE.crop) {
+			facePanel.addMouseListener(vidProcessor.crop);
+			facePanel.addMouseMotionListener(vidProcessor.crop);
+		}	else if (prevMode == LAFaceVideoProcessor.MODE.crop) {
+			vidProcessor.resetWarpAndROI();
+			ElProps.THE_PROPS.setProperty("crop", vidProcessor.crop.toString());
+		} 
+
+		if(vidProcessor.getMode() == LAFaceVideoProcessor.MODE.setMosiac) {
 			facePanel.addMouseListener(vidProcessor.getMosaicConstructor());
 			facePanel.addMouseMotionListener(vidProcessor.getMosaicConstructor());
-		} else if (prevMode == LAFaceVideoProcessor.MODE.mosaic) {
+		} else if (prevMode == LAFaceVideoProcessor.MODE.setMosiac) {
 			ElProps.THE_PROPS.setProperty("mosaicRects", vidProcessor.getMosaicConstructor().toString());			
 		}
 		

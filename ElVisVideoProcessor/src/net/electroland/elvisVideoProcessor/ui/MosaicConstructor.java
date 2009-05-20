@@ -6,6 +6,12 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
+import java.util.concurrent.TimeUnit;
+
+import javax.media.jai.RenderedOp;
+
+import net.electroland.elvisVideoProcessor.util.SwapBuffer;
 
 
 public class MosaicConstructor implements MouseListener, MouseMotionListener {
@@ -22,7 +28,12 @@ public class MosaicConstructor implements MouseListener, MouseMotionListener {
 	int mouseX;
 	int mouseY;
 
-	public MosaicConstructor(int w, int h, int rectCnt) {
+	SwapBuffer<BufferedImage[]> swapBuffer;
+	BufferedImage[]  singleLine;
+	
+
+
+	public MosaicConstructor(int w, int h, int outW, int outH, int rectCnt) {
 		srcWidth =w;
 		srcHeight = h;
 		rects = new Rectangle[rectCnt];
@@ -31,9 +42,13 @@ public class MosaicConstructor implements MouseListener, MouseMotionListener {
 		for(int i = 0; i < rectCnt; i++) {
 			rects[i] = new Rectangle(10, (3*i*boxSize) + boxSize, w-20,boxSize);
 		}
+
+		rebuildResultPool(outW, outH);
 	}
 
-	public MosaicConstructor(int srcW, int srcH, String s) {
+
+
+	public MosaicConstructor(int srcW, int srcH, int outW, int outH, String s) {
 		srcWidth =srcW;
 		srcHeight = srcH;
 
@@ -48,16 +63,31 @@ public class MosaicConstructor implements MouseListener, MouseMotionListener {
 			int h = Integer.parseInt(pnts[3]);
 			rects[i++] = new Rectangle(x,y,w,h);			
 		}
+		rebuildResultPool(outW, outH);
 	}
-	
+
+	public void rebuildResultPool(int outWidth, int outHeight) {
+
+		BufferedImage[] resultCache = new BufferedImage[rects.length];
+		BufferedImage[] resultCache2 = new BufferedImage[rects.length];
+		BufferedImage[] singleLine = new BufferedImage[rects.length];
+		for(int i = 0; i < rects.length; i++) {
+			resultCache[i] = new BufferedImage(outWidth, outHeight, BufferedImage.TYPE_USHORT_GRAY);
+			resultCache2[i] = new BufferedImage(outWidth, outHeight, BufferedImage.TYPE_USHORT_GRAY);
+			singleLine[i] = new BufferedImage(outWidth, 1, BufferedImage.TYPE_USHORT_GRAY);
+		}
+		this.singleLine = singleLine;
+		swapBuffer = new SwapBuffer<BufferedImage[]>(resultCache,resultCache2);
+
+	}
 	public void renderDrawing(Graphics2D g2d) {		
 		boolean rectFree = true;
 		for(Rectangle rect : rects) {
 			if(selected == rect || (selected == null && rect.contains(mouseX,mouseY) ) && rectFree) {
-				g2d.setColor(Color.BLACK);
+				g2d.setColor(Color.RED);
 				rectFree = false;
 			} else {
-				g2d.setColor(Color.GRAY);
+				g2d.setColor(Color.BLUE);
 			}
 			g2d.draw(rect);
 			drawPoint(g2d, rect.x, rect.y, true);
@@ -87,29 +117,21 @@ public class MosaicConstructor implements MouseListener, MouseMotionListener {
 			} 
 		}
 		if(result) {
-			g2d.setColor(Color.BLACK);			
+			g2d.setColor(Color.RED);			
 		} else {
-			g2d.setColor(Color.GRAY);						
+			g2d.setColor(Color.BLUE);						
 		}
 		g2d.fillOval(x-HANDLE_R, y-HANDLE_R, HANDLE_D,HANDLE_D);
 
 		return result;
 	}
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 	public void mouseReleased(MouseEvent e) {
 		selected = null;
@@ -206,5 +228,33 @@ public class MosaicConstructor implements MouseListener, MouseMotionListener {
 		return sb.toString();
 
 	}
+
+	public void processImage(RenderedOp input) {
+		BufferedImage[] resultCache;
+		try {
+			resultCache = swapBuffer.takeToProcess();
+			BufferedImage img = input.getAsBufferedImage();
+			BufferedImage[] ar = new BufferedImage[rects.length];
+			for(int i = 0; i < ar.length; i++) {
+				BufferedImage subImage = img.getSubimage(rects[i].x, rects[i].y, rects[i].width, rects[i].height);
+				float lineHight  = img.getHeight() / (float) resultCache[i].getHeight();
+				for(int line = 0; line < resultCache[i].getHeight(); line++) {
+					singleLine[i].createGraphics().drawImage(subImage, 0, line, singleLine[i].getWidth(), singleLine[i].getHeight(), 0,(int)(line * lineHight), subImage.getWidth(), (int) lineHight, null);
+					resultCache[i].createGraphics().drawImage(singleLine[i], 0, (int)(line * lineHight), resultCache[i].getWidth(), (int)lineHight, 0,0, singleLine[i].getWidth(), singleLine[i].getHeight(), null);					
+				}
+//				resultCache[i] = singleLine[i];
+//				resultCache[i].createGraphics().drawImage(singleLine[i], 0, 0, singleLine[i].getWidth()-1, 0, 0,0, resultCa//che[i].getWidth()-1, 6, null);
+			}
+			swapBuffer.putProcessed(resultCache);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public BufferedImage[] getImage() throws InterruptedException {
+		return swapBuffer.takeProcessed();
+	}
+
 
 }

@@ -3,6 +3,7 @@ package net.electroland.elvisVideoProcessor.ui;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -28,10 +29,6 @@ public class WarpGridConstructor implements MouseListener, MouseMotionListener {
 	int selectedRow = -1;
 
 
-	private int cropX;
-	private int cropY;
-	private int cropW;
-	private int cropH;
 
 	public static final int handleRadius = 10;
 	public static final int handleDiameter = handleRadius+handleRadius;
@@ -42,24 +39,30 @@ public class WarpGridConstructor implements MouseListener, MouseMotionListener {
 	WarpGrid warpGrid;
 	RenderedOp warpOp;
 
+	public void setSrcDims(int w, int h) {
+		srcWidth = w;
+		srcHeight = h;
+	}
 
 
-	public WarpGridConstructor(int warpGridWidth, int warpGridHeigt, int imgWidth, int imgHeight) {
+	public WarpGridConstructor(int warpGridWidth, int warpGridHeight, int imgWidth, int imgHeight) {
 		srcWidth = imgWidth;
 		srcHeight =imgHeight;
 
-		grid = new Point[warpGridWidth][warpGridHeigt];
+		grid = new Point[warpGridWidth][warpGridHeight];
 		float xScale = (float) imgWidth /  ((float)warpGridWidth - 1);
-		float yScale = (float) imgHeight /  ((float)warpGridHeigt - 1);
+		float yScale = (float) imgHeight /  ((float)warpGridHeight - 1);
 
 		for(int x = 0; x < warpGridWidth; x++) {
-			for(int y = 0; y < warpGridHeigt; y++) {
+			for(int y = 0; y < warpGridHeight; y++) {
 				grid[x][y] = new Point(
 						(int) (x * xScale),
 						(int) (y * yScale));
 
 			}
 		}
+//		resetEdges();
+
 	}
 
 
@@ -83,6 +86,7 @@ public class WarpGridConstructor implements MouseListener, MouseMotionListener {
 			}
 
 		}	
+
 	}
 
 
@@ -117,6 +121,21 @@ public class WarpGridConstructor implements MouseListener, MouseMotionListener {
 		return dx +dy;
 	}
 
+	/*
+	public void rescale(Rectangle rect) {
+		float xScale = (float) rect.width /  ((float)grid.length - 1);
+		float yScale = (float) rect.height /  ((float)grid[0].length - 1);
+
+		for(int x = 0; x < grid.length ; x++) {
+			for(int y = 0; y < grid[0].length ; y++) {
+				grid[x][y] = new Point(
+						(int) (x * xScale),
+						(int) (y * yScale));
+
+			}
+		}
+	}
+	 */
 	public void renderDrawing(Graphics2D g2d) {		
 		int curColI = 0;
 		Point[] curCol = grid[curColI++];
@@ -125,15 +144,18 @@ public class WarpGridConstructor implements MouseListener, MouseMotionListener {
 			for(int i = 0; i < curCol.length -1; i++) {
 				int x = curCol[i].x;
 				int y = curCol[i].y;
+//				if((curColI != 2) && (i != 0)) {
 				float d = mouseDistSqr(x,y);
 //				System.out.println(x+"," + y + "-" + mouseX + ","+ mouseY + "--->"+ d);
 				if(d <=handleRadiusSqr) {
-					g2d.setColor(Color.WHITE);
-				} else {
 					g2d.setColor(Color.RED);
+				} else {
+					g2d.setColor(Color.BLUE);
 				}
+
 				g2d.drawOval(x-handleRadius, y-handleRadius, handleDiameter,handleDiameter);
-				g2d.setColor(Color.RED);
+				//	}
+				g2d.setColor(Color.BLUE);
 				g2d.drawLine(x,y, curCol[i+1].x, curCol[i+1].y);
 				g2d.drawLine(x, y, nextCol[i].x, nextCol[i].y);
 
@@ -142,13 +164,15 @@ public class WarpGridConstructor implements MouseListener, MouseMotionListener {
 			int y = curCol[curCol.length -1].y;
 			float d = mouseDistSqr(x,y);
 			g2d.drawLine(x,y, nextCol[curCol.length -1].x, nextCol[curCol.length -1].y);
+
 			if(d <=handleRadiusSqr) {
-				g2d.setColor(Color.WHITE);
-			} else {
 				g2d.setColor(Color.RED);
+			} else {
+				g2d.setColor(Color.BLUE);
 			}
 			g2d.drawOval(x-handleRadius, y-handleRadius, handleDiameter,handleDiameter);
-			g2d.setColor(Color.RED);
+
+			g2d.setColor(Color.BLUE);
 
 			curCol = nextCol;
 			if(curColI < grid.length) {
@@ -164,25 +188,28 @@ public class WarpGridConstructor implements MouseListener, MouseMotionListener {
 
 			float d = mouseDistSqr(x,y);
 			g2d.drawLine(x,y, curCol[i+1].x, curCol[i+1].y);
+
 			if(d <=handleRadiusSqr) {
-				g2d.setColor(Color.WHITE);
-			} else {
 				g2d.setColor(Color.RED);
+			} else {
+				g2d.setColor(Color.BLUE);
 			}
 			g2d.drawOval(x-handleRadius, y-handleRadius, handleDiameter,handleDiameter);
-			g2d.setColor(Color.RED);
+			g2d.setColor(Color.BLUE);
+
 		}		
 		int x = curCol[curCol.length -1].x;
 		int y = curCol[curCol.length -1].y;
 
 		float d = mouseDistSqr(x,y);
 		if(d <=handleRadiusSqr) {
-			g2d.setColor(Color.WHITE);
-		} else {
 			g2d.setColor(Color.RED);
+		} else {
+			g2d.setColor(Color.BLUE);
 		}
 		g2d.drawOval(x-handleRadius, y-handleRadius, handleDiameter,handleDiameter);
-		g2d.setColor(Color.RED);
+		g2d.setColor(Color.BLUE);
+
 
 	}
 
@@ -230,28 +257,117 @@ public class WarpGridConstructor implements MouseListener, MouseMotionListener {
 
 
 	public void mouseDragged(MouseEvent e) {
+
 		if(selectedCol >= 0) {
-			grid[selectedCol][selectedRow].x += e.getX() -  mouseX;
-			grid[selectedCol][selectedRow].y += e.getY() -  mouseY;
-			
-			mouseX = e.getX();
-			mouseY = e.getY();			
-			
+			if(! e.isShiftDown()) {
+				grid[selectedCol][selectedRow].x += e.getX() -  mouseX;
+				mouseX = e.getX();
+			}
+			if(! e.isAltDown()) {
+				grid[selectedCol][selectedRow].y += e.getY() -  mouseY;
+				mouseY = e.getY();			
+			}
+
+
 			grid[selectedCol][selectedRow].x = (grid[selectedCol][selectedRow].x <0)? 0:grid[selectedCol][selectedRow].x;
 			grid[selectedCol][selectedRow].y = (grid[selectedCol][selectedRow].y <0)? 0:grid[selectedCol][selectedRow].y;
 			grid[selectedCol][selectedRow].x = (grid[selectedCol][selectedRow].x > srcWidth) ? srcWidth  : grid[selectedCol][selectedRow].x ;
 			grid[selectedCol][selectedRow].y = (grid[selectedCol][selectedRow].y > srcHeight)? srcHeight : grid[selectedCol][selectedRow].y ;
 
+
+//			resetEdges();
 		}
 
 	}
+
+	public void resetEdges() {
+		int minX = Integer.MAX_VALUE;
+		int minY = Integer.MAX_VALUE;
+		int maxX = Integer.MIN_VALUE;
+		int maxY= Integer.MIN_VALUE;
+
+		for(int i = 1; i < grid.length-1;i++) {
+			for(int j = 1; j < grid[0].length-1; j++) {
+				minX = grid[i][j].x < minX ? grid[i][j].x : minX;			
+				minY = grid[i][j].y < minY ? grid[i][j].y : minY;			
+				maxX = grid[i][j].x > maxX ? grid[i][j].x : maxX;			
+				maxY = grid[i][j].y > maxY ? grid[i][j].y : maxY;			
+
+			}
+		}
+
+		System.out.println(minX);
+
+		for(int i = 0; i < grid.length;i++) {
+			for(int j = 0; j < grid[0].length; j++) {
+				grid[i][j].x = (grid[i][j].x < minX) ? minX :  grid[i][j].x ;
+				grid[i][j].y = (grid[i][j].y < minY) ? minY :  grid[i][j].y ;
+				grid[i][j].x = (grid[i][j].x > maxX) ? maxX :  grid[i][j].x ;
+				grid[i][j].y = (grid[i][j].y > maxY) ? maxY :  grid[i][j].y ;
+			}
+		}
+
+
+		for(int i = 0; i < grid.length; i++) {
+			grid[i][0].y = minY;
+			grid[i][grid[0].length-1].y = maxY;
+		}
+
+		for(int i = 0; i < grid[0].length; i++) {
+			grid[0][i].x = minX;
+			grid[grid.length-1][i].x = maxX;
+		}
+
+	}
+
+
+	/*
+		int min = Integer.MAX_VALUE;
+
+		for(int i = 1; i < grid.length-1; i++) {
+			min = grid[i][1].y < min ? grid[i][1].y : min;			
+		}
+
+		int max = -1;
+		for(int i = 1; i < grid.length-1; i++) {
+			max = grid[i][grid.length-2].y > max ? grid[i][grid.length-2].y : max;			
+		}
+
+		for(int i = 0; i < grid.length; i++) {
+			grid[i][grid.length-1].y = max;		
+		}
+
+
+		min = Integer.MAX_VALUE;
+		for(int i = 1; i < grid[0].length-1; i++) {
+			min = grid[1][i].x < min ? grid[1][i].x : min;			
+		}
+
+		for(int i = 0; i < grid[0].length; i++) {
+			grid[0][i].x = min;		
+		}
+
+		for(int i = 0; i < grid[0].length; i++) {
+			grid[1][i].x = (grid[1][i].x< min) ? min : grid[1][i].x;		
+		}
+
+		max = -1;
+		for(int i = 1; i < grid[0].length-1; i++) {
+			max = grid[grid[0].length-2][i].x > max ? grid[grid[0].length-2][i].x : max;			
+		}
+		for(int i = 0; i < grid.length; i++) {
+			grid[grid.length-1][i].x = max;		
+		}
+	 */
+
+//	}
 
 
 	public void mouseMoved(MouseEvent e) {
 		if(selectedCol <0) {
 			mouseX = e.getX();
 			mouseY = e.getY();
-			
+
 		}
 
 	}
@@ -274,15 +390,13 @@ public class WarpGridConstructor implements MouseListener, MouseMotionListener {
 			}
 		}
 
-		cropX = minX;
-		cropY = minY;
-		cropW = maxX-minX;
-		cropH = maxY-minY;
+		float xScale = (float)srcWidth   /  ((float)grid.length - 1);
+		float yScale = (float)srcHeight /  ((float)grid[0].length - 1);
 
 
 
-		float xScale = (float) (cropW) /  ((float)grid.length - 1);
-		float yScale = (float) (cropH) /  ((float)grid[0].length - 1);
+
+//		System.out.println(cropY + ", " + cropH + ", " + yScale);
 
 		// note to self orig is grid
 		// mapped you need to construct
@@ -295,59 +409,63 @@ public class WarpGridConstructor implements MouseListener, MouseMotionListener {
 						grid[i][j+1].x, grid[i][j+1].y,
 						grid[i+1][j].x, grid[i+1][j].y,
 						grid[i+1][j+1].x, grid[i+1][j+1].y);*/
-				transforms[i][j] = PerspectiveTransform.getQuadToQuad(
+				transforms[i][j] = makeTransform(
 						(i*xScale),  	 (j*yScale), 
 						(i*xScale),  	 ((j+1)*yScale), 
 						((i+1)*xScale), 	 (j*yScale), 
 						((i+1)*xScale), 	 ((j+1)*yScale)
 						,
-						grid[i][j].x - cropX, grid[i][j].y- cropY,
-						grid[i][j+1].x - cropX, grid[i][j+1].y - cropY,
-						grid[i+1][j].x- cropX, grid[i+1][j].y - cropY,
-						grid[i+1][j+1].x -  cropX, grid[i+1][j+1].y - cropY
+						grid[i][j].x , grid[i][j].y,
+						grid[i][j+1].x, grid[i][j+1].y ,
+						grid[i+1][j].x, grid[i+1][j].y ,
+						grid[i+1][j+1].x , grid[i+1][j+1].y 
+
+
+
 				);
 
 				/*
 
 				System.out.println(
-						(minX + (i*xScale))+","+  	(minY + (j*yScale))+" "+ 
-						(minX + (i*xScale))+","+  	(minY + ((j+1)*yScale))+" "+
-						(minX + ((i+1)*xScale))+","+ 	(minY + (j*yScale))+" "+
-						(minX + ((i+1)*xScale))+","+ 	(minY + ((j+1)*yScale))
-						+"-->"+
 						grid[i][j].x+","+ grid[i][j].y+" "+
 						grid[i][j+1].x+","+ grid[i][j+1].y+" "+
 						grid[i+1][j].x+","+ grid[i+1][j].y+" "+
 						grid[i+1][j+1].x+","+ grid[i+1][j+1].y
+						+"-->"+
+						(minX + (i*xScale))+","+  	(minY + (j*yScale))+" "+ 
+						(minX + (i*xScale))+","+  	(minY + ((j+1)*yScale))+" "+
+						(minX + ((i+1)*xScale))+","+ 	(minY + (j*yScale))+" "+
+						(minX + ((i+1)*xScale))+","+ 	(minY + ((j+1)*yScale))
 				);
 				 */
+
 			}
 		}
 
-		float[] transformPositions = new float[(cropW) * (cropH) * 2];
+
+		float[] transformPositions = new float[(srcWidth) * (srcHeight) * 2];
 
 		Point2D.Float origPt = new Point2D.Float() ;
 		Point2D.Float tranformedPt = new Point2D.Float() ;
 
 
 
-		float transformWidth = xScale;
-		float transformHeight = yScale;
+		float transformWidth =  (float) (srcWidth) /  ((float)grid.length - 1);
+		float transformHeight = (float) (srcHeight) /  ((float)grid[0].length - 1);
 
 		int i = 0;
 
 
 
 		// great a mapping for very pixel orig->new
-		for(float y = 0f; y< cropH;y ++) {
-			for(float x = 0f; x< cropW;x++) {
+		for(float y = 0f; y< srcHeight;y ++) {
+			for(float x = 0f; x< srcWidth;x++) {
 				origPt.setLocation(x,y);
 				int transformJ = (int) Math.floor(((float) y) / ((float) transformHeight));
 				int transformI = (int) Math.floor(((float) x) / ((float) transformWidth));
 				transforms[transformI][transformJ].transform(origPt, tranformedPt);
-				//	System.out.println(i + ":"  + x + "," + y + " --> " + tranformedPt.x + "," + tranformedPt.y);
-				tranformedPt.y= ( tranformedPt.y > cropH) ? cropH : tranformedPt.y;
-				tranformedPt.x= ( tranformedPt.x > cropW) ? cropW : tranformedPt.x;
+//				tranformedPt.y= ( tranformedPt.y > cropH) ? cropH : tranformedPt.y;
+				//			tranformedPt.x= ( tranformedPt.x > cropW) ? cropW : tranformedPt.x;
 				transformPositions[i++] = (float) tranformedPt.getX();
 				transformPositions[i++] = (float) tranformedPt.getY();
 
@@ -358,11 +476,31 @@ public class WarpGridConstructor implements MouseListener, MouseMotionListener {
 
 
 
-		warpGrid=  new WarpGrid(0, 1, cropW-1, 0,1, cropH-1, transformPositions); // use warp grid becuse this uses hardware acceleration
+		warpGrid=  new WarpGrid(0, 1, srcWidth-1, 0,1, srcHeight-1, transformPositions); // use warp grid becuse this uses hardware acceleration
 
 
 	}
 
+	public PerspectiveTransform makeTransform(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4,
+			double dx1, double dy1, double dx2, double dy2, double dx3, double dy3, double dx4,double dy4 ) {
+		System.out.println(
+				x1+","+y1 +" " +
+				x2+","+y2 +" " +
+				x3+","+y3 +" " +
+				x4+","+y4 + "--->" +
+				dx1+","+dy1 +" " +
+				dx2+","+dy2 +" " +
+				dx3+","+dy3 +" " +
+				dx4+","+dy4
+		);
+		System.out.println("   " + x1+","+y1 +"->" +dx1+","+dy1);
+		System.out.println("   " + x2+","+y2 +"->" +dx2+","+dy2);
+		System.out.println("   " + x3+","+y3 +"->" +dx3+","+dy3);
+		System.out.println("   " + x4+","+y4 +"->" +dx4+","+dy4);
+
+		return PerspectiveTransform.getQuadToQuad(x1,y1,x2,y2,x3,y3,x4,y4,dx1,dy1,dx2,dy2,dx3,dy3,dx4,dy4);
+
+	}
 	public  RenderedOp getWarpOp(Object source) {
 		ParameterBlock pb = new ParameterBlock();
 		pb.addSource(source);
@@ -371,28 +509,5 @@ public class WarpGridConstructor implements MouseListener, MouseMotionListener {
 		return warpOp;
 	}
 
-
-
-	public int getCropX() {
-		return cropX;
-	}
-
-
-
-	public int getCropY() {
-		return cropY;
-	}
-
-
-
-	public int getCropW() {
-		return cropW;
-	}
-
-
-
-	public int getCropH() {
-		return cropH;
-	}
 
 }
