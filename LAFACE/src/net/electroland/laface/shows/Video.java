@@ -15,17 +15,9 @@ public class Video implements Animation{
 	private Raster r;
 	private LAFaceVideoProcessor lafvp;
 	
-	public Video(Raster r){
+	public Video(Raster r, LAFaceVideoProcessor lafvp){
 		this.r = r;
-		ElProps.init("depends\\LAFace.props");
-		lafvp = new LAFaceVideoProcessor(ElProps.THE_PROPS);
-		lafvp.setBackgroundAdaptation(ElProps.THE_PROPS.setProperty("adaptation", .1));
-		try {
-			lafvp.setSourceStream(ElProps.THE_PROPS.getProperty("camera", "axis"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		lafvp.start();
+		this.lafvp = lafvp;
 	}
 
 	public Raster getFrame() {

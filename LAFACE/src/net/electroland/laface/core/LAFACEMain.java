@@ -19,6 +19,8 @@ import javax.swing.JFrame;
 import processing.core.PConstants;
 import processing.core.PImage;
 import net.electroland.blobDetection.match.TrackListener;
+import net.electroland.elvisVideoProcessor.ElProps;
+import net.electroland.elvisVideoProcessor.LAFaceVideoProcessor;
 import net.electroland.laface.scheduler.TimedEvent;
 import net.electroland.laface.scheduler.TimedEventListener;
 import net.electroland.laface.gui.ControlPanel;
@@ -63,6 +65,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 	public CarTracker carTracker;
 	public PImage highlight, linearGradient, leftarrow, rightarrow, verticalGradient;
 	public Tracker tracker;
+	public LAFaceVideoProcessor lafvp;
 	public ImageSequenceCache imageCache;	// only needed for testing
 	private WeatherChecker weatherChecker;
 	private TimedEvent sunriseOn = new TimedEvent(5,00,00, this); // on at sunrise-1 based on weather
@@ -107,6 +110,17 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		controlPanel = new ControlPanel(this);
 		add(controlPanel, "wrap");
 		
+		// START GRABBING CAMERA FRAMES
+		ElProps.init("depends\\LAFace.props");
+		lafvp = new LAFaceVideoProcessor(ElProps.THE_PROPS);
+		lafvp.setBackgroundAdaptation(ElProps.THE_PROPS.setProperty("adaptation", .1));
+		try {
+			lafvp.setSourceStream(ElProps.THE_PROPS.getProperty("camera", "axis"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		lafvp.start();
+		
 
 		// this gets rid of exception for not using native acceleration
 		//System.setProperty("com.sun.media.jai.disableMediaLib", "true");
@@ -140,7 +154,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		}
 		// TODO uncomment this to test direct tracking video
 		//Animation newa = new ImageSequence(firstRaster, imageCache.getSequence("test"), true);
-		Animation newa = new Video(firstRaster);
+		Animation newa = new Video(firstRaster, lafvp);
 		
 		amr.startAnimation(newa, fixtures);
 
