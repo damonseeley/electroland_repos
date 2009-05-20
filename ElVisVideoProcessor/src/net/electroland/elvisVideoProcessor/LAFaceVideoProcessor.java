@@ -71,7 +71,7 @@ public class LAFaceVideoProcessor extends Thread implements ImageReceiver{
 
 
 
-	public static enum MODE { raw, crop, setWarp, viewWarp, background, diff, colorAdjust, setMosiac, running };
+	public static enum MODE { raw, setWarp, viewWarp, crop, background, diff, colorAdjust, setMosiac, running };
 	protected MODE mode = MODE.running;
 
 	public LAFaceVideoProcessor(ElProps props) {
@@ -144,7 +144,7 @@ public class LAFaceVideoProcessor extends Thread implements ImageReceiver{
 	public void resetWarpAndROI() {
 		System.out.println("resetting warp");
 
-		cropOp = crop.getCropOp();
+//		cropOp = crop.getCropOp();  UNDONE shoud be first
 
 
 		grayImage = new BufferedImage(crop.rect.width, crop.rect.height, BufferedImage.TYPE_USHORT_GRAY);
@@ -154,18 +154,27 @@ public class LAFaceVideoProcessor extends Thread implements ImageReceiver{
 
 		
 		warpGrid.reset();
-		warpGrid.setSrcDims(crop.rect.width, crop.rect.height);
-		warpOp = warpGrid.getWarpOp(cropOp);
+		// should work with cropped image but doesn't UNDONE
+//		warpGrid.setSrcDims(crop.rect.width, crop.rect.height);
+		warpGrid.setSrcDims(w, h);
+		
+		//UNDONE crop first
+//		warpOp = warpGrid.getWarpOp(cropOp);
+		warpOp = warpGrid.getWarpOp(new BufferedImage(w,h, BufferedImage.TYPE_BYTE_GRAY));
+
+		cropOp = crop.getCropOp(warpOp);
+		
 //		warpOp = crop
 
 
 		String mosaicString = props.getProperty("mosaicRects", "");
 		int mosaicWidth = props.getProperty("mosaicWidth", crop.rect.width);
-		int mosaicHeight = props.getProperty("mosaicHeight", 7);
+		int mosaicHeight = props.getProperty("mosaicHeight", 21);
+		int mosaicSubDivs = props.getProperty("mosaicSubDivs", 7);
 		if(mosaicString.length() == 0) {
-			mosaic = new MosaicConstructor(crop.rect.width, crop.rect.height,  mosaicWidth, mosaicHeight, 2);			
+			mosaic = new MosaicConstructor(crop.rect.width, crop.rect.height,  mosaicWidth, mosaicHeight, mosaicSubDivs, 2);			
 		} else {
-			mosaic = new MosaicConstructor(crop.rect.width, crop.rect.height,mosaicWidth, mosaicHeight, mosaicString);
+			mosaic = new MosaicConstructor(crop.rect.width, crop.rect.height,mosaicWidth, mosaicHeight, mosaicSubDivs, mosaicString);
 
 		}
 
@@ -231,30 +240,36 @@ public class LAFaceVideoProcessor extends Thread implements ImageReceiver{
 			lutCache = null;
 		}
 
-		if((mode == MODE.raw) ||(mode == MODE.crop)) {
+		
+		// SHOULD CROP FIRST UNDONE
+		if((mode == MODE.raw) ||(mode == MODE.setWarp)) {
 			return img;
 		}
 
 
-		cropOp.setSource(img, 0);
-//		warpOp.setSource(cropOp.getAsBufferedImage(), 0);
+		warpOp.setSource(img, 0);
 
-		BufferedImage warped = warpOp.getAsBufferedImage();
+//		cropOp.setSource(img, 0);
+//		warpOp.setSource(cropOp.getAsBufferedImage(), 0);
+//		BufferedImage warped = warpOp.getAsBufferedImage();
+		cropOp.setSource(warpOp.getAsBufferedImage(), 0);
+		BufferedImage warped = cropOp.getAsBufferedImage();
 		
 		if((warped.getWidth() != grayImage.getWidth()) || (warped.getHeight() != grayImage.getHeight())) {
 			grayImage = new BufferedImage(warped.getWidth(), warped.getHeight(), BufferedImage.TYPE_USHORT_GRAY);
 		}
 		try {
 			if(convertFromColor) {
-				imageConversion.convertFromRGB(warpOp.getAsBufferedImage(), grayImage);			
+				imageConversion.convertFromRGB(cropOp.getAsBufferedImage(), grayImage);			
 			} else {
-				imageConversion.convertFromGray(warpOp.getAsBufferedImage(), grayImage);
+				imageConversion.convertFromGray(cropOp.getAsBufferedImage(), grayImage);
 			}
 		} catch (RuntimeException e) {
+			e.printStackTrace();
 			System.out.println(grayImage.getWidth());
-			System.out.println(warpOp.getAsBufferedImage().getWidth());
+			System.out.println(cropOp.getAsBufferedImage().getWidth());
 			System.out.println(grayImage.getHeight());
-			System.out.println(warpOp.getAsBufferedImage().getHeight());
+			System.out.println(cropOp.getAsBufferedImage().getHeight());
 			return img;
 		}
 
@@ -273,9 +288,12 @@ public class LAFaceVideoProcessor extends Thread implements ImageReceiver{
 		switch(mode) {
 		case raw:
 		case crop:
-			return img;
+			//UNDONE
+//			return img;
+			return warpOp.getAsBufferedImage();
 		case setWarp:
-			return cropOp.getAsBufferedImage();
+//			return cropOp.getAsBufferedImage();
+			return img;
 		case viewWarp:
 			return warpOp.getAsBufferedImage();
 		case background:

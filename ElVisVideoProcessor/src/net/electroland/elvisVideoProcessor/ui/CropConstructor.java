@@ -7,12 +7,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
-import java.util.concurrent.TimeUnit;
 
 import javax.media.jai.RenderedOp;
 import javax.media.jai.operator.CropDescriptor;
-
-import net.electroland.elvisVideoProcessor.util.SwapBuffer;
 
 
 public class CropConstructor implements MouseListener, MouseMotionListener {
@@ -184,6 +181,10 @@ public class CropConstructor implements MouseListener, MouseMotionListener {
 	}
 
 	
+	public RenderedOp getCropOp(RenderedOp op) {
+		return CropDescriptor.create(op , 
+				(float)rect.x,(float) rect.y,(float) rect.width,(float) rect.height, null);
+	}
 
 	public RenderedOp getCropOp() {
 		return CropDescriptor.create(new BufferedImage(srcWidth,srcHeight, BufferedImage.TYPE_BYTE_GRAY) , 
