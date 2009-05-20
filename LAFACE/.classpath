@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="libraries/miglayout15-swing.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ElVis"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ElVisBlobTracker"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ElVisVideoProcessor"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
