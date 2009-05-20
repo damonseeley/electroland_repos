@@ -54,6 +54,8 @@ public class LAFacePanel extends JPanel implements ActionListener {
 	public void paint(Graphics g) {
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D)g;
+		
+		//g2d.clearRect(0, 0, getWidth(), getHeight());
 
 		RenderedImage ri = vidProcessor.getImage();
 
@@ -69,8 +71,15 @@ public class LAFacePanel extends JPanel implements ActionListener {
 		g2d.setColor(Color.RED);
 		g2d.drawString(mode, 5, getHeight()-5);
 		switch(vidProcessor.getMode()) {
+		case crop:
+			vidProcessor.crop.renderDrawing(g2d);
+			break;
 		case setWarp:
+			//vidProcessor.getROIConstructor().rescale(vidProcessor.crop.rect);
 			vidProcessor.getROIConstructor().renderDrawing(g2d);
+			break;
+		case setMosiac:
+			vidProcessor.getMosaicConstructor().renderDrawing(g2d);
 			break;
 		}
 

@@ -1,29 +1,34 @@
 package net.electroland.elvisVideoProcessor;
 
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.media.jai.RenderedOp;
-import javax.media.jai.operator.CropDescriptor;
 
 import net.electroland.elvis.imaging.BackgroundImage;
 import net.electroland.elvis.imaging.ImageConversion;
 import net.electroland.elvis.imaging.ImageDifference;
-import net.electroland.elvis.imaging.ImageProcessor;
 import net.electroland.elvis.imaging.acquisition.ImageAcquirer;
+import net.electroland.elvis.imaging.acquisition.ImageReceiver;
 import net.electroland.elvis.imaging.acquisition.axisCamera.AxisCamera;
 import net.electroland.elvis.imaging.acquisition.jmyron.WebCam;
 import net.electroland.elvisVideoProcessor.curveEditor.CurveEditor;
+import net.electroland.elvisVideoProcessor.ui.CropConstructor;
 import net.electroland.elvisVideoProcessor.ui.LAFaceFrame;
 import net.electroland.elvisVideoProcessor.ui.LookupTable;
 import net.electroland.elvisVideoProcessor.ui.MosaicConstructor;
 import net.electroland.elvisVideoProcessor.ui.WarpGridConstructor;
 
-public class LAFaceVideoProcessor extends ImageProcessor {
+public class LAFaceVideoProcessor extends Thread implements ImageReceiver{
 
 	public static final String JMYRON_SRC = "jMyronCam";
 	public static final String LOCALAXIS_SRC ="axis";
+
+
+	int frameCnt = 0;
+	long startTime;
+
 
 	public boolean convertFromColor = false;
 
@@ -42,9 +47,10 @@ public class LAFaceVideoProcessor extends ImageProcessor {
 
 	WarpGridConstructor warpGrid;
 	LookupTable lookupTalbe;
+	public CropConstructor crop;
 
 	ElProps props;
-	
+
 	MosaicConstructor mosaic;
 
 
@@ -53,21 +59,32 @@ public class LAFaceVideoProcessor extends ImageProcessor {
 	RenderedOp lookupOp;
 //	RenderedOp colorConvertOp;
 
-	AffineTransform cropTranslate;
+//	AffineTransform cropTranslate;
 
 	int[] lutCache = null;
 
+	ArrayBlockingQueue<BufferedImage> queue = new ArrayBlockingQueue<BufferedImage>(2);
+
+
+	public int w;
+	public int h;
 
 
 
-
-	public static enum MODE { raw, setWarp, viewWarp, background, diff, colorAdjust, mosaic, running };
+	public static enum MODE { raw, crop, setWarp, viewWarp, background, diff, colorAdjust, setMosiac, running };
 	protected MODE mode = MODE.running;
 
 	public LAFaceVideoProcessor(ElProps props) {
-		super(props.getProperty("srcWidth", 640), props.getProperty("srcHeight", 480));
 		this.props = props;
-		
+		w = props.getProperty("srcWidth", 640);
+		h = props.getProperty("srcHeight", 480);
+
+		String cropString = props.getProperty("crop","");
+		if(cropString.length()==0) {
+			crop = new CropConstructor(w,h,0,0,w,h);
+		} else {
+			crop = new CropConstructor(w,h,cropString);
+		}
 
 
 		/*
@@ -85,19 +102,21 @@ public class LAFaceVideoProcessor extends ImageProcessor {
 		} else {		
 			warpGrid = new WarpGridConstructor(warpGridStr, w, h);
 		}
-		
+
 
 		resetWarpAndROI();
 
 //		if(! props.getProperty("showGraphics", true)) {
-			String curveFile = props.getProperty("curveFile", "");
-			System.out.println("loading " + curveFile);
-			loadLutFile(curveFile);
-	//	} else {
-	//		resetLut(null);
-	//	}
+		String curveFile = props.getProperty("curveFile", "");
+		System.out.println("loading " + curveFile);
+		loadLutFile(curveFile);
+		//	} else {
+		//		resetLut(null);
+		//	}
 
 	}
+
+
 
 	public void loadLutFile(String curveFile) {
 		if(curveFile.length() == 0) {
@@ -120,30 +139,33 @@ public class LAFaceVideoProcessor extends ImageProcessor {
 		}
 
 	}
+	
 
 	public void resetWarpAndROI() {
 		System.out.println("resetting warp");
+
+		cropOp = crop.getCropOp();
+
+
+		grayImage = new BufferedImage(crop.rect.width, crop.rect.height, BufferedImage.TYPE_USHORT_GRAY);
+		diffImage = new BufferedImage(crop.rect.width, crop.rect.height, BufferedImage.TYPE_USHORT_GRAY);
+
+		
+
+		
 		warpGrid.reset();
-
-
-		cropOp = CropDescriptor.create(new BufferedImage(w,h, BufferedImage.TYPE_USHORT_GRAY) , 
-				(float)warpGrid.getCropX(), (float) warpGrid.getCropY(), (float)warpGrid.getCropW(), (float)warpGrid.getCropH(), null);
-
-
-		cropTranslate = new AffineTransform();
-		cropTranslate.translate(- warpGrid.getCropX(),- warpGrid.getCropY());
-
-		grayImage = new BufferedImage(warpGrid.getCropW(),warpGrid.getCropH(), BufferedImage.TYPE_USHORT_GRAY);
-		diffImage = new BufferedImage(warpGrid.getCropW(),warpGrid.getCropH(), BufferedImage.TYPE_USHORT_GRAY);
-
+		warpGrid.setSrcDims(crop.rect.width, crop.rect.height);
 		warpOp = warpGrid.getWarpOp(cropOp);
-		
-		
+//		warpOp = crop
+
+
 		String mosaicString = props.getProperty("mosaicRects", "");
+		int mosaicWidth = props.getProperty("mosaicWidth", crop.rect.width);
+		int mosaicHeight = props.getProperty("mosaicHeight", 7);
 		if(mosaicString.length() == 0) {
-			mosaic = new MosaicConstructor(warpGrid.getCropW(),warpGrid.getCropH(), 2);			
+			mosaic = new MosaicConstructor(crop.rect.width, crop.rect.height,  mosaicWidth, mosaicHeight, 2);			
 		} else {
-			mosaic = new MosaicConstructor(warpGrid.getCropW(),warpGrid.getCropH(),mosaicString);
+			mosaic = new MosaicConstructor(crop.rect.width, crop.rect.height,mosaicWidth, mosaicHeight, mosaicString);
 
 		}
 
@@ -196,13 +218,12 @@ public class LAFaceVideoProcessor extends ImageProcessor {
 		srcStream.start();
 		// gridDetector.resetBackground(frameSkip);
 	}
-	
-	
-	
 
 
 
-	@Override
+
+
+
 	public BufferedImage process(BufferedImage img) {
 //		System.out.println("process");
 		if(lutCache != null) {
@@ -210,15 +231,16 @@ public class LAFaceVideoProcessor extends ImageProcessor {
 			lutCache = null;
 		}
 
-		if((mode == MODE.raw) ||(mode == MODE.setWarp)) {
+		if((mode == MODE.raw) ||(mode == MODE.crop)) {
 			return img;
 		}
-		
+
 
 		cropOp.setSource(img, 0);
 //		warpOp.setSource(cropOp.getAsBufferedImage(), 0);
-		
+
 		BufferedImage warped = warpOp.getAsBufferedImage();
+		
 		if((warped.getWidth() != grayImage.getWidth()) || (warped.getHeight() != grayImage.getHeight())) {
 			grayImage = new BufferedImage(warped.getWidth(), warped.getHeight(), BufferedImage.TYPE_USHORT_GRAY);
 		}
@@ -233,7 +255,7 @@ public class LAFaceVideoProcessor extends ImageProcessor {
 			System.out.println(warpOp.getAsBufferedImage().getWidth());
 			System.out.println(grayImage.getHeight());
 			System.out.println(warpOp.getAsBufferedImage().getHeight());
-			throw e;
+			return img;
 		}
 
 		BufferedImage bkImage = background.update(grayImage);
@@ -250,8 +272,10 @@ public class LAFaceVideoProcessor extends ImageProcessor {
 
 		switch(mode) {
 		case raw:
-		case setWarp:
+		case crop:
 			return img;
+		case setWarp:
+			return cropOp.getAsBufferedImage();
 		case viewWarp:
 			return warpOp.getAsBufferedImage();
 		case background:
@@ -260,17 +284,34 @@ public class LAFaceVideoProcessor extends ImageProcessor {
 			return diffImage;
 		case colorAdjust:
 			return lookupOp.getAsBufferedImage();
-		case mosaic:
-			BufferedImage bi = lookupOp.getAsBufferedImage();
-			mosaic.renderDrawing(bi.createGraphics());
-			return bi;
-		case running:
-		default:
+		case setMosiac: {
 			return lookupOp.getAsBufferedImage();
+		}
+		case running:
+		default: {
+			BufferedImage bi = lookupOp.getAsBufferedImage();
+			int y = 0;
+			BufferedImage[] imgs;
+			try {
+				mosaic.processImage(lookupOp);
+				imgs = mosaic.getImage();
+				for(BufferedImage curImg : imgs) {
+					bi.createGraphics().drawImage(curImg, 0,y, null);
+					y+= curImg.getHeight();
+				}
+				return bi;
+
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return img;
+			}
+		}
+
 
 		}
 
-	
+
 
 
 	}
@@ -327,5 +368,58 @@ public class LAFaceVideoProcessor extends ImageProcessor {
 	public MosaicConstructor getMosaicConstructor() {
 		return mosaic;
 	}
+
+
+	public void resetFPSCalc() {
+		frameCnt = 0;
+		startTime = System.currentTimeMillis();
+	}
+
+
+	public float getFPS() {
+		return (1000.0f * frameCnt) / ((float) (System.currentTimeMillis() - startTime));
+	}
+
+
+	public void addImage(BufferedImage i) {
+		try {
+			queue.put(i);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	boolean isRunning = true;
+	
+	public void stopRunning() {
+		isRunning = false;
+		try {
+			queue.put(new BufferedImage(crop.rect.width, crop.rect.height, BufferedImage.TYPE_USHORT_GRAY));
+		} catch (InterruptedException e) {
+		}
+	}
+
+	BufferedImage img;
+	
+	public BufferedImage getImage() { 
+		return img;
+	}
+
+	public void run() {
+		startTime = System.currentTimeMillis();
+
+		while(isRunning) {
+			try {
+				img = process(queue.take());
+			} catch (InterruptedException e) {
+				if(isRunning) {
+					e.printStackTrace();
+				}
+			}
+
+		}
+	}
+
 
 }
