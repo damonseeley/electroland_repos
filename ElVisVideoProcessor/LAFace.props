@@ -1,19 +1,19 @@
 #
-#Wed May 20 13:16:52 EDT 2009
+#Wed May 20 12:47:26 PDT 2009
 axisIP=elaface.dyndns.org
 warpGridHeight=5
+mosaicSubDivs=7
 srcWidth=640
-mosaicRects=21,25,587,86_6,118,606,40
-crop=0,125,640,201
+mosaicRects=21,25,587,86
+crop=0,128,640,211
+axisUsername=laface
 warpGridWidth=640
 mosaicHeight=20
-axisUsername=laface
-#camera=jMyronCam
 camera=axis
 mosaicWidth=640
-curveFile=invs.elc
+curveFile=default.elc
 adaptation=0.1
-warpGrid=0,0_160,0_320,0_480,0_640,0-0,209_160,182_320,175_480,174_640,183-0,254_160,255_320,254_480,252_640,244-0,411_160,445_320,455_480,443_640,410-0,480_160,480_320,480_480,480_640,480
+warpGrid=0,0_160,0_320,0_480,0_640,0-0,190_159,166_321,156_480,155_640,166-0,254_160,248_321,245_481,245_640,244-0,335_160,348_320,348_481,343_640,330-0,480_160,480_320,480_480,480_640,480
 axisPassword=laface
 srcHeight=480
-showGraphics=false
+showGraphics=true
