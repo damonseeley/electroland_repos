@@ -29,6 +29,8 @@ public class LAFaceVideoProcessor extends Thread implements ImageReceiver{
 	int frameCnt = 0;
 	long startTime;
 
+	public boolean showGraphics = false;
+
 
 	public boolean convertFromColor = false;
 
@@ -76,6 +78,7 @@ public class LAFaceVideoProcessor extends Thread implements ImageReceiver{
 
 	public LAFaceVideoProcessor(ElProps props) {
 		this.props = props;
+		showGraphics = ElProps.THE_PROPS.getProperty("showGraphics", false);
 		w = props.getProperty("srcWidth", 640);
 		h = props.getProperty("srcHeight", 480);
 
@@ -139,7 +142,7 @@ public class LAFaceVideoProcessor extends Thread implements ImageReceiver{
 		}
 
 	}
-	
+
 
 	public void resetWarpAndROI() {
 		System.out.println("resetting warp");
@@ -150,20 +153,20 @@ public class LAFaceVideoProcessor extends Thread implements ImageReceiver{
 		grayImage = new BufferedImage(crop.rect.width, crop.rect.height, BufferedImage.TYPE_USHORT_GRAY);
 		diffImage = new BufferedImage(crop.rect.width, crop.rect.height, BufferedImage.TYPE_USHORT_GRAY);
 
-		
 
-		
+
+
 		warpGrid.reset();
 		// should work with cropped image but doesn't UNDONE
 //		warpGrid.setSrcDims(crop.rect.width, crop.rect.height);
 		warpGrid.setSrcDims(w, h);
-		
+
 		//UNDONE crop first
 //		warpOp = warpGrid.getWarpOp(cropOp);
 		warpOp = warpGrid.getWarpOp(new BufferedImage(w,h, BufferedImage.TYPE_BYTE_GRAY));
 
 		cropOp = crop.getCropOp(warpOp);
-		
+
 //		warpOp = crop
 
 
@@ -240,7 +243,7 @@ public class LAFaceVideoProcessor extends Thread implements ImageReceiver{
 			lutCache = null;
 		}
 
-		
+
 		// SHOULD CROP FIRST UNDONE
 		if((mode == MODE.raw) ||(mode == MODE.setWarp)) {
 			return img;
@@ -254,7 +257,7 @@ public class LAFaceVideoProcessor extends Thread implements ImageReceiver{
 //		BufferedImage warped = warpOp.getAsBufferedImage();
 		cropOp.setSource(warpOp.getAsBufferedImage(), 0);
 		BufferedImage warped = cropOp.getAsBufferedImage();
-		
+
 		if((warped.getWidth() != grayImage.getWidth()) || (warped.getHeight() != grayImage.getHeight())) {
 			grayImage = new BufferedImage(warped.getWidth(), warped.getHeight(), BufferedImage.TYPE_USHORT_GRAY);
 		}
@@ -307,22 +310,27 @@ public class LAFaceVideoProcessor extends Thread implements ImageReceiver{
 		}
 		case running:
 		default: {
-			BufferedImage bi = lookupOp.getAsBufferedImage();
-			int y = 0;
-			BufferedImage[] imgs;
-			try {
-				mosaic.processImage(lookupOp);
-				imgs = mosaic.getImage();
-				for(BufferedImage curImg : imgs) {
-					bi.createGraphics().drawImage(curImg, 0,y, null);
-					y+= curImg.getHeight();
-				}
-				return bi;
+			if(showGraphics) {
+				BufferedImage bi = lookupOp.getAsBufferedImage();
+				int y = 0;
+				BufferedImage[] imgs;
+				try {
+					mosaic.processImage(lookupOp);
+					imgs = mosaic.getImage();
+					for(BufferedImage curImg : imgs) {
+						bi.createGraphics().drawImage(curImg, 0,y, null);
+						y+= curImg.getHeight();
+					}
+					return bi;
 
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return img;
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return img;
+				}
+			} else {
+				mosaic.processImage(lookupOp);				
+				return img; // not really used
 			}
 		}
 
@@ -332,6 +340,10 @@ public class LAFaceVideoProcessor extends Thread implements ImageReceiver{
 
 
 
+	}
+	
+	public BufferedImage[] getMosaics() throws InterruptedException {
+		return mosaic.getImage();
 	}
 
 	public MODE getMode() {
@@ -409,7 +421,7 @@ public class LAFaceVideoProcessor extends Thread implements ImageReceiver{
 	}
 
 	boolean isRunning = true;
-	
+
 	public void stopRunning() {
 		isRunning = false;
 		try {
@@ -419,7 +431,7 @@ public class LAFaceVideoProcessor extends Thread implements ImageReceiver{
 	}
 
 	BufferedImage img;
-	
+
 	public BufferedImage getImage() { 
 		return img;
 	}
