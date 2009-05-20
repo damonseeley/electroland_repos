@@ -142,6 +142,7 @@ public class LAFaceVideoProcessor extends Thread implements ImageReceiver{
 		}
 
 	}
+	
 
 
 	public void resetWarpAndROI() {
