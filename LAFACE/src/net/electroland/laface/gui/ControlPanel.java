@@ -475,7 +475,7 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		} else if(((JTabbedPane)e.getSource()).getSelectedIndex() == 4){
 			Raster raster = main.getRaster();
 			main.rasterPanel.setRaster(raster);
-			Animation a = new Video(raster);
+			Animation a = new Video(raster, main.lafvp);
 			Collection<Recipient> fixtures = main.dmr.getRecipients();
 			main.amr.startAnimation(a, fixtures);
 		}
