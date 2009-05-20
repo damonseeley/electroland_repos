@@ -19,6 +19,8 @@ public class MosaicConstructor implements MouseListener, MouseMotionListener {
 	int srcWidth ;
 	int srcHeight;
 
+	int subDivs;
+	
 	public static final int HANDLE_R = 4;
 	public static final int HANDLE_D = HANDLE_R+HANDLE_R;
 	public static final int HANDLE_RSQ = HANDLE_R * HANDLE_R;
@@ -33,7 +35,7 @@ public class MosaicConstructor implements MouseListener, MouseMotionListener {
 	
 
 
-	public MosaicConstructor(int w, int h, int outW, int outH, int rectCnt) {
+	public MosaicConstructor(int w, int h, int outW, int outH, int subDivs, int rectCnt) {
 		srcWidth =w;
 		srcHeight = h;
 		rects = new Rectangle[rectCnt];
@@ -42,13 +44,14 @@ public class MosaicConstructor implements MouseListener, MouseMotionListener {
 		for(int i = 0; i < rectCnt; i++) {
 			rects[i] = new Rectangle(10, (3*i*boxSize) + boxSize, w-20,boxSize);
 		}
+		this.subDivs = subDivs;
 
 		rebuildResultPool(outW, outH);
 	}
 
 
 
-	public MosaicConstructor(int srcW, int srcH, int outW, int outH, String s) {
+	public MosaicConstructor(int srcW, int srcH, int outW, int outH,int subDivs, String s) {
 		srcWidth =srcW;
 		srcHeight = srcH;
 
@@ -63,6 +66,8 @@ public class MosaicConstructor implements MouseListener, MouseMotionListener {
 			int h = Integer.parseInt(pnts[3]);
 			rects[i++] = new Rectangle(x,y,w,h);			
 		}
+		this.subDivs = subDivs;
+
 		rebuildResultPool(outW, outH);
 	}
 
@@ -237,10 +242,15 @@ public class MosaicConstructor implements MouseListener, MouseMotionListener {
 			BufferedImage[] ar = new BufferedImage[rects.length];
 			for(int i = 0; i < ar.length; i++) {
 				BufferedImage subImage = img.getSubimage(rects[i].x, rects[i].y, rects[i].width, rects[i].height);
-				float lineHight  = img.getHeight() / (float) resultCache[i].getHeight();
+				float srcLineHeight = subImage.getHeight()/ (float) subDivs;
+				float destLineHeight = resultCache[i].getHeight() / (float) subDivs;
+//				System.out.println(srcLineHeight + "---" + destLineHeight);
+//				float lineHight  = img.getHeight() / (float) resultCache[i].getHeight();
 				for(int line = 0; line < resultCache[i].getHeight(); line++) {
-					singleLine[i].createGraphics().drawImage(subImage, 0, line, singleLine[i].getWidth(), singleLine[i].getHeight(), 0,(int)(line * lineHight), subImage.getWidth(), (int) lineHight, null);
-					resultCache[i].createGraphics().drawImage(singleLine[i], 0, (int)(line * lineHight), resultCache[i].getWidth(), (int)lineHight, 0,0, singleLine[i].getWidth(), singleLine[i].getHeight(), null);					
+//					System.out.println(line + " " + singleLine[i].getWidth() + " " + singleLine[i].getHeight() + (int)(line * lineHight)+ " " + subImage.getWidth() + " " + (int) lineHight);
+					singleLine[i].createGraphics().drawImage(subImage, 0, 0, singleLine[i].getWidth(), 1, 0,(int)(line * srcLineHeight), subImage.getWidth(), (int) ((line + 1) *srcLineHeight), null);
+//					singleLine[i].createGraphics().drawImage(subImage, 0, line, singleLine[i].getWidth(), singleLine[i].getHeight(), 0,(int)(line * lineHight), subImage.getWidth(), (int) lineHight, null);
+					resultCache[i].createGraphics().drawImage(singleLine[i], 0, (int)(line * destLineHeight), resultCache[i].getWidth(), (int)((line+1) *destLineHeight), 0,0, singleLine[i].getWidth(), singleLine[i].getHeight(), null);					
 				}
 //				resultCache[i] = singleLine[i];
 //				resultCache[i].createGraphics().drawImage(singleLine[i], 0, 0, singleLine[i].getWidth()-1, 0, 0,0, resultCa//che[i].getWidth()-1, 6, null);
