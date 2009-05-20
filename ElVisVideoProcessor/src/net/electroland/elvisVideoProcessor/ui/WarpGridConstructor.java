@@ -296,7 +296,7 @@ public class WarpGridConstructor implements MouseListener, MouseMotionListener {
 			}
 		}
 
-		System.out.println(minX);
+		//System.out.println(minX);
 
 		for(int i = 0; i < grid.length;i++) {
 			for(int j = 0; j < grid[0].length; j++) {
@@ -483,7 +483,7 @@ public class WarpGridConstructor implements MouseListener, MouseMotionListener {
 
 	public PerspectiveTransform makeTransform(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4,
 			double dx1, double dy1, double dx2, double dy2, double dx3, double dy3, double dx4,double dy4 ) {
-		System.out.println(
+	/*	System.out.println(
 				x1+","+y1 +" " +
 				x2+","+y2 +" " +
 				x3+","+y3 +" " +
@@ -497,6 +497,7 @@ public class WarpGridConstructor implements MouseListener, MouseMotionListener {
 		System.out.println("   " + x2+","+y2 +"->" +dx2+","+dy2);
 		System.out.println("   " + x3+","+y3 +"->" +dx3+","+dy3);
 		System.out.println("   " + x4+","+y4 +"->" +dx4+","+dy4);
+		*/
 
 		return PerspectiveTransform.getQuadToQuad(x1,y1,x2,y2,x3,y3,x4,y4,dx1,dy1,dx2,dy2,dx3,dy3,dx4,dy4);
 
