@@ -153,6 +153,7 @@ public class LAFaceFrame extends JFrame implements  KeyListener, MouseListener, 
 			System.out.println(", - view prev window mode");
 			System.out.println("x - increase background adaption rate");
 			System.out.println("z - decrease background adaption rate");
+			System.out.println("c - load default.elc");
 			System.out.println("r - reset background model");
 
 			break;
@@ -178,9 +179,10 @@ public class LAFaceFrame extends JFrame implements  KeyListener, MouseListener, 
 		case 'r':
 			vidProcessor.resetBackground(3);
 			break;
-
-
-		}
+		case 'c':
+			vidProcessor.loadLutFile("defaul.elc");
+			break;
+		};
 	}
 
 	public void preModeChange() {
