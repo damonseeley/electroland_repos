@@ -286,7 +286,7 @@ public class LAFaceVideoProcessor extends Thread implements ImageReceiver{
 			System.out.println("lookupOp is null");
 			return img;
 		}
-		lookupOp.setSource(grayImage, 0);
+		lookupOp.setSource(bkImage, 0);
 		lookupOp.getNewRendering();
 
 		switch(mode) {
