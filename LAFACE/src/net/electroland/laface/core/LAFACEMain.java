@@ -29,6 +29,7 @@ import net.electroland.laface.shows.Floaters;
 import net.electroland.laface.shows.Highlighter;
 import net.electroland.laface.shows.ImageSequence;
 import net.electroland.laface.shows.Reflection2;
+import net.electroland.laface.shows.Video;
 import net.electroland.laface.shows.WaveShow;
 import net.electroland.laface.sprites.Wave;
 import net.electroland.laface.tracking.Tracker;
@@ -108,7 +109,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		
 
 		// this gets rid of exception for not using native acceleration
-		System.setProperty("com.sun.media.jai.disableMediaLib", "true");
+		//System.setProperty("com.sun.media.jai.disableMediaLib", "true");
 		
 		// this is running the blob tracker server
 		//tracker = new Tracker(this, 3);
@@ -138,7 +139,8 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 			e.printStackTrace();
 		}
 		// TODO uncomment this to test direct tracking video
-		Animation newa = new ImageSequence(firstRaster, imageCache.getSequence("test"), true);
+		//Animation newa = new ImageSequence(firstRaster, imageCache.getSequence("test"), true);
+		Animation newa = new Video(firstRaster);
 		
 		amr.startAnimation(newa, fixtures);
 

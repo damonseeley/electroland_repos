@@ -34,6 +34,7 @@ import net.electroland.laface.shows.DrawTest;
 import net.electroland.laface.shows.ImageSequence;
 import net.electroland.laface.shows.Reflection2;
 import net.electroland.laface.shows.TraceTest;
+import net.electroland.laface.shows.Video;
 import net.electroland.laface.shows.WaveShow;
 import net.electroland.laface.sprites.Wave;
 import net.electroland.lighting.detector.Recipient;
@@ -75,16 +76,24 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		tabbedPane.addTab("Draw Test", makeDrawTestPanel());
 		tabbedPane.addTab("Trace Test", makeTraceTestPanel());
 		tabbedPane.addTab("Wave Show", makeWaveShowPanel());
-		tabbedPane.addTab("Reflection Show", makeReflectionPanel());
+		tabbedPane.addTab("Image Sequence Show", makeReflectionPanel());
+		tabbedPane.addTab("Video Show", makeVideoPanel());
 		
 		tabbedPane.setMinimumSize(new Dimension((width/4)*3,height));
-		tabbedPane.setSelectedIndex(3);
+		tabbedPane.setSelectedIndex(4);
 		tabbedPane.addChangeListener(this);
 		add(tabbedPane, "west");
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		
 		add(makeDisplayModePanel(), "west");
 
+	}
+	
+	public JComponent makeVideoPanel(){
+		JPanel panel = new JPanel(false);
+        panel.setLayout(new MigLayout(""));
+		panel.setMinimumSize(new Dimension((width/4)*3,height));
+		return panel;
 	}
 	
 	public JComponent makeDrawTestPanel(){
@@ -456,13 +465,19 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 				waveList.setSelectedIndex(0);
 			}
 		} else if(((JTabbedPane)e.getSource()).getSelectedIndex() == 3){
-			// switch to Reflection Show
+			// switch to Image Sequence Show
 			Raster raster = main.getRaster();
 			main.rasterPanel.setRaster(raster);
 			//Animation a = new Reflection2(main, raster, main.leftarrow, main.rightarrow);
 			Animation a = new ImageSequence(raster, main.imageCache.getSequence("test"), false);
 			Collection<Recipient> fixtures = main.dmr.getRecipients();
 			main.amr.startAnimation(a, fixtures); 
+		} else if(((JTabbedPane)e.getSource()).getSelectedIndex() == 4){
+			Raster raster = main.getRaster();
+			main.rasterPanel.setRaster(raster);
+			Animation a = new Video(raster);
+			Collection<Recipient> fixtures = main.dmr.getRecipients();
+			main.amr.startAnimation(a, fixtures);
 		}
 	}
 
