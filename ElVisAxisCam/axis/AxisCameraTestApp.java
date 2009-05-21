@@ -7,13 +7,22 @@ package axis;
 
 //obtained from URL: http://forum.java.sun.com/thread.jspa?threadID=494920&start=0&tstart=0
 
-import java.net.*;
-import com.sun.image.codec.jpeg.*;
-import java.io.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.*;
-import javax.swing.*;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import com.sun.image.codec.jpeg.JPEGCodec;
+import com.sun.image.codec.jpeg.JPEGImageDecoder;
 
 /**
  *
@@ -181,7 +190,7 @@ public class AxisCameraTestApp extends JPanel implements Runnable {
 		new Thread(axPanel).start();
 		jframe.getContentPane().add(axPanel);
 		jframe.pack();
-		jframe.show();
+		jframe.setVisible(true);
 	}
 
 
