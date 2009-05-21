@@ -95,10 +95,12 @@ public class UDPParser extends Thread {
 				logger.error(e.getMessage(), e);
 			}
 			personTracker.updateAverage((double)personTracker.getModel().getPeople().size());
+			/*
 			if(System.currentTimeMillis() - lastTileCheck > tileCheckDuration){
 				tcUtils.checkTileStates();
 				lastTileCheck = System.currentTimeMillis();
 			}
+			*/
 		}
 	}
 
