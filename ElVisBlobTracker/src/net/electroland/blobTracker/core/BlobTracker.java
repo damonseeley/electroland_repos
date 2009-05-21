@@ -89,6 +89,11 @@ public class BlobTracker extends ImageProcessor {
 		
 
 	}
+	
+	public void receiveErrorMsg(Exception cameraException) {
+		// TODO Auto-generated method stub
+		
+	}
 
 
 
