@@ -21,18 +21,18 @@ public class Video implements Animation{
 	}
 
 	public Raster getFrame() {
-		//System.out.println("video playing");
+		System.out.println("video playing");
 		if(r.isProcessing()){
 			PGraphics c = (PGraphics)(r.getRaster());
 			c.beginDraw();
 			c.background(0);
 			try {
-				//System.out.println("getting mosaics...");
+				System.out.println("getting mosaics...");
 				BufferedImage[] imgs = lafvp.getMosaics();
-				//System.out.println("mosaics received");
+				System.out.println("mosaics received");
 				if(imgs != null) {
 					for(BufferedImage bi : imgs) {
-						//System.out.println("image displayed");
+						System.out.println("image displayed");
 						c.image(new PImage(bi),0,0,c.width,c.height);
 					}
 				}
