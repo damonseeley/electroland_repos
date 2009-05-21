@@ -80,7 +80,7 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		tabbedPane.addTab("Video Show", makeVideoPanel());
 		
 		tabbedPane.setMinimumSize(new Dimension((width/4)*3,height));
-		tabbedPane.setSelectedIndex(4);
+		tabbedPane.setSelectedIndex(3);
 		tabbedPane.addChangeListener(this);
 		add(tabbedPane, "west");
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);

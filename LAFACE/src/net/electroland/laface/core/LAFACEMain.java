@@ -153,8 +153,8 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 			e.printStackTrace();
 		}
 		// TODO uncomment this to test direct tracking video
-		//Animation newa = new ImageSequence(firstRaster, imageCache.getSequence("test"), true);
-		Animation newa = new Video(firstRaster, lafvp);
+		Animation newa = new ImageSequence(firstRaster, imageCache.getSequence("test"), true);
+		//Animation newa = new Video(firstRaster, lafvp);
 		
 		amr.startAnimation(newa, fixtures);
 
