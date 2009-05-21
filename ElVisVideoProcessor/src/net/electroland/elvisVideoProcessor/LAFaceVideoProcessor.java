@@ -9,9 +9,6 @@ import javax.media.jai.RenderedOp;
 import net.electroland.elvis.imaging.BackgroundImage;
 import net.electroland.elvis.imaging.ImageConversion;
 import net.electroland.elvis.imaging.ImageDifference;
-import net.electroland.elvis.imaging.acquisition.ImageAcquirer;
-import net.electroland.elvis.imaging.acquisition.ImageReceiver;
-import net.electroland.elvis.imaging.acquisition.axisCamera.AxisCamera;
 import net.electroland.elvis.imaging.acquisition.jmyron.WebCam;
 import net.electroland.elvisVideoProcessor.curveEditor.CurveEditor;
 import net.electroland.elvisVideoProcessor.ui.CropConstructor;
@@ -19,6 +16,9 @@ import net.electroland.elvisVideoProcessor.ui.LAFaceFrame;
 import net.electroland.elvisVideoProcessor.ui.LookupTable;
 import net.electroland.elvisVideoProcessor.ui.MosaicConstructor;
 import net.electroland.elvisVideoProcessor.ui.WarpGridConstructor;
+import axis.AxisCamera;
+import axis.ImageAcquirer;
+import axis.ImageReceiver;
 
 public class LAFaceVideoProcessor extends Thread implements ImageReceiver{
 
@@ -455,7 +455,7 @@ public class LAFaceVideoProcessor extends Thread implements ImageReceiver{
 
 
 	public void receiveErrorMsg(Exception cameraException) {
-		// TODO Auto-generated method stub
+		System.out.println(cameraException);
 		
 	}
 

@@ -85,15 +85,16 @@ public class LAFacePanel extends JPanel implements ActionListener {
 
 	}
 
+	public void stop() {
+		vidProcessor.stopRunning();
+	}
 
 	public void actionPerformed(ActionEvent e) {
 		repaint();				
 	}
 
-	public void stop() {
-		vidProcessor.stopRunning();
-	}
-
+	
+	
 
 	
 
