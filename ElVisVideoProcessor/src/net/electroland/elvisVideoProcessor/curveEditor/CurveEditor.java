@@ -34,7 +34,7 @@ public class CurveEditor extends Frame implements MouseListener, MouseMotionList
 
 	Vector<LutChangeListener> lutListeners = new Vector<LutChangeListener>();
 
-	public static final int margin =25;
+	public static final int margin = 70;
 	int mouseX;
 	int mouseY;
 	int lastX;
@@ -59,7 +59,7 @@ public class CurveEditor extends Frame implements MouseListener, MouseMotionList
 	
 	public CurveEditor() {
 		super("Curve Editor");
-		setResizable(false);
+		setResizable(true);
 		MenuBar menubar = new MenuBar();
 		Menu menu = new Menu("File");
 //		toggle = new MenuItem("ToggleScale");
