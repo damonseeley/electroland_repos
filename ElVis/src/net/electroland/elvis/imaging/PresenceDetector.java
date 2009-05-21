@@ -165,4 +165,9 @@ public class PresenceDetector extends ImageProcessor {
 		return returnImage;
 	}
 
+	public void receiveErrorMsg(Exception cameraException) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
