@@ -1,19 +1,18 @@
 package axistest;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 
-import axis.AxisCamera;
+import axis.PollableAxisCamera;
 
 @SuppressWarnings("serial")
 
 public class AxisMotionTest extends JFrame implements Runnable {
 	
-	private static AxisCamera ax;
+	private static PollableAxisCamera ax;
 	public BufferedImage image;
 	public int w;
 	public int h;
@@ -32,7 +31,7 @@ public class AxisMotionTest extends JFrame implements Runnable {
 		offsety = 24;
 		imageMag = 4;
 		//construct an axis cam thread with baseURL,w,h,compression,color(0,1),user,pass
-		ax = new AxisCamera("http://navystreet.dyndns.org:70/",w,h,0,0,"n","n");
+		ax = new PollableAxisCamera("http://navystreet.dyndns.org:70/",w,h,0,0,"n","n");
 
 		//temp ui stuff
 		this.setSize(w*imageMag+offsetx,h*imageMag+offsety);
@@ -42,7 +41,7 @@ public class AxisMotionTest extends JFrame implements Runnable {
 		mds = new MotionDetectorSimple(image);
 		
 		new Thread(this).start();
-		new Thread(ax).run();
+		ax.start();
 		
 		image = ax.getImage();
 		mds = new MotionDetectorSimple(image);
