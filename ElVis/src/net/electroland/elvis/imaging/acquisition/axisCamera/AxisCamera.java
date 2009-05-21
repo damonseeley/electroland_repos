@@ -15,6 +15,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import net.electroland.elvis.imaging.acquisition.ImageAcquirer;
@@ -53,13 +54,15 @@ public class AxisCamera extends Thread implements ImageAcquirer {
 	public int compression;
 	public int color;
 
+	public static final int MAX_CONNECTION_ATTEMPTS = 5;
+
 	ImageReceiver imageReceiver;
 
 	/* Creates a new instance of AxisCamera */
 	/* baseURL,width,height,compression(0-100),color(0,1),username,password */
 	// imageReceiver can be null if not using readStream
-	
-	
+
+
 
 	public AxisCamera (String url, int w, int h, int comp, int color, String user, String pass, ImageReceiver imageReceiver) {
 		this.w = w;
@@ -91,8 +94,20 @@ public class AxisCamera extends Thread implements ImageAcquirer {
 		return "Basic " + encs;
 	}
 
+	protected void connect() throws ElCameraConnectionException {
+		connect(MAX_CONNECTION_ATTEMPTS);
+	}
 
-	protected void connect(){
+	protected void connect(int connectAttemps) throws ElCameraConnectionException{
+		if(connectAttemps < 0) {
+			URL u;
+			try {
+				u = new URL(useMJPGStream?mjpgURL:jpgURL);
+				throw new ElCameraConnectionException("Unable to connect to " + u);
+			} catch (MalformedURLException e) {
+				throw new ElCameraConnectionException("Unable to connect to axis cam URL may be malformed");
+			}
+		}
 		try{
 			URL u = new URL(useMJPGStream?mjpgURL:jpgURL);
 			huc = (HttpURLConnection) u.openConnection();
@@ -112,9 +127,12 @@ public class AxisCamera extends Thread implements ImageAcquirer {
 				Thread.sleep(60);
 			}catch(InterruptedException ie){
 				huc.disconnect();
-				connect();}
-			connect();
-		}catch(Exception e){;}
+				connect(connectAttemps -1);
+			}
+			connect(connectAttemps-1);
+		}catch(Exception e){
+			imageReceiver.receiveErrorMsg(e);
+		}
 	}
 
 
@@ -146,13 +164,15 @@ public class AxisCamera extends Thread implements ImageAcquirer {
 					disconnect();
 				}
 			}
-		}catch(Exception e){;}
+		}catch(Exception e){
+			imageReceiver.receiveErrorMsg(e);
+		}
 	}
 
 
 
 //	Decode MJPG Stream for Axis 211 Camera version
-	public void readMJPGStream(){
+	public void readMJPGStream() throws ElCameraConnectionException{
 		readLine(4,dis); //discard the first 4 lines
 		try {
 			imageReceiver.addImage(readJPG());
@@ -160,24 +180,24 @@ public class AxisCamera extends Thread implements ImageAcquirer {
 		} catch (IOException e) {
 			e.printStackTrace();
 			connect();
-			
+
 		} // Decode the JPEG image.
 	}
 
 	public BufferedImage readJPG() throws IOException { //read the embedded jpeg image
 
-			JPEGImageDecoder decoder = JPEGCodec.createJPEGDecoder(dis);
+		JPEGImageDecoder decoder = JPEGCodec.createJPEGDecoder(dis);
 
-			try {
-				return decoder.decodeAsBufferedImage();
-			} catch (ImageFormatException e) {
-				disconnect();
-				throw new IOException(e.toString());
-			} catch (IOException e) {
-				disconnect();
-				throw e;
-			} 
-		
+		try {
+			return decoder.decodeAsBufferedImage();
+		} catch (ImageFormatException e) {
+			disconnect();
+			throw new IOException(e.toString());
+		} catch (IOException e) {
+			disconnect();
+			throw e;
+		} 
+
 	}
 
 	protected void readLine(int n, DataInputStream dis){ //used to strip out the header lines
