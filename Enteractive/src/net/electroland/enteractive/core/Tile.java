@@ -35,6 +35,7 @@ public class Tile {
 	
 	public void reboot(){
 		rebooting = true;
+		sensorState = false;
 		turnedOff = System.currentTimeMillis();
 		System.out.println("tile "+id+ " rebooting ");
 	}
