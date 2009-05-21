@@ -453,4 +453,11 @@ public class LAFaceVideoProcessor extends Thread implements ImageReceiver{
 	}
 
 
+
+	public void receiveErrorMsg(Exception cameraException) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 }
