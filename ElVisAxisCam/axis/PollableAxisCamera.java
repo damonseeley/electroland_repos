@@ -7,14 +7,7 @@ package axis;
 
 //obtained from URL: http://forum.java.sun.com/thread.jspa?threadID=494920&start=0&tstart=0
 
-import java.net.*;
-import com.sun.image.codec.jpeg.*;
-import java.io.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.*;
-
-import javax.swing.*;
+import java.awt.image.BufferedImage;
 
 /**
  *
