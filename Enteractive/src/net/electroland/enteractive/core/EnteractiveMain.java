@@ -114,10 +114,11 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 				System.exit(0);								// closes app
 			}
 		});
-		
+		/*
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 		    public void run() { tcu.billyJeanMode(); }
 		});
+		*/
 		
 
 		lights3D = new Lights3D(600,600, dmr.getRecipient("floor"),  dmr.getRecipient("face"), ptr.getModel());
@@ -354,6 +355,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		} else if(e.getType() == Model.ModelConstants.OPPOSITE_CORNERS){
 			System.out.println("Corners 1 and 4!");
 			// switch to MUSICBOX show
+			/*
 			Recipient floor = dmr.getRecipient("floor");
 			if(amr.getCurrentAnimation(floor) instanceof LilyPad){
 				Raster raster = getRaster();
@@ -367,11 +369,11 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 				//Animation transition = new LinearFade(2, getRaster());
 				amr.startAnimation(a, fixtures); 					// START MUSICBOX
 			}
-			
+			*/
 		} else if(e.getType() == Model.ModelConstants.OPPOSITE_CORNERS2){
 			System.out.println("Corners 2 and 3!");
 			// switch to PONG game
-			
+			/*
 			Recipient floor = dmr.getRecipient("floor");
 			if(amr.getCurrentAnimation(floor) instanceof LilyPad){
 				Raster raster = getRaster();
@@ -385,7 +387,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 				//Animation transition = new LinearFade(2, getRaster());
 				amr.startAnimation(a, fixtures); 					// START PONG (3 points)
 			}
-			
+			*/
 		} else if(e.getType() == Model.ModelConstants.EMPTY){
 			System.out.println("area empty");
 			// switch to SCREENSAVER
