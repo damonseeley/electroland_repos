@@ -1,5 +1,6 @@
 package net.electroland.enteractive.shows;
 
+import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -69,11 +70,13 @@ public class Pong implements Animation, SpriteListener {
 				// play start animation and sound
 				// TODO send flex message to plasma to display start instructions
 				if(!playingIntro){
+					System.out.println(new Timestamp(System.currentTimeMillis()).toString() +" > Pong - Intro Started");
 					sm.createMonoSound(sm.soundProps.getProperty("pongStartSound"), 0.5f, 0.5f, 1, 1);
 					playingIntro = true;
 				}
 				raster.image(pongTitle, 0, 0, raster.width, raster.height);
 				if(System.currentTimeMillis() - startTime > introDuration){
+					System.out.println(new Timestamp(System.currentTimeMillis()).toString() +" > Pong - switching to Game Mode...");
 					gameMode = 1;
 					startTime = System.currentTimeMillis();
 					sm.createMonoSound(sm.soundProps.getProperty("pongCountdown"), 0.5f, 0.5f, 1, 1);
@@ -88,6 +91,7 @@ public class Pong implements Animation, SpriteListener {
 			case 2:
 				// play goal animation and sound, then go back to playing
 				if(!playingScore){
+					System.out.println(new Timestamp(System.currentTimeMillis()).toString() +" > Pong - Point Scored");
 					//sm.createMonoSound(sm.soundProps.getProperty("pongScoreSound"), 0.5f, 0.5f, 1, 1);
 					Sprite s = new Sparkler(spriteIndex, r, ball.x, ball.y, sm, null, ballTexture);
 					s.addListener(this);
@@ -120,6 +124,7 @@ public class Pong implements Animation, SpriteListener {
 			case 3:
 				// play win/end animation and sound, then exit
 				if(!playingEnding){
+					System.out.println(new Timestamp(System.currentTimeMillis()).toString() +" > Pong - Game Over");
 					sm.createMonoSound(sm.soundProps.getProperty("pongEndSound"), 0.5f, 0.5f, 1, 1);
 					Sprite s = new GameOver(spriteIndex, r, ball.x, ball.y, sm);
 					s.addListener(this);
@@ -235,6 +240,7 @@ public class Pong implements Animation, SpriteListener {
 		
 		if(ballDelay){
 			if(System.currentTimeMillis() - startTime > ballDelayDuration){
+				System.out.println(new Timestamp(System.currentTimeMillis()).toString() +" > Pong - Ball in Play");
 				ballDelay = false;
 			}
 		} else {
