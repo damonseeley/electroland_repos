@@ -1,7 +1,6 @@
 package net.electroland.lighting.detector;
 
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.net.UnknownHostException;
 import java.util.Collection;
