@@ -1,7 +1,5 @@
 package net.electroland.util;
 
-import java.awt.Point;
-
 public class Util {
 
 	public static byte getHiByte(short s){
