@@ -153,6 +153,17 @@ public abstract class Recipient
 		send(data);
 	}
 
+	public static String renderMap(byte[] b)
+	{
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < b.length; i++)
+		{
+			sb.append(Util.bytesToHex(b[i]));
+		}
+		return sb.toString();
+	}
+
+	
 	/**
 	 * 
 	 * @param raster
@@ -272,6 +283,7 @@ public abstract class Recipient
 		sb.append(",channels=").append(channels);
 		sb.append(",preferredDimensions=").append(preferredDimensions);
 		sb.append(",patchgroup=").append(patchgroup);
+		sb.append(",bytemap=").append(bytemap);
 		//sb.append(',').append(detectors).append(']');
 		sb.append(']');
 		return sb.toString();
