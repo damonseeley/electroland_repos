@@ -2,6 +2,7 @@ package net.electroland.lighting.detector.animation;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -95,31 +96,33 @@ public class AnimationManager implements Runnable
 
 		synchronized (animationRecipients)
 		{
-			Iterator <Animation> currentItr = animationRecipients.keySet().iterator();
-			while (currentItr.hasNext())
+			// 1.) find the states for each recipient you are currently requesting.
+			Iterator<Recipient> rIter = r.iterator();
+			while (rIter.hasNext())
 			{
-				Animation currentAnimation = currentItr.next();
-				AnimationRecipients ar = animationRecipients.get(currentAnimation);
-				// if any of the recipients we are targetting currently is allocated
-				// to another animation, take it from the other animation.
-				ar.recipients.removeAll(r);
-				// if the other animation has no recipients left, kill it off.
-				if (ar.recipients.isEmpty())
+				Recipient recipient = rIter.next();
+				RecipientState existingState = recipientStates.get(recipient);
+				// recipient is not being use? grab it.
+				if (existingState == null)
 				{
-					animationRecipients.remove(currentAnimation);
+					recipientStates.put(recipient, new RecipientState(a));
+				}else
+				{
+				// otherwise kill its current show and make this its current show.
+					existingState.current = a;
+					existingState.target = null;
+					existingState.transition = null;
 				}
 			}
+
+			// 2.) pare down the live animation list, to remove any Animations
+			//		that no longer are assigned to any recipients.
+			pareUnusedAnimations(animationRecipients, recipientStates);
+
+			// 3.) add this animation to the live list.
 			// store the show to recipient mappings
 			animationRecipients.put(a, new AnimationRecipients(r));
-
-			// set the current states
-			Iterator <Recipient> recipientsItr = r.iterator();
-			while (recipientsItr.hasNext())
-			{
-				recipientStates.put(recipientsItr.next(), new RecipientState(a));
-			}
 		}
-
 		logger.info("starting animation " + a);
 		this.printState();
 	}
@@ -160,11 +163,23 @@ public class AnimationManager implements Runnable
 					recipientStates.put(rItr.next(), new RecipientState(a));
 				}else
 				{
+					// if the current recipient is mid-transition...
+					if (rState.transition != null)
+					{
+						// 1.) immediately complete the transition:
+						rState.current = rState.target;
+						rState.transition = null;
+					}
+					// set the new transition in motion.
 					rState.transition = t;
-					rState.target = a;//<-- does this need to go in animationRecipients??
+					rState.target = a;
 				}
 			}
 		}
+		// 2.) if either the transition or the target animation
+		//		aren't allocated to any other recipients anymore, pare them.
+		pareUnusedAnimations(animationRecipients, recipientStates);
+
 		logger.info("transition to animation " + a + " using transition " + t);
 		this.printState();
 	}
@@ -362,6 +377,36 @@ public class AnimationManager implements Runnable
 			logger.info("Recipient: " + r.getID() + "\t" + recipientStates.get(r));
 		}
 	}
+
+	private static void pareUnusedAnimations(Map<Animation,AnimationRecipients> animations,
+												Map<Recipient,RecipientState> states)
+	{
+		synchronized(animations)
+		{
+			Iterator<Animation> aItr = animations.keySet().iterator();
+			while (aItr.hasNext())
+			{
+				Animation a = aItr.next();
+				boolean isLive = false;
+				Iterator <RecipientState> rsItr = states.values().iterator();
+				while (rsItr.hasNext())
+				{
+					RecipientState rs = rsItr.next();
+					if (a == rs.current ||
+						a == rs.transition ||
+						a == rs.target)
+					{
+						isLive = true;
+					}
+				}
+				if (!isLive)
+				{
+					logger.info("paring:    " + a);
+					animations.remove(a);
+				}
+			}
+		}
+	}
 }
 /**
  * Stores all recipients that require the next frame from this animation, 
@@ -392,6 +437,7 @@ class AnimationRecipients
 		return "AnimationRecipients[isTransition=" + isTransition + ", " + recipients + "]";
 	}
 }
+
 /**
  * Stores what animation and optionally what transition and target animation
  * are running on each specific Recipient.
@@ -419,3 +465,34 @@ class RecipientState
 		return "RecipientState [current=" + current + ", transition=" + transition + ", target=" + target + "]";
 	}
 }
+/** NOT USED YET.  PLANNING ON CLEANING UP THE WAY ANIMATIONS ARE STORED.
+	This would be a wrapper around Animation that holds the state information
+	required by the AnimationManager. Would prefer to store this in the 
+	RecipientState object instead of just raw Animations and do away with the
+	AnimationRecipients map altogether.  AnimationRecipients could be replaced 
+	by an on-the-fly calculated array wherever we need to do that kind of
+	looping. That would severly limit the danger of left brain/right brain
+	problems here.
+*/
+/**
+class ManagedAnimation implements Animation
+{
+	protected Animation animation;
+	protected boolean isTransition;
+	protected Raster latestFrame;
+
+	public ManagedAnimation(Animation a, boolean isTransition)
+	{
+		this.animation = a;
+		this.isTransition = isTransition;
+	}
+	public Raster getFrame()
+	{
+		return animation.getFrame();
+	}
+	public boolean isDone()
+	{
+		return animation.isDone();
+	}
+}
+*/
