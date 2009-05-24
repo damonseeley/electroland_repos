@@ -101,7 +101,7 @@ public class DetectorManager {
 
 		// load bytemaps
 		Enumeration <Object> b = props.keys();
-		while (e.hasMoreElements())
+		while (b.hasMoreElements())
 		{
 			String key = ("" + b.nextElement()).trim();
 			if (key.toLowerCase().startsWith("bytemap."))
@@ -239,7 +239,6 @@ public class DetectorManager {
 
 			throw new OptionException(id + ": The -curve feature is not yet supported.  Please use -fullmap.");
 		}
-
 		return new ByteMap(bytes);
 	}
 

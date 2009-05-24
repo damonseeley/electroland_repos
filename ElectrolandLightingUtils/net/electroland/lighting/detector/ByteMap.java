@@ -14,16 +14,22 @@ public class ByteMap {
 	{
 		return map[Util.unsignedByteToInt(in)];
 	}
-	public byte get(int in)
-	{
-		return map[in];
-	}
 	public byte[] map(byte[] in)
 	{
 		for (int i = 0; i < in.length; i++)
 		{
-			in[i] = map[in[i]];
+			in[i] = get(in[i]);
+			//in[i] = map[Util.unsignedByteToInt(in[i])];
 		}
 		return in;// somewhat superfluous
+	}
+	public String toString()
+	{
+		StringBuffer sb = new StringBuffer().append('[');
+		for (int i = 0; i < map.length; i++)
+		{
+			sb.append(Util.unsignedByteToInt(map[i])).append(", ");
+		}
+		return sb.append(']').toString();
 	}
 }
