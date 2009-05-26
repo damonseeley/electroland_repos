@@ -1,5 +1,6 @@
 package net.electroland.laface.gui;
 
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -79,6 +80,9 @@ public class RasterPanel extends PApplet {
 		if(displayMode == 0 || displayMode == 1){
 			if(raster != null && raster.isProcessing()){
 				PImage image = (PImage)raster.getRaster();
+				image(image, 0, 0);
+			} else if(raster != null && raster.isJava2d()){
+				PImage image = new PImage((Image)raster.getRaster());
 				image(image, 0, 0);
 			}
 		}
