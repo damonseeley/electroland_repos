@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -206,6 +207,14 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		int width = (int)(Integer.parseInt(dimensions[1]) * multiplier);
 		int height = (int)(Integer.parseInt(dimensions[3]) * multiplier);
 		return new Raster(rasterPanel.createGraphics(width, height, PConstants.P3D));
+	}
+	
+	public Raster getImageRaster(){
+		String[] dimensions = lightProps.getProperty("raster.faceRaster").split(" ");
+		float multiplier = Float.parseFloat(lightProps.getProperty("rasterDimensionScaling"));
+		int width = (int)(Integer.parseInt(dimensions[1]) * multiplier);
+		int height = (int)(Integer.parseInt(dimensions[3]) * multiplier);
+		return new Raster(new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB));
 	}
 	
 	public Animation getCurrentAnimation(){

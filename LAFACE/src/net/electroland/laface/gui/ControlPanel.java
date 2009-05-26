@@ -446,7 +446,7 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 			Raster raster = main.getRaster();
 			main.rasterPanel.setRaster(raster);
 			Animation a = new WaveShow(raster);
-			Wave newwave = new Wave(0, raster, 0, 0);	// TODO for shared wave sprite on multiple shows
+			Wave newwave = new Wave(0, raster, 0, 0);	// for shared wave sprite on multiple shows
 			((WaveShow)a).addWave(0, newwave);
 			Collection<Recipient> fixtures = main.dmr.getRecipients();
 			main.amr.startAnimation(a, fixtures); 			
@@ -465,7 +465,7 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 				waveList.setSelectedIndex(0);
 			}
 		} else if(((JTabbedPane)e.getSource()).getSelectedIndex() == 3){
-			// switch to Image Sequence Show
+			// TODO switch to Image Sequence Show
 			Raster raster = main.getRaster();
 			main.rasterPanel.setRaster(raster);
 			//Animation a = new Reflection2(main, raster, main.leftarrow, main.rightarrow);
@@ -473,6 +473,9 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 			Collection<Recipient> fixtures = main.dmr.getRecipients();
 			main.amr.startAnimation(a, fixtures); 
 		} else if(((JTabbedPane)e.getSource()).getSelectedIndex() == 4){
+			// TODO switch to VIDEO show
+			//Raster raster = main.getImageRaster();	// TODO BufferImage based raster
+			//main.rasterPanel.setRaster(raster);
 			Raster raster = main.getRaster();
 			main.rasterPanel.setRaster(raster);
 			Animation a = new Video(raster, main.lafvp);
