@@ -54,7 +54,7 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 	private Scrollbar dampingSlider, fpuSlider, yoffsetSlider, dxSlider, cSlider, brightnessSlider, alphaSlider;
 	private Scrollbar traceSpeedSlider, xOffsetSlider, xScaleSlider;
 	private JButton resetWaveButton, saveWavesButton, clearDrawTestButton, leftImpulse, rightImpulse;
-	private JCheckBox tintBlueButton;
+	private JCheckBox tintBlueButton, powerSwitch;
 	private DefaultListModel waveListModel;
 	private JList waveList;
 	private int currentWaveID = -1;
@@ -267,6 +267,13 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		tintBlueButton.addItemListener(this);
 		panel.add(tintBlueButton, "wrap");
 		
+		// check box to enable/disable running of animation manager loop
+		powerSwitch = new JCheckBox("Animation Running");
+		powerSwitch.setSelected(true);
+		powerSwitch.addItemListener(this);
+		panel.add(powerSwitch, "wrap");
+		
+		
 		leftImpulse = new JButton("Left Impulse");
 		leftImpulse.addActionListener(this);
 		leftImpulse.setMaximumSize(new Dimension(120, 20));
@@ -277,12 +284,14 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		rightImpulse.setMaximumSize(new Dimension(120, 20));
 		panel.add(rightImpulse, "wrap");
 		
+		/*
 		// drop down list to select raster to be displayed within the raster panel
 		panel.add(new Label("Raster:"), "wrap");
 		JComboBox rasterList = new JComboBox(new String[] {"Show A", "Show B", "Transition"});
 		rasterList.setSelectedIndex(0);
 		rasterList.addActionListener(this);		
 		panel.add(rasterList);
+		*/
 		
 		return panel;
 	}
@@ -511,6 +520,13 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 				main.rasterPanel.enableTint(false);
 			} else {
 				main.rasterPanel.enableTint(true);
+			}
+		} else if(e.getItemSelectable() == powerSwitch){
+			if(e.getStateChange() == ItemEvent.DESELECTED){
+				main.amr.stop();
+				main.dmr.blackOutAll();
+			} else {
+				main.amr.goLive();
 			}
 		}
 	}
