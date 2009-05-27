@@ -15,10 +15,13 @@ public class Video implements Animation{
 	
 	private Raster r;
 	private LAFaceVideoProcessor lafvp;
+	private boolean mirror;
+	private int[] pixeldata;
 	
 	public Video(Raster r, LAFaceVideoProcessor lafvp){
 		this.r = r;
 		this.lafvp = lafvp;
+		mirror = true;
 	}
 
 	public Raster getFrame() {
@@ -31,18 +34,38 @@ public class Video implements Animation{
 				BufferedImage[] imgs = lafvp.getMosaics();
 				//System.out.println("mosaics received");
 				if(imgs != null) {
-					/*
-					for(BufferedImage bi : imgs) {
-						//System.out.println("image displayed");
-						c.image(new PImage(bi),0,0,c.width,c.height);
-					}
-					*/
 					// this is set up to overlap multiple mosaics and blend their light areas
 					for(int i=0; i<imgs.length; i++){
+						PImage pimage = new PImage(imgs[i]);
 						if(i == 0){
-							c.image(new PImage(imgs[i]),0,0,c.width,c.height);
+							if(mirror){
+								pixeldata = new int[pimage.pixels.length];
+								System.arraycopy(pimage.pixels, 0, pixeldata, 0, pimage.pixels.length);
+								int imageWidth = pimage.width;
+								int imageHeight = pimage.height;
+								for(int w=0; w<imageWidth; w++){
+									for(int h=0; h<imageHeight; h++){
+										pimage.pixels[h*imageWidth + w] = pixeldata[(imageWidth - w - 1) + h * imageWidth];
+									}
+								}
+								pimage.updatePixels();
+							}
+							c.image(pimage,0,0,c.width,c.height);
 						} else {
-							c.blend(new PImage(imgs[i]),0,0,c.width,c.height,0,0,c.width,c.height,PConstants.LIGHTEST);
+							if(mirror){
+								pixeldata = new int[pimage.pixels.length];
+								System.arraycopy(pimage.pixels, 0, pixeldata, 0, pimage.pixels.length);
+								int imageWidth = pimage.width;
+								int imageHeight = pimage.height;
+								for(int w=0; w<imageWidth; w++){
+									for(int h=0; h<imageHeight; h++){
+										pimage.pixels[h*imageWidth + w] = pixeldata[(imageWidth - w - 1) + h * imageWidth];
+									}
+								}
+								pimage.updatePixels();
+							}
+							//System.out.println("blending");
+							c.blend(pimage,0,0,c.width,c.height,0,0,c.width,c.height,PConstants.LIGHTEST);
 						}
 					}
 				}
