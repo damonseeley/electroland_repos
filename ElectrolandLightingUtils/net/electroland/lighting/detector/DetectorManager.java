@@ -33,6 +33,9 @@ public class DetectorManager {
 
 	static Logger logger = Logger.getLogger(DetectorManager.class);
 
+	final static boolean ON = true;
+	final static boolean OFF = false;
+	
 	private Map <String, Dimension> rasters;
 	private Map <String, Recipient> recipients;
 	private Map <String, Detector> detectors;
@@ -420,6 +423,28 @@ public class DetectorManager {
 			r.blackOut();
 		}
 	}
+
+	public void turnOff()
+	{
+		this.setDisplayState(OFF);
+		blackOutAll();
+	}
+
+
+	public void turnOn()
+	{
+		this.setDisplayState(ON);
+	}
+
+	private void setDisplayState(boolean isEnabled)
+	{
+		Iterator<Recipient> rIter = recipients.values().iterator();
+		while (rIter.hasNext())
+		{
+			rIter.next().isEnabled = isEnabled;
+		}
+	}
+	
 }
 class BlackOutThread extends Thread{
 	private DetectorManager dmr;

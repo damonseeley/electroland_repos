@@ -37,6 +37,7 @@ public abstract class Recipient
 	protected Dimension preferredDimensions; // for generating raster properly.
 	protected String patchgroup;
 	protected ByteMap bytemap;
+	protected boolean isEnabled = true;
 
 	/**
 	 * @param universe - the byte id of this lighting fixtures DMX universe
@@ -159,7 +160,10 @@ public abstract class Recipient
 		{
 			data = bytemap.map(data);
 		}
-		send(data);
+		if (isEnabled)
+		{
+			send(data);
+		}
 	}
 
 	public static String renderMap(byte[] b)
