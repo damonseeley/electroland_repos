@@ -7,6 +7,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -112,6 +113,14 @@ public abstract class Recipient
 	final public void blackOut()
 	{
 		send(new byte[channels]);
+
+		// reflect the black state in the detectors (for GUIs relying on that
+		// to render the latest state)
+		Iterator <Detector> dIter = detectors.iterator();
+		while (dIter.hasNext())
+		{
+			lastEvals.put(dIter.next(), new Byte((byte)0));
+		}
 	}
 
 	/**
