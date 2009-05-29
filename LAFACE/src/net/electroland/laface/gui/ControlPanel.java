@@ -80,7 +80,7 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 		tabbedPane.addTab("Video Show", makeVideoPanel());
 		
 		tabbedPane.setMinimumSize(new Dimension((width/4)*3,height));
-		tabbedPane.setSelectedIndex(3);
+		tabbedPane.setSelectedIndex(4);
 		tabbedPane.addChangeListener(this);
 		add(tabbedPane, "west");
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -523,10 +523,11 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 			}
 		} else if(e.getItemSelectable() == powerSwitch){
 			if(e.getStateChange() == ItemEvent.DESELECTED){
-				main.amr.stop();
-				main.dmr.blackOutAll();
+				//main.amr.stop();
+				main.dmr.turnOff();
 			} else {
-				main.amr.goLive();
+				//main.amr.goLive();
+				main.dmr.turnOn();
 			}
 		}
 	}

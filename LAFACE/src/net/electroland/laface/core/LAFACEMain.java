@@ -154,8 +154,8 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 			e.printStackTrace();
 		}
 		// TODO uncomment this to test direct tracking video
-		Animation newa = new ImageSequence(firstRaster, imageCache.getSequence("test"), true);
-		//Animation newa = new Video(firstRaster, lafvp);
+		//Animation newa = new ImageSequence(firstRaster, imageCache.getSequence("test"), true);
+		Animation newa = new Video(firstRaster, lafvp);
 		
 		amr.startAnimation(newa, fixtures);
 
@@ -246,23 +246,21 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 
 	public void timedEvent(TimedEvent event) {
 		// TODO uncomment this to have the display go blank during the day
-		/*
+		
 		if(event == sunriseOn) {			// activate
-			amr.goLive();
-			System.out.println(new Timestamp(System.currentTimeMillis()).toString() + " ImageSequence Show Playing");
+			dmr.turnOn();
+			System.out.println(new Timestamp(System.currentTimeMillis()).toString() + " App Illuminating");
 		} else if (event == middayOff) {	// deactivate
-			amr.stop();
-			dmr.blackOutAll();
-			System.out.println(new Timestamp(System.currentTimeMillis()).toString() + " ImageSequence Show Stopped");
+			dmr.turnOff();
+			System.out.println(new Timestamp(System.currentTimeMillis()).toString() + " App Disabling Lights");
 		} else if (event == sunsetOn){		// activate
-			amr.goLive();
-			System.out.println(new Timestamp(System.currentTimeMillis()).toString() + " ImageSequence Show Playing");
+			dmr.turnOn();
+			System.out.println(new Timestamp(System.currentTimeMillis()).toString() + " App Illuminating");
 		} else if (event == nightOff){		// deactivate
-			amr.stop();
-			dmr.blackOutAll();
-			System.out.println(new Timestamp(System.currentTimeMillis()).toString() + " ImageSequence Show Stopped");
+			dmr.turnOff();
+			System.out.println(new Timestamp(System.currentTimeMillis()).toString() + " App Disabling Lights");
 		}
-		*/
+		
 	}
 	
 	public void tempUpdate(float tu) {
