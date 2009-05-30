@@ -454,7 +454,7 @@ class BlackOutThread extends Thread{
 	}
 	public void run()
 	{
-		dmr.blackOutAll();
+		dmr.turnOff();
 	}
 }
 class Patch{
