@@ -17,3 +17,7 @@ warpGrid=0,0_110,0_240,0_369,0_480,0-0,89_102,75_240,66_373,64_480,75-0,173_101,
 axisPassword=laface
 srcHeight=360
 showGraphics=false
+sunriseAdaptation=0.1
+morningAdaptation=0.1
+sunsetAdaptation=0.1
+nightAdaptation=0.1

@@ -73,6 +73,8 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 	private TimedEvent middayOff = new TimedEvent(10,00,00, this); // off at 10 AM for sun reasons
 	private TimedEvent sunsetOn = new TimedEvent(16,00,00, this); // on at sunset-1 based on weather
 	private TimedEvent nightOff = new TimedEvent(1,00,00, this); // off at 1 AM
+	private TimedEvent morningAdaptation = new TimedEvent(6,30,00, this);
+	private TimedEvent nightAdaptation = new TimedEvent(20,00,00, this);
 	private Timestamp sunrise,midday,sunset,night;	// these get updated whenever the weather checker updates timed events
 	
 	public LAFACEMain() throws UnknownHostException, OptionException{
@@ -249,13 +251,19 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		
 		if(event == sunriseOn) {			// activate
 			dmr.turnOn();
+			lafvp.setBackgroundAdaptation(Double.parseDouble(ElProps.THE_PROPS.getProperty("sunriseAdaptation")));
 			System.out.println(new Timestamp(System.currentTimeMillis()).toString() + " App Illuminating");
+		} else if (event == morningAdaptation){
+			lafvp.setBackgroundAdaptation(Double.parseDouble(ElProps.THE_PROPS.getProperty("morningAdaptation")));
 		} else if (event == middayOff) {	// deactivate
 			dmr.turnOff();
 			System.out.println(new Timestamp(System.currentTimeMillis()).toString() + " App Disabling Lights");
 		} else if (event == sunsetOn){		// activate
 			dmr.turnOn();
+			lafvp.setBackgroundAdaptation(Double.parseDouble(ElProps.THE_PROPS.getProperty("sunsetAdaptation")));
 			System.out.println(new Timestamp(System.currentTimeMillis()).toString() + " App Illuminating");
+		} else if (event == nightAdaptation){
+			lafvp.setBackgroundAdaptation(Double.parseDouble(ElProps.THE_PROPS.getProperty("nightAdaptation")));
 		} else if (event == nightOff){		// deactivate
 			dmr.turnOff();
 			System.out.println(new Timestamp(System.currentTimeMillis()).toString() + " App Disabling Lights");
@@ -276,6 +284,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 			System.out.println("Sunrise at " + h + ":" + m + ":" + s);
 			sunriseOn.reschedule(h-1, m, s); // turn on an hour before sunrise
 			middayOff.reschedule(h+2, m, s); // turn off an hour after sunrise
+			morningAdaptation.reschedule(h, m, s);
 		}
 		if(wce.hasSunsetChanged()) {
 			Calendar sunset = wce.getRecord().getSunset();
@@ -284,6 +293,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 			int s = sunset.get(Calendar.SECOND);
 			System.out.println("Sunset at " + h + ":" + m + ":" + s);
 			sunsetOn.reschedule(h - 1, m, s); // turn on 1 hour before sunset
+			nightAdaptation.reschedule(h+1, m, s);
 		}
 		
 		Timestamp now = new Timestamp(System.currentTimeMillis());
