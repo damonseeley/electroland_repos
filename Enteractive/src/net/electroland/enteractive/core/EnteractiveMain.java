@@ -399,7 +399,8 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 				}
 				Raster raster = getRaster();
 				((GUI)gui).setRaster(raster);
-				Animation a = new Plasma(raster);
+				//Animation a = new Plasma(raster);
+				Animation a = new Spotlight(ptr.getModel(), raster, smr, sphereTexture);
 				Collection<Recipient> fixtures = dmr.getRecipients();
 				if((now.after(night) && now.before(sunrise)) || (now.after(midday) && now.before(sunset))){
 					// if it is during an off period, remove the face recipient from fixtures
@@ -413,7 +414,8 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 			// switch back to LILYPAD
 			
 			Recipient floor = dmr.getRecipient("floor");
-			if(amr.getCurrentAnimation(floor) instanceof Plasma){
+			//if(amr.getCurrentAnimation(floor) instanceof Plasma){
+			if(amr.getCurrentAnimation(floor) instanceof Spotlight){
 				Raster raster = getRaster();
 				((GUI)gui).setRaster(raster);
 				Animation next = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture, sphereTexture, radarTexture);
