@@ -1,10 +1,15 @@
 package net.electroland.enteractive.gui;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
 
 import net.electroland.enteractive.core.Model;
+import net.electroland.enteractive.core.Tile;
+import net.electroland.enteractive.core.TileController;
 import net.electroland.lighting.detector.Detector;
 import net.electroland.lighting.detector.Recipient;
+import net.electroland.udpUtils.TCUtil;
 import processing.core.PApplet;
 
 @SuppressWarnings("serial")
@@ -19,14 +24,17 @@ public class Lights3D extends PApplet{
 	private int tileSize = 10;
 	private Recipient floor, face;
 	private boolean faceMode = false;
+	private boolean sensorMode = true;
 	private Model m;
+	private TCUtil tcu;
 	
-	public Lights3D(int width, int height, Recipient floor, Recipient face, Model m){
+	public Lights3D(int width, int height, Recipient floor, Recipient face, Model m, TCUtil tcu){
 		this.width = width;
 		this.height = height;
 		this.floor = floor;
 		this.face = face;
 		this.m = m;
+		this.tcu = tcu;
 		floorWidth = 16;
 		floorHeight = 11;
 		faceWidth = 18;
@@ -51,7 +59,11 @@ public class Lights3D extends PApplet{
 		noFill();
 		translate(-tileSize*floorWidth/2, -tileSize*floorHeight/2);
 		drawFloor();
-		drawSensors();
+		if(sensorMode){
+			drawSensors();
+		} else {
+			drawTileAverages();
+		}
 		translate(-12,0,150);
 		drawFace();
 		  
@@ -77,6 +89,10 @@ public class Lights3D extends PApplet{
 		} else if (mode == 2){
 			faceMode = true;
 		}
+	}
+	
+	public void setSensorMode(boolean sensorMode){
+		this.sensorMode = sensorMode;
 	}
 	
 	public void drawFace(){
@@ -163,6 +179,37 @@ public class Lights3D extends PApplet{
 		}
 		*/
 		
+	}
+	
+	public void drawTileAverages(){
+		int maxActivity = 0;
+		// loop through all the tiles to get the max value
+		List<TileController> tileControllers = tcu.getTileControllers();
+		Iterator<TileController> iter = tileControllers.iterator();
+		while(iter.hasNext()){
+			TileController tc = iter.next();
+			List<Tile> tiles = tc.getTiles();
+			Iterator<Tile> tileiter = tiles.iterator();
+			while(tileiter.hasNext()){
+				Tile tile = tileiter.next();
+				if(tile.getActivityCount() > maxActivity){
+					maxActivity = tile.getActivityCount();
+				}
+			}
+		}
+		// loop through all the tiles to average based on the maxActivity
+		noStroke();
+		Iterator<TileController> iter2 = tileControllers.iterator();
+		while(iter2.hasNext()){
+			TileController tc = iter2.next();
+			List<Tile> tiles = tc.getTiles();
+			Iterator<Tile> tileiter2 = tiles.iterator();
+			while(tileiter2.hasNext()){
+				Tile tile = tileiter2.next();
+				fill((tile.getActivityCount() / (float) maxActivity)*255);
+				rect((tile.getX()-1)*12 + 4, (tile.getY()-1)*12 + 4, 2, 2);
+			}
+		}
 	}
 	
 	public void drawSensors(){

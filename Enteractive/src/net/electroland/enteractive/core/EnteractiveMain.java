@@ -74,7 +74,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 	private TimedEvent nightOff = new TimedEvent(1,00,00, this); 		// off at 1 AM
 	private Timestamp sunrise,midday,sunset,night;	// these get updated whenever the weather checker updates timed events
 	private String[] animationList;
-	private JComboBox animationDropDown, displayDropDown, rasterDropDown;
+	private JComboBox animationDropDown, displayDropDown, rasterDropDown, sensorDropDown;
 	PImage rippleTexture, sweepTexture, sphereTexture, propellerTexture, spiralTexture, radarTexture;
 	PImage ballTexture, pongTitle;	// pong textures
 	
@@ -121,7 +121,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		*/
 		
 
-		lights3D = new Lights3D(600,600, dmr.getRecipient("floor"),  dmr.getRecipient("face"), ptr.getModel());
+		lights3D = new Lights3D(600,600, dmr.getRecipient("floor"),  dmr.getRecipient("face"), ptr.getModel(), tcu);
 		lights3D.setMinimumSize(new Dimension(600,600));
 		gui = new GUI(guiWidth,guiHeight, dmr.getRecipient("floor"),  dmr.getRecipient("face"));
 		Raster raster = getRaster();
@@ -239,6 +239,12 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 				} else if(rasterDropDown.getSelectedItem() == "Disabled"){
 					gui.setVisible(false);
 				}
+			} else if((JComboBox)e.getSource() == sensorDropDown){
+				if(sensorDropDown.getSelectedItem() == "Current Activity"){
+					lights3D.setSensorMode(true);
+				} else if(sensorDropDown.getSelectedItem() == "Averages"){
+					lights3D.setSensorMode(false);
+				}
 			}
 		    
 		
@@ -283,6 +289,15 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		rasterDropDown.setForeground(Color.white);
 		rasterDropDown.addActionListener(this);		
 		controlPanel.add(rasterDropDown, "wrap");
+		
+		controlPanel.add(new JLabel("Sensor Mode:"), "wrap");
+		
+		// drop down list to select sensor display mode
+		sensorDropDown = new JComboBox(new String[] {"Current Activity", "Averages"});
+		sensorDropDown.setBackground(Color.black);
+		sensorDropDown.setForeground(Color.white);
+		sensorDropDown.addActionListener(this);		
+		controlPanel.add(sensorDropDown, "wrap");
 		
 		add(controlPanel, "cell 1 0, width 200!, height 380!, gap 0!");
 		
