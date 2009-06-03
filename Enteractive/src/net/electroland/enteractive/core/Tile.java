@@ -7,6 +7,7 @@ public class Tile {
 	private boolean sensorState;
 	private int lightValue;
 	private long lastActivated;
+	private int activityCount;
 	private long turnedOff;
 	public boolean rebooting;
 	
@@ -16,6 +17,7 @@ public class Tile {
 		this.x = x;
 		this.y = y;
 		lastActivated = 0;
+		activityCount = 0;
 		rebooting = false;
 		//System.out.println("tile:\t"+id+"\t x: "+x+"\t y:"+y);
 	}
@@ -28,6 +30,7 @@ public class Tile {
 		this.sensorState = sensorState;
 		if(sensorState){
 			//System.out.println("tile "+id+ " activated ");
+			activityCount++;
 			lastActivated = System.currentTimeMillis();
 		}
 		//System.out.println("sensor state "+sensorState+" tile "+id);
@@ -59,6 +62,10 @@ public class Tile {
 	
 	public int getID(){
 		return id;
+	}
+	
+	public int getActivityCount(){
+		return activityCount;
 	}
 	
 	public TileController getController(){

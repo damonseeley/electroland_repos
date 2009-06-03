@@ -159,7 +159,7 @@ public class Spotlight implements Animation, SpriteListener{
 			float areaSize = (float)(Math.random()*0.2f);
 			xtarget = (int)(areaSize*raster.width + raster.width*0.4f);
 			ytarget = (int)(areaSize*raster.height + raster.height*0.4f);
-			System.out.println("vector changed: "+xtarget+" "+ytarget);
+			//System.out.println("vector changed: "+xtarget+" "+ytarget);
 		}
 	}
 

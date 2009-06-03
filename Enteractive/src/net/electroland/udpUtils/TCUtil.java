@@ -112,6 +112,10 @@ public class TCUtil {
 		}
 	}
 	
+	public List<TileController> getTileControllers(){
+		return tileControllers;
+	}
+	
 	public void updateLights(int offset, byte[] data){
 		int[] values = new int[data.length];
 		for(int i=0; i<data.length; i++){
