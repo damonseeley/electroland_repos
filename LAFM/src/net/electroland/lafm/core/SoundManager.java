@@ -26,7 +26,7 @@ public class SoundManager implements SCSoundControlNotifiable {
 		absolutePath = systemProps.getProperty("soundPath");
 		ss = new SCSoundControl(this);
 		ss.init();
-		ss.showDebugOutput(false);
+		ss.showDebugOutput(true);
 		ss.set_serverResponseTimeout(5000);
 	}
 

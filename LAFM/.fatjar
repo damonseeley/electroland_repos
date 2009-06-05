@@ -1,10 +1,10 @@
 #Fat Jar Configuration File
-#Fri Jan 30 12:32:28 PST 2009
+#Tue Feb 03 19:36:18 PST 2009
 onejar.license.required=false
-manifest.classpath=
+manifest.classpath=libraries/
 manifest.removesigners=true
-onejar.checkbox=true
-jarname=/Users/el/Documents/JARS/013009-morning/LAFM.jar
+onejar.checkbox=false
+jarname=/Users/el/Documents/JARS/020309_night_semifinal/LAFM.jar
 manifest.mergeall=true
 manifest.mainclass=net.electroland.lafm.core.Conductor
 manifest.file=<createnew>
