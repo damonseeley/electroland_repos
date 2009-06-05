@@ -23,10 +23,11 @@ public class SoundManager implements SCSoundControlNotifiable {
 		this.systemProps = systemProps;
 		serverIsLive = false;
 		soundFiles = new Hashtable<String, Integer>();
-		absolutePath = "D:\\Programming\\Java\\LAFM\\soundfiles\\";
+		absolutePath = systemProps.getProperty("soundPath");
 		ss = new SCSoundControl(this);
 		ss.init();
-		ss.showDebugOutput(true);
+		ss.showDebugOutput(false);
+		ss.set_serverResponseTimeout(5000);
 	}
 
 	public void loadBuffer(String soundFile){
@@ -182,6 +183,12 @@ public class SoundManager implements SCSoundControlNotifiable {
 
 	public void receiveNotification_ServerStopped() {
 		serverIsLive = false;
+	}
+
+	public void receiveNotification_ServerStatus(float averageCPU,
+			float peakCPU, int numSynths) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	
