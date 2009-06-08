@@ -638,8 +638,15 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		logger.info("collection " + collection.getId() + " is complete.");
 		if(collection.getId().equals("hourlyShow")){
 			Calendar cal = new GregorianCalendar();
-			launchChimes(cal.get(Calendar.HOUR), 0, 0);
+			System.out.println("CURRENT HOUR: " + cal.get(Calendar.HOUR));
+			if(cal.get(Calendar.HOUR) == 0){
+				launchChimes(12, 0, 0);
+			} else {
+				launchChimes(cal.get(Calendar.HOUR), 0, 0);
+			}
 		} else if(collection.getId().equals("hourlyShowTest")){
+			Calendar cal = new GregorianCalendar();
+			System.out.println("CURRENT HOUR: " + cal.get(Calendar.HOUR));
 			launchChimes(((GUI) guiWindow.gui).getChimeCount(), 0, 0);
 		}
 	}
@@ -1078,11 +1085,11 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 						}
 						
 						ColorScheme spectrum = new ColorScheme(colorlist, points);
-						int bongRate = (int)(Math.random()*(chainDelayMax-chainDelayMin)) + chainDelayMin;
 		            	String soundFile = soundFiles[(int)(Math.random()*(soundFiles.length-0.01))]; 	// unique per fixture, but same throughout chain
 						raster = guiWindow.gui.createGraphics(fixture.getWidth(), fixture.getHeight(), PConstants.P3D);	// needs a unique raster for each color
 						newShow = new SparkleSpiralThread(fixture, soundManager, 20000, detectorMngr.getFps(), raster, "Sparkle Spiral", ShowThread.HIGHEST, spectrum, 0, 0, false, soundFile, physicalProps, (int)(Math.random()*(startDelayMax-startDelayMin)) + startDelayMin, sparkleSpiralShowGain);
 						for(int h=1; h<=chainCount; h++){
+							int bongRate = (int)(Math.random()*(chainDelayMax-chainDelayMin)) + chainDelayMin;
 							newShow.chain(new SparkleSpiralThread(fixture, soundManager, 20000, detectorMngr.getFps(), raster, "Sparkle Spiral", ShowThread.HIGHEST, spectrum, 0, 0, false, soundFile, physicalProps, bongRate, sparkleSpiralShowGain));
 						}
 						if(fiter.hasNext()){
