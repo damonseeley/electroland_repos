@@ -160,7 +160,10 @@ public class SoundManager implements SCSoundControlNotifiable {
 	// this is a replacement for the original globalSound
 	public SoundNode globalSound(int soundIDToStart, String filename, boolean loop, float gain, int duration, String comment) {
 		if(!filename.equals("none") && serverIsLive){
-			return ss.createStereoSoundNodeWithLRMap(soundFiles.get(absolutePath+filename), false, new int[]{1, 0}, new int[]{0, 1}, 1.0f);
+			//return ss.createMonoSoundNode(soundFiles.get(absolutePath+filename), false, new float[]{gain,gain,gain,gain,gain,gain}, 1.0f);
+			SoundNode sn = ss.createStereoSoundNodeWithLRMap(soundFiles.get(absolutePath+filename), false, new int[]{1, 0}, new int[]{0, 1}, 1.0f);
+			sn.setAmplitudes(new int[]{0,1,2,3,4,5}, new float[]{gain,gain,gain,gain,gain,gain});
+			return sn;
 		}
 		return null;
 	}

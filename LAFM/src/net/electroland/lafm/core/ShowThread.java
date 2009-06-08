@@ -118,6 +118,13 @@ public abstract class ShowThread extends Thread {
 		}
 	}
 	
+	final public void fadeOutSound(){
+		// in case a sound is still playing when a fixture is deactivated
+		if(soundNode != null && soundNode.isAlive()){
+			soundNode.die();
+		}
+	}
+	
 	final public void playGlobalSound(String soundFile, float gain){
 		SoundManager sm = getSoundManager();
 		soundManager.globalSound(sm.newSoundID(),soundFile,false,gain,20000,getID());
