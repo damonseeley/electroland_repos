@@ -15,8 +15,11 @@ import java.net.UnknownHostException;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -75,6 +78,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 	private Timestamp sunrise,midday,sunset,night;	// these get updated whenever the weather checker updates timed events
 	private String[] animationList;
 	private JComboBox animationDropDown, displayDropDown, rasterDropDown, sensorDropDown;
+	private JButton printSensorActivityButton;
 	PImage rippleTexture, sweepTexture, sphereTexture, propellerTexture, spiralTexture, radarTexture;
 	PImage ballTexture, pongTitle;	// pong textures
 	
@@ -246,8 +250,31 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 					lights3D.setSensorMode(false);
 				}
 			}
-		    
 		
+		} else if((JButton)e.getSource() == printSensorActivityButton){
+			int maxActivity = 0;
+			int minActivity = 100000000;	// TODO kludge
+			int sumActivity = 0;
+			int tileCount = 0;
+			// loop through all the tiles to get the max value
+			List<TileController> tileControllers = tcu.getTileControllers();
+			Iterator<TileController> iter = tileControllers.iterator();
+			while(iter.hasNext()){
+				TileController tc = iter.next();
+				List<Tile> tiles = tc.getTiles();
+				Iterator<Tile> tileiter = tiles.iterator();
+				while(tileiter.hasNext()){
+					Tile tile = tileiter.next();
+					if(tile.getActivityCount() > maxActivity){
+						maxActivity = tile.getActivityCount();
+					} else if(tile.getActivityCount() < minActivity){
+						minActivity = tile.getActivityCount();
+					}
+					sumActivity += tile.getActivityCount();
+					tileCount++;
+				}
+			}
+			System.out.println(new Timestamp(System.currentTimeMillis()).toString() +" Min Activity: "+ minActivity +", Max Activity: "+ maxActivity + ", Avg Activity: "+((float)sumActivity)/tileCount);
 		}
 		//Animation next = new AnotherAnimation(m, getRaster(), smr); 			// some fake animation
 		//amr.startAnimation(next, new FadeTransition(5), dmr.getFixtures()); 	// some fake transition with a 5 second fade
@@ -298,6 +325,11 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		sensorDropDown.setForeground(Color.white);
 		sensorDropDown.addActionListener(this);		
 		controlPanel.add(sensorDropDown, "wrap");
+		
+		printSensorActivityButton = new JButton("Print Sensor Activity");
+		printSensorActivityButton.addActionListener(this);
+		printSensorActivityButton.setMaximumSize(new Dimension(180, 20));
+		controlPanel.add(printSensorActivityButton, "wrap");
 		
 		add(controlPanel, "cell 1 0, width 200!, height 380!, gap 0!");
 		
