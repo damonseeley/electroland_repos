@@ -26,7 +26,7 @@ public class Spotlight implements Animation, SpriteListener{
 	private SoundManager sm;
 	private int tileSize;
 	private ConcurrentHashMap<Integer,Ghost> ghosts;
-	private int ghostCount = 5;
+	private int ghostCount = 8;
 	//private ConcurrentHashMap<Integer,Sprite> sprites;
 	//private int spriteIndex = 0;
 	private PImage sphereTexture;
@@ -121,45 +121,87 @@ public class Spotlight implements Animation, SpriteListener{
 	
 	
 	public class Ghost{
-		private float x,y,xvec,yvec,xaccel,yaccel;
-		private int xtarget, ytarget;
-		private float damping = 0.9f;
-		private float spring = 0.0009f;
-		private int diameter;
+		private float x, y, xdiff, ydiff, hypo;
+		private int xtarget, ytarget, xstart, ystart;
+		private float damping = 0.1f;
+		private int diameter, alpha;
 		private long startTime;
-		private int vectorDuration = 10000;
+		private int vectorDuration;
+		private int minDuration = 3000;
+		private int maxDuration = 8000;
+		private boolean speedUp = false;	// TODO will switch in the future
 		
 		public Ghost(float x, float y){
 			this.x = x;
 			this.y = y;
-			xvec = (float)(Math.random() - 0.5f);
-			yvec = (float)(Math.random() - 0.5f);
-			diameter = tileSize*8;
+			this.xstart = (int)x;
+			this.ystart = (int)y;
+			diameter = tileSize * (int)((Math.random()*5)+5);
+			alpha = (int)(Math.random()*32) + 64;
+			damping = (float)(Math.random()*0.1f + 0.02f);
+			vectorDuration = (int)(Math.random()*(maxDuration - minDuration)) + minDuration;
 			startTime = System.currentTimeMillis();
 		}
 		
 		public void draw(PGraphics raster){
-			if(System.currentTimeMillis() - startTime > vectorDuration){
-				changeVector(raster);
-				startTime = System.currentTimeMillis();
+			//if(System.currentTimeMillis() - startTime > vectorDuration){
+				//changeVector(raster);
+			//}
+			if(speedUp){
+				// dampen towards middle of distance increasing speed
+				xdiff = xtarget - x;
+				ydiff = ytarget - y;
+				if(Math.abs(xdiff) < Math.abs(xtarget - xstart)/2 || Math.abs(ydiff) < Math.abs(ytarget - ystart)/2){
+					speedUp = false;
+					//System.out.println("SLOW DOWN");
+				} else {
+					if((x-xstart) == 0 && (y-ystart) == 0){
+						hypo = (float)Math.sqrt((xdiff*xdiff) + (ydiff*ydiff));
+						x += xdiff/hypo;
+						y += ydiff/hypo;
+					} else {
+						//x += (x-xstart) / (1-damping);
+						//y += (y-ystart) / (1-damping);
+						x = xstart + ((x-xstart) / (1-damping));
+						y = ystart + ((y-ystart) / (1-damping));
+						//System.out.println((x-xstart) / (1-damping) +" "+ (y-ystart) / (1-damping));
+					}
+				}
+			} else {
+				// dampen towards final target decreasing speed
+				if(x != xtarget || y != ytarget){
+					xdiff = xtarget - x;
+					ydiff = ytarget - y;
+					hypo = (float)Math.sqrt((xdiff*xdiff) + (ydiff*ydiff));
+					if(Math.abs(hypo) < 1){
+						x = xtarget;
+						y = ytarget;
+						changeVector(raster);
+					} else {
+						x += xdiff*damping;
+						y += ydiff*damping;
+					}
+				}
 			}
-			xaccel = (xtarget - x) * spring;
-			yaccel = (ytarget - y) * spring;
-			xvec += xaccel;
-			yvec += yaccel;
-			x += xvec;
-			y += yvec;
-			xaccel *= damping;
-			yaccel *= damping;
-			raster.tint(255,255,255,64);
+			// this is just in case shit goes crazy and they go way out of frame
+			if((x < -100 || x > raster.width+100) || (y < -100 || y > raster.height+100)){
+				//System.out.println(x+" "+y);
+				x = (int)(Math.random()*raster.width);
+				y = (int)(Math.random()*raster.height);
+			}
+			raster.tint(255,255,255,alpha);
 			raster.image(sphereTexture, x-(diameter/2), y-(diameter/2), diameter, diameter);
 		}
 		
 		public void changeVector(PGraphics raster){
-			float areaSize = (float)(Math.random()*0.2f);
-			xtarget = (int)(areaSize*raster.width + raster.width*0.4f);
-			ytarget = (int)(areaSize*raster.height + raster.height*0.4f);
-			//System.out.println("vector changed: "+xtarget+" "+ytarget);
+			xtarget = (int)(Math.random()*raster.width);
+			ytarget = (int)(Math.random()*raster.height);
+			xstart = (int)x;
+			ystart = (int)y;
+			speedUp = true;
+			vectorDuration = (int)(Math.random()*(maxDuration - minDuration)) + minDuration;
+			startTime = System.currentTimeMillis();
+			//System.out.println(xtarget+" "+ytarget);
 		}
 	}
 
