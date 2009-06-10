@@ -294,8 +294,9 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		
 		// drop down list to select current animation
 		animationDropDown = new JComboBox(animationList);
-		animationDropDown.setBackground(Color.black);
-		animationDropDown.setForeground(Color.white);
+		//animationDropDown.setBackground(Color.black);
+		//animationDropDown.setForeground(Color.white);
+		animationDropDown.setMinimumSize(new Dimension(180, 20));
 		animationDropDown.addActionListener(this);		
 		controlPanel.add(animationDropDown, "wrap");
 		
@@ -303,8 +304,9 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		
 		// drop down list to select 3d mode
 		displayDropDown = new JComboBox(new String[] {"Comparison", "Real World", "Disabled"});
-		displayDropDown.setBackground(Color.black);
-		displayDropDown.setForeground(Color.white);
+		//displayDropDown.setBackground(Color.black);
+		//displayDropDown.setForeground(Color.white);
+		displayDropDown.setMinimumSize(new Dimension(180, 20));
 		displayDropDown.addActionListener(this);		
 		controlPanel.add(displayDropDown, "wrap");
 		
@@ -312,8 +314,9 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		
 		// drop down list to select raster mode
 		rasterDropDown = new JComboBox(new String[] {"Face Detectors", "Floor Detectors", "No Detectors", "Disabled"});
-		rasterDropDown.setBackground(Color.black);
-		rasterDropDown.setForeground(Color.white);
+		//rasterDropDown.setBackground(Color.black);
+		//rasterDropDown.setForeground(Color.white);
+		rasterDropDown.setMinimumSize(new Dimension(180, 20));
 		rasterDropDown.addActionListener(this);		
 		controlPanel.add(rasterDropDown, "wrap");
 		
@@ -321,14 +324,16 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		
 		// drop down list to select sensor display mode
 		sensorDropDown = new JComboBox(new String[] {"Current Activity", "Averages"});
-		sensorDropDown.setBackground(Color.black);
-		sensorDropDown.setForeground(Color.white);
+		//sensorDropDown.setBackground(Color.black);
+		//sensorDropDown.setForeground(Color.white);
+		sensorDropDown.setMinimumSize(new Dimension(180, 20));
 		sensorDropDown.addActionListener(this);		
 		controlPanel.add(sensorDropDown, "wrap");
 		
 		printSensorActivityButton = new JButton("Print Sensor Activity");
 		printSensorActivityButton.addActionListener(this);
-		printSensorActivityButton.setMaximumSize(new Dimension(180, 20));
+		printSensorActivityButton.setMinimumSize(new Dimension(180, 20));
+		//printSensorActivityButton.setMaximumSize(new Dimension(180, 20));
 		controlPanel.add(printSensorActivityButton, "wrap");
 		
 		add(controlPanel, "cell 1 0, width 200!, height 380!, gap 0!");

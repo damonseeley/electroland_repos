@@ -68,6 +68,9 @@ public class TCUtil {
 		sendOffsetPackets();
 	}
 	
+	/*
+	// TODO THIS IS WHAT ENDED UP "BREAKING" TILES ON SITE
+	
 	public void checkTileStates(){
 		Iterator<TileController> iter = tileControllers.iterator();
 		while(iter.hasNext()){						// check every tile controller
@@ -111,6 +114,8 @@ public class TCUtil {
 			}
 		}
 	}
+	
+	*/
 	
 	public List<TileController> getTileControllers(){
 		return tileControllers;
