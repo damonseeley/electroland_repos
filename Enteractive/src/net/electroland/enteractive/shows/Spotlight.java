@@ -26,7 +26,7 @@ public class Spotlight implements Animation, SpriteListener{
 	private SoundManager sm;
 	private int tileSize;
 	private ConcurrentHashMap<Integer,Ghost> ghosts;
-	private int ghostCount = 8;
+	private int ghostCount = 10;
 	//private ConcurrentHashMap<Integer,Sprite> sprites;
 	//private int spriteIndex = 0;
 	private PImage sphereTexture;
@@ -127,8 +127,8 @@ public class Spotlight implements Animation, SpriteListener{
 		private int diameter, alpha;
 		private long startTime;
 		private int vectorDuration;
-		private int minDuration = 3000;
-		private int maxDuration = 8000;
+		private int minDuration = 5000;
+		private int maxDuration = 12000;
 		private boolean speedUp = false;	// TODO will switch in the future
 		
 		public Ghost(float x, float y){
@@ -188,6 +188,7 @@ public class Spotlight implements Animation, SpriteListener{
 				//System.out.println(x+" "+y);
 				x = (int)(Math.random()*raster.width);
 				y = (int)(Math.random()*raster.height);
+				changeVector(raster);
 			}
 			raster.tint(255,255,255,alpha);
 			raster.image(sphereTexture, x-(diameter/2), y-(diameter/2), diameter, diameter);
