@@ -146,11 +146,13 @@ public class Lights3D extends PApplet{
 		try{
 			ListIterator<Detector> i = floor.getDetectorPatchList().listIterator();
 			int channel = 0;
-			fill(255,255,255,20);
-			noStroke();
-			translate(0,0,-1);
-			rect(-1, -1, floorWidth*12, floorHeight*12);
-			translate(0,0,1);
+			if(sensorMode){
+				fill(255,255,255,20);
+				noStroke();
+				translate(0,0,-1);
+				rect(-1, -1, floorWidth*12, floorHeight*12);
+				translate(0,0,1);
+			}
 			noFill();
 			while(i.hasNext()){
 				Detector d = i.next();
@@ -183,6 +185,7 @@ public class Lights3D extends PApplet{
 	
 	public void drawTileAverages(){
 		int maxActivity = 0;
+		int minActivity = 999999999;
 		// loop through all the tiles to get the max value
 		List<TileController> tileControllers = tcu.getTileControllers();
 		Iterator<TileController> iter = tileControllers.iterator();
@@ -195,6 +198,9 @@ public class Lights3D extends PApplet{
 				if(tile.getActivityCount() > maxActivity){
 					maxActivity = tile.getActivityCount();
 				}
+				if(tile.getActivityCount() < minActivity){
+					minActivity = tile.getActivityCount();
+				}
 			}
 		}
 		// loop through all the tiles to average based on the maxActivity
@@ -206,7 +212,7 @@ public class Lights3D extends PApplet{
 			Iterator<Tile> tileiter2 = tiles.iterator();
 			while(tileiter2.hasNext()){
 				Tile tile = tileiter2.next();
-				fill((tile.getActivityCount() / (float) maxActivity)*255);
+				fill((tile.getActivityCount() / (float) (maxActivity-minActivity))*255);
 				rect((tile.getX()-1)*12 + 4, (tile.getY()-1)*12 + 4, 2, 2);
 			}
 		}
