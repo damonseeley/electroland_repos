@@ -2,6 +2,8 @@ package net.electroland.elvisVideoProcessor;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.media.jai.RenderedOp;
@@ -24,6 +26,8 @@ public class LAFaceVideoProcessor extends Thread implements ImageReceiver{
 
 	public static final String JMYRON_SRC = "jMyronCam";
 	public static final String LOCALAXIS_SRC ="axis";
+	
+	private List <LAFaceVideoListener> listeners;
 
 
 	int frameCnt = 0;
@@ -217,7 +221,7 @@ public class LAFaceVideoProcessor extends Thread implements ImageReceiver{
 //		int frameSkip = 2;
 		if(s.equals(JMYRON_SRC)) {
 //			frameSkip = 50;
-			srcStream = new WebCam(w, h, 15, this, false);
+			//srcStream = new WebCam(w, h, 15, this, false);
 		} else if(s.equals(LOCALAXIS_SRC)) {
 			String ip = ElProps.THE_PROPS.getProperty("axisIP", "10.0.1.90");		
 			String url = "http://" + ip + "/";
@@ -452,11 +456,20 @@ public class LAFaceVideoProcessor extends Thread implements ImageReceiver{
 		}
 	}
 
+	final public void addListener(LAFaceVideoListener listener){
+		listeners.add(listener);
+	}
 
+	final public void removeListener(LAFaceVideoListener listener){
+		listeners.remove(listener);
+	}
 
 	public void receiveErrorMsg(Exception cameraException) {
 		System.out.println(cameraException);
-		
+		Iterator<LAFaceVideoListener> i = listeners.iterator();
+		while (i.hasNext()){
+			i.next().cameraError(cameraException);
+		}
 	}
 
 
