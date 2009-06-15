@@ -29,6 +29,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import net.electroland.laface.core.Impulse;
+import net.electroland.laface.core.ImpulseThread;
 import net.electroland.laface.core.LAFACEMain;
 import net.electroland.laface.shows.DrawTest;
 import net.electroland.laface.shows.ImageSequence;
@@ -458,7 +459,9 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 			Wave newwave = new Wave(0, raster, 0, 0);	// for shared wave sprite on multiple shows
 			((WaveShow)a).addWave(0, newwave);
 			Collection<Recipient> fixtures = main.dmr.getRecipients();
-			main.amr.startAnimation(a, fixtures); 			
+			main.amr.startAnimation(a, fixtures);
+			ImpulseThread impulseThread = new ImpulseThread(main);
+			impulseThread.start();
 			
 			//Animation a  = main.getCurrentAnimation();
 			if(a instanceof WaveShow){	// confirm show has been switched over

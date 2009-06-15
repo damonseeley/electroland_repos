@@ -21,6 +21,7 @@ import processing.core.PConstants;
 import processing.core.PImage;
 import net.electroland.blobDetection.match.TrackListener;
 import net.electroland.elvisVideoProcessor.ElProps;
+import net.electroland.elvisVideoProcessor.LAFaceVideoListener;
 import net.electroland.elvisVideoProcessor.LAFaceVideoProcessor;
 import net.electroland.laface.scheduler.TimedEvent;
 import net.electroland.laface.scheduler.TimedEventListener;
@@ -50,7 +51,7 @@ import net.electroland.util.OptionException;
 import net.miginfocom.swing.MigLayout;
 
 @SuppressWarnings("serial")
-public class LAFACEMain extends JFrame implements AnimationListener, ActionListener, TimedEventListener, WeatherChangeListener {
+public class LAFACEMain extends JFrame implements AnimationListener, ActionListener, TimedEventListener, WeatherChangeListener, LAFaceVideoListener {
 	
 	public DetectorManager dmr;
 	private DetectorManagerJPanel dmp;
@@ -327,7 +328,19 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		}
 	}
 	
-	
+
+	public void cameraError(Exception cameraException) {
+		// TODO switch to wave show
+		Raster raster = getRaster();
+		rasterPanel.setRaster(raster);
+		Animation a = new WaveShow(raster);
+		Wave newwave = new Wave(0, raster, 0, 0);	// for shared wave sprite on multiple shows
+		((WaveShow)a).addWave(0, newwave);
+		Collection<Recipient> fixtures = dmr.getRecipients();
+		amr.startAnimation(a, fixtures); 
+		ImpulseThread impulseThread = new ImpulseThread(this);
+		impulseThread.start();
+	}
 	
 	
 	public static void main(String[] args){
