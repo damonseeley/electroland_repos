@@ -137,7 +137,7 @@ public class Spotlight implements Animation, SpriteListener{
 			this.xstart = (int)x;
 			this.ystart = (int)y;
 			diameter = tileSize * (int)((Math.random()*5)+5);
-			alpha = (int)(Math.random()*32) + 64;
+			alpha = (int)(Math.random()*32) + 32;
 			damping = (float)(Math.random()*0.1f + 0.02f);
 			vectorDuration = (int)(Math.random()*(maxDuration - minDuration)) + minDuration;
 			startTime = System.currentTimeMillis();

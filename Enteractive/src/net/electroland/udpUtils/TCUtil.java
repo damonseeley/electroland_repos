@@ -15,19 +15,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
 import net.electroland.enteractive.core.Tile;
 import net.electroland.enteractive.core.TileController;
 import net.electroland.enteractive.utils.HexUtils;
 
 public class TCUtil {
 
+	static Logger logger = Logger.getLogger(TCUtil.class);
 	public Properties tileProps;
 	private List<TileController> tileControllers;
 	private DatagramSocket socket;
 	private String startByte, endByte, updateByte, feedbackByte;
 	private String onChangeByte, powerByte, reportByte, offsetByte, mcResetByte;
-	private int tileTimeout = 30000;		// tiles are rebooted after this duration of being on
-	private int powerCycleDuration = 300;	// duration to keep tile off when cycled
+	private int tileTimeout = 120000;		// tiles are rebooted after this duration of being on
+	private int powerCycleDuration = 120000;	// duration to keep tile off when cycled
 	
 	public TCUtil(){
 		try{
@@ -68,7 +71,7 @@ public class TCUtil {
 		sendOffsetPackets();
 	}
 	
-	/*
+	
 	// TODO THIS IS WHAT ENDED UP "BREAKING" TILES ON SITE
 	
 	public void checkTileStates(){
@@ -83,7 +86,7 @@ public class TCUtil {
 			while(tileiter.hasNext()){
 				Tile tile = tileiter.next();
 				if(tile.getSensorState() && tile.getAge() > tileTimeout && !tile.rebooting){
-					//System.out.println("tile "+tile.getID()+" on too long");
+					logger.info("tile "+tile.getID()+" on too long");
 					triggerStateChange = true; 		// turn power off for this one tile
 					tile.reboot();
 					powerStates[i] = false;
@@ -108,14 +111,14 @@ public class TCUtil {
 						payload += "00 ";
 					}
 				}
-				byte[] buf = HexUtils.hexToBytes(startByte +" "+ powerByte + payload + "00 " + Integer.toHexString(tc.getOffset()-1) +" "+ endByte);
+				// TODO DO NOT UNCOMMENT THIS ON SITE
+				//byte[] buf = HexUtils.hexToBytes(startByte +" "+ powerByte + payload + "00 " + Integer.toHexString(tc.getOffset()-1) +" "+ endByte);
 				//HexUtils.printHex(buf);		// for debugging
-				send(tc.getAddress(), buf);
+				//send(tc.getAddress(), buf);
 			}
 		}
 	}
 	
-	*/
 	
 	public List<TileController> getTileControllers(){
 		return tileControllers;

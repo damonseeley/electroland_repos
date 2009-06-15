@@ -11,6 +11,7 @@ import net.electroland.lighting.detector.Detector;
 import net.electroland.lighting.detector.Recipient;
 import net.electroland.udpUtils.TCUtil;
 import processing.core.PApplet;
+import processing.core.PFont;
 
 @SuppressWarnings("serial")
 public class Lights3D extends PApplet{
@@ -24,9 +25,10 @@ public class Lights3D extends PApplet{
 	private int tileSize = 10;
 	private Recipient floor, face;
 	private boolean faceMode = false;
-	private boolean sensorMode = true;
+	private int sensorMode = 0;
 	private Model m;
 	private TCUtil tcu;
+	private PFont tinyfont;
 	
 	public Lights3D(int width, int height, Recipient floor, Recipient face, Model m, TCUtil tcu){
 		this.width = width;
@@ -43,6 +45,7 @@ public class Lights3D extends PApplet{
 		rotY = -30;
 		velX = 0;
 		velY = 0;
+		tinyfont = loadFont("depends/fonts/DIN-Regular-10.vlw");
 	}
 	
 	public void setup(){
@@ -59,11 +62,12 @@ public class Lights3D extends PApplet{
 		noFill();
 		translate(-tileSize*floorWidth/2, -tileSize*floorHeight/2);
 		drawFloor();
-		if(sensorMode){
+		if(sensorMode == 0){
 			drawSensors();
 		} else {
 			drawTileAverages();
 		}
+		
 		translate(-12,0,150);
 		drawFace();
 		  
@@ -91,7 +95,7 @@ public class Lights3D extends PApplet{
 		}
 	}
 	
-	public void setSensorMode(boolean sensorMode){
+	public void setSensorMode(int sensorMode){
 		this.sensorMode = sensorMode;
 	}
 	
@@ -146,7 +150,7 @@ public class Lights3D extends PApplet{
 		try{
 			ListIterator<Detector> i = floor.getDetectorPatchList().listIterator();
 			int channel = 0;
-			if(sensorMode){
+			if(sensorMode == 0){
 				fill(255,255,255,20);
 				noStroke();
 				translate(0,0,-1);
@@ -186,6 +190,8 @@ public class Lights3D extends PApplet{
 	public void drawTileAverages(){
 		int maxActivity = 0;
 		int minActivity = 999999999;
+		textMode(SCREEN);
+		textAlign(CENTER);
 		// loop through all the tiles to get the max value
 		List<TileController> tileControllers = tcu.getTileControllers();
 		Iterator<TileController> iter = tileControllers.iterator();
@@ -213,7 +219,14 @@ public class Lights3D extends PApplet{
 			while(tileiter2.hasNext()){
 				Tile tile = tileiter2.next();
 				fill((tile.getActivityCount() / (float) (maxActivity-minActivity))*255);
-				rect((tile.getX()-1)*12 + 4, (tile.getY()-1)*12 + 4, 2, 2);
+				if(sensorMode == 1){
+					rect((tile.getX()-1)*12 + 4, (tile.getY()-1)*12 + 4, 2, 2);
+				} else {
+					textFont(tinyfont);
+					int x = (int)screenX((tile.getX()-1)*12 + 6, (tile.getY()-1)*12 + 6, 0);
+					int y = (int)screenY((tile.getX()-1)*12 + 6, (tile.getY()-1)*12 + 6, 0);
+					text(tile.getActivityCount(), x, y);
+				}
 			}
 		}
 	}
