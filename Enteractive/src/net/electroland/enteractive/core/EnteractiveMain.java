@@ -245,9 +245,11 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 				}
 			} else if((JComboBox)e.getSource() == sensorDropDown){
 				if(sensorDropDown.getSelectedItem() == "Current Activity"){
-					lights3D.setSensorMode(true);
+					lights3D.setSensorMode(0);
 				} else if(sensorDropDown.getSelectedItem() == "Averages"){
-					lights3D.setSensorMode(false);
+					lights3D.setSensorMode(1);
+				} else if(sensorDropDown.getSelectedItem() == "Total Activity"){
+					lights3D.setSensorMode(2);
 				}
 			}
 		
@@ -323,7 +325,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		controlPanel.add(new JLabel("Sensor Mode:"), "wrap");
 		
 		// drop down list to select sensor display mode
-		sensorDropDown = new JComboBox(new String[] {"Current Activity", "Averages"});
+		sensorDropDown = new JComboBox(new String[] {"Current Activity", "Averages", "Total Activity"});
 		//sensorDropDown.setBackground(Color.black);
 		//sensorDropDown.setForeground(Color.white);
 		sensorDropDown.setMinimumSize(new Dimension(180, 20));
