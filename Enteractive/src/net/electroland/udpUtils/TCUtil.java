@@ -6,8 +6,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -87,6 +89,7 @@ public class TCUtil {
 				Tile tile = tileiter.next();
 				if(tile.getSensorState() && tile.getAge() > tileTimeout && !tile.rebooting){
 					logger.info("tile "+tile.getID()+" on too long");
+					grabWebcamImage();
 					triggerStateChange = true; 		// turn power off for this one tile
 					tile.reboot();
 					powerStates[i] = false;
@@ -116,6 +119,23 @@ public class TCUtil {
 				//HexUtils.printHex(buf);		// for debugging
 				//send(tc.getAddress(), buf);
 			}
+		}
+	}
+	
+	public void grabWebcamImage(){
+		String url = "http://11flower.dyndns.org/axis-cgi/io/virtualinput.cgi?action=6:/";
+		String s = "stucktile:stucktile";	    
+		String base64authorization = new sun.misc.BASE64Encoder().encode(s.getBytes());	    
+		try{
+			URL u = new URL(url);
+			HttpURLConnection huc = (HttpURLConnection) u.openConnection();
+			huc.setDoInput(true);
+			huc.setRequestProperty("Authorization",base64authorization);
+			huc.connect();		// just connecting to trigger image request
+			huc.disconnect();
+			logger.info("webcam image accessed");
+		} catch (IOException e){
+			logger.info("unable to access webcam image");
 		}
 	}
 	
