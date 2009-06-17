@@ -78,7 +78,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 	private Timestamp sunrise,midday,sunset,night;	// these get updated whenever the weather checker updates timed events
 	private String[] animationList;
 	private JComboBox animationDropDown, displayDropDown, rasterDropDown, sensorDropDown;
-	private JButton printSensorActivityButton;
+	private JButton printSensorActivityButton, grabWebcamImage;
 	PImage rippleTexture, sweepTexture, sphereTexture, propellerTexture, spiralTexture, radarTexture;
 	PImage ballTexture, pongTitle;	// pong textures
 	
@@ -277,6 +277,8 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 				}
 			}
 			System.out.println(new Timestamp(System.currentTimeMillis()).toString() +" Min Activity: "+ minActivity +", Max Activity: "+ maxActivity + ", Avg Activity: "+((float)sumActivity)/tileCount);
+		} else if ((JButton)e.getSource() == grabWebcamImage){
+			tcu.grabWebcamImage();
 		}
 		//Animation next = new AnotherAnimation(m, getRaster(), smr); 			// some fake animation
 		//amr.startAnimation(next, new FadeTransition(5), dmr.getFixtures()); 	// some fake transition with a 5 second fade
@@ -337,6 +339,11 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		printSensorActivityButton.setMinimumSize(new Dimension(180, 20));
 		//printSensorActivityButton.setMaximumSize(new Dimension(180, 20));
 		controlPanel.add(printSensorActivityButton, "wrap");
+		
+		grabWebcamImage = new JButton("Grab Webcam Image");
+		grabWebcamImage.addActionListener(this);
+		grabWebcamImage.setMinimumSize(new Dimension(180, 20));
+		controlPanel.add(grabWebcamImage, "wrap");
 		
 		add(controlPanel, "cell 1 0, width 200!, height 380!, gap 0!");
 		
