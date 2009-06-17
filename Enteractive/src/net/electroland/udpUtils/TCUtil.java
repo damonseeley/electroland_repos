@@ -128,7 +128,7 @@ public class TCUtil {
 	public void grabWebcamImage(){
 		String url = "http://11flower.dyndns.org/axis-cgi/io/virtualinput.cgi?action=6:/";
 		String s = "stucktile:stucktile";	    
-		String base64authorization = new sun.misc.BASE64Encoder().encode(s.getBytes());	    
+		String base64authorization = "Basic " + new sun.misc.BASE64Encoder().encode(s.getBytes());	    
 		try{
 			URL u = new URL(url);
 			HttpURLConnection huc = (HttpURLConnection) u.openConnection();
