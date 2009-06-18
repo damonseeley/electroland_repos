@@ -27,6 +27,8 @@ import net.electroland.enteractive.utils.HexUtils;
 public class TCUtil {
 
 	static Logger logger = Logger.getLogger(TCUtil.class);
+	static Logger tileLogger = Logger.getLogger("TileErrors");
+	
 	public Properties tileProps;
 	private List<TileController> tileControllers;
 	private DatagramSocket socket;
@@ -90,6 +92,7 @@ public class TCUtil {
 				Tile tile = tileiter.next();
 				if(tile.getSensorState() && tile.getAge() > tileTimeout && !tile.rebooting){
 					logger.info("STUCKTILE: tile "+tile.getID()+" on for " + tileTimeout + " seconds");
+					tileLogger.info("STUCKTILE: tile "+tile.getID()+" on for " + tileTimeout + " seconds");
 					grabWebcamImage();
 					//triggerStateChange = true; 		// turn power off for this one tile
 					tile.reboot();
