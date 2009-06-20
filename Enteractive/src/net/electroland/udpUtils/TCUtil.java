@@ -91,7 +91,7 @@ public class TCUtil {
 			while(tileiter.hasNext()){
 				Tile tile = tileiter.next();
 				if(tile.getSensorState() && tile.getAge() > tileTimeout && !tile.rebooting){
-					tileLogger.info("STUCKTILE,"+tile.getID()+ ","+ tileTimeout/1000 + ",seconds");
+					tileLogger.info("stuck tile,"+tile.getID()+ ","+ tileTimeout/1000 + ",seconds");
 					grabWebcamImage();
 					//triggerStateChange = true; 		// turn power off for this one tile
 					tile.reboot();
@@ -143,7 +143,7 @@ public class TCUtil {
 			//logger.info("STUCKTILE: webcam event triggered");
 		} catch (IOException e){
 			logger.info(e);
-			logger.info("STUCKTILE: unable to access webcam image");
+			logger.info("stuck tile: unable to access webcam image");
 		}
 	}
 	
