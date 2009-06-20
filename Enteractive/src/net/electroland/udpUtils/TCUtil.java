@@ -34,7 +34,7 @@ public class TCUtil {
 	private DatagramSocket socket;
 	private String startByte, endByte, updateByte, feedbackByte;
 	private String onChangeByte, powerByte, reportByte, offsetByte, mcResetByte;
-	private int tileTimeout = 10000;		// tiles are rebooted after this duration of being on
+	private int tileTimeout = 120000;		// tiles are rebooted after this duration of being on
 	private int powerCycleDuration = 120000;	// duration to keep tile off when cycled
 	
 	public TCUtil(){
