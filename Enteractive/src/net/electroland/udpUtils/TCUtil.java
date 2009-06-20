@@ -34,7 +34,7 @@ public class TCUtil {
 	private DatagramSocket socket;
 	private String startByte, endByte, updateByte, feedbackByte;
 	private String onChangeByte, powerByte, reportByte, offsetByte, mcResetByte;
-	private int tileTimeout = 20000;		// tiles are rebooted after this duration of being on
+	private int tileTimeout = 10000;		// tiles are rebooted after this duration of being on
 	private int powerCycleDuration = 120000;	// duration to keep tile off when cycled
 	
 	public TCUtil(){
@@ -91,8 +91,7 @@ public class TCUtil {
 			while(tileiter.hasNext()){
 				Tile tile = tileiter.next();
 				if(tile.getSensorState() && tile.getAge() > tileTimeout && !tile.rebooting){
-					logger.info("STUCKTILE: tile "+tile.getID()+" on for " + tileTimeout + " seconds");
-					tileLogger.info("STUCKTILE: tile "+tile.getID()+" on for " + tileTimeout + " seconds");
+					tileLogger.info("STUCKTILE,"+tile.getID()+ ","+ tileTimeout/1000 + ",seconds");
 					grabWebcamImage();
 					//triggerStateChange = true; 		// turn power off for this one tile
 					tile.reboot();
@@ -141,7 +140,7 @@ public class TCUtil {
 			//InputStream is = new InputStream();
 			huc.getInputStream();
 			huc.disconnect();
-			logger.info("STUCKTILE: webcam event triggered");
+			//logger.info("STUCKTILE: webcam event triggered");
 		} catch (IOException e){
 			logger.info(e);
 			logger.info("STUCKTILE: unable to access webcam image");

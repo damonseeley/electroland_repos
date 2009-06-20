@@ -25,6 +25,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.apache.log4j.Logger;
+
 import net.electroland.enteractive.gui.GUI;
 import net.electroland.enteractive.gui.Lights3D;
 import net.electroland.enteractive.scheduler.TimedEvent;
@@ -82,8 +84,14 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 	PImage rippleTexture, sweepTexture, sphereTexture, propellerTexture, spiralTexture, radarTexture;
 	PImage ballTexture, pongTitle;	// pong textures
 	
+	static Logger logger = Logger.getLogger(EnteractiveMain.class);
+	
 	public EnteractiveMain(String[] args) throws UnknownHostException, OptionException{
 		super("Enteractive Control Panel");
+		
+		// need this call here to access the local log4j properties first, before the props in any linked project
+		logger.info("Enteractive Startup");
+
 		systemProps = loadProperties("depends//enteractive.properties");
 		lightProps = loadProperties("depends//lights.properties");
 		int fps = Integer.parseInt(lightProps.getProperty("fps"));
