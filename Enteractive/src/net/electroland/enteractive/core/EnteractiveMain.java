@@ -484,7 +484,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 			
 			Recipient floor = dmr.getRecipient("floor");
 			//if(amr.getCurrentAnimation(floor) instanceof Plasma){
-			if(amr.getCurrentAnimation(floor) instanceof Spotlight){
+			//if(amr.getCurrentAnimation(floor) instanceof Spotlight){
 				Raster raster = getRaster();
 				((GUI)gui).setRaster(raster);
 				Animation next = new LilyPad(ptr.getModel(), raster, smr, rippleTexture, sweepTexture, propellerTexture, spiralTexture, sphereTexture, radarTexture);
@@ -495,7 +495,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 				}
 				//Animation transition = new LinearFade(1, getRaster());
 				amr.startAnimation(next, fixtures);		// START LILYPAD
-			}
+			//}
 		}
 	}
 	
