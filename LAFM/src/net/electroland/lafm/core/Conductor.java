@@ -121,7 +121,17 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		
 		try{
 			blackoutProps = new Properties();
-			blackoutProps.load(new FileInputStream(new File("depends//blackout.properties")));
+			Calendar cal = new GregorianCalendar();
+			int month = cal.get(Calendar.MONTH) + 1;
+			if(month >= 12 && month < 3){			// dec, jan, feb
+				blackoutProps.load(new FileInputStream(new File("depends//blackout_winter.properties")));
+			} else if(month >= 3 && month < 5){	// mar, apr
+				blackoutProps.load(new FileInputStream(new File("depends//blackout_spring.properties")));
+			} else if(month >= 5 && month < 9){	// may, jun, jul, aug
+				blackoutProps.load(new FileInputStream(new File("depends//blackout_summer.properties")));
+			} else if(month >= 9 && month < 12){	// sep, oct, nov
+				blackoutProps.load(new FileInputStream(new File("depends//blackout_fall.properties")));
+			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
