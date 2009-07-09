@@ -65,6 +65,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 	public Properties sensors;					// pitch to fixture mappings
 	public Properties systemProps;
 	public Properties physicalProps;
+	public Properties blackoutProps;
 	public TimedEvent[] clockEvents;
 	private ImageSequenceCache imageCache; 	// for ImageSequenceThreads
 	public String[] sensorShows, timedShows;	// list of names of sensor-triggered shows
@@ -112,6 +113,15 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		try{
 			physicalProps = new Properties();
 			physicalProps.load(new FileInputStream(new File("depends//physical.properties")));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		try{
+			blackoutProps = new Properties();
+			blackoutProps.load(new FileInputStream(new File("depends//blackout.properties")));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -299,9 +309,28 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 
 		// find the actual fixture
 		DMXLightingFixture fixture = detectorMngr.getFixture(fixtureId);
-				
-		// did we get a fixture?
-		if (fixture != null){
+		// check for blackout time
+		boolean blackout = false;
+		if(blackoutProps.containsKey(fixtureId)){
+			String[] hours = blackoutProps.getProperty(fixtureId).split(",");
+			Calendar cal = new GregorianCalendar();
+			int currentHour = 0;
+			if(cal.get(Calendar.HOUR) == 0){
+				currentHour = 12;
+			} else {
+				currentHour = cal.get(Calendar.HOUR);
+			}
+			if(cal.get(Calendar.AM_PM) > 0){
+				currentHour += 12;
+			}
+			if(currentHour >= Integer.parseInt(hours[0]) && currentHour < Integer.parseInt(hours[1])){	
+				blackout = true;
+			}
+		}
+		
+		//System.out.println(currentHour +" "+ hours[0] +" "+ hours[1]);
+		// did we get a fixture? and is it not in a black out period?
+		if (fixture != null && !blackout){
 				
 			// tell any show thread that is a midi listener that an event occured.
 			Iterator<ShowThread> i = liveShows.iterator();
