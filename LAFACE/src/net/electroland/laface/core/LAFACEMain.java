@@ -123,6 +123,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		lafvp.addListener(this);
 		lafvp.start();
 		
 
@@ -332,13 +333,16 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 
 	public void cameraError(Exception cameraException) {
 		// TODO switch to wave show
+		System.out.println("camera error received");
 		Raster raster = getRaster();
 		rasterPanel.setRaster(raster);
 		Animation a = new WaveShow(raster);
 		Wave newwave = new Wave(0, raster, 0, 0);	// for shared wave sprite on multiple shows
 		((WaveShow)a).addWave(0, newwave);
 		Collection<Recipient> fixtures = dmr.getRecipients();
+		System.out.println("attempting to start waves...");
 		amr.startAnimation(a, fixtures); 
+		System.out.println("wave show started");
 		ImpulseThread impulseThread = new ImpulseThread(this);
 		impulseThread.start();
 	}
