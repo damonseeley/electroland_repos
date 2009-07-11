@@ -190,6 +190,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		// wait 6 secs (for things to get started up) then check weather every half hour
 		weatherChecker = new WeatherChecker(6000, 60 * 30 * 1000);
 		weatherChecker.addListener(this);
+		weatherChecker.start();
 	}
 	
 	public Properties loadProperties(String filename){
