@@ -15,6 +15,6 @@ curveFile=default-night.elc
 #adaptation=0.1
 adaptation=0.1
 warpGrid=0,0_110,0_240,0_369,0_480,0-0,89_102,75_240,66_373,64_480,75-0,173_101,168_241,165_375,163_480,164-0,239_104,244_241,244_374,241_480,235-0,352_108,354_240,360_367,360_480,345
-axisPassword=laface
+axisPassword=lafaceVidProc
 srcHeight=360
 showGraphics=false
