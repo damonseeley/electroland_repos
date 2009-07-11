@@ -2,6 +2,7 @@ package net.electroland.elvisVideoProcessor;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -27,7 +28,7 @@ public class LAFaceVideoProcessor extends Thread implements ImageReceiver{
 	public static final String JMYRON_SRC = "jMyronCam";
 	public static final String LOCALAXIS_SRC ="axis";
 	
-	private List <LAFaceVideoListener> listeners;
+	private List <LAFaceVideoListener> listeners = new ArrayList();
 
 
 	int frameCnt = 0;
