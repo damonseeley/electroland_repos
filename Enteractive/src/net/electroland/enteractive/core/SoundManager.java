@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -55,20 +57,45 @@ public class SoundManager implements SCSoundControlNotifiable {
 	
 	public SoundNode createLoopingSound(String filename, float x, float y, float width, float height){
 		if(!filename.equals("none") && serverIsLive){
-			float[] amplitudes = getAmplitudes(x, y, width, height);
-			return ss.createMonoSoundNode(soundFiles.get(absolutePath+filename), true, amplitudes, 1.0f);
+			Calendar cal = new GregorianCalendar();
+			int currentHour = 0;
+			if(cal.get(Calendar.HOUR) == 0){
+				currentHour = 12;
+			} else {
+				currentHour = cal.get(Calendar.HOUR);
+			}
+			if(cal.get(Calendar.AM_PM) > 0){
+				currentHour += 12;
+			}
+			if(currentHour >= Integer.parseInt(soundProps.getProperty("soundsOn")) && currentHour < Integer.parseInt(soundProps.getProperty("soundsOff"))){
+				float[] amplitudes = getAmplitudes(x, y, width, height);
+				return ss.createMonoSoundNode(soundFiles.get(absolutePath+filename), true, amplitudes, 1.0f);	
+			}
+			
 		}
 		return null;
 	}
 	
 	public SoundNode createMonoSound(String filename, float x, float y, float width, float height){
 		if(!filename.equals("none") && serverIsLive){
-			float[] amplitudes = getAmplitudes(x, y, width, height);
-			//System.out.println(amplitudes.length);
-			for(int i=0; i<amplitudes.length; i++){
-				//System.out.print(amplitudes[i]+" ");
+			Calendar cal = new GregorianCalendar();
+			int currentHour = 0;
+			if(cal.get(Calendar.HOUR) == 0){
+				currentHour = 12;
+			} else {
+				currentHour = cal.get(Calendar.HOUR);
 			}
-			return ss.createMonoSoundNode(soundFiles.get(absolutePath+filename), false, amplitudes, 1.0f);
+			if(cal.get(Calendar.AM_PM) > 0){
+				currentHour += 12;
+			}
+			if(currentHour >= Integer.parseInt(soundProps.getProperty("soundsOn")) && currentHour < Integer.parseInt(soundProps.getProperty("soundsOff"))){
+				float[] amplitudes = getAmplitudes(x, y, width, height);
+				//System.out.println(amplitudes.length);
+				for(int i=0; i<amplitudes.length; i++){
+					//System.out.print(amplitudes[i]+" ");
+				}
+				return ss.createMonoSoundNode(soundFiles.get(absolutePath+filename), false, amplitudes, 1.0f);
+			}
 		}
 		return null;
 	}
