@@ -25,9 +25,4 @@ public class Util {
 	{
 		return (int) b & 0xFF;
 	}
-	public static int[] fitCurve(int[] in)
-	{
-		// doesn't do jack shit yet.
-		return in;
-	}
 }
