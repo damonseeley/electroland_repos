@@ -212,35 +212,17 @@ public class DetectorManager {
 		byte[] bytes = new byte[256];
 
 		Map<String,Object> options = OptionParser.parse(str);
-		String strCurve = getOption(options, "-curve", id, false);
-		if (strCurve == null)
+		// parse 256 values
+		String strFullMap = getOption(options, "-fullmap", id, true);
+		StringTokenizer st = new StringTokenizer(strFullMap, ",[] \t"); // bullshit parsing.
+		int ptr = 0;
+		while (st.hasMoreTokens())
 		{
-			// parse 256 values
-			String strFullMap = getOption(options, "-fullmap", id, true);
-			StringTokenizer st = new StringTokenizer(strFullMap, ",[] \t"); // bullshit parsing.
-			int ptr = 0;
-			while (st.hasMoreTokens())
+			if (ptr == 256)
 			{
-				if (ptr == 256)
-				{
-					throw new OptionException(id + ": -fullmap contains more than 256 values");
-				}
-				bytes[ptr++] = (byte)(Integer.parseInt(st.nextToken()));
+				throw new OptionException(id + ": -fullmap contains more than 256 values");
 			}
-		}else{
-
-			int[] vals = new int[256];
-			StringTokenizer st = new StringTokenizer(strCurve, ",[] \t()"); // bullshit parsing.
-			int x = Integer.parseInt(st.nextToken());
-			int y = Integer.parseInt(st.nextToken());
-			vals[x] = y;
-			vals = Util.fitCurve(vals);
-			for (int foo = 0; foo < vals.length; foo++)
-			{
-				bytes[foo] = (byte)vals[foo];
-			}
-
-			throw new OptionException(id + ": The -curve feature is not yet supported.  Please use -fullmap.");
+			bytes[ptr++] = (byte)(Integer.parseInt(st.nextToken()));
 		}
 		return new ByteMap(bytes);
 	}
