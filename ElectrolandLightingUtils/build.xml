@@ -57,7 +57,7 @@
 	<target name="dist" depends="build-eclipse-compiler" description="Jar it all up">
 		<echo>Jarring it all up.</echo>
 		<jar 
-			destfile="./ELU.jar"
+			destfile="lib/ELU.jar"
 			basedir="."
 			includes="net/electroland/broadcast/server/*.class 
 						net/electroland/lighting/artnet/*.class 
