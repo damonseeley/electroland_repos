@@ -56,6 +56,7 @@
 
 	<target name="dist" depends="build-eclipse-compiler" description="Jar it all up">
 		<echo>Jarring it all up.</echo>
+
 		<jar 
 			destfile="lib/ELU.jar"
 			basedir="."
@@ -66,13 +67,6 @@
 						net/electroland/lighting/detector/animation.animations/*.class 
 						net/electroland/lighting/detector/models/*.class 
 						net/electroland/util/*.class"/>
-			<!--
-			<manifest>
-				<attribute name="Implementation-Vendor" value="Electroland"/>
-			    <attribute name="Implementation-Title" value="Electroland Lighting Utils"/>
-			    <attribute name="Implementation-Version" value="1.0"/>
-			</manifest>
-			-->
 		<echo>and done.</echo>
 	</target>
 
