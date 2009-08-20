@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse.ant.import?>
+<project basedir="." default="dist" name="ElectrolandLightingUtils">
+    <property environment="env"/>
+    <property name="Enteractive.location" value="../Enteractive"/>
+    <property name="LAFACE.location" value="../LAFACE"/>
+    <property name="ECLIPSE_HOME" value="../../../../../Applications/eclipse"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.5"/>
+    <property name="source" value="1.5"/>
+
+	
+	<path id="ElectrolandLightingUtils.classpath">
+        <pathelement location="."/>
+        <pathelement location="core.jar"/>
+        <pathelement location="log4j-1.2.15.jar"/>
+        <pathelement location="miglayout15-swing.jar"/>
+        <pathelement location="junit-4.6.jar"/>
+    </path>
+    <target name="init">
+        <copy includeemptydirs="false" todir=".">
+            <fileset dir=".">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete>
+            <fileset dir="." includes="**/*.class"/>
+        </delete>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="." source="${source}" target="${target}">
+            <src path="."/>
+            <classpath refid="ElectrolandLightingUtils.classpath"/>
+        </javac>
+    </target>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+
+	<target name="dist" depends="build-eclipse-compiler" description="Jar it all up">
+		<echo>Jarring it all up.</echo>
+		<jar 
+			destfile="./ELU.jar"
+			basedir="."
+			includes="net/electroland/broadcast/server/*.class 
+						net/electroland/lighting/artnet/*.class 
+						net/electroland/lighting/artnet/diagnostics/*.class 
+						net/electroland/lighting/detector/animation/*.class 
+						net/electroland/lighting/detector/animation.animations/*.class 
+						net/electroland/lighting/detector/models/*.class 
+						net/electroland/util/*.class"/>
+			<!--
+			<manifest>
+				<attribute name="Implementation-Vendor" value="Electroland"/>
+			    <attribute name="Implementation-Title" value="Electroland Lighting Utils"/>
+			    <attribute name="Implementation-Version" value="1.0"/>
+			</manifest>
+			-->
+		<echo>and done.</echo>
+	</target>
+
+</project>
