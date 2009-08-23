@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="dist" name="Enteractive">
+    <property environment="env"/>
+    <property name="ECLIPSE_HOME" value="../../../../../../Applications/eclipse"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.5"/>
+    <property name="source" value="1.5"/>
+    <path id="Enteractive.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="libraries/miglayout15-swing.jar"/>
+        <pathelement location="libraries/log4j-1.2.15.jar"/>
+        <pathelement location="libraries/SCSoundControl.jar"/>
+        <pathelement location="libraries/core.jar"/>
+        <pathelement location="libraries/javaosc_ELmod.jar"/>
+        <pathelement location="libraries/junit-4.6.jar"/>
+        <pathelement location="libraries/ELU.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="diagnostic" excludes="**/*.launch, **/*.java"/>
+        </copy>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src" excludes="**/*.launch, **/*.java"/>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="diagnostic"/>
+            <classpath refid="Enteractive.classpath"/>
+        </javac>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="Enteractive.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+	<target name="dist" depends="build-eclipse-compiler" description="Jar it all up">
+		<echo>Jarring it all up.</echo>
+		<jar 
+			destfile="dist/Enteractive.jar"
+			basedir="bin">
+			<manifest>
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Implementation-Vendor" value="Electroland"/>
+				<attribute name="Implementation-Title" value="Enteractive"/>
+				<attribute name="Implementation-Version" value="1.0"/>
+				<attribute name="Main-Class" value="net.electroland.enteractive.core.EnteractiveMain"/>
+				<attribute name="Class-Path" value="libaries/miglayout15-swing.jar 
+													libaries/log4j-1.2.15.jar 
+													libaries/SCSoundControl.jar 
+													libaries/core.jar 
+													libaries/javaosc_ELmod.jar 
+													libaries/junit-4.6.jar 
+													libaries/ELU.jar"/>
+			</manifest>		
+		</jar>
+		<echo>and done.</echo>
+	</target>
+</project>
