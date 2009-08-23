@@ -48,14 +48,7 @@
 		<echo>Jarring it all up.</echo>
 		<jar 
 			destfile="dist/ELU.jar"
-			basedir="bin"
-			includes="net/electroland/broadcast/server/*.class 
-						net/electroland/lighting/artnet/*.class 
-						net/electroland/lighting/artnet/diagnostics/*.class 
-						net/electroland/lighting/detector/animation/*.class 
-						net/electroland/lighting/detector/animation.animations/*.class 
-						net/electroland/lighting/detector/models/*.class 
-						net/electroland/util/*.class">
+			basedir="bin">
 			<manifest>
 				<attribute name="Built-By" value="${user.name}"/>
 				<attribute name="Implementation-Vendor" value="Electroland"/>
