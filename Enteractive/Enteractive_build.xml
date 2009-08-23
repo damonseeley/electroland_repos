@@ -66,13 +66,6 @@
 				<attribute name="Implementation-Title" value="Enteractive"/>
 				<attribute name="Implementation-Version" value="1.0"/>
 				<attribute name="Main-Class" value="net.electroland.enteractive.core.EnteractiveMain"/>
-				<attribute name="Class-Path" value="libaries/miglayout15-swing.jar 
-													libaries/log4j-1.2.15.jar 
-													libaries/SCSoundControl.jar 
-													libaries/core.jar 
-													libaries/javaosc_ELmod.jar 
-													libaries/junit-4.6.jar 
-													libaries/ELU.jar"/>
 			</manifest>		
 		</jar>
 		<echo>and done.</echo>
