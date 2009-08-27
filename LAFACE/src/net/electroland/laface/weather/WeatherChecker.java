@@ -3,6 +3,8 @@ package net.electroland.laface.weather;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
+import java.util.Date;
+import java.text.DateFormat;
 
 public class WeatherChecker  {
 	protected static final Timer TIMER = new Timer();
@@ -53,8 +55,10 @@ public class WeatherChecker  {
 
 		public void run() {
 			try { // we don't want this thread to die so catch any exception and keep going
-				
-				System.out.println("fetching weather");
+				Date now = new Date();
+				//DateFormat df = DateFormat.getDateInstance();
+				// hacky change made to prevent number format exception in weather checker.
+				System.out.println(now.toLocaleString()+" fetching weather");
 				
 				WeatherRecord record = ywp.fetch();
 				
