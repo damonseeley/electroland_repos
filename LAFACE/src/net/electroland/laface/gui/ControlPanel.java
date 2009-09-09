@@ -33,7 +33,6 @@ import net.electroland.laface.core.ImpulseThread;
 import net.electroland.laface.core.LAFACEMain;
 import net.electroland.laface.shows.DrawTest;
 import net.electroland.laface.shows.ImageSequence;
-import net.electroland.laface.shows.Reflection2;
 import net.electroland.laface.shows.TraceTest;
 import net.electroland.laface.shows.Video;
 import net.electroland.laface.shows.WaveShow;
@@ -397,13 +396,6 @@ public class ControlPanel extends JPanel implements ActionListener, ChangeListen
 	public boolean handleEvent(Event e){
 		if(e.target instanceof Scrollbar){
 			Animation a  = main.getCurrentAnimation();
-			if(a instanceof Reflection2){
-				if(e.target.equals(xOffsetSlider)){
-					((Reflection2)a).setXoffset(xOffsetSlider.getValue());
-				} else if(e.target.equals(xScaleSlider)){
-					((Reflection2)a).setXscale(xScaleSlider.getValue());
-				}
-			}
 			
 			if(currentWaveID != -1){					// if a wave sprite has been selected in the wave list...
 				if(a instanceof WaveShow){			// confirm show is WaveShow

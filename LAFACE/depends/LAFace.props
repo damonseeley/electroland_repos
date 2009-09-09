@@ -1,6 +1,7 @@
 #
 #Thu May 28 20:30:38 PDT 2009
-axisIP=192.168.247.4
+#axisIP=192.168.247.4
+axisIP=elaface.dyndns.org
 warpGridHeight=5
 mosaicSubDivs=7
 srcWidth=480

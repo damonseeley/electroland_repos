@@ -19,7 +19,6 @@ import javax.swing.JFrame;
 
 import processing.core.PConstants;
 import processing.core.PImage;
-import net.electroland.blobDetection.match.TrackListener;
 import net.electroland.elvisVideoProcessor.ElProps;
 import net.electroland.elvisVideoProcessor.LAFaceVideoListener;
 import net.electroland.elvisVideoProcessor.LAFaceVideoProcessor;
@@ -27,16 +26,10 @@ import net.electroland.laface.scheduler.TimedEvent;
 import net.electroland.laface.scheduler.TimedEventListener;
 import net.electroland.laface.gui.ControlPanel;
 import net.electroland.laface.gui.RasterPanel;
-import net.electroland.laface.shows.Blackout;
 import net.electroland.laface.shows.DrawTest;
-import net.electroland.laface.shows.Floaters;
-import net.electroland.laface.shows.Highlighter;
-import net.electroland.laface.shows.ImageSequence;
-import net.electroland.laface.shows.Reflection2;
 import net.electroland.laface.shows.Video;
 import net.electroland.laface.shows.WaveShow;
 import net.electroland.laface.sprites.Wave;
-import net.electroland.laface.tracking.Tracker;
 import net.electroland.laface.weather.WeatherChangeListener;
 import net.electroland.laface.weather.WeatherChangedEvent;
 import net.electroland.lighting.detector.DetectorManager;
@@ -64,9 +57,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 	private int lowCondition = 29;
 	private float lowVisibility = 8.0f;
 	public Raster firstRaster, secondRaster, thirdRaster;
-	public CarTracker carTracker;
 	public PImage highlight, linearGradient, leftarrow, rightarrow, verticalGradient;
-	public Tracker tracker;
 	public LAFaceVideoProcessor lafvp;
 	public ImageSequenceCache imageCache;	// only needed for testing
 	private WeatherChecker weatherChecker;
@@ -130,9 +121,6 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		// this gets rid of exception for not using native acceleration
 		//System.setProperty("com.sun.media.jai.disableMediaLib", "true");
 		
-		// this is running the blob tracker server
-		//tracker = new Tracker(this, 3);
-		//tracker.start();
 		
 		//Animation a = new WaveShow(firstRaster);
 		//Wave wave = new Wave(0, firstRaster, 0, 0);

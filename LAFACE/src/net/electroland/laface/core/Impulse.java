@@ -55,7 +55,11 @@ public class Impulse extends Thread{
 		// this will loop continually while sending impact events to the wave
 		while(impulseMode){
 			int y = (int)(((System.currentTimeMillis() - startTime)/(float)duration) * (targety-starty)) + starty;
-			wave.createImpact(x, y);
+			try{
+				wave.createImpact(x, y);
+			} catch(NullPointerException e){
+				impulseMode = false;
+			}
 			//wave.autoImpact(x, 0-y);
 			if(System.currentTimeMillis() - startTime > duration){
 				impulseMode = false;
