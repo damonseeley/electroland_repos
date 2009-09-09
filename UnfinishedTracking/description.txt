@@ -1,0 +1,15 @@
+This is all code that is dependent on ElVisBlobTracker that was originally developed
+for use in LAFACE, but was ultimately discarded for a live video option. It will NOT
+run in its current condition, as much of the code is still attempting to refer to
+LAFACEMain, and the organization of the classes is far from optimal.
+
+Everything in the shows package implements the Animation interface, as they are
+designed for visual output using ElectrolandLightingUtils.
+
+A Target follows a Track returned by ElVisBlobTracker. A Candidate follows a Track to
+evaluate its vector and ensure consistent movement. A Mover follows a Candidate and
+will continue along a Candidates vector even if the Track is sporadic or drops off
+the system entirely. Movers are ultimately what are referenced by the shows in order
+to get the equivalent of a low-pass-filtered position data.
+
+Aaron Siegel, 9-9-09
