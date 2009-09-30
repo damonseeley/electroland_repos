@@ -138,7 +138,7 @@ public class Swirl {
 			soundFileList[2] = ConnectionMain.properties.get("soundSwirlC");
 			soundFile = ConnectionMain.soundController.randomSound(soundFileList);
 			//soundFile = ConnectionMain.properties.get("soundSwirl");
-			soundloc = ConnectionMain.soundController.getNearestSpeaker(x,y);
+			//soundloc = ConnectionMain.soundController.getNearestSpeaker(x,y);
 			//System.out.println("NEAREST SPKR: "+soundloc[0] + " " + soundloc[1] + "   " + x + "," + y);
 			// only runs once when instantiated
 //			try{

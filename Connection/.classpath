@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="depends/core.jar"/>
 	<classpathentry kind="lib" path="depends/javaosc.jar"/>
 	<classpathentry kind="lib" path="src/log4j-1.2.15.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SCSoundControl"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
