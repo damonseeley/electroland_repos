@@ -36,7 +36,8 @@ public class ConnectionMain {
 	public ConnectionMain(){
 		
 		loadProperties();
-		soundController = new SoundController(properties.get("SoundTarget").split(":")[0], Integer.parseInt(properties.get("SoundTarget").split(":")[1]));
+		//soundController = new SoundController(properties.get("SoundTarget").split(":")[0], Integer.parseInt(properties.get("SoundTarget").split(":")[1]));
+		soundController = new SoundController(24, 2, properties);
 		startWatching();
 		startDrawing();
 		controlWindow = new ControlWindow();
