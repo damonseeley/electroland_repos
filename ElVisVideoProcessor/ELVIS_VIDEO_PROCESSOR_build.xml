@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="dist" name="ElVisVideoProcessor">
+    <property environment="env"/>
+    <property name="ECLIPSE_HOME" value="../../../../../Applications/eclipse"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.5"/>
+    <property name="source" value="1.5"/>
+    <path id="ElVis.classpath">
+        <pathelement location="${ElVis.location}/bin"/>
+        <pathelement location="${ElVis.location}/libraries/JMyron.jar"/>
+        <pathelement location="${ElVis.location}/libraries/miglayout15-swing.jar"/>
+    </path>
+    <path id="ElVisAxisCam.classpath">
+        <pathelement location="${ElVisAxisCam.location}/bin"/>
+    </path>
+    <path id="ElVisVideoProcessor.classpath">
+        <pathelement location="bin"/>
+        <path refid="ElVis.classpath"/>
+        <path refid="ElVisAxisCam.classpath"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall">
+        <ant antfile="${ElVis.location}/ELVIS_VIDEO_PROCESSOR_build.xml" dir="${ElVis.location}" inheritAll="false" target="clean"/>
+        <ant antfile="${ElVisAxisCam.location}/ELVIS_VIDEO_PROCESSOR_build.xml" dir="${ElVisAxisCam.location}" inheritAll="false" target="clean"/>
+    </target>
+    <target depends="build-project" name="build"/>
+
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="ElVisVideoProcessor.classpath"/>
+        </javac>
+    </target>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+
+	<target name="dist" depends="build-eclipse-compiler" description="Jar it all up">
+		<echo>Jarring it all up.</echo>
+		<jar 
+			destfile="dist/ELVIS_VIDEO_PROCESSOR.jar"
+			basedir="bin">
+			<manifest>
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Implementation-Vendor" value="Electroland"/>
+				<attribute name="Implementation-Title" value="ElVis Video Processor"/>
+				<attribute name="Implementation-Version" value="1.0"/>
+			</manifest>		
+		</jar>
+		<echo>and done.</echo>
+	</target>	
+
+</project>
