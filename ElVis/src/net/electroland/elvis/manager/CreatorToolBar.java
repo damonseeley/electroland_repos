@@ -12,12 +12,12 @@ public class CreatorToolBar extends JToolBar {
 	
 	public CreatorToolBar(ImagePanel ip) {
 		imagePanel = ip;
-		JButton button = new ToolBarButton("images/cursor.gif", "draw");
+		JButton button = new ToolBarButton("depends/images/cursor.gif", "draw");
 		button.addActionListener(new DrawListener());
 		add(button);
 
 		
-		button = new ToolBarButton("images/cursorEdit.gif", "point edit");
+		button = new ToolBarButton("depends/images/cursorEdit.gif", "point edit");
 		button.addActionListener(new EditListener());
 		add(button);
 		
