@@ -10,10 +10,10 @@ public class NoHoConfig {
 	//testing
 	public static boolean TESTING = false;
 	
-	public static String QUOTEFILE = "./afi100_photoshoot_quotes.txt";
-	//public static String QUOTEFILE = "./afi100_quotes_list_modified_with_breaks.txt";
+	public static String QUOTEFILE = "depends/afi100_photoshoot_quotes.txt";
+	//public static String QUOTEFILE = "./depends/afi100_quotes_list_modified_with_breaks.txt";
 	
-	public static String FONT_DIRECTORY ="5x7_STD_GIF/";
+	public static String FONT_DIRECTORY ="depends/5x7_STD_GIF/";
 	final public static int FRAMERATE = 50;
 	final public static int CHARWIDTH = 10;
 	final public static int CHARHEIGHT = 14;
@@ -47,8 +47,8 @@ public class NoHoConfig {
 //	final public static long SOUTH_SENSOR_THRESHOLD = 5000; // 
 	final public static double NORTH_INIT_X_OFFSET = 320.0;
 	final public static double SOUTH_INIT_X_OFFSET = 20.0; // in pixels, from the left or right respectively
-	final public static String NORTH_CAMERA_ELV_FNAME = "./noho_north_vs01.elv";
-	final public static String SOUTH_CAMERA_ELV_FNAME = "./noho_south_vs01.elv";
+	final public static String NORTH_CAMERA_ELV_FNAME = "depends//noho_north_vs01.elv";
+	final public static String SOUTH_CAMERA_ELV_FNAME = "depends//noho_south_vs01.elv";
 
 	// explosion sprites
 	final public static int BLAST_WIDTH = 30;

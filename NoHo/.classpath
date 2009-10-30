@@ -2,6 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ElVis"/>
+	<classpathentry kind="lib" path="libraries/ELVIS.jar"/>
+	<classpathentry kind="lib" path="libraries/JMyron.jar"/>
+	<classpathentry kind="lib" path="libraries/miglayout15-swing.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
