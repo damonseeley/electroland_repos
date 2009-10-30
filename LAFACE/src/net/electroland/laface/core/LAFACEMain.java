@@ -106,7 +106,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 		add(controlPanel, "wrap");
 		
 		// START GRABBING CAMERA FRAMES
-		ElProps.init("depends\\LAFace.props");
+		ElProps.init("depends/LAFace.props");
 		lafvp = new LAFaceVideoProcessor(ElProps.THE_PROPS);
 		lafvp.setBackgroundAdaptation(ElProps.THE_PROPS.setProperty("adaptation", .1));
 		try {
