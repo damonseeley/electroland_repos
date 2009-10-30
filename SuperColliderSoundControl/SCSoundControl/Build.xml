@@ -5,6 +5,7 @@
 	<property name="src" location="src" />
 	<property name="data" location="data" />
 	<property name="depends" location="depends" />
+	<property name="libraries" location="libraries" />
 
 	<property name="build" location="build" />
 	<property name="dist" location="dist" />
@@ -23,8 +24,8 @@
 		<javac srcdir="${src}" destdir="${build}">
 			<classpath>
 				<pathelement path="${classpath}" />
-				<pathelement path="${depends}/core.jar" />
-				<pathelement path="${depends}/javaOSC_ELmod.jar" />
+				<pathelement path="${libraries}/core.jar" />
+				<pathelement path="${libraries}/javaOSC_ELmod.jar" />
 			</classpath>
 		</javac>
 	</target>
@@ -64,7 +65,7 @@
 		</manifest>
 
 		<copy todir="${test}">
-			<fileset dir="${depends}">
+			<fileset dir="${libraries}">
 				<include name="*.jar" />
 			</fileset>
 		</copy>
