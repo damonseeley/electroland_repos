@@ -2,9 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="depends/jsuntimes-0.3.jar"/>
-	<classpathentry kind="lib" path="depends/jdom.jar"/>
-	<classpathentry kind="lib" path="depends/rome-1.0.jar"/>
-	<classpathentry kind="lib" path="depends/modules-0.3.2.jar"/>
+	<classpathentry kind="lib" path="libraries/jdom.jar"/>
+	<classpathentry kind="lib" path="libraries/jsuntimes-0.3.jar"/>
+	<classpathentry kind="lib" path="libraries/modules-0.3.2.jar"/>
+	<classpathentry kind="lib" path="libraries/rome-1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
