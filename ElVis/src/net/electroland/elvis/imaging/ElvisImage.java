@@ -54,8 +54,8 @@ public class ElvisImage {
 
 	public static void main(String args[]) {
 
-		PlanarImage bgImage = ColorToGray(JAI.create("fileload", "images/tmpImg.gif"));
-		PlanarImage image = ColorToGray(JAI.create("fileload", "images/tmpImg2.gif"));
+		PlanarImage bgImage = ColorToGray(JAI.create("fileload", "depends/images/tmpImg.gif"));
+		PlanarImage image = ColorToGray(JAI.create("fileload", "depends/images/tmpImg2.gif"));
 		
 		long t = System.currentTimeMillis() + 1000;
 	     PlanarImage add = null;
