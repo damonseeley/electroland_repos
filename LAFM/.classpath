@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ArtNetBroadcaster_LAFM"/>
 	<classpathentry kind="lib" path="libraries/controlP5.jar"/>
 	<classpathentry kind="lib" path="libraries/core.jar"/>
 	<classpathentry kind="lib" path="libraries/log4j-1.2.15.jar"/>
@@ -14,6 +13,7 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="libraries/javaosc_ELmod.jar"/>
 	<classpathentry kind="lib" path="libraries/wrapper.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/SCSoundControl"/>
+	<classpathentry kind="lib" path="libraries/ARTNET.jar"/>
+	<classpathentry kind="lib" path="libraries/SCSoundControl.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
