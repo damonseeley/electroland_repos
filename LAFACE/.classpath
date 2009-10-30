@@ -2,11 +2,19 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ElectrolandLightingUtils"/>
 	<classpathentry kind="lib" path="libraries/core.jar"/>
 	<classpathentry kind="lib" path="libraries/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="libraries/miglayout15-swing.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ElVisVideoProcessor"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ElectrolandInstallUtils"/>
+	<classpathentry kind="lib" path="libraries/EIU.jar"/>
+	<classpathentry kind="lib" path="libraries/ELU.jar"/>
+	<classpathentry kind="lib" path="libraries/jdom.jar"/>
+	<classpathentry kind="lib" path="libraries/jsuntimes-0.3.jar"/>
+	<classpathentry kind="lib" path="libraries/junit-4.6.jar"/>
+	<classpathentry kind="lib" path="libraries/modules-0.3.2.jar"/>
+	<classpathentry kind="lib" path="libraries/rome-1.0.jar"/>
+	<classpathentry kind="lib" path="libraries/ELVIS_AXIS_CAM.jar"/>
+	<classpathentry kind="lib" path="libraries/ELVIS_VIDEO_PROCESSOR.jar"/>
+	<classpathentry kind="lib" path="libraries/ELVIS.jar"/>
+	<classpathentry kind="lib" path="libraries/JMyron.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

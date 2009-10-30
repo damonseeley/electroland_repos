@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<project basedir="." default="dist" name="LAFACE">
+    <property environment="env"/>
+    <property name="ECLIPSE_HOME" value="../../../../../Applications/eclipse"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.5"/>
+    <property name="source" value="1.5"/>
+    <path id="LAFACE.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="libraries/core.jar"/>
+        <pathelement location="libraries/log4j-1.2.15.jar"/>
+        <pathelement location="libraries/miglayout15-swing.jar"/>
+        <pathelement location="libraries/EIU.jar"/>
+        <pathelement location="libraries/ELU.jar"/>
+        <pathelement location="libraries/jdom.jar"/>
+        <pathelement location="libraries/jsuntimes-0.3.jar"/>
+        <pathelement location="libraries/junit-4.6.jar"/>
+        <pathelement location="libraries/modules-0.3.2.jar"/>
+        <pathelement location="libraries/rome-1.0.jar"/>
+        <pathelement location="libraries/ELVIS_AXIS_CAM.jar"/>
+        <pathelement location="libraries/ELVIS_VIDEO_PROCESSOR.jar"/>
+        <pathelement location="libraries/ELVIS.jar"/>
+        <pathelement location="libraries/JMyron.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-project" name="build"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="LAFACE.classpath"/>
+        </javac>
+    </target>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+    <target name="LAFACEMain">
+        <java classname="net.electroland.laface.core.LAFACEMain" failonerror="true" fork="yes">
+            <classpath refid="LAFACE.classpath"/>
+        </java>
+    </target>
+
+	<target name="dist" depends="build-eclipse-compiler" description="Jar it all up">
+		<echo>Jarring it all up.</echo>
+		<jar 
+			destfile="dist/LAFACE.jar"
+			basedir="bin">
+			<manifest>
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Implementation-Vendor" value="Electroland"/>
+				<attribute name="Implementation-Title" value="LAFACE"/>
+				<attribute name="Implementation-Version" value="1.0"/>
+			</manifest>		
+		</jar>
+		<echo>and done.</echo>
+	</target>	
+
+</project>
