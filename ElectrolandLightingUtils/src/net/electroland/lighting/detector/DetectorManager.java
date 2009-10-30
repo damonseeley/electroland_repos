@@ -293,6 +293,24 @@ public class DetectorManager {
 		Rectangle boundary = (Rectangle) parseBoundary(getOption(options, "-boundary", id, true));
 		String modelStr = getOption(options, "-model", id, true);
 		DetectionModel model = null;
+/*
+		try
+		{
+		    model = (DetectionModel)(Class.forName(modelStr).newInstance());
+		}catch(ClassNotFoundException e)
+		{
+		    throw new OptionException("Can't find DetectionModel " + modelStr + " in " + id);
+		}catch(ClassCastException e)
+		{
+		    throw new OptionException(modelStr + " is not a valid DetectionModel in " + id);
+		} catch (InstantiationException e) 
+		{
+			throw new OptionException(modelStr + " InstantiationException in " + id);
+		} catch (IllegalAccessException e) 
+		{
+			throw new OptionException(modelStr + " IllegalAccessException in " + id);
+		}		
+*/				
 		// need to implement a real class loader here.
 		if (modelStr.equalsIgnoreCase("net.electroland.lighting.detector.models.RedDetectionModel")){
 			model = new RedDetectionModel();
