@@ -26,7 +26,8 @@ textAlphaFallOff		= 255
 horizontalFallOff		= 200
 
 # AUTHOR TEXT PROPERTIES
-authorFontName			= Helvetica LT 77 Bold Condensed
+#authorFontName			= Helvetica LT 77 Bold Condensed
+authorFontName			= Arial
 authorFontSize			= 64
 textScaleMin 			= 0.3
 textScaleMax 			= 1.5
@@ -43,7 +44,8 @@ authorSelectedGreenVal	= 255
 authorSelectedBlueVal	= 255
 
 # QUOTE TEXT PROPERTIES
-quoteFontName			= HelveticaNeue LT 57 Cn
+#quoteFontName			= HelveticaNeue LT 57 Cn
+quoteFontName			= Arial
 quoteFontSize			= 64
 quoteTextScale			= 0.4
 charsPerLine			= 40
@@ -55,7 +57,8 @@ quoteTextBlueVal		= 50
 quotationOffset			= 10
 
 # BIO TEXT PROPERTIES
-bioFontName				= HelveticaNeue LT 57 Cn
+#bioFontName				= HelveticaNeue LT 57 Cn
+bioFontName				= Arial
 bioFontSize				= 64
 bioTextScale			= 0.4
 bioTextRedVal			= 200
@@ -63,7 +66,8 @@ bioTextGreenVal			= 200
 bioTextBlueVal			= 200
 
 # DATE TEXT PROPERTIES (displayed when bio is displayed)
-dateFontName			= HelveticaNeue LT 67 MdCn
+#dateFontName			= HelveticaNeue LT 67 MdCn
+dateFontName			= Arial
 dateFontSize			= 64
 dateTextScale			= 0.7
 dateTextRedVal			= 255
@@ -71,7 +75,8 @@ dateTextGreenVal		= 50
 dateTextBlueVal			= 50
 
 # GENRE TEXT PROPERTIES (displayed when bio is displayed)
-genreFontName			= HelveticaNeue LT 67 MdCn
+#genreFontName			= HelveticaNeue LT 67 MdCn
+genreFontName			= Arial
 genreFontSize			= 64
 genreTextScale			= 0.5
 genreTextRedVal			= 150
