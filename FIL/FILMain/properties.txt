@@ -93,9 +93,9 @@ textVerticalSpring		= 0.015
 textVerticalDamping		= 0.97
 textHorizontalDamping	= 0.97
 # prev 30
-clearAreaMultiplier		= 500
+clearAreaMultiplier		= 2000
 # prev 3
-quotePushMultiplier		= 30 
+quotePushMultiplier		= 300 
 
 # note: durations are measured in frames now
 textFadeInDuration		= 30
@@ -123,10 +123,10 @@ minZoom					= 1.6
 
 # RAMP MASK PROPERTIES
 rampMaskTopLeftX		= 0
-rampMaskTopLeftY		= 700
-rampMaskTopRightX		= 2000
-rampMaskTopRightY		= 900
-rampMaskBottomRightX	= 2000
+rampMaskTopLeftY		= 860
+rampMaskTopRightX		= 1806
+rampMaskTopRightY		= 1787
+rampMaskBottomRightX	= 1806
 rampMaskBottomRightY	= 1080
 rampMaskBottomLeftX		= 0
 rampMaskBottomLeftY		= 1080
