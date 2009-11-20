@@ -38,12 +38,12 @@ public class SliderBar extends Widget{
     //rect(x,y,w,h);
     if(dragging){
       image(leftImgDown, x, y);
+      image(segmentImgDown, x + leftImg.width, y, int(w - (leftImg.width+rightImg.width)) + 1, segmentImg.height);
       image(rightImgDown, int(x + leftImg.width + (w - (leftImg.width+rightImg.width))), y);
-      image(segmentImgDown, x + leftImg.width, y, int(w - (leftImg.width+rightImg.width)), segmentImg.height);
     } else {
       image(leftImg, x, y);
+      image(segmentImg, x + leftImg.width, y, int(w - (leftImg.width+rightImg.width)) + 1, segmentImg.height);
       image(rightImg, int(x + leftImg.width + (w - (leftImg.width+rightImg.width))), y);
-      image(segmentImg, x + leftImg.width, y, int(w - (leftImg.width+rightImg.width)), segmentImg.height);
     }
   }
   
