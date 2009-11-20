@@ -587,7 +587,8 @@ public void createQuote(Author author){
   if(quote.endsWith("\"")){
     quote = quote.substring(0, quote.length()-1);
   }
-  quote = "\"" + quote + "\"";
+  //quote = "\"" + quote + "\"";
+  quote = "“" + quote + "”";
   
   float lineHeight = author.getTextRenderer().getHeight(quote) * quoteTextScale;
   float maxLineWidth = 0;
