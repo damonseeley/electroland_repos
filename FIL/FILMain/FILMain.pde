@@ -1734,7 +1734,7 @@ void keyPressed(){
     } else {
       cursor(ARROW);
     }
-    displayCursor != displayCursor;
+    displayCursor = !displayCursor;
   } else if(key == 'b' || key == 'B'){  // toggle bounding box display
     displayBoundingBoxes = !displayBoundingBoxes;
   } else if(key == 's' || key == 'S'){  // toggle statistics display
