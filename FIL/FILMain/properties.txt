@@ -7,6 +7,7 @@ yflip					= true
 standAlone				= false
 displayRampMask			= true
 xmlFileName				= data.xml
+displayCursor			= true
 
 # APPLET DIMENSIONAL PROPERTIES
 # ultimately determined by MPE properties file

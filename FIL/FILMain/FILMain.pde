@@ -93,6 +93,7 @@ boolean displayFrames = false;
 boolean displayBoundingBoxes = false;
 boolean enableCamera = false;
 boolean zooming = false;
+boolean displayCursor = false;
 int zoomCounter, zoomDuration;
 float zoomTarget, zoomStart;
 float maxZoom, minZoom;
@@ -146,6 +147,12 @@ long lastTime;
 int mpeFps = 0;
 ArrayList mpeFpsHistory = new ArrayList();
 
+// RAMP MASK VARIABLES
+int rampMaskTopLeftX, rampMaskTopLeftY;
+int rampMaskTopRightX, rampMaskTopRightY;
+int rampMaskBottomRightX, rampMaskBottomRightY;
+int rampMaskBottomLeftX, rampMaskBottomLeftY;
+
 
 
 
@@ -159,7 +166,9 @@ void setup(){
   client = new TCPClient(sketchPath("mpe.ini"), this);
   size(client.getLWidth(), client.getLHeight(), OPENGL);
   randomSeed(1);
-  //noCursor();
+  if(!displayCursor){
+    noCursor();
+  }
   xGrav = client.getMWidth()/2;
   yGrav = client.getMHeight()/2;
   colorMode(RGB, 255);
@@ -484,6 +493,7 @@ void loadProperties(){
   
   enableCamera          = Boolean.parseBoolean(properties.getProperty("enableCamera"));   // camera properties
   displayControls       = Boolean.parseBoolean(properties.getProperty("displayControls"));
+  displayCursor         = Boolean.parseBoolean(properties.getProperty("displayCursor"));
   
   /*
   buttonAuthorCloudImage  = loadImage(properties.getProperty("buttonAuthorCloudImage"));                // button properties
@@ -1719,11 +1729,12 @@ void mouseDragged(){
 
 void keyPressed(){
   if(key == 'c' || key == 'C'){         // toggle gravity along the x axis
-    if(xgravity > 0){
-      xgravity = 0;
+    if(displayCursor){
+      noCursor();
     } else {
-      xgravity = Float.parseFloat(properties.getProperty("xgravity"));
+      cursor(ARROW);
     }
+    displayCursor != displayCursor;
   } else if(key == 'b' || key == 'B'){  // toggle bounding box display
     displayBoundingBoxes = !displayBoundingBoxes;
   } else if(key == 's' || key == 'S'){  // toggle statistics display
