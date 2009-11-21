@@ -6,5 +6,7 @@
 	<classpathentry kind="lib" path="libraries/jsuntimes-0.3.jar"/>
 	<classpathentry kind="lib" path="libraries/modules-0.3.2.jar"/>
 	<classpathentry kind="lib" path="libraries/rome-1.0.jar"/>
+	<classpathentry kind="lib" path="libraries/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="libraries/miglayout15-swing.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
