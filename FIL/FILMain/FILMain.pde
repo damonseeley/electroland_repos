@@ -34,6 +34,7 @@ int xSize, ySize;                // stage width/height
 float xGrav, yGrav;              // location of gravity center
 float xgravity, ygravity;        // gravitational force
 float interfaceScale = 1.6;      // scaling of the text cloud for master control machine
+float defaultInterfaceScale;
 int verticalOffset = 0;
 int horizontalOffset = 0;        // necessary for slider widget to operate
 boolean yflip = false;
@@ -70,6 +71,7 @@ int quoteID = 0;
 int maxQuotes;
 float clearAreaMultiplier;
 float quotePushMultiplier;
+int quoteBlockTopMargin, bioBlockTopMargin, dateTextLeftMargin, genreTextTopMargin;
 
 // COLOR VARIABLES
 int backgroundGray;
@@ -94,8 +96,10 @@ boolean displayBoundingBoxes = false;
 boolean enableCamera = false;
 boolean zooming = false;
 boolean displayCursor = false;
-int zoomCounter, zoomDuration;
+int zoomCounter, zoomDuration, zoomDelayCounter;
+int buttonZoomDuration, inactivityZoomDuration;
 float zoomTarget, zoomStart;
+float inactivityZoomDelay;
 float maxZoom, minZoom;
 PFont statFont;
 long lastDragged;
@@ -407,6 +411,7 @@ void loadProperties(){
   ygravity                = Float.parseFloat(properties.getProperty("ygravity"));
   yflip                   = Boolean.parseBoolean(properties.getProperty("yflip"));
   interfaceScale          = Float.parseFloat(properties.getProperty("interfaceScale"));
+  defaultInterfaceScale   = interfaceScale;
   //verticalOffset        = Integer.parseInt(properties.getProperty("verticalOffset"));
   dragDamp                = Float.parseFloat(properties.getProperty("dragDamp"));  // amount of damping user control
   dragRadius              = Float.parseFloat(properties.getProperty("dragRadius"));
@@ -414,7 +419,7 @@ void loadProperties(){
   dropDownItemHeight      = Integer.parseInt(properties.getProperty("dropDownItemHeight"));
   dropDownItemLeading     = Integer.parseInt(properties.getProperty("dropDownItemLeading"));
   //standAlone              = Boolean.parseBoolean(properties.getProperty("standAlone"));
-  zoomDuration            = Integer.parseInt(properties.getProperty("zoomDuration"));
+  buttonZoomDuration      = Integer.parseInt(properties.getProperty("zoomDuration"));
   maxZoom                 = Float.parseFloat(properties.getProperty("maxZoom"));
   minZoom                 = Float.parseFloat(properties.getProperty("minZoom"));
   
@@ -453,6 +458,7 @@ void loadProperties(){
   textHorizontalSpring  = Float.parseFloat(properties.getProperty("textHorizontalSpring"));// springy action between textblocks
   textVerticalSpring    = Float.parseFloat(properties.getProperty("textVerticalSpring"));
   quotePushMultiplier   = Float.parseFloat(properties.getProperty("quotePushMultiplier"));
+  quoteBlockTopMargin   = Integer.parseInt(properties.getProperty("quoteBlockTopMargin"));
   
   bioFontName           = properties.getProperty("bioFontName");
   bioFontSize           = Integer.parseInt(properties.getProperty("bioFontSize"));
@@ -460,6 +466,7 @@ void loadProperties(){
   bioTextRedVal         = Integer.parseInt(properties.getProperty("bioTextRedVal"));
   bioTextGreenVal       = Integer.parseInt(properties.getProperty("bioTextGreenVal"));
   bioTextBlueVal        = Integer.parseInt(properties.getProperty("bioTextBlueVal"));
+  bioBlockTopMargin     = Integer.parseInt(properties.getProperty("bioBlockTopMargin"));
   
   dateFontName          = properties.getProperty("dateFontName");
   dateFontSize          = Integer.parseInt(properties.getProperty("dateFontSize"));
@@ -467,6 +474,7 @@ void loadProperties(){
   dateTextRedVal        = Integer.parseInt(properties.getProperty("dateTextRedVal"));
   dateTextGreenVal      = Integer.parseInt(properties.getProperty("dateTextGreenVal"));
   dateTextBlueVal       = Integer.parseInt(properties.getProperty("dateTextBlueVal"));
+  dateTextLeftMargin    = Integer.parseInt(properties.getProperty("dateTextLeftMargin"));  
   
   genreFontName         = properties.getProperty("genreFontName");
   genreFontSize         = Integer.parseInt(properties.getProperty("genreFontSize"));
@@ -474,11 +482,14 @@ void loadProperties(){
   genreTextRedVal       = Integer.parseInt(properties.getProperty("genreTextRedVal"));
   genreTextGreenVal     = Integer.parseInt(properties.getProperty("genreTextGreenVal"));
   genreTextBlueVal      = Integer.parseInt(properties.getProperty("genreTextBlueVal"));
+  genreTextTopMargin    = Integer.parseInt(properties.getProperty("genreTextTopMargin"));
   
-  screensaverInactivity = Integer.parseInt(properties.getProperty("screensaverInactivity"));
-  screensaverSpeed      = Float.parseFloat(properties.getProperty("screensaverSpeed"));
-  resetDelay            = Integer.parseInt(properties.getProperty("resetDelay"));
-  resetDuration         = Integer.parseInt(properties.getProperty("resetDuration"));
+  screensaverInactivity   = Integer.parseInt(properties.getProperty("screensaverInactivity"));
+  screensaverSpeed        = Float.parseFloat(properties.getProperty("screensaverSpeed"));
+  resetDelay              = Integer.parseInt(properties.getProperty("resetDelay"));
+  resetDuration           = Integer.parseInt(properties.getProperty("resetDuration"));
+  inactivityZoomDelay     = Integer.parseInt(properties.getProperty("inactivityZoomDelay"));
+  inactivityZoomDuration  = Integer.parseInt(properties.getProperty("inactivityZoomDuration"));
   
   textRollOverDuration  = Integer.parseInt(properties.getProperty("textRollOverDuration"));
   textRollOutDuration   = Integer.parseInt(properties.getProperty("textRollOutDuration"));
@@ -679,6 +690,7 @@ public void createQuote(Author author){
   
   author.setFadeInDuration(quoteFadeInDuration);  
   author.setFadeOutDuration(quoteFadeOutDuration);
+  author.setAuthorFadeOutDelay(authorFadeOutDelay);
   author.setHoldDuration((quoteHoldDuration*lineCount) + quoteIntroDelay + authorFadeOutDelay);
 
   ArrayList textBlocksToRemove = new ArrayList();  // list of ID numbers for textblocks to remove 
@@ -726,15 +738,19 @@ public void createQuote(Author author){
       //ypos = (lineHeight * i) + ((lineHeight*0.5) + author.getY()+(author.getHeight()*0.5) + textMarginVertical+1);
       if(author.getHeight() > author.getMaxHeight()){
         ypos = (lineHeight * i) + ((lineHeight*0.5) + author.getY()+(author.getHeight()*0.5) + textMarginVertical+1);
+        ypos += quoteBlockTopMargin;
       } else {
         ypos = (lineHeight * i) + ((lineHeight*0.5) + author.getY()+(author.getMaxHeight()*0.5) + textMarginVertical+1);
+        ypos += quoteBlockTopMargin;
       }
     } else {
       //ypos = (author.getY()-(author.getHeight()*0.5)) - ((lineCount*lineHeight) - (lineHeight*0.5) - (lineHeight * i) + (textMarginVertical+1));
       if(author.getHeight() > author.getMaxHeight()){
         ypos = (author.getY() - (author.getHeight()*0.5)) - ((lineCount*lineHeight) - (lineHeight*0.5) - (lineHeight * i) + (textMarginVertical+1));
+        ypos -= quoteBlockTopMargin;
       } else {
         ypos = (author.getY() - (author.getMaxHeight()*0.5)) - ((lineCount*lineHeight) - (lineHeight*0.5) - (lineHeight * i) + (textMarginVertical+1));
+        ypos -= quoteBlockTopMargin;
       }
     }
     //println(ypos);
@@ -919,7 +935,7 @@ void createBio(Author author){
   numTextBlocks++;
   
   // create the date text object that will go on the right of the author name
-  String dateString = "b. ";
+  String dateString = "b.";
   if(author.born > 0){
     dateString += author.born;
   }
@@ -940,7 +956,7 @@ void createBio(Author author){
   } else {
     dateY = dateY - (author.getHeight()/2) + dateHeight/2;
   }
-  dateX += dateObj.getWidth()/2;
+  dateX += (dateObj.getWidth()/2) + dateTextLeftMargin;
   dateObj.setX(dateX);
   dateObj.setY(dateY);
   dateObj.setRed(dateTextRedVal);
@@ -952,7 +968,7 @@ void createBio(Author author){
   dateObj.setStageWidth(client.getMWidth());
   dateObj.setStageHeight(client.getMHeight());
   dateObj.clearArea(textBlocks, clearAreaMultiplier);
-  dateObj.snapToRight();
+  dateObj.snapToRight(dateTextLeftMargin);
   
   if(author.born > 0){
     textBlocks.put(numTextBlocks, dateObj);
@@ -999,13 +1015,16 @@ void createBio(Author author){
   author.setFadeInDuration(quoteFadeInDuration);
   author.setFadeOutDuration(quoteFadeOutDuration);
   author.setHoldDuration((quoteHoldDuration*lineCount) + quoteIntroDelay + authorFadeOutDelay);
+  author.setAuthorFadeOutDelay(authorFadeOutDelay);
   genreObj.setHoldDuration((quoteHoldDuration*lineCount) - (quoteIntroDelay + (quoteFadeInDuration*lineCount)));
   dateObj.setHoldDuration((quoteHoldDuration*lineCount) - (quoteIntroDelay + (quoteFadeInDuration*lineCount)));
   
   if(author.getY() < client.getMHeight()*0.5){
     genreY = genreY + (author.getHeight()/2) + genreHeight/2;
+    genreY += genreTextTopMargin;
   } else {
     genreY = genreY - (author.getHeight()/2) - genreHeight/2 - (lineCount * lineHeight);
+    genreY -= genreTextTopMargin;
   }
   genreObj.setY(genreY);
   
@@ -1017,9 +1036,11 @@ void createBio(Author author){
     if(author.getY() < client.getMHeight()*0.5){
       ypos = (lineHeight * i) + ((lineHeight*0.5) + author.getY()+(author.getHeight()*0.5) + textMarginVertical+1);
       ypos += genreHeight;
+      ypos += bioBlockTopMargin;
     } else {
       ypos = (author.getY()-(author.getHeight()*0.5)) - ((lineCount*lineHeight) - (lineHeight*0.5) - (lineHeight * i) + (textMarginVertical+1));
       //ypos -= genreHeight;
+      ypos -= bioBlockTopMargin;      
     }
     bioLine.setY(ypos);
   }
@@ -1410,6 +1431,7 @@ void render(TCPClient c){
   } else {
     screensaverActivated = false;
     resetCounter = 0;
+    zoomDelayCounter = 0;
   }
   
   if(screensaverActivated){
@@ -1418,6 +1440,23 @@ void render(TCPClient c){
       TextBlock textBlock = (TextBlock)iter.next();
       textBlock.xv += screensaverSpeed;
     }
+    
+    /*
+    // THIS IS WHERE FUCKED UP INACTIVITY ZOOMING OCCURS
+    if(interfaceScale != defaultInterfaceScale){
+      if(!zooming){
+        zoomDelayCounter++;
+      }
+      if(zoomDelayCounter > inactivityZoomDelay){
+        zoomDuration = inactivityZoomDuration;
+        zoomTarget = defaultInterfaceScale;
+        zoomStart = interfaceScale;
+        zoomDelayCounter = 0;
+        zooming = true;
+      }
+    }
+    */
+    
     resetCounter++;
     if(resetCounter > resetDelay){
       // trigger "freak out" and re-arrange all author names as well as randomize and tween to a new textscale
@@ -1481,6 +1520,7 @@ void frameEvent(TCPClient c){
         if(enableCamera){
           if(interfaceScale > maxZoom){
             // TODO: tween the interfaceScale down by 0.1
+            zoomDuration = buttonZoomDuration;
             zoomTarget = interfaceScale - 0.1;
             zoomStart = interfaceScale;
             zooming = true;
@@ -1493,6 +1533,7 @@ void frameEvent(TCPClient c){
         if(enableCamera){
           if(interfaceScale < minZoom){
             // TODO: tween the interfaceScale up by 0.1
+            zoomDuration = buttonZoomDuration;
             zoomTarget = interfaceScale + 0.1;
             zoomStart = interfaceScale;
             zooming = true;

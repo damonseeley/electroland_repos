@@ -24,7 +24,19 @@ public class Slider extends Widget implements WidgetListener{
   }
   
   public void pressed(){
-    sliderBar.mousePressed(mouseX-x, mouseY-y);
+    if(!sliderBar.mouseInside(mouseX-x, mouseY-y)){
+      if(mouseX-x < sliderBar.getX()){
+        sliderBar.setOffset(mouseX-x);
+        WidgetEvent newwe = new WidgetEvent(this, DRAGGED, true);
+        super.newEvent(newwe);
+      } else if(mouseX-x > sliderBar.getX()+sliderBar.getWidth()){
+        sliderBar.setOffset((mouseX-x) - sliderBar.getWidth());
+        WidgetEvent newwe = new WidgetEvent(this, DRAGGED, true);
+        super.newEvent(newwe);
+      }
+    } else {
+      sliderBar.mousePressed(mouseX-x, mouseY-y);
+    }
   }
   
   public void released(){

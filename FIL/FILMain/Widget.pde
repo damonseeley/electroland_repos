@@ -126,6 +126,14 @@ public abstract class Widget {
     return h;
   }
   
+  final public void setX(int x){
+    this.x = x;
+  }
+  
+  final public void setY(int y){
+    this.y = y;
+  }
+  
   
   
   /* COLOR SETTER FUNCTIONS */
