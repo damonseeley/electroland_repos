@@ -2,6 +2,10 @@ public class Slider extends Widget implements WidgetListener{
   
   private PImage img;
   public SliderBar sliderBar;
+  private int sliderXtarget, sliderXsource;
+  private int barSlideDuration;
+  private int barSlideCounter;
+  private boolean barSliding = false;
   
   public Slider(String name, int x, int y, float value, PImage img, PImage segmentImg, PImage segmentImgDown,
                 PImage leftImg, PImage leftImgDown, PImage rightImg, PImage rightImgDown){
@@ -20,19 +24,41 @@ public class Slider extends Widget implements WidgetListener{
     translate(x,y,0);
     image(img,0,0);
     sliderBar.draw();
+    if(barSliding){
+      float progress = sin((barSlideCounter / (float)barSlideDuration) * (PI/2));
+      float xpos = sliderXsource + ((sliderXtarget - sliderXsource) * progress);
+      sliderBar.setOffset(int(xpos));
+      WidgetEvent newwe = new WidgetEvent(this, DRAGGED, true);
+      super.newEvent(newwe);
+      barSlideCounter++;
+      if(barSlideCounter == barSlideDuration){
+        barSliding = false;
+        barSlideCounter = 0;
+        sliderBar.setOffset(sliderXtarget);
+        super.newEvent(new WidgetEvent(this, DRAGGED, true));
+      }
+    }
     popMatrix();
   }
   
   public void pressed(){
     if(!sliderBar.mouseInside(mouseX-x, mouseY-y)){
       if(mouseX-x < sliderBar.getX()){
-        sliderBar.setOffset(mouseX-x);
-        WidgetEvent newwe = new WidgetEvent(this, DRAGGED, true);
-        super.newEvent(newwe);
+        sliderXsource = sliderBar.getX();
+        sliderXtarget = mouseX-x;
+        barSlideCounter = 0;
+        barSliding = true;
+        //sliderBar.setOffset(mouseX-x);
+        //WidgetEvent newwe = new WidgetEvent(this, DRAGGED, true);
+        //super.newEvent(newwe);
       } else if(mouseX-x > sliderBar.getX()+sliderBar.getWidth()){
-        sliderBar.setOffset((mouseX-x) - sliderBar.getWidth());
-        WidgetEvent newwe = new WidgetEvent(this, DRAGGED, true);
-        super.newEvent(newwe);
+        sliderXsource = sliderBar.getX();
+        sliderXtarget = (mouseX-x) - sliderBar.getWidth();
+        barSlideCounter = 0;
+        barSliding = true;
+        //sliderBar.setOffset((mouseX-x) - sliderBar.getWidth());
+        //WidgetEvent newwe = new WidgetEvent(this, DRAGGED, true);
+        //super.newEvent(newwe);
       }
     } else {
       sliderBar.mousePressed(mouseX-x, mouseY-y);
@@ -63,6 +89,10 @@ public class Slider extends Widget implements WidgetListener{
   public void setOffset(float offset){
     // normalized value used to move the bar
     sliderBar.setOffset(int(w*offset));
+  }
+  
+  public void setBarSlideDuration(int barSlideDuration){
+    this.barSlideDuration = barSlideDuration;
   }
   
   public void widgetEvent(WidgetEvent we){

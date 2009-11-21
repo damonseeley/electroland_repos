@@ -36,7 +36,7 @@ float xgravity, ygravity;        // gravitational force
 float interfaceScale = 1.6;      // scaling of the text cloud for master control machine
 float defaultInterfaceScale;
 int verticalOffset = 0;
-int horizontalOffset = 0;        // necessary for slider widget to operate
+float horizontalOffset = 0;        // necessary for slider widget to operate
 boolean yflip = false;
 boolean standAlone = false;      // for testing without MPE
 
@@ -111,6 +111,7 @@ Balloon balloon;
 Slider slider;
 float horizontalMouseOffset, verticalMouseOffset;
 float scaledWidth, scaledHeight;
+int barSlideDuration;  // speed of sliderbar auto-movement
 
 // BUTTON VARIABLES
 PImage buttonAuthorCloudImage, buttonDateImage, buttonGenreImage, buttonPopularityImage;
@@ -152,6 +153,9 @@ int mpeFps = 0;
 ArrayList mpeFpsHistory = new ArrayList();
 
 // RAMP MASK VARIABLES
+RampMask rampMask;
+boolean displayRamp = false;
+boolean enableRampForce = false;
 int rampMaskTopLeftX, rampMaskTopLeftY;
 int rampMaskTopRightX, rampMaskTopRightY;
 int rampMaskBottomRightX, rampMaskBottomRightY;
@@ -182,6 +186,8 @@ void setup(){
   if(displayControls){
     loadControls();
   }
+  
+  rampMask = new RampMask(rampMaskTopLeftX, rampMaskTopLeftY, rampMaskTopRightX, rampMaskTopRightY, rampMaskBottomRightX, rampMaskBottomRightY, rampMaskBottomLeftX, rampMaskBottomLeftY);
   
   // TEMPORARY! MUST GET GENRE LIST FROM BILINGUAL FILE
   genreList_english.add("fiction");
@@ -382,6 +388,7 @@ void loadControls(){
   verticalMouseOffset = (scaledHeight/2) - (height/2 + verticalOffset);         // centered
   slider.setAreaVisible(width/(float)scaledWidth);
   slider.setOffset(horizontalMouseOffset/(float)scaledWidth);
+  slider.setBarSlideDuration(barSlideDuration);
   
   widgetManager.addItem(btnEnglish);
   widgetManager.addItem(btnEspanol);
@@ -422,6 +429,18 @@ void loadProperties(){
   buttonZoomDuration      = Integer.parseInt(properties.getProperty("zoomDuration"));
   maxZoom                 = Float.parseFloat(properties.getProperty("maxZoom"));
   minZoom                 = Float.parseFloat(properties.getProperty("minZoom"));
+  barSlideDuration        = Integer.parseInt(properties.getProperty("barSlideDuration"));
+  
+  displayRamp             = Boolean.parseBoolean(properties.getProperty("displayRamp"));
+  enableRampForce         = Boolean.parseBoolean(properties.getProperty("enableRampForce"));
+  rampMaskTopLeftX        = Integer.parseInt(properties.getProperty("rampMaskTopLeftX"));
+  rampMaskTopLeftY        = Integer.parseInt(properties.getProperty("rampMaskTopLeftY"));
+  rampMaskTopRightX       = Integer.parseInt(properties.getProperty("rampMaskTopRightX"));
+  rampMaskTopRightY       = Integer.parseInt(properties.getProperty("rampMaskTopRightY"));
+  rampMaskBottomRightX    = Integer.parseInt(properties.getProperty("rampMaskBottomRightX"));
+  rampMaskBottomRightY    = Integer.parseInt(properties.getProperty("rampMaskBottomRightY"));
+  rampMaskBottomLeftX     = Integer.parseInt(properties.getProperty("rampMaskBottomLeftX"));
+  rampMaskBottomLeftY     = Integer.parseInt(properties.getProperty("rampMaskBottomLeftY"));
   
   backgroundGray          = Integer.parseInt(properties.getProperty("backgroundGray"));      // color properties
   authorTextRedVal        = Integer.parseInt(properties.getProperty("authorTextRedVal"));
@@ -1170,7 +1189,8 @@ void render(TCPClient c){
     slider.setOffset(horizontalMouseOffset/(float)scaledWidth);
     // check slider to make sure we aren't zooming out beyond the allowed viewable area
     float offset = 0 - (slider.getBarPosition() - 0.5);  // cloud is centered
-    horizontalOffset = int(offset * scaledWidth);
+    //horizontalOffset = int(offset * scaledWidth);
+    horizontalOffset = offset * scaledWidth;
     if(balloon != null){
       balloon.setInterfaceScale(interfaceScale);
       balloon.setHorizontalOffset(horizontalMouseOffset);
@@ -1360,6 +1380,14 @@ void render(TCPClient c){
     }
   }
   
+  // CHECK ALL TEXTBLOCKS AGAINST RAMPMASK TO SEE IF THEY SHOULD BE PUSHED AWAY
+  if(enableRampForce){
+    rampMask.checkCollisions(textBlocks);
+  }
+  if(displayRamp){
+    rampMask.draw();
+  }
+  
   // GRADIENTS ON EDGES TO FADE ALL TEXT HORIZONTALLY
   image(leftFade, 0, -1000, horizontalFallOff, client.getMHeight()+2000);
   image(rightFade, client.getMWidth() - horizontalFallOff, -1000, horizontalFallOff, client.getMHeight()+2000);
@@ -1442,16 +1470,14 @@ void render(TCPClient c){
     }
     
     /*
-    // THIS IS WHERE FUCKED UP INACTIVITY ZOOMING OCCURS
-    if(interfaceScale != defaultInterfaceScale){
-      if(!zooming){
-        zoomDelayCounter++;
-      }
-      if(zoomDelayCounter > inactivityZoomDelay){
+    if(zoomDelayCounter < inactivityZoomDelay){
+      zoomDelayCounter++;
+    } else {
+      if(interfaceScale != defaultInterfaceScale && !zooming){
         zoomDuration = inactivityZoomDuration;
         zoomTarget = defaultInterfaceScale;
         zoomStart = interfaceScale;
-        zoomDelayCounter = 0;
+        zoomCounter = 0;
         zooming = true;
       }
     }
@@ -1545,7 +1571,7 @@ void frameEvent(TCPClient c){
       } else if(command[1].equals("slide")){
         if(enableCamera){
           float offset = 0 - (Float.parseFloat(command[2]) - 0.5);  // cloud is centered
-          horizontalOffset = int(offset * scaledWidth);
+          horizontalOffset = offset * scaledWidth;
           //println(offset +" horizontalOffset: "+ horizontalOffset + " horizontalMouseOffset: "+ horizontalMouseOffset);
         }
       } else if(command[1].equals("cloud")){
@@ -1787,5 +1813,7 @@ void keyPressed(){
     displayFrames = !displayFrames;
   } else if(key == 'y' || key == 'Y'){
     yflip = !yflip;
+  } else if(key == 'r' || key == 'R'){
+    displayRamp = !displayRamp;
   }
 }
