@@ -125,12 +125,15 @@ dropDownItemLeading		= 0
 zoomDuration			= 15
 maxZoom					= 0.5
 minZoom					= 1.6
+barSlideDuration		= 15
 
 # RAMP MASK PROPERTIES
+displayRamp				= true
+enableRampForce			= true
 rampMaskTopLeftX		= 0
-rampMaskTopLeftY		= 860
+rampMaskTopLeftY		= 704
 rampMaskTopRightX		= 1806
-rampMaskTopRightY		= 1787
+rampMaskTopRightY		= 831
 rampMaskBottomRightX	= 1806
 rampMaskBottomRightY	= 1080
 rampMaskBottomLeftX		= 0
