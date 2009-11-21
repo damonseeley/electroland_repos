@@ -1,12 +1,12 @@
 # PROPERTIES FOR 'FIL TEXT CLOUD' PROJECT
 
 # OFTEN CHANGED VARIABLES
-enableCamera			= false
-displayControls			= false
-yflip				= true
+enableCamera			= true
+displayControls			= true
+yflip					= true
 standAlone				= false
 displayRampMask			= true
-xmlFileName			= data.xml
+xmlFileName				= data.xml
 displayCursor			= true
 
 # APPLET DIMENSIONAL PROPERTIES
@@ -14,8 +14,7 @@ displayCursor			= true
 overflow 				= 500
 xgravity 				= 0
 ygravity 				= 0.005
-# different platforms seem to use different coordinate systems, so flip Y axis using this
-interfaceScale			= 1.2
+interfaceScale			= 1.0
 verticalOffset			= 156
 
 # COLOR PROPERTIES
@@ -53,6 +52,7 @@ quoteTextRedVal			= 255
 quoteTextGreenVal		= 50
 quoteTextBlueVal		= 50
 quotationOffset			= 10
+quoteBlockTopMargin		= 0
 
 # BIO TEXT PROPERTIES
 bioFontName				= HelveticaNeue LT 57 Cn
@@ -61,6 +61,7 @@ bioTextScale			= 0.4
 bioTextRedVal			= 200
 bioTextGreenVal			= 200
 bioTextBlueVal			= 200
+bioBlockTopMargin		= 0
 
 # DATE TEXT PROPERTIES (displayed when bio is displayed)
 dateFontName			= HelveticaNeue LT 67 MdCn
@@ -69,6 +70,7 @@ dateTextScale			= 0.7
 dateTextRedVal			= 255
 dateTextGreenVal		= 50
 dateTextBlueVal			= 50
+dateTextLeftMargin		= 4
 
 # GENRE TEXT PROPERTIES (displayed when bio is displayed)
 genreFontName			= HelveticaNeue LT 67 MdCn
@@ -77,6 +79,7 @@ genreTextScale			= 0.5
 genreTextRedVal			= 150
 genreTextGreenVal		= 255
 genreTextBlueVal		= 150
+genreTextTopMargin		= 1
 
 # SCREENSAVER PROPERTIES
 # specified in frames
@@ -86,6 +89,8 @@ screensaverSpeed		= 0.01
 resetDelay				= 18000
 #resetDelay				= 900
 resetDuration			= 90
+inactivityZoomDelay		= 300
+inactivityZoomDuration	= 300
 
 # ANIMATION EFFECT PROPERTIES
 textHorizontalSpring	= 0.01

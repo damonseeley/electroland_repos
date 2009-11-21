@@ -18,6 +18,7 @@ public class QuoteLine extends TextBlock{
   private float pushMultiplier = 0.5;
   private float centerX, centerY;
   private float paragraphWidth, paragraphHeight;
+  private int leftMargin = 0;
   
   public QuoteLine(int id, int quoteID, int lineNumber, Author author, String textValue, float x, float y, String fontName, int fontSize, float textScale, float quotationOffset){
     super(id, textValue, x, y, fontName, fontSize, textScale);
@@ -186,9 +187,9 @@ public class QuoteLine extends TextBlock{
     }
     
     if(!fadeOut && !alignRight){
-      x = ((author.getX() - (author.getWidth()*0.5)) + (w*0.5)) + 1 - quotationOffset;  // stay left aligned with author name at all times
+      x = (((author.getX() - (author.getWidth()*0.5)) + (w*0.5)) + 1 - quotationOffset);  // stay left aligned with author name at all times
     } else if(!fadeOut && alignRight){
-      x = ((author.getX() + (author.getWidth()*0.5)) + (w*0.5)) + 2;
+      x = ((author.getX() + (author.getWidth()*0.5)) + (w*0.5)) + leftMargin;
       y = (author.getY() + (author.getHeight()*0.5)) - (h*0.5);
     }
     
@@ -206,8 +207,9 @@ public class QuoteLine extends TextBlock{
     return author;
   }
   
-  public void snapToRight(){
+  public void snapToRight(int leftMargin){
     alignRight = true;
+    this.leftMargin = leftMargin;
   }
   
   public int getQuoteID(){

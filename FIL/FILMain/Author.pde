@@ -28,6 +28,7 @@ public class Author extends TextBlock {
   private boolean tweenDamping = false;
   private float targetXdamping, targetYdamping;
   private float originalXdamping, originalYdamping;
+  private float authorFadeOutDelay;
   
   public String seminalwork_english, seminalwork_spanish;
   public String bio_english, bio_spanish;
@@ -424,10 +425,15 @@ public class Author extends TextBlock {
         super.render(pgl, xoffset, yoffset, yflip);
       } else if(hold){
         float progress = counter / (float)holdDuration;
-        if(counter == holdDuration){
+        if(counter >= holdDuration){
           hold = false;
           fadeOut = true;
           counter = 0;
+        } else if(counter >= (holdDuration - authorFadeOutDelay) + fadeOutDuration){
+          if(widgetManager != null && balloon != null){
+            widgetManager.removeItem(balloon);
+          }
+        } else if(counter >= holdDuration - authorFadeOutDelay){
           if(balloon != null){
             balloon.fadeOut(fadeOutDuration);
           }
@@ -448,9 +454,9 @@ public class Author extends TextBlock {
           fadeOut = false;
           triggered = false;
           counter = 0;
-          if(widgetManager != null && balloon != null){
-            widgetManager.removeItem(balloon);
-          }
+          //if(widgetManager != null && balloon != null){
+          //  widgetManager.removeItem(balloon);
+          //}
         }
         
         c = color((selectedRedVal - redVal)*progress + redVal, (selectedGreenVal - greenVal)*progress + greenVal, (selectedBlueVal - blueVal)*progress + blueVal, (255 - alphaVal)*progress+ alphaVal);
@@ -481,6 +487,10 @@ public class Author extends TextBlock {
   
   public void setFadeOutDuration(int fadeOutDuration){
     this.fadeOutDuration = fadeOutDuration;
+  }
+  
+  public void setAuthorFadeOutDelay(int authorFadeOutDelay){
+    this.authorFadeOutDelay = authorFadeOutDelay;  // additional delay after quote fades out
   }
   
   public void setSelectedRed(float selectedRedVal){

@@ -127,26 +127,28 @@ public class Balloon extends Widget implements WidgetListener{
   }
   
   public void pressed(){
-    quote.mousePressed(mouseX-x, mouseY-y);
-    bio.mousePressed(mouseX-x, mouseY-y);
+    if(!fadeout){
+      quote.mousePressed(mouseX-x, mouseY-y);
+      bio.mousePressed(mouseX-x, mouseY-y);
+    }
   }
   
   public void released(){
   }
   
   public void rollOver(){
-    quote.rollOver();
-    bio.rollOver();
+    //quote.rollOver();
+    //bio.rollOver();
   }
   
   public void rollOut(){
-    quote.rollOut();
-    bio.rollOut();
+    //quote.rollOut();
+    //bio.rollOut();
   }
   
   public void cursorMovement(){
-    quote.cursorMovement();
-    bio.cursorMovement();
+    //quote.cursorMovement();
+    //bio.cursorMovement();
   }
   
   public void setAuthor(Author author){
