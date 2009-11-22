@@ -61,7 +61,11 @@ public class ProcessClient {
 					while (true)
 					{
 						String directive = in.readLine();
-
+						if (directive == null)
+						{
+							System.out.println("connection broken.");
+							break;
+						}
 						if (directive.toLowerCase().startsWith((START_CMD)))
 						{
 							runCmd(stopCmd,  ">> services stopped.", out);
@@ -70,11 +74,11 @@ public class ProcessClient {
 									"";
 							runCmd(startCmd + userArgs, ">> services started.", out);
 		
-						}else if (directive.equalsIgnoreCase(STOP_CMD))
+						}else if (STOP_CMD.equalsIgnoreCase(directive))
 						{
 							runCmd(stopCmd, ">> services stopped.", out);
 
-						}else if (directive.equalsIgnoreCase(QUIT_CMD))
+						}else if (QUIT_CMD.equalsIgnoreCase(directive))
 						{
 							System.out.println("Director disconnected.");
 							out.println(">> good bye!.");
