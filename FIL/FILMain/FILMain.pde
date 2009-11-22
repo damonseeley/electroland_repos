@@ -819,7 +819,7 @@ public void createQuote(Author author){
       }
     }
     
-    // CHECK SURROUNDING AREA FOR ANY OTHER QUOTES/BIOGRAPHIES WITHIN THE THRESHOLD THAT SHOULD BE REMOVED
+    // CHECK SURROUNDING AREA FOR ANY OTHER BIOGRAPHIES WITHIN THE THRESHOLD THAT SHOULD BE REMOVED
     iter = bioObjects.values().iterator();
     while(iter.hasNext()){
       QuoteLine otherQuoteLine = (QuoteLine)iter.next();
@@ -865,7 +865,8 @@ public void createQuote(Author author){
         }
       } else if(textBlock instanceof Author){
         if(textBlock.getID() == authorID){
-          textBlock.fadeOutAndRemove(authorFadeOutDelay);
+          //textBlock.fadeOutAndRemove(authorFadeOutDelay);
+          textBlock.fadeOutAndRemove();
         }
       }
     }
@@ -1208,7 +1209,8 @@ void render(TCPClient c){
     //println("myoffset: "+ offset +" sliderbar offset: "+ (0 - (slider.getBarPosition() - 0.5)));
     //horizontalOffset = offset * scaledWidth;
 
-    horizontalOffset = offsetSource + ((offsetTarget - offsetSource) * progress);
+    //horizontalOffset = offsetSource + ((offsetTarget - offsetSource) * progress);  // this gets to the right place
+    horizontalOffset = validateScaleTarget(interfaceScale);
     
     // check slider to make sure we aren't zooming out beyond the allowed viewable area
     // THIS IS WHERE THE PROBLEM IS, BUT PROVIDES THE MOST ACCURATE OFFSET VALUE
@@ -1456,7 +1458,7 @@ void render(TCPClient c){
   fill(200);
   if(displayStats){
     pushMatrix();
-    translate(client.getXoffset(), client.getYoffset());
+    //translate(client.getXoffset(), client.getYoffset());
     text(int(frameRate) +" fps", 10, 20);
     
     if(System.currentTimeMillis() - lastTime > 0){
@@ -1488,6 +1490,7 @@ void render(TCPClient c){
     screensaverActivated = false;
     resetCounter = 0;
     zoomDelayCounter = 0;
+    //println("reset and zoomdelay counters set to 0");
   }
   
   if(screensaverActivated){
@@ -1496,20 +1499,6 @@ void render(TCPClient c){
       TextBlock textBlock = (TextBlock)iter.next();
       textBlock.xv += screensaverSpeed;
     }
-    
-    /*
-    if(zoomDelayCounter < inactivityZoomDelay){
-      zoomDelayCounter++;
-    } else {
-      if(interfaceScale != defaultInterfaceScale && !zooming){
-        zoomDuration = inactivityZoomDuration;
-        zoomTarget = defaultInterfaceScale;
-        zoomStart = interfaceScale;
-        zoomCounter = 0;
-        zooming = true;
-      }
-    }
-    */
     
     if(!zooming && interfaceScale != defaultInterfaceScale){
       zoomDelayCounter++;
@@ -1627,7 +1616,7 @@ void frameEvent(TCPClient c){
             float offset = 0 - (Float.parseFloat(command[2]) - 0.5);  // cloud is centered
             horizontalOffset = offset * scaledWidth;
             offsetSource = horizontalOffset;
-            println("horizontalOffset: "+ horizontalOffset +" horizontalMouseOffset: "+ horizontalMouseOffset +" offset: "+ offset);
+            //println("horizontalOffset: "+ horizontalOffset +" horizontalMouseOffset: "+ horizontalMouseOffset +" offset: "+ offset);
             //println(offset +" horizontalOffset: "+ horizontalOffset + " horizontalMouseOffset: "+ horizontalMouseOffset);
           }
         } else if(command[1].equals("cloud")){

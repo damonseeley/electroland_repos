@@ -307,13 +307,13 @@ public class Author extends TextBlock {
   }
   
   public void releasedOutside(){
-    //if(rolledOver){
+    if(rolledOver){
       //println(textValue + " released outside");
       rolledOver = false;
       scaleDown = false;
       scaleUp = true;
       counter = 0;
-    //}
+    }
     super.releasedOutside();
   }
   
