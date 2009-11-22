@@ -113,6 +113,7 @@ Slider slider;
 float horizontalMouseOffset, verticalMouseOffset;
 float scaledWidth, scaledHeight;
 int barSlideDuration;  // speed of sliderbar auto-movement
+float offsetSource, offsetTarget;  // used to tween horizontal offset while scaling in/out
 
 // BUTTON VARIABLES
 PImage buttonAuthorCloudImage, buttonDateImage, buttonGenreImage, buttonPopularityImage;
@@ -1192,8 +1193,7 @@ void render(TCPClient c){
       interfaceScale = maxZoom;
     }
     
-    //float offset = 0 - ((horizontalMouseOffset/(float)scaledWidth));
-    //horizontalOffset = offset * scaledWidth;
+    //horizontalOffset = (offset * client.getMWidth());
     //println("horizontalOffset: "+ horizontalOffset +" horizontalMouseOffset: "+ horizontalMouseOffset +" offset: "+ offset);
     scaledWidth = client.getMWidth() * (1/interfaceScale);
     scaledHeight = client.getMHeight() * (1/interfaceScale);
@@ -1202,9 +1202,20 @@ void render(TCPClient c){
     //println(offset * scaledWidth);
     slider.setAreaVisible(width/(float)scaledWidth);
     slider.setOffset(horizontalMouseOffset/(float)scaledWidth);
+    //println(slider.getBarPosition() +" "+ horizontalMouseOffset/(float)scaledWidth);
+    
+    //float offset = 0 - (horizontalMouseOffset/(float)scaledWidth);
+    //println("myoffset: "+ offset +" sliderbar offset: "+ (0 - (slider.getBarPosition() - 0.5)));
+    //horizontalOffset = offset * scaledWidth;
+
+    horizontalOffset = offsetSource + ((offsetTarget - offsetSource) * progress);
+    
     // check slider to make sure we aren't zooming out beyond the allowed viewable area
-    float offset = 0 - (slider.getBarPosition() - 0.5);  // cloud is centered
-    horizontalOffset = offset * scaledWidth;
+    // THIS IS WHERE THE PROBLEM IS, BUT PROVIDES THE MOST ACCURATE OFFSET VALUE
+    //float offset = 0 - (slider.getBarPosition() - 0.5);  // cloud is centered
+    //horizontalOffset = offset * scaledWidth;
+    //println("horizontalOffset: "+ horizontalOffset +" horizontalMouseOffset: "+ horizontalMouseOffset +" offset: "+ offset);
+    
     if(balloon != null){
       balloon.setInterfaceScale(interfaceScale);
       balloon.setHorizontalOffset(horizontalMouseOffset);
@@ -1509,6 +1520,8 @@ void render(TCPClient c){
         zoomDuration = inactivityZoomDuration;
         zoomTarget = defaultInterfaceScale;
         zoomStart = interfaceScale;
+        offsetSource = horizontalOffset;
+        offsetTarget = validateScaleTarget(zoomTarget);
         zoomDelayCounter = 0;
         zooming = true;
       }
@@ -1584,6 +1597,8 @@ void frameEvent(TCPClient c){
               zoomStart = interfaceScale;
               zooming = true;
               zoomCounter = 0;
+              offsetSource = horizontalOffset;
+              offsetTarget = validateScaleTarget(zoomTarget);
             } else {
               btnPlus.silentOff();
             }
@@ -1597,6 +1612,12 @@ void frameEvent(TCPClient c){
               zoomStart = interfaceScale;
               zooming = true;
               zoomCounter = 0;
+              offsetSource = horizontalOffset;
+              offsetTarget = validateScaleTarget(zoomTarget);
+              if(zoomTarget > minZoom){
+                zoomTarget = minZoom;
+                offsetTarget = 0;
+              }
             } else {
               btnMinus.silentOff();
             }
@@ -1605,6 +1626,7 @@ void frameEvent(TCPClient c){
           if(enableCamera){
             float offset = 0 - (Float.parseFloat(command[2]) - 0.5);  // cloud is centered
             horizontalOffset = offset * scaledWidth;
+            offsetSource = horizontalOffset;
             println("horizontalOffset: "+ horizontalOffset +" horizontalMouseOffset: "+ horizontalMouseOffset +" offset: "+ offset);
             //println(offset +" horizontalOffset: "+ horizontalOffset + " horizontalMouseOffset: "+ horizontalMouseOffset);
           }
@@ -1691,6 +1713,20 @@ void frameEvent(TCPClient c){
 
 
 
+
+
+// SCALING STUFF
+
+float validateScaleTarget(float scaleTarget){
+  float maxOffset = ((client.getMWidth()/2) * (1/scaleTarget)) - 960;
+  println("maxOffset: "+ maxOffset +", horizontalOffset: "+ horizontalOffset);
+  if(horizontalOffset >= maxOffset){
+    return maxOffset;
+  } else if(horizontalOffset <= 0-maxOffset){
+    return 0-maxOffset;
+  }
+  return horizontalOffset;
+}
 
 
 
