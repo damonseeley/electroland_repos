@@ -1,4 +1,4 @@
-package net.electrolnd.installutils.mgmt;
+package net.electroland.installutils.mgmt;
 
 import java.io.BufferedReader;
 import java.io.File;
