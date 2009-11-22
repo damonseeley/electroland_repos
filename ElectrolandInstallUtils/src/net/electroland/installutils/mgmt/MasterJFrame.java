@@ -1,4 +1,4 @@
-package net.electrolnd.installutils.mgmt;
+package net.electroland.installutils.mgmt;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

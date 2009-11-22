@@ -1,4 +1,4 @@
-package net.electrolnd.installutils.mgmt;
+package net.electroland.installutils.mgmt;
 
 import java.io.File;
 import java.io.FileInputStream;
