@@ -26,19 +26,21 @@ public class ClientJFrame extends JFrame implements ActionListener, Runnable{
 	private static final long serialVersionUID = 1163302714818806541L;
 	private JMenuBar menuBar;
 	private JMenu menu;
-	private JMenuItem start, stop, clear;
+	private JMenuItem start, stop, clear, reconnect;
 	private JTextArea output;
 	private Connection c;
 	private BufferedReader responseStream;
 
-	public ClientJFrame(Connection c)
+	public ClientJFrame(Connection c, int x, int y)
 	{
 		super(c.address + ':' + c.port);
 		
 		this.c = c;
 
 		this.setLayout(new MigLayout());
-
+		this.setLocation(x,y);
+		this.setSize(550, 450);
+		
 		//Create the menu bar.
 		menuBar = new JMenuBar();
 		
@@ -78,6 +80,13 @@ public class ClientJFrame extends JFrame implements ActionListener, Runnable{
 		clear.addActionListener(this);
 		menu.add(clear);
 		
+
+		// clear option
+		reconnect = new JMenuItem("Reset connection");
+		reconnect.getAccessibleContext().setAccessibleDescription(
+		        "reconnect to the client");
+		reconnect.addActionListener(this);
+		menu.add(reconnect);
 		
 		this.add(menuBar, "span 1, wrap");
 
@@ -87,7 +96,6 @@ public class ClientJFrame extends JFrame implements ActionListener, Runnable{
         JScrollPane scrollPane = new JScrollPane(output);
 
         this.add(scrollPane, "span1, grow");
-		this.setSize(550, 450);
 		this.setVisible(true);
 		this.addWindowListener(new java.awt.event.WindowAdapter()
 		{
@@ -123,15 +131,30 @@ public class ClientJFrame extends JFrame implements ActionListener, Runnable{
 			output.append("\n\r");
 		}		
 	}
-	
+
+	public void close()
+	{
+		try {
+			output.append("connection reset.");
+			c.close();
+		} catch (UnknownHostException e1) {
+			output.append(e1.toString());
+		} catch (IOException e1) {
+			output.append(e1.toString());
+		}finally{
+			output.append("\n\r");
+		}		
+	}
+
 	public void actionPerformed(ActionEvent e) {
 		if ("Stop".equalsIgnoreCase(e.getActionCommand())){
 			stop();
 		}else if ("Start".equalsIgnoreCase(e.getActionCommand())){
 			start();
-		}else if ("Clear".equalsIgnoreCase(e.getActionCommand()))
-		{
+		}else if ("Clear".equalsIgnoreCase(e.getActionCommand())){
 			output.setText("");
+		}else if ("Reset connection".equalsIgnoreCase(e.getActionCommand())){
+			close();
 		}
 	}
 

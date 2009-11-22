@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.Properties;
 
 public class ProcessServer {
-
+	
 	public static void main(String args[])
 	{
 		try {
@@ -40,11 +40,18 @@ public class ProcessServer {
 			ArrayList <Connection>connections = parse(clientStrs);
 			ArrayList <ClientJFrame> clients = new ArrayList<ClientJFrame>();
 			Iterator <Connection>i = connections.iterator();
+			int x = 10;
+			int y = 120;
 			while (i.hasNext())
 			{
-				ClientJFrame client = new ClientJFrame(i.next());
+				ClientJFrame client = new ClientJFrame(i.next(),x,y);
 				clients.add(client);
 				new Thread(client).start();
+				x+=client.getWidth();
+				if (x > 1000){
+					x = 10;
+					y+= client.getHeight();
+				}
 			}
 			new MasterJFrame(clients);
 			

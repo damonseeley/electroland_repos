@@ -22,13 +22,20 @@ public class Connection {
 
 	public void connect() throws UnknownHostException, IOException
 	{
-		if (socket == null || !socket.isConnected())
+		if (socket == null || (!socket.isConnected() || socket.isClosed()))
 		{
 			socket = new Socket(address, port);			
 			responseStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		}
 	}
 
+	public void close()  throws UnknownHostException, IOException{
+		if (socket != null && socket.isConnected()){
+			socket.close();
+		}
+	}
+	
+	
 	public void sendCommand(String command) throws UnknownHostException, IOException{
 
 		connect();
