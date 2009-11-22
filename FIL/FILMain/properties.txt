@@ -89,7 +89,7 @@ screensaverSpeed		= 0.01
 resetDelay				= 18000
 #resetDelay				= 900
 resetDuration			= 90
-inactivityZoomDelay		= 300
+inactivityZoomDelay		= 150
 inactivityZoomDuration	= 300
 
 # ANIMATION EFFECT PROPERTIES
@@ -118,12 +118,12 @@ textRollOverDuration	= 6
 textRollOutDuration		= 15
 textRollOverScale		= 0.9
 textRollOverAlpha		= 0.5
-dragDamp			    = 0.05
+dragDamp			    = 0.005
 dragRadius				= 500
 postDragDelay			= 500
 dropDownItemHeight		= 30
 dropDownItemLeading		= 0
-zoomDuration			= 15
+zoomDuration			= 8
 maxZoom					= 0.5
 minZoom					= 1.6
 barSlideDuration		= 15
