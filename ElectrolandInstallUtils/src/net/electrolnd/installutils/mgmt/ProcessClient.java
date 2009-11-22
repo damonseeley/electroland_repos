@@ -14,8 +14,9 @@ import java.util.Properties;
 
 public class ProcessClient {
 
-//	final static String startCmd = "C:\\Documents and Settings\\Electroland\\Desktop\\FIL\\Projection2\\FILMain";
-//	final static String stopCmd = "taskkill /f /fi \"WINDOWTITLE eq FIL*\"";
+	public static final String START_CMD = "start";
+	public static final String STOP_CMD = "stop";
+	public static final String QUIT_CMD = "quit";
 	
 	public static void main(String args[])
 	{
@@ -49,9 +50,9 @@ public class ProcessClient {
 					out.println("Welcome Director!");
 					out.println("=================");
 					out.println(" Valid commands are:");
-					out.println("   start");
-					out.println("   stop");
-					out.println("   quit (or just 'q')");
+					out.println("   " + START_CMD + " [args]");
+					out.println("   " + STOP_CMD);
+					out.println("   " + QUIT_CMD);
 					out.println("");
 					out.flush();
 
@@ -62,16 +63,19 @@ public class ProcessClient {
 					{
 						String directive = in.readLine();
 
-						if (directive.equalsIgnoreCase("start"))
+						if (directive.toLowerCase().startsWith((START_CMD)))
 						{
 							runCmd(stopCmd,  ">> services stopped.", out);
-							runCmd(startCmd, ">> services started.", out);
+							String userArgs = (directive.length() > 5) ?
+									directive.substring(5, directive.length()) :
+									"";
+							runCmd(startCmd + userArgs, ">> services started.", out);
 		
-						}else if (directive.equalsIgnoreCase("stop"))
+						}else if (directive.equalsIgnoreCase(STOP_CMD))
 						{
 							runCmd(stopCmd, ">> services stopped.", out);
 
-						}else if (directive.toLowerCase().startsWith("q"))
+						}else if (directive.equalsIgnoreCase(QUIT_CMD))
 						{
 							System.out.println("Director disconnected.");
 							out.println(">> good bye!.");
