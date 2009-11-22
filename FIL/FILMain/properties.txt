@@ -6,7 +6,7 @@ displayControls			= true
 yflip					= true
 standAlone				= false
 displayRampMask			= true
-xmlFileName				= data.xml
+xmlFileName				= AUTHORDATA.xml
 displayCursor			= true
 
 # APPLET DIMENSIONAL PROPERTIES
