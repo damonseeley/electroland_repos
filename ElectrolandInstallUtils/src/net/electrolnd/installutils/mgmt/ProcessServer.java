@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -21,7 +20,6 @@ public class ProcessServer {
 
 			Enumeration <Object>keys = p.keys();
 			ArrayList <String> clientStrs = new ArrayList<String>();
-			ArrayList <Connection> clienclients = new ArrayList<Connection>();
 
 			// expecting:
 			//	client0=127.0.0.1:8181
@@ -39,20 +37,16 @@ public class ProcessServer {
 			}		
 
 			// get the sockets
-			clienclients = parse(clientStrs);
-			Iterator <Connection>i = clienclients.iterator();
+			ArrayList <Connection>connections = parse(clientStrs);
+			ArrayList <ClientJFrame> clients = new ArrayList<ClientJFrame>();
+			Iterator <Connection>i = connections.iterator();
 			while (i.hasNext())
 			{
-				new ClientJFrame(i.next());
+				ClientJFrame client = new ClientJFrame(i.next());
+				clients.add(client);
+				new Thread(client).start();
 			}
-			
-			// for each socket, generate a monitor window.
-			// start - args
-			// stop
-			// output
-
-			// and generate a master window.
-			// startall - stopall
+			new MasterJFrame(clients);
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -63,7 +57,7 @@ public class ProcessServer {
 
 	private static ArrayList <Connection> parse(ArrayList <String> clientsStr) throws IOException
 	{
-		ArrayList <Connection> addies = new ArrayList<Connection>();
+		ArrayList <Connection> connections = new ArrayList<Connection>();
 		Iterator <String> i = clientsStr.iterator();
 		while (i.hasNext())
 		{
@@ -76,7 +70,7 @@ public class ProcessServer {
 				try
 				{
 					int port = Integer.parseInt(portStr);
-					addies.add(new Connection(ip, port));
+					connections.add(new Connection(ip, port));
 					
 				}catch(NumberFormatException e)
 				{
@@ -87,6 +81,6 @@ public class ProcessServer {
 				throw new IOException("bad client (no port specified): " + str);
 			}
 		}
-		return addies;
+		return connections;
 	}
 }

@@ -13,36 +13,36 @@ public class Connection {
 	protected String address;
 	protected int port;
 	protected Socket socket;
+	protected BufferedReader responseStream;
 
 	public Connection(String address, int port){
 		this.address = address;
 		this.port = port;
 	}
 
-	public String sendCommand(String command)throws UnknownHostException, IOException{
-
+	public void connect() throws UnknownHostException, IOException
+	{
 		if (socket == null || !socket.isConnected())
 		{
-			socket = new Socket(address, port);
+			socket = new Socket(address, port);			
+			responseStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		}
+	}
 
-		BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+	public void sendCommand(String command) throws UnknownHostException, IOException{
+
+		connect();
+
 		PrintWriter pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-
 		pw.println(command);
-
-		StringBuffer sbr = new StringBuffer();
-		while (br.ready()){
-			sbr.append(br.readLine()).append("\n\r");
-		}
-		return sbr.toString();
+		pw.flush();
 	}
 	
-	public String start()throws UnknownHostException, IOException{
-		return sendCommand(ProcessClient.START_CMD);
+	public void start() throws UnknownHostException, IOException{
+		sendCommand(ProcessClient.START_CMD);
 	}
 
-	public String stop()throws UnknownHostException, IOException{
-		return sendCommand(ProcessClient.STOP_CMD);
+	public void stop() throws UnknownHostException, IOException{
+		sendCommand(ProcessClient.STOP_CMD);
 	}	
 }
