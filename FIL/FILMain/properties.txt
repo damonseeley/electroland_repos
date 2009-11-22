@@ -111,6 +111,7 @@ quoteFadeInDuration		= 5
 # note: this is hold duration per line
 quoteHoldDuration		= 60
 quoteFadeOutDuration	= 60
+quoteMinDisplay			= 120
 
 # USER INTERACTION PROPERTIES
 textRollOverDuration	= 6
