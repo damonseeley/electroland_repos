@@ -297,7 +297,7 @@ public class Author extends TextBlock {
       counter = 0;
     }
     if(rolledOver || scaleDown){
-      println(textValue + " released");
+      //println(textValue + " released");
       rolledOver = false;
       scaleDown = false;
       scaleUp = true;
@@ -307,19 +307,19 @@ public class Author extends TextBlock {
   }
   
   public void releasedOutside(){
-    if(rolledOver){
-      println(textValue + " released outside");
+    //if(rolledOver){
+      //println(textValue + " released outside");
       rolledOver = false;
       scaleDown = false;
       scaleUp = true;
       counter = 0;
-    }
+    //}
     super.releasedOutside();
   }
   
   public void rollOver(){
-    if(!rolledOver){
-      println(textValue + " rolled over");
+    if(!rolledOver && !triggered){
+      //println(textValue + " rolled over");
       scaleDown = true;
       rolledOver = true;
       targetTextScale = defaultTextScale * rollOverScale;
@@ -330,7 +330,7 @@ public class Author extends TextBlock {
   
   public void rollOut(){
     if(rolledOver){
-      println(textValue + " rolled out");
+      //println(textValue + " rolled out");
       scaleDown = false;
       rolledOver = false;
       scaleUp = true;

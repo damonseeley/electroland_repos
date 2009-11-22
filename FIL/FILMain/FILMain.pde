@@ -72,6 +72,7 @@ int maxQuotes;
 float clearAreaMultiplier;
 float quotePushMultiplier;
 int quoteBlockTopMargin, bioBlockTopMargin, dateTextLeftMargin, genreTextTopMargin;
+int quoteMinDisplay;
 
 // COLOR VARIABLES
 int backgroundGray;
@@ -457,6 +458,7 @@ void loadProperties(){
   quoteTextBlueVal        = Integer.parseInt(properties.getProperty("quoteTextBlueVal"));
   quoteDistanceThreshold  = Integer.parseInt(properties.getProperty("quoteDistanceThreshold"));
   quotationOffset         = Integer.parseInt(properties.getProperty("quotationOffset"));
+  quoteMinDisplay         = Integer.parseInt(properties.getProperty("quoteMinDisplay"));
   
   authorFontName        = properties.getProperty("authorFontName");                        // text properties
   authorFontSize        = Integer.parseInt(properties.getProperty("authorFontSize"));
@@ -710,7 +712,11 @@ public void createQuote(Author author){
   author.setFadeInDuration(quoteFadeInDuration);  
   author.setFadeOutDuration(quoteFadeOutDuration);
   author.setAuthorFadeOutDelay(authorFadeOutDelay);
-  author.setHoldDuration((quoteHoldDuration*lineCount) + quoteIntroDelay + authorFadeOutDelay);
+  if((quoteHoldDuration*lineCount) > quoteMinDisplay){
+    author.setHoldDuration((quoteHoldDuration*lineCount) + quoteIntroDelay + authorFadeOutDelay);
+  } else {
+    author.setHoldDuration(quoteMinDisplay + quoteIntroDelay + authorFadeOutDelay);
+  }
 
   ArrayList textBlocksToRemove = new ArrayList();  // list of ID numbers for textblocks to remove 
  
@@ -746,7 +752,11 @@ public void createQuote(Author author){
     QuoteLine quoteLine = ((QuoteLine)quoteLines.get(i));
     //Author quoteAuthor = quoteLine.getAuthor();
     //quoteLine.setHoldDuration((quoteHoldDuration*lineCount) - (quoteIntroDelay + (quoteFadeInDuration*i)));  // this fades all lines out at once
-    quoteLine.setHoldDuration((quoteHoldDuration*lineCount) - (quoteIntroDelay + (quoteFadeInDuration*(lineCount-i))));    // this fades lines out as they came in
+    if((quoteHoldDuration*lineCount) - (quoteIntroDelay + (quoteFadeInDuration*(lineCount-i))) > quoteMinDisplay){
+      quoteLine.setHoldDuration((quoteHoldDuration*lineCount) - (quoteIntroDelay + (quoteFadeInDuration*(lineCount-i))));    // this fades lines out as they came in
+    } else {
+      quoteLine.setHoldDuration(quoteMinDisplay);
+    }
     //println("centerX: "+centerX +" centerY: "+ centerY);
     //println("left side: "+leftmost+" right side: "+rightmost);
     quoteLine.setParagraphCenter(centerX, centerY);
@@ -801,7 +811,7 @@ public void createQuote(Author author){
         }
         
         float hypo = sqrt(sq(xdist) + sq(ydist));
-        println("hypo: "+hypo +" xdist: "+ xdist +" ydist: "+ ydist + " threshold: "+ quoteDistanceThreshold);
+        //println("hypo: "+hypo +" xdist: "+ xdist +" ydist: "+ ydist + " threshold: "+ quoteDistanceThreshold);
         if(hypo < quoteDistanceThreshold){
           textBlocksToRemove.add(otherQuoteLine.getQuoteID());
         }
@@ -834,7 +844,7 @@ public void createQuote(Author author){
         }
         
         float hypo = sqrt(sq(xdist) + sq(ydist));
-        println("hypo: "+hypo +" xdist: "+ xdist +" ydist: "+ ydist + " threshold: "+ quoteDistanceThreshold);
+        //println("hypo: "+hypo +" xdist: "+ xdist +" ydist: "+ ydist + " threshold: "+ quoteDistanceThreshold);
         if(hypo < quoteDistanceThreshold){
           textBlocksToRemove.add(otherQuoteLine.getQuoteID());
         }
@@ -1131,7 +1141,7 @@ void sortByDate(){
     Author author = (Author)iter.next();
     float xpos = ((author.workbegan - lowest)/range) * client.getMWidth();
     author.moveTo(xpos, random(0,768), 60);
-    println(author.getText() +" "+ author.workbegan +" "+ xpos);
+    //println(author.getText() +" "+ author.workbegan +" "+ xpos);
   }
 }
 
@@ -1141,7 +1151,7 @@ void sortByPopularity(){
     Author author = (Author)iter.next();
     float xpos = (author.popularity * 0.01) * client.getMWidth();
     author.moveTo(xpos, random(0,768), 60);
-    println(author.getText() +" "+ author.popularity +" "+ xpos);
+    //println(author.getText() +" "+ author.popularity +" "+ xpos);
   }
 }
 
@@ -1181,15 +1191,19 @@ void render(TCPClient c){
     } else if(interfaceScale < maxZoom){
       interfaceScale = maxZoom;
     }
+    
+    //float offset = 0 - ((horizontalMouseOffset/(float)scaledWidth));
+    //horizontalOffset = offset * scaledWidth;
+    //println("horizontalOffset: "+ horizontalOffset +" horizontalMouseOffset: "+ horizontalMouseOffset +" offset: "+ offset);
     scaledWidth = client.getMWidth() * (1/interfaceScale);
     scaledHeight = client.getMHeight() * (1/interfaceScale);
     horizontalMouseOffset = (scaledWidth/2) - (width/2 + horizontalOffset);      // centered
     verticalMouseOffset = (scaledHeight/2) - (height/2 + verticalOffset);         // centered
+    //println(offset * scaledWidth);
     slider.setAreaVisible(width/(float)scaledWidth);
     slider.setOffset(horizontalMouseOffset/(float)scaledWidth);
     // check slider to make sure we aren't zooming out beyond the allowed viewable area
     float offset = 0 - (slider.getBarPosition() - 0.5);  // cloud is centered
-    //horizontalOffset = int(offset * scaledWidth);
     horizontalOffset = offset * scaledWidth;
     if(balloon != null){
       balloon.setInterfaceScale(interfaceScale);
@@ -1197,9 +1211,12 @@ void render(TCPClient c){
       balloon.setVerticalOffset(verticalMouseOffset);
     }
     zoomCounter++;
-    if(zoomCounter == zoomDuration){
+    //println("zoomCounter: "+ zoomCounter +" zoomDuration: "+ zoomDuration);
+    if(zoomCounter >= zoomDuration){
+      interfaceScale = zoomTarget;
       zooming = false;
       zoomCounter = 0;
+      //println("zooming deactivated");
       if(displayControls){
         btnPlus.silentOff();
         btnMinus.silentOff();
@@ -1393,8 +1410,8 @@ void render(TCPClient c){
   image(rightFade, client.getMWidth() - horizontalFallOff, -1000, horizontalFallOff, client.getMHeight()+2000);
   // additional black area beyond screen just in case of scaling rounding issues
   fill(0);
-  rect(-20,-1000,20,client.getMHeight()+2000);
-  rect(client.getMWidth(),-1000,20,client.getMHeight()+2000);
+  rect(-20,-1000,21,client.getMHeight()+2000);
+  rect(client.getMWidth()-1,-1000,20,client.getMHeight()+2000);
   
   if(displayFrames){
     stroke(255);
@@ -1483,6 +1500,20 @@ void render(TCPClient c){
     }
     */
     
+    if(!zooming && interfaceScale != defaultInterfaceScale){
+      zoomDelayCounter++;
+    }
+    if(zoomDelayCounter > inactivityZoomDelay){
+      if(interfaceScale != defaultInterfaceScale){
+        //println("auto zooming activated");
+        zoomDuration = inactivityZoomDuration;
+        zoomTarget = defaultInterfaceScale;
+        zoomStart = interfaceScale;
+        zoomDelayCounter = 0;
+        zooming = true;
+      }
+    }
+    
     resetCounter++;
     if(resetCounter > resetDelay){
       // trigger "freak out" and re-arrange all author names as well as randomize and tween to a new textscale
@@ -1504,148 +1535,152 @@ void frameEvent(TCPClient c){
   if(c.messageAvailable()){
     String[] msg = c.getDataMessage();
     //println(msg[0]);
-    String[] command = msg[0].split(",");
-    if(command[0].equals("drag")){    // used for roll overs and moving the text cloud side to side
-      Iterator iter = textBlocks.values().iterator();
-      while(iter.hasNext()){
-        TextBlock textBlock = (TextBlock)iter.next();
-        textBlock.xv += Integer.parseInt(command[1])*dragDamp;
-        float distance = abs(textBlock.y - Integer.parseInt(command[3]));
-        if(distance < dragRadius){
-          textBlock.xv += Integer.parseInt(command[1]) * (dragDamp * (1 - (distance/dragRadius)));
-        }
-        if(textBlock.isOver(Integer.parseInt(command[2]), Integer.parseInt(command[3]))){
-          textBlock.rollOver();
-        } else {
-          textBlock.rollOut();
-        }
-      }
-      lastDragged = System.currentTimeMillis();
-    } else if(command[0].equals("press")){    // used to register intentional contact with author names
-      mousePressedEvent(Integer.parseInt(command[1]), Integer.parseInt(command[2]));
-    } else if(command[0].equals("release")){  // used to check for intentional click of author names
-      mouseReleasedEvent(Integer.parseInt(command[1]), Integer.parseInt(command[2]));
-    } else if(command[0].equals("buttonEvent")){
-      if(command[1].equals("english")){
-        userLanguage = "English";
-        if(displayControls){
-          btnEspanol.silentOff();
-          if(balloon != null){
-            balloon.setUserLanguage(userLanguage);
-          }
-        }
-      } else if(command[1].equals("espanol")){
-        userLanguage = "Espanol";
-        if(displayControls){
-          btnEnglish.silentOff();
-          if(balloon != null){
-            balloon.setUserLanguage(userLanguage);
-          }
-        }
-      } else if(command[1].equals("zoomin")){
-        if(enableCamera){
-          if(interfaceScale > maxZoom){
-            // TODO: tween the interfaceScale down by 0.1
-            zoomDuration = buttonZoomDuration;
-            zoomTarget = interfaceScale - 0.1;
-            zoomStart = interfaceScale;
-            zooming = true;
-            zoomCounter = 0;
-          } else {
-            btnPlus.silentOff();
-          }
-        }
-      } else if(command[1].equals("zoomout")){
-        if(enableCamera){
-          if(interfaceScale < minZoom){
-            // TODO: tween the interfaceScale up by 0.1
-            zoomDuration = buttonZoomDuration;
-            zoomTarget = interfaceScale + 0.1;
-            zoomStart = interfaceScale;
-            zooming = true;
-            zoomCounter = 0;
-          } else {
-            btnMinus.silentOff();
-          }
-        }
-      } else if(command[1].equals("slide")){
-        if(enableCamera){
-          float offset = 0 - (Float.parseFloat(command[2]) - 0.5);  // cloud is centered
-          horizontalOffset = offset * scaledWidth;
-          //println(offset +" horizontalOffset: "+ horizontalOffset + " horizontalMouseOffset: "+ horizontalMouseOffset);
-        }
-      } else if(command[1].equals("cloud")){
-        if(command[2].equals("normal")){
-          if(displayControls){
-            btnDate.silentOff();
-            dropdownGenre.silentOff();
-            btnPopularity.silentOff();
-          }
-          mode = "authorcloud";
-          // TODO: cause all author names to condense towards the middle of the screen
-          authorCloudMode();
-        } else if(command[2].equals("date")){
-          if(displayControls){
-            dropdownGenre.silentOff();
-            btnAuthorCloud.silentOff();
-            btnPopularity.silentOff();
-          }
-          mode = "date";
-          sortByDate();
-          // TODO: PREVENT DRAGGING/SLIDING
-        } else if(command[2].equals("genre")){
-          if(displayControls){
-            btnDate.silentOff();
-            btnAuthorCloud.silentOff();
-            btnPopularity.silentOff();
-          }
-          mode = "genre";
-          //println("Displaying authors with "+ genreList_english.get(Integer.parseInt(command[3])) +" genre");
-          sortByGenre((String)genreList_english.get(Integer.parseInt(command[3])));
-          // TODO: PREVENT DRAGGING/SLIDING?
-        } else if(command[2].equals("popularity")){
-          if(displayControls){
-            btnDate.silentOff();
-            btnAuthorCloud.silentOff();
-            dropdownGenre.silentOff();
-          }
-          mode = "popularity";
-          sortByPopularity();
-          // TODO: PREVENT DRAGGING/SLIDING
-        } 
-      }
-    } else if(command[0].equals("quote")){    // affect the quote in some way
-      if(command[1].equals("fadein")){
-        // fade out any bio belonging to this author that exists first
-        Iterator iter = bioObjects.values().iterator();
+    for(int i=0; i<msg.length; i++){
+      String[] command = msg[i].split(",");
+      if(command[0].equals("drag")){    // used for roll overs and moving the text cloud side to side
+        Iterator iter = textBlocks.values().iterator();
         while(iter.hasNext()){
-          QuoteLine bioLine = (QuoteLine)iter.next();
-          if(bioLine.getQuoteID() == Integer.parseInt(command[2])){
-            bioLine.fadeOutAndRemove();
+          TextBlock textBlock = (TextBlock)iter.next();
+          textBlock.xv += Integer.parseInt(command[1])*dragDamp;
+          float distance = abs(textBlock.y - Integer.parseInt(command[3]));
+          if(distance < dragRadius){
+            textBlock.xv += Integer.parseInt(command[1]) * (dragDamp * (1 - (distance/dragRadius)));
+          }
+          if(textBlock.isOver(Integer.parseInt(command[2]), Integer.parseInt(command[3]))){
+            textBlock.rollOver();
+          } else {
+            textBlock.rollOut();
           }
         }
-        Author author = (Author)textBlocks.get(Integer.parseInt(command[2]));
-        if(author.hasQuote(userLanguage)){
-          author.addControls(widgetManager, balloon);
-          author.retrigger();
-          createQuote(author);
+        lastDragged = System.currentTimeMillis();
+      } else if(command[0].equals("press")){    // used to register intentional contact with author names
+        mousePressedEvent(Integer.parseInt(command[1]), Integer.parseInt(command[2]));
+      } else if(command[0].equals("release")){  // used to check for intentional click of author names
+        //println("mouse release event received");
+        mouseReleasedEvent(Integer.parseInt(command[1]), Integer.parseInt(command[2]));
+      } else if(command[0].equals("buttonEvent")){
+        if(command[1].equals("english")){
+          userLanguage = "English";
+          if(displayControls){
+            btnEspanol.silentOff();
+            if(balloon != null){
+              balloon.setUserLanguage(userLanguage);
+            }
+          }
+        } else if(command[1].equals("espanol")){
+          userLanguage = "Espanol";
+          if(displayControls){
+            btnEnglish.silentOff();
+            if(balloon != null){
+              balloon.setUserLanguage(userLanguage);
+            }
+          }
+        } else if(command[1].equals("zoomin")){
+          if(enableCamera){
+            if(interfaceScale > maxZoom){
+              // TODO: tween the interfaceScale down by 0.1
+              zoomDuration = buttonZoomDuration;
+              zoomTarget = interfaceScale - 0.1;
+              zoomStart = interfaceScale;
+              zooming = true;
+              zoomCounter = 0;
+            } else {
+              btnPlus.silentOff();
+            }
+          }
+        } else if(command[1].equals("zoomout")){
+          if(enableCamera){
+            if(interfaceScale < minZoom){
+              // TODO: tween the interfaceScale up by 0.1
+              zoomDuration = buttonZoomDuration;
+              zoomTarget = interfaceScale + 0.1;
+              zoomStart = interfaceScale;
+              zooming = true;
+              zoomCounter = 0;
+            } else {
+              btnMinus.silentOff();
+            }
+          }
+        } else if(command[1].equals("slide")){
+          if(enableCamera){
+            float offset = 0 - (Float.parseFloat(command[2]) - 0.5);  // cloud is centered
+            horizontalOffset = offset * scaledWidth;
+            println("horizontalOffset: "+ horizontalOffset +" horizontalMouseOffset: "+ horizontalMouseOffset +" offset: "+ offset);
+            //println(offset +" horizontalOffset: "+ horizontalOffset + " horizontalMouseOffset: "+ horizontalMouseOffset);
+          }
+        } else if(command[1].equals("cloud")){
+          if(command[2].equals("normal")){
+            if(displayControls){
+              btnDate.silentOff();
+              dropdownGenre.silentOff();
+              btnPopularity.silentOff();
+            }
+            mode = "authorcloud";
+            // TODO: cause all author names to condense towards the middle of the screen
+            authorCloudMode();
+          } else if(command[2].equals("date")){
+            if(displayControls){
+              dropdownGenre.silentOff();
+              btnAuthorCloud.silentOff();
+              btnPopularity.silentOff();
+            }
+            mode = "date";
+            sortByDate();
+            // TODO: PREVENT DRAGGING/SLIDING
+          } else if(command[2].equals("genre")){
+            if(displayControls){
+              btnDate.silentOff();
+              btnAuthorCloud.silentOff();
+              btnPopularity.silentOff();
+            }
+            mode = "genre";
+            //println("Displaying authors with "+ genreList_english.get(Integer.parseInt(command[3])) +" genre");
+            sortByGenre((String)genreList_english.get(Integer.parseInt(command[3])));
+            // TODO: PREVENT DRAGGING/SLIDING?
+          } else if(command[2].equals("popularity")){
+            if(displayControls){
+              btnDate.silentOff();
+              btnAuthorCloud.silentOff();
+              dropdownGenre.silentOff();
+            }
+            mode = "popularity";
+            sortByPopularity();
+            // TODO: PREVENT DRAGGING/SLIDING
+          } 
         }
-      }
-    } else if(command[0].equals("bio")){      // affect the bio in some way
-      if(command[1].equals("fadein")){
-        // fade out any quote belonging to this author that exists first
-        Iterator iter = quoteObjects.values().iterator();
-        while(iter.hasNext()){
-          QuoteLine quoteLine = (QuoteLine)iter.next();
-          if(quoteLine.getQuoteID() == Integer.parseInt(command[2])){
-            quoteLine.fadeOutAndRemove();
+      } else if(command[0].equals("quote")){    // affect the quote in some way
+        if(command[1].equals("fadein")){
+          // fade out any bio belonging to this author that exists first
+          Iterator iter = bioObjects.values().iterator();
+          while(iter.hasNext()){
+            QuoteLine bioLine = (QuoteLine)iter.next();
+            if(bioLine.getQuoteID() == Integer.parseInt(command[2])){
+              bioLine.fadeOutAndRemove();
+            }
+          }
+          Author author = (Author)textBlocks.get(Integer.parseInt(command[2]));
+          if(author.hasQuote(userLanguage)){
+            author.addControls(widgetManager, balloon);
+            author.retrigger();
+            createQuote(author);
           }
         }
-        Author author = (Author)textBlocks.get(Integer.parseInt(command[2]));
-        if(author.hasBio(userLanguage)){
-          author.addControls(widgetManager, balloon);
-          author.retrigger();
-          createBio(author);
+      } else if(command[0].equals("bio")){      // affect the bio in some way
+        if(command[1].equals("fadein")){
+          // fade out any quote belonging to this author that exists first
+          Iterator iter = quoteObjects.values().iterator();
+          while(iter.hasNext()){
+            QuoteLine quoteLine = (QuoteLine)iter.next();
+            if(quoteLine.getQuoteID() == Integer.parseInt(command[2])){
+              quoteLine.fadeOutAndRemove();
+            }
+          }
+          Author author = (Author)textBlocks.get(Integer.parseInt(command[2]));
+          if(author.hasBio(userLanguage)){
+            author.addControls(widgetManager, balloon);
+            author.retrigger();
+            createBio(author);
+          }
         }
       }
     }
@@ -1742,11 +1777,12 @@ void mousePressedEvent(int xpos, int ypos){
 }
 
 void mouseReleased(){
+  //println("mouse released");
   if(displayControls){
     widgetManager.released(mouseX, mouseY);
     if(!widgetManager.isOverAWidget(mouseX, mouseY)){
       //client.broadcast("release,"+ int(mouseX * interfaceScale) +","+ int((mouseY * interfaceScale) - verticalOffset));
-       client.broadcast("release,"+ int((mouseX  + horizontalMouseOffset) * interfaceScale)+","+int((mouseY + verticalMouseOffset) * interfaceScale));
+      client.broadcast("release,"+ int((mouseX  + horizontalMouseOffset) * interfaceScale)+","+int((mouseY + verticalMouseOffset) * interfaceScale));
     }
   }
 }
