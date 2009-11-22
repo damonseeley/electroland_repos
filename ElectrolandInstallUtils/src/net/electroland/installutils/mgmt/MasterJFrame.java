@@ -19,7 +19,7 @@ public class MasterJFrame extends JFrame implements ActionListener{
 	 * 
 	 */
 	private static final long serialVersionUID = -4463633428581584781L;
-	private JButton stopAll, startAll;
+	private JButton stopAll, startAll, close;
 	private Collection<ClientJFrame> clients;
 	
 	public MasterJFrame(Collection<ClientJFrame> clients)
@@ -29,7 +29,8 @@ public class MasterJFrame extends JFrame implements ActionListener{
 		this.clients = clients;
 		
 		this.setLayout(new MigLayout());
-		this.setSize(250, 100);
+		this.setSize(500, 100);
+		this.setLocation(10, 10);
 		
 		stopAll = new JButton("stop all");
 		stopAll.addActionListener(this);
@@ -37,7 +38,11 @@ public class MasterJFrame extends JFrame implements ActionListener{
 
 		startAll = new JButton("start all");
 		startAll.addActionListener(this);
-		this.add(startAll, "span 1, wrap");
+		this.add(startAll, "span 1");
+		
+		close = new JButton("reset all connections");
+		close.addActionListener(this);
+		this.add(close, "span 1, wrap");
 		
 		this.setVisible(true);
 
@@ -60,6 +65,11 @@ public class MasterJFrame extends JFrame implements ActionListener{
 			Iterator<ClientJFrame> i = clients.iterator();
 			while (i.hasNext()){
 				i.next().start();
+			}			
+		}else if ("reset all connections".equalsIgnoreCase(e.getActionCommand())){
+			Iterator<ClientJFrame> i = clients.iterator();
+			while (i.hasNext()){
+				i.next().close();
 			}			
 		}
 	}
