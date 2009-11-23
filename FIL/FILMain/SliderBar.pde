@@ -1,12 +1,12 @@
 public class SliderBar extends Widget{
   
-  private int clickX;
-  private int totalWidth;
+  private float clickX;
+  private float totalWidth;
   private boolean dragging = false;
   private PImage segmentImg, leftImg, rightImg;
   private PImage segmentImgDown, leftImgDown, rightImgDown;
   
-  public SliderBar(String name, int x, int y, int w, int h, float value, PImage segmentImg, PImage segmentImgDown,
+  public SliderBar(String name, float x, float y, float w, float h, float value, PImage segmentImg, PImage segmentImgDown,
                    PImage leftImg, PImage leftImgDown, PImage rightImg, PImage rightImgDown){
     super(name, x, y, w, h, value);
     this.totalWidth = w;
@@ -68,7 +68,7 @@ public class SliderBar extends Widget{
     // ignore
   }
   
-  public void setWidth(int w){
+  public void setWidth(float w){
     this.w = w;
     if(x < 0){
       x = 0;
@@ -77,7 +77,7 @@ public class SliderBar extends Widget{
     }
   }
   
-  public void setOffset(int offset){
+  public void setOffset(float offset){
     this.x = offset;
     if(x < 0){
       x = 0;

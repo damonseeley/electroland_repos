@@ -2,7 +2,7 @@ public class Slider extends Widget implements WidgetListener{
   
   private PImage img;
   public SliderBar sliderBar;
-  private int sliderXtarget, sliderXsource;
+  private float sliderXtarget, sliderXsource;
   private int barSlideDuration;
   private int barSlideCounter;
   private boolean barSliding = false;

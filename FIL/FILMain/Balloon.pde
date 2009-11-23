@@ -81,11 +81,11 @@ public class Balloon extends Widget implements WidgetListener{
     pushMatrix();
     
     if(flipped){
-      x = int(((author.getX()+(author.getWidth()/2)) / interfaceScale) - horizontalOffset);
+      x = ((author.getX()+(author.getWidth()/2)) / interfaceScale) - horizontalOffset;
     } else {
-      x = int(((author.getX()-(author.getWidth()/2)) / interfaceScale) - horizontalOffset) + 10 - img.width;
+      x = ((author.getX()-(author.getWidth()/2)) / interfaceScale) - horizontalOffset + 10 - img.width;
     }
-    y = int((author.getY() / interfaceScale) - verticalOffset) + 10 - img.height;
+    y = (author.getY() / interfaceScale) - verticalOffset + 10 - img.height;
     
     translate(x, y);
     if(fadeout){

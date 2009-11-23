@@ -5,7 +5,7 @@ public class DropDownMenu extends Widget implements WidgetListener{
   // also manages the receipt of widget events from buttons and broadcasts them
   // back to the widget manager.
   
-  private int buttonWidth, buttonHeight, leading;
+  private float buttonWidth, buttonHeight, leading;
   private ArrayList items;
   private boolean displayItems = false;
   private boolean on = false;
