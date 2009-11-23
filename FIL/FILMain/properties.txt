@@ -8,6 +8,9 @@ standAlone				= false
 displayRampMask			= true
 xmlFileName				= AUTHORDATA.xml
 displayCursor			= true
+enableSounds			= true
+authorSoundFile			= authorsound.wav
+interfaceSoundFile		= interfacesound.wav
 
 # APPLET DIMENSIONAL PROPERTIES
 # ultimately determined by MPE properties file

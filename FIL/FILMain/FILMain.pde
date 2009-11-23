@@ -2,6 +2,7 @@ import controlP5.*;
 import processing.opengl.*;
 import java.util.concurrent.ConcurrentHashMap;
 import mpe.client.*;
+import pitaru.sonia_v2_9.*;
 
 // FIL TEXT CLOUD
 // by Electroland
@@ -26,6 +27,7 @@ ConcurrentHashMap quoteObjects   = new ConcurrentHashMap();
 ConcurrentHashMap bioObjects     = new ConcurrentHashMap();
 ArrayList genreList_english      = new ArrayList();
 ArrayList genreList_spanish      = new ArrayList();
+Properties genreTranslations     = new Properties();
 int numAuthors                   = 0;
 String xmlFileName;
 
@@ -163,6 +165,13 @@ int rampMaskTopRightX, rampMaskTopRightY;
 int rampMaskBottomRightX, rampMaskBottomRightY;
 int rampMaskBottomLeftX, rampMaskBottomLeftY;
 
+// SOUND VARIABLES
+Boolean enableSounds;
+String authorSoundFile;
+String interfaceSoundFile;
+Sample authorSoundSample;
+Sample interfaceSoundSample;
+
 
 
 
@@ -187,6 +196,9 @@ void setup(){
   
   if(displayControls){
     loadControls();
+    Sonia.start(this);
+    authorSoundSample = new Sample(authorSoundFile);
+    interfaceSoundSample = new Sample(interfaceSoundFile);
   }
   
   rampMask = new RampMask(rampMaskTopLeftX, rampMaskTopLeftY, rampMaskTopRightX, rampMaskTopRightY, rampMaskBottomRightX, rampMaskBottomRightY, rampMaskBottomLeftX, rampMaskBottomLeftY);
@@ -370,7 +382,7 @@ void createAuthor(int id, String name, int born, int died, int workbegan, int wo
 }
 
 void loadControls(){  
-  widgetManager   = new WidgetManager(client);
+  widgetManager   = new WidgetManager(client, interfaceSoundSample, enableSounds);
   btnEnglish      = new Button("English", buttonEnglishX, buttonEnglishY, 1, buttonEnglishImage, buttonEnglishDown);
   btnEnglish.silentOn();      // defaults to on
   btnEspanol      = new Button("Espanol", buttonEspanolX, buttonEspanolY, 0, buttonEspanolImage, buttonEspanolDown);
@@ -404,6 +416,17 @@ void loadControls(){
 }
 
 void loadProperties(){
+  // LOAD IN GENRE TRANSLATIONS FILE
+  try{
+    InputStream in = createInput(sketchPath("genre_translations.txt"));
+    genreTranslations.load(in);
+    in.close();
+  } catch(Exception e){
+    e.printStackTrace();
+    System.exit(0);
+  }
+  
+  // LOAD IN MASTER PROPERTIES FILE
   try{
     //InputStream in = createInput("properties.txt");  // load in the properties for this project
     InputStream in = createInput(sketchPath("properties.txt"));
@@ -527,6 +550,10 @@ void loadProperties(){
   enableCamera          = Boolean.parseBoolean(properties.getProperty("enableCamera"));   // camera properties
   displayControls       = Boolean.parseBoolean(properties.getProperty("displayControls"));
   displayCursor         = Boolean.parseBoolean(properties.getProperty("displayCursor"));
+  
+  enableSounds          = Boolean.parseBoolean(properties.getProperty("enableSounds"));
+  authorSoundFile       = properties.getProperty("authorSoundFile");
+  interfaceSoundFile    = properties.getProperty("interfaceSoundFile");
   
   /*
   buttonAuthorCloudImage  = loadImage(properties.getProperty("buttonAuthorCloudImage"));                // button properties
@@ -937,7 +964,19 @@ void createBio(Author author){
   String[] words = bio.split(" ");
   
   // create the genre text object that will go under the author name
-  String genreString = join(author.genres, ", ").toUpperCase();
+  String genreString = "";
+  if(userLanguage == "English"){
+    genreString = join(author.genres, ", ").toUpperCase();
+  } else {
+    for(int i=0; i<author.genres.length; i++){
+      if(genreTranslations.containsKey(author.genres[i].toLowerCase().replace(" ", ""))){
+        genreString += genreTranslations.getProperty(author.genres[i].toLowerCase().replace(" ", "")) + ", ";
+      } else {
+        genreString += author.genres[i].toLowerCase() + ", ";
+      }
+    }
+    genreString = genreString.substring(0, genreString.length()-2).toUpperCase();  // remove last comma and space
+  }
   float genreX = author.getX() + (author.getWidth()/2);
   float genreY = author.getY();
   QuoteLine genreObj = new QuoteLine(numTextBlocks, author.getID(), 0, author, genreString, genreX, genreY, genreFontName, genreFontSize, genreTextScale, 0);
@@ -1457,8 +1496,9 @@ void render(TCPClient c){
   textFont(statFont);
   fill(200);
   if(displayStats){
-    pushMatrix();
+    //pushMatrix();
     //translate(client.getXoffset(), client.getYoffset());
+    //translate(width/2, height/2);
     text(int(frameRate) +" fps", 10, 20);
     
     if(System.currentTimeMillis() - lastTime > 0){
@@ -1480,7 +1520,7 @@ void render(TCPClient c){
     text(quoteObjects.size() +" quote lines", 10, 80);
     text(bioObjects.size() +" bio lines", 10, 95);
     lastTime = System.currentTimeMillis();  // record time for FPS comparison
-    popMatrix();
+    //popMatrix();
   }
   
   inactivityCounter++;  // keep counting forever, gets reset on mousePressedEvent
@@ -1824,6 +1864,9 @@ void mouseReleasedEvent(int xpos, int ypos){
             if(!((Author)textBlock).triggered && textBlock.pressed){
               createQuote((Author)textBlock);  // create quote here based on author properties
               if(displayControls){
+                if(!authorSoundSample.isPlaying() && enableSounds){
+                  authorSoundSample.play();
+                }
                 widgetManager.removeItem(balloon);
                 balloon = new Balloon("Balloon", (Author)textBlock, 0, balloonImage, balloonDown, buttonQuoteImage, buttonQuoteDown, buttonQuoteEspImage, buttonQuoteEspDown, buttonQuoteGrey, buttonBiographyImage, buttonBiographyDown, buttonBiographyEspImage, buttonBiographyEspDown, buttonBiographyGrey, interfaceScale, horizontalMouseOffset, verticalMouseOffset, userLanguage);
                 widgetManager.addItem(balloon);
