@@ -5,7 +5,7 @@ public abstract class Widget {
   
   private ArrayList listeners;
   protected String name;
-  protected int x, y, w, h;
+  protected float x, y, w, h;
   protected float value;
   protected boolean mouseOver           = false;
   protected boolean mouseDown           = false;
@@ -19,7 +19,7 @@ public abstract class Widget {
   protected final int ROLLOUT = 3;
   protected final int DRAGGED = 4;
   
-  public Widget(String name, int x, int y, float value){
+  public Widget(String name, float x, float y, float value){
     this.name = name;
     this.x = x;
     this.y = y;
@@ -27,7 +27,7 @@ public abstract class Widget {
     listeners = new ArrayList();
   }
   
-  public Widget(String name, int x, int y, int w, int h, float value){
+  public Widget(String name, float x, float y, float w, float h, float value){
     this.name = name;
     this.x = x;
     this.y = y;
@@ -63,7 +63,7 @@ public abstract class Widget {
   public abstract void rollOut();
   public abstract void cursorMovement();
   
-  final public void mouseMoved(int mouseX, int mouseY){
+  final public void mouseMoved(float mouseX, float mouseY){
     if(mouseInside(mouseX, mouseY)){	// if within constraints, activate rollOver
       if(!mouseOver){
         mouseOver = true;
@@ -78,27 +78,27 @@ public abstract class Widget {
     cursorMovement();			// verbose movement repeater (needed for embedded items)
   }
 	
-  final public void mouseDragged(int mouseX, int mouseY){
+  final public void mouseDragged(float mouseX, float mouseY){
     if(mouseDown){
       dragged();
     }
   }
 	
-  final public void mousePressed(int mouseX, int mouseY){
+  final public void mousePressed(float mouseX, float mouseY){
     if(mouseInside(mouseX, mouseY)){
       mouseDown = true;
       pressed();
     }
   }
 
-  final public void mouseReleased(int mouseX, int mouseY){
+  final public void mouseReleased(float mouseX, float mouseY){
     if(mouseDown){
       released();
       mouseDown = false;
     }
   }
 	
-  final public boolean mouseInside(int mouseX, int mouseY){
+  final public boolean mouseInside(float mouseX, float mouseY){
     if((mouseX >= x && mouseX <= x+w) && (mouseY >= y && mouseY <= y+h)){
       return true;
     } else {
@@ -110,27 +110,27 @@ public abstract class Widget {
     return name;
   }
   
-  final public int getX(){
+  final public float getX(){
     return x;
   }
   
-  final public int getY(){
+  final public float getY(){
     return y;
   }
   
-  final public int getWidth(){
+  final public float getWidth(){
     return w;
   }
   
-  final public int getHeight(){
+  final public float getHeight(){
     return h;
   }
   
-  final public void setX(int x){
+  final public void setX(float x){
     this.x = x;
   }
   
-  final public void setY(int y){
+  final public void setY(float y){
     this.y = y;
   }
   

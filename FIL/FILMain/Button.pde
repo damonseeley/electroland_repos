@@ -8,7 +8,7 @@ public class Button extends Widget{
   private float textScale;
   private float textWidth, textHeight;
   
-  public Button(String name, int x, int y, int w, int h, float value){
+  public Button(String name, float x, float y, float w, float h, float value){
     super(name, x, y, w, h, value);
     String fontName = "HelveticaNeue BoldCond";
     int fontSize    = 16;
@@ -18,13 +18,13 @@ public class Button extends Widget{
     textHeight = textRender.getHeight(name);
   }
   
-  public Button(String name, int x, int y, int w, int h, float value, PImage img){
+  public Button(String name, float x, float y, float w, float h, float value, PImage img){
     super(name, x, y, w, h, value);
     this.img = img;
     imgMode = true;
   }
   
-  public Button(String name, int x, int y, float value, PImage img, PImage imgDown){
+  public Button(String name, float x, float y, float value, PImage img, PImage imgDown){
     super(name, x, y, value);
     this.img = img;
     this.imgDown = imgDown;
@@ -55,7 +55,7 @@ public class Button extends Widget{
       }
       rect(0,y,w,h);
       // this should be better
-      textRender.print(name, int(x+(w/2)) - int(textWidth/2), (height - 50 - y) - int(h/2 + textHeight/2));
+      textRender.print(name, int(x+(w/2)) - int(textWidth/2), int(height - 50 - y) - int(h/2 + textHeight/2));
       
     }
     popMatrix();
