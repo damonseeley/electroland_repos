@@ -7,9 +7,11 @@ public class WidgetManager implements WidgetListener {
   
   private TCPClient client;   // reference to mpe broadcaster
   private ArrayList widgets;  // root level widgets
+  private boolean enableSounds;
  
-  public WidgetManager(TCPClient client){
+  public WidgetManager(TCPClient client, Sample interfaceSoundSample, boolean enableSounds){
     this.client = client;
+    this.enableSounds = enableSounds;
     widgets = new ArrayList();
   }
   
@@ -75,8 +77,14 @@ public class WidgetManager implements WidgetListener {
   public void widgetEvent(WidgetEvent we){
     //println(we.name);
     if(we.name.equals("English")){
+      if(!interfaceSoundSample.isPlaying() && enableSounds){
+        interfaceSoundSample.play();
+      }
       client.broadcast("buttonEvent,english");
     } else if(we.name.equals("Espanol")){
+      if(!interfaceSoundSample.isPlaying() && enableSounds){
+        interfaceSoundSample.play();
+      }
       client.broadcast("buttonEvent,espanol");
     } else if(we.name.equals("Author Cloud")){
       client.broadcast("buttonEvent,cloud,normal");
@@ -87,10 +95,19 @@ public class WidgetManager implements WidgetListener {
     } else if(we.name.equals("By Genre")){
       client.broadcast("buttonEvent,cloud,genre,"+int(we.widget.value));
     } else if(we.name.equals("ZoomIn")){
+      if(!interfaceSoundSample.isPlaying() && enableSounds){
+        interfaceSoundSample.play();
+      }
       client.broadcast("buttonEvent,zoomin");
     } else if(we.name.equals("ZoomOut")){
+      if(!interfaceSoundSample.isPlaying() && enableSounds){
+        interfaceSoundSample.play();
+      }
       client.broadcast("buttonEvent,zoomout");
     } else if(we.name.equals("Balloon")){
+      if(!interfaceSoundSample.isPlaying() && enableSounds){
+        interfaceSoundSample.play();
+      }
       if(((Balloon)we.widget).quoteMode){
         client.broadcast("quote,fadein,"+((Balloon)we.widget).author.getID());
       } else {

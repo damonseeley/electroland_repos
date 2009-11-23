@@ -1,0 +1,6 @@
+fiction = ficción
+nonfiction = nonficción
+journalism = periodismo
+urbanism = urbanismo
+socialtheory = la teoría social
+poetry = poesía
