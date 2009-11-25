@@ -129,7 +129,9 @@ int buttonPlusX, buttonPlusY, buttonMinusX, buttonMinusY;
 int buttonSliderX, buttonSliderY, dropDownItemHeight, dropDownItemLeading;
 PImage buttonQuoteImage, buttonQuoteDown, buttonBiographyImage, buttonBiographyDown, balloonImage, balloonDown;
 PImage buttonQuoteEspImage, buttonQuoteEspDown, buttonBiographyEspImage, buttonBiographyEspDown, buttonQuoteGrey, buttonBiographyGrey;
-PImage backgroundImage, leftFade, rightFade;
+PImage backgroundImage, leftFade, rightFade, bottomFade;
+Boolean displayBottomFade = false;
+int bottomFadeY = 1020;
 PImage sliderBarSegmentImage, sliderBarSegmentDown, sliderBarLeftImage, sliderBarLeftDown, sliderBarRightImage, sliderBarRightDown;
 
 // IMAGE VARIABLES
@@ -628,6 +630,9 @@ void loadProperties(){
   backgroundImage                 = loadImage(properties.getProperty("backgroundImage"));
   leftFade                        = loadImage(properties.getProperty("leftFade"));
   rightFade                       = loadImage(properties.getProperty("rightFade"));
+  bottomFade                      = loadImage(properties.getProperty("bottomFade"));
+  displayBottomFade               = Boolean.parseBoolean(properties.getProperty("displayBottomFade"));
+  bottomFadeY                     = Integer.parseInt(properties.getProperty("bottomFadeY"));
 }
 
 public void createQuote(Author author){
@@ -1464,6 +1469,11 @@ void render(TCPClient c){
   fill(0);
   rect(-20,-1000,21,client.getMHeight()+2000);
   rect(client.getMWidth()-1,-1000,20,client.getMHeight()+2000);
+  
+  if(displayBottomFade){
+    // DISPLAY GRADIENT AT BOTTOM OF THE SCREEN
+    image(bottomFade, 0, bottomFadeY, client.getMWidth(), bottomFade.height); 
+  }
   
   if(displayFrames){
     stroke(255);

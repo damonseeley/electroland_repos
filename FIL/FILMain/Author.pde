@@ -28,6 +28,8 @@ public class Author extends TextBlock {
   private boolean tweenDamping = false;
   private float targetXdamping, targetYdamping;
   private float originalXdamping, originalYdamping;
+  private float targetXspring, targetYspring;
+  private float originalXspring, originalYspring;
   private float authorFadeOutDelay;
   
   public String seminalwork_english, seminalwork_spanish;
@@ -41,8 +43,12 @@ public class Author extends TextBlock {
     super(id, name, x, y, fontName, fontSize, textScale);
     originalXdamping = xdamping;
     originalYdamping = ydamping;
+    originalXspring = horizontalSpring;
+    originalYspring = verticalSpring;
     targetXdamping = 0.8;
     targetYdamping = 0.8;
+    targetXspring = originalXspring / 2;
+    targetYspring = originalYspring / 2;
   }
   
   public Author(int id, String name, String quote, float x, float y, String fontName, int fontSize, float textScale){
@@ -50,8 +56,12 @@ public class Author extends TextBlock {
     this.quote = quote;
     originalXdamping = xdamping;
     originalYdamping = ydamping;
+    originalXspring = horizontalSpring;
+    originalYspring = verticalSpring;
     targetXdamping = 0.8;
     targetYdamping = 0.8;
+    targetXspring = originalXspring / 2;
+    targetYspring = originalYspring / 2;
   }
   
   public void applyGravity(float xGrav, float yGrav, float xgravity, float ygravity){
@@ -204,10 +214,14 @@ public class Author extends TextBlock {
           float progress = (movementCounter / (float)movementDuration);
           xdamping = targetXdamping - ((targetXdamping - originalXdamping) * progress);
           ydamping = targetYdamping - ((targetYdamping - originalYdamping) * progress);
+          //horizontalSpring = targetXspring - ((targetXspring - originalXspring) * progress);
+          //verticalSpring = targetYspring - ((targetYspring - originalYspring) * progress);
           movementCounter++;
         } else {
           xdamping = originalXdamping;
           ydamping = originalYdamping;
+          //horizontalSpring = originalXspring;
+          //verticalSpring = originalYspring;
           movementCounter = 0;
           tweenDamping = false;
         }
