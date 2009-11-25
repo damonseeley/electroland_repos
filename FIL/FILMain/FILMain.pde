@@ -210,9 +210,7 @@ void setup(){
   genreList_english.add("nonfiction");
   
   loadXML(xmlFileName);
-  if(!standAlone){
-    client.start();
-  }
+  client.start();
   lastTime = System.currentTimeMillis();  // record time for FPS comparison
 }
 
