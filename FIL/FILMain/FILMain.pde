@@ -186,6 +186,13 @@ void setup(){
   
   client = new TCPClient(sketchPath("mpe.ini"), this);
   size(client.getLWidth(), client.getLHeight(), OPENGL);
+  
+  background(0);
+  statFont = loadFont("ArialMT-10.vlw");
+  textFont(statFont);
+  fill(255);
+  
+  text("instantiated client, created size...", width/2, height/2);  // FOR MPE DEBUGGING
   randomSeed(1);
   if(!displayCursor){
     noCursor();
@@ -194,24 +201,37 @@ void setup(){
   yGrav = client.getMHeight()/2;
   colorMode(RGB, 255);
   pgl = (PGraphicsOpenGL)g;
-  statFont = loadFont("ArialMT-10.vlw");
+  
+  text("set gravity, colormode, opengl object...", width/2, (height/2) + 15);  // FOR MPE DEBUGGING
   
   if(displayControls){
     loadControls();
     Sonia.start(this);
     authorSoundSample = new Sample(authorSoundFile);
     interfaceSoundSample = new Sample(interfaceSoundFile);
+    
+    text("loaded controls, started sound engine...", width/2, (height/2) + 30);  // FOR MPE DEBUGGING
+  } else {
+    text("skipped loading controls & sound engine...", width/2, (height/2) + 30);  // FOR MPE DEBUGGING
   }
   
   rampMask = new RampMask(rampMaskTopLeftX, rampMaskTopLeftY, rampMaskTopRightX, rampMaskTopRightY, rampMaskBottomRightX, rampMaskBottomRightY, rampMaskBottomLeftX, rampMaskBottomLeftY);
+
+  text("loaded ramp mask...", width/2, (height/2) + 45);  // FOR MPE DEBUGGING
   
   // TEMPORARY! MUST GET GENRE LIST FROM BILINGUAL FILE
   genreList_english.add("fiction");
   genreList_english.add("nonfiction");
   
   loadXML(xmlFileName);
+  
+  text("loaded xml...", width/2, (height/2) + 60);  // FOR MPE DEBUGGING
+  
   client.start();
   lastTime = System.currentTimeMillis();  // record time for FPS comparison
+  
+  text("STARTED MPE CLIENT...", width/2, (height/2) + 75);  // FOR MPE DEBUGGING
+  
 }
 
 public void loadXML(String filename){
