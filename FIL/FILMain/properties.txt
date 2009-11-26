@@ -1,5 +1,8 @@
 # PROPERTIES FOR 'FIL TEXT CLOUD' PROJECT
 
+# NEWLY ADDED VARIABLES
+rightFadeX			= 2872
+
 # OFTEN CHANGED VARIABLES
 enableCamera			= true
 displayControls			= true
