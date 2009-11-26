@@ -1,16 +1,17 @@
 # PROPERTIES FOR 'FIL TEXT CLOUD' PROJECT
+# working copy
 
 # NEWLY ADDED VARIABLES
 rightFadeX			= 2872
 
 # OFTEN CHANGED VARIABLES
-enableCamera			= true
-displayControls			= true
+enableCamera			= false
+displayControls			= false
 yflip					= true
 standAlone				= false
-displayRampMask			= true
+displayRampMask			= false
 xmlFileName				= fil_authordata_vs03.xml
-displayCursor			= true
+displayCursor			= false
 enableSounds			= true
 authorSoundFile			= authorsound.wav
 interfaceSoundFile		= interfacesound.wav
@@ -40,9 +41,11 @@ textMarginVertical		= 2
 textMarginHorizontal	= 2
 quoteMarginHorizontal	= 80
 quoteMarginVertical		= 40
-authorTextRedVal		= 100
-authorTextGreenVal		= 170
+
+authorTextRedVal		= 80
+authorTextGreenVal		= 220
 authorTextBlueVal		= 255
+
 authorSelectedRedVal	= 255
 authorSelectedGreenVal	= 255
 authorSelectedBlueVal	= 255
@@ -55,8 +58,8 @@ charsPerLine			= 40
 maxQuotes				= 2
 quoteDistanceThreshold	= 200
 quoteTextRedVal			= 255
-quoteTextGreenVal		= 50
-quoteTextBlueVal		= 50
+quoteTextGreenVal		= 106
+quoteTextBlueVal		= 200
 quotationOffset			= 10
 quoteBlockTopMargin		= 0
 
@@ -73,10 +76,16 @@ bioBlockTopMargin		= 0
 dateFontName			= HelveticaNeue LT 67 MdCn
 dateFontSize			= 64
 dateTextScale			= 0.7
+
 dateTextRedVal			= 255
-dateTextGreenVal		= 50
-dateTextBlueVal			= 50
-dateTextLeftMargin		= 4
+dateTextGreenVal		= 106
+dateTextBlueVal			= 200
+
+#dateTextRedVal			= 255
+#dateTextGreenVal		= 50
+#dateTextBlueVal			= 50
+
+dateTextLeftMargin		= 8
 
 # GENRE TEXT PROPERTIES (displayed when bio is displayed)
 genreFontName			= HelveticaNeue LT 67 MdCn
@@ -85,7 +94,7 @@ genreTextScale			= 0.5
 genreTextRedVal			= 150
 genreTextGreenVal		= 255
 genreTextBlueVal		= 150
-genreTextTopMargin		= 1
+genreTextTopMargin		= 3
 
 # SCREENSAVER PROPERTIES
 # specified in frames
@@ -135,7 +144,7 @@ minZoom					= 1.6
 barSlideDuration		= 15
 
 # RAMP MASK PROPERTIES
-displayRamp				= true
+displayRamp				= false
 enableRampForce			= true
 rampMaskTopLeftX		= 0
 rampMaskTopLeftY		= 704
