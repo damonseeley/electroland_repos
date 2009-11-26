@@ -130,6 +130,7 @@ int buttonSliderX, buttonSliderY, dropDownItemHeight, dropDownItemLeading;
 PImage buttonQuoteImage, buttonQuoteDown, buttonBiographyImage, buttonBiographyDown, balloonImage, balloonDown;
 PImage buttonQuoteEspImage, buttonQuoteEspDown, buttonBiographyEspImage, buttonBiographyEspDown, buttonQuoteGrey, buttonBiographyGrey;
 PImage backgroundImage, leftFade, rightFade, bottomFade;
+int rightFadeX;
 Boolean displayBottomFade = false;
 int bottomFadeY = 1020;
 PImage sliderBarSegmentImage, sliderBarSegmentDown, sliderBarLeftImage, sliderBarLeftDown, sliderBarRightImage, sliderBarRightDown;
@@ -651,6 +652,7 @@ void loadProperties(){
   bottomFade                      = loadImage(properties.getProperty("bottomFade"));
   displayBottomFade               = Boolean.parseBoolean(properties.getProperty("displayBottomFade"));
   bottomFadeY                     = Integer.parseInt(properties.getProperty("bottomFadeY"));
+  rightFadeX                      = Integer.parseInt(properties.getProperty("rightFadeX"));
 }
 
 public void createQuote(Author author){
@@ -1482,11 +1484,11 @@ void render(TCPClient c){
   
   // GRADIENTS ON EDGES TO FADE ALL TEXT HORIZONTALLY
   image(leftFade, 0, -1000, horizontalFallOff, client.getMHeight()+2000);
-  image(rightFade, client.getMWidth() - horizontalFallOff, -1000, horizontalFallOff, client.getMHeight()+2000);
+  image(rightFade, rightFadeX, -1000, horizontalFallOff, client.getMHeight()+2000);
   // additional black area beyond screen just in case of scaling rounding issues
   fill(0);
   rect(-20,-1000,21,client.getMHeight()+2000);
-  rect(client.getMWidth()-1,-1000,20,client.getMHeight()+2000);
+  rect((rightFadeX+rightFade.width)-1,-1000,20,client.getMHeight()+2000);
   
   if(displayBottomFade){
     // DISPLAY GRADIENT AT BOTTOM OF THE SCREEN
@@ -1947,5 +1949,11 @@ void keyPressed(){
     yflip = !yflip;
   } else if(key == 'r' || key == 'R'){
     displayRamp = !displayRamp;
+  } else if(keyCode == LEFT){
+    rightFadeX--;
+    println("right fade X: "+ rightFadeX);
+  } else if(keyCode == RIGHT){
+    rightFadeX++;
+    println("right fade X: "+ rightFadeX);
   }
 }
