@@ -5,12 +5,12 @@
 rightFadeX			= 2872
 
 # OFTEN CHANGED VARIABLES
-enableCamera			= false
-displayControls			= false
+enableCamera			= true
+displayControls			= true
 yflip					= true
 standAlone				= false
 displayRampMask			= false
-xmlFileName				= fil_authordata_vs03.xml
+xmlFileName				= fil_authordata_vs10.xml
 displayCursor			= false
 enableSounds			= true
 authorSoundFile			= authorsound.wav
