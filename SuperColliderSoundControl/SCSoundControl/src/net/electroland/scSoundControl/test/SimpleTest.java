@@ -81,8 +81,10 @@ public class SimpleTest extends PApplet implements SCSoundControlNotifiable {
 		if (mousePressed) howMuchX = mouseX / (float)width;
 		
 		if (sound1 != null) {
-			if (sound1.isAlive()) sound1.setAmplitude(0, 1, howMuchY);
-			if (sound1.isAlive()) sound1.setAmplitude(1, 1, howMuchX);
+			if (sound1.isAlive()) sound1.setAmplitude(0, 0, howMuchY);
+			if (sound1.isAlive()) sound1.setAmplitude(0, 1, 1f-howMuchY);
+			if (sound1.isAlive()) sound1.setAmplitude(1, 0, howMuchX);
+			if (sound1.isAlive()) sound1.setAmplitude(1, 1, 1f-howMuchX);
 		}
 
 	}
@@ -99,7 +101,7 @@ public class SimpleTest extends PApplet implements SCSoundControlNotifiable {
 	}
 	
 	public void mousePressed() {
-		if (serverIsLive) sound1 = ss.createStereoSoundNode(buffer2, true, new int[]{0, 1}, new float[]{1, 1}, new int[]{1}, new float[]{1}, 0.85f);
+		if (serverIsLive) sound1 = ss.createStereoSoundNode(buffer2, true, new int[]{0, 1}, new float[]{1, 1}, new int[]{0, 1}, new float[]{1, 1}, 0.85f);
 	}
 	
 	public void mouseReleased() {
