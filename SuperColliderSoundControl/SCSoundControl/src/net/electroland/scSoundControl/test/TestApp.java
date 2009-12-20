@@ -192,7 +192,7 @@ public class TestApp extends PApplet implements SCSoundControlNotifiable {
 		int newVoicesNeeded = targetPolyphony - getCurPolyphony();
 		if (newVoicesNeeded > 0) {
 			for (int i = 0; i < newVoicesNeeded; i++) {
-				_soundNodes.add(ss.createMonoSoundNode(_bufferList.get((int)random(0,_bufferList.size())), false, generateRandomVolumeArray(), 2f));
+				_soundNodes.add(ss.createMonoSoundNode(_bufferList.get((int)random(0,_bufferList.size())), false, generateOutputChannelArray(), generateRandomVolumeArray(), 2f));
 			}
 		}
 	}
@@ -206,6 +206,14 @@ public class TestApp extends PApplet implements SCSoundControlNotifiable {
 		return result;
 	}
 	
+	//populate an array of floats with random values 0-1, size equal to number of output channels
+	public int[] generateOutputChannelArray() {
+		int[] result = new int[numOutputChannels];
+		for (int i = 0 ; i < numOutputChannels; i++) {
+			result[i] = i;
+		}
+		return result;
+	}
 	
 	//go through the list of sound nodes. If one has finished playing, cull it from the list.
 	protected void cleanupSoundNodes() {
@@ -222,7 +230,7 @@ public class TestApp extends PApplet implements SCSoundControlNotifiable {
 		if (!serverIsLive) return;
 		
 		if (_bufferList.contains(bufferNumber)) {
-			SoundNode thisNode = ss.createMonoSoundNode(_bufferList.get(bufferNumber), false, new float[]{1f,1f}, 2f);
+			SoundNode thisNode = ss.createMonoSoundNode(_bufferList.get(bufferNumber), false, new int[]{0, 1}, new float[]{1f,1f}, 2f);
 			if (thisNode != null) { _soundNodes.add(thisNode); }
 			else { println("Unable to create new sound node for buffer " + bufferNumber); }
 		} else {
