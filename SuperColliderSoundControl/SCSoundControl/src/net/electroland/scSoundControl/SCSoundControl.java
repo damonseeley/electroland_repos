@@ -262,7 +262,9 @@ public class SCSoundControl implements OSCListener, Runnable {
 		//_scsynthLauncher.killScsynth();
 	}
 	
-	// cleanup all SCSoundControl nodes in SuperCollider
+	/**
+	 *  cleanup all SCSoundControl nodes in SuperCollider
+	 */
 	public synchronized void cleanup() {
 		// by freeing the mother group we clean up all the nodes we've created
 		// on the SC server
@@ -528,17 +530,24 @@ public class SCSoundControl implements OSCListener, Runnable {
 		sendMessage("/g_new", new Object[] { 1 });
 	}
 
-	// for debugging: tell scsynth to dump a tree of its nodes to the post
-	// windows
+	/**
+	 * for debugging: tell scsynth to dump a tree of its nodes to the post windows
+	 */
 	public void dumpTree() {
 		sendMessage("/g_dumpTree", new Object[] { 0, 0 });
 	}
 
-	// for debugging: tell scsynth to trace a given node in the post window
+	/**
+	 * for debugging: tell scsynth to trace a given node in the post window
+	 * @param node: ID
+	 */
 	public void trace(int node) {
 		sendMessage("/n_trace", new Object[] { node });
 	}
 
+	/**
+	 * Quit ScSynth
+	 */
 	public void quitScsynth() {
 		sendMessage("quit");
 	}
@@ -635,24 +644,48 @@ public class SCSoundControl implements OSCListener, Runnable {
 	//*****************************************
 	// Sound Node Factory Methods
 	//*****************************************
-	
+
+	/**
+	 * Convenience function to create a new soundNode to playback a mono buffer 
+	 * to a single output channel (can be used to play the left channel of a stereo buffer). Calls createMonoSoundNode().
+	 * @param bufferNumber : id of the playback buffer
+	 * @param doLoop : boolean - loop? or play then stop & die
+	 * @param channel : which output channel the playback buffer should play to
+	 * @param amplitude : the amplitude to begin playing at.
+	 * @param playbackRate : amplitudes corresponding to the rChannelOutputChannels param.
+	 * @return a new SoundNode
+	 */
 	public SoundNode createSoundNodeOnSingleChannel(int bufferNumber, boolean doLoop, int channel, float amplitude, float playbackRate) {
-		float[] amps = new float[_outChannels];
-		for (int i=0; i < _outChannels; i++) {
-			amps[i] = i==channel? amplitude : 0;
-		}
-		return createMonoSoundNode(bufferNumber, doLoop, amps, playbackRate);
+		int[] channels = new int[1];
+		channels[0] = channel;
+		
+		float[] amps = new float[1];
+		amps[0] = amplitude;
+		
+		return createMonoSoundNode(bufferNumber, doLoop, channels, amps, playbackRate);
 	}
 	
-	// create a new soundNode to playback a buffer
+	/**
+	 * create a new soundNode to playback a mono buffer (can be used to play the left channel of a stereo buffer)
+	 * @param bufferNumber : id of the playback buffer
+	 * @param doLoop : boolean - loop? or play then stop & die
+	 * @param outputChannels : an array of output channels which the playback buffer should play to
+	 * @param channelAmplitudes : amplitudes corresponding to the outputChannels param.
+	 * @param playbackRate : amplitudes corresponding to the rChannelOutputChannels param.
+	 * @return a new SoundNode
+	 */
 	public SoundNode createMonoSoundNode(int bufferNumber, boolean doLoop,
-			float[] channelAmplitudes, float playbackRate) {
+			int[] outputChannels, float[] channelAmplitudes, float playbackRate) {
 		
 		//sanity check the buffer that's been requested.
 		if (!_bufferMap.containsKey(bufferNumber)) return null;
 		
+		//wrap up 1D input arrays into 2D arrays
 		float[][] amps = new float[1][];
-		amps[0] = channelAmplitudes;
+		amps[0] = channelAmplitudes; //this is ok, since the the amps array gets copied inside of SoundNode constructor.
+		
+		int[][] outChannels = new int[1][];
+		outChannels[0] = outputChannels;
 		
 		// instantiate a new SoundNode and remember it by its group ID.
 		// when that group ID is freed on the server we'll know this SoundNode
@@ -660,29 +693,44 @@ public class SCSoundControl implements OSCListener, Runnable {
 		SoundNode sn;
 		synchronized (this) {
 			sn = new SoundNode(this, bufferNumber, 1, doLoop,
-					_outChannels, amps, playbackRate);
+					outChannels, amps, playbackRate);
 			_soundNodes.put(sn.getGroup(), sn);
 		}
 
 		return sn;
 	}
-	
-	public SoundNode createStereoSoundNodeWithLRMap(int bufferNumber, boolean doLoop,
+
+
+	/**
+	 * The use of this function is deprecated, as its functionality is made redundant by updates to createStereoSoundNode().
+	 */
+	@Deprecated public SoundNode createStereoSoundNodeWithLRMap(int bufferNumber, boolean doLoop,
 			int[] leftChannelMap, int[] rightChannelMap, float playbackRate) {
-		float[] lChannelAmplitudes = new float[_outChannels];
-		float[] rChannelAmplitudes = new float[_outChannels];
+		float[] lChannelAmplitudes = new float[leftChannelMap.length];
+		float[] rChannelAmplitudes = new float[rightChannelMap.length];
 		for (int i=0; i<leftChannelMap.length; i++) {
 			lChannelAmplitudes[leftChannelMap[i]] = 1f;
 		}
 		for (int i=0; i<rightChannelMap.length; i++) {
 			rChannelAmplitudes[rightChannelMap[i]] = 1f;
 		}
-		return createStereoSoundNode(bufferNumber, doLoop, lChannelAmplitudes, rChannelAmplitudes, playbackRate);
+		return createStereoSoundNode(bufferNumber, doLoop, leftChannelMap, lChannelAmplitudes, rightChannelMap, rChannelAmplitudes, playbackRate);
 	}
 	
-	// create a new soundNode to playback a buffer
+	/**
+	 * create a new soundNode to playback a stereo buffer
+	 * @param bufferNumber : id of the playback buffer
+	 * @param doLoop : boolean - loop? or play then stop & die
+	 * @param lChannelOutputChannels : an array of output channels which the left channel of the playback buffer should play to
+	 * @param lChannelAmplitudes : amplitudes corresponding to the lChannelOutputChannels param.
+	 * @param rChannelOutputChannels : an array of output channels which the right channel of the playback buffer should play to
+	 * @param rChannelAmplitudes
+	 * @param playbackRate : amplitudes corresponding to the rChannelOutputChannels param.
+	 * @return a new SoundNode
+	 */
+
 	public SoundNode createStereoSoundNode(int bufferNumber, boolean doLoop,
-			float[] lChannelAmplitudes, float[] rChannelAmplitudes, float playbackRate) {
+			int[] lChannelOutputChannels, float[] lChannelAmplitudes, int[] rChannelOutputChannels, float[] rChannelAmplitudes, float playbackRate) {
 		
 		//sanity check the buffer that's been requested.
 		if (!_bufferMap.containsKey(bufferNumber)) return null;
@@ -691,13 +739,17 @@ public class SCSoundControl implements OSCListener, Runnable {
 		amps[0] = lChannelAmplitudes;
 		amps[1] = rChannelAmplitudes;
 
+		int[][] outChannels = new int[2][];
+		outChannels[0] = lChannelOutputChannels;
+		outChannels[1] = rChannelOutputChannels;
+
 		// instantiate a new SoundNode and remember it by its group ID.
 		// when that group ID is freed on the server we'll know this SoundNode
 		// is dead.
 		SoundNode sn;
 		synchronized (this) {
 			sn = new SoundNode(this, bufferNumber, 2, doLoop,
-					_outChannels, amps, playbackRate);
+					outChannels, amps, playbackRate);
 			_soundNodes.put(sn.getGroup(), sn);
 		}
 
@@ -705,7 +757,12 @@ public class SCSoundControl implements OSCListener, Runnable {
 	}
 
 	
+	
+	
+	//*********************************
 	// debug output helpers
+	//*********************************
+
 	boolean _doDebug = false;
 
 	public void showDebugOutput(boolean state) {
