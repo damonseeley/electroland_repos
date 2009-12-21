@@ -51,6 +51,8 @@ public class MusicBox implements Animation {
 		return duration;
 	}	
 	public byte[] draw(){
+		
+		/*
 		if(frameCount >= framesPerRefresh){
 			player.move();
 			frameCount = 0;
@@ -85,6 +87,56 @@ public class MusicBox implements Animation {
 						ConnectionMain.soundController.playSimpleSound(soundFileF, xpos, ypos, 1, "musicboxF");
 					}
 				}
+			}
+		}
+		*/
+
+		float compensation = Float.parseFloat(ConnectionMain.properties.get("forwardCompensation"));	// one and only access per draw
+		if(frameCount >= framesPerRefresh){
+			player.move();
+			frameCount = 0;
+			
+			Iterator <Person> itr = ConnectionMain.personTracker.getPersonIterator();
+			while (itr.hasNext()){
+				Person person = itr.next();
+				int[] loc = person.getForwardIntLoc(compensation);
+				xpos = loc[0];
+				ypos = loc[1];
+				element = xpos + ypos*gridx;
+				if(element < lights.length && element >= 0){	// when people go out of range they need to be omitted
+					//lights[element].setRed(253);				// make light active
+					if(player.gy == ypos){
+						// play sound above person
+						if(xpos == 0){
+							ConnectionMain.soundController.playSimpleSound(soundFileA, xpos, ypos, 1, "musicboxA");
+						} else if(xpos == 1){
+							ConnectionMain.soundController.playSimpleSound(soundFileB, xpos, ypos, 1, "musicboxB");
+						} else if(xpos == 2){
+							ConnectionMain.soundController.playSimpleSound(soundFileC, xpos, ypos, 1, "musicboxC");
+						} else if(xpos == 3){
+							ConnectionMain.soundController.playSimpleSound(soundFileD, xpos, ypos, 1, "musicboxD");
+						} else if(xpos == 4){
+							ConnectionMain.soundController.playSimpleSound(soundFileE, xpos, ypos, 1, "musicboxE");
+						} else if(xpos == 5){
+							ConnectionMain.soundController.playSimpleSound(soundFileF, xpos, ypos, 1, "musicboxF");
+						}
+					}
+				}
+			}
+		} else {
+			frameCount++;
+			//System.out.println(frameCount);
+		}
+		
+		Iterator <Person> itr = ConnectionMain.personTracker.getPersonIterator();
+		while (itr.hasNext()){
+			Person person = itr.next();
+			int[] loc = person.getForwardIntLoc(compensation);
+			xpos = loc[0];
+			ypos = loc[1];
+			element = xpos + ypos*gridx;
+			if(element < lights.length && element >= 0){	// when people go out of range they need to be omitted
+				lights[element].setRed(253);				// make light active
 			}
 		}
 		

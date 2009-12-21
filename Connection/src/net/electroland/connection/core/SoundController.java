@@ -75,8 +75,14 @@ public class SoundController implements SCSoundControlNotifiable {
 		if(!soundFile.equals("none") && serverIsLive){
 			int[] channels = new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23};
 			float[] amplitudes = new float[]{gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain};
-			SoundNode sn = ss.createStereoSoundNodeWithLRMap(soundFiles.get(absolutePath+soundFile), false, new int[]{1, 0}, new int[]{0, 1}, 1.0f);
-			sn.setAmplitudes(channels, amplitudes);
+			//float[] amplitudes = new float[]{gain,gain};
+			//SoundNode sn = ss.createStereoSoundNodeWithLRMap(soundFiles.get(absolutePath+soundFile), false, new int[]{1, 0}, new int[]{0, 1}, 1.0f);
+			SoundNode sn = ss.createMonoSoundNode(soundFiles.get(absolutePath+soundFile), false, channels, amplitudes, 1.0f);
+			//if(sn != null){	// verify that a sound has been returned
+			//	sn.setAmplitudes(channels, amplitudes);
+			//} else {
+			//	System.out.println(soundFiles.get(absolutePath+soundFile) + " returned null");		
+			//}
 		}
 	}
 	
@@ -88,8 +94,24 @@ public class SoundController implements SCSoundControlNotifiable {
 	public void playSimpleSound(String filename, int x, int y, float gain, String comment){
 		soundID++;
 		if(!filename.equals("none") && serverIsLive){
-			float[] amplitudes = getAmplitudes(x, y, gain);
-			ss.createMonoSoundNode(soundFiles.get(absolutePath+filename), false, amplitudes, 1.0f);
+			int channel = y/2;
+			if(channel < 1){
+				channel = 1;
+			} else if(channel > 12){
+				channel = 12;
+			}
+			if(x <= 2){
+				channel = (channel*2) - 1;
+			} else {
+				channel = (channel*2);
+			}
+			channel -= 1; // for zero index
+			SoundNode sn = ss.createSoundNodeOnSingleChannel(soundFiles.get(absolutePath+filename), false, channel, gain, 1.0f);
+			//float[] amplitudes = getAmplitudes(x, y, gain);
+			//SoundNode sn = ss.createMonoSoundNode(soundFiles.get(absolutePath+filename), false, amplitudes, 1.0f);
+			//if(sn == null){
+			//	System.out.println(soundFiles.get(absolutePath+filename) + " returned null");	
+			//}
 		}
 	}
 	
