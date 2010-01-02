@@ -70,11 +70,11 @@ public class AnimationManager {
 		compositor.isOverlayEnabled(true);
 		compositor.setBackgroundColor(Color.BLACK);
 		anim = new ImageFileAnimation(w,h);
-		anim.loadImagesAsync("./wave/wave", 1, 2, ".png", 10);
+		anim.loadImagesAsync("./depends/wave/wave", 1, 2, ".png", 10);
 		anim.playCnt(1);
 		
 		anim2 = new ImageFileAnimation(w,h);
-		anim2.loadImagesAsync("./EFFECTS/white_cells/white_cells", 0, 2, ".png", 30);
+		anim2.loadImagesAsync("./depends/EFFECTS/white_cells/white_cells", 0, 2, ".png", 30);
 		anim2.playCnt(1);
 		
 		
