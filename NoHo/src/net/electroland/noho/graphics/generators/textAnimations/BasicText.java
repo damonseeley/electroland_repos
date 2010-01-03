@@ -43,6 +43,7 @@ public class BasicText extends Switcher {
 		if(curLine < displayText.size()) {
 			basicLine = new BasicLine(image.getWidth(), image.getHeight());
 			basicLine.setColor(c);
+			System.out.println("render: " + displayText.get(curLine));
 			basicLine.prerenderLine( displayText.get(curLine++));
 			basicLine.setDisplayTime(holdTime+transitionTime);
 			addImage(basicLine);
