@@ -21,7 +21,6 @@ import net.electroland.elvis.regions.PolyRegion;
 import net.electroland.noho.graphics.AnimationManager;
 import net.electroland.noho.graphics.Compositor;
 import net.electroland.noho.graphics.ImageConsumer;
-import net.electroland.noho.graphics.generators.sprites.LinearMotionRecSprite;
 import net.electroland.noho.graphics.generators.sprites.SpriteImageGenerator;
 import net.electroland.noho.graphics.generators.sprites.TextMotionSprite;
 import net.electroland.noho.util.SensorPair;
@@ -48,17 +47,17 @@ public class DriveBy2010 extends JFrame implements ImageConsumer, TimedEventList
 	
 	final static double vadj = 10;
 	
-	
+	public static boolean trafficEnabled = false;
 	TimedEvent sunriseOn = new TimedEvent(6,00,00, this); // on at sunrise-1 based on weather
-	TimedEvent middayOff = new TimedEvent(12,00,00, this); // off at 12 PM for sun reasons
+	TimedEvent middayOff = new TimedEvent(16,59,00, this); // off at 12 PM for sun reasons
 	TimedEvent sunsetOn = new TimedEvent(16,00,00, this); // on at sunset-1 based on weather
 	TimedEvent nightOff = new TimedEvent(2,00,00, this); // off at 2 AM
 	
 	TextQueue textQueue = new TextQueue();
-	TrafficObserver trafficobserver;
 	Compositor compositor;
 	AnimationManager animationManager;
 	RenderThread render;
+	TrafficObserver trafficobserver;
 	SensorThread northSensor;
 	SensorThread southSensor;
 	BufferedImage imageBuffer;
@@ -83,8 +82,15 @@ public class DriveBy2010 extends JFrame implements ImageConsumer, TimedEventList
 		imageBuffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 		compositor = new Compositor(w,h);
 		compositor.setConsumer(this);
-		trafficobserver = new TrafficObserver();
-		animationManager = new AnimationManager(w,h, compositor, textQueue, trafficobserver);
+		if (trafficEnabled)
+		{
+			trafficobserver = new TrafficObserver();
+			animationManager = new AnimationManager(w,h, compositor, textQueue, trafficobserver);
+		}else
+		{
+			animationManager = new AnimationManager(w,h, compositor, textQueue);			
+		}
+		
 		
 
 		// wait 6 secs (for things to get started up) then check weather every half hour
@@ -108,30 +114,30 @@ public class DriveBy2010 extends JFrame implements ImageConsumer, TimedEventList
 		if(render == null) { // don't want to start twice
 			render = new RenderThread(NoHoConfig.FRAMERATE);
 			render.start();
+		}
+		if (trafficEnabled){
+			if (northSensor == null){
+				System.out.println("starting up northern camera.");
+				PresenceDetector ndet = 
+					PresenceDetector.createFromFile(new File(NoHoConfig.NORTH_CAMERA_ELV_FNAME));
+				AxisCamera ncam = new NoHoNorthCam(160,120, ndet, false);
+				
+				northSensor = new SensorThread(ndet, ncam, new NoHoConfig().NORTH_SENSOR_PAIRS, 
+												animationManager.getSpriteWorld());
+				northSensor.start();
+			}			
+			if (southSensor == null){
+				System.out.println("starting up southern camera.");
+				PresenceDetector sdet = 
+					PresenceDetector.createFromFile(new File(NoHoConfig.SOUTH_CAMERA_ELV_FNAME));
+				AxisCamera scam = new NoHoSouthCam(160,120, sdet, false);
+				
+				southSensor = new SensorThread(sdet, scam, new NoHoConfig().SOUTH_SENSOR_PAIRS, 
+												animationManager.getSpriteWorld());
+				southSensor.start();
+			}
+			trafficobserver.resetAll();
 		}		
-		if (northSensor == null){
-			System.out.println("starting up northern camera.");
-			PresenceDetector ndet = 
-				PresenceDetector.createFromFile(new File(NoHoConfig.NORTH_CAMERA_ELV_FNAME));
-			AxisCamera ncam = new NoHoNorthCam(160,120, ndet, false);
-			
-			northSensor = new SensorThread(ndet, ncam, new NoHoConfig().NORTH_SENSOR_PAIRS, 
-											animationManager.getSpriteWorld());
-			northSensor.start();
-		}
-
-		if (southSensor == null){
-			System.out.println("starting up southern camera.");
-			PresenceDetector sdet = 
-				PresenceDetector.createFromFile(new File(NoHoConfig.SOUTH_CAMERA_ELV_FNAME));
-			AxisCamera scam = new NoHoSouthCam(160,120, sdet, false);
-			
-			southSensor = new SensorThread(sdet, scam, new NoHoConfig().SOUTH_SENSOR_PAIRS, 
-											animationManager.getSpriteWorld());
-			southSensor.start();
-		}
-		
-		trafficobserver.resetAll();
 	}
 	
 	public void stop() {
@@ -142,10 +148,16 @@ public class DriveBy2010 extends JFrame implements ImageConsumer, TimedEventList
 		} else {
 			render.isRunning = false;
 			render = null;
-			northSensor.isRunning = false;
-			northSensor = null;
-			southSensor.isRunning = false;
-			southSensor = null;
+			if (northSensor != null)
+			{
+				northSensor.isRunning = false;
+				northSensor = null;
+			}
+			if (southSensor != null)
+			{
+				southSensor.isRunning = false;
+				southSensor = null;				
+			}
 		}
 	}
 	
@@ -360,7 +372,10 @@ public class DriveBy2010 extends JFrame implements ImageConsumer, TimedEventList
 				dTime = startTime - lastTime;
 				render(dTime, startTime);
 				
-				trafficobserver.process();
+				if (trafficobserver != null)
+				{					
+					trafficobserver.process();
+				}
 
 				dTime = startTime + ticksPerFrame - System.currentTimeMillis();
 				
@@ -492,7 +507,7 @@ public class DriveBy2010 extends JFrame implements ImageConsumer, TimedEventList
 				} else {
 					if (render != null) {
 						System.out.println("Stopping in the afternoon due to weather condition at temp " + lastTemp);
-						stop();
+//						stop();
 					}
 				}
 			}

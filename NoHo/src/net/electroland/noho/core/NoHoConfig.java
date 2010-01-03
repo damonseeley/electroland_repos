@@ -14,7 +14,8 @@ public class NoHoConfig {
 	//public static String QUOTEFILE = "./depends/afi100_quotes_list_modified_with_breaks.txt";
 	
 	public static String FONT_DIRECTORY ="depends/5x7_STD_GIF/";
-	final public static int FRAMERATE = 50;
+//	final public static int FRAMERATE = 50;
+	final public static int FRAMERATE = 10;
 	final public static int CHARWIDTH = 10;
 	final public static int CHARHEIGHT = 14;
 	final public static int DISPLAYWIDTH = 390;
@@ -22,6 +23,7 @@ public class NoHoConfig {
 	final public static int TOTALCHARS = DISPLAYWIDTH / CHARWIDTH;
 	
 	//timing
+	final public static int PHRASEPAUSING = 2 * 1000;
 	final public static int PHRASETIMING = 8 * 1000;
 	final public static int TEXTTIMEOUT = PHRASETIMING * 4 - 1000; //4 = 4 LINES, REGARDLESS OF PHRASES // not used in new system
 	// TRY 75s for SPRITES
