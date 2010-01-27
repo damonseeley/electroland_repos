@@ -263,7 +263,7 @@ public class AnimationManager {
 				
 				case TEXT2010:{
 					
-					curForground = new BasicText(width,height, textQueue.getNext(), 0, 6000);
+					curForground = new BasicText(width,height, textQueue.getNext(), 0, NoHoConfig.PHRASETIMING);
 					compositor.addForground(curForground, 0);
 
 					state = AnimationState.BLACK;	
