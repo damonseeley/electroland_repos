@@ -23,8 +23,8 @@ public class NoHoConfig {
 	final public static int TOTALCHARS = DISPLAYWIDTH / CHARWIDTH;
 	
 	//timing
-	final public static int PHRASEPAUSING = 2 * 1000;
-	final public static int PHRASETIMING = 8 * 1000;
+	final public static int PHRASEPAUSING = 3 * 1000;
+	final public static int PHRASETIMING = 10 * 1000;
 	final public static int TEXTTIMEOUT = PHRASETIMING * 4 - 1000; //4 = 4 LINES, REGARDLESS OF PHRASES // not used in new system
 	// TRY 75s for SPRITES
 	final public static int SPRITESMAXTIME = 90 * 1000; // max time that sprite mode can be active

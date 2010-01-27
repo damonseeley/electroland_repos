@@ -49,7 +49,7 @@ public class DriveBy2010 extends JFrame implements ImageConsumer, TimedEventList
 	
 	public static boolean trafficEnabled = false;
 	TimedEvent sunriseOn = new TimedEvent(6,00,00, this); // on at sunrise-1 based on weather
-	TimedEvent middayOff = new TimedEvent(16,59,00, this); // off at 12 PM for sun reasons
+	TimedEvent middayOff = new TimedEvent(15,59,00, this); // off at 12 PM for sun reasons
 	TimedEvent sunsetOn = new TimedEvent(16,00,00, this); // on at sunset-1 based on weather
 	TimedEvent nightOff = new TimedEvent(2,00,00, this); // off at 2 AM
 	
