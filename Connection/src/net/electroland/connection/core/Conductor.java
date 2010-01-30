@@ -2,6 +2,7 @@ package net.electroland.connection.core;
 
 import net.electroland.connection.animation.Animation;
 import net.electroland.connection.animation.Biggest;
+import net.electroland.connection.animation.BlankAnimation;
 import net.electroland.connection.animation.Matrix;
 import net.electroland.connection.animation.MusicBox;
 import net.electroland.connection.animation.TrackingConnections;
@@ -46,6 +47,7 @@ public class Conductor implements TransitionListener{
 	public Matrix matrix;
 	public Biggest biggest;
 	public ScreenSaver screenSaver;
+	public BlankAnimation blankAnimation;
 	
 	// LITTLE SHOWS
 	public RandomFill randomfill;
@@ -74,6 +76,7 @@ public class Conductor implements TransitionListener{
 		matrix = new Matrix(lights, getIntProp("matrixDuration"), ConnectionMain.properties.get("soundMatrixGlobal"));
 		biggest = new Biggest(lights, getIntProp("biggestHold")/33, getIntProp("biggestFade")/33, getIntProp("biggestDuration"));
 		screenSaver = new ScreenSaver(getIntProp("trackingDuration"), 30, 3000, 1000, 500);
+		blankAnimation = new BlankAnimation(lights, 30);
 
 		Animation[] shows = {vegaspulse, wave, musicbox, matrix, biggest};
 		//Animation[] shows = {screenSaver};
@@ -191,6 +194,10 @@ public class Conductor implements TransitionListener{
 			currentAnimation = screenSaver;
 			currentAnimation.start();
 			automatedSwitching = false;		// disabled automated switching for each documentation
+		} else if(mode == -3){				// blank animation mode
+			currentAnimation = blankAnimation;
+			currentAnimation.start();
+			automatedSwitching = false;
 		} else {
 			currentAnimation = shows[mode];
 			currentAnimation.start();
