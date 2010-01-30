@@ -5,14 +5,17 @@ import java.awt.event.*;
 import java.applet.Applet;
 
 import net.electroland.connection.core.ConnectionMain;
+import net.electroland.connection.core.SoundController;
 
 public class ControlWindow extends Frame {
 	private static final long serialVersionUID = 1L;
 	//private int w = 1000, h = 450;
 	private int w = 1010, h = 310;
+	private SoundController soundController;
 	
-	public ControlWindow(){
+	public ControlWindow(SoundController sc){
 		super("Electroland Connection Installation Control Panel");		// establish name
+		this.soundController = sc;
 		setSize(w, h);										// set frame size
 		setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));	// left/top oriented layout
 		Applet gui = new GUI(w, h);							// create processing applet
@@ -23,6 +26,7 @@ public class ControlWindow extends Frame {
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {		// when the X is hit in the frame
 				ConnectionMain.renderThread.lightController.sendKillPackets();	// turns lights off (don't think this runs)
+				soundController.shutdown();
 				System.exit(0);								// closes app
 			}
 		});

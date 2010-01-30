@@ -40,7 +40,7 @@ public class ConnectionMain {
 		soundController = new SoundController(24, 2, properties);
 		startWatching();
 		startDrawing();
-		controlWindow = new ControlWindow();
+		controlWindow = new ControlWindow(soundController);
 		controlWindow.setVisible(true);
 	}
 	

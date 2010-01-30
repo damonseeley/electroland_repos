@@ -147,6 +147,12 @@ public class SoundController implements SCSoundControlNotifiable {
 		ss.freeAllBuffers();		
 	}
 	
+	public void shutdown(){
+		if(ss != null){
+			ss.shutdown();
+		}
+	}
+	
 
 }
 
