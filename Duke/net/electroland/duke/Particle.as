@@ -1,6 +1,7 @@
 ﻿package net.electroland.duke {
 	
 	import flash.display.MovieClip;
+	import flash.geom.ColorTransform
 	import com.greensock.TweenLite;
 	import com.greensock.events.TweenEvent;
 	
@@ -79,9 +80,28 @@
 			}
 		}
 		
+		public function applyRotation(gravityObjects:Array, torque:Number):void{
+			// torque is a magnifier for movement perpindicular to line between gravity object and this particle.
+			for(var i:Number = 0; i<gravityObjects.length; i++){
+				// get hypotenuse between this particle and the gravity object
+				xdiff = x - gravityObjects[i].x;
+				ydiff = y - gravityObjects[i].y;
+				hypo = Math.sqrt(xdiff*xdiff + ydiff*ydiff);
+				
+				if(hypo < gravityObjects[i].radiusOfRotation){
+					unitx = xdiff/hypo;						// normalize and create unit vector
+					unity = ydiff/hypo;
+					// the closer the particle, the faster it rotates
+					magnitude = (1 - (hypo / gravityObjects[i].radiusOfRotation)) * torque * mass;
+					xv -= unity * magnitude;	// swap vectors to go perpindicular
+					yv += unitx * magnitude;
+				}
+				
+			}
+		}
+		
 		public function addCallBack(f:Function):void{
 			deathCallBack = f;
-			trace("callback added");
 		}
 		
 		public function die():void{
@@ -90,13 +110,37 @@
 		
 		public function move():void{
 			// if velocity drops to approximately zero, begin fade out and die procedure.
-			if(Math.abs(xv) < 0.01 && Math.abs(yv) < 0.01){
-				TweenLite.to(this, 5, {alpha:0, onComplete:die});
-			}
+			// TODO: add a timer that can be reset to require movement to be null for a period before dying.
+			//if(Math.abs(xv) < 0.01 && Math.abs(yv) < 0.01){
+				//TweenLite.to(this, 5, {alpha:0, onComplete:die});
+			//}
 			x += xv;
 			y += yv;
 			xv *= damping;
 			yv *= damping;
+		}
+		
+		public function setColor(colors:Array){
+			var ct:ColorTransform = this.transform.colorTransform;
+			//ct.redOffset(colors[0]);
+			//ct.greenOffset(colors[1]);
+			//ct.blueOffset(colors[2]);
+			var redHex:String = colors[0].toString(16);
+			if(redHex.length < 2){
+				redHex = "0"+redHex;
+			}
+			var greenHex:String = colors[1].toString(16);
+			if(greenHex.length < 2){
+				greenHex = "0"+greenHex;
+			}
+			var blueHex:String = colors[2].toString(16);
+			if(blueHex.length < 2){
+				blueHex = "0"+blueHex;
+			}
+			trace("0x"+redHex+greenHex+blueHex);
+			ct.color = uint("0x"+redHex+greenHex+blueHex);
+			this.transform.colorTransform = ct;
+			this.alpha = colors[3];
 		}
 		
 	}
