@@ -62,10 +62,11 @@
 				ydiff = y - gravityObjects[i].y;
 				hypo = Math.sqrt(xdiff*xdiff + ydiff*ydiff);
 				
-				if(hypo < gravityObjects[i].radiusOfAttraction && hypo > gravityObjects[i].radiusOfRepulsion + 50){		// if hypo is less than radiusOfAttraction
+				if(hypo < gravityObjects[i].radiusOfAttractionMax && hypo > gravityObjects[i].radiusOfAttractionMin){
+					// if hypo is less than radiusOfAttractionMax and more than radiusOfAttractionMin
 					unitx = xdiff/hypo;						// normalize and create unit vector
 					unity = ydiff/hypo;
-					magnitude = (1 - (hypo / gravityObjects[i].radiusOfAttraction)) * gravityObjects[i].mass;
+					magnitude = (1 - (hypo / gravityObjects[i].radiusOfAttractionMax)) * gravityObjects[i].mass;
 					xv -= unitx * magnitude;
 					yv -= unity * magnitude;
 				}
@@ -80,7 +81,7 @@
 			}
 		}
 		
-		public function applyRotation(gravityObjects:Array, torque:Number):void{
+		public function applyRotation(gravityObjects:Array):void{
 			// torque is a magnifier for movement perpindicular to line between gravity object and this particle.
 			for(var i:Number = 0; i<gravityObjects.length; i++){
 				// get hypotenuse between this particle and the gravity object
@@ -92,7 +93,7 @@
 					unitx = xdiff/hypo;						// normalize and create unit vector
 					unity = ydiff/hypo;
 					// the closer the particle, the faster it rotates
-					magnitude = (1 - (hypo / gravityObjects[i].radiusOfRotation)) * torque * mass;
+					magnitude = (1 - (hypo / gravityObjects[i].radiusOfRotation)) * gravityObjects[i].torque * mass;
 					xv -= unity * magnitude;	// swap vectors to go perpindicular
 					yv += unitx * magnitude;
 				}
@@ -121,11 +122,10 @@
 			yv *= damping;
 		}
 		
-		public function setColor(colors:Array){
-			var ct:ColorTransform = this.transform.colorTransform;
-			//ct.redOffset(colors[0]);
-			//ct.greenOffset(colors[1]);
-			//ct.blueOffset(colors[2]);
+		public function setColor(colors:Array):void{
+			redColor = colors[0];	// for storage
+			greenColor = colors[1];
+			blueColor = colors[2];
 			var redHex:String = colors[0].toString(16);
 			if(redHex.length < 2){
 				redHex = "0"+redHex;
@@ -139,9 +139,25 @@
 				blueHex = "0"+blueHex;
 			}
 			//trace("0x"+redHex+greenHex+blueHex);
+			var ct:ColorTransform = this.transform.colorTransform;
 			ct.color = uint("0x"+redHex+greenHex+blueHex);
 			this.transform.colorTransform = ct;
 			this.alpha = colors[3];
+		}
+		
+		public function setRed(red:Number):void{
+			redColor = red;
+			setColor([redColor, greenColor, blueColor, alpha]);
+		}
+		
+		public function setGreen(green:Number):void{
+			greenColor = green;
+			setColor([redColor, greenColor, blueColor, alpha]);
+		}
+		
+		public function setBlue(blue:Number):void{
+			blueColor = blue;
+			setColor([redColor, greenColor, blueColor, alpha]);
 		}
 		
 	}

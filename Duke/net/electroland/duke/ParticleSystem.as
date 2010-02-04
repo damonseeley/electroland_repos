@@ -14,6 +14,7 @@
 		private var personLayer:MovieClip;
 		private var colors:Array;				// preset colors
 		private var selectedPerson:Number;		// id of selected person
+		private var controlPanel:ControlPanel;	// reference just for updating values
 		
 		/*
 		PARTICLESYSTEM.as
@@ -61,7 +62,8 @@
 				var yPos:Number = Math.random()*stage.stageHeight;
 				var radius:Number = 25;
 				var mass:Number = 1;
-				var person:Person = new Person(personID, xPos, yPos, radius, mass);
+				var torque:Number = (-0.1 * Math.random()) - 0.05;	// counter clockwise
+				var person:Person = new Person(personID, xPos, yPos, radius, mass, torque);
 				person.setParticleColor(colors[i]);
 				person.addCallback(this);
 				personLayer.addChild(person);
@@ -85,14 +87,14 @@
 				values[i].applyGravity(people);
 			}
 			for(i = 0; i<values.length; i++){
-				values[i].applyRotation(people, -0.1);
+				values[i].applyRotation(people);
 			}
 		}
 		
 		public function createNewParticle(emitterID:Number, xPos:Number, yPos:Number):void{
 			// emit particles from this point with an initial random vector
-			var mass:Number = Math.random();	// 0-1
-			var radius:Number = 3 + (Math.random() * 3)
+			var mass:Number = Math.random() + 0.1;	// 0.1 - 1
+			var radius:Number = 3 + (Math.random() * 3);
 			var particle:Particle = new Particle(particleID, emitterID, xPos, yPos, radius, mass);
 			particle.addCallBack(this);
 			particle.setColor(people[emitterID].getParticleColor());
@@ -111,6 +113,83 @@
 			for(var i:Number = 0; i<people.length; i++){
 				if(people[i].id != id){
 					people[i].deselect();
+				}
+			}
+			// update control panel
+			controlPanel.updateValues(people[id].radiusOfAttractionMin, people[id].radiusOfAttractionMax, people[id].radiusOfRepulsion, people[id].mass, people[id].torque, people[id].particleColorRed, people[id].particleColorGreen, people[id].particleColorBlue);
+		}
+		
+		
+		
+		// FUNCTIONS FOR MODIFYING PERSON AND PROPERTY VALUES ON THE FLY
+		// TODO: needs to be changed to support people hashmap
+		
+		public function addControlPanel(controlPanel:ControlPanel):void{
+			this.controlPanel = controlPanel;
+		}
+		
+		public function setRadiusOfAttractionMax(radiusOfAttractionMax:Number):void{
+			if(!isNaN(selectedPerson)){
+				people[selectedPerson].setRadiusOfAttractionMax(radiusOfAttractionMax);
+			}
+		}
+		
+		public function setRadiusOfAttractionMin(radiusOfAttractionMin:Number):void{
+			if(!isNaN(selectedPerson)){
+				people[selectedPerson].setRadiusOfAttractionMin(radiusOfAttractionMin);
+			}
+		}
+		
+		public function setRadiusOfRepulsion(radiusOfRepulsion:Number):void{
+			if(!isNaN(selectedPerson)){
+				people[selectedPerson].setRadiusOfRepulsion(radiusOfRepulsion);
+			}
+		} 
+		
+		public function setTorque(torque:Number):void{
+			if(!isNaN(selectedPerson)){
+				people[selectedPerson].setTorque(torque);
+			}
+		}
+		
+		public function setMass(mass:Number):void{
+			if(!isNaN(selectedPerson)){
+				people[selectedPerson].setMass(mass);
+			}
+		}
+		
+		public function setRed(red:Number):void{
+			if(!isNaN(selectedPerson)){
+				people[selectedPerson].setRed(red);
+				var values:Array = particles.getValues();
+				for(var i:Number = 0; i<values.length; i++){
+					if(values[i].emitterID == selectedPerson){
+						values[i].setRed(red);
+					}
+				}
+			}
+		}
+		
+		public function setGreen(green:Number):void{
+			if(!isNaN(selectedPerson)){
+				people[selectedPerson].setGreen(green);
+				var values:Array = particles.getValues();
+				for(var i:Number = 0; i<values.length; i++){
+					if(values[i].emitterID == selectedPerson){
+						values[i].setGreen(green);
+					}
+				}
+			}
+		}
+		
+		public function setBlue(blue:Number):void{
+			if(!isNaN(selectedPerson)){
+				people[selectedPerson].setBlue(blue);
+				var values:Array = particles.getValues();
+				for(var i:Number = 0; i<values.length; i++){
+					if(values[i].emitterID == selectedPerson){
+						values[i].setBlue(blue);
+					}
 				}
 			}
 		}
