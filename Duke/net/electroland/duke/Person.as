@@ -9,10 +9,12 @@
 		
 		public var id:Number;						// unique ID# of person
 		public var radius:Number;					// visual radius
-		public var radiusOfAttraction:Number;		// must be atleast this close to be pulled towards person
+		public var radiusOfAttractionMax:Number;	// must be atleast this close to be pulled towards person
+		public var radiusOfAttractionMin:Number;	// must be atleast this far away to be pulled towards person
 		public var radiusOfRepulsion:Number;		// must be atleast this close to be pushed away from person
 		public var radiusOfRotation:Number;			// must be atleast this close to be rotated around a person
 		public var mass:Number;						// multiplier to increase gravity magnitude
+		public var torque:Number;					// rotational force applied to particles
 		
 		public var personColorRed:Number;			// visual properties of person object
 		public var personColorGreen:Number;
@@ -40,15 +42,17 @@
 		(4) Person objects can attract particles emitted from other Person objects.
 		*/
 		
-		public function Person(id:Number, x:Number, y:Number, radius:Number, mass:Number){
+		public function Person(id:Number, x:Number, y:Number, radius:Number, mass:Number, torque:Number){
 			this.id = id;
 			this.x = x;
 			this.y = y;
 			this.radius = radius;
 			this.radiusOfRepulsion = radius*2;
-			this.radiusOfAttraction = radius*10;
+			this.radiusOfAttractionMax = radius*10;
+			this.radiusOfAttractionMin = radius*2 + 50;
 			this.radiusOfRotation = radius*10;
 			this.mass = mass;
+			this.torque = torque;
 			
 			// properties regarding creation of new particles
 			distanceBetweenParticles = radius;	// amount this must move before creating a new particle
@@ -83,7 +87,7 @@
 			particleColorAlpha = colors[3];
 		}
 		
-		public function addCallback(particleSystem:ParticleSystem){
+		public function addCallback(particleSystem:ParticleSystem):void{
 			// notify particle system when a person has been selected
 			this.particleSystem = particleSystem;
 		}
@@ -97,7 +101,7 @@
 			stopDrag();
 		}
 		
-		public function onEnterFrame(event:Event){
+		public function onEnterFrame(event:Event):void{
 			var xdiff:Number = x - lastParticleX;
 			var ydiff:Number = y - lastParticleY;
 			var hypo:Number = Math.sqrt(xdiff*xdiff + ydiff*ydiff);
@@ -108,7 +112,7 @@
 			}
 		}
 		
-		public function select(){
+		public function select():void{
 			var ct:ColorTransform = this.transform.colorTransform;
 			ct.color = 0x666666;
 			this.transform.colorTransform = ct;
@@ -116,11 +120,45 @@
 			particleSystem.personSelected(id);
 		}
 		
-		public function deselect(){
+		public function deselect():void{
 			var ct:ColorTransform = this.transform.colorTransform;
 			ct.color = 0xAAAAAA;
 			this.transform.colorTransform = ct;
 			selected = false;
+		}
+		
+		// FUNCTIONS TO CHANGE PROPERTIES ON THE FLY FROM CONTROL PANEL
+		
+		public function setRadiusOfAttractionMax(radiusOfAttractionMax:Number):void{
+			this.radiusOfAttractionMax = radiusOfAttractionMax;
+		}
+		
+		public function setRadiusOfAttractionMin(radiusOfAttractionMin:Number):void{
+			this.radiusOfAttractionMin = radiusOfAttractionMin;
+		}
+		
+		public function setRadiusOfRepulsion(radiusOfRepulsion:Number):void{
+			this.radiusOfRepulsion = radiusOfRepulsion;
+		} 
+		
+		public function setTorque(torque:Number):void{
+			this.torque = torque;
+		}
+		
+		public function setMass(mass:Number):void{
+			this.mass = mass;
+		}
+		
+		public function setRed(particleColorRed:Number):void{
+			this.particleColorRed = particleColorRed;
+		}
+		
+		public function setGreen(particleColorGreen:Number):void{
+			this.particleColorGreen = particleColorGreen;
+		}
+		
+		public function setBlue(particleColorBlue:Number):void{
+			this.particleColorBlue = particleColorBlue;
 		}
 		
 	}
