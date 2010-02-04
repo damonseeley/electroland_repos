@@ -1,7 +1,7 @@
 ﻿package net.electroland.duke {
 	
 	import flash.display.MovieClip;
-	import flash.geom.ColorTransform
+	import flash.geom.ColorTransform;
 	import com.greensock.TweenLite;
 	import com.greensock.events.TweenEvent;
 	
@@ -28,7 +28,7 @@
 		private var alphaColor:Number;
 		
 		private var fadeOutTween:TweenLite;
-		private var deathCallBack:Function;
+		private var particleSystem:ParticleSystem;
 		
 		/*
 		PARTICLE.as
@@ -100,20 +100,21 @@
 			}
 		}
 		
-		public function addCallBack(f:Function):void{
-			deathCallBack = f;
+		public function addCallBack(particleSystem:ParticleSystem):void{
+			this.particleSystem = particleSystem;
 		}
 		
 		public function die():void{
-			deathCallBack(new ParticleEvent(id));
+			//deathCallBack(new ParticleEvent(id));
+			particleSystem.removeParticle(new ParticleEvent(id));
 		}
 		
 		public function move():void{
 			// if velocity drops to approximately zero, begin fade out and die procedure.
 			// TODO: add a timer that can be reset to require movement to be null for a period before dying.
-			//if(Math.abs(xv) < 0.01 && Math.abs(yv) < 0.01){
-				//TweenLite.to(this, 5, {alpha:0, onComplete:die});
-			//}
+			if(Math.abs(xv) < 0.01 && Math.abs(yv) < 0.01){
+				TweenLite.to(this, 5, {alpha:0, onComplete:die});
+			}
 			x += xv;
 			y += yv;
 			xv *= damping;
@@ -137,7 +138,7 @@
 			if(blueHex.length < 2){
 				blueHex = "0"+blueHex;
 			}
-			trace("0x"+redHex+greenHex+blueHex);
+			//trace("0x"+redHex+greenHex+blueHex);
 			ct.color = uint("0x"+redHex+greenHex+blueHex);
 			this.transform.colorTransform = ct;
 			this.alpha = colors[3];

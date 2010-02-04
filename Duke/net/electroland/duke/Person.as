@@ -2,6 +2,8 @@
 	
 	import flash.display.MovieClip;
 	import flash.events.MouseEvent;
+	import flash.events.Event;
+	import flash.geom.ColorTransform;
 	
 	public class Person extends MovieClip{
 		
@@ -20,6 +22,12 @@
 		public var particleColorGreen:Number;
 		public var particleColorBlue:Number;
 		public var particleColorAlpha:Number;
+		
+		public var selected:Boolean = false;
+		private var particleSystem:ParticleSystem;
+		private var distanceBetweenParticles:Number;
+		private var lastParticleX:Number;
+		private var lastParticleY:Number;
 		
 		/*
 		PERSON.as
@@ -42,6 +50,11 @@
 			this.radiusOfRotation = radius*10;
 			this.mass = mass;
 			
+			// properties regarding creation of new particles
+			distanceBetweenParticles = radius;	// amount this must move before creating a new particle
+			lastParticleX = x;
+			lastParticleY = y;
+			
 			// draw visual appearance of person object
 			this.graphics.beginFill(0xAAAAAAAA);
 			this.graphics.drawCircle(0, 0, radius);
@@ -51,6 +64,7 @@
 			// add event listeners for user interaction
 			this.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			this.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+			this.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 		
 		public function getParticleColor():Array{
@@ -69,12 +83,44 @@
 			particleColorAlpha = colors[3];
 		}
 		
+		public function addCallback(particleSystem:ParticleSystem){
+			// notify particle system when a person has been selected
+			this.particleSystem = particleSystem;
+		}
+		
 		public function onMouseDown(event:MouseEvent):void{
 			startDrag();
+			select();
 		}
 		
 		public function onMouseUp(event:MouseEvent):void{
 			stopDrag();
+		}
+		
+		public function onEnterFrame(event:Event){
+			var xdiff:Number = x - lastParticleX;
+			var ydiff:Number = y - lastParticleY;
+			var hypo:Number = Math.sqrt(xdiff*xdiff + ydiff*ydiff);
+			if(hypo > distanceBetweenParticles){
+				lastParticleX = x;
+				lastParticleY = y;
+				particleSystem.createNewParticle(id, x, y);
+			}
+		}
+		
+		public function select(){
+			var ct:ColorTransform = this.transform.colorTransform;
+			ct.color = 0x666666;
+			this.transform.colorTransform = ct;
+			selected = true;
+			particleSystem.personSelected(id);
+		}
+		
+		public function deselect(){
+			var ct:ColorTransform = this.transform.colorTransform;
+			ct.color = 0xAAAAAA;
+			this.transform.colorTransform = ct;
+			selected = false;
 		}
 		
 	}

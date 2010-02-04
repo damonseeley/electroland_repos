@@ -6,13 +6,14 @@
 	
 	public class ParticleSystem extends MovieClip{
 		
-		private var people:Array;
-		private var particles:HashMap;
-		private var personID:Number;
-		private var particleID:Number;
+		private var people:Array;				// container of person objects
+		private var particles:HashMap;			// container of particle objects
+		private var personID:Number;			// unique ID for each person
+		private var particleID:Number;			// unique ID for each particle
 		private var particleLayer:MovieClip;
 		private var personLayer:MovieClip;
-		private var colors:Array;	// preset colors
+		private var colors:Array;				// preset colors
+		private var selectedPerson:Number;		// id of selected person
 		
 		/*
 		PARTICLESYSTEM.as
@@ -62,6 +63,7 @@
 				var mass:Number = 1;
 				var person:Person = new Person(personID, xPos, yPos, radius, mass);
 				person.setParticleColor(colors[i]);
+				person.addCallback(this);
 				personLayer.addChild(person);
 				people.push(person);
 				for(var p:Number = 0; p<particleCount; p++){
@@ -92,7 +94,7 @@
 			var mass:Number = Math.random();	// 0-1
 			var radius:Number = 3 + (Math.random() * 3)
 			var particle:Particle = new Particle(particleID, emitterID, xPos, yPos, radius, mass);
-			particle.addCallBack(removeParticle);
+			particle.addCallBack(this);
 			particle.setColor(people[emitterID].getParticleColor());
 			particleLayer.addChild(particle);
 			particles.put(particleID, particle);
@@ -100,9 +102,17 @@
 		}
 		
 		public function removeParticle(e:ParticleEvent){
-			// remove particle
-			particles.remove(e.id);
+			particles.remove(e.id);	// remove particle
 			//trace("particle "+ e.id +" removed, "+ particles.size() + " left");
+		}
+		
+		public function personSelected(id:Number){
+			selectedPerson = id;
+			for(var i:Number = 0; i<people.length; i++){
+				if(people[i].id != id){
+					people[i].deselect();
+				}
+			}
 		}
 		
 	}
