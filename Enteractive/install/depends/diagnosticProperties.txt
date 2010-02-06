@@ -1,0 +1,9 @@
+bytes04=ff 11 fd fd fd fd fd fd fd fd fe
+bytes03=ff 80 00 00 fe
+bytes02=ff 00 fd fd fd fd fd fd fd fd fe
+bytes01=ff 00 00 00 00 00 00 00 00 00 fe
+sendPort=10001
+IPAddress=192.168.2.255
+rcvPort=10011
+bytes05=ff 88 aa 55 fe
+bytes06=ff 20 fd fe
