@@ -196,7 +196,9 @@ public class SoundManager implements SCSoundControlNotifiable {
 	}
 	
 	public void shutdown(){
-		ss.shutdown();
+		if(ss != null){
+			ss.shutdown();
+		}
 	}
 	
 	

@@ -305,7 +305,7 @@ public class Conductor extends Thread implements ShowThreadListener, WeatherChan
 		weatherChecker.addListener(this);
 		//weatherChecker.start();
 
-		Runtime.getRuntime().addShutdownHook(new ShutdownThread(fixtures, guiWindow.gui.createGraphics(fixtures.get(0).getWidth(), fixtures.get(0).getHeight(), PConstants.P2D), "ShutdownShow"));
+		Runtime.getRuntime().addShutdownHook(new ShutdownThread(fixtures, soundManager, guiWindow.gui.createGraphics(fixtures.get(0).getWidth(), fixtures.get(0).getHeight(), PConstants.P2D), "ShutdownShow"));
 	
 	}
 	
