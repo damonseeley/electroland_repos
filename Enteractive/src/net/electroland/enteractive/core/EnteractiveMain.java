@@ -123,6 +123,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {		// when the X is hit in the frame
+				smr.shutdown();
 				System.exit(0);								// closes app
 			}
 		});
