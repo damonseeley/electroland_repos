@@ -15,5 +15,10 @@
 	<classpathentry kind="lib" path="libraries/wrapper.jar"/>
 	<classpathentry kind="lib" path="libraries/ARTNET.jar"/>
 	<classpathentry kind="lib" path="libraries/SCSoundControl.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ElectrolandInstallUtils"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ElectrolandLightingUtils"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ElVis"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ElVisAxisCam"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ElVisVideoProcessor"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
