@@ -15,6 +15,5 @@
 	<classpathentry kind="lib" path="libraries/wrapper.jar"/>
 	<classpathentry kind="lib" path="libraries/ARTNET.jar"/>
 	<classpathentry kind="lib" path="libraries/SCSoundControl.jar"/>
-	<classpathentry kind="lib" path="libraries/javaosc.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
