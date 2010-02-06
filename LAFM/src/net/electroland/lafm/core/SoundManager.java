@@ -151,8 +151,9 @@ public class SoundManager implements SCSoundControlNotifiable {
 	// this is a replacement for the original playSimpleSound
 	public SoundNode playSimpleSound(String filename, int c, float gain, String comment){
 		if(!filename.equals("none") && serverIsLive){
+			int[] channels = {0,1,2,3,4,5};
 			float[] amplitudes = lookupCoordinatesForSC(c, gain);
-			return ss.createMonoSoundNode(soundFiles.get(absolutePath+filename), false, amplitudes, 1.0f);
+			return ss.createMonoSoundNode(soundFiles.get(absolutePath+filename), false, channels, amplitudes, 1.0f);
 		}
 		return null;
 	}
@@ -194,6 +195,10 @@ public class SoundManager implements SCSoundControlNotifiable {
 		
 	}
 	
+	public void shutdown(){
+		ss.shutdown();
+	}
+	
 	
 	
 	
@@ -209,8 +214,8 @@ public class SoundManager implements SCSoundControlNotifiable {
 			e.printStackTrace();
 		}
 		
-		SCSoundManager soundManager = new SCSoundManager(2,2);
-		soundManager.parseSoundFiles(systemProps);
+		//SCSoundManager soundManager = new SCSoundManager(2,2);
+		//soundManager.parseSoundFiles(systemProps);
 	}
 
 }

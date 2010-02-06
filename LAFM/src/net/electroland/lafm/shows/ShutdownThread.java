@@ -24,6 +24,7 @@ public class ShutdownThread extends ShowThread {
 		raster.beginDraw();
 		raster.background(0);	// paint it black.
 		raster.endDraw();
+		super.getSoundManager().shutdown();
 	}
 
 	@Override
