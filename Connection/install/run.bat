@@ -1,0 +1,1 @@
+java -classpath CONNECTIONS.jar;libraries/controlP5.jar;libraries/core.jar;libraries/javaosc_ELmod.jar;libraries/javasoc.jar;libraries/log4j-1.2.15.jar;libraries/RXTXcomm.jar;libraries/SCSoundControl.jar net.electroland.connection.core.ConnectionMain
