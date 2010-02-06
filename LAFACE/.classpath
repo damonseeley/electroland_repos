@@ -16,5 +16,7 @@
 	<classpathentry kind="lib" path="libraries/ELVIS_VIDEO_PROCESSOR.jar"/>
 	<classpathentry kind="lib" path="libraries/ELVIS.jar"/>
 	<classpathentry kind="lib" path="libraries/JMyron.jar"/>
+	<classpathentry kind="lib" path="libraries/jai_codec.jar"/>
+	<classpathentry kind="lib" path="libraries/jai_core.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
