@@ -36,7 +36,11 @@ public class Video implements Animation{
 				if(imgs != null) {
 					// this is set up to overlap multiple mosaics and blend their light areas
 					for(int i=0; i<imgs.length; i++){
-						PImage pimage = new PImage(imgs[i]);
+						// fix for problem with 
+						Image foo = new BufferedImage(imgs[i].getWidth(), imgs[i].getHeight(),
+														BufferedImage.TYPE_INT_RGB);
+						foo.getGraphics().drawImage(imgs[i], 0, 0, null);
+						PImage pimage = new PImage(foo);
 						if(i == 0){
 							if(mirror){
 								pixeldata = new int[pimage.pixels.length];
