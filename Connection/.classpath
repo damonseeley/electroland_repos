@@ -7,6 +7,7 @@
 	<classpathentry kind="lib" path="libraries/javaosc.jar"/>
 	<classpathentry kind="lib" path="libraries/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="libraries/RXTXcomm.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/SCSoundControl"/>
+	<classpathentry kind="lib" path="libraries/SCSoundControl.jar"/>
+	<classpathentry kind="lib" path="libraries/javaosc_ELmod.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
