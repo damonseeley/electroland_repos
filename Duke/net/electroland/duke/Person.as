@@ -30,6 +30,13 @@
 		private var distanceBetweenParticles:Number;
 		private var lastParticleX:Number;
 		private var lastParticleY:Number;
+		public var particleMinRadius = 3;
+		public var particleMaxRadius = 6;
+		public var particleSpinMin;
+		public var particleSpinMax;
+		
+		public var gravityMode = 0;					// 0 = regular gravity, 1 = square gravity
+		public var visualMode = 0;					// visual mode of particles emitted from this person
 		
 		/*
 		PERSON.as
@@ -58,6 +65,8 @@
 			distanceBetweenParticles = radius;	// amount this must move before creating a new particle
 			lastParticleX = x;
 			lastParticleY = y;
+			particleSpinMin = -2;	// degrees per frame
+			particleSpinMax = 2;
 			
 			// draw visual appearance of person object
 			this.graphics.beginFill(0xAAAAAAAA);
@@ -108,7 +117,9 @@
 			if(hypo > distanceBetweenParticles){
 				lastParticleX = x;
 				lastParticleY = y;
-				particleSystem.createNewParticle(id, x, y);
+				var radius:Number = particleMinRadius + (Math.random() * (particleMaxRadius - particleMinRadius));
+				var spin:Number = particleSpinMin + (Math.random() * (particleSpinMax - particleSpinMin));
+				particleSystem.createNewParticle(id, x, y, radius, spin, visualMode);
 			}
 		}
 		
@@ -159,6 +170,30 @@
 		
 		public function setBlue(particleColorBlue:Number):void{
 			this.particleColorBlue = particleColorBlue;
+		}
+		
+		public function setParticleMinSize(particleMinRadius:Number):void{
+			this.particleMinRadius = particleMinRadius;
+		}
+		
+		public function setParticleMaxSize(particleMaxRadius:Number):void{
+			this.particleMaxRadius = particleMaxRadius;
+		}
+		
+		public function setParticleMinSpin(particleSpinMin:Number):void{
+			this.particleSpinMin = particleSpinMin;
+		}
+		
+		public function setParticleMaxSpin(particleSpinMax:Number):void{
+			this.particleSpinMax = particleSpinMax;
+		}
+		
+		public function setVisualMode(visualMode:Number):void{
+			this.visualMode = visualMode;
+		}
+		
+		public function setGravityMode(gravityMode:Number):void{
+			this.gravityMode = gravityMode;
 		}
 		
 	}

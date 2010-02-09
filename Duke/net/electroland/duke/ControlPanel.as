@@ -6,7 +6,6 @@
 	public class ControlPanel extends MovieClip{
 		
 		private var particleSystem:ParticleSystem;
-		private var bg:MovieClip;
 		
 		private var attractionRadiusMaxSlider:ScrollBar;
 		private var attractionRadiusMinSlider:ScrollBar;
@@ -16,6 +15,12 @@
 		private var redSlider:ScrollBar;
 		private var greenSlider:ScrollBar;
 		private var blueSlider:ScrollBar;
+		private var particleMinSizeSlider:ScrollBar;
+		private var particleMaxSizeSlider:ScrollBar;
+		private var particleMinSpinSlider:ScrollBar;
+		private var particleMaxSpinSlider:ScrollBar;
+		private var visualMode:RadioButtonGroup;
+		private var gravityMode:RadioButtonGroup;
 		
 		public function ControlPanel(particleSystem:ParticleSystem){
 			this.particleSystem = particleSystem;
@@ -36,13 +41,34 @@
 			addChild(greenSlider);
 			blueSlider = new ScrollBar("Blue", 300, 100, 0, 255, 1, blueCallback);
 			addChild(blueSlider);			
+			particleMinSizeSlider = new ScrollBar("Particle Min Radius", 500, 10, 1, 20, 3, particleMinSizeCallback);
+			addChild(particleMinSizeSlider);
+			particleMaxSizeSlider = new ScrollBar("Particle Max Radius", 500, 40, 1, 20, 6, particleMaxSizeCallback);
+			addChild(particleMaxSizeSlider);	
+			particleMinSpinSlider = new ScrollBar("Particle Min Spin", 500, 70, -20, 0, -2, particleMinSpinCallback);
+			addChild(particleMinSpinSlider);
+			particleMaxSpinSlider = new ScrollBar("Particle Max Spin", 500, 100, 0, 20, 2, particleMaxSpinCallback);
+			addChild(particleMaxSpinSlider);	
+			
+			visualMode = new RadioButtonGroup(750, 0, visualModeCallback);
+			visualMode.addButton(0, "Circle", 0, 10, true);
+			visualMode.addButton(1, "Soft", 0, 40, false);
+			visualMode.addButton(2, "Jagged", 0, 70, false);
+			visualMode.addButton(3, "Line", 0, 100, false);
+			addChild(visualMode);
+			
+			gravityMode = new RadioButtonGroup(900, 0, gravityModeCallback);
+			gravityMode.addButton(0, "Circle", 0, 10, true);
+			gravityMode.addButton(1, "Square", 0, 40, false);
+			//gravityMode.addButton(2, "Star", 0, 70, false);
+			addChild(gravityMode);
 			
 			this.addEventListener(MouseEvent.MOUSE_UP, mouseReleased);
 			alpha = 0.5;
 		}
 		
 		public function mouseReleased(e:MouseEvent):void{
-			trace("mouse released");
+			//trace("mouse released");
 			// make sure all sliders are set to mouseDown in case it was released outside
 			attractionRadiusMaxSlider.mouseDown = false;
 			attractionRadiusMinSlider.mouseDown = false;
@@ -53,12 +79,14 @@
 			greenSlider.mouseDown = false;
 			blueSlider.mouseDown = false;
 		}
+
 		
 		
 		
 		
 		public function updateValues(attractionRadiusMin:Number, attractionRadiusMax:Number, repulsionRadius:Number,
-									 mass:Number, torque:Number, red:Number, green:Number, blue:Number):void{
+									 mass:Number, torque:Number, red:Number, green:Number, blue:Number, minRadius:Number,
+									 maxRadius:Number, minSpin:Number, maxSpin:Number, visualModeNum:Number, gravityModeNum:Number):void{
 			attractionRadiusMinSlider.setValue(attractionRadiusMin);
 			attractionRadiusMaxSlider.setValue(attractionRadiusMax);
 			repulsionRadiusSlider.setValue(repulsionRadius);
@@ -67,6 +95,12 @@
 			redSlider.setValue(red);
 			greenSlider.setValue(green);
 			blueSlider.setValue(blue);
+			particleMinSizeSlider.setValue(minRadius);
+			particleMaxSizeSlider.setValue(maxRadius);
+			particleMinSpinSlider.setValue(minSpin);
+			particleMaxSpinSlider.setValue(maxSpin);
+			visualMode.activate(visualModeNum);
+			gravityMode.activate(gravityModeNum);
 		}
 		
 		
@@ -101,6 +135,30 @@
 		
 		public function blueCallback(val:Number):void{
 			particleSystem.setBlue(val);
+		}
+		
+		public function particleMinSizeCallback(val:Number):void{
+			particleSystem.setParticleMinSize(val);
+		}
+		
+		public function particleMaxSizeCallback(val:Number):void{
+			particleSystem.setParticleMaxSize(val);
+		}
+		
+		public function particleMinSpinCallback(val:Number):void{
+			particleSystem.setParticleMinSpin(val);
+		}
+		
+		public function particleMaxSpinCallback(val:Number):void{
+			particleSystem.setParticleMaxSpin(val);
+		}
+		
+		public function visualModeCallback(val:Number):void{
+			particleSystem.setVisualMode(val);
+		}
+		
+		public function gravityModeCallback(val:Number):void{
+			particleSystem.setGravityMode(val);
 		}
 		
 	}
