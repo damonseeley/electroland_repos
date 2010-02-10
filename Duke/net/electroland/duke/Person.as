@@ -114,12 +114,13 @@
 			var xdiff:Number = x - lastParticleX;
 			var ydiff:Number = y - lastParticleY;
 			var hypo:Number = Math.sqrt(xdiff*xdiff + ydiff*ydiff);
-			if(hypo > distanceBetweenParticles){
-				lastParticleX = x;
-				lastParticleY = y;
-				var radius:Number = particleMinRadius + (Math.random() * (particleMaxRadius - particleMinRadius));
-				var spin:Number = particleSpinMin + (Math.random() * (particleSpinMax - particleSpinMin));
-				particleSystem.createNewParticle(id, x, y, radius, spin, visualMode);
+			if(gravityMode == 0){
+				if(hypo > distanceBetweenParticles){
+					lastParticleX = x;
+					lastParticleY = y;
+					var spin:Number = particleSpinMin + (Math.random() * (particleSpinMax - particleSpinMin));
+					particleSystem.createNewParticle(id, x, y, spin, visualMode);
+				}
 			}
 		}
 		
@@ -194,6 +195,17 @@
 		
 		public function setGravityMode(gravityMode:Number):void{
 			this.gravityMode = gravityMode;
+			if(gravityMode == 3 || gravityMode == 4){	// spring or atomic mode
+				var values:Array = particleSystem.particles.getValues();
+				for(var i:Number = 0; i<values.length; i++){
+					var xdiff:Number = x - values[i].x;
+					var ydiff:Number = y - values[i].y;
+					var hypo:Number = Math.sqrt(xdiff*xdiff + ydiff*ydiff);
+					if(hypo < radiusOfAttractionMax){
+						values[i].beginSpring();
+					}
+				}
+			}
 		}
 		
 	}

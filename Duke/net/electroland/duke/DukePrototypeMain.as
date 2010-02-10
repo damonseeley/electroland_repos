@@ -6,14 +6,18 @@
 		
 		private var particleSystem:ParticleSystem;
 		private var controlPanel:ControlPanel;
+		private var macroManager:MacroManager;
 		
 		public function DukePrototypeMain(){
 			particleSystem = new ParticleSystem();
 			addChild(particleSystem);
-			particleSystem.setup(50, 3);
+			particleSystem.setup(20, 1);
 			controlPanel = new ControlPanel(particleSystem);
 			particleSystem.addControlPanel(controlPanel);
 			addChild(controlPanel);
+			macroManager = new MacroManager(particleSystem, controlPanel);
+			addChild(macroManager);
+			macroManager.start();
 		}
 		
 	}

@@ -41,26 +41,35 @@
 			addChild(greenSlider);
 			blueSlider = new ScrollBar("Blue", 300, 100, 0, 255, 1, blueCallback);
 			addChild(blueSlider);			
-			particleMinSizeSlider = new ScrollBar("Particle Min Radius", 500, 10, 1, 20, 3, particleMinSizeCallback);
+			particleMinSizeSlider = new ScrollBar("Particle Min Radius", 500, 10, 1, 50, 3, particleMinSizeCallback);
 			addChild(particleMinSizeSlider);
-			particleMaxSizeSlider = new ScrollBar("Particle Max Radius", 500, 40, 1, 20, 6, particleMaxSizeCallback);
+			particleMaxSizeSlider = new ScrollBar("Particle Max Radius", 500, 40, 1, 50, 6, particleMaxSizeCallback);
 			addChild(particleMaxSizeSlider);	
 			particleMinSpinSlider = new ScrollBar("Particle Min Spin", 500, 70, -20, 0, -2, particleMinSpinCallback);
 			addChild(particleMinSpinSlider);
 			particleMaxSpinSlider = new ScrollBar("Particle Max Spin", 500, 100, 0, 20, 2, particleMaxSpinCallback);
 			addChild(particleMaxSpinSlider);	
 			
-			visualMode = new RadioButtonGroup(750, 0, visualModeCallback);
+			visualMode = new RadioButtonGroup(850, 0, visualModeCallback);
 			visualMode.addButton(0, "Circle", 0, 10, true);
-			visualMode.addButton(1, "Soft", 0, 40, false);
-			visualMode.addButton(2, "Jagged", 0, 70, false);
-			visualMode.addButton(3, "Line", 0, 100, false);
+			visualMode.addButton(1, "Green Dot", 0, 40, false);
+			visualMode.addButton(2, "Blue Dot", 0, 70, false);
+			visualMode.addButton(3, "Hexagon", 0, 100, false);
+			visualMode.addButton(4, "Cross", 0, 130, false);
+			visualMode.addButton(5, "Line", 0, 160, false);
+			visualMode.addButton(6, "Rounded Rectangle", 0, 190, true);
+			//visualMode.addButton(0, "Circle", 0, 10, true);
+			//visualMode.addButton(1, "Soft", 0, 40, false);
+			//visualMode.addButton(2, "Jagged", 0, 70, false);
+			//visualMode.addButton(3, "Line", 0, 100, false);
 			addChild(visualMode);
 			
-			gravityMode = new RadioButtonGroup(900, 0, gravityModeCallback);
-			gravityMode.addButton(0, "Circle", 0, 10, true);
-			gravityMode.addButton(1, "Square", 0, 40, false);
+			gravityMode = new RadioButtonGroup(750, 0, gravityModeCallback);
+			gravityMode.addButton(0, "Gravity", 0, 10, true);
+			//gravityMode.addButton(1, "Square", 0, 40, false);
 			//gravityMode.addButton(2, "Star", 0, 70, false);
+			gravityMode.addButton(3, "Spring", 0, 40, false);
+			gravityMode.addButton(4, "Atomic", 0, 70, false);
 			addChild(gravityMode);
 			
 			this.addEventListener(MouseEvent.MOUSE_UP, mouseReleased);
@@ -101,6 +110,55 @@
 			particleMaxSpinSlider.setValue(maxSpin);
 			visualMode.activate(visualModeNum);
 			gravityMode.activate(gravityModeNum);
+		}
+		
+		public function getMacro(id:Number):Macro{
+			var macro:Macro = new Macro(id);
+			macro.setValues(attractionRadiusMinSlider.getValue(),
+							attractionRadiusMaxSlider.getValue(),
+							repulsionRadiusSlider.getValue(),
+							massSlider.getValue(),
+							torqueSlider.getValue(),
+							redSlider.getValue(),
+							greenSlider.getValue(),
+							blueSlider.getValue(),
+							particleMinSizeSlider.getValue(),
+							particleMaxSizeSlider.getValue(),
+							particleMinSpinSlider.getValue(),
+							particleMaxSpinSlider.getValue(),
+							visualMode.getValue(),
+							gravityMode.getValue());
+			return macro;
+		}
+		
+		public function loadMacro(macro:Macro):void{
+			attractionRadiusMinSlider.setValue(macro.attractionRadiusMin);
+			particleSystem.setRadiusOfAttractionMin(macro.attractionRadiusMin);
+			attractionRadiusMaxSlider.setValue(macro.attractionRadiusMax);
+			particleSystem.setRadiusOfAttractionMax(macro.attractionRadiusMax);
+			repulsionRadiusSlider.setValue(macro.repulsionRadius);
+			particleSystem.setRadiusOfRepulsion(macro.repulsionRadius);
+			massSlider.setValue(macro.mass);
+			particleSystem.setMass(macro.mass);
+			torqueSlider.setValue(macro.torque);
+			particleSystem.setTorque(macro.torque);
+			redSlider.setValue(macro.red);
+			particleSystem.setRed(macro.red);
+			greenSlider.setValue(macro.green);
+			particleSystem.setGreen(macro.green);
+			blueSlider.setValue(macro.blue);
+			particleSystem.setBlue(macro.blue);
+			particleMinSizeSlider.setValue(macro.minRadius);
+			particleSystem.setParticleMinSize(macro.minRadius);
+			particleMaxSizeSlider.setValue(macro.maxRadius);
+			particleSystem.setParticleMaxSize(macro.maxRadius);
+			particleMinSpinSlider.setValue(macro.minSpin);
+			particleSystem.setParticleMinSpin(macro.minSpin);
+			particleMaxSpinSlider.setValue(macro.maxSpin);
+			visualMode.activate(macro.visualMode);
+			particleSystem.setVisualMode(macro.visualMode);
+			gravityMode.activate(macro.gravityMode);
+			particleSystem.setGravityMode(macro.gravityMode);
 		}
 		
 		
