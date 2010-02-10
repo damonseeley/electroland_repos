@@ -6,6 +6,7 @@
 		
 		public var buttons:Array;
 		public var callbackFunction:Function;
+		public var val:Number = 0;
 		
 		public function RadioButtonGroup(x:Number, y:Number, callbackFunction:Function){
 			this.x = x;
@@ -21,6 +22,7 @@
 		}
 		
 		public function buttonSelected(radioButton:RadioButton):void{
+			val = radioButton.id;
 			callbackFunction(radioButton.id);
 			for(var i:Number = 0; i<buttons.length; i++){
 				if(buttons[i] != radioButton){
@@ -37,6 +39,10 @@
 					buttons[i].activate();
 				}
 			}
+		}
+		
+		public function getValue():Number{
+			return val;
 		}
 		
 	}
