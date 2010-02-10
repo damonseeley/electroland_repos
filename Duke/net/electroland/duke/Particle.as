@@ -317,8 +317,10 @@
 		
 		public function move():void{
 			// if velocity drops to approximately zero, begin fade out and die procedure.
-			if(Math.abs(xv) < 0.01 && Math.abs(yv) < 0.01){
-				//TweenLite.to(this, 5, {alpha:0, onComplete:die});
+			if(particleSystem.people[emitterID].gravityMode == 0){
+				if(Math.abs(xv) < 0.01 && Math.abs(yv) < 0.01){
+					TweenLite.to(this, 5, {alpha:0, onComplete:die});
+				}
 			}
 			x += xv;
 			y += yv;
