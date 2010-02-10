@@ -2,6 +2,9 @@
 	
 	import flash.display.MovieClip;
 	import flash.events.MouseEvent;
+	import flash.events.Event;
+	import flash.text.TextField;
+	import flash.text.TextFormat;
 	
 	public class ControlPanel extends MovieClip{
 		
@@ -21,6 +24,8 @@
 		private var particleMaxSpinSlider:ScrollBar;
 		private var visualMode:RadioButtonGroup;
 		private var gravityMode:RadioButtonGroup;
+		private var particleCount:TextField;
+		private var textFormat:TextFormat;
 		
 		public function ControlPanel(particleSystem:ParticleSystem){
 			this.particleSystem = particleSystem;
@@ -72,7 +77,18 @@
 			gravityMode.addButton(4, "Atomic", 0, 70, false);
 			addChild(gravityMode);
 			
+			textFormat = new TextFormat("Arial", 10, 0x333333);
+			particleCount = new TextField();
+			particleCount.text = "Particles: "+ String(particleSystem.particles.size());
+			particleCount.x = 10;
+			particleCount.y = 130;
+			particleCount.autoSize = "left";
+			particleCount.selectable = false;
+			particleCount.setTextFormat(textFormat);
+			addChild(particleCount);
+			
 			this.addEventListener(MouseEvent.MOUSE_UP, mouseReleased);
+			this.addEventListener(Event.ENTER_FRAME, countParticles);
 			alpha = 0.5;
 		}
 		
@@ -87,6 +103,11 @@
 			redSlider.mouseDown = false;
 			greenSlider.mouseDown = false;
 			blueSlider.mouseDown = false;
+		}
+		
+		public function countParticles(e:Event){
+			particleCount.text = "Particles: "+ String(particleSystem.particles.size());
+			particleCount.setTextFormat(textFormat);
 		}
 
 		
