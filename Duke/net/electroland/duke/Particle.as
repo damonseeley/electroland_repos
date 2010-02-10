@@ -61,6 +61,7 @@
 		private var alphaColor:Number;
 		private var visualMode:Number = 0;	// 0 = flash circle, 1 = softParticle.png, 2 = weirdParticle.png, 3 = lineParticle.png
 		private var image:Bitmap;
+		private var fadingOut:Boolean = false;
 		
 		// reference to system
 		private var particleSystem:ParticleSystem;
@@ -304,6 +305,7 @@
 		}
 		
 		public function die():void{
+			//trace("particle "+id+" die!");
 			particleSystem.removeParticle(new ParticleEvent(id));
 		}
 		
@@ -319,7 +321,10 @@
 			// if velocity drops to approximately zero, begin fade out and die procedure.
 			if(particleSystem.people[emitterID].gravityMode == 0){
 				if(Math.abs(xv) < 0.01 && Math.abs(yv) < 0.01){
-					TweenLite.to(this, 5, {alpha:0, onComplete:die});
+					if(!fadingOut){
+						fadingOut = true;
+						TweenLite.to(this, 5, {alpha:0, onComplete:die});
+					}
 				}
 			}
 			x += xv;
