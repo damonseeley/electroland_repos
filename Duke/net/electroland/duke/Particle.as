@@ -50,8 +50,11 @@
 		public var springDistanceScale:Number = Math.random();
 		private var springDistance:Number = (springDistanceScale*(springDistanceMax-springDistanceMin)) + springDistanceMin;	// distance from person obj
 		private var springRotation:Number = Math.random() * (Math.PI*2);	// rotation of spring vector
-		private var atomicRotationA:Number = Math.random() * (Math.PI);
-		private var atomicRotationB:Number = Math.random() * (Math.PI);
+		
+		
+		// atomic motion variables
+		private var atomicOrbitCount = 4;
+		private var atomicRotation = Math.round((Math.random()*atomicOrbitCount)) * (360/atomicOrbitCount);
 		
 		
 		// visual properties
@@ -231,12 +234,15 @@
 				if(gravityObjects[i].gravityMode == 4){			// if atomic gravity...
 					xv = 0;
 					yv = 0;
-					var xpos:Number = (springDistanceMax * Math.cos(springPosition));
-					var ypos:Number = (springDistanceMax * Math.sin(springPosition));
-					var rotX:Number = Math.cos(springRotation)*xpos;
-					var rotY:Number = Math.sin(springRotation)*ypos;
-					x = rotX + particleSystem.people[emitterID].x;
-					y = rotY + particleSystem.people[emitterID].y;
+					
+					// SOLUTION HERE: http://www.pixelwit.com/blog/2008/08/draw-rotated-oval/#solidcode
+					var spinSin:Number = Math.sin(atomicRotation);
+					var spinCos:Number = Math.cos(atomicRotation);
+					var radianSin:Number = Math.sin(springPosition);
+        			var radianCos:Number = Math.cos(springPosition);
+					x = particleSystem.people[emitterID].x + (springDistanceMax * radianCos * spinCos - springDistanceMin * radianSin * spinSin);
+        			y = particleSystem.people[emitterID].y + (springDistanceMax * radianCos * spinSin + springDistanceMin * radianSin * spinCos);
+        
 				}
 			}
 		}
