@@ -42,7 +42,6 @@
 		}
 		
 		public function loadValues(xml:XML){
-			trace("loading");
 			this.attractionRadiusMin = Number(xml.child("attractionRadiusMin").valueOf());
 			this.attractionRadiusMax = Number(xml.child("attractionRadiusMax").valueOf());
 			this.repulsionRadius = Number(xml.child("repulsionRadius").valueOf());
