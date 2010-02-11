@@ -87,8 +87,8 @@
 			this.maxRadius = maxRadius;
 			this.radius = (radiusScale * (maxRadius-minRadius)) + minRadius;
 			this.mass = mass;
-			this.minSpin = particleSystem.people[emitterID].particleSpinMin;
-			this.maxSpin = particleSystem.people[emitterID].particleSpinMax;
+			this.minSpin = particleSystem.people.getValue(emitterID).particleSpinMin;
+			this.maxSpin = particleSystem.people.getValue(emitterID).particleSpinMax;
 			this.spin = spin;
 			this.spinScale = (spin - minSpin) / (maxSpin - minSpin);
 			this.visualMode = visualMode;
@@ -132,6 +132,7 @@
 		public function applySquareGravity(gravityObjects:Array):void{
 			for(var i:Number = 0; i<gravityObjects.length; i++){
 				if(gravityObjects[i].gravityMode == 1){		// if a square gravity producer...
+					/*
 					xdiff = x - gravityObjects[i].x;
 					ydiff = y - gravityObjects[i].y;
 					hypo = Math.sqrt(xdiff*xdiff + ydiff*ydiff);
@@ -177,6 +178,8 @@
 							}
 						}
 					}
+					*/
+					
 				}
 			}
 		}
@@ -212,37 +215,43 @@
 		
 		public function applySpringGravity(gravityObjects:Array):void{
 			for(var i:Number = 0; i<gravityObjects.length; i++){
-				if(gravityObjects[i].gravityMode == 3){			// if spring gravity...
-					xv = 0;
-					yv = 0;
-					//x = (springDistance * Math.cos(springPosition)) + particleSystem.people[emitterID].x;
-					//y = (springDistance * Math.sin(springPosition)) + particleSystem.people[emitterID].y;
-					//y = particleSystem.people[emitterID].y;
-					
-					var pos:Number = (springDistance * Math.cos(springPosition));
-					var rotX:Number = Math.cos(springRotation)*pos;
-					var rotY:Number = Math.sin(springRotation)*pos;
-					x = rotX + particleSystem.people[emitterID].x;
-					y = rotY + particleSystem.people[emitterID].y;
-					
+				if(emitterID == gravityObjects[i].id){
+					if(gravityObjects[i].gravityMode == 3){			// if spring gravity...
+						//xv = 0;
+						//yv = 0;
+						//x = (springDistance * Math.cos(springPosition)) + particleSystem.people[emitterID].x;
+						//y = (springDistance * Math.sin(springPosition)) + particleSystem.people[emitterID].y;
+						//y = particleSystem.people[emitterID].y;
+						
+						var pos:Number = (springDistance * Math.cos(springPosition));
+						var rotX:Number = Math.cos(springRotation)*pos;
+						var rotY:Number = Math.sin(springRotation)*pos;
+						x = rotX + particleSystem.people.getValue(emitterID).x;
+						y = rotY + particleSystem.people.getValue(emitterID).y;
+						
+					}
 				}
 			}
 		}
 		
 		public function applyAtomicGravity(gravityObjects:Array):void{
 			for(var i:Number = 0; i<gravityObjects.length; i++){
-				if(gravityObjects[i].gravityMode == 4){			// if atomic gravity...
-					xv = 0;
-					yv = 0;
-					
-					// SOLUTION HERE: http://www.pixelwit.com/blog/2008/08/draw-rotated-oval/#solidcode
-					var spinSin:Number = Math.sin(atomicRotation);
-					var spinCos:Number = Math.cos(atomicRotation);
-					var radianSin:Number = Math.sin(springPosition);
-        			var radianCos:Number = Math.cos(springPosition);
-					x = particleSystem.people[emitterID].x + (springDistanceMax * radianCos * spinCos - springDistanceMin * radianSin * spinSin);
-        			y = particleSystem.people[emitterID].y + (springDistanceMax * radianCos * spinSin + springDistanceMin * radianSin * spinCos);
-        
+				if(particleSystem.people.containsKey(emitterID)){
+					if(emitterID == gravityObjects[i].id){
+						if(gravityObjects[i].gravityMode == 4){			// if atomic gravity...
+							//xv = 0;
+							//yv = 0;
+							
+							// SOLUTION HERE: http://www.pixelwit.com/blog/2008/08/draw-rotated-oval/#solidcode
+							var spinSin:Number = Math.sin(atomicRotation);
+							var spinCos:Number = Math.cos(atomicRotation);
+							var radianSin:Number = Math.sin(springPosition);
+							var radianCos:Number = Math.cos(springPosition);
+							x = particleSystem.people.getValue(emitterID).x + (springDistanceMax * radianCos * spinCos - springDistanceMin * radianSin * spinSin);
+							y = particleSystem.people.getValue(emitterID).y + (springDistanceMax * radianCos * spinSin + springDistanceMin * radianSin * spinCos);
+				
+						}
+					}
 				}
 			}
 		}
@@ -325,11 +334,18 @@
 		
 		public function move():void{
 			// if velocity drops to approximately zero, begin fade out and die procedure.
-			if(particleSystem.people[emitterID].gravityMode == 0){
-				if(Math.abs(xv) < 0.01 && Math.abs(yv) < 0.01){
-					if(!fadingOut){
-						fadingOut = true;
-						TweenLite.to(this, 5, {alpha:0, onComplete:die});
+			if(!particleSystem.people.containsKey(emitterID)){	// if person no longer exists...
+				if(!fadingOut){
+					fadingOut = true;
+					TweenLite.to(this, 5, {alpha:0, onComplete:die});
+				}
+			} else {
+				if(particleSystem.people.getValue(emitterID).gravityMode <= 1){
+					if(Math.abs(xv) < 0.01 && Math.abs(yv) < 0.01){
+						if(!fadingOut){
+							fadingOut = true;
+							TweenLite.to(this, 5, {alpha:0, onComplete:die});
+						}
 					}
 				}
 			}

@@ -3,6 +3,7 @@
 	import flash.display.MovieClip;
 	import flash.events.MouseEvent;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 	import flash.geom.ColorTransform;
 	
 	public class Person extends MovieClip{
@@ -37,6 +38,8 @@
 		
 		public var gravityMode = 0;					// 0 = regular gravity, 1 = square gravity
 		public var visualMode = 0;					// visual mode of particles emitted from this person
+		public var remove:Boolean = false;			// whether removeNow should be triggered when clicked
+		public var removeNow:Boolean = false;		// tells particle system to remove at end of loop
 		
 		/*
 		PERSON.as
@@ -99,22 +102,40 @@
 		public function addCallback(particleSystem:ParticleSystem):void{
 			// notify particle system when a person has been selected
 			this.particleSystem = particleSystem;
+			stage.addEventListener(KeyboardEvent.KEY_DOWN,keyDownListener);
+			stage.addEventListener(KeyboardEvent.KEY_UP,keyUpListener);
 		}
 		
 		public function onMouseDown(event:MouseEvent):void{
-			startDrag();
-			select();
+			if(remove){
+				//particleSystem.people.remove(id);
+				particleSystem.removePerson(id);
+				//removeNow = true;	// removed by particle system
+			} else {
+				startDrag();
+				select();
+			}
 		}
 		
 		public function onMouseUp(event:MouseEvent):void{
 			stopDrag();
 		}
 		
+		public function keyDownListener(e:KeyboardEvent):void{
+			if(e.ctrlKey){
+				remove = true;
+			}
+		}
+		
+		public function keyUpListener(e:KeyboardEvent):void{
+			remove = false;
+		}
+		
 		public function onEnterFrame(event:Event):void{
 			var xdiff:Number = x - lastParticleX;
 			var ydiff:Number = y - lastParticleY;
 			var hypo:Number = Math.sqrt(xdiff*xdiff + ydiff*ydiff);
-			if(gravityMode == 0){
+			if(gravityMode <= 1){
 				if(hypo > distanceBetweenParticles){
 					lastParticleX = x;
 					lastParticleY = y;
@@ -194,6 +215,7 @@
 		}
 		
 		public function setGravityMode(gravityMode:Number):void{
+			trace(id +" gravity mode "+gravityMode);
 			this.gravityMode = gravityMode;
 			if(gravityMode == 3 || gravityMode == 4){	// spring or atomic mode
 				var values:Array = particleSystem.particles.getValues();

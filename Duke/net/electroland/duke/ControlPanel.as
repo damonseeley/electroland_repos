@@ -71,10 +71,10 @@
 			
 			gravityMode = new RadioButtonGroup(750, 0, gravityModeCallback);
 			gravityMode.addButton(0, "Gravity", 0, 10, true);
-			//gravityMode.addButton(1, "Square", 0, 40, false);
+			gravityMode.addButton(1, "Square", 0, 40, false);
 			//gravityMode.addButton(2, "Star", 0, 70, false);
-			gravityMode.addButton(3, "Spring", 0, 40, false);
-			gravityMode.addButton(4, "Atomic", 0, 70, false);
+			gravityMode.addButton(3, "Spring", 0, 70, false);
+			gravityMode.addButton(4, "Atomic", 0, 100, false);
 			addChild(gravityMode);
 			
 			textFormat = new TextFormat("Arial", 10, 0x333333);

@@ -2,6 +2,8 @@
 	
 	import flash.display.MovieClip;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
+	import flash.events.MouseEvent;
 	import flash.display.Loader;
 	import flash.display.LoaderInfo;
 	import flash.net.URLRequest;
@@ -9,10 +11,12 @@
 	
 	public class ParticleSystem extends MovieClip{
 		
-		public var people:Array;				// container of person objects
+		//public var people:Array;				// container of person objects
+		public var people:HashMap;
 		public var particles:HashMap;			// container of particle objects
 		private var personID:Number;			// unique ID for each person
 		private var particleID:Number;			// unique ID for each particle
+		private var bgLayer:MovieClip;
 		private var particleLayer:MovieClip;
 		private var personLayer:MovieClip;
 		private var colors:Array;				// preset colors
@@ -28,6 +32,7 @@
 		public var cross:Loader;
 		public var hexagon:Loader;
 		public var roundRect:Loader;
+		public var addPerson:Boolean = false;	// set to true when CTRL is held
 		
 		/*
 		PARTICLESYSTEM.as
@@ -38,8 +43,10 @@
 		*/
 		
 		public function ParticleSystem(){
+			bgLayer = new MovieClip();
 			particleLayer = new MovieClip();
 			personLayer = new MovieClip();
+			addChild(bgLayer);
 			addChild(particleLayer);
 			addChild(personLayer);
 			
@@ -68,6 +75,11 @@
 		public function setup(particleCount:Number, personCount:Number):void{
 			personID = 0;
 			particleID = 0;
+			
+			bgLayer.graphics.beginFill(0x000000);
+			bgLayer.graphics.drawRect(0,0,stage.stageWidth,stage.stageHeight);
+			bgLayer.graphics.endFill();
+			bgLayer.alpha = 0;
 
 			//softParticle = new Loader();
 			//softParticle.contentLoaderInfo.addEventListener(Event.COMPLETE, imageLoaded);
@@ -99,7 +111,8 @@
 			
 			
 			
-			people = new Array();
+			//people = new Array();
+			people = new HashMap();
 			particles = new HashMap();
 			for(var i:Number = 0; i<personCount; i++){
 				var xPos:Number = Math.random()*stage.stageWidth;
@@ -113,9 +126,10 @@
 				var torque:Number = (-0.1 * Math.random()) - 0.05;	// counter clockwise
 				var person:Person = new Person(personID, xPos, yPos, radius, mass, torque);
 				person.setParticleColor(colors[i]);
-				person.addCallback(this);
 				personLayer.addChild(person);
-				people.push(person);
+				person.addCallback(this);
+				//people.push(person);
+				people.put(personID, person);
 				for(var p:Number = 0; p<particleCount; p++){
 					createNewParticle(personID, xPos, yPos, -2 + (Math.random() * 4), 0);
 				}
@@ -123,6 +137,9 @@
 			}
 			
 			this.addEventListener(Event.ENTER_FRAME, update);
+			stage.addEventListener(KeyboardEvent.KEY_DOWN,keyDownListener);
+			stage.addEventListener(KeyboardEvent.KEY_UP,keyUpListener);
+			bgLayer.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownListener);
 		}
 		
 		public function imageLoaded(e:Event):void{
@@ -138,25 +155,25 @@
 				values[i].move();
 			}
 			for(i = 0; i<values.length; i++){
-				values[i].applyRotation(people);
+				values[i].applyRotation(people.getValues());
 			}
 			for(i = 0; i<values.length; i++){
-				values[i].applySquareRotation(people);
+				values[i].applySquareRotation(people.getValues());
 			}
 			for(i = 0; i<values.length; i++){
-				values[i].applyGravity(people);
+				values[i].applyGravity(people.getValues());
 			}
 			for(i = 0; i<values.length; i++){
-				values[i].applySquareGravity(people);
+				values[i].applySquareGravity(people.getValues());
 			}
 			for(i = 0; i<values.length; i++){
-				values[i].applyStarGravity(people);
+				values[i].applyStarGravity(people.getValues());
 			}
 			for(i = 0; i<values.length; i++){
-				values[i].applySpringGravity(people);
+				values[i].applySpringGravity(people.getValues());
 			}
 			for(i = 0; i<values.length; i++){
-				values[i].applyAtomicGravity(people);
+				values[i].applyAtomicGravity(people.getValues());
 			}
 		}
 		
@@ -164,40 +181,53 @@
 			// emit particles from this point with an initial random vector
 			var mass:Number = Math.random() + 0.1;	// 0.1 - 1
 			var scale:Number = Math.random();
-			var minRadius:Number = people[emitterID].particleMinRadius;
-			var maxRadius:Number = people[emitterID].particleMaxRadius;
+			var minRadius:Number = people.getValue(emitterID).particleMinRadius;//people[emitterID].particleMinRadius;
+			var maxRadius:Number = people.getValue(emitterID).particleMaxRadius;//people[emitterID].particleMaxRadius;
 			var particle:Particle = new Particle(particleID, emitterID, xPos, yPos, scale, minRadius, maxRadius, mass, spin, visualMode, this);
 			if(visualMode < 1){
-				particle.setColor(people[emitterID].getParticleColor());
+				//particle.setColor(people[emitterID].getParticleColor());
+				particle.setColor(people.getValue(emitterID).getParticleColor());
 			}
 			particleLayer.addChild(particle);
 			particles.put(particleID, particle);
 			particleID++;
 		}
 		
-		public function removeParticle(e:ParticleEvent){
+		public function removeParticle(e:ParticleEvent):void{
+			particleLayer.removeChild(particles.getValue(e.id));
 			particles.remove(e.id);	// remove particle
 			//trace("particle "+ e.id +" removed, "+ particles.size() + " left");
 		}
 		
-		public function personSelected(id:Number){
+		public function removePerson(id:Number):void{
+			personLayer.removeChild(people.getValue(id));
+			people.remove(id);
+		}
+		
+		public function personSelected(id:Number):void{
 			selectedPerson = id;
-			for(var i:Number = 0; i<people.length; i++){
-				if(people[i].id != id){
-					people[i].deselect();
+			//for(var i:Number = 0; i<people.length; i++){
+				//if(people[i].id != id){
+					//people[i].deselect();
+				//}
+			//}
+			var values:Array = people.getValues();
+			for(var i:Number = 0; i<values.length; i++){
+				if(values[i].id != id){
+					values[i].deselect();
 				}
 			}
 			// update control panel
-			controlPanel.updateValues(people[id].radiusOfAttractionMin, people[id].radiusOfAttractionMax, people[id].radiusOfRepulsion,
-									  people[id].mass, people[id].torque, people[id].particleColorRed, people[id].particleColorGreen,
-									  people[id].particleColorBlue, people[id].particleMinRadius, people[id].particleMaxRadius,
-									  people[id].particleSpinMin, people[id].particleSpinMax, people[id].visualMode, people[id].gravityMode);
+			var person = people.getValue(id);
+			controlPanel.updateValues(person.radiusOfAttractionMin, person.radiusOfAttractionMax, person.radiusOfRepulsion,
+									  person.mass, person.torque, person.particleColorRed, person.particleColorGreen,
+									  person.particleColorBlue, person.particleMinRadius, person.particleMaxRadius,
+									  person.particleSpinMin, person.particleSpinMax, person.visualMode, person.gravityMode);
 		}
 		
 		
 		
 		// FUNCTIONS FOR MODIFYING PERSON AND PROPERTY VALUES ON THE FLY
-		// TODO: needs to be changed to support people hashmap
 		
 		public function addControlPanel(controlPanel:ControlPanel):void{
 			this.controlPanel = controlPanel;
@@ -205,37 +235,37 @@
 		
 		public function setRadiusOfAttractionMax(radiusOfAttractionMax:Number):void{
 			if(!isNaN(selectedPerson)){
-				people[selectedPerson].setRadiusOfAttractionMax(radiusOfAttractionMax);
+				people.getValue(selectedPerson).setRadiusOfAttractionMax(radiusOfAttractionMax);
 			}
 		}
 		
 		public function setRadiusOfAttractionMin(radiusOfAttractionMin:Number):void{
 			if(!isNaN(selectedPerson)){
-				people[selectedPerson].setRadiusOfAttractionMin(radiusOfAttractionMin);
+				people.getValue(selectedPerson).setRadiusOfAttractionMin(radiusOfAttractionMin);
 			}
 		}
 		
 		public function setRadiusOfRepulsion(radiusOfRepulsion:Number):void{
 			if(!isNaN(selectedPerson)){
-				people[selectedPerson].setRadiusOfRepulsion(radiusOfRepulsion);
+				people.getValue(selectedPerson).setRadiusOfRepulsion(radiusOfRepulsion);
 			}
 		} 
 		
 		public function setTorque(torque:Number):void{
 			if(!isNaN(selectedPerson)){
-				people[selectedPerson].setTorque(torque);
+				people.getValue(selectedPerson).setTorque(torque);
 			}
 		}
 		
 		public function setMass(mass:Number):void{
 			if(!isNaN(selectedPerson)){
-				people[selectedPerson].setMass(mass);
+				people.getValue(selectedPerson).setMass(mass);
 			}
 		}
 		
 		public function setRed(red:Number):void{
 			if(!isNaN(selectedPerson)){
-				people[selectedPerson].setRed(red);
+				people.getValue(selectedPerson).setRed(red);
 				var values:Array = particles.getValues();
 				for(var i:Number = 0; i<values.length; i++){
 					if(values[i].emitterID == selectedPerson){
@@ -247,7 +277,7 @@
 		
 		public function setGreen(green:Number):void{
 			if(!isNaN(selectedPerson)){
-				people[selectedPerson].setGreen(green);
+				people.getValue(selectedPerson).setGreen(green);
 				var values:Array = particles.getValues();
 				for(var i:Number = 0; i<values.length; i++){
 					if(values[i].emitterID == selectedPerson){
@@ -259,7 +289,7 @@
 		
 		public function setBlue(blue:Number):void{
 			if(!isNaN(selectedPerson)){
-				people[selectedPerson].setBlue(blue);
+				people.getValue(selectedPerson).setBlue(blue);
 				var values:Array = particles.getValues();
 				for(var i:Number = 0; i<values.length; i++){
 					if(values[i].emitterID == selectedPerson){
@@ -271,7 +301,7 @@
 		
 		public function setParticleMinSize(size:Number):void{
 			if(!isNaN(selectedPerson)){
-				people[selectedPerson].setParticleMinSize(size);
+				people.getValue(selectedPerson).setParticleMinSize(size);
 				var values:Array = particles.getValues();
 				for(var i:Number = 0; i<values.length; i++){
 					if(values[i].emitterID == selectedPerson){
@@ -283,7 +313,7 @@
 		
 		public function setParticleMaxSize(size:Number):void{
 			if(!isNaN(selectedPerson)){
-				people[selectedPerson].setParticleMaxSize(size);
+				people.getValue(selectedPerson).setParticleMaxSize(size);
 				var values:Array = particles.getValues();
 				for(var i:Number = 0; i<values.length; i++){
 					if(values[i].emitterID == selectedPerson){
@@ -295,7 +325,7 @@
 		
 		public function setParticleMinSpin(spin:Number):void{
 			if(!isNaN(selectedPerson)){
-				people[selectedPerson].setParticleMinSpin(spin);
+				people.getValue(selectedPerson).setParticleMinSpin(spin);
 				var values:Array = particles.getValues();
 				for(var i:Number = 0; i<values.length; i++){
 					if(values[i].emitterID == selectedPerson){
@@ -307,7 +337,7 @@
 		
 		public function setParticleMaxSpin(spin:Number):void{
 			if(!isNaN(selectedPerson)){
-				people[selectedPerson].setParticleMaxSpin(spin);
+				people.getValue(selectedPerson).setParticleMaxSpin(spin);
 				var values:Array = particles.getValues();
 				for(var i:Number = 0; i<values.length; i++){
 					if(values[i].emitterID == selectedPerson){
@@ -319,7 +349,7 @@
 		
 		public function setVisualMode(val:Number):void{
 			if(!isNaN(selectedPerson)){
-				people[selectedPerson].setVisualMode(val);
+				people.getValue(selectedPerson).setVisualMode(val);
 				var values:Array = particles.getValues();
 				for(var i:Number = 0; i<values.length; i++){
 					if(values[i].emitterID == selectedPerson){
@@ -331,7 +361,35 @@
 		
 		public function setGravityMode(val:Number){
 			if(!isNaN(selectedPerson)){
-				people[selectedPerson].setGravityMode(val);
+				people.getValue(selectedPerson).setGravityMode(val);
+			}
+		}
+		
+		public function keyDownListener(e:KeyboardEvent):void{
+			addPerson = true;
+		}
+		
+		public function keyUpListener(e:KeyboardEvent):void{
+			addPerson = false;
+		}
+		
+		public function mouseDownListener(event:MouseEvent):void{
+			if(addPerson){
+				var particleCount = 20;
+				var xPos:Number = mouseX;
+				var yPos:Number = mouseY;
+				var radius:Number = 25;
+				var mass:Number = 1;
+				var torque:Number = (-0.1 * Math.random()) - 0.05;	// counter clockwise
+				var person:Person = new Person(personID, xPos, yPos, radius, mass, torque);
+				person.setParticleColor([Math.random()*255, Math.random()*255, Math.random()*255, 0.8]);
+				personLayer.addChild(person);
+				person.addCallback(this);
+				people.put(personID, person);
+				for(var p:Number = 0; p<particleCount; p++){
+					createNewParticle(personID, xPos, yPos, -2 + (Math.random() * 4), 0);
+				}
+				personID++;
 			}
 		}
 		
