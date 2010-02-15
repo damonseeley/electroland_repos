@@ -191,18 +191,20 @@
 		
 		public function createNewParticle(emitterID:Number, xPos:Number, yPos:Number, spin:Number, visualMode:Number):void{
 			// emit particles from this point with an initial random vector
-			var mass:Number = Math.random() + 0.1;	// 0.1 - 1
-			var scale:Number = Math.random();
-			var minRadius:Number = people.getValue(emitterID).particleMinRadius;//people[emitterID].particleMinRadius;
-			var maxRadius:Number = people.getValue(emitterID).particleMaxRadius;//people[emitterID].particleMaxRadius;
-			var particle:Particle = new Particle(particleID, emitterID, xPos, yPos, scale, minRadius, maxRadius, mass, spin, visualMode, this);
-			if(visualMode < 1){
-				//particle.setColor(people[emitterID].getParticleColor());
-				particle.setColor(people.getValue(emitterID).getParticleColor());
+			if(people.containsKey(emitterID)){
+				var mass:Number = Math.random() + 0.1;	// 0.1 - 1
+				var scale:Number = Math.random();
+				var minRadius:Number = people.getValue(emitterID).particleMinRadius;//people[emitterID].particleMinRadius;
+				var maxRadius:Number = people.getValue(emitterID).particleMaxRadius;//people[emitterID].particleMaxRadius;
+				var particle:Particle = new Particle(particleID, emitterID, xPos, yPos, scale, minRadius, maxRadius, mass, spin, visualMode, this);
+				if(visualMode < 1){
+					//particle.setColor(people[emitterID].getParticleColor());
+					particle.setColor(people.getValue(emitterID).getParticleColor());
+				}
+				particleLayer.addChild(particle);
+				particles.put(particleID, particle);
+				particleID++;
 			}
-			particleLayer.addChild(particle);
-			particles.put(particleID, particle);
-			particleID++;
 		}
 		
 		public function removeParticle(e:ParticleEvent):void{
