@@ -130,6 +130,10 @@
 				person.addCallback(this);
 				//people.push(person);
 				people.put(personID, person);
+				if(personCount == 1){
+					person.silentSelect();
+					selectedPerson = personID;
+				}
 				for(var p:Number = 0; p<particleCount; p++){
 					createNewParticle(personID, xPos, yPos, -2 + (Math.random() * 4), 0);
 				}

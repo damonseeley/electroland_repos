@@ -172,6 +172,13 @@
 			selected = false;
 		}
 		
+		public function silentSelect():void{
+			var ct:ColorTransform = this.transform.colorTransform;
+			ct.color = 0x666666;
+			this.transform.colorTransform = ct;
+			selected = true;
+		}
+		
 		// FUNCTIONS TO CHANGE PROPERTIES ON THE FLY FROM CONTROL PANEL
 		
 		public function setRadiusOfAttractionMax(radiusOfAttractionMax:Number):void{
