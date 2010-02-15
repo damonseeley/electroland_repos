@@ -43,19 +43,21 @@
 		
 		// spring motion variables
 		private var springDuration:Number = 2;								// seconds around person
-		//public var springPosition:Number = (Math.random() * (Math.PI*2)) - Math.PI;		// initial point in spring action
-		public var springPosition:Number = Math.random() * (Math.PI*2)
+		public var springPosition:Number = Math.random() * (Math.PI*2);		// initial point in spring action
 		public var springDistanceMin:Number = 50;
 		public var springDistanceMax:Number = 150;
 		public var springDistanceScale:Number = Math.random();
 		private var springDistance:Number = (springDistanceScale*(springDistanceMax-springDistanceMin)) + springDistanceMin;	// distance from person obj
 		private var springRotation:Number = Math.random() * (Math.PI*2);	// rotation of spring vector
 		
-		
 		// atomic motion variables
 		private var atomicOrbitCount = 4;
-		private var atomicRotation = Math.round((Math.random()*atomicOrbitCount)) * (360/atomicOrbitCount);
+		public var ellipseDuration:Number = 2;
+		public var ellipsePosition:Number = Math.random() * (Math.PI*2);
+		private var atomicRotation = Math.round((Math.random()*atomicOrbitCount)) * (360/atomicOrbitCount);	// even rotation of ellipse
 		
+		// spark motion variables
+		public var sparkLife:Number;
 		
 		// visual properties
 		private var redColor:Number;		
@@ -100,6 +102,19 @@
 			// draw visual appearance of particle
 			this.alpha = 0.8;
 			setVisualMode(visualMode);
+			if(particleSystem.people.getValue(emitterID).gravityMode == 3){
+				beginSpring();
+			} else if(particleSystem.people.getValue(emitterID).gravityMode == 4){
+				beginEllipse();
+			} else if(particleSystem.people.getValue(emitterID).gravityMode == 5){
+				var sparkLifeMin:Number = particleSystem.people.getValue(emitterID).sparkLifeMin;
+				var sparkLifeMax:Number = particleSystem.people.getValue(emitterID).sparkLifeMax;
+				sparkLife = sparkLifeMin + (Math.random() * (sparkLifeMax - sparkLifeMin));
+				xv = (Math.random() - 0.5) * particleSystem.people.getValue(emitterID).sparkSpeed;
+				yv = (Math.random() - 0.5) * particleSystem.people.getValue(emitterID).sparkSpeed;
+				//trace("sparkLife: "+sparkLife+" xv: "+xv+" yv: "+yv+ " alpha: "+alpha);
+				TweenLite.to(this, sparkLife, {alpha:0, onComplete:die});
+			}
 		}
 		
 		public function applyGravity(gravityObjects:Array):void{
@@ -245,8 +260,8 @@
 							// SOLUTION HERE: http://www.pixelwit.com/blog/2008/08/draw-rotated-oval/#solidcode
 							var spinSin:Number = Math.sin(atomicRotation);
 							var spinCos:Number = Math.cos(atomicRotation);
-							var radianSin:Number = Math.sin(springPosition);
-							var radianCos:Number = Math.cos(springPosition);
+							var radianSin:Number = Math.sin(ellipsePosition);
+							var radianCos:Number = Math.cos(ellipsePosition);
 							x = particleSystem.people.getValue(emitterID).x + (springDistanceMax * radianCos * spinCos - springDistanceMin * radianSin * spinSin);
 							y = particleSystem.people.getValue(emitterID).y + (springDistanceMax * radianCos * spinSin + springDistanceMin * radianSin * spinCos);
 				
@@ -343,8 +358,8 @@
 				if(particleSystem.people.getValue(emitterID).gravityMode <= 1){
 					if(Math.abs(xv) < 0.01 && Math.abs(yv) < 0.01){
 						if(!fadingOut){
-							fadingOut = true;
-							TweenLite.to(this, 5, {alpha:0, onComplete:die});
+							//fadingOut = true;
+							//TweenLite.to(this, 5, {alpha:0, onComplete:die});
 						}
 					}
 				}
@@ -564,6 +579,13 @@
 			//setColor([redColor, greenColor, blueColor, alpha]);
 		}
 		
+		public function setSpringSpeed(springDuration:Number):void{
+			this.springDuration = springDuration;
+		}
+		
+		public function setAtomicSpeed(ellipseDuration:Number):void{
+			this.ellipseDuration = ellipseDuration;
+		}
 		
 		
 		
@@ -579,6 +601,16 @@
 		public function repeatSpring():void{
 			springPosition = 0;
 			beginSpring();
+		}
+		
+		public function beginEllipse():void{
+			var duration:Number = ellipseDuration - (ellipseDuration * (ellipsePosition / (2*Math.PI)));
+			TweenLite.to(this, duration, {ellipsePosition:Math.PI*2, ease:Linear.easeNone, onComplete:repeatEllipse});
+		}
+		
+		public function repeatEllipse():void{
+			ellipsePosition = 0;
+			beginEllipse();
 		}
 	}
 	

@@ -99,6 +99,13 @@
 				trace("<maxSpin>" + values[i].maxSpin + "</maxSpin>");
 				trace("<visualMode>" + values[i].visualMode + "</visualMode>");
 				trace("<gravityMode>" + values[i].gravityMode + "</gravityMode>");
+				trace("<atomicSpeed>" + values[i].atomicSpeed + "</atomicSpeed>");
+				trace("<springSpeed>" + values[i].springSpeed + "</springSpeed>");
+				trace("<particleCount>" + values[i].particleCount + "</particleCount>");
+				trace("<sparkSpeed>" + values[i].sparkSpeed + "</sparkSpeed>");
+				trace("<sparkLifeMin>" + values[i].sparkLifeMin + "</sparkLifeMin>");
+				trace("<sparkLifeMax>" + values[i].sparkLifeMax + "</sparkLifeMax>");
+				trace("<emitterDelay>" + values[i].emitterDelay + "</emitterDelay>");
 				
 				trace("</Macro>");
 			}

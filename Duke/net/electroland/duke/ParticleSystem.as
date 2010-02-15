@@ -177,6 +177,18 @@
 			}
 		}
 		
+		public function createNumParticles(num:Number, emitterID:Number, xPos:Number, yPos:Number):void{
+			for(var p:Number = 0; p<num; p++){
+				createNewParticle(emitterID, xPos, yPos, -2 + (Math.random() * 4), people.getValue(emitterID).visualMode);
+			}
+		}
+		
+		public function createNewParticles(emitterID:Number, xPos:Number, yPos:Number):void{
+			for(var p:Number = 0; p<people.getValue(emitterID).particleCount; p++){
+				createNewParticle(emitterID, xPos, yPos, -2 + (Math.random() * 4), people.getValue(emitterID).visualMode);
+			}
+		}
+		
 		public function createNewParticle(emitterID:Number, xPos:Number, yPos:Number, spin:Number, visualMode:Number):void{
 			// emit particles from this point with an initial random vector
 			var mass:Number = Math.random() + 0.1;	// 0.1 - 1
@@ -194,8 +206,12 @@
 		}
 		
 		public function removeParticle(e:ParticleEvent):void{
-			particleLayer.removeChild(particles.getValue(e.id));
-			particles.remove(e.id);	// remove particle
+			if(particles.containsKey(e.id)){
+				if(particleLayer.contains(particles.getValue(e.id))){
+					particleLayer.removeChild(particles.getValue(e.id));
+				}
+				particles.remove(e.id);	// remove particle
+			}
 			//trace("particle "+ e.id +" removed, "+ particles.size() + " left");
 		}
 		
@@ -222,7 +238,9 @@
 			controlPanel.updateValues(person.radiusOfAttractionMin, person.radiusOfAttractionMax, person.radiusOfRepulsion,
 									  person.mass, person.torque, person.particleColorRed, person.particleColorGreen,
 									  person.particleColorBlue, person.particleMinRadius, person.particleMaxRadius,
-									  person.particleSpinMin, person.particleSpinMax, person.visualMode, person.gravityMode);
+									  person.particleSpinMin, person.particleSpinMax, person.visualMode, person.gravityMode,
+									  person.atomicSpeed, person.springSpeed, person.particleCount, person.sparkSpeed, person.sparkLifeMin,
+									  person.sparkLifeMax, person.emitterSpeed);
 		}
 		
 		
@@ -347,6 +365,30 @@
 			}
 		}
 		
+		public function setSpringSpeed(val:Number):void{
+			if(!isNaN(selectedPerson)){
+				people.getValue(selectedPerson).setSpringSpeed(val);
+				var values:Array = particles.getValues();
+				for(var i:Number = 0; i<values.length; i++){
+					if(values[i].emitterID == selectedPerson){
+						values[i].setSpringSpeed(val);
+					}
+				}
+			}
+		}
+		
+		public function setAtomicSpeed(val:Number):void{
+			if(!isNaN(selectedPerson)){
+				people.getValue(selectedPerson).setAtomicSpeed(val);
+				var values:Array = particles.getValues();
+				for(var i:Number = 0; i<values.length; i++){
+					if(values[i].emitterID == selectedPerson){
+						values[i].setAtomicSpeed(val);
+					}
+				}
+			}
+		}
+		
 		public function setVisualMode(val:Number):void{
 			if(!isNaN(selectedPerson)){
 				people.getValue(selectedPerson).setVisualMode(val);
@@ -362,11 +404,82 @@
 		public function setGravityMode(val:Number){
 			if(!isNaN(selectedPerson)){
 				people.getValue(selectedPerson).setGravityMode(val);
+				var values:Array = particles.getValues();
+				for(var i:Number = 0; i<values.length; i++){
+					if(values[i].emitterID == selectedPerson){
+						if(val > 1){
+							values[i].die();
+						}
+					}
+				}
+				if(val > 1 && val < 5){
+					createNewParticles(people.getValue(selectedPerson).id, people.getValue(selectedPerson).x, people.getValue(selectedPerson).y);
+				}
+			}
+		}
+		
+		
+		public function setSparkSpeed(val:Number):void{
+			if(!isNaN(selectedPerson)){
+				people.getValue(selectedPerson).setSparkSpeed(val);
+			}
+		}
+		
+		public function setSparkLifeMin(val:Number):void{
+			if(!isNaN(selectedPerson)){
+				people.getValue(selectedPerson).setSparkLifeMin(val);
+			}
+		}
+		
+		public function setSparkLifeMax(val:Number):void{
+			if(!isNaN(selectedPerson)){
+				people.getValue(selectedPerson).setSparkLifeMax(val);
+			}
+		}
+		
+		public function setSparkEmitterDelay(val:Number):void{
+			if(!isNaN(selectedPerson)){
+				people.getValue(selectedPerson).setSparkEmitterDelay(val);
+			}
+		}
+		
+		public function setParticleCount(val:Number):void{
+			
+			if(!isNaN(selectedPerson)){
+				var num:Number;
+				if(val > people.getValue(selectedPerson).particleCount){
+					num = Math.round(val - people.getValue(selectedPerson).particleCount);
+					createNumParticles(num, selectedPerson, people.getValue(selectedPerson).x, people.getValue(selectedPerson).y);
+				} else {
+					num = Math.round(people.getValue(selectedPerson).particleCount - val);
+					var removed:Number = 0;
+					var values:Array = particles.getValues();
+					for(var i:Number = 0; i<values.length; i++){
+						if(values[i].emitterID == selectedPerson){
+							values[i].die();
+							removed++;
+							if(removed >= num){
+								break;
+							}
+						}
+					}
+				}
+				people.getValue(selectedPerson).setParticleCount(val);
 			}
 		}
 		
 		public function keyDownListener(e:KeyboardEvent):void{
-			addPerson = true;
+			if(e.keyCode == 187){	// create new person
+				createPerson(Math.random()*stage.stageWidth, Math.random()*stage.stageHeight);
+			} else if(e.keyCode == 189){ 
+				var values:Array = people.getValues();
+				if(values.length > 0){
+					personLayer.removeChild(values[0]);
+					people.remove(values[0].id);	// remove oldest person
+				}
+			} else {
+				addPerson = true;
+			}
 		}
 		
 		public function keyUpListener(e:KeyboardEvent):void{
@@ -375,22 +488,24 @@
 		
 		public function mouseDownListener(event:MouseEvent):void{
 			if(addPerson){
-				var particleCount = 20;
-				var xPos:Number = mouseX;
-				var yPos:Number = mouseY;
-				var radius:Number = 25;
-				var mass:Number = 1;
-				var torque:Number = (-0.1 * Math.random()) - 0.05;	// counter clockwise
-				var person:Person = new Person(personID, xPos, yPos, radius, mass, torque);
-				person.setParticleColor([Math.random()*255, Math.random()*255, Math.random()*255, 0.8]);
-				personLayer.addChild(person);
-				person.addCallback(this);
-				people.put(personID, person);
-				for(var p:Number = 0; p<particleCount; p++){
-					createNewParticle(personID, xPos, yPos, -2 + (Math.random() * 4), 0);
-				}
-				personID++;
+				createPerson(mouseX, mouseY);
 			}
+		}
+		
+		public function createPerson(xPos:Number, yPos:Number):void{
+			var particleCount = 20;
+			var radius:Number = 25;
+			var mass:Number = 1;
+			var torque:Number = (-0.1 * Math.random()) - 0.05;	// counter clockwise
+			var person:Person = new Person(personID, xPos, yPos, radius, mass, torque);
+			person.setParticleColor([Math.random()*255, Math.random()*255, Math.random()*255, 0.8]);
+			personLayer.addChild(person);
+			person.addCallback(this);
+			people.put(personID, person);
+			for(var p:Number = 0; p<particleCount; p++){
+				createNewParticle(personID, xPos, yPos, -2 + (Math.random() * 4), 0);
+			}
+			personID++;
 		}
 		
 	}
