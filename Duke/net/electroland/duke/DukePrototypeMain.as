@@ -13,9 +13,10 @@
 			addChild(particleSystem);
 			particleSystem.setup(20, 1);
 			controlPanel = new ControlPanel(particleSystem);
-			particleSystem.addControlPanel(controlPanel);
 			addChild(controlPanel);
 			macroManager = new MacroManager(particleSystem, controlPanel);
+			controlPanel.setup(macroManager);
+			particleSystem.addControlPanel(controlPanel);
 			addChild(macroManager);
 			macroManager.start();
 		}

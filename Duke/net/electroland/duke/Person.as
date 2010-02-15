@@ -4,6 +4,8 @@
 	import flash.events.MouseEvent;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
 	import flash.geom.ColorTransform;
 	
 	public class Person extends MovieClip{
@@ -35,6 +37,14 @@
 		public var particleMaxRadius = 6;
 		public var particleSpinMin;
 		public var particleSpinMax;
+		public var particleCount = 20;				// regulated number of particles emitted from this person
+		public var springSpeed = 2;
+		public var atomicSpeed = 2;
+		
+		public var sparkLifeMin:Number = 1;
+		public var sparkLifeMax:Number = 2;
+		public var sparkSpeed:Number = 20;
+		public var emitterSpeed:Number = 50;		// delay between particles in milliseconds
 		
 		public var gravityMode = 0;					// 0 = regular gravity, 1 = square gravity
 		public var visualMode = 0;					// visual mode of particles emitted from this person
@@ -132,6 +142,7 @@
 		}
 		
 		public function onEnterFrame(event:Event):void{
+			/*
 			var xdiff:Number = x - lastParticleX;
 			var ydiff:Number = y - lastParticleY;
 			var hypo:Number = Math.sqrt(xdiff*xdiff + ydiff*ydiff);
@@ -143,6 +154,7 @@
 					particleSystem.createNewParticle(id, x, y, spin, visualMode);
 				}
 			}
+			*/
 		}
 		
 		public function select():void{
@@ -210,26 +222,84 @@
 			this.particleSpinMax = particleSpinMax;
 		}
 		
+		public function setParticleCount(particleCount:Number):void{
+			this.particleCount = particleCount;
+		}
+		
 		public function setVisualMode(visualMode:Number):void{
 			this.visualMode = visualMode;
 		}
 		
 		public function setGravityMode(gravityMode:Number):void{
-			trace(id +" gravity mode "+gravityMode);
+			//trace(id +" gravity mode "+gravityMode);
 			this.gravityMode = gravityMode;
-			if(gravityMode == 3 || gravityMode == 4){	// spring or atomic mode
-				var values:Array = particleSystem.particles.getValues();
+			var xdiff:Number;
+			var ydiff:Number;
+			var hypo:Number;
+			var values:Array = particleSystem.particles.getValues();
+			if(gravityMode == 3){	// spring mode
 				for(var i:Number = 0; i<values.length; i++){
-					var xdiff:Number = x - values[i].x;
-					var ydiff:Number = y - values[i].y;
-					var hypo:Number = Math.sqrt(xdiff*xdiff + ydiff*ydiff);
+					xdiff = x - values[i].x;
+					ydiff = y - values[i].y;
+					hypo = Math.sqrt(xdiff*xdiff + ydiff*ydiff);
 					if(hypo < radiusOfAttractionMax){
 						values[i].beginSpring();
 					}
 				}
+			} else if (gravityMode == 4){	// atomic mode
+				for(i = 0; i<values.length; i++){
+					xdiff = x - values[i].x;
+					ydiff = y - values[i].y;
+					hypo = Math.sqrt(xdiff*xdiff + ydiff*ydiff);
+					if(hypo < radiusOfAttractionMax){
+						values[i].beginEllipse();
+					}
+				}
+			} else if(gravityMode == 5){	// spark mode
+				emitParticle();
 			}
 		}
 		
+		public function setSparkLifeMin(sparkLifeMin:Number):void{
+			this.sparkLifeMin = sparkLifeMin;
+		}
+		
+		public function setSparkLifeMax(sparkLifeMax:Number):void{
+			this.sparkLifeMax = sparkLifeMax;
+		}
+		
+		public function setSparkSpeed(sparkSpeed:Number):void{
+			this.sparkSpeed = sparkSpeed;
+		}
+		
+		public function setSparkEmitterDelay(emitterSpeed:Number):void{
+			this.emitterSpeed = emitterSpeed;
+		}
+		
+		public function setSpringSpeed(springSpeed:Number):void{
+			this.springSpeed = springSpeed;
+		}
+		
+		public function setAtomicSpeed(atomicSpeed:Number):void{
+			this.atomicSpeed = atomicSpeed;
+		}
+		
+		public function emitParticle():void{
+			//trace("emit particle");
+			var spin:Number = (Math.random() * (particleSpinMax - particleSpinMin)) + particleSpinMin;
+			particleSystem.createNewParticle(id, x, y, spin, visualMode);
+			var timer:Timer = new Timer(emitterSpeed, 1);
+			timer.addEventListener("timer", repeatEmitter);
+			timer.start();
+			//trace(timer.delay);
+		}
+		
+		public function repeatEmitter(e:TimerEvent):void{
+			if(gravityMode == 5){
+				//trace("repeating");
+				emitParticle();
+			}
+		}
 	}
 	
 }

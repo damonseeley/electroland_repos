@@ -21,7 +21,7 @@
 		public var textFormat:TextFormat;
 		public var valueLabel:TextField;
 		
-		public function ScrollBar(label:String, x:Number, y:Number, minVal:Number, maxVal:Number, val:Number, callback:Function){
+		public function ScrollBar(label:String, x:Number, y:Number, minVal:Number, maxVal:Number, val:Number, callback:Function, color:uint){
 			this.label = label;
 			this.x = x;
 			this.y = y;
@@ -35,7 +35,7 @@
 			this.graphics.endFill();
 			
 			bar = new MovieClip();
-			bar.graphics.beginFill(0x666666);
+			bar.graphics.beginFill(color);
 			var normVal:Number = (val-minVal) / (maxVal-minVal);
 			bar.graphics.drawRect(0, 0, normVal * w, h);
 			bar.graphics.endFill();
