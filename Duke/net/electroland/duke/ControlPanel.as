@@ -266,13 +266,13 @@
 			sparksLabel.selectable = false;
 			sparksLabel.setTextFormat(textFormat);
 			advancedControls.addChild(sparksLabel);
-			sparksSpeedSlider = new ScrollBar("Speed", 100, 130, 0, 20, 2, sparksSpeedCallback, 0x666666);
+			sparksSpeedSlider = new ScrollBar("Speed", 100, 130, 0.1, 20, 2, sparksSpeedCallback, 0x666666);
 			advancedControls.addChild(sparksSpeedSlider);
-			sparksLifeMinSlider = new ScrollBar("Life Min", 300, 130, 0, 5, 2, sparksLifeMinCallback, 0x666666);
+			sparksLifeMinSlider = new ScrollBar("Life Min", 300, 130, 0.1, 5, 2, sparksLifeMinCallback, 0x666666);
 			advancedControls.addChild(sparksLifeMinSlider);
-			sparksLifeMaxSlider = new ScrollBar("Life Max", 500, 130, 0, 5, 2, sparksLifeMaxCallback, 0x666666);
+			sparksLifeMaxSlider = new ScrollBar("Life Max", 500, 130, 0.1, 5, 2, sparksLifeMaxCallback, 0x666666);
 			advancedControls.addChild(sparksLifeMaxSlider);
-			sparksEmitterDelay = new ScrollBar("Emitter Delay", 700, 130, 0, 1000, 50, sparksEmitterDelayCallback, 0x666666);
+			sparksEmitterDelay = new ScrollBar("Emitter Delay", 700, 130, 1, 1000, 50, sparksEmitterDelayCallback, 0x666666);
 			advancedControls.addChild(sparksEmitterDelay);
 			
 			this.addEventListener(MouseEvent.MOUSE_UP, mouseReleased);
