@@ -35,8 +35,14 @@
 		public function start():void{
 			macros = new HashMap();
 			stage.addEventListener(KeyboardEvent.KEY_DOWN,keyDownListener);
-			xmlLoader.addEventListener(Event.COMPLETE, parseXML);
-			xmlLoader.load(new URLRequest("macros.xml")); 
+			//xmlLoader.addEventListener(Event.COMPLETE, parseXML);
+			//xmlLoader.load(new URLRequest("macros.xml")); 
+			
+			var macroOne = new Macro(1);
+			macroOne.setValues(100, 300, 50, 1, -2, 200, 150, 0, 2, 25, -1, 1, 5, 4, 2, 1, 60, 3, 2, 5, 50)
+			macros.put(1, macroOne);
+			
+			applyMacro(1);
 		}
 		
 		function keyDownListener(e:KeyboardEvent) {
