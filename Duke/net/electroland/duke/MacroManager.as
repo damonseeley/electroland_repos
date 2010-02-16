@@ -39,8 +39,11 @@
 			//xmlLoader.load(new URLRequest("macros.xml")); 
 			
 			var macroOne = new Macro(1);
-			macroOne.setValues(100, 300, 50, 1, -2, 200, 150, 0, 2, 25, -1, 1, 5, 4, 2, 1, 60, 3, 2, 5, 50)
+			macroOne.setValues(100, 300, 50, 1, -0.25, 200, 150, 0, 2, 25, -1, 1, 5, 4, 2, 1, 60, 3, 2, 5, 50);
 			macros.put(1, macroOne);
+			var macroTwo = new Macro(2);
+			macroTwo.setValues(100, 300, 50, 1, -0.25, 200, 150, 0, 2, 25, -1, 2, 3, 1, 2, 1, 60, 3, 2, 5, 50);
+			macros.put(2, macroTwo);
 			
 			applyMacro(1);
 		}
@@ -53,7 +56,8 @@
 					applyMacro(e.keyCode - 48);
 				}
 			} else if(e.keyCode == 186) {	// semi-colon
-				printXML();
+				//printXML();
+				printValues();
 			}
 		}
 		
@@ -80,6 +84,13 @@
 				macro.loadValues(macroElement);
 				macros.put(id, macro);
 				//trace(macros.size());
+			}
+		}
+		
+		public function printValues():void{
+			var values:Array = macros.getValues();
+			for(var i=0; i<values.length; i++){
+				trace(values[i].id +": "+ values[i].attractionRadiusMin +", "+ values[i].attractionRadiusMax +", "+ values[i].repulsionRadius +", "+ values[i].mass +", "+ values[i].torque +", "+ values[i].red +", "+ values[i].green +", "+ values[i].blue +", "+ values[i].minRadius +", "+ values[i].maxRadius +", "+ values[i].minSpin +", "+ values[i].maxSpin +", "+ values[i].visualMode +", "+ values[i].gravityMode +", "+ values[i].atomicSpeed +", "+ values[i].springSpeed +", "+ values[i].particleCount +", "+ values[i].sparkSpeed +", "+ values[i].sparkLifeMin +", "+ values[i].sparkLifeMax +", "+ values[i].emitterDelay);
 			}
 		}
 		
