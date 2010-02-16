@@ -27,13 +27,14 @@
 		public var particleColorGreen:Number;
 		public var particleColorBlue:Number;
 		public var particleColorAlpha:Number;
+		public var particleColorHue:Number;
 		
 		public var selected:Boolean = false;
 		private var particleSystem:ParticleSystem;
 		private var distanceBetweenParticles:Number;
 		private var lastParticleX:Number;
 		private var lastParticleY:Number;
-		public var particleMinRadius = 3;
+		public var particleMinRadius = 1;
 		public var particleMaxRadius = 6;
 		public var particleSpinMin;
 		public var particleSpinMax;
@@ -142,11 +143,10 @@
 		}
 		
 		public function onEnterFrame(event:Event):void{
-			/*
 			var xdiff:Number = x - lastParticleX;
 			var ydiff:Number = y - lastParticleY;
 			var hypo:Number = Math.sqrt(xdiff*xdiff + ydiff*ydiff);
-			if(gravityMode <= 1){
+			if(gravityMode <= 1){	// only gravity and square mode
 				if(hypo > distanceBetweenParticles){
 					lastParticleX = x;
 					lastParticleY = y;
@@ -154,7 +154,6 @@
 					particleSystem.createNewParticle(id, x, y, spin, visualMode);
 				}
 			}
-			*/
 		}
 		
 		public function select():void{
@@ -211,6 +210,14 @@
 		
 		public function setBlue(particleColorBlue:Number):void{
 			this.particleColorBlue = particleColorBlue;
+		}
+		
+		public function setHue(particleColorHue:Number):void{
+			this.particleColorHue = particleColorHue;
+			var rgb:Array = HSVtoRGB(particleColorHue, 100, 100);
+			particleColorRed = rgb[0];
+			particleColorGreen = rgb[1];
+			particleColorBlue = rgb[2];
 		}
 		
 		public function setParticleMinSize(particleMinRadius:Number):void{
@@ -306,6 +313,37 @@
 				//trace("repeating");
 				emitParticle();
 			}
+		}
+		
+		// utility for colors
+		
+		private function HSVtoRGB(h:Number, s:Number, v:Number):Array{
+			var r:Number = 0;
+			var g:Number = 0;
+			var b:Number = 0;
+			var rgb:Array = [];
+	
+			var tempS:Number = s / 100;
+			var tempV:Number = v / 100;
+	
+			var hi:int = Math.floor(h/60) % 6;
+			var f:Number = h/60 - Math.floor(h/60);
+			var p:Number = (tempV * (1 - tempS));
+			var q:Number = (tempV * (1 - f * tempS));
+			var t:Number = (tempV * (1 - (1 - f) * tempS));
+
+			switch(hi){
+				case 0: r = tempV; g = t; b = p; break;
+				case 1: r = q; g = tempV; b = p; break;
+				case 2: r = p; g = tempV; b = t; break;
+				case 3: r = p; g = q; b = tempV; break;
+				case 4: r = t; g = p; b = tempV; break;
+				case 5: r = tempV; g = p; b = q; break;
+			}
+			
+			rgb = [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+			//trace(rgb[0] +" "+ rgb[1] +" "+ rgb[2]);
+			return rgb;
 		}
 	}
 	

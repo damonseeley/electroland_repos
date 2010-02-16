@@ -64,8 +64,10 @@
 		private var greenColor:Number;
 		private var blueColor:Number;
 		private var alphaColor:Number;
+		private var hue:Number;
 		private var visualMode:Number = 0;	// 0 = flash circle, 1 = softParticle.png, 2 = weirdParticle.png, 3 = lineParticle.png
-		private var image:Bitmap;
+		//private var image:Bitmap;
+		private var image:MovieClip;
 		private var fadingOut:Boolean = false;
 		
 		// reference to system
@@ -355,11 +357,11 @@
 					TweenLite.to(this, 5, {alpha:0, onComplete:die});
 				}
 			} else {
-				if(particleSystem.people.getValue(emitterID).gravityMode <= 1){
+				if(particleSystem.people.getValue(emitterID).gravityMode <= 1){	// only gravity and square modes...
 					if(Math.abs(xv) < 0.01 && Math.abs(yv) < 0.01){
 						if(!fadingOut){
-							//fadingOut = true;
-							//TweenLite.to(this, 5, {alpha:0, onComplete:die});
+							fadingOut = true;
+							TweenLite.to(this, 5, {alpha:0, onComplete:die});
 						}
 					}
 				}
@@ -403,8 +405,9 @@
 				if(image != null && this.contains(image)){
 					removeChild(image);
 				}
-				bm = particleSystem.greenDot.content as Bitmap;
-				image = new Bitmap(bm.bitmapData);
+				//bm = particleSystem.greenDot.content as Bitmap;
+				//image = new Bitmap(bm.bitmapData);
+				image = new GreenDot();
 				image.width = radius*2;
 				image.height = radius*2;
 				addChild(image);
@@ -416,8 +419,9 @@
 				if(image != null && this.contains(image)){
 					removeChild(image);
 				}
-				bm = particleSystem.blueDot.content as Bitmap;
-				image = new Bitmap(bm.bitmapData);
+				//bm = particleSystem.blueDot.content as Bitmap;
+				//image = new Bitmap(bm.bitmapData);
+				image = new BlueDot();
 				image.width = radius*2;
 				image.height = radius*2;
 				addChild(image);
@@ -429,8 +433,9 @@
 				if(image != null && this.contains(image)){
 					removeChild(image);
 				}
-				bm = particleSystem.hexagon.content as Bitmap;
-				image = new Bitmap(bm.bitmapData);
+				//bm = particleSystem.hexagon.content as Bitmap;
+				//image = new Bitmap(bm.bitmapData);
+				image = new Hexagon();
 				image.width = radius*2;
 				image.height = radius*2;
 				addChild(image);
@@ -442,8 +447,9 @@
 				if(image != null && this.contains(image)){
 					removeChild(image);
 				}
-				bm = particleSystem.cross.content as Bitmap;
-				image = new Bitmap(bm.bitmapData);
+				//bm = particleSystem.cross.content as Bitmap;
+				//image = new Bitmap(bm.bitmapData);
+				image = new Cross();
 				image.width = radius*2;
 				image.height = radius*2;
 				addChild(image);
@@ -455,8 +461,9 @@
 				if(image != null && this.contains(image)){
 					removeChild(image);
 				}
-				bm = particleSystem.lineParticle.content as Bitmap;
-				image = new Bitmap(bm.bitmapData);
+				//bm = particleSystem.lineParticle.content as Bitmap;
+				//image = new Bitmap(bm.bitmapData);
+				image = new LineParticle();
 				image.width = radius*2;
 				image.height = radius*2;
 				addChild(image);
@@ -468,8 +475,9 @@
 				if(image != null && this.contains(image)){
 					removeChild(image);
 				}
-				bm = particleSystem.roundRect.content as Bitmap;
-				image = new Bitmap(bm.bitmapData);
+				//bm = particleSystem.roundRect.content as Bitmap;
+				//image = new Bitmap(bm.bitmapData);
+				image = new RoundRect();
 				image.width = radius*2;
 				image.height = radius*2;
 				addChild(image);
@@ -527,6 +535,12 @@
 		public function setBlue(blue:Number):void{
 			blueColor = blue;
 			setColor([redColor, greenColor, blueColor, alpha]);
+		}
+		
+		public function setHue(hue:Number):void{
+			this.hue = hue;
+			var rgb:Array = HSVtoRGB(hue, 100, 100);
+			setColor([rgb[0], rgb[1], rgb[2], alpha]);
 		}
 		
 		public function setSpin(spin:Number):void{
@@ -611,6 +625,41 @@
 		public function repeatEllipse():void{
 			ellipsePosition = 0;
 			beginEllipse();
+		}
+		
+		
+		
+		
+		
+		// utility for colors
+		
+		private function HSVtoRGB(h:Number, s:Number, v:Number):Array{
+			var r:Number = 0;
+			var g:Number = 0;
+			var b:Number = 0;
+			var rgb:Array = [];
+	
+			var tempS:Number = s / 100;
+			var tempV:Number = v / 100;
+	
+			var hi:int = Math.floor(h/60) % 6;
+			var f:Number = h/60 - Math.floor(h/60);
+			var p:Number = (tempV * (1 - tempS));
+			var q:Number = (tempV * (1 - f * tempS));
+			var t:Number = (tempV * (1 - (1 - f) * tempS));
+
+			switch(hi){
+				case 0: r = tempV; g = t; b = p; break;
+				case 1: r = q; g = tempV; b = p; break;
+				case 2: r = p; g = tempV; b = t; break;
+				case 3: r = p; g = q; b = tempV; break;
+				case 4: r = t; g = p; b = tempV; break;
+				case 5: r = tempV; g = p; b = q; break;
+			}
+			
+			rgb = [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+			//trace(rgb[0] +" "+ rgb[1] +" "+ rgb[2]);
+			return rgb;
 		}
 	}
 	

@@ -26,12 +26,14 @@
 		public var weirdParticle:Loader;
 		public var lineParticle:Loader;
 		
+		/*
 		public var redDot:Loader;				// new images
 		public var greenDot:Loader;
 		public var blueDot:Loader;
 		public var cross:Loader;
 		public var hexagon:Loader;
 		public var roundRect:Loader;
+		*/
 		public var addPerson:Boolean = false;	// set to true when CTRL is held
 		
 		/*
@@ -87,6 +89,7 @@
 			//weirdParticle = new Loader();
 			//weirdParticle.contentLoaderInfo.addEventListener(Event.COMPLETE, imageLoaded);
 			//weirdParticle.load(new URLRequest("images/weirdParticle.png"));
+			/*
 			lineParticle = new Loader();
 			lineParticle.contentLoaderInfo.addEventListener(Event.COMPLETE, imageLoaded);
 			lineParticle.load(new URLRequest("images/line.png"));
@@ -108,7 +111,7 @@
 			roundRect = new Loader();
 			roundRect.contentLoaderInfo.addEventListener(Event.COMPLETE, imageLoaded);
 			roundRect.load(new URLRequest("images/roundrect.png"));
-			
+			*/
 			
 			
 			//people = new Array();
@@ -183,6 +186,14 @@
 		
 		public function createNumParticles(num:Number, emitterID:Number, xPos:Number, yPos:Number):void{
 			for(var p:Number = 0; p<num; p++){
+				createNewParticle(emitterID, xPos, yPos, -2 + (Math.random() * 4), people.getValue(emitterID).visualMode);
+			}
+		}
+		
+		public function createNewParticlesOutside(emitterID:Number, xPos:Number, yPos:Number):void{
+			for(var p:Number = 0; p<people.getValue(emitterID).particleCount; p++){
+				xPos += (Math.random()*100) - 50;
+				yPos += (Math.random()*100) - 50;
 				createNewParticle(emitterID, xPos, yPos, -2 + (Math.random() * 4), people.getValue(emitterID).visualMode);
 			}
 		}
@@ -323,6 +334,18 @@
 			}
 		}
 		
+		public function setHue(hue:Number):void{
+			if(!isNaN(selectedPerson)){
+				people.getValue(selectedPerson).setHue(hue);
+				var values:Array = particles.getValues();
+				for(var i:Number = 0; i<values.length; i++){
+					if(values[i].emitterID == selectedPerson){
+						values[i].setHue(hue);
+					}
+				}
+			}
+		}
+		
 		public function setParticleMinSize(size:Number):void{
 			if(!isNaN(selectedPerson)){
 				people.getValue(selectedPerson).setParticleMinSize(size);
@@ -413,13 +436,15 @@
 				var values:Array = particles.getValues();
 				for(var i:Number = 0; i<values.length; i++){
 					if(values[i].emitterID == selectedPerson){
-						if(val > 1){
+						//if(val > 1){
 							values[i].die();
-						}
+						//}
 					}
 				}
-				if(val > 1 && val < 5){
+				if(val != 1){
 					createNewParticles(people.getValue(selectedPerson).id, people.getValue(selectedPerson).x, people.getValue(selectedPerson).y);
+				} else {
+					createNewParticlesOutside(people.getValue(selectedPerson).id, people.getValue(selectedPerson).x, people.getValue(selectedPerson).y);
 				}
 			}
 		}

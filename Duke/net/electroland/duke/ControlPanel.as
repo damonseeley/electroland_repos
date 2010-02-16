@@ -37,6 +37,7 @@
 		private var redSlider:ScrollBar;
 		private var greenSlider:ScrollBar;
 		private var blueSlider:ScrollBar;
+		private var hueSlider:ScrollBar;
 		private var particleMinSizeSlider:ScrollBar;
 		private var particleMaxSizeSlider:ScrollBar;
 		private var particleMinSpinSlider:ScrollBar;
@@ -62,7 +63,13 @@
 			addChild(basicControls);
 			basicControls.graphics.lineStyle(1, 0x666666, 0.5);
 			basicControls.graphics.moveTo(90,0);		// vertical line
-			basicControls.graphics.lineTo(90,155);
+			basicControls.graphics.lineTo(90,125);
+			
+			basicControls.graphics.moveTo(290,95);
+			basicControls.graphics.lineTo(290,125);
+			basicControls.graphics.moveTo(590,95);
+			basicControls.graphics.lineTo(590,125);
+			
 			basicControls.graphics.moveTo(0,35);		// horizontal lines
 			basicControls.graphics.lineTo(1024,35);
 			basicControls.graphics.moveTo(0,65);
@@ -71,23 +78,51 @@
 			basicControls.graphics.lineTo(1024,95);
 			basicControls.graphics.moveTo(0,125);
 			basicControls.graphics.lineTo(1024,125);
-			basicControls.graphics.moveTo(0,155);
-			basicControls.graphics.lineTo(1024,155);
+			//basicControls.graphics.moveTo(0,155);
+			//basicControls.graphics.lineTo(1024,155);
+			//basicControls.graphics.moveTo(0,185);
+			//basicControls.graphics.lineTo(1024,185);
 			
+			var titles = new BasicControlsTitles();
+			basicControls.addChild(titles);
+			titles.y = 10;
+			titles.x = 5;
 			
-			textFormat = new TextFormat("Verdana", 12, 0x000000);
+			textFormat = new TextFormat("Verdana", 12, 0x999999);
 			textFormat.bold = true;
 			
+			
+			// PRESETS SECTION
+			/*
+			presetsLabel = new TextField();
+			presetsLabel.text = "PRESETS:";
+			presetsLabel.x = 5;
+			presetsLabel.y = 10;
+			presetsLabel.autoSize = "left";
+			presetsLabel.selectable = false;
+			presetsLabel.setTextFormat(textFormat);
+			basicControls.addChild(presetsLabel);	
+			*/
+			presetMode = new RadioButtonGroup(100, 10, presetModeCallback);
+			presetMode.addButton(1, "1", 0, 0, true);
+			presetMode.addButton(2, "2", 50, 0, false);
+			presetMode.addButton(3, "3", 100, 0, false);
+			presetMode.addButton(4, "4", 150, 0, false);
+			presetMode.addButton(5, "5", 200, 0, false);
+			basicControls.addChild(presetMode);
+			
 			// MOTION SECTION
+			/*
 			motionLabel = new TextField();
 			motionLabel.text = "MOTION:";
 			motionLabel.x = 5;
-			motionLabel.y = 10;
+			motionLabel.y = 40;
 			motionLabel.autoSize = "left";
 			motionLabel.selectable = false;
 			motionLabel.setTextFormat(textFormat);
 			basicControls.addChild(motionLabel);
-			gravityMode = new RadioButtonGroup(100, 10, gravityModeCallback);
+			*/
+			gravityMode = new RadioButtonGroup(100, 40, gravityModeCallback);
 			gravityMode.addButton(0, "Gravity", 0, 0, true);
 			gravityMode.addButton(1, "Square", 100, 0, false);
 			//gravityMode.addButton(2, "Star", 0, 10, false);
@@ -97,15 +132,17 @@
 			basicControls.addChild(gravityMode);
 			
 			// SHAPE SECTION
+			/*
 			shapeLabel = new TextField();
 			shapeLabel.text = "SHAPE:";
 			shapeLabel.x = 5;
-			shapeLabel.y = 40;
+			shapeLabel.y = 70;
 			shapeLabel.autoSize = "left";
 			shapeLabel.selectable = false;
 			shapeLabel.setTextFormat(textFormat);
 			basicControls.addChild(shapeLabel);
-			visualMode = new RadioButtonGroup(100, 40, visualModeCallback);
+			*/
+			visualMode = new RadioButtonGroup(100, 70, visualModeCallback);
 			visualMode.addButton(0, "Circle", 0, 0, true);
 			visualMode.addButton(1, "Green Dot", 100, 0, false);
 			visualMode.addButton(2, "Blue Dot", 200, 0, false);
@@ -116,61 +153,75 @@
 			basicControls.addChild(visualMode);
 			
 			// SIZE SECTION
+			/*
 			sizeLabel = new TextField();
 			sizeLabel.text = "SIZE:";
 			sizeLabel.x = 5;
-			sizeLabel.y = 70;
+			sizeLabel.y = 100;
 			sizeLabel.autoSize = "left";
 			sizeLabel.selectable = false;
 			sizeLabel.setTextFormat(textFormat);
 			basicControls.addChild(sizeLabel);	
-			particleMinSizeSlider = new ScrollBar("Min", 100, 70, 1, 50, 3, particleMinSizeCallback, 0x666666);
-			basicControls.addChild(particleMinSizeSlider);
-			particleMaxSizeSlider = new ScrollBar("Max", 250, 70, 1, 50, 6, particleMaxSizeCallback, 0x666666);
+			*/
+			particleMinSizeSlider = new ScrollBar("Min", 100, 100, 1, 50, 3, particleMinSizeCallback, 0x666666);
+			//basicControls.addChild(particleMinSizeSlider);
+			particleMaxSizeSlider = new ScrollBar("Particle Size", 100, 100, 1, 50, 6, particleMaxSizeCallback, 0x666666);
 			basicControls.addChild(particleMaxSizeSlider);	
 			
 			// COLOR SECTION
+			/*
 			colorLabel = new TextField();
 			colorLabel.text = "COLOR:";
-			colorLabel.x = 5;
+			colorLabel.x = 300;
 			colorLabel.y = 100;
 			colorLabel.autoSize = "left";
 			colorLabel.selectable = false;
 			colorLabel.setTextFormat(textFormat);
 			basicControls.addChild(colorLabel);	
-			redSlider = new ScrollBar("Red", 100, 100, 0, 255, 1, redCallback, 0xff0000);
-			basicControls.addChild(redSlider);
-			greenSlider = new ScrollBar("Green", 250, 100, 0, 255, 1, greenCallback, 0x00ff00);
-			basicControls.addChild(greenSlider);
-			blueSlider = new ScrollBar("Blue", 400, 100, 0, 255, 1, blueCallback, 0x0000ff);
-			basicControls.addChild(blueSlider);
+			*/
+			redSlider = new ScrollBar("Red", 100, 130, 0, 255, 1, redCallback, 0xff0000);
+			//basicControls.addChild(redSlider);
+			greenSlider = new ScrollBar("Green", 250, 130, 0, 255, 1, greenCallback, 0x00ff00);
+			//basicControls.addChild(greenSlider);
+			blueSlider = new ScrollBar("Blue", 400, 130, 0, 255, 1, blueCallback, 0x0000ff);
+			//basicControls.addChild(blueSlider);
+			hueSlider = new ScrollBar("Hue", 400, 100, 0, 360, 1, hueCallback, 0x666666);
+			basicControls.addChild(hueSlider);
 			
-			// PRESETS SECTION
-			presetsLabel = new TextField();
-			presetsLabel.text = "PRESETS:";
-			presetsLabel.x = 5;
-			presetsLabel.y = 130;
-			presetsLabel.autoSize = "left";
-			presetsLabel.selectable = false;
-			presetsLabel.setTextFormat(textFormat);
-			basicControls.addChild(presetsLabel);	
-			presetMode = new RadioButtonGroup(100, 130, presetModeCallback);
-			presetMode.addButton(1, "1", 0, 0, false);
-			presetMode.addButton(2, "2", 50, 0, false);
-			presetMode.addButton(3, "3", 100, 0, false);
-			presetMode.addButton(4, "4", 150, 0, false);
-			presetMode.addButton(5, "5", 200, 0, false);
-			basicControls.addChild(presetMode);
+			
+			// PARTICLE SECTION
+			/*
+			particlesLabel = new TextField();
+			particlesLabel.text = "DENSITY:";
+			particlesLabel.x = 600;
+			particlesLabel.y = 100;
+			particlesLabel.autoSize = "left";
+			particlesLabel.selectable = false;
+			particlesLabel.setTextFormat(textFormat);
+			basicControls.addChild(particlesLabel);
+			*/
+			particleCountSlider = new ScrollBar("Particle Count", 700, 100, 0, 100, 20, particleCountCallback, 0x666666);
+			basicControls.addChild(particleCountSlider);
+			
+			//textFormat = new TextFormat("Arial", 10, 0x333333);
+			particleCount = new TextField();
+			particleCount.text = "Total: "+ String(particleSystem.particles.size());
+			particleCount.x = 300;
+			particleCount.y = 100;
+			particleCount.autoSize = "left";
+			particleCount.selectable = false;
+			particleCount.setTextFormat(new TextFormat("Arial", 12, 0x333333));
+			//advancedControls.addChild(particleCount);
 			
 			
 			
 			advancedControls = new MovieClip();
 			addChild(advancedControls);
-			advancedControls.y = 150;
+			advancedControls.y = 120;
 			advancedControls.visible = false;
 			advancedControls.graphics.lineStyle(1, 0x666666, 0.5);
 			advancedControls.graphics.moveTo(90,5);		// vertical line
-			advancedControls.graphics.lineTo(90,155);
+			advancedControls.graphics.lineTo(90,135);
 			advancedControls.graphics.moveTo(0,35);		// horizontal lines
 			advancedControls.graphics.lineTo(1024,35);
 			advancedControls.graphics.moveTo(0,65);
@@ -179,10 +230,14 @@
 			advancedControls.graphics.lineTo(1024,95);
 			advancedControls.graphics.moveTo(0,125);
 			advancedControls.graphics.lineTo(1024,125);
-			advancedControls.graphics.moveTo(0,155);
-			advancedControls.graphics.lineTo(1024,155);
+			
+			var advancedTitles = new AdvancedControlsTitles();
+			advancedControls.addChild(advancedTitles);
+			advancedTitles.x = 5;
+			advancedTitles.y = 10;
 			
 			// RADIUS SECTION
+			/*
 			radiusLabel = new TextField();
 			radiusLabel.text = "RADIUS:";
 			radiusLabel.x = 5;
@@ -191,6 +246,7 @@
 			radiusLabel.selectable = false;
 			radiusLabel.setTextFormat(textFormat);
 			advancedControls.addChild(radiusLabel);
+			*/
 			attractionRadiusMinSlider = new ScrollBar("Attraction Min", 100, 10, 25, 500, 250, attractionRadiusMinCallback, 0x666666);
 			advancedControls.addChild(attractionRadiusMinSlider);
 			attractionRadiusMaxSlider = new ScrollBar("Attraction Max", 300, 10, 25, 500, 250, attractionRadiusMaxCallback, 0x666666);
@@ -200,6 +256,7 @@
 			
 			
 			// ROTATION SECTION
+			/*
 			rotationLabel = new TextField();
 			rotationLabel.text = "ROTATION:";
 			rotationLabel.x = 5;
@@ -208,6 +265,7 @@
 			rotationLabel.selectable = false;
 			rotationLabel.setTextFormat(textFormat);
 			advancedControls.addChild(rotationLabel);
+			*/
 			
 			torqueSlider = new ScrollBar("Person Torque", 100, 40, -2, 2, -0.1, torqueCallback, 0x666666);
 			advancedControls.addChild(torqueSlider);
@@ -218,6 +276,7 @@
 			
 			
 			// SPEED SECTION
+			/*
 			speedLabel = new TextField();
 			speedLabel.text = "SPEED:";
 			speedLabel.x = 5;
@@ -226,6 +285,7 @@
 			speedLabel.selectable = false;
 			speedLabel.setTextFormat(textFormat);
 			advancedControls.addChild(speedLabel);
+			*/
 			massSlider = new ScrollBar("Mass", 100, 70, 0, 5, 1, massCallback, 0x666666);
 			advancedControls.addChild(massSlider);
 			springSpeedSlider = new ScrollBar("Spring Speed", 300, 70, 0.1, 10, 2, springSpeedCallback, 0x666666);
@@ -234,45 +294,26 @@
 			advancedControls.addChild(atomicSpeedSlider);
 			
 		
-			// PARTICLE SECTION
-			particlesLabel = new TextField();
-			particlesLabel.text = "PARTICLES:";
-			particlesLabel.x = 5;
-			particlesLabel.y = 100;
-			particlesLabel.autoSize = "left";
-			particlesLabel.selectable = false;
-			particlesLabel.setTextFormat(textFormat);
-			advancedControls.addChild(particlesLabel);
-			particleCountSlider = new ScrollBar("Particle Count", 100, 100, 0, 100, 20, particleCountCallback, 0x666666);
-			advancedControls.addChild(particleCountSlider);
-			
-			//textFormat = new TextFormat("Arial", 10, 0x333333);
-			particleCount = new TextField();
-			particleCount.text = "Total: "+ String(particleSystem.particles.size());
-			particleCount.x = 300;
-			particleCount.y = 100;
-			particleCount.autoSize = "left";
-			particleCount.selectable = false;
-			particleCount.setTextFormat(new TextFormat("Arial", 12, 0x333333));
-			advancedControls.addChild(particleCount);
 			
 			
 			// SPARKS SECTION
+			/*
 			sparksLabel = new TextField();
 			sparksLabel.text = "SPARKS:";
 			sparksLabel.x = 5;
-			sparksLabel.y = 130;
+			sparksLabel.y = 100;
 			sparksLabel.autoSize = "left";
 			sparksLabel.selectable = false;
 			sparksLabel.setTextFormat(textFormat);
 			advancedControls.addChild(sparksLabel);
-			sparksSpeedSlider = new ScrollBar("Speed", 100, 130, 0.1, 20, 2, sparksSpeedCallback, 0x666666);
+			*/
+			sparksSpeedSlider = new ScrollBar("Speed", 100, 100, 0.1, 20, 2, sparksSpeedCallback, 0x666666);
 			advancedControls.addChild(sparksSpeedSlider);
-			sparksLifeMinSlider = new ScrollBar("Life Min", 300, 130, 0.1, 5, 2, sparksLifeMinCallback, 0x666666);
+			sparksLifeMinSlider = new ScrollBar("Life Min", 300, 100, 0.1, 5, 2, sparksLifeMinCallback, 0x666666);
 			advancedControls.addChild(sparksLifeMinSlider);
-			sparksLifeMaxSlider = new ScrollBar("Life Max", 500, 130, 0.1, 5, 2, sparksLifeMaxCallback, 0x666666);
+			sparksLifeMaxSlider = new ScrollBar("Life Max", 500, 100, 0.1, 5, 2, sparksLifeMaxCallback, 0x666666);
 			advancedControls.addChild(sparksLifeMaxSlider);
-			sparksEmitterDelay = new ScrollBar("Emitter Delay", 700, 130, 1, 1000, 50, sparksEmitterDelayCallback, 0x666666);
+			sparksEmitterDelay = new ScrollBar("Emitter Delay", 700, 100, 1, 1000, 50, sparksEmitterDelayCallback, 0x666666);
 			advancedControls.addChild(sparksEmitterDelay);
 			
 			this.addEventListener(MouseEvent.MOUSE_UP, mouseReleased);
@@ -343,6 +384,9 @@
 			sparksLifeMinSlider.setValue(sparkLifeMin);
 			sparksLifeMaxSlider.setValue(sparkLifeMax);
 			sparksEmitterDelay.setValue(emitterDelay);
+			
+			var hsv:Array = RGBtoHSV(red, green, blue);
+			hueSlider.setValue(hsv[0]);
 		}
 		
 		public function getMacro(id:Number):Macro{
@@ -399,6 +443,24 @@
 			particleSystem.setVisualMode(macro.visualMode);
 			gravityMode.activate(macro.gravityMode);
 			particleSystem.setGravityMode(macro.gravityMode);
+			atomicSpeedSlider.setValue(macro.atomicSpeed);
+			particleSystem.setAtomicSpeed(macro.atomicSpeed);
+			springSpeedSlider.setValue(macro.springSpeed);
+			particleSystem.setSpringSpeed(macro.springSpeed);
+			particleCountSlider.setValue(macro.particleCount);
+			particleSystem.setParticleCount(macro.particleCount);
+			sparksSpeedSlider.setValue(macro.sparkSpeed);
+			particleSystem.setSparkSpeed(macro.sparkSpeed);
+			sparksLifeMinSlider.setValue(macro.sparkLifeMin);
+			particleSystem.setSparkLifeMin(macro.sparkLifeMin);
+			sparksLifeMaxSlider.setValue(macro.sparkLifeMax);
+			particleSystem.setSparkLifeMax(macro.sparkLifeMax);
+			sparksEmitterDelay.setValue(macro.emitterDelay);
+			particleSystem.setSparkEmitterDelay(macro.emitterDelay);
+			
+			var hsv:Array = RGBtoHSV(macro.red, macro.green, macro.blue);
+			hueSlider.setValue(hsv[0]);
+			
 		}
 		
 		
@@ -433,6 +495,10 @@
 		
 		public function blueCallback(val:Number):void{
 			particleSystem.setBlue(val);
+		}
+		
+		public function hueCallback(val:Number):void{
+			particleSystem.setHue(val);
 		}
 		
 		public function particleMinSizeCallback(val:Number):void{
@@ -489,6 +555,42 @@
 		
 		public function sparksEmitterDelayCallback(val:Number):void{
 			particleSystem.setSparkEmitterDelay(val);
+		}
+		
+		
+		// color utility
+		
+		private function RGBtoHSV(r:uint, g:uint, b:uint):Array{
+			var max:uint = Math.max(r, g, b);
+			var min:uint = Math.min(r, g, b);
+			var hue:Number = 0;
+			var saturation:Number = 0;
+			var value:Number = 0;
+	
+			var hsv:Array = [];
+	
+			 //get Hue
+			if(max == min){
+				hue = 0;
+			}else if(max == r){
+				hue = (60 * (g-b) / (max-min) + 360) % 360;
+			}else if(max == g){
+				hue = (60 * (b-r) / (max-min) + 120);
+			}else if(max == b){
+				hue = (60 * (r-g) / (max-min) + 240);
+			}
+	
+			//get Value
+			value = max;
+			//get Saturation
+			if(max == 0){
+				saturation = 0;
+			}else{
+				saturation = (max - min) / max;
+			}
+	
+			hsv = [Math.round(hue), Math.round(saturation * 100), Math.round(value / 255 * 100)];
+			return hsv;
 		}
 		
 	}
