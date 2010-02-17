@@ -501,7 +501,9 @@
 		
 		public function keyDownListener(e:KeyboardEvent):void{
 			if(e.keyCode == 187){	// create new person
-				createPerson(Math.random()*stage.stageWidth, Math.random()*stage.stageHeight);
+				var xpos:Number = Math.random()*stage.stageWidth;
+				var ypos:Number = (Math.random() * (stage.stageHeight - 150)) + 150;
+				createPerson(xpos, ypos);
 			} else if(e.keyCode == 189){ 
 				var values:Array = people.getValues();
 				if(values.length > 0){
