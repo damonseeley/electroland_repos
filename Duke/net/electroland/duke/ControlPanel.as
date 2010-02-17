@@ -109,6 +109,7 @@
 			presetMode.addButton(3, "3", 100, 0, false);
 			presetMode.addButton(4, "4", 150, 0, false);
 			presetMode.addButton(5, "5", 200, 0, false);
+			presetMode.addButton(6, "6", 250, 0, false);
 			basicControls.addChild(presetMode);
 			
 			// MOTION SECTION
