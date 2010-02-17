@@ -121,8 +121,10 @@
 				var xPos:Number = Math.random()*stage.stageWidth;
 				var yPos:Number = Math.random()*stage.stageHeight;
 				if(personCount == 1){
-					xPos = stage.stageWidth / 2;	// center person if only using one
-					yPos = stage.stageHeight / 2;
+					//xPos = stage.stageWidth / 2;	// center person if only using one
+					//yPos = stage.stageHeight / 2;
+					xPos = 512;
+					yPos = 384;
 				}
 				var radius:Number = 25;
 				var mass:Number = 1;
