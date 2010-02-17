@@ -38,12 +38,28 @@
 			//xmlLoader.addEventListener(Event.COMPLETE, parseXML);
 			//xmlLoader.load(new URLRequest("macros.xml")); 
 			
+			//var macroOne = new Macro(1);
+			//macroOne.setValues(100, 300, 50, 1, -0.25, 200, 150, 0, 2, 25, -1, 1, 5, 4, 2, 1, 60, 3, 2, 5, 50);
+			//macros.put(1, macroOne);
+			
 			var macroOne = new Macro(1);
-			macroOne.setValues(100, 300, 50, 1, -0.25, 200, 150, 0, 2, 25, -1, 1, 5, 4, 2, 1, 60, 3, 2, 5, 50);
-			macros.put(1, macroOne);
 			var macroTwo = new Macro(2);
-			macroTwo.setValues(100, 300, 50, 1, -0.25, 200, 150, 0, 2, 25, -1, 2, 3, 1, 2, 1, 60, 3, 2, 5, 50);
+			var macroThree = new Macro(3);
+			var macroFour = new Macro(4);
+			var macroFive = new Macro(5);
+			var macroSix = new Macro(6);
+			macroOne.setValues(100, 300, 50, 1, -0.25, 200, 150, 0, 2, 25, -1, 1, 5, 4, 2.08, 1, 80, 3, 2, 5, 50);
+			macroTwo.setValues(86.75, 300, 27, 0.6, 0.879, 200, 150, 0, 2, 14.72, -1, 2, 1, 0, 2, 1, 70, 3, 2, 5, 50);
+			macroThree.setValues(181.75, 300, 50, 1.85, 0.2, 0, 255, 117, 2, 19.13, -1, 2.6, 4, 3, 2.08, 3.961, 75, 3, 2, 4.755, 50);
+			macroFour.setValues(181.75, 300, 50, 1.85, 0.2, 0, 255, 117, 2, 15.7, -1, 2.6, 3, 5, 2.08, 3.367, 75, 8.6569, 1.962, 2.158, 10.99);
+			macroFive.setValues(181.75, 300, 50, 1.95, 0.2, 0, 255, 117, 2, 15.7, -1, 2.6, 6, 3, 2.08, 2.377, 88, 8.6569, 1.325, 1.521, 50.95);
+			macroSix.setValues(181.75, 305.25, 40, 0.35, -0.196, 0, 87, 255, 2, 8.84, -14.2, 14, 2, 4, 2.971, 1, 100, 3, 2, 3.138, 50);
+			macros.put(1, macroOne);
 			macros.put(2, macroTwo);
+			macros.put(3, macroThree);
+			macros.put(4, macroFour);
+			macros.put(5, macroFive);
+			macros.put(6, macroSix);
 			
 			applyMacro(1);
 		}
