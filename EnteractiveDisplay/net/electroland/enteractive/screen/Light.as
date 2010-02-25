@@ -1,7 +1,7 @@
 ﻿package net.electroland.enteractive.screen {
 	
 	import flash.display.MovieClip;
-	import flash.geom.ColorTransform;
+	//import flash.geom.ColorTransform;
 	
 	/*
 	LIGHT.as
@@ -36,6 +36,8 @@
 			// receive new lighting value and update appearance
 			// TODO: switch this to use alpha instead
 			this.lightValue = lightValue;
+			this.alpha = lightValue / 255.0;
+			/*
 			var redHex:String = lightValue.toString(16);
 			if(redHex.length < 2){
 				redHex = "0"+redHex;
@@ -43,6 +45,7 @@
 			var ct:ColorTransform = this.transform.colorTransform;
 			ct.color = uint("0x"+redHex+"0000");
 			this.transform.colorTransform = ct;
+			*/
 		}
 		
 	}
