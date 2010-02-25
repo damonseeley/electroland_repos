@@ -94,13 +94,19 @@
 			//var mm:WireframeMaterial = new WireframeMaterial(0xff0000, 0.5);
 			mm.doubleSided = true;
 			lightPlane = new Plane(mm, horizontalCount * (lightWidth + horizontalSpacing), verticalCount * (lightHeight + verticalSpacing));
-			//lightPlane.x = -30;
-			//lightPlane.y = 33;
+			lightPlane.x = -21;
+			lightPlane.y = 19;
 			scene.addChild(lightPlane);
 			
 			// SET INITIAL VALUES FOR CAMERA/LIGHTPLANE POSITIONS
-			camera.zoom = 11;
+			camera.zoom = 13;
 			camera.focus = 100;								// sets scaling of MC's to natural state
+			camera.x = 238;
+			camera.y = -547;
+			camera.z = -957;
+			camera.rotationX = -29;
+			camera.rotationY = -14;
+			camera.rotationZ = 0;
 			//camera.orbit(62, 83, true, lightPlane);
 		}
 		
@@ -146,7 +152,7 @@
 			} else if(e.keyCode == 80){	// p
 				// TODO: print out values for camera and lightPlane
 				trace("lightPlane.x: "+ lightPlane.x +", lightPlane.y: "+ lightPlane.y);
-				trace("camera zoom: "+ camera.zoom +", pitch: "+ camera.rotationY + ", yaw: "+ camera.rotationX);
+				trace("camera zoom: "+ camera.zoom +", x: "+ camera.x + ", y: "+ camera.y + ", z: "+ camera.z + ", rotX: "+ camera.rotationX +", rotY: "+ camera.rotationY + ", rotZ: "+ camera.rotationZ);
 			}
 		}
 
