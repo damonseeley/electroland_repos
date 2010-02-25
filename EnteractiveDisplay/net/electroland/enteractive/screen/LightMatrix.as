@@ -3,17 +3,13 @@
 	import flash.display.Sprite;
 	import flash.display.MovieClip;
 	import flash.events.Event;
-	import flash.events.MouseEvent;
 	import flash.events.KeyboardEvent;
 	import com.ericfeminella.collections.HashMap;
 	import org.papervision3d.view.Viewport3D;
 	import org.papervision3d.cameras.*;
 	import org.papervision3d.scenes.Scene3D;
 	import org.papervision3d.render.BasicRenderEngine;
-	//import org.papervision3d.materials.ColorMaterial;
 	import org.papervision3d.materials.MovieMaterial;
-	//import org.papervision3d.materials.MovieAssetMaterial;
-	//import org.papervision3d.materials.WireframeMaterial;
 	import org.papervision3d.objects.primitives.Plane;
 	
 	/*
@@ -43,7 +39,7 @@
 		public var scene:Scene3D;
 		public var camera:Camera3D;
 		public var lightPlane:Plane;
-		public var dragging:Boolean = false;
+		public var translateMode:Number = 0;	// 0 = move camera, 1 = rotate camera, 2 = adjust FOV
 		
 		public function LightMatrix(){
 			lights = new HashMap();
@@ -64,7 +60,6 @@
             renderer = new BasicRenderEngine();				// render image draws everything
             scene = new Scene3D();							// default scene object
             camera = new Camera3D(53.1);					// default camera object
-			//camera = new DebugCamera3D(viewport, 53.1);
         }
 		
 		private function init3d():void {					
@@ -90,12 +85,8 @@
 			
 			// create a large plane to hold all light movieclips in a single parent MC
 			var mm:MovieMaterial = new MovieMaterial(lightsMC, true, true, true);
-			//var mm:ColorMaterial = new ColorMaterial(0xff0000, 0.5);
-			//var mm:WireframeMaterial = new WireframeMaterial(0xff0000, 0.5);
 			mm.doubleSided = true;
 			lightPlane = new Plane(mm, horizontalCount * (lightWidth + horizontalSpacing), verticalCount * (lightHeight + verticalSpacing));
-			lightPlane.x = -21;
-			lightPlane.y = 19;
 			scene.addChild(lightPlane);
 			
 			// SET INITIAL VALUES FOR CAMERA/LIGHTPLANE POSITIONS
@@ -106,53 +97,81 @@
 			camera.z = -957;
 			camera.rotationX = -29;
 			camera.rotationY = -14;
-			camera.rotationZ = 0;
+			//camera.rotationZ = 0;
 			//camera.orbit(62, 83, true, lightPlane);
 		}
 		
 		private function initEvents():void {
 			addEventListener(Event.ENTER_FRAME, frameEvent);
-			stage.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownEvent);
-			stage.addEventListener(MouseEvent.MOUSE_UP, mouseUpEvent);			
-			stage.addEventListener(MouseEvent.MOUSE_WHEEL, mouseWheelEvent);
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownEvent);
 		}
 		
 		protected function frameEvent(e:Event):void {
-			if(dragging){
-				//lightPlane.rotationX = mouseY;
-				//lightPlane.rotationY = mouseX;
-				//camera.orbit(mouseY, mouseX, true, lightPlane);
-				camera.orbit(mouseY, mouseX);
-			}
 			renderer.renderScene(scene, camera, viewport);
 		}
 		
-		public function mouseDownEvent(e:MouseEvent):void{
-			dragging = true;
-		}
-		
-		public function mouseUpEvent(e:MouseEvent):void{
-			dragging = false;
-		}
-		
-		public function mouseWheelEvent(e:MouseEvent):void{
-			camera.zoom += e.delta * 0.1;
-		}
-		
 		public function keyDownEvent(e:KeyboardEvent):void{
-			if(e.keyCode == 37){		// left
-				lightPlane.x -= 1;
-			} else if(e.keyCode == 38){	// up
-				lightPlane.y += 1;
-			} else if(e.keyCode == 39){	// right
-				lightPlane.x += 1;
-			} else if(e.keyCode == 40){	// down
-				lightPlane.y -= 1;
+			if(e.keyCode == 37){		// left arrow
+				if(translateMode == 0){
+					camera.x--;
+				} else if(translateMode == 1){
+					camera.rotationY--;
+				} else if(translateMode == 2){
+					
+				}
+			} else if(e.keyCode == 38){	// up arrow
+				if(translateMode == 0){
+					camera.y++;
+				} else if(translateMode == 1){
+					camera.rotationX--;
+				} else if(translateMode == 2){
+					camera.fov++;
+				}
+			} else if(e.keyCode == 39){	// right arrow
+				if(translateMode == 0){
+					camera.x++;
+				} else if(translateMode == 1){
+					camera.rotationY++;
+				} else if(translateMode == 2){
+					
+				}
+			} else if(e.keyCode == 40){	// down arrow
+				if(translateMode == 0){
+					camera.y--;
+				} else if(translateMode == 1){
+					camera.rotationX++;
+				} else if(translateMode == 2){
+					camera.fov--;
+				}
+			} else if(e.keyCode == 49){ // 1, a.k.a. translate mode
+				translateMode = 0;
+			} else if(e.keyCode == 50){ // 2, a.k.a. rotate mode
+				translateMode = 1;
+			} else if(e.keyCode == 51){ // 3, a.k.a. FOV mode
+				translateMode = 2;
 			} else if(e.keyCode == 80){	// p
-				// TODO: print out values for camera and lightPlane
-				trace("lightPlane.x: "+ lightPlane.x +", lightPlane.y: "+ lightPlane.y);
-				trace("camera zoom: "+ camera.zoom +", x: "+ camera.x + ", y: "+ camera.y + ", z: "+ camera.z + ", rotX: "+ camera.rotationX +", rotY: "+ camera.rotationY + ", rotZ: "+ camera.rotationZ);
+				// print out values for camera and lightPlane
+				trace("camera zoom: "+ camera.zoom +", x: "+ camera.x + ", y: "+ camera.y + ", z: "+ camera.z);
+				trace("camera rotX: "+ camera.rotationX +", rotY: "+ camera.rotationY + ", rotZ: "+ camera.rotationZ);
+				trace("camera FOV: "+ camera.fov);
+			} else if(e.keyCode == 187){ // plus
+				if(translateMode == 0){
+					camera.z++;
+				} else if(translateMode == 1){
+					camera.rotationZ++;
+				} else if(translateMode == 2){
+					
+				}
+			} else if(e.keyCode == 189){ // minus
+				if(translateMode == 0){
+					camera.z--;
+				} else if(translateMode == 1){
+					camera.rotationZ--;
+				} else if(translateMode == 2){
+					
+				}
+			} else {
+				trace(e.keyCode);
 			}
 		}
 
