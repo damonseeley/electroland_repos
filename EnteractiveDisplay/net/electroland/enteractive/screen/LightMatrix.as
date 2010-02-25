@@ -9,7 +9,10 @@
 	import org.papervision3d.cameras.*;
 	import org.papervision3d.scenes.Scene3D;
 	import org.papervision3d.render.BasicRenderEngine;
+	import org.papervision3d.materials.ColorMaterial;
 	import org.papervision3d.materials.MovieMaterial;
+	import org.papervision3d.materials.MovieAssetMaterial;
+	import org.papervision3d.materials.WireframeMaterial;
 	import org.papervision3d.objects.primitives.Plane;
 	
 	/*
@@ -86,7 +89,9 @@
 			}
 			
 			// create a large plane to hold all light movieclips in a single parent MC
-			var mm:MovieMaterial = new MovieMaterial(lightsMC, true, true);
+			var mm:MovieMaterial = new MovieMaterial(lightsMC, true, true, true);
+			//var mm:ColorMaterial = new ColorMaterial(0xff0000, 0.5);
+			//var mm:WireframeMaterial = new WireframeMaterial(0xff0000, 0.5);
 			mm.doubleSided = true;
 			lightPlane = new Plane(mm, horizontalCount * (lightWidth + horizontalSpacing), verticalCount * (lightHeight + verticalSpacing));
 			scene.addChild(lightPlane);
@@ -96,6 +101,7 @@
 			addEventListener(Event.ENTER_FRAME, frameEvent);
 			stage.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownEvent);
 			stage.addEventListener(MouseEvent.MOUSE_UP, mouseUpEvent);			
+			stage.addEventListener(MouseEvent.MOUSE_WHEEL, mouseWheelEvent);
 		}
 		
 		protected function frameEvent(e:Event):void {
@@ -112,6 +118,10 @@
 		
 		public function mouseUpEvent(e:MouseEvent):void{
 			dragging = false;
+		}
+		
+		public function mouseWheelEvent(e:MouseEvent):void{
+			camera.zoom += e.delta * 0.1;
 		}
 
 		
