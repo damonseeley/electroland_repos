@@ -60,8 +60,11 @@
 		}
 		
 		public function weatherLoaded(e:WeatherResultEvent):void{
-			sunrise = e.data.current.astronomy.sunrise;
-			sunset = e.data.current.astronomy.sunset;
+			// KLUDGE: for some reason the astraweb-api is subtracting 7 hours from the sunrise/sunset time.
+			sunrise = new Date(e.data.current.astronomy.sunrise.time + (7*60*60*1000));
+			sunset = new Date(e.data.current.astronomy.sunset.time + (7*60*60*1000));
+			//sunrise = e.data.current.astronomy.sunrise;
+			//sunset = e.data.current.astronomy.sunset;
 			dayLength = (sunset.time - sunrise.time) / 1000;
 			secsPerImage = dayLength / (sunsetImage - sunriseImage);
 			//secsPerImage = 2;	// TESTING ONLY
