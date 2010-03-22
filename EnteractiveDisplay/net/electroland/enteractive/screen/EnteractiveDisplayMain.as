@@ -25,7 +25,6 @@
 			addChild(imageSwitcher);
 			lightMatrix = new LightMatrix();
 			addChild(lightMatrix);
-			lightMatrix.init();
 			xmlServer = new XMLServer(lightMatrix);
 		}
 		
