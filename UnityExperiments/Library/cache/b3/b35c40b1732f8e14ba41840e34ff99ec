@@ -41,7 +41,7 @@ function OnGUI (){
 			
 			GUILayout.Label("Connection status: Client!");
 			GUILayout.Label("Ping to server: "+Network.GetAveragePing(  Network.connections[0] ) );
-			Camera.main.transform.position = Vector3(offset, 2, -16);	// move camera just right of center
+			Camera.main.transform.position = Vector3(offset, 2, -40);	// move camera just right of center
 			GUILayout.Label("Aspect Ratio: "+Camera.main.aspect);
 			GUILayout.Label("Orthographic Size: "+Camera.main.orthographicSize);			
 			
@@ -49,7 +49,7 @@ function OnGUI (){
 			
 			GUILayout.Label("Connection status: Server!");
 			GUILayout.Label("Connections: "+Network.connections.length);
-			Camera.main.transform.position = Vector3(-offset, 2, -16);	// move camera just left of center
+			Camera.main.transform.position = Vector3(-offset, 2, -40);	// move camera just left of center
 			GUILayout.Label("Aspect Ratio: "+Camera.main.aspect);	
 			GUILayout.Label("Orthographic Size: "+Camera.main.orthographicSize);			
 			if(Network.connections.length>=1){
