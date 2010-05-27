@@ -57,7 +57,7 @@ function Update () {
 				//Too bad a server can't send an rpc to itself using "RPCMode.Server"!...bugged :[
 				SendMovementInput(HInput, VInput);
 			}else if(Network.isClient){
-				//SendMovementInput(HInput, VInput); //Use this (and line 64) for simple "prediction"
+				SendMovementInput(HInput, VInput); //Use this (and line 64) for simple "prediction"
 				networkView.RPC("SendMovementInput", RPCMode.Server, HInput, VInput);
 			}
 			
@@ -65,7 +65,8 @@ function Update () {
 	}
 	
 	//Server movement code
-	if(Network.isServer){//Also enable this on the client itself: "|| Network.player==owner){|"
+	//if(Network.isServer){//Also enable this on the client itself: "|| Network.player==owner){|"
+	if(Network.isServer || Network.player==owner){
 		//Actually move the player using his/her input
 		var moveDirection : Vector3 = new Vector3(serverCurrentHInput, 0, serverCurrentVInput);
 		var speed : float = 5;
