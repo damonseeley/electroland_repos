@@ -1,0 +1,20 @@
+# UNITY PROPERTIES FILE
+
+# if true, connects to server app for network sync of game objects.
+# if false, creates server to control game objects and get sensor input. 
+client=false
+
+# if client, uses ip/port for gameobject sync. if server, uses ip/port to connect to sensor server.
+unityIP=127.0.0.1
+unityPort=25001
+sensorIP=127.0.0.1
+sensorPort=7474
+
+# camera location and orthographic size (vertical size in world units)
+cameraSize=5
+cameraX=0
+cameraY=3
+cameraZ=-10
+cameraRoll=0
+cameraPitch=10
+cameraYaw=0
