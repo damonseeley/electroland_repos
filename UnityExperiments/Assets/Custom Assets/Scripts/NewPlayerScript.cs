@@ -9,6 +9,11 @@ public class NewPlayerScript : MonoBehaviour {
 	void Start () {
 		GameObject conductor = GameObject.Find("Conductor");
 		client = System.Convert.ToBoolean((conductor.GetComponent("SystemProperties") as SystemProperties).props.getProperty("client"));
+		if(client){
+			CharacterController cc = GetComponent("CharacterController") as CharacterController;
+			Destroy(cc);
+			Destroy(GetComponent("SampleMoveScript"));
+		}
 	}
 	
 	void OnSerializeNetworkView (BitStream stream, NetworkMessageInfo info) {

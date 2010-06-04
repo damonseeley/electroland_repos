@@ -11,6 +11,7 @@ sensorIP=127.0.0.1
 sensorPort=7474
 
 # camera location and orthographic size (vertical size in world units)
+cameraNumber=0
 cameraSize=5
 cameraX=0
 cameraY=3
