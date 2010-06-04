@@ -10,11 +10,19 @@ public class SystemProperties : MonoBehaviour {
 	void Start () {
 		props = new Properties(filename);
 		Camera.main.orthographicSize = System.Convert.ToSingle(props.getProperty("cameraSize"));
-		//float offset = Camera.main.aspect * Camera.main.orthographicSize;
+		float offset = Camera.main.aspect * Camera.main.orthographicSize;
 		float cameraX = System.Convert.ToSingle(props.getProperty("cameraX"));
 		float cameraY = System.Convert.ToSingle(props.getProperty("cameraY"));
 		float cameraZ = System.Convert.ToSingle(props.getProperty("cameraZ"));
-		Camera.main.transform.position = new Vector3(cameraX, cameraY, cameraZ);
+		int cameraNumber = System.Convert.ToInt32(props.getProperty("cameraNumber"));
+		//Camera.main.transform.position = new Vector3(cameraX, cameraY, cameraZ);
+		if(cameraNumber == 0){				// server camera
+			Camera.main.transform.position = new Vector3(cameraX, cameraY, cameraZ);
+		} else if(cameraNumber == 1){	// #1 client camera
+			Camera.main.transform.position = new Vector3(0 - offset, cameraY, cameraZ);
+		} else if(cameraNumber == 2){	// #2 client camera
+			Camera.main.transform.position = new Vector3(offset, cameraY, cameraZ);
+		}
 		
 		float cameraRoll = System.Convert.ToSingle(props.getProperty("cameraRoll"));
 		float cameraPitch = System.Convert.ToSingle(props.getProperty("cameraPitch"));

@@ -20,6 +20,10 @@ function Update () {
 	// Update the speed in the Animation script
 	SendMessage("SetCurrentSpeed", newSpeed, SendMessageOptions.DontRequireReceiver);
 	SendMessage("SetCurrentLean", Input.GetAxis("Horizontal"), SendMessageOptions.DontRequireReceiver);
+	
+	// update the speed and lean across client instances not running this control script
+	networkView.RPC("SetPlayerSpeed", RPCMode.All, newSpeed);
+	networkView.RPC("SetPlayerLean", RPCMode.All, Input.GetAxis("Horizontal"));
 }
 
 @script RequireComponent (CharacterController)

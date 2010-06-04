@@ -27,6 +27,18 @@ function SetCurrentLean ( newSpeed : float)
 	currentLean = newSpeed;
 }
 
+@RPC
+function SetPlayerSpeed ( newSpeed : float )
+{
+	currentSpeed = newSpeed;
+}
+
+@RPC
+function SetPlayerLean ( newLean : float )
+{
+	currentLean = newLean;
+}
+
 
 function Start ()
 {
