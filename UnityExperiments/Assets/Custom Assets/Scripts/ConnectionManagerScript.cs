@@ -33,7 +33,7 @@ public class ConnectionManagerScript : MonoBehaviour {
 				Network.Instantiate(prefabCube, new Vector3(-1,3.5f,-2), transform.rotation, 0);
 				Network.Instantiate(prefabBall, new Vector3(-3,2.5f,2), transform.rotation, 0);
 				// this object is controlled by the user
-				Network.Instantiate(playerPrefab, new Vector3(0,1.5f,0), transform.rotation, 0);
+				//Network.Instantiate(playerPrefab, new Vector3(0,1.5f,0), transform.rotation, 0);
 			}
 		}
 	}
@@ -55,6 +55,8 @@ public class ConnectionManagerScript : MonoBehaviour {
 	//Server functions called by Unity
 	void OnPlayerConnected(NetworkPlayer player) {
 		Debug.Log("Player connected from: " + player.ipAddress +":" + player.port);
+		// this object is controlled by the user
+		Network.Instantiate(playerPrefab, new Vector3(0,1.5f,0), transform.rotation, 0);
 	}
 
 	void OnServerInitialized() {
