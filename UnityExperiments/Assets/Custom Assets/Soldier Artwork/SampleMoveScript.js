@@ -24,6 +24,8 @@ function Update () {
 	// update the speed and lean across client instances not running this control script
 	networkView.RPC("SetPlayerSpeed", RPCMode.All, newSpeed);
 	networkView.RPC("SetPlayerLean", RPCMode.All, Input.GetAxis("Horizontal"));
+	//networkView.RPC("setPlayerPosition", RPCMode.All, transform.position);
+	//networkView.RPC("setPlayerRotation", RPCMode.All, transform.rotation);
 }
 
 @script RequireComponent (CharacterController)
