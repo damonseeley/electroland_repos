@@ -20,6 +20,9 @@ public class ConnectionManagerAnimator : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
+		// lock framerate
+		Application.targetFrameRate = 60;
+		
 		if (Network.peerType == NetworkPeerType.Disconnected){
 			Network.useNat = false;
 			client = System.Convert.ToBoolean((GetComponent("SystemProperties") as SystemProperties).props.getProperty("client"));
