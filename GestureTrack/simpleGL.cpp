@@ -771,6 +771,7 @@ void render(int view)
 
 
 	}
+	// hello svn!
 
 	rawVoxel->calcVoxel(cloudConstructor->pointCnt, cloudConstructor->getGPUPoints(), true, false);
 	cloudConstructor->freeGPUPoints();
