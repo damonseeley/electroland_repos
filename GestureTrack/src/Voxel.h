@@ -11,7 +11,6 @@ using namespace cinder;
 class Voxel {
 public:
 	static GLuint displayList;
-
 	Vec3f minDim;
 	Vec3f maxDim;
 	Vec3i divisions;
