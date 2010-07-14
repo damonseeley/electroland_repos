@@ -43,6 +43,7 @@ __global__ void gpu_calcVoxel_kernel(int pointCnt, float* pixels, float minX, fl
 	float py = validPoint ? pixels[i++] : -1;
 	float pz = validPoint ? pixels[i] : -1;
 	
+	validPoint = validPoint && (! ((px ==  0) && (py== 0) && (pz == 0))) ; // not valid if 0,0,0
 #ifdef EMULATE	
 		printf("    pt (%f,%f, %f)\n", px,py,pz);
 #endif
@@ -250,6 +251,35 @@ __global__ void gpu_incIfOverThresh_kernel(int gridSize, float *d_this, float* d
 };
 
 
+
+__global__ void gpu_scaleDownFrom_kernel(int gridSize, int dx, int dy, int dz, float *d_this, float *d_that) {
+	int i = (blockIdx.x * blockDim.x) + threadIdx.x;
+	
+		int z = i / (dx * dy);
+		int r = i % (dx * dy);
+		int y = r / (dx);
+		int x = r % (dx);
+
+
+	if(((i < gridSize) && (x < dx -1)) && ((y < dy -1) && (z < dz - 1))) {
+
+		x*=2;
+		y*=2;
+		z*=2;
+
+		d_this[i] += d_that[x	+ (y * (2 * dx))		+ (z * (4 * dx * dy))];
+		d_this[i] += d_that[x+1 + (y * (2 * dx))		+ (z * (4 * dx * dy))];
+		d_this[i] += d_that[x	+ ((y+1) * (2 * dx))	+ (z * (4 * dx * dy))];
+		d_this[i] += d_that[x+1 + ((y+1) * (2 * dx))	+ (z * (4 * dx * dy))];
+		d_this[i] += d_that[x	+ (y * (2 * dx))		+ ((z+1) * (4 * dx * dy))];
+		d_this[i] += d_that[x+1 + (y * (2 * dx))		+ ((z+1) * (4 * dx * dy))];
+		d_this[i] += d_that[x	+ ((y+1) * (2 * dx))	+ ((z+1) * (4 * dx * dy))];
+		d_this[i] += d_that[x+1 + ((y+1) * (2 * dx))	+ ((z+1) * (4 * dx * dy))];
+		d_this[i] /= 8.0f;
+	}
+};
+
+
 extern "C" void gpu_incIfOverThresh(int gridSize, float *d_this, float* d_that, float thresh){
 	int theadsPerBlock = 256;
 	int blocks = (int) ceilf(gridSize/(float) theadsPerBlock);
@@ -258,6 +288,13 @@ extern "C" void gpu_incIfOverThresh(int gridSize, float *d_this, float* d_that, 
 };
 
 
+
+extern "C" void gpu_scaleDownFrom(int gridSize, int dx, int dy, int dz, float *d_this, float *d_that) {
+	int theadsPerBlock = 256;
+	int blocks = (int) ceilf(gridSize/(float) theadsPerBlock);
+	gpu_scaleDownFrom_kernel <<<blocks,theadsPerBlock>>> ( gridSize, dx, dy, dz, d_this, d_that);
+
+}
 
 
 #endif

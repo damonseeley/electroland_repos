@@ -47,7 +47,7 @@ __global__ void gpu_calcPointCloud_kernel(int camCnt, int imgWidth, int imgHeigh
 	
 	//	z = (z < 1000) ? -10000 : z;
 
-	
+	isValidIndex = (z != 0) && isValidIndex;
 
 	
 	double* paramPt = &params[t * CAM_PARAM_CNT];
@@ -89,9 +89,9 @@ double *m = &transforms[t*12];
 double tx =  m[0] * x	+  m[1] * y	+ m[2] * z + m[9];	
 double ty =  m[3] * x	+  m[4] * y	+ m[5] * z + m[10];	
 double tz =  m[6] * x	+  m[7] * y	+ m[8] * z + m[11];
-results[pixelIndex++]	=  (float) tx ;
-results[pixelIndex++]	=  (float) ty ; 
-results[pixelIndex]		=  (float) tz ;
+results[pixelIndex++]	=  isValidIndex ? (float) tx : 0.0f ;
+results[pixelIndex++]	=  isValidIndex ? (float) ty : 0.0f ; 
+results[pixelIndex]		=  isValidIndex ? (float) tz : 0.0f ;
 
 		
 	}

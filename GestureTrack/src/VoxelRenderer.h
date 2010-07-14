@@ -16,6 +16,9 @@
 
 class VoxelRenderer {
 public:
+	int to;
+	int from;
+
 	float cubePoints[4*6*3];
 	float colorVals[4*6*3];
 
@@ -31,6 +34,6 @@ public:
 
 	void setVoxel(Voxel *voxel);
 	void draw(DWORD curTime, float dt, float thresh);
-	
+	void setFromTo(float from, float to);
 };
 #endif

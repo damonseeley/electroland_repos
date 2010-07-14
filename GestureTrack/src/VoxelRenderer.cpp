@@ -1,15 +1,19 @@
 #include "VoxelRenderer.h"
+#include "math.h"
+
 
 
 
 VoxelRenderer::VoxelRenderer(Voxel *voxel) {
 	setVoxel(voxel);
 	constructDisplayList();
+	from = 0;
+	to = voxel->divisions.z;
 }
 
 void VoxelRenderer::constructDisplayList() {
 	Vec3f sides = (voxel->maxDim-voxel->minDim);
-	sides /= voxel->divisions * 2.0;
+	sides /= voxel->divisions * 2.0f;
 
 	int i = 0;
 	//top
@@ -63,44 +67,53 @@ void VoxelRenderer::setBackColor (Vec3f f, Vec3f back, Vec3f l, Vec3f r, Vec3f t
 }
 
 void VoxelRenderer::constructColorList(int slice) {
-	float p = slice / voxel->divisions.z;
-	Vec3f f = colors[FRONT][FRONT] * p + colors[BACK][FRONT] * (1-p);
-	Vec3f bk = colors[FRONT][BACK] * p + colors[BACK][BACK] * (1-p);
-	Vec3f l = colors[FRONT][LEFT] * p + colors[BACK][LEFT] * (1-p);
-	Vec3f r = colors[FRONT][RIGHT] * p + colors[BACK][RIGHT] * (1-p);
-	Vec3f t = colors[FRONT][TOP] * p + colors[BACK][TOP] * (1-p);
-	Vec3f bt = colors[FRONT][BOT] * p + colors[BACK][BOT] * (1-p);
+	float p = ((float)slice) / voxel->divisions.z;
+	Vec3f bf = colors[FRONT][FRONT] * p + colors[BACK][FRONT] * (1-p);
+	Vec3f bbk = colors[FRONT][BACK] * p + colors[BACK][BACK] * (1-p);
+	Vec3f bl = colors[FRONT][LEFT] * p + colors[BACK][LEFT] * (1-p);
+	Vec3f br = colors[FRONT][RIGHT] * p + colors[BACK][RIGHT] * (1-p);
+	Vec3f bt = colors[FRONT][TOP] * p + colors[BACK][TOP] * (1-p);
+	Vec3f bbt = colors[FRONT][BOT] * p + colors[BACK][BOT] * (1-p);
+
+	 p = ((float)(slice+1)) / voxel->divisions.z;
+	Vec3f ff = colors[FRONT][FRONT] * p + colors[BACK][FRONT] * (1-p);
+	Vec3f fbk = colors[FRONT][BACK] * p + colors[BACK][BACK] * (1-p);
+	Vec3f fl = colors[FRONT][LEFT] * p + colors[BACK][LEFT] * (1-p);
+	Vec3f fr = colors[FRONT][RIGHT] * p + colors[BACK][RIGHT] * (1-p);
+	Vec3f ft = colors[FRONT][TOP] * p + colors[BACK][TOP] * (1-p);
+	Vec3f fbt = colors[FRONT][BOT] * p + colors[BACK][BOT] * (1-p);
 	
 	int i = 0;
-	colorVals[i++] = t.x; colorVals[i++] = t.y; colorVals[i++] = t.z; 
-	colorVals[i++] = t.x; colorVals[i++] = t.y; colorVals[i++] = t.z;
-	colorVals[i++] = t.x; colorVals[i++] = t.y; colorVals[i++] = t.z;
-	colorVals[i++] = t.x; colorVals[i++] = t.y; colorVals[i++] = t.z;
-
+	//top 
 	colorVals[i++] = bt.x; colorVals[i++] = bt.y; colorVals[i++] = bt.z; 
 	colorVals[i++] = bt.x; colorVals[i++] = bt.y; colorVals[i++] = bt.z;
-	colorVals[i++] = bt.x; colorVals[i++] = bt.y; colorVals[i++] = bt.z;
-	colorVals[i++] = bt.x; colorVals[i++] = bt.y; colorVals[i++] = bt.z;
+	colorVals[i++] = ft.x; colorVals[i++] = ft.y; colorVals[i++] = ft.z;
+	colorVals[i++] = ft.x; colorVals[i++] = ft.y; colorVals[i++] = ft.z;
 
-	colorVals[i++] = f.x; colorVals[i++] = f.y; colorVals[i++] = f.z; 
-	colorVals[i++] = f.x; colorVals[i++] = f.y; colorVals[i++] = f.z;
-	colorVals[i++] = f.x; colorVals[i++] = f.y; colorVals[i++] = f.z;
-	colorVals[i++] = f.x; colorVals[i++] = f.y; colorVals[i++] = f.z;
+	colorVals[i++] = fbt.x; colorVals[i++] = fbt.y; colorVals[i++] = fbt.z; 
+	colorVals[i++] = fbt.x; colorVals[i++] = fbt.y; colorVals[i++] = fbt.z;
+	colorVals[i++] = bbt.x; colorVals[i++] = bbt.y; colorVals[i++] = bbt.z;
+	colorVals[i++] = bbt.x; colorVals[i++] = bbt.y; colorVals[i++] = bbt.z;
 
-	colorVals[i++] = bk.x; colorVals[i++] = bk.y; colorVals[i++] = bk.z; 
-	colorVals[i++] = bk.x; colorVals[i++] = bk.y; colorVals[i++] = bk.z;
-	colorVals[i++] = bk.x; colorVals[i++] = bk.y; colorVals[i++] = bk.z;
-	colorVals[i++] = bk.x; colorVals[i++] = bk.y; colorVals[i++] = bk.z;
+	colorVals[i++] = ff.x; colorVals[i++] = ff.y; colorVals[i++] = ff.z; 
+	colorVals[i++] = ff.x; colorVals[i++] = ff.y; colorVals[i++] = ff.z;
+	colorVals[i++] = ff.x; colorVals[i++] = ff.y; colorVals[i++] = ff.z;
+	colorVals[i++] = ff.x; colorVals[i++] = ff.y; colorVals[i++] = ff.z;
 
-	colorVals[i++] = l.x; colorVals[i++] = l.y; colorVals[i++] = l.z; 
-	colorVals[i++] = l.x; colorVals[i++] = l.y; colorVals[i++] = l.z;
-	colorVals[i++] = l.x; colorVals[i++] = l.y; colorVals[i++] = l.z;
-	colorVals[i++] = l.x; colorVals[i++] = l.y; colorVals[i++] = l.z;
+	colorVals[i++] = bbk.x; colorVals[i++] = bbk.y; colorVals[i++] = bbk.z; 
+	colorVals[i++] = bbk.x; colorVals[i++] = bbk.y; colorVals[i++] = bbk.z;
+	colorVals[i++] = bbk.x; colorVals[i++] = bbk.y; colorVals[i++] = bbk.z;
+	colorVals[i++] = bbk.x; colorVals[i++] = bbk.y; colorVals[i++] = bbk.z;
 
-	colorVals[i++] = r.x; colorVals[i++] = r.y; colorVals[i++] = r.z; 
-	colorVals[i++] = r.x; colorVals[i++] = r.y; colorVals[i++] = r.z;
-	colorVals[i++] = r.x; colorVals[i++] = r.y; colorVals[i++] = r.z;
-	colorVals[i++] = r.x; colorVals[i++] = r.y; colorVals[i++] = r.z;
+	colorVals[i++] = fl.x; colorVals[i++] = fl.y; colorVals[i++] = fl.z; 
+	colorVals[i++] = bl.x; colorVals[i++] = bl.y; colorVals[i++] = bl.z;
+	colorVals[i++] = bl.x; colorVals[i++] = bl.y; colorVals[i++] = bl.z;
+	colorVals[i++] = fl.x; colorVals[i++] = fl.y; colorVals[i++] = fl.z;
+
+	colorVals[i++] = br.x; colorVals[i++] = br.y; colorVals[i++] = br.z; 
+	colorVals[i++] = fr.x; colorVals[i++] = fr.y; colorVals[i++] = fr.z;
+	colorVals[i++] = fr.x; colorVals[i++] = fr.y; colorVals[i++] = fr.z;
+	colorVals[i++] = br.x; colorVals[i++] = br.y; colorVals[i++] = br.z;
 }
 
 
@@ -108,6 +121,12 @@ void VoxelRenderer::setVoxel(Voxel *voxel) {
 	this->voxel = voxel;
 }
 
+void VoxelRenderer::setFromTo(float from, float to) {
+	Vec3f size = (voxel->maxDim-voxel->minDim);
+	Vec3f sides = size / voxel->divisions;
+	this->from = voxel->divisions.z *  ((from - voxel->minDim.z) / size.z) ;
+	this->to = voxel->divisions.z *((to - voxel->minDim.z) / size.z );
+}
 void VoxelRenderer::draw(DWORD curTime, float dt, float renderThresh) {
 
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -115,21 +134,28 @@ void VoxelRenderer::draw(DWORD curTime, float dt, float renderThresh) {
 	glVertexPointer(3, GL_FLOAT, 0, cubePoints);
 
 
-	float* gridPtr = voxel->grid;
-	Vec3f sides = (voxel->maxDim-voxel->minDim);
-	sides /= voxel->divisions;
+	Vec3f size = (voxel->maxDim-voxel->minDim);
+	Vec3f sides = size / voxel->divisions;
 
 	float xTrans = 0;
 	float yTrans = 0;
-	float zTrans = -sides.z * .5f;
-	for(int k = 0; k < voxel->divisions.z; k++) {
+
+//	int kFrom = voxel->divisions.z *  ((from - voxel->minDim.z) / size.z) ;
+//	int kTo = voxel->divisions.z *((to - voxel->minDim.z) / size.z );
+
+
+	float zTrans = voxel->minDim.z + (sides.z * .5f) + (sides.z * from);
+
+	float* gridPtr = &voxel->grid[from * voxel->divisions.x * voxel->divisions.y];
+
+	for(int k = from; k < to; k++) {
 		zTrans += sides.z;
-		yTrans = -sides.y * .5f;
+		yTrans = voxel->minDim.y + (sides.y * .5f);
 		constructColorList(k);
 		glColorPointer(3, GL_FLOAT, 0, colorVals);
 		for(int j = 0; j < voxel->divisions.y; j++) {
 			yTrans += sides.y;
-			xTrans = -sides.x * .5f;
+			xTrans = voxel->minDim.x + (sides.x * .5f);
 			for(int i = 0; i < voxel->divisions.x; i++) {
 				xTrans += sides.x;
 				if(*gridPtr > renderThresh) {
@@ -148,3 +174,4 @@ void VoxelRenderer::draw(DWORD curTime, float dt, float renderThresh) {
 
 
 }
+

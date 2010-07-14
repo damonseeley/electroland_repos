@@ -15,10 +15,11 @@ public:
 	static GLuint displayList;
 
 	float x,y,z;
+	float r,g,b;
 	DWORD startTime;
 	DWORD endTime;
 	float timeScale;
-	FadeBlock(DWORD startTime, DWORD endTime, float x, float y, float z);
+	FadeBlock(DWORD startTime, DWORD endTime, float x, float y, float z, float r,float g, float b);
 	static void createDisplayList(Vec3f sides);
 	virtual bool draw(DWORD curTime);
 	~FadeBlock() {};
