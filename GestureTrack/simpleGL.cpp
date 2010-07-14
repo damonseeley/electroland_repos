@@ -141,20 +141,26 @@ Voxel *fgVoxel;
 Voxel *persistanceVoxel;
 Voxel *lastPersistanceVoxel;
 Voxel *diffVoxel;
+Voxel *fgHalfVoxel;
+Voxel *fgQuaterVoxel;
 
 
-VoxelRenderer *voxelRenderer;
+VoxelRenderer *voxelRendererFull;
+VoxelRenderer *voxelRendererHalf;
+VoxelRenderer *voxelRendererQuater;
 
+Vec3f fadeColor;
+DWORD fadeTime;
 
 vector<PSystem *> pSystems;
 
 vector<Vec3f> voxCenters;
 
 
-enum VoxelMode         { RAW_VOXELS,	BG_VOXELS,		FG_VOXELS,		PERSIST_VOXELS,		DIFF_VOXELS,	NO_VOXELS};
-char *voxelModeStr[] = {"RAW_VOXELS",	"BG_VOXELS",	"FG_VOXELS",	"PERSIST_VOXELS",	"DIFF_VOXELS",	"NO_VOXELS"};
-int voxelMode = RAW_VOXELS;
-bool showPoints = true;
+enum VoxelMode         { RAW_VOXELS,	BG_VOXELS,		FG_VOXELS,		PERSIST_VOXELS,		DIFF_VOXELS,	HALF_VOXELS,   QUATER_VOXELS, RUNNING, NO_VOXELS};
+char *voxelModeStr[] = {"RAW_VOXELS",	"BG_VOXELS",	"FG_VOXELS",	"PERSIST_VOXELS",	"DIFF_VOXELS",	"HALF_VOXELS", "QUATER_VOXELS", "RUNNING", "NO_VOXELS"};
+int voxelMode = RUNNING;
+bool showPoints = false;
 float voxelThresh;
 float persistanceThresh;
 float adaptation;
@@ -423,15 +429,80 @@ void setupWorld(){
 	rawVoxel = new Voxel(minDim, maxDim, divs);
 	bgVoxel = new Voxel(minDim, maxDim, divs);
 	fgVoxel = new Voxel(minDim, maxDim, divs);
+	fgHalfVoxel = new Voxel(minDim, maxDim, divs/2);
+	fgQuaterVoxel =  new Voxel(minDim, maxDim, divs/4);
 	persistanceVoxel = new Voxel(minDim, maxDim, divs);
 	lastPersistanceVoxel = new Voxel(minDim, maxDim, divs);
 	diffVoxel = new Voxel(minDim, maxDim, divs);
-	voxelRenderer = new VoxelRenderer(rawVoxel);
+
+
+
+	voxelRendererFull = new VoxelRenderer(fgVoxel);
+
+	Vec3f topColor = Vec3f(voxSet["level2"]["frontColors"]["top"][0], voxSet["level2"]["frontColors"]["top"][1], voxSet["level2"]["frontColors"]["top"][2] );
+	Vec3f bottomColor = Vec3f(voxSet["level2"]["frontColors"]["bottom"][0], voxSet["level2"]["frontColors"]["bottom"][1], voxSet["level2"]["frontColors"]["bottom"][2] );
+	Vec3f leftColor = Vec3f(voxSet["level2"]["frontColors"]["left"][0], voxSet["level2"]["frontColors"]["left"][1], voxSet["level2"]["frontColors"]["left"][2] );
+	Vec3f rightColor = Vec3f(voxSet["level2"]["frontColors"]["right"][0], voxSet["level2"]["frontColors"]["right"][1], voxSet["level2"]["frontColors"]["right"][2] );
+	Vec3f frontColor = Vec3f(voxSet["level2"]["frontColors"]["front"][0], voxSet["level2"]["frontColors"]["front"][1], voxSet["level2"]["frontColors"]["front"][2] );
+	Vec3f backColor = Vec3f(voxSet["level2"]["frontColors"]["back"][0], voxSet["level2"]["frontColors"]["back"][1], voxSet["level2"]["frontColors"]["back"][2] );
+	voxelRendererFull->setFrontColor(frontColor, backColor, leftColor, rightColor, topColor, bottomColor);
+	
+	topColor = Vec3f(voxSet["level2"]["backColors"]["top"][0], voxSet["level2"]["backColors"]["top"][1], voxSet["level2"]["backColors"]["top"][2] );
+	bottomColor = Vec3f(voxSet["level2"]["backColors"]["bottom"][0], voxSet["level2"]["backColors"]["bottom"][1], voxSet["level2"]["backColors"]["bottom"][2] );
+	leftColor = Vec3f(voxSet["level2"]["backColors"]["left"][0], voxSet["level2"]["backColors"]["left"][1], voxSet["level2"]["backColors"]["left"][2] );
+	rightColor = Vec3f(voxSet["level2"]["backColors"]["right"][0], voxSet["level2"]["backColors"]["right"][1], voxSet["level2"]["backColors"]["right"][2] );
+	frontColor = Vec3f(voxSet["level2"]["backColors"]["front"][0], voxSet["level2"]["backColors"]["front"][1], voxSet["level2"]["backColors"]["front"][2] );
+	backColor = Vec3f(voxSet["level2"]["backColors"]["back"][0], voxSet["level2"]["backColors"]["back"][1], voxSet["level2"]["backColors"]["back"][2] );
+	voxelRendererFull->setBackColor(frontColor, backColor, leftColor, rightColor, topColor, bottomColor);
+	voxelRendererFull->setFromTo(voxSet["level2"]["from"], voxSet["level2"]["to"]);
+	voxelRendererFull->constructDisplayList();
+
+
+	voxelRendererHalf = new VoxelRenderer(fgHalfVoxel);
+	 topColor = Vec3f(voxSet["level1"]["frontColors"]["top"][0], voxSet["level1"]["frontColors"]["top"][1], voxSet["level1"]["frontColors"]["top"][2] );
+	 bottomColor = Vec3f(voxSet["level1"]["frontColors"]["bottom"][0], voxSet["level1"]["frontColors"]["bottom"][1], voxSet["level1"]["frontColors"]["bottom"][2] );
+	 leftColor = Vec3f(voxSet["level1"]["frontColors"]["left"][0], voxSet["level1"]["frontColors"]["left"][1], voxSet["level1"]["frontColors"]["left"][2] );
+	 rightColor = Vec3f(voxSet["level1"]["frontColors"]["right"][0], voxSet["level1"]["frontColors"]["right"][1], voxSet["level1"]["frontColors"]["right"][2] );
+	 frontColor = Vec3f(voxSet["level1"]["frontColors"]["front"][0], voxSet["level1"]["frontColors"]["front"][1], voxSet["level1"]["frontColors"]["front"][2] );
+	 backColor = Vec3f(voxSet["level1"]["frontColors"]["back"][0], voxSet["level1"]["frontColors"]["back"][1], voxSet["level1"]["frontColors"]["back"][2] );
+	voxelRendererHalf->setFrontColor(frontColor, backColor, leftColor, rightColor, topColor, bottomColor);
+	topColor = Vec3f(voxSet["level1"]["backColors"]["top"][0], voxSet["level1"]["backColors"]["top"][1], voxSet["level1"]["backColors"]["top"][2] );
+	bottomColor = Vec3f(voxSet["level1"]["backColors"]["bottom"][0], voxSet["level1"]["backColors"]["bottom"][1], voxSet["level1"]["backColors"]["bottom"][2] );
+	leftColor = Vec3f(voxSet["level1"]["backColors"]["left"][0], voxSet["level1"]["backColors"]["left"][1], voxSet["level1"]["backColors"]["left"][2] );
+	rightColor = Vec3f(voxSet["level1"]["backColors"]["right"][0], voxSet["level1"]["backColors"]["right"][1], voxSet["level1"]["backColors"]["right"][2] );
+	frontColor = Vec3f(voxSet["level1"]["backColors"]["front"][0], voxSet["level1"]["backColors"]["front"][1], voxSet["level1"]["backColors"]["front"][2] );
+	backColor = Vec3f(voxSet["level1"]["backColors"]["back"][0], voxSet["level1"]["backColors"]["back"][1], voxSet["level1"]["backColors"]["back"][2] );
+	voxelRendererHalf->setBackColor(frontColor, backColor, leftColor, rightColor, topColor, bottomColor);
+	voxelRendererHalf->setFromTo(voxSet["level1"]["from"], voxSet["level1"]["to"]);
+	voxelRendererHalf->constructDisplayList();
+
+
+	
+	voxelRendererQuater = new VoxelRenderer(fgQuaterVoxel);
+	 topColor = Vec3f(voxSet["level0"]["frontColors"]["top"][0], voxSet["level0"]["frontColors"]["top"][1], voxSet["level0"]["frontColors"]["top"][2] );
+	 bottomColor = Vec3f(voxSet["level0"]["frontColors"]["bottom"][0], voxSet["level0"]["frontColors"]["bottom"][1], voxSet["level0"]["frontColors"]["bottom"][2] );
+	 leftColor = Vec3f(voxSet["level0"]["frontColors"]["left"][0], voxSet["level0"]["frontColors"]["left"][1], voxSet["level0"]["frontColors"]["left"][2] );
+	 rightColor = Vec3f(voxSet["level0"]["frontColors"]["right"][0], voxSet["level0"]["frontColors"]["right"][1], voxSet["level0"]["frontColors"]["right"][2] );
+	 frontColor = Vec3f(voxSet["level0"]["frontColors"]["front"][0], voxSet["level0"]["frontColors"]["front"][1], voxSet["level0"]["frontColors"]["front"][2] );
+	 backColor = Vec3f(voxSet["level0"]["frontColors"]["back"][0], voxSet["level0"]["frontColors"]["back"][1], voxSet["level0"]["frontColors"]["back"][2] );
+	voxelRendererQuater->setFrontColor(frontColor, backColor, leftColor, rightColor, topColor, bottomColor);
+	topColor = Vec3f(voxSet["level0"]["backColors"]["top"][0], voxSet["level0"]["backColors"]["top"][1], voxSet["level0"]["backColors"]["top"][2] );
+	bottomColor = Vec3f(voxSet["level0"]["backColors"]["bottom"][0], voxSet["level0"]["backColors"]["bottom"][1], voxSet["level0"]["backColors"]["bottom"][2] );
+	leftColor = Vec3f(voxSet["level0"]["backColors"]["left"][0], voxSet["level0"]["backColors"]["left"][1], voxSet["level0"]["backColors"]["left"][2] );
+	rightColor = Vec3f(voxSet["level0"]["backColors"]["right"][0], voxSet["level0"]["backColors"]["right"][1], voxSet["level0"]["backColors"]["right"][2] );
+	frontColor = Vec3f(voxSet["level0"]["backColors"]["front"][0], voxSet["level0"]["backColors"]["front"][1], voxSet["level0"]["backColors"]["front"][2] );
+	backColor = Vec3f(voxSet["level0"]["backColors"]["back"][0], voxSet["level0"]["backColors"]["back"][1], voxSet["level0"]["backColors"]["back"][2] );
+	voxelRendererQuater->setBackColor(frontColor, backColor, leftColor, rightColor, topColor, bottomColor);
+	voxelRendererQuater->setFromTo(voxSet["level0"]["from"], voxSet["level0"]["to"]);
+
+	voxelRendererQuater->constructDisplayList();
 
 
 	voxelThresh = voxSet["thresh"];
 	persistanceThresh = voxSet["persistanceThresh"];
 	adaptation= voxSet["adaptation"];
+	fadeTime = voxSet["fadeTime"];
+	fadeColor = Vec3f(voxSet["fadeColor"][0], voxSet["fadeColor"][1],voxSet["fadeColor"][2]);
 
 	Vec3f boxSize = (maxDim - minDim) /divs;
 
@@ -520,7 +591,7 @@ void setupWorld(){
 
 	renderList = new RenderList();
 
-	//	FadeBlock::createDisplayList((maxDim-minDim)/divs);
+		FadeBlock::createDisplayList((maxDim-minDim)/divs);
 
 	translate_z = -maxDim.z;
 	translate_x = (float)  -(maxDim.x + minDim.x) * .5f;
@@ -580,6 +651,7 @@ CUTBoolean initGL(int argc, char **argv)
 	glEnable(GL_DEPTH_TEST);
 	glEnable (GL_BLEND);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//glEnable(GL_CULL_FACE);	
 
 	canvasRatio = window["canvasRatio"];
 	viewWidth = (int) (canvasRatio * window_height);
@@ -636,6 +708,28 @@ CUTBoolean runGL(int argc, char** argv) {
 //username WAP@CINGULARGPRS.COM
 //CINGULAR1
 
+void drawBlocks(RenderList *renderList, Voxel *diffVoxel, DWORD curTime, DWORD endTime, float r, float g, float b) {
+	float* gridPtr = diffVoxel->grid;
+	float curZ;
+	float curY;
+	Vec3f sides = (diffVoxel->maxDim - diffVoxel->minDim) / diffVoxel->divisions;
+	float thresh = persistanceThresh * fps;
+	float threshHalf = persistanceThresh * fps * .5f;
+	for(int k = 0; k < diffVoxel->divisions.z; k++) {
+		curZ = diffVoxel->minDim.z + (k+.5) * sides.z;
+		for(int j = 0; j < diffVoxel->divisions.y; j++) {
+			curY = diffVoxel->minDim.y+ (j+.5) * sides.y;
+			for(int i = 0; i < diffVoxel->divisions.x; i++) {
+
+				if(*gridPtr > thresh) {
+					FadeBlock *db = new FadeBlock(curTime, endTime,  diffVoxel->minDim.x + (i+.5) * sides.x, curY, curZ, r,g,b);
+					renderList->add(db);
+				}
+				gridPtr++;
+			}
+		}
+	}
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //! Display callback
@@ -779,6 +873,9 @@ void render(int view)
 	fgVoxel->sub(rawVoxel, bgVoxel, false);
 	rawVoxel->deallocateGridOnGPU();
 	bgVoxel->deallocateGridOnGPU();
+	fgHalfVoxel->scaleDownFrom(fgVoxel, false);
+	fgQuaterVoxel->scaleDownFrom(fgHalfVoxel);
+	fgHalfVoxel->deallocateGridOnGPU();
 	persistanceVoxel->incIfOverThresh(fgVoxel, voxelThresh, false);
 	fgVoxel->deallocateGridOnGPU();
 	diffVoxel->sub(lastPersistanceVoxel, persistanceVoxel,true);
@@ -801,11 +898,24 @@ void render(int view)
 			fgVoxel->draw(voxelThresh);
 			break;
 		case PERSIST_VOXELS:
-			std::cout << "render threash " <<  persistanceThresh * fps << std::endl;
+//			std::cout << "render threash " <<  persistanceThresh * fps << std::endl;
 			persistanceVoxel->draw(persistanceThresh * fps);			
 			break;
 		case DIFF_VOXELS:
 			diffVoxel->draw(persistanceThresh * fps);			
+			break;
+		case HALF_VOXELS:
+			fgHalfVoxel->draw(voxelThresh);
+			break;
+		case QUATER_VOXELS:
+			fgQuaterVoxel->draw(voxelThresh);
+			break;
+		case RUNNING: 
+			voxelRendererQuater->draw(curTime, dt, voxelThresh );
+			voxelRendererHalf->draw(curTime, dt, voxelThresh );
+			voxelRendererFull->draw(curTime, dt, voxelThresh );
+			drawBlocks(renderList, diffVoxel, curTime, curTime + fadeTime, fadeColor.x, fadeColor.y, fadeColor.z);
+			renderList->draw(curTime);
 			break;
 		case NO_VOXELS:
 			break;

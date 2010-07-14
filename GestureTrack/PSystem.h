@@ -19,7 +19,6 @@ struct Particle {
 
 class PSystem {
 public:
-
 //	LUnit texture[i];
 
 	Particle     *m_pActiveList;

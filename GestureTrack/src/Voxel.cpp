@@ -19,11 +19,12 @@ extern "C" void gpu_add(int gridSize, float* d_this, float* d_that);
 extern "C" void gpu_sub(int gridSize, float* d_this, float* d_that);
 extern "C" void gpu_sub2(int gridSize, float* d_this, float* a, float* b);
 extern "C" void gpu_incIfOverThresh(int gridSize, float *d_this, float* d_that, float thresh);
+extern "C" void gpu_scaleDownFrom(int gridSize, int dx, int dy, int dz, float *d_this, float *d_that);
 
 
-float* Voxel::glFloorPoints= NULL;
-float* Voxel::glFloorColors = NULL;
-float Voxel::floorGridPointCnt = 0.0f;
+//float* Voxel::glFloorPoints= NULL;
+//float* Voxel::glFloorColors = NULL;
+//float Voxel::floorGridPointCnt = 0.0f;
 GLuint Voxel::displayList = 0;
 
 Voxel::Voxel(Vec3f minDim, Vec3f maxDim, Vec3i divisions, bool createDL) {
@@ -41,10 +42,10 @@ Voxel::Voxel(Vec3f minDim, Vec3f maxDim, Vec3i divisions, bool createDL) {
 		exit(1);
 	}
 	if(createDL) {
-		if(glFloorPoints == NULL) {
+//		if(glFloorPoints == NULL) {
 			createDisplayList();
-			constructFloorPoints();
-		}
+//			constructFloorPoints();
+		//}
 	}
 	d_vox = NULL;
 
@@ -55,7 +56,7 @@ Voxel::Voxel(Vec3f minDim, Vec3f maxDim, Vec3i divisions, bool createDL) {
 Voxel::~Voxel() {
 	free(grid);
 }
-
+/*
 void Voxel::constructFloorPoints() {
 	Voxel::floorGridPointCnt = (2 * (divisions.x +1)) + (2 * (divisions.y+1)) + (2 * (divisions.x +1)) +(2 * (divisions.z +1));
 	Voxel::glFloorColors = new float[floorGridPointCnt * 3];
@@ -151,9 +152,11 @@ void Voxel::constructFloorPoints() {
 	}
 */
 
-}
+//}
+
 
 void Voxel::draw(float renderThresh) {
+	/*
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(3, GL_FLOAT, 0, glFloorColors);
@@ -161,7 +164,7 @@ void Voxel::draw(float renderThresh) {
 	glDrawArrays(GL_LINES,0, floorGridPointCnt);
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
-
+*/
 	Vec3f sides = (maxDim-minDim);
 	sides /= divisions;
 
@@ -353,7 +356,7 @@ void Voxel::add(Voxel *vox, bool freeFromGPU) {
 
 void Voxel::sub(Voxel *a, Voxel *b, bool freeFromGPU) {
 
-	allocateGridOnGPU();
+	allocateGridOnGPU(false);
 	a->allocateGridOnGPU();
 	b->allocateGridOnGPU();
 
@@ -426,5 +429,43 @@ void Voxel::incIfOverThresh(Voxel *v, float thresh, bool freeFromGPU) {
 	cutilSafeCall( cudaMemcpy(grid, d_vox, voxMemSize, cudaMemcpyDeviceToHost) );
 	if(freeFromGPU) 
 		deallocateGridOnGPU();
+
+}
+
+void Voxel::scaleDownFrom(Voxel *doubleDim, bool freeFromGPU) {
+	
+	allocateGridOnGPU(false); // just zero out
+	doubleDim->allocateGridOnGPU();
+	gpu_scaleDownFrom(gridSize, divisions.x, divisions.y, divisions.z, d_vox, doubleDim->d_vox);
+	cutilSafeCall( cudaMemcpy(grid, d_vox, voxMemSize, cudaMemcpyDeviceToHost) );
+	if(freeFromGPU) 
+		deallocateGridOnGPU();
+
+}
+
+void Voxel:: scaleDownFrom_kernel(int gridSize, int dx, int dy, int dz, float *d_this, float *d_that) {
+
+	for(int i = 0; i < gridSize; i++) {
+		int z = i / (dx * dy);
+		int r = i % (dx * dy);
+		int y = r / (dx);
+		int x = r % (dx);
+
+		x*=2;
+		y*=2;
+		z*=2;
+
+		d_this[i] = d_that[x + (y * (2 * dx)) + (z * (4 * dx * dy))];
+		d_this[i] = d_that[x+1 + (y * (2 * dx)) + (z * (4 * dx * dy))];
+		d_this[i] = d_that[x + ( (y+1) * (2 * dx)) + (z * (4 * dx * dy))];
+		d_this[i] = d_that[x+1 + ((y+1) * (2 * dx)) + (z * (4 * dx * dy))];
+		d_this[i] = d_that[x + (y * (2 * dx)) + ((z+1) * (4 * dx * dy))];
+		d_this[i] = d_that[x+1 + (y * (2 * dx)) + ((z+1) * (4 * dx * dy))];
+		d_this[i] = d_that[x + ( (y+1) * (2 * dx)) + ((z+1) * (4 * dx * dy))];
+		d_this[i] = d_that[x+1 + ((y+1) * (2 * dx)) + ((z+1) * (4 * dx * dy))];
+
+	}
+
+
 
 }

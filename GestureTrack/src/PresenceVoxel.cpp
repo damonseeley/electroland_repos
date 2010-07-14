@@ -4,7 +4,7 @@
 PresenceVoxel::PresenceVoxel(Vec3f minDim, Vec3f maxDim, Vec3i divisions, bool createDL) : Voxel(minDim, maxDim, divisions, false) {
 	if(createDL) {
 		createDisplayList();
-		constructFloorPoints();
+//		constructFloorPoints();
 	}
 
 }	
@@ -54,6 +54,7 @@ void PresenceVoxel::createDisplayList() {
 
 }
 void PresenceVoxel::draw(float renderThresh) {
+	/*
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(3, GL_FLOAT, 0, glFloorColors);
@@ -61,7 +62,7 @@ void PresenceVoxel::draw(float renderThresh) {
 	glDrawArrays(GL_LINES,0, floorGridPointCnt);
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
-
+*/
 	Vec3f sides = (maxDim-minDim);
 	sides /= divisions;
 

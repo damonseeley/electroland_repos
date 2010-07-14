@@ -18,9 +18,9 @@ public:
 	float *grid;
 	float *d_vox;
 
-	static float* glFloorPoints;
-	static float* glFloorColors;
-	static float floorGridPointCnt;
+//	static float* glFloorPoints;
+//	static float* glFloorColors;
+//	static float floorGridPointCnt;
 
 	Voxel(Vec3f minDim, Vec3f maxDim, Vec3i divisions, bool createDisplayList = true);
 
@@ -33,7 +33,7 @@ public:
 	virtual void createDisplayList();
 
 	virtual void draw(float renderThresh=1.0f);
-	void constructFloorPoints();
+//	void constructFloorPoints();
 
 	void copyGrid(Voxel *vox); // assumes same dims, only copies grid
 
@@ -46,11 +46,14 @@ public:
 	void scalarMult(float v, bool freeFromGPU = true); 
 	void threshSet(float t, float below, float above, bool freeFromGPU = true);
 	void incIfOverThresh(Voxel *other, float t, bool freeFromGPU=true); // if other[i] > t then this[i]++ else 0
+	void scaleDownFrom(Voxel *doubleSize,  bool freeFromGPU=true);
 
 
 	void allocateGridOnGPU(bool copy = true); // if copy is false valus are zeroed
 	void deallocateGridOnGPU();
 	size_t voxMemSize;
+
+	void scaleDownFrom_kernel(int gridSize, int dx, int dy, int dz, float *d_this, float *d_that);
 
 };
 
