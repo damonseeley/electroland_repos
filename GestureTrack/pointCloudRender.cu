@@ -6,7 +6,6 @@ __device__ void HSV2RGB(float h, float s, float v, float &r, float &g, float &b)
 			b=v;
 			return;
 		}
-		
 		h *= .0166666666666667; // convert from 360 to 0-6;		
 		int i = (int) floor(h);
 		float f = h - i;
@@ -63,14 +62,19 @@ __global__ void gpu_calcColor_kernel(int pointCnt, float* pixels, float minZ, fl
 	if(z != 0.0) { // only equal to 0.0 if set as invalid in cloud contructor	
 		float distZ = z - minZ;
 		float percent = distZ/diffZ;
-		percent = percent<0.0 ? 0.0 : percent;
-		percent = percent>1.0 ? 1.0 : percent;
+		percent = percent<=0.0 ? 0.01 : percent;
+		percent = percent>=1.0 ? 1.0 : percent;
 	
 		float r; 	
 		float g; 
 		float b;
 		if(hsv) {
-			HSV2RGB(minC1 + percent * diffC1, minC2 + percent * diffC2, minC3 + percent * diffC3, r,g,b); 		
+			if(percent == 0.0) {
+				HSV2RGB(minC1 , minC2, minC3 , r,g,b); 		
+				
+			} else {
+				HSV2RGB(minC1 + percent * diffC1, minC2 + percent * diffC2, minC3 + percent * diffC3, r,g,b); 		
+			}
 		} else {
 			r= minC1 + percent * diffC1;
 			g= minC2 + percent * diffC2;

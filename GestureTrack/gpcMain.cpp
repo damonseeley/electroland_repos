@@ -127,10 +127,10 @@ bool drawQuads;
 
 Floor *vFloor;
 
-Vec3f fadeColor;
-DWORD fadeTime;
-
-
+float minPointSize;
+float maxPointSize;
+float pointSizeRate;
+float curPointSize;
 
 
 bool worldCamRot = false;
@@ -384,14 +384,18 @@ void setupWorld(){
 		configRoot["pointCloud"]["maxColor"][1],
 		configRoot["pointCloud"]["maxColor"][2]),
 		configRoot["pointCloud"]["hsv"],
-		configRoot["pointCloud"]["size"]
+		0.0
 
 	);
-	if(configRoot["pointCloud"]["drawQuads"]) {
+//	if(configRoot["pointCloud"]["drawQuads"]) {
 		drawQuads = true;
 		cloudColorer->setQuads(true);
-	} 
-
+//	} 
+	
+	 minPointSize = configRoot["pointCloud"]["minSize"];
+	 maxPointSize = configRoot["pointCloud"]["maxSize"];
+	 pointSizeRate = configRoot["pointCloud"]["deltaPerFrame"];
+	curPointSize = minPointSize;
 
 
 		vFloor = new Floor(fLevel, fMinX, fMaxX, fDepth, fBackColor, fFrontColor, 10, 10);
@@ -443,6 +447,9 @@ CUTBoolean initGL(int argc, char **argv)
 	} else {
 		glutInitWindowSize(window_width, window_height);
 		glutCreateWindow("Electroland Gesture Track");
+	}
+	if(window["hideCursor"]) {
+glutSetCursor(GLUT_CURSOR_NONE);
 	}
 
 
@@ -609,12 +616,13 @@ void render(int view)
 	cloudConstructor->calcPoints(false);
 	//		cloudColorer->calcColors(cloudConstructor->getPointCnt(),  cloudConstructor->getPoints(), true);
 
-//	CULL HERE
+//	Linear CULL HERE
+	/*
 	if(cullOn) {
-	float cullx1 = 0;
-	float cullz1 = -10000;
+	float cullx1 = 6000;
+	float cullz1 = -1000;
 	float cullx2 = 10000;
-	float cullz2 = -10000;
+	float cullz2 = -1000;
 	float cullfloor = 0;
 	if(selectedCam >= 0) {
 		glColor3f(1.0,0.0,1.0f);
@@ -628,6 +636,25 @@ void render(int view)
 	}
 	
 	cloudConstructor->cull(cullx1,cullz1,cullx2,cullz2, cullfloor);
+	}*/
+
+	if(cullOn) {
+	float cx = 6500;
+	float cz = -1400;
+	float r = 450;
+	float ceilingHackCut = 2400;
+	cloudConstructor->cullCylinder(cx,cz, r, ceilingHackCut);
+		if(selectedCam >= 0) {
+			glColor3f(1.0,0.0,1.0f);
+			glLineWidth(5.0f);
+			glBegin(GL_LINES) ;
+			glVertex3f(cx-r, 0, cz);
+			glVertex3f(cx+r, 0, cz);
+			glVertex3f(cx, 0, cz-r);
+			glVertex3f(cx, 0, cz+r);
+			glEnd();
+			glLineWidth(1.0f);
+		}
 	}
 
 	cloudColorer->calcColors(cloudConstructor->getPointCnt(),  cloudConstructor->getGPUPoints(), true);
@@ -644,6 +671,14 @@ void render(int view)
 	}
 
 	glColorPointer(3, GL_FLOAT, 0,  cloudColorer->getColors());
+
+	
+	curPointSize +=pointSizeRate;
+	if(curPointSize > maxPointSize) {
+		curPointSize = minPointSize;
+	}
+	cloudColorer->size = curPointSize;
+
 
 	if(selectedCam >= 0) {
 		for(int i = 0; i < camCnt; i++) {
@@ -676,6 +711,8 @@ void render(int view)
 
 				glEnd();
 			}
+				glDisableClientState(GL_COLOR_ARRAY);
+
 			if ((selectedCam < 0) || (selectedCam == i )) {
 				glColor3f(1.0,0.0,0.0);
 			} else {
@@ -702,6 +739,10 @@ void render(int view)
 
 
 	// other cloud stuff here
+
+	//HACK to force into drawing points in quad verticies
+		drawQuads = false;
+		cloudColorer->setQuads(false);
 
 
 }
@@ -808,7 +849,8 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 		std::cout << "?\t\t- this help " << std::endl;
 		std::cout << "esc\t\t- exit " << std::endl;
 		std::cout << "z\t\t- display fps" << std::endl;
-		std::cout << "p\t\t- hide/show point cloud " << std::endl;
+		std::cout << "p\t\t- toggle between points and squares " << std::endl;
+		std::cout << "v\t\t- turn on/of culling " << std::endl;
 		std::cout << "=\t\t- show ortho views" << std::endl;
 		std::cout << "0-9\t\t- select camera " << std::endl << std::endl;
 		std::cout << "-\t\t- deselect camera " << std::endl << std::endl;
@@ -821,7 +863,7 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 		std::cout << "\t\tjkl" << std::endl;
 		std::cout << "SPACE\t\t- toggle fullscreen" << std::endl;
 		std::cout << "SHIFT and ALT modify speed of rotation and translation" << std::endl;
-		std::cout << "Arrow UP/DOWN adjust voxel display threshold" << std::endl;
+		std::cout << "Arrow UP/DOWN adjust point/square size" << std::endl;
 		std::cout << std::endl;
 		break;
 	case(27) :
