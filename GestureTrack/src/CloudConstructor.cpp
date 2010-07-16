@@ -1,7 +1,6 @@
 #include "CloudConstructor.h"
 #include <cuda_runtime.h>
 #include <cutil_inline.h>
-//#include <rendercheck_gl.h>
 
 //#include<pointCloud.cu>
 
@@ -167,4 +166,28 @@ void CloudConstructor::calcPoints(bool freeResultPointsOnGPU) {
 CloudConstructor::~CloudConstructor() {
 	delete camParams;
 	delete points;
+}
+
+void CloudConstructor::cull(float ax, float ay, float bx, float by) {
+
+
+
+	float axbx = bx-ax;
+	float byay = by-ay;
+	float r = axbx*byay;
+
+	for(int i = 0; i < pointCnt; i++) {
+		int j = i*3;
+		float cx = points[j];
+		float cy = points[j+2];
+		if((cx>ax) && (cx<bx)) {
+		float r1 = axbx * (cy-ay);
+		float r2 = (bx-cx) * byay;
+		if(r-r1-r2 >0) {
+			 points[j++] =0;
+			 points[j++] =0;
+			 points[j] =0;
+		}
+		}
+	}
 }
