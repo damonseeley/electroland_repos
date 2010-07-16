@@ -268,8 +268,9 @@ void Voxel::calcVoxel(int pointCloudCnt, float* pointCloud, bool cloudIsOnGPU, b
 		d_pointCloud = pointCloud;
 	}
 
-	cutilSafeCall( cudaMalloc((void**)&d_vox, voxMemSize) ); // need to look up safecall TODO
-	cudaMemset(d_vox, 0, voxMemSize);
+	// use allocateGridOnGPU
+//	cutilSafeCall( cudaMalloc((void**)&d_vox, voxMemSize) ); // need to look up safecall TODO
+//	cudaMemset(d_vox, 0, voxMemSize);
 
 	allocateGridOnGPU(false);
 

@@ -13,8 +13,13 @@ public:
 	float depth;
 	Vec3f backColor;
 	Vec3f frontColor;
+	float divX;
+	float divZ;
+	float stepX;
+	float stepZ;
+	Vec3f stepC;
 
-	Floor(float level, float minX, float maxX, float depth, Vec3f backColor, Vec3f frontColor) ;
+	Floor(float level, float minX, float maxX, float depth, Vec3f backColor, Vec3f frontColor, float divx, float divz) ;
 	void render();
 
 }
