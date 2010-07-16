@@ -48,6 +48,8 @@ public:
 
 	void updateTransform();
 
+	void applyRotation(Vec3f euler);
+
 	void setTransform(Vec3d translation, Vec3d rotation);
 	void setMatrix(
 		double m0,	double m1,	double m2,
@@ -63,6 +65,7 @@ public:
 
 	//	void setMatrix(Matrix44d m) {transformMatrix=m; }
 
+	void transfromPoint(Vec3f &p);
 
 	bool start();
 	bool grab();
