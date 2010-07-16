@@ -553,6 +553,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\CloudColorer.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\CloudConstructor.h"
 					>
 					<FileConfiguration
@@ -675,6 +679,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\CloudColorer.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\CloudConstructor.cpp"
 					>
 				</File>
@@ -691,23 +699,15 @@
 					>
 				</File>
 				<File
+					RelativePath=".\gpcMain.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\Guicon.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\PresenceVoxel.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\PSystem.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\src\RenderList.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\simpleGL.cpp"
+					RelativePath=".\mainVox.cpp"
 					>
 					<FileConfiguration
 						Name="Release|Win32"
@@ -733,6 +733,18 @@
 							AdditionalIncludeDirectories="$(CUDA_INC_PATH);../../common/inc"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\src\PresenceVoxel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\PSystem.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\RenderList.cpp"
+					>
 				</File>
 				<File
 					RelativePath=".\src\TCPreceiver.cpp"
@@ -796,6 +808,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\pointCloudRender.cu"
+					>
+				</File>
+				<File
 					RelativePath=".\src\voxel.cu"
 					>
 					<FileConfiguration
@@ -824,22 +840,6 @@
 					</FileConfiguration>
 				</File>
 			</Filter>
-		</Filter>
-		<Filter
-			Name="rendercheck"
-			>
-			<File
-				RelativePath="..\..\common\inc\nvShaderUtils.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\common\src\rendercheck_gl.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\common\inc\rendercheck_gl.h"
-				>
-			</File>
 		</Filter>
 		<File
 			RelativePath=".\GestureTrack.cfg"
