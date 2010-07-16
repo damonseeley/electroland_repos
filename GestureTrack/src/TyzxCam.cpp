@@ -120,6 +120,32 @@ TyzxCam::~TyzxCam() {
 	delete receiver;
 }	
 
+void TyzxCam::applyRotation(Vec3f euler) {
+	double toRad = PI / 180.0f;
+	Tyzx3x3Matrix eu = Tyzx3x3Matrix( rotation.x * toRad, rotation.y * toRad, rotation.z * toRad);
+	Tyzx3x3Matrix oldRot = Tyzx3x3Matrix(tMatrix[0],tMatrix[1],tMatrix[2],tMatrix[3],tMatrix[4],tMatrix[5],tMatrix[6],tMatrix[7],tMatrix[8]);
+
+	Tyzx3x3Matrix newRot;
+	oldRot.mult(eu, newRot);
+		// rotcomp = rot1 * rot2
+
+	
+	Tyzx3Vector trans2 = Tyzx3Vector(0,0,0);
+	Tyzx3Vector oldTrans = Tyzx3Vector(tMatrix[9],tMatrix[10],tMatrix[11]);
+	Tyzx3Vector transComp = Tyzx3Vector();
+
+
+
+	// transcomp = rot1*trans2 + trans1
+	trans2.rigidTransform(oldRot, oldTrans, transComp);
+	double *trans = transComp.array();
+	double *rot = newRot.array();
+	
+	setTransform(Vec3f(trans[0],trans[1],trans[2]), Vec3f(rot[0],rot[1],rot[2]));
+
+
+}
+
 
 void TyzxCam::setTransform(Vec3d translation, Vec3d rotation) {
 	this->translation = translation;
@@ -130,7 +156,7 @@ void TyzxCam::setTransform(Vec3d translation, Vec3d rotation) {
 				a[3], a[4], a[5],
 				a[6], a[7], a[8],
 				translation.x, translation.y, translation.z);
-
+	
 	std::cout << camIP << " set from euler   T(" << translation << ")    R(" << rotation << ")" << std::endl;
 
 }
@@ -184,6 +210,16 @@ void TyzxCam::setMatrix(
 
 			std::cout << camIP << "  set from matrix   T(" << translation << ")    R(" << rotation << ")" << std::endl;
 			
+}
+void TyzxCam::transfromPoint(Vec3f &p) {
+	float x = p.x;
+		float y = p.y;
+		float z = p.z;
+
+p.x =  tMatrix[0] * x	+  tMatrix[3] * y	+ tMatrix[6] * ((double) z) + tMatrix[9];	
+p.y =  tMatrix[1] * x	+  tMatrix[4] * y	+ tMatrix[7] * ((double) z) + tMatrix[10];	
+p.z =  tMatrix[2] * x	+  tMatrix[5] * y	+ tMatrix[8] * ((double) z) + tMatrix[11];
+
 }
 
 void TyzxCam::setMatrixInternal(

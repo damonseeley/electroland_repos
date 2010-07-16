@@ -15,6 +15,7 @@
 __global__ void gpu_calcPointCloud_kernel(int camCnt, int imgWidth, int imgHeight, double* params, double* transforms, unsigned short *imgs, float* results) 
 {
 
+
 	int u,v,t,pixelIndex;
 
 	t = threadIdx.z; 
@@ -54,7 +55,7 @@ __global__ void gpu_calcPointCloud_kernel(int camCnt, int imgWidth, int imgHeigh
 	double cx = *paramPt++;
 	double cy = *paramPt++;
 	double cu = *paramPt++;
-	double cv = *paramPt++;	
+	double cv = *paramPt;	
 	
 	#ifdef EMULATE
 	if((u == 0) &&(v == 0)) {
@@ -86,9 +87,10 @@ __global__ void gpu_calcPointCloud_kernel(int camCnt, int imgWidth, int imgHeigh
 //	results[pixelIndex++]	=  (float) (ty * w) ; 
 //	results[pixelIndex]		=  (float) (tz * w) ;
 double *m = &transforms[t*12];
-double tx =  m[0] * x	+  m[1] * y	+ m[2] * z + m[9];	
-double ty =  m[3] * x	+  m[4] * y	+ m[5] * z + m[10];	
-double tz =  m[6] * x	+  m[7] * y	+ m[8] * z + m[11];
+double tx =  m[0] * x	+  m[3] * y	+ m[6] * ((double) z) + m[9];	
+double ty =  m[1] * x	+  m[4] * y	+ m[7] * ((double) z) + m[10];	
+double tz =  m[2] * x	+  m[5] * y	+ m[8] * ((double) z) + m[11];
+
 results[pixelIndex++]	=  isValidIndex ? (float) tx : 0.0f ;
 results[pixelIndex++]	=  isValidIndex ? (float) ty : 0.0f ; 
 results[pixelIndex]		=  isValidIndex ? (float) tz : 0.0f ;
