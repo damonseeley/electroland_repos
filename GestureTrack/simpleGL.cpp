@@ -848,7 +848,7 @@ void render(int view)
 
 	if(showPoints) {
 
-		glPointSize(1.0);
+		glPointSize(3.0);
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glVertexPointer(3, GL_FLOAT, 0, cloudConstructor->getPoints());
 		for(int i = 0; i < camCnt; i++) {
