@@ -161,6 +161,8 @@ enum VoxelMode         { RAW_VOXELS,	BG_VOXELS,		FG_VOXELS,		PERSIST_VOXELS,		DI
 char *voxelModeStr[] = {"RAW_VOXELS",	"BG_VOXELS",	"FG_VOXELS",	"PERSIST_VOXELS",	"DIFF_VOXELS",	"HALF_VOXELS", "QUATER_VOXELS", "RUNNING", "NO_VOXELS"};
 int voxelMode = RUNNING;
 bool showPoints = false;
+bool worldCamRot = false;
+
 float voxelThresh;
 float persistanceThresh;
 float adaptation;
@@ -362,13 +364,27 @@ void setupWorld(){
 			m[10] = camera["matrix"][10];
 			m[11] = camera["matrix"][11];
 			tyzxCams[i] = new TyzxCam(name.c_str(), trans, rot, ip.c_str());
-			tyzxCams[i]->setMatrix(
-				m[0], m[1], m[2],
-				m[3], m[4], m[5],
-				m[6], m[7], m[8],
-				m[9], m[10], m[11]
-			);
-	} else {
+			
+			bool transpose = false;
+			if(camera.exists("transpose")) {
+				transpose = camera["transpose"];
+			}
+			if(transpose) {
+				tyzxCams[i]->setMatrix(
+					m[0], m[3], m[6],
+					m[1], m[4], m[7],
+					m[2], m[5], m[8],
+					m[9], m[10], m[11]
+				);
+			} else {
+				tyzxCams[i]->setMatrix(
+					m[0], m[1], m[2],
+					m[3], m[4], m[5],
+					m[6], m[7], m[8],
+					m[9], m[10], m[11]
+				);
+			}
+		} else {
 			trans.x = camera["translation"][0];
 			trans.y = camera["translation"][1];
 			trans.z = camera["translation"][2];
@@ -424,7 +440,7 @@ void setupWorld(){
 	divs.y = voxSet["div"][1];
 	divs.z = voxSet["div"][2];
 
-	
+
 
 	rawVoxel = new Voxel(minDim, maxDim, divs);
 	bgVoxel = new Voxel(minDim, maxDim, divs);
@@ -446,7 +462,7 @@ void setupWorld(){
 	Vec3f frontColor = Vec3f(voxSet["level2"]["frontColors"]["front"][0], voxSet["level2"]["frontColors"]["front"][1], voxSet["level2"]["frontColors"]["front"][2] );
 	Vec3f backColor = Vec3f(voxSet["level2"]["frontColors"]["back"][0], voxSet["level2"]["frontColors"]["back"][1], voxSet["level2"]["frontColors"]["back"][2] );
 	voxelRendererFull->setFrontColor(frontColor, backColor, leftColor, rightColor, topColor, bottomColor);
-	
+
 	topColor = Vec3f(voxSet["level2"]["backColors"]["top"][0], voxSet["level2"]["backColors"]["top"][1], voxSet["level2"]["backColors"]["top"][2] );
 	bottomColor = Vec3f(voxSet["level2"]["backColors"]["bottom"][0], voxSet["level2"]["backColors"]["bottom"][1], voxSet["level2"]["backColors"]["bottom"][2] );
 	leftColor = Vec3f(voxSet["level2"]["backColors"]["left"][0], voxSet["level2"]["backColors"]["left"][1], voxSet["level2"]["backColors"]["left"][2] );
@@ -459,12 +475,12 @@ void setupWorld(){
 
 
 	voxelRendererHalf = new VoxelRenderer(fgHalfVoxel);
-	 topColor = Vec3f(voxSet["level1"]["frontColors"]["top"][0], voxSet["level1"]["frontColors"]["top"][1], voxSet["level1"]["frontColors"]["top"][2] );
-	 bottomColor = Vec3f(voxSet["level1"]["frontColors"]["bottom"][0], voxSet["level1"]["frontColors"]["bottom"][1], voxSet["level1"]["frontColors"]["bottom"][2] );
-	 leftColor = Vec3f(voxSet["level1"]["frontColors"]["left"][0], voxSet["level1"]["frontColors"]["left"][1], voxSet["level1"]["frontColors"]["left"][2] );
-	 rightColor = Vec3f(voxSet["level1"]["frontColors"]["right"][0], voxSet["level1"]["frontColors"]["right"][1], voxSet["level1"]["frontColors"]["right"][2] );
-	 frontColor = Vec3f(voxSet["level1"]["frontColors"]["front"][0], voxSet["level1"]["frontColors"]["front"][1], voxSet["level1"]["frontColors"]["front"][2] );
-	 backColor = Vec3f(voxSet["level1"]["frontColors"]["back"][0], voxSet["level1"]["frontColors"]["back"][1], voxSet["level1"]["frontColors"]["back"][2] );
+	topColor = Vec3f(voxSet["level1"]["frontColors"]["top"][0], voxSet["level1"]["frontColors"]["top"][1], voxSet["level1"]["frontColors"]["top"][2] );
+	bottomColor = Vec3f(voxSet["level1"]["frontColors"]["bottom"][0], voxSet["level1"]["frontColors"]["bottom"][1], voxSet["level1"]["frontColors"]["bottom"][2] );
+	leftColor = Vec3f(voxSet["level1"]["frontColors"]["left"][0], voxSet["level1"]["frontColors"]["left"][1], voxSet["level1"]["frontColors"]["left"][2] );
+	rightColor = Vec3f(voxSet["level1"]["frontColors"]["right"][0], voxSet["level1"]["frontColors"]["right"][1], voxSet["level1"]["frontColors"]["right"][2] );
+	frontColor = Vec3f(voxSet["level1"]["frontColors"]["front"][0], voxSet["level1"]["frontColors"]["front"][1], voxSet["level1"]["frontColors"]["front"][2] );
+	backColor = Vec3f(voxSet["level1"]["frontColors"]["back"][0], voxSet["level1"]["frontColors"]["back"][1], voxSet["level1"]["frontColors"]["back"][2] );
 	voxelRendererHalf->setFrontColor(frontColor, backColor, leftColor, rightColor, topColor, bottomColor);
 	topColor = Vec3f(voxSet["level1"]["backColors"]["top"][0], voxSet["level1"]["backColors"]["top"][1], voxSet["level1"]["backColors"]["top"][2] );
 	bottomColor = Vec3f(voxSet["level1"]["backColors"]["bottom"][0], voxSet["level1"]["backColors"]["bottom"][1], voxSet["level1"]["backColors"]["bottom"][2] );
@@ -477,14 +493,14 @@ void setupWorld(){
 	voxelRendererHalf->constructDisplayList();
 
 
-	
+
 	voxelRendererQuater = new VoxelRenderer(fgQuaterVoxel);
-	 topColor = Vec3f(voxSet["level0"]["frontColors"]["top"][0], voxSet["level0"]["frontColors"]["top"][1], voxSet["level0"]["frontColors"]["top"][2] );
-	 bottomColor = Vec3f(voxSet["level0"]["frontColors"]["bottom"][0], voxSet["level0"]["frontColors"]["bottom"][1], voxSet["level0"]["frontColors"]["bottom"][2] );
-	 leftColor = Vec3f(voxSet["level0"]["frontColors"]["left"][0], voxSet["level0"]["frontColors"]["left"][1], voxSet["level0"]["frontColors"]["left"][2] );
-	 rightColor = Vec3f(voxSet["level0"]["frontColors"]["right"][0], voxSet["level0"]["frontColors"]["right"][1], voxSet["level0"]["frontColors"]["right"][2] );
-	 frontColor = Vec3f(voxSet["level0"]["frontColors"]["front"][0], voxSet["level0"]["frontColors"]["front"][1], voxSet["level0"]["frontColors"]["front"][2] );
-	 backColor = Vec3f(voxSet["level0"]["frontColors"]["back"][0], voxSet["level0"]["frontColors"]["back"][1], voxSet["level0"]["frontColors"]["back"][2] );
+	topColor = Vec3f(voxSet["level0"]["frontColors"]["top"][0], voxSet["level0"]["frontColors"]["top"][1], voxSet["level0"]["frontColors"]["top"][2] );
+	bottomColor = Vec3f(voxSet["level0"]["frontColors"]["bottom"][0], voxSet["level0"]["frontColors"]["bottom"][1], voxSet["level0"]["frontColors"]["bottom"][2] );
+	leftColor = Vec3f(voxSet["level0"]["frontColors"]["left"][0], voxSet["level0"]["frontColors"]["left"][1], voxSet["level0"]["frontColors"]["left"][2] );
+	rightColor = Vec3f(voxSet["level0"]["frontColors"]["right"][0], voxSet["level0"]["frontColors"]["right"][1], voxSet["level0"]["frontColors"]["right"][2] );
+	frontColor = Vec3f(voxSet["level0"]["frontColors"]["front"][0], voxSet["level0"]["frontColors"]["front"][1], voxSet["level0"]["frontColors"]["front"][2] );
+	backColor = Vec3f(voxSet["level0"]["frontColors"]["back"][0], voxSet["level0"]["frontColors"]["back"][1], voxSet["level0"]["frontColors"]["back"][2] );
 	voxelRendererQuater->setFrontColor(frontColor, backColor, leftColor, rightColor, topColor, bottomColor);
 	topColor = Vec3f(voxSet["level0"]["backColors"]["top"][0], voxSet["level0"]["backColors"]["top"][1], voxSet["level0"]["backColors"]["top"][2] );
 	bottomColor = Vec3f(voxSet["level0"]["backColors"]["bottom"][0], voxSet["level0"]["backColors"]["bottom"][1], voxSet["level0"]["backColors"]["bottom"][2] );
@@ -591,24 +607,30 @@ void setupWorld(){
 
 	renderList = new RenderList();
 
-		FadeBlock::createDisplayList((maxDim-minDim)/divs);
+	FadeBlock::createDisplayList((maxDim-minDim)/divs);
 
-	translate_z = -maxDim.z;
-	translate_x = (float)  -(maxDim.x + minDim.x) * .5f;
-	translate_y = -1524; // approx 5 ft
+
+	translate_x = (float) configRoot["window"]["translation"][0] + (float)  -(maxDim.x + minDim.x) * .5f;
+	translate_y = - (float)  configRoot["window"]["translation"][1]; // approx 5 ft
+	translate_z = - (float) configRoot["window"]["translation"][2] ; // why wasn't this 0.0?
+
+	rotate_x = (float) configRoot["window"]["rotation"][0];
+	rotate_y = - (float) configRoot["window"]["rotation"][1]; 
+	rotate_z = (float) configRoot["window"]["rotation"][2]; 
+
 
 	curTime = timeGetTime();
 	lastSystemTime = curTime;
 	lastTime = curTime;
 
 
-//	topZero(
+	//	topZero(
 	topBoundsMin.x =  10000+topZero.x + topZero.z;
-			topBoundsMax.x =  -10000+topZero.x - topZero.z;
-			topBoundsMin.y =  -10000+topZero.y - topZero.z;
-			topBoundsMax.y =  10000+topZero.y+topZero.z;
-			topBoundsMin.z =  10000;
-			topBoundsMax.z =  -10000;
+	topBoundsMax.x =  -10000+topZero.x - topZero.z;
+	topBoundsMin.y =  -10000+topZero.y - topZero.z;
+	topBoundsMax.y =  10000+topZero.y+topZero.z;
+	topBoundsMin.z =  10000;
+	topBoundsMax.z =  -10000;
 
 
 }
@@ -618,15 +640,21 @@ CUTBoolean initGL(int argc, char **argv)
 {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
-
-
 	const Setting &window = config.getRoot()["window"];
+
+	if(window["fullscreen"]) {
+		glutGameModeString(window["fullscreenString"]);
+		isFullscreen = true;
+		glutEnterGameMode();		
+	} else {
+			glutInitWindowSize(window_width, window_height);
+	glutCreateWindow("Electroland Gesture Track");
+	}
+
 	window_width = window["width"];
 	window_height = window["height"];
 
 
-	glutInitWindowSize(window_width, window_height);
-	glutCreateWindow("Electroland Gesture Track");
 	glutDisplayFunc(display);
 	glutKeyboardFunc(keyboard);
 	glutSpecialFunc(keyboardSpecial);	
@@ -634,11 +662,7 @@ CUTBoolean initGL(int argc, char **argv)
 
 	// initialize necessary OpenGL extensions
 	glewInit();
-	if(window["fullscreen"]) {
-		glutGameModeString(window["fullscreenString"]);
-		isFullscreen = true;
-		glutEnterGameMode();		
-	}
+
 
 	if (! glewIsSupported("GL_VERSION_2_0 ")) {
 		fprintf(stderr, "ERROR: Support for necessary OpenGL extensions missing.");
@@ -651,7 +675,7 @@ CUTBoolean initGL(int argc, char **argv)
 	glEnable(GL_DEPTH_TEST);
 	glEnable (GL_BLEND);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//glEnable(GL_CULL_FACE);	
+	//glEnable(GL_CULL_FACE);	
 
 	canvasRatio = window["canvasRatio"];
 	viewWidth = (int) (canvasRatio * window_height);
@@ -807,51 +831,50 @@ void render(int view)
 
 
 
-	Vec3f zero = Vec3f(0,0,0);
-	Vec3f xAxis = Vec3f(100,0,0);
-	Vec3f yAxis = Vec3f(0,100,0);
-	Vec3f zAxis = Vec3f(0,0,100);
 
 	for(int i =0; i < camCnt; i++) {
 		tyzxCams[i]->grab();
-		/*
-		glBegin(GL_TRIANGLE_FAN);
-
-		glColor3f(1,1,1);
-		Vec3f pt = tyzxCams[i]->transformMatrix.transformPoint(zero);
-		glVertex3f(pt.x, pt.y, pt.z);
-
-		glColor3f(1,0,0);
-		pt = tyzxCams[i]->transformMatrix.transformPoint(xAxis);
-		glVertex3f(pt.x, pt.y, pt.z);
-
-		glColor3f(0,1,0);
-		pt = tyzxCams[i]->transformMatrix.transformPoint(yAxis);
-		glVertex3f(pt.x, pt.y, pt.z);
 		
-		glColor3f(0,0,1);
-		 pt = tyzxCams[i]->transformMatrix.transformPoint(zAxis);
-		glVertex3f(pt.x, pt.y, pt.z);
-
-		glColor3f(1,0,0);
-		pt = tyzxCams[i]->transformMatrix.transformPoint(xAxis);
-		glVertex3f(pt.x, pt.y, pt.z);
-
-		glEnd();
-		*/
 
 	}
-		glPointSize(1);
+	glPointSize(1);
 
 
 	cloudConstructor->calcPoints(false);
 
 	if(showPoints) {
 
-		glPointSize(3.0);
+		glPointSize(1.0);
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glVertexPointer(3, GL_FLOAT, 0, cloudConstructor->getPoints());
 		for(int i = 0; i < camCnt; i++) {
+		Vec3f zero = Vec3f(0,0,0);
+	Vec3f xAxis = Vec3f(100,0,0);
+	Vec3f yAxis = Vec3f(0,100,0);
+	Vec3f zAxis = Vec3f(0,0,100);
+	tyzxCams[i]->transfromPoint(zero);
+	tyzxCams[i]->transfromPoint(xAxis);
+	tyzxCams[i]->transfromPoint(yAxis);
+	tyzxCams[i]->transfromPoint(zAxis);
+		
+		glBegin(GL_TRIANGLE_FAN);
+
+		glColor3f(1,1,1);
+		glVertex3f(zero.x, zero.y, zero.z);
+
+		glColor3f(1,0,0);
+		glVertex3f(xAxis.x, xAxis.y, xAxis.z);
+
+		glColor3f(0,1,0);
+		glVertex3f(yAxis.x, yAxis.y, yAxis.z);
+
+		glColor3f(0,0,1);
+		glVertex3f(zAxis.x, zAxis.y, zAxis.z);
+
+		glColor3f(1,0,0);
+		glVertex3f(xAxis.x, xAxis.y, xAxis.z);
+
+		glEnd();
 			if ((selectedCam < 0) || (selectedCam == i )) {
 				glColor3f(1.0,0.0,0.0);
 			} else {
@@ -885,7 +908,7 @@ void render(int view)
 
 	// if its in the forground the current is zero then set with current time else set to 
 
-//	enum VoxelMode { RAW_VOXELS, BG_VOXELS, FG_VOXELS, PERSIST_VOXELS, DIFF_VOXELS, NO_VOXELS};
+	//	enum VoxelMode { RAW_VOXELS, BG_VOXELS, FG_VOXELS, PERSIST_VOXELS, DIFF_VOXELS, NO_VOXELS};
 
 	switch(voxelMode) {
 		case RAW_VOXELS:
@@ -898,7 +921,7 @@ void render(int view)
 			fgVoxel->draw(voxelThresh);
 			break;
 		case PERSIST_VOXELS:
-//			std::cout << "render threash " <<  persistanceThresh * fps << std::endl;
+			//			std::cout << "render threash " <<  persistanceThresh * fps << std::endl;
 			persistanceVoxel->draw(persistanceThresh * fps);			
 			break;
 		case DIFF_VOXELS:
@@ -924,111 +947,111 @@ void render(int view)
 }
 
 /*
-	if(voxelMode == NO_VOXELS) {
-		curVoxel->deallocateGridOnGPU();
-		//		curVoxel->draw(1000.0f);
-	} else if(voxelMode == RAW_VOXELS) {
-		curVoxel->deallocateGridOnGPU();
-		curVoxel->draw(.5f);
-	} else {
-		bgVoxel->addScale(adaptation, curVoxel,1.0f - adaptation, false);
-		if(voxelMode == BG_VOXELS) {
-			bgVoxel->deallocateGridOnGPU();
-			bgVoxel->draw(.5f);
-		} else {
-			//			curVoxel->addScale(1, bgVoxel, -1);
-			curVoxel->sub(bgVoxel);
-			bgVoxel->deallocateGridOnGPU();
-			curVoxel->deallocateGridOnGPU();
-			if(voxelMode== FG_VOXELS) {
-				curVoxel->draw(.75f);
-			} else {
+if(voxelMode == NO_VOXELS) {
+curVoxel->deallocateGridOnGPU();
+//		curVoxel->draw(1000.0f);
+} else if(voxelMode == RAW_VOXELS) {
+curVoxel->deallocateGridOnGPU();
+curVoxel->draw(.5f);
+} else {
+bgVoxel->addScale(adaptation, curVoxel,1.0f - adaptation, false);
+if(voxelMode == BG_VOXELS) {
+bgVoxel->deallocateGridOnGPU();
+bgVoxel->draw(.5f);
+} else {
+//			curVoxel->addScale(1, bgVoxel, -1);
+curVoxel->sub(bgVoxel);
+bgVoxel->deallocateGridOnGPU();
+curVoxel->deallocateGridOnGPU();
+if(voxelMode== FG_VOXELS) {
+curVoxel->draw(.75f);
+} else {
 
 
-				voxCenters.clear();
-				Vec3f sides = (curVoxel->maxDim-curVoxel->minDim);
-				sides /= curVoxel->divisions;
+voxCenters.clear();
+Vec3f sides = (curVoxel->maxDim-curVoxel->minDim);
+sides /= curVoxel->divisions;
 
-				float* gridPtr = curVoxel->grid;
+float* gridPtr = curVoxel->grid;
 
-				float curZ;
-				float curY;
+float curZ;
+float curY;
 
-				for(int k = 0; k < curVoxel->divisions.z; k++) {
-					curZ = curVoxel->minDim.z + (k+.5) * sides.z;
-					for(int j = 0; j < curVoxel->divisions.y; j++) {
-						curY = curVoxel->minDim.y+ (j+.5) * sides.y;
-						for(int i = 0; i < curVoxel->divisions.x; i++) {
-							if(*gridPtr > .25) {
-								voxCenters.push_back(Vec3f(curVoxel->minDim.x + (i+.5) * sides.x, curY, curZ));
-							}
-							gridPtr++;
-						}
-					}
-				}
+for(int k = 0; k < curVoxel->divisions.z; k++) {
+curZ = curVoxel->minDim.z + (k+.5) * sides.z;
+for(int j = 0; j < curVoxel->divisions.y; j++) {
+curY = curVoxel->minDim.y+ (j+.5) * sides.y;
+for(int i = 0; i < curVoxel->divisions.x; i++) {
+if(*gridPtr > .25) {
+voxCenters.push_back(Vec3f(curVoxel->minDim.x + (i+.5) * sides.x, curY, curZ));
+}
+gridPtr++;
+}
+}
+}
 
-				for(vector<PSystem *>::iterator it = pSystems.begin(); it!=pSystems.end(); it++) {
-					(*it)->addPoints(curTime,dt,voxCenters);
-					(*it)->update(curTime,dt);
-					(*it)->render();
-				}
+for(vector<PSystem *>::iterator it = pSystems.begin(); it!=pSystems.end(); it++) {
+(*it)->addPoints(curTime,dt,voxCenters);
+(*it)->update(curTime,dt);
+(*it)->render();
+}
 
 
-				/*
-				lastVoxel->sub(curVoxel);
-				curVoxel->deallocateGridOnGPU();
-				if(voxelMode == DIFF_VOXELS) {
-				lastVoxel->draw(.5f);
-				}
+/*
+lastVoxel->sub(curVoxel);
+curVoxel->deallocateGridOnGPU();
+if(voxelMode == DIFF_VOXELS) {
+lastVoxel->draw(.5f);
+}
 
-				lastVoxel->copyGrid(curVoxel);
+lastVoxel->copyGrid(curVoxel);
 
-				Vec3f sides = (lastVoxel->maxDim-lastVoxel->minDim);
-				sides /= lastVoxel->divisions;
+Vec3f sides = (lastVoxel->maxDim-lastVoxel->minDim);
+sides /= lastVoxel->divisions;
 
-				float* gridPtr = lastVoxel->grid;
-				for(int k = 0; k < lastVoxel->divisions.z; k++) {
-				for(int j = 0; j < lastVoxel->divisions.y; j++) {
-				for(int i = 0; i < lastVoxel->divisions.x; i++) {
-				if(*gridPtr > .5) {
-				renderList->add(new FadeBlock(lastSystemTime, lastSystemTime+1000, 
-				(i+.5) * sides.x, (j+.5) * sides.y, (k+.5) * sides.z));
-				}
-				gridPtr++;
+float* gridPtr = lastVoxel->grid;
+for(int k = 0; k < lastVoxel->divisions.z; k++) {
+for(int j = 0; j < lastVoxel->divisions.y; j++) {
+for(int i = 0; i < lastVoxel->divisions.x; i++) {
+if(*gridPtr > .5) {
+renderList->add(new FadeBlock(lastSystemTime, lastSystemTime+1000, 
+(i+.5) * sides.x, (j+.5) * sides.y, (k+.5) * sides.z));
+}
+gridPtr++;
 
-				}
-				}
-				}
-			}
-		}
+}
+}
+}
+}
+}
 */
 //		bgVoxel->deallocateGridOnGPU();
 //		curVoxel->deallocateGridOnGPU();
 //		lastVoxel->deallocateGridOnGPU();
 
 
-		/*
-		if((voxelMode == DIFF_VOXELS) || (voxelMode == PRES_VOXELS)) {
-		curVoxel->sub(bgVoxel,false);
-		bgVoxel->deallocateGridOnGPU();
-		curVoxel->threshSet(voxelThresh,0,1,false);
-		presenceVoxel->add(curVoxel, false); // increment cubes
-		presenceVoxel->mult(curVoxel, false); // mask		
-		lastPresenceVoxel->sub(presenceVoxel); // this should be all the old voxels
-		lastPresenceVoxel->copyGrid(presenceVoxel);
-		} else {
-		}	
-		curVoxel->deallocateGridOnGPU();
+/*
+if((voxelMode == DIFF_VOXELS) || (voxelMode == PRES_VOXELS)) {
+curVoxel->sub(bgVoxel,false);
+bgVoxel->deallocateGridOnGPU();
+curVoxel->threshSet(voxelThresh,0,1,false);
+presenceVoxel->add(curVoxel, false); // increment cubes
+presenceVoxel->mult(curVoxel, false); // mask		
+lastPresenceVoxel->sub(presenceVoxel); // this should be all the old voxels
+lastPresenceVoxel->copyGrid(presenceVoxel);
+} else {
+}	
+curVoxel->deallocateGridOnGPU();
 
 
 
-		if(voxelMode == BG_VOXELS) {
-		} else if(voxelMode != NO_VOXELS) {
-		presenceVoxel->draw(.5f);
-		}
-		*/
+if(voxelMode == BG_VOXELS) {
+} else if(voxelMode != NO_VOXELS) {
+presenceVoxel->draw(.5f);
+}
+*/
 //	}
-	//	renderList->draw(lastSystemTime);
+//	renderList->draw(lastSystemTime);
 
 //}
 
@@ -1056,8 +1079,8 @@ void display() {
 		glScissor (window_width/2,window_height/2, window_width/2, window_height/2);
 		glMatrixMode (GL_PROJECTION);								// Select The Projection Matrix
 		glLoadIdentity ();
-//		glOrtho ( 10000+topZero.x + topZero.z,     -10000+topZero.x-topZero.z, 
-//			-10000+topZero.y - topZero.z,      10000+topZero.y+topZero.z, 100000,-100000);
+		//		glOrtho ( 10000+topZero.x + topZero.z,     -10000+topZero.x-topZero.z, 
+		//			-10000+topZero.y - topZero.z,      10000+topZero.y+topZero.z, 100000,-100000);
 		glOrtho(topBoundsMin.x, topBoundsMax.x,	topBoundsMin.y, topBoundsMax.y,topBoundsMin.z, topBoundsMax.z);
 		render(TOP_VIEW);
 
@@ -1175,6 +1198,14 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 	case('p'):
 		showPoints = ! showPoints;
 		break;
+	case('['):
+		worldCamRot = ! worldCamRot;
+		if(worldCamRot) {
+			std::cout << "rotating cameras in world coords" << std::endl;
+		} else {
+			std::cout << "rotating cameras in cam coords" << std::endl;
+		}
+		break;
 	case('v'):
 		voxelMode++;
 		if(voxelMode > NO_VOXELS) 
@@ -1202,7 +1233,7 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 		}
 	}
 
-	
+
 	if(selectedCam >= 0) {
 		switch(key) {
 			case('w'):
@@ -1211,7 +1242,7 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 				} else {
 					tyzxCams[selectedCam]->translation += Vec3f(0,0,100);
 				}
-//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
+				//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
 				break;
 			case('W'):
 				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
@@ -1219,7 +1250,7 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 				} else {
 					tyzxCams[selectedCam]->translation += Vec3f(0,0,10);
 				}
-//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
+				//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
 				break;
 			case('a'):
 				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
@@ -1227,7 +1258,7 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 				} else {
 					tyzxCams[selectedCam]->translation += Vec3f(100,0,0);
 				}
-//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
+				//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
 				break;
 			case('A'):
 				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
@@ -1235,7 +1266,7 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 				} else {
 					tyzxCams[selectedCam]->translation += Vec3f(10,0,0);
 				}
-//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
+				//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
 				break;
 			case('d'):
 				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
@@ -1243,7 +1274,7 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 				} else {
 					tyzxCams[selectedCam]->translation += Vec3f(-100,0,0);
 				}
-//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
+				//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
 				break;
 			case('D'):
 				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
@@ -1251,7 +1282,7 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 				} else {
 					tyzxCams[selectedCam]->translation += Vec3f(-10,0,0);
 				}
-//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
+				//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
 				break;		
 			case('s'):
 				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
@@ -1259,7 +1290,7 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 				} else {
 					tyzxCams[selectedCam]->translation += Vec3f(0,0,-100);
 				}
-//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
+				//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
 				break;
 			case('S'):
 				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
@@ -1267,7 +1298,7 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 				} else {
 					tyzxCams[selectedCam]->translation += Vec3f(0,0,-10);
 				}
-//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
+				//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
 				break;
 			case('r'):
 				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
@@ -1275,7 +1306,7 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 				} else {
 					tyzxCams[selectedCam]->translation += Vec3f(0,100,0);
 				}
-//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
+				//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
 				break;
 			case('R'):
 				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
@@ -1283,7 +1314,7 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 				} else {
 					tyzxCams[selectedCam]->translation += Vec3f(0,10,0);
 				}
-//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
+				//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
 				break;
 			case('f'):
 				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
@@ -1291,7 +1322,7 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 				} else {
 					tyzxCams[selectedCam]->translation += Vec3f(0,-100,0);
 				}
-//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
+				//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
 				break;
 			case('F'):
 				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
@@ -1299,15 +1330,20 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 				} else {
 					tyzxCams[selectedCam]->translation += Vec3f(0,-10,0);
 				}
-//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
+				//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
 				break;
 			case('j'): // yaw
+				if(worldCamRot) {
+					tyzxCams[selectedCam]->applyRotation(Vec3f(0, 10.0, 0.0));
+				} else {
+
 				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
 					tyzxCams[selectedCam]->rotation += Vec3f(0,0,.1);
 				} else {
 					tyzxCams[selectedCam]->rotation += Vec3f(0,0,10);
 				}
-//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
+				}
+				//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
 				break;
 			case('J'):
 				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
@@ -1315,7 +1351,7 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 				} else {
 					tyzxCams[selectedCam]->rotation += Vec3f(0,0,1);
 				}
-//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
+				//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
 				break;	
 			case('l'):
 				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
@@ -1323,7 +1359,7 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 				} else {
 					tyzxCams[selectedCam]->rotation += Vec3f(0,0,-10);
 				}
-//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
+				//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
 				break;
 			case('L'):
 				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
@@ -1331,23 +1367,27 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 				} else {
 					tyzxCams[selectedCam]->rotation += Vec3f(0,0,-1);
 				}
-//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
+				//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
 				break;
 			case('i'): // pitch
+				if(worldCamRot) {
+					tyzxCams[selectedCam]->applyRotation(Vec3f(10, 0, 0.0));
+				} else {
 				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
 					tyzxCams[selectedCam]->rotation += Vec3f(.1,0,0);
 				} else {
 					tyzxCams[selectedCam]->rotation += Vec3f(10,0,0);
 				}
-//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
+				}
+				//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
 				break;
 			case('I'):
 				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
 					tyzxCams[selectedCam]->rotation += Vec3f(.01,0,0);
 				} else {
-					tyzxCams[selectedCam]->rotation += Vec3f(10,0,0);
+					tyzxCams[selectedCam]->rotation += Vec3f(1,0,0);
 				}
-//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
+				//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
 				break;	
 			case('k'):
 				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
@@ -1355,7 +1395,7 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 				} else {
 					tyzxCams[selectedCam]->rotation += Vec3f(-10,0,0);
 				}
-//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
+				//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
 				break;
 			case('K'):
 				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
@@ -1363,7 +1403,7 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 				} else {
 					tyzxCams[selectedCam]->rotation += Vec3f(-1,0,0);
 				}
-//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
+				//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
 				break;
 			case('o'): // roll
 				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
@@ -1371,7 +1411,7 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 				} else {
 					tyzxCams[selectedCam]->rotation += Vec3f(0,10,0);
 				}
-//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
+				//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
 				break;
 			case('O'):
 				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
@@ -1379,202 +1419,202 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 				} else {
 					tyzxCams[selectedCam]->rotation += Vec3f(0,1,0);
 				}
-//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
+				//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
 				break;	
 			case('u'):
 				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
-						tyzxCams[selectedCam]->rotation += Vec3f(0,-0.1,0);
-			} else {
-						tyzxCams[selectedCam]->rotation += Vec3f(0,-10,0);
+					tyzxCams[selectedCam]->rotation += Vec3f(0,-0.1,0);
+				} else {
+					tyzxCams[selectedCam]->rotation += Vec3f(0,-10,0);
 				}
-//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
+				//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
 				break;
 			case('U'):
 				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
-						tyzxCams[selectedCam]->rotation += Vec3f(0,-0.01,0);
+					tyzxCams[selectedCam]->rotation += Vec3f(0,-0.01,0);
 				} else {
-						tyzxCams[selectedCam]->rotation += Vec3f(0,-1,0);
+					tyzxCams[selectedCam]->rotation += Vec3f(0,-1,0);
 				}
-//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
+				//				tyzxCams[selectedCam]->applyWorldTransforms(camWorldTrans, camWorldRot);	
 				break;
 		}
-	tyzxCams[selectedCam]->updateTransform( );
+		tyzxCams[selectedCam]->updateTransform( );
 
 	}/* else { // change world
 
-		switch(key) {
-			case('w'):
-				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
-					camWorldTrans+=Vec3f(0,0,1);
-				} else {
-					camWorldTrans+=Vec3f(0,0,100);
-				}
-				break;
-			case('W'):
-				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
-					camWorldTrans+=Vec3f(0,0,.1);
-				} else {
-					camWorldTrans+=Vec3f(0,0,10);
-				}
-				break;
-			case('a'):
-				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
-					camWorldTrans+=Vec3f(-1,0,0);
-				} else {
-					camWorldTrans+=Vec3f(-100,0,0);
-				}
-				break;
-			case('A'):
-				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
-					camWorldTrans+=Vec3f(-0.1,0,0);
-				} else {
-					camWorldTrans+=Vec3f(-10,0,0);
-				}
-				break;
-			case('d'):
-				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
-					camWorldTrans+=Vec3f(1,0,0);
-				} else {
-					camWorldTrans+=Vec3f(100,0,0);
-				}
-				break;
-			case('D'):
-				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
-					camWorldTrans+=Vec3f(.1,0,0);
-				} else {
-					camWorldTrans+=Vec3f(10,0,0);
-				}
-				break;		
-			case('s'):
-				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
-					camWorldTrans+=Vec3f(0,0,-1);
-				} else {
-					camWorldTrans+=Vec3f(0,0,-100);
-				}
-				break;
-			case('S'):
-				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
-					camWorldTrans+=Vec3f(0,0,-.1);
-				} else {
-					camWorldTrans+=Vec3f(0,0,-10);
-				}
-				break;
-			case('r'):
-				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
-					camWorldTrans+=Vec3f(0,1,0);
-				} else {
-					camWorldTrans+=Vec3f(0,100,0);
-				}
-				break;
-			case('R'):
-				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
-					camWorldTrans+=Vec3f(0,0.1,0);
-				} else {
-					camWorldTrans+=Vec3f(0,10,0);
-				}
-				break;
-			case('f'):
-				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
-					camWorldTrans+=Vec3f(0,-1,0);
-				} else {
-					camWorldTrans+=Vec3f(0,-100,0);
-				}
-				break;
-			case('F'):
-				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
-					camWorldTrans+=Vec3f(0,-0.1,0);
-				} else {
-					camWorldTrans+=Vec3f(0,-10,0);
-				}
-				break;
-			case('j'): // yaw
-				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
-					camWorldRot+=Vec3f(0,0,.1);
-				} else {
-					camWorldRot+=Vec3f(0,0,10);
-				}
-				break;
-			case('J'):
-				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
-					camWorldRot+=Vec3f(0,0,.01);
-				} else {
-					camWorldRot+=Vec3f(0,0,1);
-				}
-				break;	
-			case('l'):
-				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
-					camWorldRot+=Vec3f(0,0,-.1);
-				} else {
-					camWorldRot+=Vec3f(0,0,-10);
-				}
-				break;
-			case('L'):
-				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
-					camWorldRot+=Vec3f(0,0,-.01);
-				} else {
-					camWorldRot+=Vec3f(0,0,-.1);
-				}
-				break;
-			case('i'): // pitch
-				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
-					camWorldRot+=Vec3f(0.1,0,0);
-				} else {
-					camWorldRot+=Vec3f(10,0,0);
-				}
-				break;
-			case('I'):
-				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
-					camWorldRot+=Vec3f(.01,0,0);
-				} else {
-					camWorldRot+=Vec3f(1,0,0);
-				}
-				break;	
-			case('k'):
-				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
-					camWorldRot+=Vec3f(-0.1,0,0);
-				} else {
-					camWorldRot+=Vec3f(-10,0,0);
-				}
-				break;
-			case('K'):
-				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
-					camWorldRot+=Vec3f(-0.010,0,0);
-				} else {
-					camWorldRot+=Vec3f(-1,0,0);
-				}
-				break;
-			case('o'): // roll
-				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
-					camWorldRot+=Vec3f(0,0.1,0);
-				} else {
-					camWorldRot+=Vec3f(0,10,0);
-				}
-				break;
-			case('O'):
-				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
-					camWorldRot+=Vec3f(0,0.01,0);
-				} else {
-					camWorldRot+=Vec3f(0,1,0);
-				}
-				break;	
-			case('u'):
-				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
-					camWorldRot+=Vec3f(0,-0.1,0);
-				} else {
-					camWorldRot+=Vec3f(0,-10,0);
-				}
-				break;
-			case('U'):
-				if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
-					camWorldRot+=Vec3f(0,-0.01,0);
-				} else {
-					camWorldRot+=Vec3f(0,-1,0);
-				}
-				break;
-		}
-		for(int i = 0; i < camCnt; i++) {
-			tyzxCams[i]->applyWorldTransforms(camWorldTrans, camWorldRot);	
-		}*/
+	 switch(key) {
+	 case('w'):
+	 if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
+	 camWorldTrans+=Vec3f(0,0,1);
+	 } else {
+	 camWorldTrans+=Vec3f(0,0,100);
+	 }
+	 break;
+	 case('W'):
+	 if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
+	 camWorldTrans+=Vec3f(0,0,.1);
+	 } else {
+	 camWorldTrans+=Vec3f(0,0,10);
+	 }
+	 break;
+	 case('a'):
+	 if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
+	 camWorldTrans+=Vec3f(-1,0,0);
+	 } else {
+	 camWorldTrans+=Vec3f(-100,0,0);
+	 }
+	 break;
+	 case('A'):
+	 if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
+	 camWorldTrans+=Vec3f(-0.1,0,0);
+	 } else {
+	 camWorldTrans+=Vec3f(-10,0,0);
+	 }
+	 break;
+	 case('d'):
+	 if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
+	 camWorldTrans+=Vec3f(1,0,0);
+	 } else {
+	 camWorldTrans+=Vec3f(100,0,0);
+	 }
+	 break;
+	 case('D'):
+	 if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
+	 camWorldTrans+=Vec3f(.1,0,0);
+	 } else {
+	 camWorldTrans+=Vec3f(10,0,0);
+	 }
+	 break;		
+	 case('s'):
+	 if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
+	 camWorldTrans+=Vec3f(0,0,-1);
+	 } else {
+	 camWorldTrans+=Vec3f(0,0,-100);
+	 }
+	 break;
+	 case('S'):
+	 if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
+	 camWorldTrans+=Vec3f(0,0,-.1);
+	 } else {
+	 camWorldTrans+=Vec3f(0,0,-10);
+	 }
+	 break;
+	 case('r'):
+	 if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
+	 camWorldTrans+=Vec3f(0,1,0);
+	 } else {
+	 camWorldTrans+=Vec3f(0,100,0);
+	 }
+	 break;
+	 case('R'):
+	 if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
+	 camWorldTrans+=Vec3f(0,0.1,0);
+	 } else {
+	 camWorldTrans+=Vec3f(0,10,0);
+	 }
+	 break;
+	 case('f'):
+	 if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
+	 camWorldTrans+=Vec3f(0,-1,0);
+	 } else {
+	 camWorldTrans+=Vec3f(0,-100,0);
+	 }
+	 break;
+	 case('F'):
+	 if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
+	 camWorldTrans+=Vec3f(0,-0.1,0);
+	 } else {
+	 camWorldTrans+=Vec3f(0,-10,0);
+	 }
+	 break;
+	 case('j'): // yaw
+	 if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
+	 camWorldRot+=Vec3f(0,0,.1);
+	 } else {
+	 camWorldRot+=Vec3f(0,0,10);
+	 }
+	 break;
+	 case('J'):
+	 if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
+	 camWorldRot+=Vec3f(0,0,.01);
+	 } else {
+	 camWorldRot+=Vec3f(0,0,1);
+	 }
+	 break;	
+	 case('l'):
+	 if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
+	 camWorldRot+=Vec3f(0,0,-.1);
+	 } else {
+	 camWorldRot+=Vec3f(0,0,-10);
+	 }
+	 break;
+	 case('L'):
+	 if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
+	 camWorldRot+=Vec3f(0,0,-.01);
+	 } else {
+	 camWorldRot+=Vec3f(0,0,-.1);
+	 }
+	 break;
+	 case('i'): // pitch
+	 if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
+	 camWorldRot+=Vec3f(0.1,0,0);
+	 } else {
+	 camWorldRot+=Vec3f(10,0,0);
+	 }
+	 break;
+	 case('I'):
+	 if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
+	 camWorldRot+=Vec3f(.01,0,0);
+	 } else {
+	 camWorldRot+=Vec3f(1,0,0);
+	 }
+	 break;	
+	 case('k'):
+	 if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
+	 camWorldRot+=Vec3f(-0.1,0,0);
+	 } else {
+	 camWorldRot+=Vec3f(-10,0,0);
+	 }
+	 break;
+	 case('K'):
+	 if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
+	 camWorldRot+=Vec3f(-0.010,0,0);
+	 } else {
+	 camWorldRot+=Vec3f(-1,0,0);
+	 }
+	 break;
+	 case('o'): // roll
+	 if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
+	 camWorldRot+=Vec3f(0,0.1,0);
+	 } else {
+	 camWorldRot+=Vec3f(0,10,0);
+	 }
+	 break;
+	 case('O'):
+	 if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
+	 camWorldRot+=Vec3f(0,0.01,0);
+	 } else {
+	 camWorldRot+=Vec3f(0,1,0);
+	 }
+	 break;	
+	 case('u'):
+	 if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
+	 camWorldRot+=Vec3f(0,-0.1,0);
+	 } else {
+	 camWorldRot+=Vec3f(0,-10,0);
+	 }
+	 break;
+	 case('U'):
+	 if(glutGetModifiers()==GLUT_ACTIVE_ALT) {
+	 camWorldRot+=Vec3f(0,-0.01,0);
+	 } else {
+	 camWorldRot+=Vec3f(0,-1,0);
+	 }
+	 break;
+	 }
+	 for(int i = 0; i < camCnt; i++) {
+	 tyzxCams[i]->applyWorldTransforms(camWorldTrans, camWorldRot);	
+	 }*/
 }
 
 //	}
@@ -1699,9 +1739,11 @@ void motion(int x, int y)
 			rotate_x += dy * 0.2;
 			rotate_z += dx * 0.2;
 		}
+			std::cout << "VCAM T" << translate_x << ", " << translate_y << ", " << translate_z << std::endl;
+			std::cout << "VCAM R" << rotate_x << ", " << rotate_y << ", " << rotate_z << std::endl;
 	}
 
-//	cout << "Mouse: T(" << translate_x << ", " << translate_y << ", " << translate_z << " )  R(" << rotate_x << ", " << rotate_y << ")\n";
+	//	cout << "Mouse: T(" << translate_x << ", " << translate_y << ", " << translate_z << " )  R(" << rotate_x << ", " << rotate_y << ")\n";
 
 	mouse_old_x = x;
 	mouse_old_y = y;
