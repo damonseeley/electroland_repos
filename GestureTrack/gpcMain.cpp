@@ -103,6 +103,7 @@ int refresh;
 bool isFullscreen = false;
 bool showOrtho = false;
 bool showAxis = true;
+bool cullOn = true;
 Config config;
 
 
@@ -609,14 +610,25 @@ void render(int view)
 	//		cloudColorer->calcColors(cloudConstructor->getPointCnt(),  cloudConstructor->getPoints(), true);
 
 //	CULL HERE
-//	if(selectedCam >= 0) {
-//		glBegin(GL_LINES) ;
-//			glVertex3f(0,0,0);
-//			glVertex3f(10000,0,-10000);
-//			glEnd();
-//		
-//	}
-//	cloudConstructor->cull(0,0,10000,-10000);
+	if(cullOn) {
+	float cullx1 = 0;
+	float cullz1 = -10000;
+	float cullx2 = 10000;
+	float cullz2 = -10000;
+	float cullfloor = 0;
+	if(selectedCam >= 0) {
+		glColor3f(1.0,0.0,1.0f);
+		glLineWidth(5.0f);
+		glBegin(GL_LINES) ;
+			glVertex3f(cullx1,0,cullz1);
+			glVertex3f(cullx2,0,cullz2);
+			glEnd();
+			glLineWidth(1.0f);
+		
+	}
+	
+	cloudConstructor->cull(cullx1,cullz1,cullx2,cullz2, cullfloor);
+	}
 
 	cloudColorer->calcColors(cloudConstructor->getPointCnt(),  cloudConstructor->getGPUPoints(), true);
 	cloudConstructor->freeGPUPoints();
@@ -859,6 +871,7 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 		}
 		break;
 	case('v'):
+		cullOn = ! cullOn;
 		break;
 	default:
 		int camNum = key - '1' + 1;
