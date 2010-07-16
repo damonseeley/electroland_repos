@@ -37,6 +37,9 @@ public:
 
 	~CloudConstructor();
 
+	void cull(float ax, float ay, float bx, float by); // y actually z
+
+
 };
 
 #endif
