@@ -167,6 +167,29 @@ CloudConstructor::~CloudConstructor() {
 	delete camParams;
 	delete points;
 }
+void CloudConstructor::cullCylinder(float cx, float cz, float r, float ceilingHack) {
+	float rSqr = r*r;
+	int j;
+	float x,y,z,dx, dz;
+	for(int i = 0; i < pointCnt; i++) {
+		 j = i*3;
+		 x = points[j];
+		 y = points[j+1];
+		 z = points[j+2];
+		 dx = cx - x;
+		 dx *=dx;
+		 dz = cz - z;
+		 dz *= dz;
+		 dx+=dz;
+		 if((dx < rSqr) || (y > ceilingHack)) {
+			 points[j++] =0;
+			points[j++] =0;
+			points[j] =0;
+		 }
+	}
+		 
+
+}
 
 void CloudConstructor::cull(float ax, float az, float bx, float bz, float floor) {
 

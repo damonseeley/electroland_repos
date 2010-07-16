@@ -38,6 +38,7 @@ public:
 	~CloudConstructor();
 
 	void cull(float ax, float az, float bx, float bz, float floor); 
+	void cullCylinder(float cx, float cz, float r, float lameCeilingHack);
 
 };
 
