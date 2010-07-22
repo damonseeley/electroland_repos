@@ -1,0 +1,124 @@
+<?xml version="1.0"?>
+
+<!--
+This file is automatically loaded by the main code at launch.
+Define the appropriate module definitions and global properties in here.
+-->
+
+<Config>
+
+	<InactivityTimeout>300000</InactivityTimeout>
+	<KioskID>1</KioskID>
+	<ShowDebugDisplay>true</ShowDebugDisplay>
+	<ShowCursor>true</ShowCursor>
+	<FullScreen>false</FullScreen>
+	<LoggerURL>http://datadreamer.dyndns.org/ive/</LoggerURL>
+	<ModuleFile>XML/Intro.xml</ModuleFile>
+	<ButtonSound>MEDIA/AUDIO/buttons_pop5b.mp3</ButtonSound>
+
+	<InactivityUnit UnitID="Inactivity_Screen" UnitType="interactive" DefaultAction="resetSession" DefaultLink="default" Timer="15000">
+		<Description>Displays warning of session inactivity before resetting everything.</Description>
+		<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+		<Items>
+			
+			<Item ID="WarningImage" Name="WarningImage" Type="Image" Description="Inactivity screen image." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100%" height="100%">
+				<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="1000"/>
+				<ItemEvent Language="all" Gender="all" Age="all" Action="fadeout" Time="onExit" Duration="500"/>
+				<ItemEntry Language="all" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="true">MEDIA/IMAGES/crc_bg_timeout_vs01.png</ItemEntry>
+			</Item>
+		
+			<Item ID="InvisibleButton" Name="InvisibleButton" Type="Button" ButtonType="Invisible" SingleUse="false" Description="Back to kiosk session." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100%" height="100%">
+				<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+				<ItemEntry Language="all" Gender="all" Age="all" Action="wakeup" Link="default"></ItemEntry>
+			</Item>
+			
+			<Item ID="Alert_Audio" Name="Alert_Audio" Type="Audio" Description="Are you still there?" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+				<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/Timeout-E.mp3</ItemEntry>
+				<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/Timeout-S.mp3</ItemEntry>
+			</Item>
+		
+		</Items>
+	</InactivityUnit>
+	
+	<AdminUnit UnitID="Admin_Panel" UnitType="interactive" DefaultAction="wakeup" DefaultLink="default">
+		<Description>Functions for the administrator.</Description>
+		<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+		<Items>
+		
+			<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="bg" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100%" height="100%">
+				<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+				<ItemEntry Language="all" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="true">MEDIA/IMAGES/bluewave.png</ItemEntry>
+				<!-- ><ItemEntry Language="all" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="true">MEDIA/IMAGES/crc_bg_main_red_vs01.png</ItemEntry> -->
+			</Item>
+			
+
+			
+			<Item ID="EnglishButton" Name="EnglishButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="Set language to english." HorizontalAlign="center" VerticalAlign="middle" x="595" y="170" width="100" height="100">
+				<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+				<ItemEntry Language="all" Gender="all" Age="all" Action="setLanguage" Link="English" MinWidth="180">English</ItemEntry>
+			</Item>
+			
+			<Item ID="SpanishButton" Name="SpanishButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="Set language to spanish." HorizontalAlign="center" VerticalAlign="middle" x="845" y="170" width="100" height="100">
+				<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+				<ItemEntry Language="all" Gender="all" Age="all" Action="setLanguage" Link="Spanish" MinWidth="180">Spanish</ItemEntry>
+			</Item>
+			
+			<Item ID="MaleButton" Name="MaleButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="Set gender to male." HorizontalAlign="center" VerticalAlign="middle" x="595" y="280" width="100" height="100">
+				<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+				<ItemEntry Language="all" Gender="all" Age="all" Action="setGender" Link="Male" MinWidth="180">Male</ItemEntry>
+			</Item>
+			
+			<Item ID="FemaleButton" Name="FemaleButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="Set gender to female." HorizontalAlign="center" VerticalAlign="middle" x="845" y="280" width="100" height="100">
+				<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+				<ItemEntry Language="all" Gender="all" Age="all" Action="setGender" Link="Female" MinWidth="180">Female</ItemEntry>
+			</Item>
+			
+			
+			
+			<Item ID="YoungButton" Name="YoungButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="Set age group to young." HorizontalAlign="center" VerticalAlign="middle" x="970" y="390" width="100" height="100">
+				<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+				<ItemEntry Language="all" Gender="all" Age="all" Action="setAge" Link="Young" MinWidth="180">Young</ItemEntry>
+			</Item>
+			
+			<Item ID="MiddleButton" Name="MiddleButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="Set age group to middle." HorizontalAlign="center" VerticalAlign="middle" x="50%" y="390" width="100" height="100">
+				<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+				<ItemEntry Language="all" Gender="all" Age="all" Action="setAge" Link="Middle" MinWidth="180">Middle</ItemEntry>
+			</Item>
+			
+			<Item ID="OldButton" Name="OldButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="Set age group to old." HorizontalAlign="center" VerticalAlign="middle" x="469" y="390" width="100" height="100">
+				<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+				<ItemEntry Language="all" Gender="all" Age="all" Action="setAge" Link="Old" MinWidth="180">Old</ItemEntry>
+			</Item>
+			
+		<!--
+			<Item ID="VolumeUpButton" Name="VolumeUpButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="Turn volume up." HorizontalAlign="left" VerticalAlign="top" x="50" y="40%" width="100" height="100">
+				<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+				<ItemEntry Language="all" Gender="all" Age="all" Action="volumeUp" Link="default">Volume Up</ItemEntry>
+			</Item>
+			
+			<Item ID="VolumeDownButton" Name="VolumeDownButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="Turn volume down." HorizontalAlign="left" VerticalAlign="top" x="300" y="40%" width="100" height="100">
+				<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+				<ItemEntry Language="all" Gender="all" Age="all" Action="volumeDown" Link="default">Volume Down</ItemEntry>
+			</Item>
+		-->
+			
+			<Item ID="ExitButton" Name="ExitButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="Back to kiosk session." HorizontalAlign="center" VerticalAlign="middle" x="373" y="700" width="100" height="100">
+				<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+				<ItemEntry Language="all" Gender="all" Age="all" Action="exitAdminPanel" Link="default">Exit Admin Panel</ItemEntry>
+			</Item>
+
+			<Item ID="ResetButton" Name="ResetButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="Reset kiosk session." HorizontalAlign="center" VerticalAlign="middle" x="50%" y="700" width="100" height="100">
+				<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+				<ItemEntry Language="all" Gender="all" Age="all" Action="resetSession" Link="default">Reset Session</ItemEntry>
+			</Item>
+			
+			<Item ID="QuitButton" Name="QuitButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="Quit the application." HorizontalAlign="center" VerticalAlign="middle" x="1053" y="700" width="100" height="100">
+				<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+				<ItemEntry Language="all" Gender="all" Age="all" Action="quit" Link="default">Quit Kiosk App</ItemEntry>
+			</Item>
+			
+		
+		</Items>
+	</AdminUnit>
+	
+</Config>
