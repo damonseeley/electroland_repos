@@ -1,0 +1,211 @@
+<?xml version="1.0"?>
+
+<Modules EntryPoint="Welcome Module">
+
+	<Module LogVariable="000">
+		<ModuleName>Welcome Module</ModuleName>
+		<Description>Looping linear video module.</Description>
+		<EntryPoints>
+			<EntryPoint Age="all" FirstUnit="W_1"/>
+		</EntryPoints>
+		<Units>
+		
+			<Unit UnitID="W_1" UnitType="interactive" DefaultAction="module" DefaultLink="Intake Module">
+				<Description>Displays looping welcome video.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="1500">Crossfade</Transition>
+				<Items>
+					
+					<Item ID="Welcome_Video" Name="Welcome_Video" Type="Video" Description="Welcome_Video" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<!--<ItemEvent Language="all" Gender="all" Age="all" Action="fadeout" Time="onExit" Duration="0"/>-->
+						<ItemEntry Language="all" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="true">CRC/MEDIA/VIDEO/WelcomeScreen.mov</ItemEntry>
+					</Item>
+				
+					<Item ID="StartSessionButton" Name="StartSessionButton" Type="Button" ButtonType="Invisible" SingleUse="false" Description="SESSION STARTED" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="33"/>
+						<ItemEntry Language="all" Gender="all" Age="all" Action="module" Link="Intake Module"></ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+		</Units>
+	</Module>
+	
+	<Module LogVariable="001">
+		<ModuleName>Intake Module</ModuleName>
+		<Description>Users enter demographic data that determines module path.</Description>
+		<EntryPoints>
+			<EntryPoint Age="all" FirstUnit="I_Language"/>
+		</EntryPoints>
+		<Units>
+		
+			<Unit UnitID="I_Language" UnitType="interactive" DefaultAction="unit" DefaultLink="I_Age" StartLogger="true">
+				<Description>Language selection.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">CRC/MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Language_Question_Audio" Name="Language_Question_Audio" Type="Audio" Description="Language_Question_Audio" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEntry Language="all" Gender="all" Age="all" Volume="100" Loop="false">CRC/MEDIA/AUDIO/I_Language.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="Language_Question_Text" Name="Language_Question_Text" Type="Text" Description="Which language do you prefer?" HorizontalAlign="center" VerticalAlign="center" x="50%" y="280" width="1100" height="300">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Leading="15" Color="0xFFFFFF">¿Qué idioma prefiere: Español o Inglés? &#13; What language do you prefer, English or Spanish?</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Leading="15" Color="0xFFFFFF">¿Qué idioma prefiere: Español o Inglés? &#13; What language do you prefer, English or Spanish?</ItemEntry>
+					</Item>
+				
+					<Item ID="SpanishButton" Name="SpanishButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="SPANISH LANGUAGE" HorizontalAlign="left" VerticalAlign="top" x="471" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="all" Gender="all" Age="all" Action="setLanguage" Link="Spanish" MinWidth="180">Español</ItemEntry>
+					</Item>
+					
+					<Item ID="EnglishButton" Name="EnglishButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="ENGLISH LANGUAGE" HorizontalAlign="left" VerticalAlign="top" x="754" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="all" Gender="all" Age="all" Action="setLanguage" Link="English" MinWidth="180">English</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+		
+			<Unit UnitID="I_Age" UnitType="interactive" DefaultAction="unit" DefaultLink="I_Sex">
+				<Description>Age group selection.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="1"/>
+						<ItemEntry Language="all" Gender="all" Age="all">CRC/MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Age_Question_Audio" Name="Age_Question_Audio" Type="Audio" Description="Age_Question_Audio" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">CRC/MEDIA/AUDIO/I_2-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">CRC/MEDIA/AUDIO/I_2-S.mp3</ItemEntry>
+					</Item>
+				
+					<Item ID="Age_Question_Text" Name="Age_Question_Text" Type="Text" Description="How old are you?" HorizontalAlign="center" VerticalAlign="center" x="50%" y="320" width="1000" height="300">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Color="0xFFFFFF">How old are you?</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Color="0xFFFFFF">¿Qué edad tiene usted?</ItemEntry>
+					</Item>
+				
+					<Item ID="YoungButton" Name="YoungButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="YOUNG AGE GROUP" HorizontalAlign="left" VerticalAlign="top" x="322" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="setAge" Link="Young" MinWidth="180">Under 50</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="setAge" Link="Young" MinWidth="180" x="300">Menor de 50</ItemEntry>
+					</Item>
+				
+					<Item ID="MiddleButton" Name="MiddleButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="MIDDLE AGE GROUP" HorizontalAlign="left" VerticalAlign="top" x="610" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="setAge" Link="Middle" MinWidth="180">50 to 64</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="setAge" Link="Middle" MinWidth="180" x="631">50 a 64</ItemEntry>
+					</Item>
+				
+					<Item ID="OldButton" Name="OldButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="OLD AGE GROUP" HorizontalAlign="left" VerticalAlign="top" x="898" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="setAge" Link="Old" MinWidth="180">Over 65</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="setAge" Link="Old" MinWidth="180" x="913">Más de 65</ItemEntry>
+						
+					</Item>
+				
+				</Items>
+			</Unit>
+		
+			<Unit UnitID="I_Sex" UnitType="interactive" DefaultAction="module" DefaultLink="Product Selection">
+				<Description>Gender selection.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="1"/> 
+						<ItemEntry Language="all" Gender="all" Age="all">CRC/MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Gender_Question_Audio" Name="Gender_Question_Audio" Type="Audio" Description="Gender_Question_Audio" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">CRC/MEDIA/AUDIO/I_3-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">CRC/MEDIA/AUDIO/I_3-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="Gender_Question_Text" Name="Gender_Question_Text" Type="Text" Description="Are you a man or a woman?" HorizontalAlign="center" VerticalAlign="center" x="50%" y="320" width="1000" height="300">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Color="0xFFFFFF">Are you male or female?</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Color="0xFFFFFF">¿Es usted hombre o mujer?</ItemEntry>
+					</Item>
+				
+					<Item ID="MaleButton" Name="MaleButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="MALE GENDER" HorizontalAlign="left" VerticalAlign="top" x="471" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="setGender" Link="Male" MinWidth="180">Male</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="setGender" Link="Male" MinWidth="180">Hombre</ItemEntry>
+					</Item>
+				
+					<Item ID="FemaleButton" Name="FemaleButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="FEMALE GENDER" HorizontalAlign="left" VerticalAlign="top" x="754" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="setGender" Link="Female" MinWidth="180">Female</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="setGender" Link="Female" MinWidth="180">Mujer</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+		</Units>
+	</Module>
+	
+	<Module LogVariable="002">
+		<ModuleName>Product Selection</ModuleName>
+		<Description>User chooses which product to review.</Description>
+		<EntryPoints>
+			<EntryPoint Age="all" FirstUnit="P_1"/>
+		</EntryPoints>
+		<Units>
+		
+			<Unit UnitID="P_1" UnitType="interactive" DefaultAction="module" DefaultLink="Welcome Module">
+				<Description>Displays looping welcome video.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="1500">Crossfade</Transition>
+				<Items>
+					
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="1"/> 
+						<ItemEntry Language="all" Gender="all" Age="all">CRC/MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Product_Selection_Text" Name="Product_Selection_Text" Type="Text" Description="Select a product to review" HorizontalAlign="center" VerticalAlign="center" x="50%" y="320" width="1000" height="300">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Color="0xFFFFFF">Select a product to review.</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Color="0xFFFFFF">Elija un producto para su revisión.</ItemEntry>
+					</Item>
+					
+					<Item ID="CRCButton" Name="CRCButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="Colo-Rectal Cancer" HorizontalAlign="center" VerticalAlign="top" x="25%" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="loadModules" Link="CRC/XML/Modules.xml" MinWidth="180">Colo-Rectal Cancer</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="loadModules" Link="CRC/XML/Modules.xml" MinWidth="180">Cáncer de Colon</ItemEntry>
+					</Item>
+					
+					<Item ID="BreastButton" Name="BreastButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="Breast Cancer" HorizontalAlign="center" VerticalAlign="top" x="50%" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="loadModules" Link="BC/XML/Modules.xml" MinWidth="180">Breast Cancer</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="loadModules" Link="BC/XML/Modules.xml" MinWidth="180">Cáncer de Mama</ItemEntry>
+					</Item>
+					
+					<Item ID="BreastButton" Name="BreastButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="Breast Cancer" HorizontalAlign="center" VerticalAlign="top" x="85%" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="loadModules" Link="CC/XML/Modules.xml" MinWidth="180">Cervical Cancer</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="loadModules" Link="CC/XML/Modules.xml" MinWidth="180">Cáncer de Cuello Uterino</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+		</Units>
+	</Module>
+
+</Modules>

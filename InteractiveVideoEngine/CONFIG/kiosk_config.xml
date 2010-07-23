@@ -14,7 +14,7 @@ Define the appropriate module definitions and global properties in here.
 	<FullScreen>false</FullScreen>
 	<LoggerURL>http://datadreamer.dyndns.org/ive/</LoggerURL>
 	<ModuleFile>XML/Intro.xml</ModuleFile>
-	<ButtonSound>MEDIA/AUDIO/buttons_pop5b.mp3</ButtonSound>
+	<ButtonSound>CRC/MEDIA/AUDIO/buttons_pop5b.mp3</ButtonSound>
 
 	<InactivityUnit UnitID="Inactivity_Screen" UnitType="interactive" DefaultAction="resetSession" DefaultLink="default" Timer="15000">
 		<Description>Displays warning of session inactivity before resetting everything.</Description>
@@ -24,7 +24,7 @@ Define the appropriate module definitions and global properties in here.
 			<Item ID="WarningImage" Name="WarningImage" Type="Image" Description="Inactivity screen image." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100%" height="100%">
 				<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="1000"/>
 				<ItemEvent Language="all" Gender="all" Age="all" Action="fadeout" Time="onExit" Duration="500"/>
-				<ItemEntry Language="all" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="true">MEDIA/IMAGES/crc_bg_timeout_vs01.png</ItemEntry>
+				<ItemEntry Language="all" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="true">CRC/MEDIA/IMAGES/crc_bg_timeout_vs01.png</ItemEntry>
 			</Item>
 		
 			<Item ID="InvisibleButton" Name="InvisibleButton" Type="Button" ButtonType="Invisible" SingleUse="false" Description="Back to kiosk session." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100%" height="100%">
@@ -33,8 +33,8 @@ Define the appropriate module definitions and global properties in here.
 			</Item>
 			
 			<Item ID="Alert_Audio" Name="Alert_Audio" Type="Audio" Description="Are you still there?" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
-				<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/Timeout-E.mp3</ItemEntry>
-				<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/Timeout-S.mp3</ItemEntry>
+				<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">CRC/MEDIA/AUDIO/Timeout-E.mp3</ItemEntry>
+				<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">CRC/MEDIA/AUDIO/Timeout-S.mp3</ItemEntry>
 			</Item>
 		
 		</Items>
@@ -47,7 +47,7 @@ Define the appropriate module definitions and global properties in here.
 		
 			<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="bg" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100%" height="100%">
 				<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
-				<ItemEntry Language="all" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="true">MEDIA/IMAGES/bluewave.png</ItemEntry>
+				<ItemEntry Language="all" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="true">CRC/MEDIA/IMAGES/bluewave.png</ItemEntry>
 				<!-- ><ItemEntry Language="all" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="true">MEDIA/IMAGES/crc_bg_main_red_vs01.png</ItemEntry> -->
 			</Item>
 			
