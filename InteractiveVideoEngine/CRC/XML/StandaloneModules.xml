@@ -1,0 +1,2147 @@
+<?xml version="1.0"?>
+
+<!-- EXAMPLES
+CR: &#13;
+LF: &#10;
+Left Curly Quote: &#8220;
+Right Curly Quote: &#8221;
+Left Curly Quote: &#8216;
+Right Curly Quote: &#8217;
+
+// titles text
+<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="60" Leading="10" Color="0xFFFFFF">TEXT</ItemEntry>
+// optional params: Bold, Shadow and Leading
+
+// main questions
+Size="54" Leading="15"
+
+// question or intstruction text
+<ItemEntry Language="English" Gender="all" Age="all" TextAlign="left" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="10" Color="0xFFFFFF">
+
+// buttons
+<ItemEntry Language="all" Gender="all" Age="all" Action="setLanguage" Link="English" MinWidth="180">English</ItemEntry>
+// optional params: MinWidth
+
+
+END EXAMPLES -->
+
+
+<Modules EntryPoint="Module 1">
+	
+	<Module LogVariable="003">
+		<ModuleName>Module 1</ModuleName>
+		<Description>What is colon cancer?</Description>
+		<EntryPoints>
+			<EntryPoint Age="all" FirstUnit="1_title"/>
+		</EntryPoints>
+		<Units>
+		
+			<Unit UnitID="1_title" UnitType="audio" DefaultAction="unit" DefaultLink="1_1">
+				<Description>Module 1 Title</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+					
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_titles_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Mod1_TitleVO" Name="Mod1_TitleVO" Type="Audio" Description="Mod1_TitleVO" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:01:000" Duration="30"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/1_Title-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/1_Title-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="Mod1_Title" Name="Mod1_Title" Type="Text" Description="Mod1_Title" HorizontalAlign="center" VerticalAlign="center" x="50%" y="50%" width="1000" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="60" Leading="10" Color="0xFFFFFF">What is Colon Cancer?</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="60" Leading="10" Color="0xFFFFFF">¿Qué es Cáncer de Colon?</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="1_1" UnitType="video" DefaultAction="module" DefaultLink="Module 2">
+				<Description>Displays video on colon cancer.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+					
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Video" Name="Video" Type="Video" Description="Module 1 Video" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="100"/> 
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">MEDIA/VIDEO/E-1_1.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">MEDIA/VIDEO/S-1_1.mov</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+		</Units>
+	</Module>
+	
+	<Module LogVariable="004">
+		<ModuleName>Module 2</ModuleName>
+		<Description>Colon cancer risk factors and misconceptions.</Description>
+		<EntryPoints>
+			<EntryPoint Age="all" FirstUnit="2_title"/>
+		</EntryPoints>
+		<Units>
+		
+			<Unit UnitID="2_title" UnitType="audio" DefaultAction="unit" DefaultLink="2_1">
+				<Description>Module 2 Title</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+					
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_titles_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Mod2_TitleVO" Name="Mod2_TitleVO" Type="Audio" Description="Mod2_TitleVO" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:01:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/2_Title-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/2_Title-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="Mod2_Title" Name="Mod2_Title" Type="Text" Description="Mod2_Title" HorizontalAlign="center" VerticalAlign="center" x="50%" y="50%" width="1000" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="60" Leading="10" Color="0xFFFFFF">What Increases Your Risk for&#13;Developing Colon Cancer?</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="60" Leading="10" Color="0xFFFFFF">¿Qué es lo Que Aumenta Su Riesgo de Contraer el Cáncer de Colon?</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="2_1" UnitType="video" DefaultAction="unit" DefaultLink="2_2">
+				<Description>Risk factors and misconceptions video.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="RiskFactorsVideo" Name="RiskFactorsVideo" Type="Video" Description="Risk factors and misconceptions video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">MEDIA/VIDEO/E-2_1.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">MEDIA/VIDEO/S-2_1.mov</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+		
+			<Unit UnitID="2_2" UnitType="interactive" DefaultAction="module" DefaultLink="Module 3">
+				<Description>Continue to module 3 or review risk info.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<!--<Transition Duration="500">Crossfade</Transition>-->
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+					</Item>
+				
+					<Item ID="ReviewRiskText" Name="ReviewRiskText" Type="Text" Description="ReviewRiskText" HorizontalAlign="center" VerticalAlign="center" x="50%" y="400" width="1000" height="0">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="left" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="10" Color="0xFFFFFF">Touch the &#8220;Review Risks&#8221; button to see if you have higher than average risk for colon cancer.</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="left" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="10" Color="0xFFFFFF">Toque el botón que dice &#8220;Revisar&#8221; para saber si tiene un nivel de riesgo más alto que la norma para contraer cáncer de colon.</ItemEntry>
+					</Item>
+				
+					<Item ID="ReviewRiskVO" Name="ReviewRiskVO" Type="Audio" Description="VO for review risk" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/2_2-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/2_2-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="ReviewRiskInfo" Name="ReviewRiskInfo" Type="Button" ButtonType="NavButton" SingleUse="false" Description="GO TO MODULE 2A" HorizontalAlign="left" VerticalAlign="top" x="889" y="774" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="module" Link="Module 2A">Review Risks</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="module" Link="Module 2A" x="973">Revisar</ItemEntry>
+						
+					</Item>
+				
+					<Item ID="ContinueButton" Name="ContinueButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="GO TO TO MODULE 3" HorizontalAlign="left" VerticalAlign="top" x="1190" y="774" width="100" height="100">
+						<ItemEvent Language="English" Gender="all" Age="all" Action="fadein" Time="00:00:07:000" Duration="500"/>
+						<ItemEvent Language="Spanish" Gender="all" Age="all" Action="fadein" Time="00:00:12:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="module" Link="Module 3">Continue</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="module" Link="Module 3" x="1176">Continuar</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+		</Units>
+	</Module>
+	
+	<Module LogVariable="005">
+		<ModuleName>Module 2A</ModuleName>
+		<Description>Family Risk Factors</Description>
+		<EntryPoints>
+			<EntryPoint Age="all" FirstUnit="2A_title"/>
+		</EntryPoints>
+		<Units>
+		
+			<Unit UnitID="2A_title" UnitType="audio" DefaultAction="unit" DefaultLink="2A_0">
+				<Description>Module 2A Title</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+					
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_titles_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Mod2A_TitleVO" Name="Mod2A_TitleVO" Type="Audio" Description="Mod2A_TitleVO" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:01:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/2A_Title-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/2A_Title-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="Mod2A_Title" Name="Mod2A_Title" Type="Text" Description="Mod2A_Title" HorizontalAlign="center" VerticalAlign="center" x="50%" y="50%" width="1000" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="60" Leading="10" Color="0xFFFFFF">Do You Have Family Risk&#13;Factors for Colon Cancer?</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="60" Leading="10" Color="0xFFFFFF">¿Tiene Factores de Familia Que Aumentan Su Riesgo de Contraer Cáncer de Colon?</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="2A_0" UnitType="interactive">
+				<Description>Close relative with colon cancer? yes/no.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+					</Item>
+				
+					<Item ID="FamilyRisk_Question_Audio" Name="FamilyRisk_Question_Audio" Type="Audio" Description="FamilyRisk_Question_Audio" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/2A_0-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/2A_0-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="FamilyRisk_Question_Text" Name="FamilyRisk_Question_Text" Type="Text" Description="FamilyRisk_Question_Text" HorizontalAlign="center" VerticalAlign="center" x="50%" y="250" width="1000" height="300">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<!--<ItemEvent Language="all" Gender="all" Age="all" Action="fadeout" Time="onExit" Duration="0"/>-->
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="left" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="10" Color="0xFFFFFF">Do you have a close relative that has been diagnosed with colon cancer? A close relative is your parents, brothers, sisters, or your children.</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="left" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="10" Color="0xFFFFFF">¿Tiene parientes inmediatos a quienes les han diagnosticado cancer de colon? Parientes inmediatos son sus padres, hermanos, hermanas y sus hijos.</ItemEntry>
+					</Item>
+				
+					<Item ID="YesButton" Name="YesButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="YES TO FAMILY RISK" HorizontalAlign="left" VerticalAlign="top" x="560" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" MinWidth="100" Link="2A_1">Yes</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" MinWidth="100" Link="2A_1">Si</ItemEntry>
+					</Item>
+				
+					<Item ID="NoButton" Name="NoButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="NO TO FAMILY RISK" HorizontalAlign="left" VerticalAlign="top" x="744" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="all" Gender="all" Age="all" Action="module" MinWidth="100" Link="Module 3">No</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="2A_1" UnitType="video" DefaultAction="unit" DefaultLink="2A_1_1">
+				<Description>Personal risk factors video.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Items>
+					
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="PersonalRiskFactorsVideo" Name="PersonalRiskFactorsVideo" Type="Video" Description="Personal Risk Factors video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-2A_1.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-2A_1.mov</ItemEntry>
+					</Item>
+					
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="2A_1_1" UnitType="interactive" DefaultAction="unit" DefaultLink="2A_3">
+				<Description>Personal risk factors. 3 binary questions.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+					
+					<!-- this bg graphic covers video during text presentation.  Should it be baked in to the video? -->
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+					</Item>
+
+					<Item ID="FamilyRisk_Question_Audio" Name="FamilyRisk_Question_Audio" Type="Audio" Description="FamilyRisk_Question_Audio" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/2A_1_1-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/2A_1_1-S.mp3</ItemEntry>
+					</Item>
+
+					<Item ID="ColonPolyps" Name="ColonPolyps" Type="Text" Description="ColonPolyps" HorizontalAlign="center" VerticalAlign="top" x="50%" y="100" width="1000" height="300">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="left" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="10" Color="0xFFFFFF">Have you been found to have colon polyps?</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="left" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="10" Color="0xFFFFFF">¿Le han encontrado pólipos en el colon?</ItemEntry>
+					</Item>
+
+					<Item ID="ColonCancer" Name="ColonCancer" Type="Text" Description="ColonCancer" HorizontalAlign="center" VerticalAlign="top" x="50%" y="308" width="1000" height="300">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:03:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="left" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="10" Color="0xFFFFFF">Have you ever been diagnosed with colon cancer?</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="left" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="10" Color="0xFFFFFF">¿Alguna vez ha sido diagnosticado con cáncer de colon?</ItemEntry>
+					</Item>
+
+					<Item ID="Crohns" Name="Crohns" Type="Text" Description="Crohns" HorizontalAlign="center" VerticalAlign="top" x="50%" y="524" width="1000" height="300">
+						<ItemEvent Language="English" Gender="all" Age="all" Action="fadein" Time="00:00:06:000" Duration="500"/>
+						<ItemEvent Language="Spanish" Gender="all" Age="all" Action="fadein" Time="00:00:07:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="left" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="10" Color="0xFFFFFF">Do you suffer from inflammatory intestinal disease, such as ulcerative colitis or Crohn&#8217;s disease?</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="left" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="10" Color="0xFFFFFF">¿Sufre de alguna enfermedad inflamatoria intestinal, como colitis ulcerosa o la enfermedad de Crohn?</ItemEntry>
+					</Item>
+
+
+					<Item ID="PersonalRiskFactors" Name="PersonalRiskFactors" Type="ButtonPairList" Description="personal risk factors binary questions" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+
+						<ItemEntry Language="all" Gender="all" Age="all" Action="unit" Link="2A_2">Personal Risk Factors</ItemEntry>
+						<ItemEvent Language="English" Gender="all" Age="all" Action="fadein" Time="00:00:13:000" Duration="500"/>
+						<ItemEvent Language="Spanish" Gender="all" Age="all" Action="fadein" Time="00:00:15:500" Duration="500"/>
+
+						<Item ID="ButtonPairA" Name="ButtonPairA" Type="ButtonPair" Description="first question, 2 answers" HorizontalAlign="left" VerticalAlign="top" x="0" y="1" width="100" height="100">
+							<ItemEntry Language="all" Gender="all" Age="all" Action="unit" Link="2A_2">Personal Risk Factors</ItemEntry>
+							<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+
+							<Item ID="YesButton" Name="YesButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="YES TO COLON POLYPS" HorizontalAlign="left" VerticalAlign="top" x="560" y="186" width="100" height="100">
+								<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+								<ItemEntry Language="English" Gender="all" Age="all" MinWidth="100" Action="option" Link="true">Yes</ItemEntry>
+								<ItemEntry Language="Spanish" Gender="all" Age="all" MinWidth="100" Action="option" Link="true">Si</ItemEntry>
+							</Item>
+							<Item ID="NoButton" Name="NoButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="NO TO COLON POLYPS" HorizontalAlign="left" VerticalAlign="top" x="744" y="186" width="100" height="100">
+								<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+								<ItemEntry Language="all" Gender="all" Age="all" MinWidth="100" Action="option" Link="false">No</ItemEntry>
+							</Item>
+						</Item>
+
+						<Item ID="ButtonPairB" Name="ButtonPairB" Type="ButtonPair" Description="second question, 2 answers" HorizontalAlign="left" VerticalAlign="top" x="0" y="1" width="100" height="100">
+							<ItemEntry Language="all" Gender="all" Age="all" Action="unit" Link="2A_2">Personal Risk Factors</ItemEntry>
+							<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+
+							<Item ID="YesButton" Name="YesButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="YES TO COLON CANCER" HorizontalAlign="left" VerticalAlign="top" x="560" y="391" width="100" height="100">
+								<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+								<ItemEntry Language="English" Gender="all" Age="all" MinWidth="100" Action="option" Link="true">Yes</ItemEntry>
+								<ItemEntry Language="Spanish" Gender="all" Age="all" MinWidth="100" Action="option" Link="true">Si</ItemEntry>
+							</Item>
+							<Item ID="NoButton" Name="NoButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="NO TO COLON CANCER" HorizontalAlign="left" VerticalAlign="top" x="744" y="391" width="100" height="100">
+								<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+								<ItemEntry Language="all" Gender="all" Age="all" MinWidth="100" Action="option" Link="false">No</ItemEntry>
+							</Item>
+						</Item>
+
+						<Item ID="ButtonPairC" Name="ButtonPairC" Type="ButtonPair" Description="third question, 2 answers" HorizontalAlign="left" VerticalAlign="top" x="0" y="1" width="100" height="100">
+							<ItemEntry Language="all" Gender="all" Age="all" Action="unit" Link="2A_2">Personal Risk Factors</ItemEntry>
+							<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+
+							<Item ID="YesButton" Name="YesButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="YES TO CROHNS" HorizontalAlign="left" VerticalAlign="top" x="560" y="663" width="100" height="100">
+								<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+								<ItemEntry Language="English" Gender="all" Age="all" MinWidth="100" Action="option" Link="true">Yes</ItemEntry>
+								<ItemEntry Language="Spanish" Gender="all" Age="all" MinWidth="100" Action="option" Link="true">Si</ItemEntry>
+							</Item>
+							<Item ID="NoButton" Name="NoButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="NO TO CROHNS" HorizontalAlign="left" VerticalAlign="top" x="744" y="663" width="100" height="100">
+								<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+								<ItemEntry Language="all" Gender="all" Age="all" MinWidth="100" Action="option" Link="false">No</ItemEntry>
+							</Item>
+						</Item>
+
+						<Item ID="SubmitButton" Name="SubmitButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="SUBMIT ANSWERS TO 2A_1_1" HorizontalAlign="left" VerticalAlign="top" x="1190" y="774" width="100" height="100">
+							<ItemEvent Language="English" Gender="all" Age="all" Action="fadein" Time="00:00:13:000" Duration="500"/>
+							<ItemEvent Language="Spanish" Gender="all" Age="all" Action="fadein" Time="00:00:15:500" Duration="500"/>
+							<ItemEvent Language="all" Gender="all" Age="all" Action="deactivate" Time="00:00:00:000" Duration="0"/>
+							<ItemEvent Language="all" Gender="all" Age="all" Action="activate" Time="onComplete" Duration="0"/>
+							<ItemEntry Language="English" Gender="all" Age="all" Action="isAnyTrue" Link="unit:2A_2">Continue</ItemEntry>
+							<ItemEntry Language="Spanish" Gender="all" Age="all" Action="isAnyTrue" Link="unit:2A_2" x="1176">Continuar</ItemEntry>
+						</Item>
+
+					</Item>
+
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="2A_2" UnitType="video" DefaultAction="unit" DefaultLink="2A_2_1">
+				<Description>Family risk factors. 2 binary questions.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="FamilyRiskFactorsVideo" Name="FamilyRiskFactorsVideo" Type="Video" Description="Family Risk Factors video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">MEDIA/VIDEO/E-2A_2.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">MEDIA/VIDEO/S-2A_2.mov</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>	
+			
+			<Unit UnitID="2A_2_1" UnitType="interactive" DefaultAction="module" DefaultLink="Module 3">
+					<Description>Family risk factors. 2 binary questions.</Description>
+					<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+					<Transition Duration="500">Crossfade</Transition>
+					<Items>
+						
+						<!-- this bg graphic covers video during text presentation.  Should it be baked in to the video? -->
+						<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+							<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+							<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+						</Item>
+
+						<Item ID="FamilyRiskFactors_Audio" Name="FamilyRiskFactors_Audio" Type="Audio" Description="FamilyRiskFactors_Audio" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+							<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+							<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/2A_2_1-E.mp3</ItemEntry>
+							<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/2A_2_1-S.mp3</ItemEntry>
+						</Item>
+						
+						<Item ID="ColonPolyps" Name="ColonPolyps" Type="Text" Description="ColonPolyps" HorizontalAlign="center" VerticalAlign="top" x="50%" y="182" width="1000" height="300">
+							<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+							<ItemEntry Language="English" Gender="all" Age="all" TextAlign="left" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="10" Color="0xFFFFFF">Has any first-degree relative ever been diagnosed with colon cancer before the age of 60?</ItemEntry>
+							<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="left" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="10" Color="0xFFFFFF">¿Acaso tiene algún pariente inmediato que ha sido diagnosticado con cáncer de colon antes de los 60 años de edad?</ItemEntry>
+						</Item>
+
+						<Item ID="ColonCancer" Name="ColonCancer" Type="Text" Description="ColonCancer" HorizontalAlign="center" VerticalAlign="top" x="50%" y="432" width="1000" height="300">
+							<ItemEvent Language="English" Gender="all" Age="all" Action="fadein" Time="00:00:07:000" Duration="500"/>
+							<ItemEvent Language="Spanish" Gender="all" Age="all" Action="fadein" Time="00:00:08:500" Duration="500"/>
+							<ItemEntry Language="English" Gender="all" Age="all" TextAlign="left" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="10" Color="0xFFFFFF">Does any first-degree relative have a history of precancerous colon polyps?</ItemEntry>
+							<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="left" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="10" Color="0xFFFFFF">¿Tiene algún pariente inmediato que tiene un historial de pólipos precancerosos en el colon?</ItemEntry>
+						</Item>
+						
+						<Item ID="FamilyRiskFactors" Name="FamilyRiskFactors" Type="ButtonPairList" Description="Family risk factors binary questions" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+
+							<ItemEntry Language="all" Gender="all" Age="all" Action="unit" Link="2A_2">Family Risk Factors</ItemEntry>
+							<ItemEvent Language="English" Gender="all" Age="all" Action="fadein" Time="00:00:15:000" Duration="2000"/>
+							<ItemEvent Language="Spanish" Gender="all" Age="all" Action="fadein" Time="00:00:16:000" Duration="2000"/>
+
+							<Item ID="ButtonPairA" Name="ButtonPairA" Type="ButtonPair" Description="first question, 2 answers" HorizontalAlign="left" VerticalAlign="top" x="0" y="1" width="100" height="100">
+								<ItemEntry Language="all" Gender="all" Age="all" Action="unit" Link="2A_2">Family Risk Factors</ItemEntry>
+								<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+
+								<Item ID="YesButton" Name="YesButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="YES TO RELATIVE WITH POLYPS" HorizontalAlign="left" VerticalAlign="top" x="560" y="311" width="100" height="100">
+									<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+									<ItemEntry Language="English" Gender="all" Age="all" MinWidth="100" Action="option" Link="true">Yes</ItemEntry>
+									<ItemEntry Language="Spanish" Gender="all" Age="all" MinWidth="100" Action="option" Link="true">Si</ItemEntry>
+								</Item>
+								<Item ID="NoButton" Name="NoButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="NO TO RELATIVE WITH POLYPS" HorizontalAlign="left" VerticalAlign="top" x="744" y="311" width="100" height="100">
+									<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+									<ItemEntry Language="all" Gender="all" Age="all" MinWidth="100" Action="option" Link="false">No</ItemEntry>
+								</Item>
+							</Item>
+
+							<Item ID="ButtonPairB" Name="ButtonPairB" Type="ButtonPair" Description="second question, 2 answers" HorizontalAlign="left" VerticalAlign="top" x="0" y="1" width="100" height="100">
+								<ItemEntry Language="all" Gender="all" Age="all" Action="unit" Link="2A_2">Family Risk Factors</ItemEntry>
+								<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+
+								<Item ID="YesButton" Name="YesButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="YES TO RELATIVE WITH COLON CANCER" HorizontalAlign="left" VerticalAlign="top" x="560" y="567" width="100" height="100">
+									<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+									<ItemEntry Language="English" Gender="all" Age="all" MinWidth="100" Action="option" Link="true">Yes</ItemEntry>
+									<ItemEntry Language="Spanish" Gender="all" Age="all" MinWidth="100" Action="option" Link="true">Si</ItemEntry>
+								</Item>
+								<Item ID="NoButton" Name="NoButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="NO TO RELATIVE WITH COLON CANCER" HorizontalAlign="left" VerticalAlign="top" x="744" y="567" width="100" height="100">
+									<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+									<ItemEntry Language="all" Gender="all" Age="all" MinWidth="100" Action="option" Link="false">No</ItemEntry>
+								</Item>
+							</Item>
+
+							<Item ID="SubmitButton" Name="SubmitButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="SUBMIT ANSWERS TO 2A_2_1" HorizontalAlign="left" VerticalAlign="top" x="1190" y="774" width="100" height="100">
+								<ItemEvent Language="English" Gender="all" Age="all" Action="fadein" Time="00:00:15:000" Duration="500"/>
+								<ItemEvent Language="Spanish" Gender="all" Age="all" Action="fadein" Time="00:00:16:000" Duration="500"/>
+								<ItemEvent Language="all" Gender="all" Age="all" Action="deactivate" Time="00:00:00:000" Duration="0"/>
+								<ItemEvent Language="all" Gender="all" Age="all" Action="activate" Time="onComplete" Duration="0"/>
+								<ItemEntry Language="English" Gender="all" Age="all" Action="isAnyTrue" Link="unit:2A_4">Continue</ItemEntry>
+								<ItemEntry Language="Spanish" Gender="all" Age="all" Action="isAnyTrue" Link="unit:2A_4" x="1176">Continuar</ItemEntry>
+							</Item>
+
+						</Item>
+
+					</Items>
+				</Unit>
+			
+			<Unit UnitID="2A_3" UnitType="video" DefaultAction="module" DefaultLink="Module 3">
+				<Description>Negative summation.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+					</Item>
+				
+					<Item ID="NegativeSummationVideo" Name="NegativeSummationVideo" Type="Video" Description="Negative Summation Video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">MEDIA/VIDEO/E-2A_3.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">MEDIA/VIDEO/S-2A_3.mov</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="2A_4" UnitType="video" DefaultAction="module" DefaultLink="Module 3">
+				<Description>Positive Summation.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+					</Item>
+				
+					<Item ID="SummationVideo" Name="SummationVideo" Type="Video" Description="Summation Video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">MEDIA/VIDEO/E-2A_4.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">MEDIA/VIDEO/S-2A_4.mov</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+		</Units>
+	</Module>
+	
+	<Module LogVariable="006">
+		<ModuleName>Module 3</ModuleName>
+		<Description>Prevention Strategies.</Description>
+		<EntryPoints>
+			<EntryPoint Age="all" FirstUnit="3_title"/>
+		</EntryPoints>
+		<Units>
+		
+			<Unit UnitID="3_title" UnitType="audio" DefaultAction="unit" DefaultLink="3_1">
+				<Description>Module 3 Title</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+					
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_titles_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Mod3_TitleVO" Name="Mod3_TitleVO" Type="Audio" Description="Mod3_TitleVO" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:01:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/3_Title-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/3_Title-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="Mod3_Title" Name="Mod3_Title" Type="Text" Description="Mod3_Title" HorizontalAlign="center" VerticalAlign="center" x="50%" y="50%" width="1000" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="60" Leading="10" Color="0xFFFFFF">Lifestyle Changes That Can&#13;Prevent Colon Cancer</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="60" Leading="10" Color="0xFFFFFF">Los Cambios de Sus Hábitos Pueden Prevenír el Cáncer de Colon</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="3_1" UnitType="video" DefaultAction="module" DefaultLink="Module 4">
+				<Description>Displays video on colon cancer prevention strategies.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+					</Item>
+				
+					<Item ID="PreventionStrategiesVideo" Name="PreventionStrategiesVideo" Type="Video" Description="Prevention Strategies Video" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">MEDIA/VIDEO/E-3.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">MEDIA/VIDEO/S-3.mov</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+		</Units>
+	</Module>
+	
+	<Module LogVariable="007">
+		<ModuleName>Module 4</ModuleName>
+		<Description>Screening and early detection.</Description>
+		<EntryPoints>
+			<EntryPoint Age="all" FirstUnit="4_title"/>
+		</EntryPoints>
+		<Units>
+		
+			<Unit UnitID="4_title" UnitType="audio" DefaultAction="unit" DefaultLink="4_0">
+				<Description>Module 4 Title</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+					
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_titles_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Mod4_TitleVO" Name="Mod4_TitleVO" Type="Audio" Description="Mod4_TitleVO" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:01:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/4_Title-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/4_Title-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="Mod4_Title" Name="Mod4_Title" Type="Text" Description="Mod4_Title" HorizontalAlign="center" VerticalAlign="center" x="50%" y="50%" width="1000" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="60" Leading="10" Color="0xFFFFFF">Screening Tests for Colon Cancer</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="60" Leading="10" Color="0xFFFFFF">Las Pruebas de Detección del Cáncer de Colon </ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="4_0" UnitType="video" DefaultAction="unit" DefaultLink="4_1">
+				<Description>Overview.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="Overview" Name="Overview" Type="Video" Description="Screening overview video" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Volume="100" Link="First Unit" Loop="false">MEDIA/VIDEO/E-4_0.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Volume="100" Link="First Unit" Loop="false">MEDIA/VIDEO/S-4_0.mov</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+		
+			<Unit UnitID="4_1" UnitType="interactive">
+				<Description>3 topic selecteds.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Contingencies>
+					<!-- disabled for now, no 'some' selected logic here <ButtonContingency TotalButtons="1" Action="unit" Link="4_1A" /> -->	<!-- go to reduced VO version of unit -->
+					<ButtonContingency TotalButtons="3" Action="unit" Link="4_1B" />	<!-- force user to go to screening frequency -->
+				</Contingencies>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="4_1Audio" Name="4_1Audio" Type="Audio" Description="Mod 4 branching by test" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Link="First Unit" Loop="false">MEDIA/AUDIO/4_1-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Link="First Unit" Loop="false">MEDIA/AUDIO/4_1-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="Tests_Text" Name="Tests_Text" Type="Text" Description="Which test to learn about" HorizontalAlign="center" VerticalAlign="center" x="50%" y="320" width="1000" height="300">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="10" Color="0xFFFFFF">Touch the button with the name of the test you would like to learn more about.</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="10" Color="0xFFFFFF" y="230">Toque el botón con el nombre de cualquier prueba para obtener más detalles sobre esa prueba.</ItemEntry>
+					</Item>
+				
+					<Item ID="StoolButton" Name="StoolButton" Type="Button" ButtonType="NavButton" SingleUse="true" Description="STOOL TESTS" HorizontalAlign="left" VerticalAlign="top" x="274" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="4_2">Stool Tests</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="4_2" x="548" y="322">Prueba de Heces</ItemEntry>
+					</Item>
+					
+					<Item ID="ScopeButton" Name="ScopeButton" Type="Button" ButtonType="NavButton" SingleUse="true" Description="SCOPE TESTS" HorizontalAlign="left" VerticalAlign="top" x="562" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="4_4">Scope Tests</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="4_4" x="509" y="436">Prueba Visual Interna</ItemEntry>
+					</Item>
+					
+					<Item ID="ImagingButton" Name="ImagingButton" Type="Button" ButtonType="NavButton" SingleUse="true" Description="IMAGING TESTS" HorizontalAlign="left" VerticalAlign="top" x="865" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="4_7">Imaging Tests</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="4_7" x="465" y="550">Prueba de Imagen Externa</ItemEntry>
+					</Item>
+					
+					<Item ID="ScreeningButton" Name="ScreeningButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="SCREENING FREQUENCY" HorizontalAlign="left" VerticalAlign="top" x="990" y="774" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="4_9">Screening Frequency</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="4_9" x="1152">Frecuencia</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="4_1B" UnitType="interactive">
+				<Description>3 topic selecteds.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<!-- replace this audio with the VO for the unit that has already been through all of the selecteds -->
+					<Item ID="4_1Audio" Name="4_1Audio" Type="Audio" Description="Mod 4 branching by test" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Link="First Unit" Loop="false">MEDIA/AUDIO/4_1B-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Link="First Unit" Loop="false">MEDIA/AUDIO/4_1B-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="Tests_Text" Name="Tests_Text" Type="Text" Description="Which test to learn about" HorizontalAlign="center" VerticalAlign="center" x="50%" y="320" width="1100" height="300">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="10" Color="0xFFFFFF">Touch the &#8220;Screening Frequency&#8221; button to learn how often you should be screened.</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="10" Color="0xFFFFFF" y="230">Toque el botón que dice &#8220;Frecuencia&#8221; para aprender con que frecuencia debe hacerse las pruebas.</ItemEntry>
+					</Item>
+					
+					<Item ID="StoolButton" Name="StoolButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="STOOL TESTS" HorizontalAlign="left" VerticalAlign="top" x="274" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="4_2">Stool Tests</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="4_2" x="548" y="322">Prueba de Heces</ItemEntry>
+					</Item>
+					
+					<Item ID="ScopeButton" Name="ScopeButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="SCOPE TESTS" HorizontalAlign="left" VerticalAlign="top" x="562" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="4_4">Scope Tests</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="4_4" x="509" y="436">Prueba Visual Interna</ItemEntry>
+					</Item>
+					
+					<Item ID="ImagingButton" Name="ImagingButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="IMAGING TESTS" HorizontalAlign="left" VerticalAlign="top" x="865" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="4_7">Imaging Tests</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="4_7" x="465" y="550">Prueba de Imagen Externa</ItemEntry>
+					</Item>
+					
+					<Item ID="ScreeningButton" Name="ScreeningButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="SCREENING FREQUENCY" HorizontalAlign="left" VerticalAlign="top" x="990" y="774" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="4_9">Screening Frequency</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="4_9" x="1152">Frecuencia</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+		
+			<Unit UnitID="4_2" UnitType="video" DefaultAction="unit" DefaultLink="4_3">
+				<Description>FOBT/FIT.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="4_2Video" Name="4_2Video" Type="Video" Description="FOBT/FIT" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-4_2.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-4_2.mov</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+		
+			<Unit UnitID="4_3" UnitType="interactive">
+				<Description>Stool DNA: review tests or screening frequency.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+
+					<Item ID="4_3Video" Name="4_3Video" Type="Video" Description="FOBT/FIT" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-4_3.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-4_3.mov</ItemEntry>
+					</Item>
+					
+					<Item ID="4_3Audio" Name="4_3Audio" Type="Audio" Description="4_3 VO" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="videoEnd" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/4_3-6-8-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/4_3-6-8-S.mp3</ItemEntry>
+					</Item>
+				
+					<Item ID="ReviewTestsButton" Name="ReviewTestsButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="REVIEW TESTS" HorizontalAlign="left" VerticalAlign="top" x="685" y="774" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="videoEnd" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="4_1">Review Tests</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="4_1" x="798">Revisar Pruebas</ItemEntry>
+					</Item>
+					
+					<Item ID="ScreeningButton" Name="ScreeningButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="SCREENING FREQUENCY" HorizontalAlign="left" VerticalAlign="top" x="990" y="774" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="videoEnd" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="4_9">Screening Frequency</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="4_9" x="1151">Frecuencia</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+		
+			<Unit UnitID="4_4" UnitType="video" DefaultAction="unit" DefaultLink="4_5">
+				<Description>Sigmoidoscopy.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="4_4Video" Name="4_4Video" Type="Video" Description="Sigmoidoscopy" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-4_4.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-4_4.mov</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+		
+			<Unit UnitID="4_5" UnitType="video" DefaultAction="unit" DefaultLink="4_6">
+				<Description>Flexible Sigmoid</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="4_5Video" Name="4_5Video" Type="Video" Description="Flexible Sigmoid" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-4_5.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-4_5.mov</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+		
+			<Unit UnitID="4_6" UnitType="interactive">
+				<Description>Colonoscopy: review tests or screening frequency.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="4_6Video" Name="4_6Video" Type="Video" Description="FOBT/FIT" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-4_6.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-4_6.mov</ItemEntry>
+					</Item>
+					
+					<Item ID="4_6Audio" Name="4_6Audio" Type="Audio" Description="4_6 VO" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="videoEnd" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/4_3-6-8-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/4_3-6-8-S.mp3</ItemEntry>
+					</Item>
+				
+					<Item ID="ReviewTestsButton" Name="ReviewTestsButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="REVIEW TESTS" HorizontalAlign="left" VerticalAlign="top" x="685" y="774" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="videoEnd" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="4_1">Review Tests</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="4_1" x="798">Revisar Pruebas</ItemEntry>
+					</Item>
+					
+					<Item ID="ScreeningButton" Name="ScreeningButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="SCREENING FREQUENCY" HorizontalAlign="left" VerticalAlign="top" x="990" y="774" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="videoEnd" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="4_9">Screening Frequency</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="4_9" x="1151">Frecuencia</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+		
+			<Unit UnitID="4_7" UnitType="video" DefaultAction="unit" DefaultLink="4_8">
+				<Description>Barium Enema Test.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="4_7Video" Name="4_7Video" Type="Video" Description="Barium Enema" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-4_7.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-4_7.mov</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+		
+			<Unit UnitID="4_8" UnitType="interactive">
+				<Description>Virtual Colonoscopy: review tests or screening frequency.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="4_8Video" Name="4_8Video" Type="Video" Description="Virtual Colonoscopy" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-4_8.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-4_8.mov</ItemEntry>
+					</Item>
+					
+					<Item ID="4_8Audio" Name="4_8Audio" Type="Audio" Description="4_8 VO" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="videoEnd" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/4_3-6-8-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/4_3-6-8-S.mp3</ItemEntry>
+					</Item>
+				
+					<Item ID="ReviewTestsButton" Name="ReviewTestsButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="REVIEW TESTS" HorizontalAlign="left" VerticalAlign="top" x="685" y="774" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="videoEnd" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="4_1">Review Tests</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="4_1" x="798">Revisar Pruebas</ItemEntry>
+					</Item>
+					
+					<Item ID="ScreeningButton" Name="ScreeningButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="SCREENING FREQUENCY" HorizontalAlign="left" VerticalAlign="top" x="990" y="774" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="videoEnd" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="4_9">Screening Frequency</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="4_9" x="1151">Frecuencia</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+		
+			<Unit UnitID="4_9" UnitType="video" DefaultAction="unit" DefaultLink="4_9_1">
+				<Description>Screening frequency video</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="ScreeningFreqVideo" Name="ScreeningFreqVideo" Type="Video" Description="ScreeningFreqVideo" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-4_9.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-4_9.mov</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="4_9_1" UnitType="interactive">
+				<Description>Screening frequency: Continue or questions for your doctor.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="4_9Audio" Name="4_9Audio" Type="Audio" Description="4_9_1 VO" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/4_9_1-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/4_9_1-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="5AText" Name="5AText" Type="Text" Description="Review or Questions or Continue" HorizontalAlign="center" VerticalAlign="center" x="50%" y="260" width="1100" height="300">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Leading="5" Color="0xFFFFFF">Touch the &#8220;Review Tests&#8221; button to review other types of tests. Touch the &#8220;Questions&#8221; button if you want tips on questions you can ask your doctor.  Touch the &#8220;Continue&#8221; button to move on.</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Leading="5" Color="0xFFFFFF">Toque el botón que dice &#8220;Revisar Pruebas&#8221; para obtener detalles sobre otras pruebas del cáncer de colon.  Toque el botón que dice &#8220;Preguntas&#8221; si quiere sugerencias e ideas sobre las preguntas que le puede hacer a su doctor.  Toque el botón que dice &#8220;Continuar&#8221; para seguir adelante.</ItemEntry>
+					</Item>
+					
+					<Item ID="ReviewTestsButton" Name="ReviewTestsButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="REVIEW TESTS FROM 4.9" HorizontalAlign="center" VerticalAlign="center" x="50%" y="450" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="4_1">Review Tests</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="4_1" y="510">Revisar Pruebas</ItemEntry>
+					</Item>
+				
+					<Item ID="QuestionsForDoctor" Name="QuestionsForDoctor" Type="Button" ButtonType="NavButton" SingleUse="false" Description="GO TO MODULE 4A" HorizontalAlign="center" VerticalAlign="center" x="50%" y="560" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="module" Link="Module 4A">Questions</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="module" Link="Module 4A" y="620">Preguntas</ItemEntry>
+					</Item>
+					
+					<Item ID="Continue" Name="Continue" Type="Button" ButtonType="NavButton" SingleUse="false" Description="GO TO TO MODULE 5" HorizontalAlign="left" VerticalAlign="top" x="1190" y="774" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="module" Link="Module 5">Continue</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="module" Link="Module 5" x="1176">Continuar</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+		</Units>
+	</Module>
+	
+	<Module LogVariable="008">
+		<ModuleName>Module 4A</ModuleName>
+		<Description>Questions For Your Doctor.</Description>
+		<EntryPoints>
+			<EntryPoint Age="all" FirstUnit="4A_title"/>
+		</EntryPoints>
+		<Units>
+		
+			<Unit UnitID="4A_title" UnitType="audio" DefaultAction="unit" DefaultLink="4A_1">
+				<Description>Module 4A Title</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+					
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_titles_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Mod4A_TitleVO" Name="Mod4A_TitleVO" Type="Audio" Description="Mod4A_TitleVO" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:01:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/4A_Title-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/4A_Title-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="Mod4A_Title" Name="Mod4A_Title" Type="Text" Description="Mod4A_Title" HorizontalAlign="center" VerticalAlign="center" x="50%" y="50%" width="1000" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="60" Leading="10" Color="0xFFFFFF">Tips For Questions To Ask Your Doctor</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="60" Leading="10" Color="0xFFFFFF">Preguntas para Su Doctor:&#13;Unas Sugerencias</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="4A_1" UnitType="video" DefaultAction="module" DefaultLink="Module 5">
+				<Description>Displays video with questions for your doctor.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="DoctorQuestionsVideo" Name="DoctorQuestionsVideo" Type="Video" Description="Doctor Questions Video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">MEDIA/VIDEO/E-4A.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">MEDIA/VIDEO/S-4A.mov</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+		</Units>
+	</Module>
+	
+	<Module LogVariable="009">
+		<ModuleName>Module 5</ModuleName>
+		<Description>Chances of Survival</Description>
+		<EntryPoints>
+			<EntryPoint Age="all" FirstUnit="5_title"/>
+		</EntryPoints>
+		<Units>
+		
+			<Unit UnitID="5_title" UnitType="audio" DefaultAction="unit" DefaultLink="5_1">
+				<Description>Module 5 Title</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+					
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_titles_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Mod5_TitleVO" Name="Mod5_TitleVO" Type="Audio" Description="Mod5_TitleVO" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:01:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/5_Title-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/5_Title-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="Mod5_Title" Name="Mod5_Title" Type="Text" Description="Mod5_Title" HorizontalAlign="center" VerticalAlign="center" x="50%" y="50%" width="1000" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="60" Leading="10" Color="0xFFFFFF">What Are Your Chances of Beating Colon Cancer if You Get It?</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="60" Leading="10" Color="0xFFFFFF">¿Cuáles Son Sus Posibilidades de Sobrevivir el Cancer de Colon?</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="5_1" UnitType="interactive" DefaultAction="unit" DefaultLink="5_2">
+				<Description>Early stage detection.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+					
+					<Item ID="EarlyStageDetectionVideo" Name="EarlyStageDetectionVideo" Type="Video" Description="Early Stage Detection Video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">MEDIA/VIDEO/E-5_1.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">MEDIA/VIDEO/S-5_1.mov</ItemEntry>
+					</Item>
+					
+					<Item ID="Continue_VO" Name="Continue_VO" Type="Audio" Description="Continue_VO" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="videoEnd" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/Continue-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/Continue-S.mp3</ItemEntry>
+					</Item>
+				
+					<Item ID="ContinueButton" Name="ContinueButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="CONTINUE" HorizontalAlign="left" VerticalAlign="top" x="1190" y="774" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="videoEnd" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="5_2">Continue</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="5_2" x="1176">Continuar</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+		
+			<Unit UnitID="5_2" UnitType="interactive" DefaultAction="unit" DefaultLink="5_3">
+				<Description>Late stage detection.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="LateStageDetectionVideo" Name="LateStageDetectionVideo" Type="Video" Description="Late Stage Detection Video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">MEDIA/VIDEO/E-5_2.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">MEDIA/VIDEO/S-5_2.mov</ItemEntry>
+					</Item>
+					
+					<Item ID="Continue_VO" Name="Continue_VO" Type="Audio" Description="Continue_VO" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="videoEnd" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/Continue-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/Continue-S.mp3</ItemEntry>
+					</Item>
+				
+					<Item ID="ContinueButton" Name="ContinueButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="CONTINUE" HorizontalAlign="left" VerticalAlign="top" x="1190" y="774" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="videoEnd" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="5_3">Continue</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="5_3" x="1176">Continuar</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+		
+			<Unit UnitID="5_3" UnitType="video" DefaultAction="module" DefaultLink="Module 5A">
+				<Description>Surviving colon cancer video.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="SurvivingColonCancerVideo" Name="SurvivingColonCancerVideo" Type="Video" Description="Surviving Colon Cancer Video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">MEDIA/VIDEO/E-5_3.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">MEDIA/VIDEO/S-5_3.mov</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+		</Units>
+	</Module>
+	
+	<Module LogVariable="010">
+		<ModuleName>Module 5A</ModuleName>
+		<Description>Second Tier Topics</Description>
+		<EntryPoints>
+			<EntryPoint Language="all" Age="all" Gender="all" FirstUnit="5A_1"/>
+		</EntryPoints>
+		<Units>
+		
+			<Unit UnitID="5A_1" UnitType="interactive" DefaultAction="unit" DefaultLink="6_1">
+				<Description>Branching selecteds: module 6, 7 or print.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="5A_VO" Name="5A_VO" Type="Audio" Description="Touch any of these buttons to learn more" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/5A-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/5A-S.mp3</ItemEntry>
+					</Item>
+				
+					<Item ID="5AText" Name="5AText" Type="Text" Description="Touch any of these..." HorizontalAlign="center" VerticalAlign="center" x="50%" y="260" width="1000" height="300">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="60" Leading="5" Color="0xFFFFFF">Touch any of these buttons to&#13;learn more about that topic.</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="60" Leading="5" Color="0xFFFFFF">Toque cualqier cuadro para obtener detalles sobre ese tema.</ItemEntry>
+					</Item>
+				
+					<Item ID="Module6Button" Name="Module6Button" Type="Button" ButtonType="NavButton" SingleUse="true" Description="GO TO MODULE 6" HorizontalAlign="left" VerticalAlign="top" x="417" y="398" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="module" Link="Module 6">Do I Really Need to Get Tested?</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="module" Link="Module 6" x="416" y="362">¿Necesito Hacerme una Prueba?</ItemEntry>
+					</Item>
+				
+					<Item ID="Module7Button" Name="Module7Button" Type="Button" ButtonType="NavButton" SingleUse="true" Description="GO TO MODULE 7" HorizontalAlign="left" VerticalAlign="top" x="494" y="506" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="module" Link="Module 7">You Can Do Something</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="module" Link="Module 7" x="266" y="476">Lo Que Debe Usted Hacer Para Reducir Su Riesgo</ItemEntry>
+					</Item>
+					
+					<Item ID="ContinueButton" Name="ContinueButton" Type="Button" ButtonType="NavButton" SingleUse="true" Description="GO TO END/PRINT MODULE" HorizontalAlign="left" VerticalAlign="top" x="1190" y="774" width="100" height="100">
+						<ItemEvent Language="English" Gender="all" Age="all" Action="fadein" Time="00:00:05:000" Duration="500"/>
+						<ItemEvent Language="Spanish" Gender="all" Age="all" Action="fadein" Time="00:00:09:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="module" Link="Print Module">Continue</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="module" Link="Print Module">Imprimir</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+		
+		</Units>
+	</Module>
+	
+	<Module LogVariable="011">
+		<ModuleName>Module 6</ModuleName>
+		<Description>Barriers to Screening</Description>
+		<EntryPoints>
+			<EntryPoint Language="all" Age="all" Gender="Male" FirstUnit="6M_title"/>
+			<EntryPoint Language="all" Age="all" Gender="Female" FirstUnit="6F_title"/>
+		</EntryPoints>
+		<Units>
+		
+			<!-- NOTE - 2 identical title units here because we are not differentiating entry points in title units -->
+			<Unit UnitID="6M_title" UnitType="audio" DefaultAction="unit" DefaultLink="6_0M">
+				<Description>Module 6 Title</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+					
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_titles_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Mod6M_TitleVO" Name="Mod6M_TitleVO" Type="Audio" Description="Mod6M_TitleVO" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:01:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/6_Title-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/6_Title-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="Mod6M_Title" Name="Mod6M_Title" Type="Text" Description="Mod6M_Title" HorizontalAlign="center" VerticalAlign="center" x="50%" y="50%" width="1000" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="60" Leading="10" Color="0xFFFFFF">Do I Really Need To Get&#13;Tested For Colon Cancer?</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="60" Leading="10" Color="0xFFFFFF">¿Necesito Hacerme una Prueba de Cancer de Colon?</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			<!-- NOTE - 2 identical title units here because we are not differentiating entry points in title units -->
+			<Unit UnitID="6F_title" UnitType="audio" DefaultAction="unit" DefaultLink="6_0F">
+				<Description>Module 6 Title</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+					
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_titles_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Mod6F_TitleVO" Name="Mod6F_TitleVO" Type="Audio" Description="Mod6F_TitleVO" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:01:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/6_Title-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/6_Title-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="Mod6F_Title" Name="Mod6F_Title" Type="Text" Description="Mod6F_Title" HorizontalAlign="center" VerticalAlign="center" x="50%" y="50%" width="1000" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="60" Leading="10" Color="0xFFFFFF">Do I Really Need To Get&#13;Tested For Colon Cancer?</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="60" Leading="10" Color="0xFFFFFF">¿Necesito Hacerme una Prueba de Cancer de Colon?</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			
+			
+			<Unit UnitID="6_0M" UnitType="video" DefaultAction="unit" DefaultLink="6_01M">
+				<Description>Male linear quad video.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="6_0MaleVideo" Name="6_0MaleVideo" Type="Video" Description="6_0MaleVideo" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="1000"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-6_0M.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-6_0M.mov</ItemEntry>
+					</Item>
+					
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="6_0F" UnitType="video" DefaultAction="unit" DefaultLink="6_01F">
+				<Description>Female linear quad video.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Items>
+				
+					<Item ID="6_0FemaleVideo" Name="6_0FemaleVideo" Type="Video" Description="6_0FemaleVideo" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="1000"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-6_0F.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-6_0F.mov</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="6_01M" UnitType="interactive">
+				<Description>Male: 4 topic selections + continue.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Contingencies>
+					<ButtonContingency TotalButtons="4" Action="unit" Link="6_01M_B" />	<!-- force user to go to unit with disabled buttons  -->
+				</Contingencies>
+				<Items>
+					
+					<Item ID="6_0MaleVideoMatrix" Name="6_0MaleVideoMatrix" Type="Video" Description="6_0MaleVideoMatrix" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="1000"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-6_01M.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-6_01M.mov</ItemEntry>
+					</Item>
+					
+					<Item ID="6_0_1M_VO" Name="6_0_1M_VO" Type="Audio" Description="Touch any of these buttons to learn more" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/6_0_1-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/6_0_1-S.mp3</ItemEntry>
+					</Item>
+				
+					<Item ID="LowPerceivedRiskButton" Name="LowPerceivedRiskButton" Type="Button" ButtonType="Mod6Button" SingleUse="true" Description="LOW PERCEIVED RISK" HorizontalAlign="left" VerticalAlign="top" x="289" y="50" width="398" height="364">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/> 
+						<ItemEntry Language="all" Gender="all" Age="all" Action="unit" Link="6_1">Low Perceived Risk</ItemEntry>  <!-- buttons are invisible so no translation needed -->
+					</Item>
+				
+					<Item ID="NoInsuranceButton" Name="NoInsuranceButton" Type="Button" ButtonType="Mod6Button" SingleUse="true" Description="DON'T HAVE INSURANCE" HorizontalAlign="left" VerticalAlign="top" x="753" y="50" width="398" height="364">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="all" Gender="all" Age="all" Action="unit" Link="6_3">Don't Have Insurance</ItemEntry>
+					</Item>
+					
+					<Item ID="EmbarrasedButton" Name="EmbarrasedButton" Type="Button" ButtonType="Mod6Button" SingleUse="true" Description="EMBARRASED" HorizontalAlign="left" VerticalAlign="top" x="289" y="480" width="398" height="364">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/> 
+						<ItemEntry Language="all" Gender="all" Age="all" Action="unit" Link="6_5">Embarrased</ItemEntry>
+					</Item>
+					
+					<Item ID="FearOfPainButton" Name="FearOfPainButton" Type="Button" ButtonType="Mod6Button" SingleUse="true" Description="FEAR OF PAIN" HorizontalAlign="left" VerticalAlign="top" x="753" y="480" width="398" height="364">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="all" Gender="all" Age="all" Action="unit" Link="6_6">Fear of Pain</ItemEntry>
+					</Item>
+					
+					<Item ID="ContinueButton" Name="ContinueButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="CONTINUE" HorizontalAlign="left" VerticalAlign="top" x="1190" y="774" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="module" Link="Module 7">Continue</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="module" Link="Module 7" x="1176">Continuar</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="6_01M_B" UnitType="interactive">
+				<Description>Male: 4 topic selections + continue.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+					
+					<Item ID="6_0MaleVideoMatrix" Name="6_0MaleVideoMatrix" Type="Video" Description="6_0MaleVideoMatrix" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="1000"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-6_01M.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-6_01M.mov</ItemEntry>
+					</Item>
+					
+					<Item ID="6_0_1M_VO" Name="6_0_1M_VO" Type="Audio" Description="Touch any of these buttons to learn more" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/Continue-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/Continue-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="ContinueButton" Name="ContinueButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="CONTINUE" HorizontalAlign="left" VerticalAlign="top" x="1190" y="774" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="module" Link="Module 7">Continue</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="module" Link="Module 7" x="1176">Continuar</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+		
+			<Unit UnitID="6_01F" UnitType="interactive">
+				<Description>Female: 3 topic selections + continue.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Contingencies>
+					<ButtonContingency TotalButtons="3" Action="unit" Link="6_01F_B" />	<!-- force user to go to unit with disabled buttons  -->
+				</Contingencies>
+				<Items>
+					
+					<Item ID="6_0FemaleVideoMatrix" Name="6_0FemaleMatrix" Type="Video" Description="6_0FemaleMatrix" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="1000"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-6_01F.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-6_01F.mov</ItemEntry>
+					</Item>
+					
+					<Item ID="6_0_1F_VO" Name="6_0_1F_VO" Type="Audio" Description="Touch any of these buttons to learn more" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/6_0_1-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/6_0_1-S.mp3</ItemEntry>
+					</Item>
+				
+					<Item ID="TooBusyButton" Name="TooBusyButton" Type="Button" ButtonType="Mod6Button" SingleUse="true" Description="TOO BUSY" HorizontalAlign="left" VerticalAlign="top" x="289" y="50" width="398" height="364">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="all" Gender="all" Age="all" Action="unit" Link="6_2">Too Busy</ItemEntry>
+					</Item>
+				
+					<Item ID="AfraidButton" Name="AfraidButton" Type="Button" ButtonType="Mod6Button" SingleUse="true" Description="AFRAID OF TEST RESULTS" HorizontalAlign="left" VerticalAlign="top" x="753" y="50" width="398" height="364">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="all" Gender="all" Age="all" Action="unit" Link="6_4">Afraid of Test Results</ItemEntry>
+					</Item>
+					
+					<Item ID="NotSureWhereToGoButton" Name="NotSureWhereToGoButton" Type="Button" ButtonType="Mod6Button" SingleUse="true" Description="NOT SURE WHERE TO GO" HorizontalAlign="left" VerticalAlign="top" x="289" y="480" width="398" height="364">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="all" Gender="all" Age="all" Action="unit" Link="6_7">Not Sure Where to Go</ItemEntry>
+					</Item>				
+					
+					<Item ID="ContinueButton" Name="ContinueButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="CONTINUE" HorizontalAlign="left" VerticalAlign="top" x="1190" y="774" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="module" Link="Module 7">Continue</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="module" Link="Module 7" x="1176">Continuar</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="6_01F_B" UnitType="interactive">
+				<Description>Female: 3 topic selections + continue.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+			
+					
+					<Item ID="6_0FemaleVideoMatrix" Name="6_0FemaleMatrix" Type="Video" Description="6_0FemaleMatrix" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="1000"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-6_01F.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-6_01F.mov</ItemEntry>
+					</Item>
+					
+					<Item ID="6_01F_VO" Name="6_01F_VO" Type="Audio" Description="Continue to move on" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/Continue-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/Continue-S.mp3</ItemEntry>
+					</Item>		
+					
+					<Item ID="ContinueButton" Name="ContinueButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="CONTINUE" HorizontalAlign="left" VerticalAlign="top" x="1190" y="774" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="module" Link="Module 7">Continue</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="module" Link="Module 7" x="1176">Continuar</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+		
+			<Unit UnitID="6_1" UnitType="video" DefaultAction="unit" DefaultLink="6_01M">
+				<Description>Low perceived risk.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="LowPerceivedRiskVideo" Name="LowPerceivedRiskVideo" Type="Video" Description="Low Perceived Risk Video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-6_1.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-6_1.mov</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+		
+			<Unit UnitID="6_2" UnitType="video" DefaultAction="unit" DefaultLink="6_01F">
+				<Description>Too busy.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="TooBusyVideo" Name="TooBusyVideo" Type="Video" Description="Too Busy Video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-6_2.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-6_2.mov</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+		
+			<Unit UnitID="6_3" UnitType="video" DefaultAction="unit" DefaultLink="6_01M">
+				<Description>Don't have insurance.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="NoInsuranceVideo" Name="NoInsuranceVideo" Type="Video" Description="No Insurance Video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-6_3.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-6_3.mov</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+		
+			<Unit UnitID="6_4" UnitType="video" DefaultAction="unit" DefaultLink="6_01F">
+				<Description>Afraid of test results.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="AfraidVideo" Name="AfraidVideo" Type="Video" Description="Afraid of Test Video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-6_4.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-6_4.mov</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+		
+			<Unit UnitID="6_5" UnitType="video" DefaultAction="unit" DefaultLink="6_01M">
+				<Description>Embarrassed.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="EmbarrassedVideo" Name="EmbarrassedVideo" Type="Video" Description="Embarrassed Video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-6_5.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-6_5.mov</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+		
+			<Unit UnitID="6_6" UnitType="video" DefaultAction="unit" DefaultLink="6_01M">
+				<Description>Fear of Pain.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="FearOfPainVideo" Name="FearOfPainVideo" Type="Video" Description="Fear of Pain Video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-6_6.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-6_6.mov</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+		
+			<Unit UnitID="6_7" UnitType="interactive" DefaultAction="unit" DefaultLink="6_7Print">
+				<Description>Not sure where to go.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+					</Item>
+				
+					<Item ID="WhereToGoVideo" Name="WhereToGoVideo" Type="Video" Description="Not Sure Where to Go Video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-6_7.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-6_7.mov</ItemEntry>
+					</Item>
+					
+					<Item ID="6_7_VO" Name="6_7_VO" Type="Audio" Description="Touch the print button for cancer orgs" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="videoEnd" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/6_7-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/6_7-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="PrintButton" Name="PrintButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="PRINT" HorizontalAlign="left" VerticalAlign="top" x="942" y="774" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="videoEnd" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="print" Link="MEDIA/PDF/CancerSupportOrgs_bi_vs01.pdf" MinWidth="180">Print</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="print" Link="MEDIA/PDF/CancerSupportOrgs_bi_vs01.pdf" x="959">Imprimir</ItemEntry>
+					</Item>
+					
+					<Item ID="ContinueButton" Name="ContinueButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="CONTINUE" HorizontalAlign="left" VerticalAlign="top" x="1190" y="774" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="videoEnd" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="6_01F">Continue</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="6_01F" x="1176">Continuar</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="6_7Print" UnitType="audio" DefaultAction="unit" DefaultLink="6_01F">
+				<Description>Waiting for print to finish</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="FormPrintWaitText" Name="FormPrintWaitText" Type="Text" Description="FormPrintWaitText" HorizontalAlign="center" VerticalAlign="center" x="50%" y="400" width="700" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<!--><ItemEvent Language="all" Gender="all" Age="all" Action="fadeout" Time="00:00:10:000" Duration="1000"/> -->
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="10" Color="0xFFFFFF">Please wait while the form&#13;is being printed.</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="10" Color="0xFFFFFF">Por favor esperé mientras que se imprime el documento.</ItemEntry>
+					</Item>
+					
+					<Item ID="Please_wait_during_printVO" Name="Please_wait_during_printVO" Type="Audio" Description="Please_wait_during_printVO" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:500" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/PrintWait-E-10s.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/PrintWait-S-10s.mp3</ItemEntry>
+					</Item>
+					
+					<!--
+					<Item ID="Continue_after_printVO" Name="Continue_after_printVO" Type="Audio" Description="Continue_after_printVO" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:06:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/Continue-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/Continue-S.mp3</ItemEntry>
+					</Item>
+					
+					
+					<Item ID="ContinueButton" Name="ContinueButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="Continue Button" HorizontalAlign="left" VerticalAlign="top" x="1190" y="774" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:06:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="6_01F">Continue</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="6_01F" x="1176">Continuar</ItemEntry>
+					</Item>
+					-->
+				
+				</Items>
+			</Unit>
+			
+		</Units>
+	</Module>
+	
+	<Module LogVariable="012">
+		<ModuleName>Module 7</ModuleName>
+		<Description>Adherence Monitoring</Description>
+		<EntryPoints>
+			<EntryPoint Language="all" Age="all" Gender="Male" FirstUnit="7M_title"/>
+			<EntryPoint Language="all" Age="all" Gender="Female" FirstUnit="7F_title"/>
+		</EntryPoints>
+		<Units>
+		
+			<!-- NOTE - 2 identical title units here because we are not differentiating entry points in title units -->
+			<Unit UnitID="7M_title" UnitType="audio" DefaultAction="unit" DefaultLink="7_1">
+				<Description>Module 7 Title</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+					
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_titles_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Mod7M_TitleVO" Name="Mod7M_TitleVO" Type="Audio" Description="Mod7M_TitleVO" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:01:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/7_Title-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/7_Title-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="Mod7M_Title" Name="Mod7M_Title" Type="Text" Description="Mod7M_Title" HorizontalAlign="center" VerticalAlign="center" x="50%" y="50%" width="1000" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="60" Leading="10" Color="0xFFFFFF">Si Se Puede. You Can Do Something To Reduce Your Risk For Colon Cancer.</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="60" Leading="10" Color="0xFFFFFF">¡Sí Se Puede! Lo Que Debe Usted Hacer para Reducir Su Riesgo de Contraer Cáncer de Colon.</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			<!-- NOTE - 2 identical title units here because we are not differentiating entry points in title units -->
+			<Unit UnitID="7F_title" UnitType="audio" DefaultAction="unit" DefaultLink="7_2">
+				<Description>Module 7 Title</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+					
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_titles_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Mod7F_TitleVO" Name="Mod7F_TitleVO" Type="Audio" Description="Mod7F_TitleVO" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:01:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/7_Title-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/7_Title-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="Mod7F_Title" Name="Mod7F_Title" Type="Text" Description="Mod7F_Title" HorizontalAlign="center" VerticalAlign="center" x="50%" y="50%" width="1000" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="60" Leading="10" Color="0xFFFFFF">Si Se Puede. You Can Do Something To Reduce Your Risk For Colon Cancer.</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="60" Leading="10" Color="0xFFFFFF">¡Sí Se Puede! Lo Que Debe Usted Hacer para Reducir Su Riesgo de Contraer Cáncer de Colon.</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="7_1" UnitType="video" DefaultAction="unit" DefaultLink="7_3">
+				<Description>Low susceptibility M.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+
+					<Item ID="LowSusceptibilityVideo" Name="LowSusceptibilityVideo" Type="Video" Description="Low Susceptibility Video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-7_1.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-7_1.mov</ItemEntry>
+					</Item>
+
+				</Items>
+			</Unit>
+
+			<Unit UnitID="7_2" UnitType="video" DefaultAction="unit" DefaultLink="7_4">
+				<Description>Low susceptibility F.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+
+					<Item ID="AgeRiskFactor" Name="AgeRiskFactor" Type="Video" Description="Age as risk factor video" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-7_2.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-7_2.mov</ItemEntry>
+					</Item>
+
+				</Items>
+			</Unit>
+
+			<Unit UnitID="7_3" UnitType="video" DefaultAction="unit" DefaultLink="7_8">
+				<Description>Age as risk factor M.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+
+					<Item ID="AgeRiskVideo" Name="AgeRiskVideo" Type="Video" Description="Age as risk factor Video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-7_3.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-7_3.mov</ItemEntry>
+					</Item>
+
+				</Items>
+			</Unit>
+
+			<Unit UnitID="7_4" UnitType="video" DefaultAction="unit" DefaultLink="7_7">
+				<Description>Age as risk factor F.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+
+					<Item ID="AgeRiskVideo" Name="AgeRiskVideo" Type="Video" Description="Age as risk factor Video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-7_4.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-7_4.mov</ItemEntry>
+					</Item>
+
+				</Items>
+			</Unit>
+
+			<Unit UnitID="7_5" UnitType="video" DefaultAction="unit" DefaultLink="7_6">
+				<Description>Discomfort and pain.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+
+					<Item ID="DiscomfortVideo" Name="DiscomfortVideo" Type="Video" Description="Discomfort and pain Video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-7_5.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-7_5.mov</ItemEntry>
+					</Item>
+
+				</Items>
+			</Unit>
+
+			<Unit UnitID="7_6" UnitType="video" DefaultAction="module" DefaultLink="Print Module">
+				<Description>Perceived severity.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+
+					<Item ID="PerceivedSeverityVideo" Name="PerceivedSeverityVideo" Type="Video" Description="Perceived Severity Video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-7_6.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-7_6.mov</ItemEntry>
+					</Item>
+
+				</Items>
+			</Unit>
+
+			<Unit UnitID="7_7" UnitType="video" DefaultAction="unit" DefaultLink="7_9">
+				<Description>Impact on family F.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+
+					<Item ID="FamilyImpactVideo" Name="FamilyImpactVideo" Type="Video" Description="Family Impact Video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-7_7.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-7_7.mov</ItemEntry>
+					</Item>
+
+				</Items>
+			</Unit>
+
+			<Unit UnitID="7_8" UnitType="video" DefaultAction="unit" DefaultLink="7_5">
+				<Description>Impact on family M.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+
+					<Item ID="FamilyImpactVideo" Name="FamilyImpactVideo" Type="Video" Description="Family Impact Video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-7_8.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-7_8.mov</ItemEntry>
+					</Item>
+
+				</Items>
+			</Unit>
+
+			<Unit UnitID="7_9" UnitType="video" DefaultAction="unit" DefaultLink="7_5">
+				<Description>Association with breast and cervical cancer.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Items>
+
+					<Item ID="AssociationVideo" Name="AssociationVideo" Type="Video" Description="Association with breast and cervical cancer Video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/E-7_9.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/VIDEO/S-7_9.mov</ItemEntry>
+					</Item>
+
+				</Items>
+			</Unit>
+			
+		</Units>
+	</Module>
+	
+	<Module LogVariable="013">
+		<ModuleName>Print Module</ModuleName>
+		<Description>Print Form or End Session</Description>
+		<EntryPoints>
+			<EntryPoint Age="all" FirstUnit="8_0"/>
+		</EntryPoints>
+		<Units>
+		
+			<Unit UnitID="8_0" UnitType="interactive" DefaultAction="unit" DefaultLink="8_1">
+				<Description>Print form or end session.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="EndSessionPrintVO" Name="EndSessionPrintVO" Type="Audio" Description="EndSessionPrintVO" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/8_0-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/8_0-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="EndSessionPrintText" Name="EndSessionPrintText" Type="Text" Description="EndSessionPrintText" HorizontalAlign="center" VerticalAlign="center" x="50%" y="290" width="1100" height="300">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="0" Color="0xFFFFFF">Touch the &#8220;Print&#8221; button to print out a form to get a free colon cancer test.  Take this form to the front desk to schedule an appointment.</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="0" Color="0xFFFFFF">Toque el botón que dice &#8220;Imprimir&#8221; para imprimir un documento para hacerse una prueba de cáncer de colon gratis. Lleve el documento a la recepcionista para hacer una cita para hacerse una prueba.</ItemEntry>
+					</Item>
+				
+					<Item ID="PrintFormButton" Name="PrintFormButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="PRINT FORM" HorizontalAlign="left" VerticalAlign="top" x="460" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="print" Link="MEDIA\PDF\Clinical_Referral_Advisory-final-English.pdf">Print Form</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="print" Link="MEDIA\PDF\Clinical_Referral_Advisory-final-Spanish.pdf" x="501">Imprimir</ItemEntry>
+					</Item>
+				
+					<Item ID="EndSessionButton" Name="EndSessionButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="END SESSION" HorizontalAlign="left" VerticalAlign="top" x="751" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="Question_1">End Session</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="Question_1">Terminar</ItemEntry>
+					</Item>
+					
+				</Items>
+			</Unit>
+			
+			<!-- wait while form prints, use audio length to control wait time -->
+			<!-- ><Unit UnitID="8_1" UnitType="audio" DefaultAction="unit" DefaultLink="8_1_survey"> -->
+			<Unit UnitID="8_1" UnitType="audio" DefaultAction="module" DefaultLink="Survey Module">
+				<Description>Print form.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+					</Item>
+				
+					<Item ID="Please_wait_during_printVO" Name="Please_wait_during_printVO" Type="Audio" Description="Please_wait_during_printVO" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:500" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/PrintWait-E-10s.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/PrintWait-S-10s.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="FormPrintWaitText" Name="FormPrintWaitText" Type="Text" Description="FormPrintWaitText" HorizontalAlign="center" VerticalAlign="center" x="50%" y="400" width="700" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Leading="10" Color="0xFFFFFF">Please wait while the form&#13;is being printed.</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Leading="10" Color="0xFFFFFF">Por favor esperé mientras que se imprime el documento.</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			
+			<!-- interstitial thanks and please take survey -->
+			<!-- need VO for this to work, currently don't have it -->
+			<Unit UnitID="8_1_survey" UnitType="audio" DefaultAction="module" DefaultLink="Survey Module">
+				<Description>Take Survey Now</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+					</Item>
+				
+				<!-- dummy VO, change this -->
+					<Item ID="Please_wait_during_printVO" Name="Please_wait_during_printVO" Type="Audio" Description="Please_wait_during_printVO" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:500" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/PrintWait-E-10s.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/PrintWait-S-10s.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="FormPrintWaitText" Name="FormPrintWaitText" Type="Text" Description="FormPrintWaitText" HorizontalAlign="center" VerticalAlign="center" x="50%" y="400" width="1000" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="10" Color="0xFFFFFF">Please take the survey</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="10" Color="0xFFFFFF">Please take the survey ESP</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			
+						
+			<!-- we come back here after the survey.  Final, final thank you -->
+			<Unit UnitID="8_2_final" UnitType="audio" DefaultAction="resetSession" DefaultLink="Welcome Module">
+				<Description>Thank you screen.</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+					</Item>
+				
+					<Item ID="ThankYouVO" Name="ThankYouVO" Type="Audio" Description="ThankYouVO" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:500" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/8_2-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/8_2-S.mp3</ItemEntry> <!-- use this, fixed typo -->
+					</Item>
+					
+					<Item ID="ThankYouText" Name="ThankYouText" Type="Text" Description="ThankYouText" HorizontalAlign="center" VerticalAlign="center" x="50%" y="400" width="1100" height="300">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="10" Color="0xFFFFFF">Thank you for reviewing this information. We urge you to get checked for colon cancer on a regular basis. As you know, too many people suffer preventable death because they didn&#8217;t get checked regularly.</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="10" Color="0xFFFFFF">Muchas gracias por haber revisado esta información.  Le pedimos con toda urgencia que se haga una prueba de cáncer de colon regularmente.  Ya sabe que muchos sufren una muerte que se puede prevenir si se hacen chequeos regularmente.</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+		</Units>
+	</Module>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<Module LogVariable="014">
+		<ModuleName>Survey Module</ModuleName>
+		<Description>Users answer questions regarding their kiosk experience.</Description>
+		<EntryPoints>
+			<EntryPoint Age="all" FirstUnit="Question_1"/>
+		</EntryPoints>
+		<Units>
+		
+			<Unit UnitID="Question_1" UnitType="interactive" DefaultAction="unit" DefaultLink="Question_2">
+				<Description>How much did you like learning from a kiosk?</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Survey_Question_Audio" Name="Survey_Question_Audio" Type="Audio" Description="Survey_Question_Audio" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:500" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/post_1-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/post_1-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="Question_Text" Name="Question_Text" Type="Text" Description="How much did you like using a kiosk" HorizontalAlign="center" VerticalAlign="center" x="50%" y="280" width="1100" height="300">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Leading="15" Color="0xFFFFFF">How much did you like using a kiosk to&#13;learn about colon cancer?</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Leading="15" Color="0xFFFFFF">¿Qué tanto le gustó usar el quiosco para&#13;aprender acerca del cáncer de colon?</ItemEntry>
+					</Item>
+				
+					<Item ID="HighButton" Name="HighButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="SQ_1_HIGH" HorizontalAlign="center" VerticalAlign="top" x="429" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Very much" MinWidth="180">Very much</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Very much" MinWidth="180" x="437">Mucho</ItemEntry>
+					</Item>
+				
+					<Item ID="MidButton" Name="MidButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="SQ_1_MIDDLE" HorizontalAlign="center" VerticalAlign="top" x="50%" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Somewhat" MinWidth="180">Somewhat</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Somewhat" MinWidth="180">Algo</ItemEntry>
+					</Item>
+					
+					<Item ID="LowButton" Name="LowButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="SQ_1_LOW" HorizontalAlign="center" VerticalAlign="top" x="1003" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Not much" MinWidth="180">Not much</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Not much" MinWidth="180">No mucho</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="Question_2" UnitType="interactive" DefaultAction="unit" DefaultLink="Question_3">
+				<Description>How easy was it to understand?</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<!-- <Transition Duration="500">Crossfade</Transition> -->
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Survey_Question_Audio" Name="Survey_Question_Audio" Type="Audio" Description="Survey_Question_Audio" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:500" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/post_2-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/post_2-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="Question_Text" Name="Question_Text" Type="Text" Description="How easy was it to understand" HorizontalAlign="center" VerticalAlign="center" x="50%" y="280" width="1100" height="300">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Leading="15" Color="0xFFFFFF">How easy was it to understand the information presented through the kiosk?</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Leading="15" Color="0xFFFFFF">¿Qué tan fácil fue entender la información&#13;que se presentó en el quiosco?</ItemEntry>
+					</Item>
+					
+					<Item ID="HighButton" Name="HighButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="SQ_2_HIGH" HorizontalAlign="center" VerticalAlign="top" x="392" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Very much" MinWidth="180">Very easy</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Very much" MinWidth="180" x="435">Muy fácil</ItemEntry>
+					</Item>
+				
+					<Item ID="MidButton" Name="MidButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="SQ_2_MIDDLE" HorizontalAlign="center" VerticalAlign="top" x="50%" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Somewhat" MinWidth="180">Somewhat easy</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Somewhat" MinWidth="180" x="718">Algo fácil</ItemEntry>
+					</Item>
+					
+					<Item ID="LowButton" Name="LowButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="SQ_2_LOW" HorizontalAlign="center" VerticalAlign="top" x="1049" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Not much" MinWidth="180">Not easy</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Not much" MinWidth="180" x="1023">No muy fácil</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="Question_3" UnitType="interactive" DefaultAction="unit" DefaultLink="Question_4">
+				<Description>How easy was it to navigate?</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<!-- <Transition Duration="500">Crossfade</Transition> -->
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Survey_Question_Audio" Name="Survey_Question_Audio" Type="Audio" Description="Survey_Question_Audio" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:500" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/post_3-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/post_3-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="Question_Text" Name="Question_Text" Type="Text" Description="How easy was it to navigate" HorizontalAlign="center" VerticalAlign="center" x="50%" y="280" width="1100" height="300">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Leading="15" Color="0xFFFFFF">How easy was it to move through the&#13;different sections of the kiosk?</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Leading="15" Color="0xFFFFFF">¿Qué tan fácil fue pasar de una sección&#13;a otra en el quiosco?</ItemEntry>
+					</Item>
+				
+					<Item ID="HighButton" Name="HighButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="SQ_3_HIGH" HorizontalAlign="center" VerticalAlign="top" x="392" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Very much" MinWidth="180">Very easy</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Very much" MinWidth="180" x="435">Muy fácil</ItemEntry>
+					</Item>
+				
+					<Item ID="MidButton" Name="MidButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="SQ_3_MIDDLE" HorizontalAlign="center" VerticalAlign="top" x="50%" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Somewhat" MinWidth="180">Somewhat easy</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Somewhat" MinWidth="180" x="718">Algo fácil</ItemEntry>
+					</Item>
+					
+					<Item ID="LowButton" Name="LowButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="SQ_3_LOW" HorizontalAlign="center" VerticalAlign="top" x="1049" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Not much" MinWidth="180">Not easy</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Not much" MinWidth="180" x="1023">No muy fácil</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="Question_4" UnitType="interactive" DefaultAction="unit" DefaultLink="Question_5">
+				<Description>How much did you think you learned?</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<!-- <Transition Duration="500">Crossfade</Transition> -->
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Survey_Question_Audio" Name="Survey_Question_Audio" Type="Audio" Description="Survey_Question_Audio" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:500" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/post_4-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/post_4-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="Question_Text" Name="Question_Text" Type="Text" Description="How much did you think you learned" HorizontalAlign="center" VerticalAlign="center" x="50%" y="280" width="1100" height="300">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Leading="15" Color="0xFFFFFF">How much do you feel you learned about&#13;colon cancer from the kiosk?</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Leading="15" Color="0xFFFFFF">¿Qué tanto le gustó aprender acerca del&#13;cáncer de colon en el quiosco?</ItemEntry>
+					</Item>
+				
+					<Item ID="HighButton" Name="HighButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="SQ_4_HIGH" HorizontalAlign="center" VerticalAlign="top" x="429" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Very much" MinWidth="180">Very much</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Very much" MinWidth="180" x="437">Mucho</ItemEntry>
+					</Item>
+				
+					<Item ID="MidButton" Name="MidButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="SQ_4_MIDDLE" HorizontalAlign="center" VerticalAlign="top" x="50%" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Somewhat" MinWidth="180">Somewhat</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Somewhat" MinWidth="180">Algo</ItemEntry>
+					</Item>
+					
+					<Item ID="LowButton" Name="LowButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="SQ_4_LOW" HorizontalAlign="center" VerticalAlign="top" x="1003" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Not much" MinWidth="180">Not much</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Not much" MinWidth="180">No mucho</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="Question_5" UnitType="interactive" DefaultAction="unit" DefaultLink="8_2_final">
+				<Description>Would you prefer a kiosk in the future?</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<!-- <Transition Duration="500">Crossfade</Transition> -->
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">MEDIA/IMAGES/crc_bg_main_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Survey_Question_Audio" Name="Survey_Question_Audio" Type="Audio" Description="Survey_Question_Audio" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:500" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/post_5-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">MEDIA/AUDIO/post_5-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="Question_Text" Name="Question_Text" Type="Text" Description="Would you prefer a kiosk in the future" HorizontalAlign="center" VerticalAlign="center" x="50%" y="240" width="1100" height="300">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Leading="15" Color="0xFFFFFF">How much would you prefer to use a kiosk&#13;rather than other media to get&#13;health information in the future?</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Leading="15" Color="0xFFFFFF">¿Cuánto prefiere usar un quiosco para obtener información de salud en el futuro en lugar de usar otros medios?</ItemEntry>
+					</Item>
+				
+					<Item ID="HighButton" Name="HighButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="SQ_5_HIGH" HorizontalAlign="center" VerticalAlign="top" x="429" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Very much" MinWidth="180">Very much</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Very much" MinWidth="180" x="437">Mucho</ItemEntry>
+					</Item>
+				
+					<Item ID="MidButton" Name="MidButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="SQ_5_MIDDLE" HorizontalAlign="center" VerticalAlign="top" x="50%" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Somewhat" MinWidth="180">Somewhat</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Somewhat" MinWidth="180">Algo</ItemEntry>
+					</Item>
+					
+					<Item ID="LowButton" Name="LowButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="SQ_5_LOW" HorizontalAlign="center" VerticalAlign="top" x="1003" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Not much" MinWidth="180">Not much</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="setReviewQuestionOne" Link="Not much" MinWidth="180">No mucho</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+		</Units>
+	</Module>
+
+</Modules>

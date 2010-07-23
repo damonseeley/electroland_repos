@@ -111,7 +111,7 @@
 					trace(getName()+".loadContent(): BUTTON LOADER INSTANTIATED");
 					buttonLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, buttonsLoaded);
 					trace(getName()+".loadContent(): BUTTON LISTENER ADDED");
-					buttonLoader.load(new URLRequest("MEDIA/SWF/"+getButtonType()+".swf"));		// button type is swf name
+					buttonLoader.load(new URLRequest("BUTTONS/"+getButtonType()+".swf"));		// button type is swf name
 					trace(getName()+".loadContent(): BUTTON LOAD CALL MADE");
 				}
 				//drawn = true;	// only uncomment this to prevent a second load

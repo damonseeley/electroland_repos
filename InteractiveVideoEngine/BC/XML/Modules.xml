@@ -1,0 +1,377 @@
+<?xml version="1.0"?>
+
+<!-- EXAMPLES
+CR: &#13;
+LF: &#10;
+Left Curly Quote: &#8220;
+Right Curly Quote: &#8221;
+Left Curly Quote: &#8216;
+Right Curly Quote: &#8217;
+
+// titles text
+<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="60" Leading="10" Color="0xFFFFFF">TEXT</ItemEntry>
+// optional params: Bold, Shadow and Leading
+
+// main questions
+Size="54" Leading="15"
+
+// question or intstruction text
+<ItemEntry Language="English" Gender="all" Age="all" TextAlign="left" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="48" Leading="10" Color="0xFFFFFF">
+
+// buttons
+<ItemEntry Language="all" Gender="all" Age="all" Action="setLanguage" Link="English" MinWidth="180">English</ItemEntry>
+// optional params: MinWidth
+
+
+END EXAMPLES -->
+
+<Modules EntryPoint="Intake Module">
+
+	<Module LogVariable="003">
+		<ModuleName>Intake Module</ModuleName>
+		<Description>Breast Cancer Intake Module</Description>
+		<EntryPoints>
+			<EntryPoint Age="all" FirstUnit="I_1"/>
+		</EntryPoints>
+		<Units>
+		
+			<Unit UnitID="I_1" UnitType="interactive" DefaultAction="unit" DefaultLink="I_2">
+				<Description>Age Selection</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">BC/MEDIA/IMAGES/bc_bg_titles_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Age_Question_Text" Name="Age_Question_Text" Type="Text" Description="How old are you?" HorizontalAlign="center" VerticalAlign="center" x="50%" y="320" width="1000" height="300">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Color="0xFFFFFF">How old are you?</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Color="0xFFFFFF">¿Qué edad tiene usted?</ItemEntry>
+					</Item>
+					
+					<Item ID="YoungButton" Name="YoungButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="YOUNG AGE GROUP" HorizontalAlign="left" VerticalAlign="top" x="322" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="setAge" Link="Young" MinWidth="180">Under 50</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="setAge" Link="Young" MinWidth="180" x="300">Menor de 50</ItemEntry>
+					</Item>
+				
+					<Item ID="MiddleButton" Name="MiddleButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="MIDDLE AGE GROUP" HorizontalAlign="left" VerticalAlign="top" x="610" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="setAge" Link="Middle" MinWidth="180">50 to 64</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="setAge" Link="Middle" MinWidth="180" x="631">50 a 64</ItemEntry>
+					</Item>
+				
+					<Item ID="OldButton" Name="OldButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="OLD AGE GROUP" HorizontalAlign="left" VerticalAlign="top" x="898" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="setAge" Link="Old" MinWidth="180">Over 65</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="setAge" Link="Old" MinWidth="180" x="913">Más de 65</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="I_2" UnitType="interactive" DefaultAction="unit" DefaultLink="I_2">
+				<Description>Mammogram Question</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">BC/MEDIA/IMAGES/bc_bg_titles_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Mammogram_Question_Text" Name="Mammogram_Question_Text" Type="Text" Description="Mammogram Question" HorizontalAlign="center" VerticalAlign="center" x="50%" y="320" width="1000" height="300">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Color="0xFFFFFF">Have you had a mammogram in the past 24 months?</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Color="0xFFFFFF">¿Ha tenido usted una mamografía en los últimos 24 meses?</ItemEntry>
+					</Item>
+					
+					<Item ID="MaleButton" Name="MaleButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="Yes" HorizontalAlign="left" VerticalAlign="top" x="471" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="module" Link="Module 5" MinWidth="180">Yes</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="module" Link="Module 5" MinWidth="180">Si</ItemEntry>
+					</Item>
+				
+					<Item ID="FemaleButton" Name="FemaleButton" Type="Button" ButtonType="NavButton" SingleUse="false" Description="No" HorizontalAlign="left" VerticalAlign="top" x="754" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="all" Gender="all" Age="all" Action="module" Link="Module 3" MinWidth="180">No</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+		
+		</Units>
+	</Module>
+	
+	<Module LogVariable="004">
+		<ModuleName>Module 3</ModuleName>
+		<Description>Do you need to have a mammogram?</Description>
+		<EntryPoints>
+			<EntryPoint Age="all" FirstUnit="3_0"/>
+		</EntryPoints>
+		<Units>
+		
+			<Unit UnitID="3_0" UnitType="audio" DefaultAction="unit" DefaultLink="3_1">
+				<Description>Mammogram Question</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">BC/MEDIA/IMAGES/bc_bg_titles_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Mammogram_Question_Audio" Name="Mammogram_Question_Audio" Type="Audio" Description="Mammogram_Question_Audio" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">BC/MEDIA/AUDIO/3_0-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">BC/MEDIA/AUDIO/3_0-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="Mammogram_Question_Text" Name="Mammogram_Question_Text" Type="Text" Description="Mammogram Question" HorizontalAlign="center" VerticalAlign="center" x="50%" y="320" width="1000" height="300">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Color="0xFFFFFF">Do you need a mammogram?</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Color="0xFFFFFF">¿Necesita usted una mamografía?</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="3_1" UnitType="video" DefaultAction="module" DefaultLink="Module 3A">
+				<Description>Mammogram Video</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">BC/MEDIA/IMAGES/bc_bg_titles_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="MammogramVideo" Name="MammogramVideo" Type="Video" Description="Mammogram video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">BC/MEDIA/VIDEO/E-3_1.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">BC/MEDIA/VIDEO/S-3_1.mov</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+		
+		</Units>
+	</Module>
+	
+	<Module LogVariable="005">
+		<ModuleName>Module 3A</ModuleName>
+		<Description>Breast Self Exam</Description>
+		<EntryPoints>
+			<EntryPoint Age="all" FirstUnit="3A_0"/>
+		</EntryPoints>
+		<Units>
+		
+			<Unit UnitID="3A_0" UnitType="audio" DefaultAction="unit" DefaultLink="3A_1">
+				<Description>Breast self exam title</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">BC/MEDIA/IMAGES/bc_bg_titles_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Mammogram_Question_Audio" Name="Mammogram_Question_Audio" Type="Audio" Description="Mammogram_Question_Audio" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">BC/MEDIA/AUDIO/3A_0-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">BC/MEDIA/AUDIO/3A_0-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="Mammogram_Question_Text" Name="Mammogram_Question_Text" Type="Text" Description="Mammogram Question" HorizontalAlign="center" VerticalAlign="center" x="50%" y="320" width="1000" height="300">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Color="0xFFFFFF">Breast Self Exam Title</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Color="0xFFFFFF">Breast Self Exam Title Spanish</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="3A_1" UnitType="video" DefaultAction="module" DefaultLink="Submenu B">
+				<Description>Self Exam Video</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">BC/MEDIA/IMAGES/bc_bg_titles_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="MammogramVideo" Name="MammogramVideo" Type="Video" Description="Mammogram video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">BC/MEDIA/VIDEO/E-3A_1.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">BC/MEDIA/VIDEO/S-3A_1.mov</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+		
+		</Units>
+	</Module>
+
+	<Module LogVariable="006">
+		<ModuleName>SubMenu B</ModuleName>
+		<Description>Young & No to mammogram question</Description>
+		<EntryPoints>
+			<EntryPoint Age="all" FirstUnit="YN_1"/>
+		</EntryPoints>
+		<Units>
+		
+			<Unit UnitID="YN_1" UnitType="interactive" DefaultAction="restart" DefaultLink="null">
+				<Description>Select from two modules</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">BC/MEDIA/IMAGES/bc_bg_titles_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Mod5Button" Name="Mod5Button" Type="Button" ButtonType="NavButton" SingleUse="false" Description="Yes" HorizontalAlign="left" VerticalAlign="top" x="471" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="module" Link="Module 5" MinWidth="180">Module 5</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="module" Link="Module 5" MinWidth="180">Modulo 5</ItemEntry>
+					</Item>
+					
+					<Item ID="Mod9Button" Name="Mod9Button" Type="Button" ButtonType="NavButton" SingleUse="false" Description="Yes" HorizontalAlign="left" VerticalAlign="top" x="754" y="411" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="module" Link="Module 9" MinWidth="180">Module 9</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="module" Link="Module 9" MinWidth="180">Modulo 9</ItemEntry>
+					</Item>
+					
+					<Item ID="ExitButton" Name="Mod5Button" Type="Button" ButtonType="NavButton" SingleUse="false" Description="Yes" HorizontalAlign="left" VerticalAlign="top" x="90%" y="10%" width="100" height="100">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="restart" Link="null" MinWidth="180">Exit</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="restart" Link="null" MinWidth="180">Exit</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+		
+		</Units>
+	</Module>
+	
+	<Module LogVariable="007">
+		<ModuleName>Module 5</ModuleName>
+		<Description>Reducing Risk</Description>
+		<EntryPoints>
+			<EntryPoint Age="all" FirstUnit="5_0"/>
+		</EntryPoints>
+		<Units>
+		
+			<Unit UnitID="5_0" UnitType="audio" DefaultAction="link" DefaultLink="5_1">
+				<Description>Reducing risk title</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">BC/MEDIA/IMAGES/bc_bg_titles_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Reducing_Risk_Audio" Name="Reducing_Risk_Audio" Type="Audio" Description="Reducing_Risk_Audio" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">BC/MEDIA/AUDIO/5_0-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">BC/MEDIA/AUDIO/5_0-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="Reducing_Risk_Text" Name="Reducing_Risk_Text" Type="Text" Description="Reducing Risk Text" HorizontalAlign="center" VerticalAlign="center" x="50%" y="320" width="1000" height="300">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Color="0xFFFFFF">Reducing Risk Title</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Color="0xFFFFFF">Reducing Risk Title Spanish</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="5_1" UnitType="video" DefaultAction="module" DefaultLink="Submenu B">
+				<Description>Reducing Risk Video</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">BC/MEDIA/IMAGES/bc_bg_titles_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Reducing_Risk_Video" Name="Reducing_Risk_Video" Type="Video" Description="Reducing Risk video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">BC/MEDIA/VIDEO/E-5_1.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">BC/MEDIA/VIDEO/S-5_1.mov</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+		
+		</Units>
+	</Module>
+	
+	<Module LogVariable="009">
+		<ModuleName>Module 9</ModuleName>
+		<Description>Chance of survival</Description>
+		<EntryPoints>
+			<EntryPoint Age="all" FirstUnit="5_0"/>
+		</EntryPoints>
+		<Units>
+		
+			<Unit UnitID="9_0" UnitType="audio" DefaultAction="link" DefaultLink="9_1">
+				<Description>Survival chance title</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">BC/MEDIA/IMAGES/bc_bg_titles_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Survival_Chance_Audio" Name="Survival_Chance_Audio" Type="Audio" Description="Survival_Chance_Audio" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="100" height="100">
+						<ItemEntry Language="English" Gender="all" Age="all" Volume="100" Loop="false">BC/MEDIA/AUDIO/9_0-E.mp3</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Volume="100" Loop="false">BC/MEDIA/AUDIO/9_0-S.mp3</ItemEntry>
+					</Item>
+					
+					<Item ID="Survival_Chance_Text" Name="Survival_Chance_Text" Type="Text" Description="Survival Chance Text" HorizontalAlign="center" VerticalAlign="center" x="50%" y="320" width="1000" height="300">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="fadein" Time="00:00:00:000" Duration="500"/>
+						<ItemEntry Language="English" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Color="0xFFFFFF">Survival chance Title</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" TextAlign="center" Font="Adobe Garamond Pro" Bold="true" Shadow="true" Size="54" Color="0xFFFFFF">Survival chance Title Spanish</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+			
+			<Unit UnitID="9_1" UnitType="video" DefaultAction="module" DefaultLink="Submenu B">
+				<Description>Survival chance Video</Description>
+				<BackgroundAudio VolumeLevel="50"></BackgroundAudio>
+				<Transition Duration="500">Crossfade</Transition>
+				<Items>
+				
+					<Item ID="BackgroundImage" Name="BackgroundImage" Type="Image" Description="Background image" HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="30"/>
+						<ItemEntry Language="all" Gender="all" Age="all">BC/MEDIA/IMAGES/bc_bg_titles_red_vs02.png</ItemEntry>
+					</Item>
+					
+					<Item ID="Survival_Chance_Video" Name="Survival_Chance_Video" Type="Video" Description="Survival Chance video." HorizontalAlign="left" VerticalAlign="top" x="0" y="0" width="1440" height="900">
+						<ItemEvent Language="all" Gender="all" Age="all" Action="cutin" Time="00:00:00:000" Duration="0"/>
+						<ItemEntry Language="English" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">BC/MEDIA/VIDEO/E-9_1.mov</ItemEntry>
+						<ItemEntry Language="Spanish" Gender="all" Age="all" Action="unit" Link="First Unit" Volume="100" Loop="false">BC/MEDIA/VIDEO/S-9_1.mov</ItemEntry>
+					</Item>
+				
+				</Items>
+			</Unit>
+		
+		</Units>
+	</Module>
+	
+</Modules>
