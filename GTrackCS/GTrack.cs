@@ -46,6 +46,10 @@ namespace Electroland
 			sender.send(sb.ToString());
 		}
 		
+		public void send(String s) {
+			sender.send(s);
+		}
+		
 		public void stopDetectRegion(string id) {
 			sb.Length = 0; // clear
 			sb.Append("F"); // f for free
@@ -54,6 +58,16 @@ namespace Electroland
 		}
 		public Dictionary<string, Dictionary<string, float>> getData() {
 			return gtrackParser.get();
+		}
+		
+		public static void prettyPrint(Dictionary<string, Dictionary<string, float>> d) {
+			foreach(KeyValuePair<string, Dictionary<string, float>> objEnt in d) {
+				Console.WriteLine(objEnt.Key + " { ");
+				foreach(KeyValuePair<string, float> ent in objEnt.Value) {
+					Console.WriteLine("   " + ent.Key + " : " + ent.Value + " ;");
+				}
+				Console.WriteLine("}");
+			}
 		}
 	}
 }
