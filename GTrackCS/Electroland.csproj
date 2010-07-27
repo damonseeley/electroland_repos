@@ -43,6 +43,7 @@
     <Compile Include="ObjectPool.cs" />
     <Compile Include="GTrack.cs" />
     <Compile Include="UDPSender.cs" />
+    <Compile Include="Test.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
