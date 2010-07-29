@@ -263,10 +263,12 @@ void CloudConstructor::cull(float ax, float az, float bx, float bz, float floor)
 		float cx = points[j];
 		float cy = points[j+1];
 		float cz = points[j+2];
+
+
 		if((cx>ax) && (cx<bx)) {
-			float r1 = axbx * (cy-ay);
+			float r1 = axbx * (cz-az);
 			float r2 = (bx-cx) * byay;
-			if(r-r1-r2 >0) {
+			if((cy<floor) || (r-r1-r2 >0)) {
 				points[j++] =0;
 				points[j++] =0;
 				points[j] =0;
