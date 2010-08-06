@@ -31,6 +31,7 @@ public:
 			case 4:
 				return Vec3f(n,m,v);
 			case 5:
+			default:
 				return Vec3f(v,m,n);
 		}
 

@@ -60,9 +60,12 @@ Host code
 
 #include "Guicon.h"
 #include "TyzxCam.h"
+#include "PersonTrackReceiver.h"
 #include "CloudConstructor.h"
 #include "CloudColorer.h"
 #include "Floor.h"
+#include "UDPSender.h"
+#include "TrackHash.h"
 
 #define PERSP_VIEW 0
 #define FRONT_VIEW 1
@@ -106,6 +109,9 @@ bool showAxis = true;
 bool cullOn = true;
 Config config;
 
+PersonTrackReceiver *tracker = NULL;
+TrackHash *trackHash = NULL;
+UDPSender *udpSender = NULL;
 
 int camCnt;
 TyzxCam **tyzxCams;
@@ -278,6 +284,31 @@ void setupWorld(){
 
 	const Setting& configRoot = config.getRoot();
 
+	if(configRoot.exists("net")) {
+		const Setting &net = configRoot["net"];
+		if(net["useTrackAPI"]) {
+			string modIP;
+			net.lookupValue("moderatorIP", modIP);
+			tracker = new PersonTrackReceiver((const char*) modIP.c_str());
+			std::cout << "Starting Person Track" << std::endl;
+			tracker->start();
+		}
+
+		 trackHash = new TrackHash();
+
+		string sendIP;
+		net.lookupValue("sendIP", sendIP);
+		udpSender = new UDPSender(sendIP, net["port"]);
+	}
+
+
+//useTrackAPI = true;
+//	clientIP = 192.168.247.1;
+//	listenPort = 2345;
+//	sendPort = 1234;
+//	int sendIP
+
+	
 
 
 	if(! configRoot.exists("cameras")) {
@@ -285,7 +316,7 @@ void setupWorld(){
 		exit(1);
 	} 
 
-
+	
 
 	const Setting &cameras = configRoot["cameras"];
 
@@ -463,6 +494,8 @@ glutSetCursor(GLUT_CURSOR_NONE);
 	glewInit();
 
 
+
+
 	if (! glewIsSupported("GL_VERSION_2_0 ")) {
 		fprintf(stderr, "ERROR: Support for necessary OpenGL extensions missing.");
 		fflush(stderr);
@@ -604,6 +637,10 @@ void render(int view)
 
 */
 
+	if(tracker) {
+		tracker->grab(trackHash);
+	}
+	// build hash here
 
 
 	for(int i =0; i < camCnt; i++) {
@@ -744,7 +781,8 @@ void render(int view)
 		drawQuads = false;
 		cloudColorer->setQuads(false);
 
-
+		if(trackHash)
+		udpSender->sendString(trackHash->toString());
 }
 
 

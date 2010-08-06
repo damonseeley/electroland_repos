@@ -99,6 +99,8 @@ bool TyzxCam::grab() {
 //	std::cout << "img " << imgWidth << "x" << imgHeight << "  cx,cy " <<receiver->getCx() << "," << receiver->getCy() << std::endl; 
 
 	receiver->getZimageCenter(params.imageCenterU, params.imageCenterV);
+	params.imageCenterU += 6;
+	params.imageCenterV += 6;
 
 	// request new image as soon as you are done getting the last so it can be buffered while the current frame is rendering
 //	int retVal = receiver->sendRequest(GET_ONE_IMAGE);
