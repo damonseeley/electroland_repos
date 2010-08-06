@@ -599,6 +599,14 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\PersonTrackReceiver.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\PointCloud.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\PresenceVoxel.h"
 					>
 				</File>
@@ -633,6 +641,14 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\Track.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\TrackHash.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\TyzxCam.h"
 					>
 					<FileConfiguration
@@ -653,6 +669,14 @@
 							Name="VCCustomBuildTool"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\UDPReceiver.h"
+					>
+				</File>
+				<File
+					RelativePath=".\UDPSender.h"
+					>
 				</File>
 				<File
 					RelativePath=".\Util.h"
@@ -735,6 +759,14 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\PersonTrackReceiver.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\PointCloud.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\PresenceVoxel.cpp"
 					>
 				</File>
@@ -751,11 +783,23 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\TrackHash.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\TyzxCam.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\src\TyzxTCPreceiver.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\UDPReceiver.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\UDPSender.cpp"
 					>
 				</File>
 				<File
