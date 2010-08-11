@@ -12,6 +12,8 @@ using namespace std;
 
 class UDPSender {
 public:
+	int  buffSize;
+
 	SOCKET	theSocket;
 	SOCKADDR_IN	saServer;
 
