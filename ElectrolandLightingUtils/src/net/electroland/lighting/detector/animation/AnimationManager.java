@@ -6,16 +6,24 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.log4j.Logger;
-
 import net.electroland.lighting.detector.DetectorManagerJPanel;
 import net.electroland.lighting.detector.Recipient;
+import net.electroland.lighting.tools.RecipientRepresentation;
 
+import org.apache.log4j.Logger;
+
+/**
+ * @author Bradley
+ *
+ */
 public class AnimationManager implements Runnable 
 {
 	private static Logger logger = Logger.getLogger(AnimationManager.class);
 
 	private DetectorManagerJPanel dmp;
+	// RR superceded dmp. need to properly sunset dmp, probably by
+	// having it subclass rr.
+	private CopyOnWriteArrayList<RecipientRepresentation> rrList;
 	private Thread thread;
 
 	// This object contains all live animations and transitions.  That includes
@@ -40,6 +48,11 @@ public class AnimationManager implements Runnable
 		this.init(fps);
 	}
 
+	/**
+	 * @deprecated
+	 * @param dmp
+	 * @param fps
+	 */
 	public AnimationManager(DetectorManagerJPanel dmp, int fps)
 	{
 		this.dmp = dmp;
@@ -48,12 +61,40 @@ public class AnimationManager implements Runnable
 
 	public void init(int fps)
 	{
-		this.delay = (long)(1000 / (double)fps);
+		setFPS(fps);
 		animationRecipients = new ConcurrentHashMap<Animation, AnimationRecipients>();
 		recipientStates = new ConcurrentHashMap<Recipient, RecipientState>();
 		listeners = new CopyOnWriteArrayList<AnimationListener>();
 	}
 
+	final public void addRecipientRepresentation(RecipientRepresentation rr)
+	{
+		if (rrList == null)
+		{
+			rrList = new CopyOnWriteArrayList<RecipientRepresentation>();
+		}
+		rrList.add(rr);
+	}
+	final public void removeRecipientRepresentation(RecipientRepresentation rr)
+	{
+		if (rrList != null)
+			rrList.remove(rr);
+	}
+	final public void emptyRecipientRepresentationList()
+	{
+		rrList = null;
+	}
+	
+	final public void setFPS(int fps)
+	{
+		this.delay = (long)(1000 / (double)fps);		
+	}
+	
+	final public int getFPS()
+	{
+		return (int)(1000 / delay);
+	}
+	
 	final public void reapRecipient(Collection <Recipient> recipients)
 	{
 		synchronized (animationRecipients)
@@ -246,6 +287,11 @@ public class AnimationManager implements Runnable
 		}
 	}
 
+	final public boolean isRunning()
+	{
+		return isRunning;
+	}
+	
 	final public void run()
 	{
 		long startTime;
@@ -330,17 +376,41 @@ public class AnimationManager implements Runnable
 					if (state.transition == null)
 					{
 						recipient.sync(animationRecipients.get(state.current).latestFrame);	
+						// Yuck: have to call render in the RecipientRepresentation here.
 					}else
 					{
 						recipient.sync(state.current == null ? null : animationRecipients.get(state.current).latestFrame,
 								state.transition == null ? null : animationRecipients.get(state.transition).latestFrame,
 								state.target == null ? null : animationRecipients.get(state.target).latestFrame);
+						// Yuck: have to call render in the RecipientRepresentation here if we want transitions to show up.
 					}
 				}
 			}
+			
+			/** 
+			 * This belongs in the recipient sync section above, if we
+			 * want transitions to appear.
+			 */
+			if (rrList != null)
+			{
+				Iterator<RecipientRepresentation> i = rrList.iterator();
+				while (i.hasNext())
+				{
+					RecipientRepresentation rr = i.next();
+					Recipient r = rr.getRecipient();
+					rr.render(r, this.getCurrentAnimation(r).getFrame());
+				}
+			}
+			
+			/**
+			 * This should go away.  dmp is old school.  It should subclass
+			 * RecipientRepresentation, and then dmp should just be stored
+			 * in rrList.
+			 */
 			if (dmp != null)
 			{
-				dmp.repaint();
+				dmp.repaint();// see note above about transitions.
+							  // (DetectorJPanel doesn't show transitions currently)
 			}
 
 			try 
@@ -465,34 +535,3 @@ class RecipientState
 		return "RecipientState [current=" + current + ", transition=" + transition + ", target=" + target + "]";
 	}
 }
-/** NOT USED YET.  PLANNING ON CLEANING UP THE WAY ANIMATIONS ARE STORED.
-	This would be a wrapper around Animation that holds the state information
-	required by the AnimationManager. Would prefer to store this in the 
-	RecipientState object instead of just raw Animations and do away with the
-	AnimationRecipients map altogether.  AnimationRecipients could be replaced 
-	by an on-the-fly calculated array wherever we need to do that kind of
-	looping. That would severly limit the danger of left brain/right brain
-	problems here.
-*/
-/**
-class ManagedAnimation implements Animation
-{
-	protected Animation animation;
-	protected boolean isTransition;
-	protected Raster latestFrame;
-
-	public ManagedAnimation(Animation a, boolean isTransition)
-	{
-		this.animation = a;
-		this.isTransition = isTransition;
-	}
-	public Raster getFrame()
-	{
-		return animation.getFrame();
-	}
-	public boolean isDone()
-	{
-		return animation.isDone();
-	}
-}
-*/
