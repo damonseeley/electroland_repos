@@ -38,6 +38,15 @@ public abstract class Recipient
 	protected String patchgroup;
 	protected ByteMap bytemap;
 	protected boolean isEnabled = true;
+	protected String originalStr;
+
+	public String getOriginalStr() {
+		return originalStr;
+	}
+
+	public void setOriginalStr(String originalStr) {
+		this.originalStr = originalStr;
+	}
 
 	/**
 	 * @param universe - the byte id of this lighting fixtures DMX universe
@@ -111,19 +120,43 @@ public abstract class Recipient
 		this.sync(raster, null, null);
 	}
 
+	abstract public byte getOnVal();
+	abstract public byte getOffVal();	
+	
+	/**
+	 * @deprecated
+	 */
 	final public void blackOut()
 	{
-		send(new byte[channels]);
+		setAll(getOffVal());
+	}
+	final public void allOff()
+	{
+		setAll(getOffVal());
+	}
+	final public void allOn()
+	{
+		setAll(getOnVal());
+	}
+	
+	final public void setAll(byte to)
+	{
+		byte[] bytes = new byte[channels];
+		for (int i = 0; i < channels; i++)
+		{
+			bytes[i] = to;
+		}
+		send(bytes);
 
-		// reflect the black state in the detectors (for GUIs relying on that
+		// reflect state in the detectors (for GUIs relying on that
 		// to render the latest state)
 		Iterator <Detector> dIter = detectors.iterator();
 		while (dIter.hasNext())
 		{
-			lastEvals.put(dIter.next(), new Byte((byte)0));
+			lastEvals.put(dIter.next(), new Byte(to));
 		}
 	}
-
+	
 	/**
 	 * 
 	 * @param currentRaster
@@ -175,7 +208,6 @@ public abstract class Recipient
 		}
 		return sb.toString();
 	}
-
 	
 	/**
 	 * 
@@ -287,7 +319,7 @@ public abstract class Recipient
 	{
 		return preferredDimensions;
 	}
-
+	
 	public String toString()
 	{
 		StringBuffer sb = new StringBuffer(id);

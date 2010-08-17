@@ -15,6 +15,16 @@ import net.electroland.util.Util;
 
 public class ArtNetRecipient extends Recipient {
 
+	@Override
+	public byte getOnVal() {
+		return (byte)255;
+	}
+
+	@Override
+	public byte getOffVal() {
+		return (byte)0;
+	}
+
 	static Logger logger = Logger.getLogger(ArtNetRecipient.class);
 
 	protected byte universe;
