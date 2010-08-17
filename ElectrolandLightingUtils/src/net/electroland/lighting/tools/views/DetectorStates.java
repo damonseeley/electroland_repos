@@ -1,29 +1,20 @@
 package net.electroland.lighting.tools.views;
 
-import javax.swing.JPanel;
+import java.awt.Graphics;
 
 import net.electroland.lighting.detector.Recipient;
-import net.electroland.lighting.detector.animation.Animation;
-import net.electroland.lighting.tools.VisualAnimationRecipientViewable;
+import net.electroland.lighting.tools.RecipientRepresentation;
 
-public class DetectorStates extends VisualAnimationRecipientViewable {
+public class DetectorStates extends RecipientRepresentation {
 
-	@Override
-	public JPanel getPanel() {
-		// TODO Auto-generated method stub
-		return null;
+	public DetectorStates(Recipient r)
+	{
+		super(r);
 	}
-
+	
 	@Override
-	public Recipient getRecipient() {
+	protected void paintComponent(Graphics g) {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
-
-	@Override
-	public Animation getAnimation() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
