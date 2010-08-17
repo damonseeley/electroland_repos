@@ -1,29 +1,37 @@
 package net.electroland.lighting.tools.views;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+
 import javax.swing.JPanel;
 
 import net.electroland.lighting.detector.Recipient;
-import net.electroland.lighting.detector.animation.Animation;
-import net.electroland.lighting.tools.VisualAnimationRecipientViewable;
+import net.electroland.lighting.tools.RecipientRepresentation;
 
-public class CurrentAnimation extends VisualAnimationRecipientViewable {
+public class CurrentAnimation extends RecipientRepresentation {
 
-	@Override
-	public JPanel getPanel() {
-		// TODO Auto-generated method stub
-		return null;
+	public CurrentAnimation(Recipient r){
+		super(r);
 	}
-
+	
 	@Override
-	public Recipient getRecipient() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	protected void paintComponent(Graphics g) {
 
-	@Override
-	public Animation getAnimation() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
+		// draw raster
+		if (this.getRaster() != null)
+		{
+			BufferedImage raster = (BufferedImage)((this.getRaster().getRaster()));
+			g.drawImage(raster, 0, 0, raster.getWidth((JPanel)this), 
+										raster.getHeight((JPanel)this), this);
+			
+			// draw the border of the fixture
+			Recipient fixture = getRecipient();
+			g.setColor(Color.DARK_GRAY);
+			g.drawRect(0, 0, fixture.getPreferredDimensions().width, fixture.getPreferredDimensions().height);					
+		}
+	}
 }
