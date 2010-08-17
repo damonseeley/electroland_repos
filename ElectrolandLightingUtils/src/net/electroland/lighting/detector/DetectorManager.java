@@ -2,6 +2,10 @@ package net.electroland.lighting.detector;
 
 import java.awt.Dimension;
 import java.awt.Rectangle;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Collections;
@@ -20,7 +24,6 @@ import net.electroland.lighting.detector.models.RedDetectionModel;
 import net.electroland.lighting.detector.models.ThresholdDetectionModel;
 import net.electroland.util.OptionException;
 import net.electroland.util.OptionParser;
-import net.electroland.util.Util;
 
 import org.apache.log4j.Logger;
 
@@ -41,8 +44,40 @@ public class DetectorManager {
 	private Map <String, Detector> detectors;
 	private Map <String, ByteMap> bytemaps;
 	private int fps;
+	private File propsFile;
+
+	public File getPropsFile() {
+		return propsFile;
+	}
+
+	public void setPropsFile(File propsFile) {
+		this.propsFile = propsFile;
+	}
+
+	public DetectorManager(String propsFileName) throws UnknownHostException, IOException,  UnknownHostException, OptionException
+	{
+		propsFile = new File(propsFileName);
+		init(propsFile);
+	}
 
 	public DetectorManager(Properties props) throws UnknownHostException, OptionException
+	{
+		init(props);
+	}
+
+	public void saveChanges(boolean backup)
+	{
+		// create a new props file based on the objects in memory.
+	}
+	
+	public void init(File file) throws IOException, OptionException
+	{
+		Properties systemProps = new Properties();
+		systemProps.load(new FileInputStream(file));
+		init(systemProps);		
+	}
+	
+	public void init(Properties props) throws UnknownHostException, OptionException
 	{
 		bytemaps = Collections.synchronizedMap(new HashMap<String, ByteMap>());
 		rasters = Collections.synchronizedMap(new HashMap<String, Dimension>());
@@ -236,7 +271,7 @@ public class DetectorManager {
 		return new Dimension(width, height);
 	}
 
-	final private static Recipient parseRecipient(String id, String str, DetectorManager dmr) throws OptionException, UnknownHostException
+	final public static Recipient parseRecipient(String id, String str, DetectorManager dmr) throws OptionException, UnknownHostException
 	{
 		Recipient r;
 		Map<String,Object> options = OptionParser.parse(str);
@@ -282,6 +317,7 @@ public class DetectorManager {
 			throw new OptionException("no such protocol " + protocol + " in recipient " + id);
 		}
 
+		r.originalStr = str;
 		r.setByteMap(map);
 		return r;
 	}
@@ -413,6 +449,9 @@ public class DetectorManager {
 		return k;
 	}
 
+	/**
+	 * @deprecated
+	 */
 	public void blackOutAll()
 	{
 		Iterator<Recipient> i = recipients.values().iterator();
@@ -424,6 +463,27 @@ public class DetectorManager {
 		}
 	}
 
+	public void allOff()
+	{
+		Iterator<Recipient> i = recipients.values().iterator();
+		while (i.hasNext())
+		{
+			Recipient r = i.next();
+			logger.info("off " + r.id);
+			r.allOff();
+		}
+	}
+	public void allOn()
+	{
+		Iterator<Recipient> i = recipients.values().iterator();
+		while (i.hasNext())
+		{
+			Recipient r = i.next();
+			logger.info("on " + r.id);
+			r.allOn();
+		}		
+	}
+	
 	public void turnOff()
 	{
 		this.setDisplayState(OFF);
