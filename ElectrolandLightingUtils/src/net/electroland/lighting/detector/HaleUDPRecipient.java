@@ -13,6 +13,16 @@ import org.apache.log4j.Logger;
 
 public class HaleUDPRecipient extends Recipient {
 
+	@Override
+	public byte getOnVal() {
+		return (byte)255;
+	}
+
+	@Override
+	public byte getOffVal() {
+		return (byte)0;
+	}	
+
 	private static Logger logger = Logger.getLogger(HaleUDPRecipient.class);
 	private static DatagramSocket socket;
 

@@ -12,6 +12,16 @@ import net.electroland.util.Util;
 
 public class FlexXMLRecipient extends Recipient {
 
+	@Override
+	public byte getOnVal() {
+		return (byte)255;
+	}
+
+	@Override
+	public byte getOffVal() {
+		return (byte)0;
+	}
+
 	private static Logger logger = Logger.getLogger(FlexXMLRecipient.class);
 	private XMLSocketBroadcaster xmlsb;
 	private ConcurrentLinkedQueue <String>q;
