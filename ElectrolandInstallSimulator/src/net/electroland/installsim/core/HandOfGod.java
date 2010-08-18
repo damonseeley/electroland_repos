@@ -18,11 +18,11 @@ public class HandOfGod {
 	private float upVec[] = {0.0f,-1.0f,0.0f};
 	private float dnVec[] = {0.0f,1.0f,0.0f};
 	
-	public int lowerSpawnPt[] = {125,700,0};
+	public int lowerSpawnPt[] = {125,650,0};
 	public int upperSpawnPt[] = {105,25,0};
 	
 	private int pID = 0;
-	private double moveInc = 0.6f;
+	private double moveInc = 2.0f;
 	private double moveRnd = 0.5f;
 	
 	private int spawnTimeout = 30;
@@ -44,14 +44,15 @@ public class HandOfGod {
 		// starting lower person
 		Person p = new Person(pID,lowerSpawnPt[0],lowerSpawnPt[1],lowerSpawnPt[2]);
 		p.setVector(upVec);
-		pID++;
 		people.put(pID, p);
+		pID++;
+		
 		
 		// starting lower person
 		p = new Person(pID,upperSpawnPt[0],upperSpawnPt[1],upperSpawnPt[2]);
 		p.setVector(dnVec);
-		pID++;
 		people.put(pID, p);
+		pID++;
 		
 		
 		System.out.println(people.toString());
@@ -59,12 +60,16 @@ public class HandOfGod {
 	}
 	
 	public void updatePeople(){
-		Enumeration<Person> persons = InstallSimMainThread.people.elements();
+		Enumeration<Person> persons = people.elements();
 		while(persons.hasMoreElements()) {
 			Person p = persons.nextElement();
 			p.setLoc(p.x + (float)(Math.random()*moveInc*p.getVec()[0]), p.y + (float)(Math.random()*moveInc*p.getVec()[1]));
+			if (p.y < 5 || p.y > 750) {
+				InstallSimMainThread.people.remove(p.id);
+			}
 
 		}
+		
 
 		if (spawnTimer > spawnTimeout){
 			if (people.size() < popSize) {
@@ -72,14 +77,14 @@ public class HandOfGod {
 					// create a down-walking person
 					Person p = new Person(pID,lowerSpawnPt[0],lowerSpawnPt[1],lowerSpawnPt[2]);
 					p.setVector(upVec);
-					pID++;
 					people.put(pID, p);
+					pID++;
 				} else if (Math.random() < spawnChance){
 					// create an up-walking person	
 					Person p = new Person(pID,upperSpawnPt[0],upperSpawnPt[1],upperSpawnPt[2]);
 					p.setVector(dnVec);
-					pID++;
 					people.put(pID, p);
+					pID++;
 				}
 			}
 			spawnTimer = 0;
