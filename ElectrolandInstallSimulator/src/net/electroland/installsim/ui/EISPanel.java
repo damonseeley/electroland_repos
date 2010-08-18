@@ -67,40 +67,23 @@ public class EISPanel extends JPanel implements MouseMotionListener { // change 
 
 			
 			//draw sensors
-			Enumeration<PhotoelectricTripWire> sensors = InstallSimMainThread.Sensors.elements();
+			Enumeration<Sensor> sensors = InstallSimMainThread.sensors.elements();
 			while(sensors.hasMoreElements()) {
-				PhotoelectricTripWire s = sensors.nextElement();
+				PhotoelectricTripWire s = (PhotoelectricTripWire)sensors.nextElement();
 				s.render(g2);
 				
 			}
 			
-			
-			
+			//draw spawn locations and other indicators
+			InstallSimMainThread.god.render(g2);
 			
 			
 			//draw people
-			
-			//fill the person circle
-			Color c = new Color(255,0,0);
-			
-			float w = (float) (personCircle.width * 0.5f); // lets compute these values once per frame rather than once per person
-			float h = (float) (personCircle.height * 0.5f);
 			Enumeration<Person> persons = InstallSimMainThread.people.elements();
 			while(persons.hasMoreElements()) {
 				Person p = persons.nextElement();
-				//System.out.println("person " + p.id + " (" + p.x + ", " + p.y + ")");
-				personCircle.x = p.x * xScale - w + xOffset;
-				personCircle.y = p.y * yScale - h + yOffset;
+				p.render(g2, p.id);
 				
-				g2.setColor(p.color);
-				g2.fill(personCircle);
-				
-				c = new Color(128,128,128);
-				g2.setColor(c);
-				Font font = new Font("Arial", Font.PLAIN, 11);
-			    g2.setFont(font);
-				g2.drawString("ID: " + p.id.toString(), (int)personCircle.x-1, (int)personCircle.y-4);
-				g2.drawString((int)p.x + ", " + (int)p.y + ", " + (int)p.z, (int)personCircle.x-10, (int)personCircle.y+h*3+1);
 			}
 			
 
