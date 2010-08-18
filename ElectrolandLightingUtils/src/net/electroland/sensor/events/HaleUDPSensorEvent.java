@@ -16,16 +16,20 @@ public class HaleUDPSensorEvent extends SensorEvent {
 		// who's it from?
 		this.sender = sender;
 
-		// is the originalPacket length going to include dead buffer?
-		// if so, need to find the location of the stop byte, and ONLY copy
-		// that much here.  until we test, assuming the stop byte is the last
-		// byte.
-		originalPacket = new byte[packet.length];
-		System.arraycopy(packet, 0, this.originalPacket, 0, originalPacket.length);
+		// find the end byte (well before the end of the packet length, hopefully)
+		boolean endFound = false;
+		int length = 0;
+		while (!endFound && length < packet.length)
+		{
+			endFound = packet[length++] == (byte)254;
+		}
 
-		// verify we got valid Hale
-		isValid = originalPacket[0] == (byte)255 &&
-					originalPacket[originalPacket.length - 1] == (byte)254;
+		// make sure there was a start byte
+		isValid = endFound && packet[0] == (byte)255;
+
+		// cache the packet
+		originalPacket = new byte[length];
+		System.arraycopy(packet, 0, this.originalPacket, 0, originalPacket.length);
 
 		if (isValid){
 			// yes?  get the command byte
@@ -45,6 +49,8 @@ public class HaleUDPSensorEvent extends SensorEvent {
 		sb.append(", cmdByte=").append(Util.bytesToHex(cmdByte));
 		sb.append(", originalPacket=");
 		sb.append(Util.bytesToHex(originalPacket, originalPacket.length));
+		sb.append(", data=");
+		sb.append(Util.bytesToHex(data, data.length));
 		
 		return sb.append(']').toString();
 	}
