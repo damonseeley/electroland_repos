@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import net.electroland.coopLights.core.Light;
 
 
 public class InstallPropsReader {
@@ -21,7 +20,7 @@ public class InstallPropsReader {
 	}
 	
 	public void setupLights() throws IOException {
-		Vector<Light>lightVec = new Vector<Light>(); 
+		/*Vector<Light>lightVec = new Vector<Light>(); 
 		int lineCnt = 0;
 		while(reader.ready()) {
 			String line  = reader.readLine();
@@ -44,6 +43,6 @@ public class InstallPropsReader {
 			Light l = e.nextElement();
 			//System.out.println(l);
 			//InstallSimMain.lights[l.id] = l;
-		}
+		}*/
 	}
 }

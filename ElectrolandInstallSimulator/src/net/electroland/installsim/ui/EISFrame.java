@@ -17,8 +17,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
-import net.electroland.coopLights.core.InstallSimMain;
-
 public class EISFrame extends JFrame implements KeyEventDispatcher {
 
 	public static EISPanel eISPanel;
@@ -54,7 +52,7 @@ public class EISFrame extends JFrame implements KeyEventDispatcher {
 		addWindowListener(new WindowAdapter() { // setupMenus() for explanation of anonymous classes (this syntax)
 			public void windowClosing(WindowEvent event) {
 				try { // surround w/try catch block to make sure System.exit(0) gets call no matter what
-					InstallSimMain.killTheads();
+					//InstallSimMain.killTheads();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

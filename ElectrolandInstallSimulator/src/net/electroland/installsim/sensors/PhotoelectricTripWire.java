@@ -6,7 +6,7 @@ import java.util.Enumeration;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import net.electroland.installsim.core.InstallSimMainThread;
+import net.electroland.installsim.core.InstallSimMain;
 import net.electroland.installsim.core.Person;
 
 public class PhotoelectricTripWire extends Sensor {
@@ -69,7 +69,7 @@ public class PhotoelectricTripWire extends Sensor {
 	public void detect() {
 		
 		//System.out.println(this);
-		Enumeration<Person> persons = InstallSimMainThread.people.elements();
+		Enumeration<Person> persons = InstallSimMain.people.elements();
 		while(persons.hasMoreElements()) {
 			Person p = persons.nextElement();
 			

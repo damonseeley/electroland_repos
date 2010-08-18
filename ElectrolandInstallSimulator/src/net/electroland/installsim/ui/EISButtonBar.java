@@ -7,8 +7,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import net.electroland.coopLights.core.InstallSimConductor;
-import net.electroland.coopLights.core.InstallSimMain;
 
 
 public class EISButtonBar extends JPanel {
@@ -51,7 +49,7 @@ public class EISButtonBar extends JPanel {
 		button.addActionListener(new ActionListener() { // create an action listener
 			public void actionPerformed(ActionEvent e) {
 				//System.out.println("button 3 pressed(and released)");
-				System.out.println(InstallSimConductor.peopleCount() + " people in the space");
+				//System.out.println(InstallSimConductor.peopleCount() + " people in the space");
 			}
 		});
 		// yet another way to get keyboard shortcuts.
