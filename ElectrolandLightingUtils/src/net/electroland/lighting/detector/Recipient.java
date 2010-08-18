@@ -278,7 +278,10 @@ public abstract class Recipient
 		}
 	}
 
-
+	final public List<Detector> getDetectors()
+	{
+		return detectors;
+	}
 
 	final public Byte getLastEvaluatedValue(Detector detector)
 	{
