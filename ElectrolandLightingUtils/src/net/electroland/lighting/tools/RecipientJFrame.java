@@ -15,7 +15,7 @@ import javax.swing.JTextArea;
 import net.electroland.lighting.detector.DetectorManager;
 import net.electroland.lighting.detector.Recipient;
 import net.electroland.lighting.detector.animation.AnimationManager;
-import net.electroland.lighting.tools.views.CurrentAnimation;
+import net.electroland.lighting.tools.views.DetectorStates;
 import net.electroland.util.OptionException;
 import net.miginfocom.swing.MigLayout;
 
@@ -64,7 +64,7 @@ public class RecipientJFrame extends JFrame implements ActionListener, KeyListen
 		display.setSelectedIndex(0);
 		display.addActionListener(this);
 
-		representation = new CurrentAnimation(recipient);
+		representation = new DetectorStates(recipient);
 
 		// 6 columns
 		this.setName(recipient.getID());
