@@ -55,7 +55,7 @@ public class HandOfGod {
 		pID++;
 		
 		
-		System.out.println(people.toString());
+		//System.out.println(people.toString());
 			
 	}
 	
@@ -65,7 +65,7 @@ public class HandOfGod {
 			Person p = persons.nextElement();
 			p.setLoc(p.x + (float)(Math.random()*moveInc*p.getVec()[0]), p.y + (float)(Math.random()*moveInc*p.getVec()[1]));
 			if (p.y < 5 || p.y > 750) {
-				InstallSimMainThread.people.remove(p.id);
+				InstallSimMain.people.remove(p.id);
 			}
 
 		}

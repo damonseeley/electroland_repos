@@ -19,7 +19,7 @@ import net.electroland.installsim.ui.EISPanel;
 
 //import javax.swing.JApplet;
 
-public class InstallSimMainThread extends Thread {
+public class InstallSimMain extends Thread {
 
 	public static Vector<Sensor>sensors = new Vector<Sensor> ();
 	
@@ -28,7 +28,9 @@ public class InstallSimMainThread extends Thread {
 	
 	public static HandOfGod god;
 	
-	public static HaleUDPoutput hudp = new HaleUDPoutput("localhost", 7474);
+	public static String address = "localhost";
+	public static int port = 7474;
+	public static HaleUDPoutput hudp = new HaleUDPoutput(address, port);
 	
 	public static boolean SHOWUI;
 	
@@ -55,7 +57,7 @@ public class InstallSimMainThread extends Thread {
 
 	
 	// constructor does all the setup work
-	public InstallSimMainThread() {
+	public InstallSimMain() {
 		
 		SHOWUI = true;
 
@@ -87,6 +89,7 @@ public class InstallSimMainThread extends Thread {
 		//conductor = new InstallSimConductor(CoopFrame.coopPanel);
 		
 		start();
+		System.out.println("InstallSim Running on " + address + " " + port);
 
 	}
 	
@@ -104,7 +107,7 @@ public class InstallSimMainThread extends Thread {
 			PhotoelectricTripWire s = new PhotoelectricTripWire(i,startx,starty+incy*i,0,vec);
 			sensors.add(s);
 		}
-		System.out.println(sensors.toString());
+		//System.out.println(sensors.toString());
 		
 	}
 	
@@ -194,7 +197,7 @@ public class InstallSimMainThread extends Thread {
 	
 	public static void shutdown() {
 		try { // surround w/try catch block to make sure System.exit(0) gets call no matter what
-			InstallSimMainThread.killTheads();
+			InstallSimMain.killTheads();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -224,7 +227,7 @@ public class InstallSimMainThread extends Thread {
 	
 	
 	public static void main(String[] args) {
-		new InstallSimMainThread();
+		new InstallSimMain();
 	}
 	
 	

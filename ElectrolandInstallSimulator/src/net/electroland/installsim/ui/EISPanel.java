@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 
 import net.electroland.coopLights.core.*;
 //import net.electroland.installsim.core.InstallSimConductor;
-import net.electroland.installsim.core.InstallSimMainThread;
+import net.electroland.installsim.core.InstallSimMain;
 import net.electroland.installsim.core.Person;
 import net.electroland.installsim.sensors.*;
 
@@ -33,12 +33,12 @@ public class EISPanel extends JPanel implements MouseMotionListener { // change 
 		final static Color white = Color.white;
 		
 		
-		final static float xScale = InstallSimMainThread.xScale;
+		final static float xScale = InstallSimMain.xScale;
 		final static float yScale = xScale;
-		final static float xOffset = InstallSimMainThread.xOffset;
-		final static float yOffset = InstallSimMainThread.yOffset;
+		final static float xOffset = InstallSimMain.xOffset;
+		final static float yOffset = InstallSimMain.yOffset;
 		
-		public static int dummyPerson = InstallSimMainThread.DUMMYID;
+		public static int dummyPerson = InstallSimMain.DUMMYID;
 		
 //		Light[] lights;  Don't dup variable for no reason EGM
 //		ConcurrentHashMap<Integer, Person>  people;
@@ -67,7 +67,7 @@ public class EISPanel extends JPanel implements MouseMotionListener { // change 
 
 			
 			//draw sensors
-			Enumeration<Sensor> sensors = InstallSimMainThread.sensors.elements();
+			Enumeration<Sensor> sensors = InstallSimMain.sensors.elements();
 			while(sensors.hasMoreElements()) {
 				PhotoelectricTripWire s = (PhotoelectricTripWire)sensors.nextElement();
 				s.render(g2);
@@ -75,11 +75,11 @@ public class EISPanel extends JPanel implements MouseMotionListener { // change 
 			}
 			
 			//draw spawn locations and other indicators
-			InstallSimMainThread.god.render(g2);
+			InstallSimMain.god.render(g2);
 			
 			
 			//draw people
-			Enumeration<Person> persons = InstallSimMainThread.people.elements();
+			Enumeration<Person> persons = InstallSimMain.people.elements();
 			while(persons.hasMoreElements()) {
 				Person p = persons.nextElement();
 				p.render(g2, p.id);
@@ -113,7 +113,7 @@ public class EISPanel extends JPanel implements MouseMotionListener { // change 
 
 		public void mouseDragged(MouseEvent e) {
 				Person p;
-				p = InstallSimMainThread.people.get(InstallSimMainThread.DUMMYID);
+				p = InstallSimMain.people.get(InstallSimMain.DUMMYID);
 				if (p!=null){
 					p.setLoc((float)e.getX()-xOffset,(float)e.getY()-yOffset);
 				}

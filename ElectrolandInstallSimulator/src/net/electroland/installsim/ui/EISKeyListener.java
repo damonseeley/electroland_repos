@@ -102,7 +102,7 @@ public class EISKeyListener implements KeyListener {
 				//RESTART STUFF
 			case KeyEvent.VK_R:
 				System.out.println("setting lights for restart");
-				InstallSimMain.executeRestart();
+				//InstallSimMain.executeRestart();
 				break;
 				
 				//QUIT
@@ -159,17 +159,17 @@ public class EISKeyListener implements KeyListener {
 				
 				//create the test people
 			case KeyEvent.VK_P:
-				InstallSimMain.createTestPerson();
+				//InstallSimMain.createTestPerson();
 				break;
 				
 				
 				
 			case KeyEvent.VK_SPACE:
-				if (InstallSimMain.SHOWUI){
-					InstallSimMain.SHOWUI = false;
-				} else {
-					InstallSimMain.SHOWUI = true;
-				}
+				//if (InstallSimMain.SHOWUI){
+					//InstallSimMain.SHOWUI = false;
+				//} else {
+					//InstallSimMain.SHOWUI = true;
+				//}
 				break;
 				
 
