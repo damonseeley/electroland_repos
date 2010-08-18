@@ -58,7 +58,12 @@ public class AnimationManager implements Runnable
 		this.dmp = dmp;
 		this.init(fps);
 	}
-
+	
+	public void setViewer(DetectorManagerJPanel dmp)
+	{
+		this.dmp = dmp;
+	}
+	
 	public void init(int fps)
 	{
 		setFPS(fps);
@@ -398,7 +403,11 @@ public class AnimationManager implements Runnable
 				{
 					RecipientRepresentation rr = i.next();
 					Recipient r = rr.getRecipient();
-					rr.render(r, this.getCurrentAnimation(r).getFrame());
+					Animation a = this.getCurrentAnimation(r); 
+					if (a != null && r != null){
+						AnimationRecipients ar = animationRecipients.get(a);
+						rr.render(r, ar.latestFrame);
+					}
 				}
 			}
 			
