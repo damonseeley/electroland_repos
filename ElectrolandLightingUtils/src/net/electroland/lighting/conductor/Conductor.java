@@ -7,6 +7,7 @@ import java.util.Vector;
 
 import net.electroland.lighting.detector.DetectorManager;
 import net.electroland.lighting.detector.animation.AnimationManager;
+import net.electroland.lighting.tools.SimpleVLM;
 import net.electroland.lighting.tools.VisualLightingManager;
 import net.electroland.sensor.SensorEvent;
 import net.electroland.sensor.SensorListener;
@@ -20,37 +21,6 @@ abstract public class Conductor implements SensorListener {
 	private DetectorManager dm;
 	private HaleUDPSensor hs;
 	
-	/*	Sample (includes a lot of future enablement.
-	public Conductor(){
-		// enable HaldUDP
-		this.initHaleUDP(8080, 2048);
-		this.initAnimationManager("depends\\lights.properties");
-		//this.initLighting("depends\\lights.properties"); // lighting with no manager
-		//this.initRemoteLogging("127.0.0.1"); // some day
-		//this.initSound(...); // etc.
-
-		// Behaviors will have access to whatever the conductor has access
-		// to.  e.g., if it has lights, it has access to lights.  if
-		// it has sounds, it has access to sound.  A behavior takes sensor
-		// input and decides how to affect the "show"
-		Behavior southBound = new SouthBoundBehavior();
-		this.addBehavior(southBound);
-		
-		Behavior northBound = new NorthBoundBehavior();
-		this.addBehavior(northBound);
-
-		this.addAnimation(new SpiralAnimation());
-		this.addAnimation(new CircleAnimation());
-		this.addTransition(new FadeTransition());
-
-		// control using the visual lighting manager
-		this.showVLM();
-		// versus headless
-		// this.startSystem();
-		// this.stopSystem();
-	}
-*/
-
 	final public void startSystem()
 	{
 		if (am != null){
@@ -78,7 +48,7 @@ abstract public class Conductor implements SensorListener {
 	 * 
 	 * @throws MissingResourcesException
 	 */
-	final public void showVLM() throws MissingResourcesException
+	final public void showVLM()
 	{
 		if (am== null || dm == null)
 		{
@@ -89,6 +59,18 @@ abstract public class Conductor implements SensorListener {
 		}
 	}
 
+	final public void showSimpleVLM()
+	{
+		if (am== null || dm == null)
+		{
+			throw new MissingResourcesException("VLM requires calling initAnimationManager() first.");
+		}else
+		{
+			new SimpleVLM(am, dm, this);
+		}
+		
+	}
+	
 	/**
 	 * Start Lights with no animation.
 	 * @param propsName
@@ -126,11 +108,13 @@ abstract public class Conductor implements SensorListener {
 	{
 		if (am != null)
 		{
+			// make the Behavior aware of the dm and am.
 			b.setAnimationManager(am);
 			b.setDetectorManager(dm);
+			// tell the am to send animation complete messages to the
+			// behavior
 			am.addListener(b);
-			System.out.println("added behavior " + b);
-		} // else throw exception?
+		}
 		behaviors.add(b);
 	}
 	final public void removeBehavior(Behavior b)
@@ -153,7 +137,6 @@ abstract public class Conductor implements SensorListener {
 
 	@Override
 	final public void eventSensed(SensorEvent e) {
-		System.out.println(e);
 		// go through each behavior and tell them the event occurred
 		Iterator<Behavior> i = behaviors.iterator();
 		while (i.hasNext()){
