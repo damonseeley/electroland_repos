@@ -15,7 +15,7 @@ import net.electroland.util.OptionException;
 
 abstract public class Conductor implements SensorListener {
 
-	private Vector<Behavior> behaviors;
+	private Vector<Behavior> behaviors = new Vector<Behavior>();
 	private AnimationManager am;
 	private DetectorManager dm;
 	private HaleUDPSensor hs;
@@ -119,16 +119,18 @@ abstract public class Conductor implements SensorListener {
 	final public void initHaleUDPSensor(int port, int bufferLength)
 	{
 		hs = new HaleUDPSensor(port, bufferLength);
+		hs.addListener(this);
 	}
 	
 	final public void addBehavior(Behavior b)
 	{
 		if (am != null)
 		{
-			am.addListener(b);
 			b.setAnimationManager(am);
 			b.setDetectorManager(dm);
-		}
+			am.addListener(b);
+			System.out.println("added behavior " + b);
+		} // else throw exception?
 		behaviors.add(b);
 	}
 	final public void removeBehavior(Behavior b)
@@ -151,6 +153,7 @@ abstract public class Conductor implements SensorListener {
 
 	@Override
 	final public void eventSensed(SensorEvent e) {
+		System.out.println(e);
 		// go through each behavior and tell them the event occurred
 		Iterator<Behavior> i = behaviors.iterator();
 		while (i.hasNext()){
