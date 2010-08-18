@@ -41,12 +41,17 @@ public class HaleUDPSensor extends Sensor implements Runnable {
 	@Override
 	public void stopSensing() {
 		isRunning = false;
+
+		if (socket != null){
+			socket.close();
+		}
+
 	}
+	private DatagramSocket socket = null;
 
 	@Override
 	public void run() {
 
-		DatagramSocket socket;
 		try {
 			socket = new DatagramSocket(port);
 
@@ -65,9 +70,11 @@ public class HaleUDPSensor extends Sensor implements Runnable {
 				}
 				packet.setLength(buffer.length);
 			}
-
+			
 		} catch (SocketException e) {
-			e.printStackTrace();
+			if (isRunning){
+				e.printStackTrace();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}finally
