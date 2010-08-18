@@ -66,7 +66,7 @@ public class InstallSimMainThread extends Thread {
 		
 		initPeople();
 		
-		god = new HandOfGod(people,20,0.05f);
+		god = new HandOfGod(people,30,0.05f);
 
 		// this puts the menubar in the correct place on macs (at the top of the screen vs at the top of the window) 
 		// but won't effect windows.  Its a good habit to call it before you create your frame
