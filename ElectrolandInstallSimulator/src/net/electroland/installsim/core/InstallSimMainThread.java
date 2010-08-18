@@ -7,6 +7,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Vector;
+import java.util.Iterator;
 import java.util.Enumeration;
 import java.util.Random;
 
@@ -20,14 +21,14 @@ import net.electroland.installsim.ui.EISPanel;
 
 public class InstallSimMainThread extends Thread {
 
-	public static Vector Sensors = new Vector ();
+	public static Vector<Sensor>sensors = new Vector<Sensor> ();
 	
 	// this is eg. of casting Vector to
 	public static ConcurrentHashMap<Integer, Person> people = new ConcurrentHashMap<Integer, Person>();
 	
 	public static HandOfGod god;
 	
-	
+	public static HaleUDPoutput hudp = new HaleUDPoutput("localhost", 7474);
 	
 	public static boolean SHOWUI;
 	
@@ -65,9 +66,7 @@ public class InstallSimMainThread extends Thread {
 		
 		initPeople();
 		
-		
 		god = new HandOfGod(people,20,0.05f);
-		
 
 		// this puts the menubar in the correct place on macs (at the top of the screen vs at the top of the window) 
 		// but won't effect windows.  Its a good habit to call it before you create your frame
@@ -96,15 +95,16 @@ public class InstallSimMainThread extends Thread {
 	
 	private void initSensors() {
 		//for now setup specific 
-		float startx = 70;
-		float starty = 50;
+		float startx = 90;
+		float starty = 80;
 		float incy = 20;
+		//vector is not the right term here, this defines a box
 		int[] vec = {45,0,0};
 		for (int i=0; i<27; i++) {
 			PhotoelectricTripWire s = new PhotoelectricTripWire(i,startx,starty+incy*i,0,vec);
-			Sensors.add(s);
+			sensors.add(s);
 		}
-		System.out.println(Sensors.toString());
+		System.out.println(sensors.toString());
 		
 	}
 	
@@ -133,18 +133,27 @@ public class InstallSimMainThread extends Thread {
 			long tmpTime = System.currentTimeMillis();
 			elapsedTime = tmpTime - curTime;
 			curTime = tmpTime;
-			
-	
-
-			//detectCollisionsAndTripWires();
-
+		
 			//update people locations
 			god.updatePeople();
 			
 			//detect sensor states
+			Iterator s = sensors.iterator();
+		    while (s.hasNext()) {
+		      ((PhotoelectricTripWire) s.next()).detect();
+		    }
 			
 			//broadcast sensor states
-
+		    String startByte = "FF";
+		    String cmdByte = "31";
+		    String stopByte = "FE";
+		    String sensorBytes = "";
+		    Iterator se = sensors.iterator();
+		    while (se.hasNext()) {
+		    	sensorBytes += ((PhotoelectricTripWire) se.next()).getValueAsString();
+		    }
+		    String thePacket = startByte+cmdByte+sensorBytes+stopByte;
+		    hudp.sendPacket(thePacket);
 
 			//paint people and sensors
 			if (SHOWUI){
