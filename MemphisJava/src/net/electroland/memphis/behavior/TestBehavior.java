@@ -1,28 +1,48 @@
 package net.electroland.memphis.behavior;
 
+import java.awt.image.BufferedImage;
+
 import net.electroland.lighting.conductor.Behavior;
+import net.electroland.lighting.detector.DetectorManager;
+import net.electroland.lighting.detector.Recipient;
 import net.electroland.lighting.detector.animation.Animation;
+import net.electroland.lighting.detector.animation.AnimationManager;
+import net.electroland.lighting.detector.animation.animations.Throb;
 import net.electroland.sensor.SensorEvent;
 
 public class TestBehavior extends Behavior {
 
+	private Recipient bridge;
+	private AnimationManager am;
+	
+	
 	@Override
 	public void eventSensed(SensorEvent e) {
-		// this needs to figure out what the relationship is between a 
-		// sensor being tripped, and sending out an animation.
 		
-		// it has these assets at it's finger tips.
-		this.getAnimationManager();
-		this.getDetectorManger();
-		
-		// when an event comes in, it should locate where the event is,
-		// then probably correlate it with the layout of the fixtures
-		// and start animating.
+		// get the bridge and the animation manager.
+		// unfortunately, the am and dm aren't set until after
+		// instantiation of this object. (the conductor adds them after
+		// you pass it an instantiated Behavior)
+		if (bridge == null)
+		{
+			am = this.getAnimationManager();
+
+			// get a handle on the bridge
+			DetectorManager dm = this.getDetectorManger();
+			bridge = dm.getRecipients().iterator().next();			
+		}
+
+		//System.out.println(e); // show the packet received.
+
+		// for any event, just start a throb.
+		if (am.getCurrentAnimation(bridge) == null){ // alternate.
+			int width = bridge.getPreferredDimensions().width;
+			int height = bridge.getPreferredDimensions().height;
+			am.startAnimation(new Throb(new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)), bridge);
+		}
 	}
 
 	@Override
 	public void completed(Animation a) {
-		// no idea if we'll need this.  just let's us know if an animation
-		// stopped.
 	}
 }
