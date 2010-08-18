@@ -27,7 +27,7 @@ public class HaleUDPSensor extends Sensor implements Runnable {
 	// for testing
 	public static void main(String args[])
 	{
-		new HaleUDPSensor(8088, 2048).startSensing();
+		new HaleUDPSensor(7474, 2048).startSensing();
 	}
 	
 
