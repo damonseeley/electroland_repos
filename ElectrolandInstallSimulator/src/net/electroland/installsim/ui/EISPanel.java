@@ -15,8 +15,6 @@ import java.util.Enumeration;
 
 import javax.swing.JPanel;
 
-import net.electroland.coopLights.core.*;
-//import net.electroland.installsim.core.InstallSimConductor;
 import net.electroland.installsim.core.InstallSimMain;
 import net.electroland.installsim.core.Person;
 import net.electroland.installsim.sensors.*;

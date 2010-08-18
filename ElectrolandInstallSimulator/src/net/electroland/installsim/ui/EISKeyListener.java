@@ -4,7 +4,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Random;
 
-import net.electroland.coopLights.core.*;
 
 public class EISKeyListener implements KeyListener {
 	
