@@ -124,7 +124,11 @@ abstract public class Conductor implements SensorListener {
 	final public void addBehavior(Behavior b)
 	{
 		if (am != null)
+		{
 			am.addListener(b);
+			b.setAnimationManager(am);
+			b.setDetectorManager(dm);
+		}
 		behaviors.add(b);
 	}
 	final public void removeBehavior(Behavior b)
