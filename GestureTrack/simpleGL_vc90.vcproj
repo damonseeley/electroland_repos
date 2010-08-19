@@ -217,7 +217,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="./libs/libconfig;$(TYZXROOT)/Include;&quot;$(CUDA_INC_PATH)&quot;;./src;./;&quot;$(CUDA_COM)/inc&quot;;&quot;$(CUDA_COM)/GLEW/include&quot;"
+				AdditionalIncludeDirectories="./libs/libconfig;&quot;$(TYZXROOT)/Include&quot;;&quot;$(CUDA_INC_PATH)&quot;;./src;./;&quot;$(CUDA_COM)/inc&quot;;&quot;$(CUDA_COM)/GLEW/include&quot;;&quot;C:\Program Files (x86)\boost\boost_1_42&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -241,7 +241,7 @@
 				AdditionalDependencies="cudartemu.lib libconfig++_d.lib Ws2_32.lib DeepSeaIF.lib PersonTrackAPI.lib cudart.lib cutil32D.lib glew32.lib"
 				OutputFile="../../bin/win32/$(ConfigurationName)/simpleGL.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="./libs/libconfig;&quot;$(TYZXROOT)/Lib&quot;;&quot;$(CUDA_LIB_PATH)/../lib&quot;;&quot;$(CUDA_COM)/lib&quot;;&quot;$(CUDA_COM)/GLEW/lib&quot;"
+				AdditionalLibraryDirectories="./libs/libconfig;&quot;$(TYZXROOT)/Lib&quot;;&quot;$(CUDA_LIB_PATH)/../lib&quot;;&quot;$(CUDA_COM)/lib&quot;;&quot;$(CUDA_COM)/GLEW/lib&quot;;C:\OpenCV2.1\lib;&quot;C:\Program Files (x86)\boost\boost_1_42\lib&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/simpleGL.pdb"
 				SubSystem="1"
@@ -301,7 +301,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="./libs/libconfig;$(TYZXROOT)/Include;&quot;$(CUDA_INC_PATH)&quot;;./src;./;&quot;$(CUDA_COM)/inc&quot;;&quot;$(CUDA_COM)/GLEW/include&quot;"
+				AdditionalIncludeDirectories="./libs/libconfig;&quot;$(TYZXROOT)/Include&quot;;&quot;$(CUDA_INC_PATH)&quot;;./src;./;&quot;$(CUDA_COM)/inc&quot;;&quot;$(CUDA_COM)/GLEW/include&quot;;&quot;C:\Program Files (x86)\boost\boost_1_42&quot;;C:\OpenCV2.1\include\opencv"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -322,10 +322,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=" libconfig++_d.lib Ws2_32.lib DeepSeaIF.lib PersonTrackAPI.lib cudart.lib cutil32D.lib glew32.lib"
+				AdditionalDependencies=" libconfig++_d.lib Ws2_32.lib DeepSeaIF.lib PersonTrackAPI.lib cudart.lib cutil32D.lib glew32.lib cv210d.lib cvaux210d.lib cxcore210d.lib cxts210.lib highgui210d.lib"
 				OutputFile="../../bin/win32/$(ConfigurationName)/simpleGL.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="./libs/libconfig;&quot;$(TYZXROOT)/Lib&quot;;&quot;$(CUDA_LIB_PATH)/../lib&quot;;&quot;$(CUDA_COM)/lib&quot;;&quot;$(CUDA_COM)/GLEW/lib&quot;"
+				AdditionalLibraryDirectories="C:\OpenCV2.1\lib;./libs/libconfig;&quot;$(TYZXROOT)/Lib&quot;;&quot;$(CUDA_LIB_PATH)/../lib&quot;;&quot;$(CUDA_COM)/lib&quot;;&quot;$(CUDA_COM)/GLEW/lib&quot;;&quot;C:\Program Files (x86)\boost\boost_1_42\lib&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/simpleGL.pdb"
 				SubSystem="1"
@@ -568,6 +568,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\src\CountDownLatch.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\Drawable.h"
 					>
 				</File>
@@ -588,6 +592,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Globals.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\Guicon.h"
 					>
 					<FileConfiguration
@@ -599,11 +607,11 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\PersonTrackReceiver.h"
+					RelativePath=".\PersonDetector.h"
 					>
 				</File>
 				<File
-					RelativePath=".\src\PointCloud.h"
+					RelativePath=".\PersonTrackReceiver.h"
 					>
 				</File>
 				<File
@@ -611,11 +619,27 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ProjCell.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Projection.h"
+					>
+				</File>
+				<File
 					RelativePath=".\PSystem.h"
 					>
 				</File>
 				<File
+					RelativePath=".\Recorder.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\RenderList.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\SyncedThreadLoop.h"
 					>
 				</File>
 				<File
@@ -639,6 +663,10 @@
 							Name="VCCustomBuildTool"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ThreadedTrackGrab.h"
+					>
 				</File>
 				<File
 					RelativePath=".\Track.h"
@@ -711,6 +739,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\CountDownLatch.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\FadeBlock.cpp"
 					>
 				</File>
@@ -759,11 +791,11 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\PersonTrackReceiver.cpp"
+					RelativePath=".\PersonDetector.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\PointCloud.cpp"
+					RelativePath=".\PersonTrackReceiver.cpp"
 					>
 				</File>
 				<File
@@ -771,7 +803,15 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Projection.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\PSystem.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Recorder.cpp"
 					>
 				</File>
 				<File
@@ -779,7 +819,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\SyncedThreadLoop.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\TCPreceiver.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ThreadedTrackGrab.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Track.cpp"
 					>
 				</File>
 				<File
@@ -838,6 +890,7 @@
 						>
 						<Tool
 							Name="CUDA Build Rule"
+							Arch1="20"
 							Emulation="true"
 						/>
 					</FileConfiguration>
@@ -854,6 +907,34 @@
 				<File
 					RelativePath=".\pointCloudRender.cu"
 					>
+					<FileConfiguration
+						Name="Emulate|Win32"
+						>
+						<Tool
+							Name="CUDA Build Rule"
+							Arch1="20"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\projection.cu"
+					>
+					<FileConfiguration
+						Name="Emulate|Win32"
+						>
+						<Tool
+							Name="CUDA Build Rule"
+							Arch1="20"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug2|Win32"
+						>
+						<Tool
+							Name="CUDA Build Rule"
+							Arch1="20"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath=".\src\voxel.cu"
@@ -871,6 +952,7 @@
 						>
 						<Tool
 							Name="CUDA Build Rule"
+							Arch1="20"
 							Emulation="true"
 						/>
 					</FileConfiguration>
