@@ -340,7 +340,7 @@ void setupWorld(){
 	netMsg << fixed;
 	netMsg.precision(0);
 
-	const Setting& configRoot = config.getRoot();
+	const Setting	& configRoot = config.getRoot();
 
 	if(configRoot.exists("net")) {
 		PersonTrackReceiver *tracker  = NULL;
@@ -880,7 +880,7 @@ void render(int view)
 			break;
 	}
 
-
+	trackHash->render();
 
 }
 
