@@ -691,7 +691,7 @@ void processVoxels(Voxel *raw, Voxel *bg, Voxel *fg, Voxel *despec, float adapt,
 }
 
 void calculate() {
-
+	if(camCnt > 0) {
 	cloudConstructor->calcPoints(false);
 
 	if(cullOn) 
@@ -716,13 +716,15 @@ void calculate() {
 	projection->deallocateGridOnGPU();
 
 	personDetector->calc(curFrame++);
+	}
 
 	if(trackGrab) {
 		trackHash = trackGrab->getCurrentHash();
 	}
 
+	if(camCnt > 0) {
 	trackHash->merge(&personDetector->existingTracks, 1, curFrame);
-
+	}
 
 	if(trackGrab) {
 		trackGrab->trackHashUpdated();
