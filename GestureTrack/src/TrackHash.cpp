@@ -114,7 +114,8 @@ void TrackHash::render() {
 		if(t) {
 			glPushMatrix();
 //			glRotatef(90.0f,1.0f,0.0f,0.0f);
-			glTranslatef(t->x->value, t->center->value, t->z->value);
+			
+			glTranslatef(t->x->value, t->height->value, t->z->value);
 //			std::cout << " rendering at " << t->x->value << " , " <<  t->center->value << " , " << t->z->value << std::endl;
 			glutWireSphere(.1, 5,5);
 //			glutSolidCone(.25f, t->height->value, 6, 2);
