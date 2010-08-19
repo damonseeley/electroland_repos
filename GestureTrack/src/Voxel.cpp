@@ -18,8 +18,10 @@ extern "C" void gpu_mult(int gridSize, float* d_this, float* d_that);
 extern "C" void gpu_add(int gridSize, float* d_this, float* d_that);
 extern "C" void gpu_sub(int gridSize, float* d_this, float* d_that);
 extern "C" void gpu_sub2(int gridSize, float* d_this, float* a, float* b);
+extern "C" void gpu_setMask(int gridSize, float* d_this, float* d_src, float* d_mask, float thresh);
 extern "C" void gpu_incIfOverThresh(int gridSize, float *d_this, float* d_that, float thresh);
 extern "C" void gpu_scaleDownFrom(int gridSize, int dx, int dy, int dz, float *d_this, float *d_that);
+extern "C" void gpu_noiseFilter(int gridSize, int dx, int dy, int dz, float *d_this, float *d_that, int thresh);
 
 
 //float* Voxel::glFloorPoints= NULL;
@@ -165,7 +167,7 @@ void Voxel::draw(float renderThresh) {
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 */
-	Vec3f sides = (maxDim-minDim);
+		Vec3f sides = (maxDim-minDim);
 	sides /= divisions;
 
 	float* gridPtr = grid;
@@ -255,6 +257,14 @@ void Voxel::deallocateGridOnGPU() {
 		d_vox = NULL;
 }
 
+float* Voxel::getGridOnGPU() {
+	if(d_vox == NULL) {
+		allocateGridOnGPU(true);
+	}
+	return d_vox;
+	
+	
+}
 void Voxel::calcVoxel(int pointCloudCnt, float* pointCloud, bool cloudIsOnGPU, bool freeGridFromGPU) {
 
 
@@ -373,6 +383,20 @@ void Voxel::sub(Voxel *a, Voxel *b, bool freeFromGPU) {
 
 }
 
+
+void Voxel::setMask(Voxel *src, Voxel *mask, float thresh, bool freeFromGPU) {
+	allocateGridOnGPU(false);
+	src->allocateGridOnGPU();
+	mask->allocateGridOnGPU();
+	gpu_setMask(gridSize, d_vox, src->d_vox, mask->d_vox, thresh);
+	cutilSafeCall( cudaMemcpy(grid, d_vox, voxMemSize, cudaMemcpyDeviceToHost) );
+
+	
+	if(freeFromGPU) 
+		deallocateGridOnGPU();
+
+}
+
 void Voxel::sub(Voxel *vox, bool freeFromGPU) {
 #ifdef _DEBUG
 	if(this->divisions != vox->divisions) {
@@ -444,29 +468,17 @@ void Voxel::scaleDownFrom(Voxel *doubleDim, bool freeFromGPU) {
 
 }
 
-void Voxel:: scaleDownFrom_kernel(int gridSize, int dx, int dy, int dz, float *d_this, float *d_that) {
 
-	for(int i = 0; i < gridSize; i++) {
-		int z = i / (dx * dy);
-		int r = i % (dx * dy);
-		int y = r / (dx);
-		int x = r % (dx);
-
-		x*=2;
-		y*=2;
-		z*=2;
-
-		d_this[i] = d_that[x + (y * (2 * dx)) + (z * (4 * dx * dy))];
-		d_this[i] = d_that[x+1 + (y * (2 * dx)) + (z * (4 * dx * dy))];
-		d_this[i] = d_that[x + ( (y+1) * (2 * dx)) + (z * (4 * dx * dy))];
-		d_this[i] = d_that[x+1 + ((y+1) * (2 * dx)) + (z * (4 * dx * dy))];
-		d_this[i] = d_that[x + (y * (2 * dx)) + ((z+1) * (4 * dx * dy))];
-		d_this[i] = d_that[x+1 + (y * (2 * dx)) + ((z+1) * (4 * dx * dy))];
-		d_this[i] = d_that[x + ( (y+1) * (2 * dx)) + ((z+1) * (4 * dx * dy))];
-		d_this[i] = d_that[x+1 + ((y+1) * (2 * dx)) + ((z+1) * (4 * dx * dy))];
+void Voxel::setNoiseFilter(Voxel *src, float thresh, bool freeFromGPU) {
+	allocateGridOnGPU(false); // just zero out
+	src->allocateGridOnGPU();
+	gpu_noiseFilter(gridSize, divisions.x, divisions.y, divisions.z, d_vox, src->d_vox, thresh);
+	cutilSafeCall( cudaMemcpy(grid, d_vox, voxMemSize, cudaMemcpyDeviceToHost) );
+	if(freeFromGPU) 
+		deallocateGridOnGPU();
 
 	}
 
 
 
-}
+

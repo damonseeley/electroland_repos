@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <iostream>
 
-#define USE_CPU
+//#define USE_CPU
 
 extern "C" void gpu_calcPointCloud(int camCnt, int imgWidth, int imgHeight, double* params, double* transforms, unsigned short *imgs, float* results);
 
@@ -136,7 +136,7 @@ void CloudConstructor::calcPoints(bool freeResultPointsOnGPU) {
 	d_zimg = (unsigned short*) malloc(singleZImageArrSize * camCnt); // need to look up safecall TODO
 
 	for(int i = 0; i < camCnt;i++) {
-		memcpy(&d_zimg[i*imgSize], cams[i]->zImage, singleZImageArrSize);
+		memcpy(&d_zimg[i*imgSize], cams[i]->getZImage(), singleZImageArrSize);
 	}
 
 
@@ -187,7 +187,7 @@ void CloudConstructor::calcPoints(bool freeResultPointsOnGPU) {
 	cutilSafeCall( cudaMalloc((void**)&d_zimg, singleZImageArrSize * camCnt) ); // need to look up safecall TODO
 
 	for(int i = 0; i < camCnt;i++) {
-		cutilSafeCall( cudaMemcpy(&d_zimg[i*imgSize], cams[i]->zImage, singleZImageArrSize, cudaMemcpyHostToDevice) );
+		cutilSafeCall( cudaMemcpy(&d_zimg[i*imgSize], cams[i]->getZImage(), singleZImageArrSize, cudaMemcpyHostToDevice) );
 	}
 
 
@@ -297,7 +297,7 @@ void CloudConstructor::cpu_calcPointCloud(int camCnt, int imgWidth, int imgHeigh
 
 
 				double x = isValidIndex ?  ((u - cu) *  cx * (double) z) : 0.0;
-				double y = isValidIndex ?  ((v - cv) *  cy * (double) z) : 0.0;
+				double y = isValidIndex ?  (-(v - cv) *  cy * (double) z) : 0.0;
 
 
 				pixelIndex = isValidIndex ? pixelIndex++ : 0 ;
@@ -305,9 +305,13 @@ void CloudConstructor::cpu_calcPointCloud(int camCnt, int imgWidth, int imgHeigh
 
 
 				double *m = &transforms[t*12];
-				double tx =  m[0] * x	+  m[3] * y	+ m[6] * ((double) z) + m[9];	
-				double ty =  m[1] * x	+  m[4] * y	+ m[7] * ((double) z) + m[10];	
-				double tz =  m[2] * x	+  m[5] * y	+ m[8] * ((double) z) + m[11];
+				double tx =  m[0] * x	+  m[1] * y	+ m[2] * ((double) z) + m[9];	
+				double ty =  m[3] * x	+  m[4] * y	+ m[5] * ((double) z) + m[10];	
+				double tz =  m[6] * x	+  m[7] * y	+ m[8] * ((double) z) + m[11];
+
+//				double tx =  m[0] * x	+  m[3] * y	+ m[6] * ((double) z) + m[9];	
+//				double ty =  m[1] * x	+  m[4] * y	+ m[7] * ((double) z) + m[10];	
+//				double tz =  m[2] * x	+  m[5] * y	+ m[8] * ((double) z) + m[11];
 
 				results[pixelIndex++]	=  isValidIndex ? (float) tx : 0.0f ;
 				results[pixelIndex++]	=  isValidIndex ? (float) ty : 0.0f ; 

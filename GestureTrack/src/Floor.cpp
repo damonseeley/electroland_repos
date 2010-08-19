@@ -7,7 +7,7 @@ Floor::Floor(float level, float minX, float maxX, float depth, Vec3f backColor, 
 	this->level = level;
 	this->minX = minX;
 	this->maxX = maxX;
-	this->depth = -depth;
+	this->depth = depth;
 	this->backColor = backColor;
 	this->frontColor = frontColor;
 	this->divX = divX;
