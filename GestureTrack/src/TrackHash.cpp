@@ -114,8 +114,8 @@ void TrackHash::render() {
 		if(t) {
 			glPushMatrix();
 //			glRotatef(90.0f,1.0f,0.0f,0.0f);
-			glTranslatef(t->x->value, t->height->value, t->z->value);
-			std::cout << " rendering at " << t->x->value << " , " <<  t->height->value << " , " << t->z->value << std::endl;
+			glTranslatef(t->x->value, t->center->value, t->z->value);
+//			std::cout << " rendering at " << t->x->value << " , " <<  t->center->value << " , " << t->z->value << std::endl;
 			glutWireSphere(.1, 5,5);
 //			glutSolidCone(.25f, t->height->value, 6, 2);
 
@@ -165,13 +165,18 @@ void TrackHash::merge(TrackHash *otherHash, float maxDistSqr, long curFrame) {
 				closest->merge(otherTrack, curFrame);
 				matchedTracks.push_back(closest);
 
+			} else {
+				matchedTracks.push_back(otherTrack);
 			}
-		}
-		for(int i = 0; i < matchedTracks.size(); i++) {
-			Track *t = matchedTracks[i];
-			hash[t->id] = t;
 		}
 		
 	}
+		for(int i = 0; i < matchedTracks.size(); i++) {
+			Track *t = matchedTracks[i];
+			if(t) {
+			otherHash->hash.erase(t->id); // remove from other hash so not deleted on clear
+			hash[t->id] = t;
+			}
+		}
 	
 }
