@@ -6,15 +6,29 @@
 #include "GestureTypeDefs.h"
 #include "TyzxTCPreceiver.h"
 #include "Axis.h"
+#include "SyncedThreadLoop.h"
 
 #include <string>
+
+#include <boost/thread/thread.hpp>
+#include <boost/thread/mutex.hpp>
 
 using namespace cinder;
 using namespace std;
 
+
+class Grabber;
+
 class TyzxCam
 {
+private:
+		unsigned short *zImage;
+
 public:
+
+	boost::barrier *barrier;
+	Grabber* grabber;
+
 	Axis *axis;
 
 	bool isCamOn;
@@ -24,11 +38,11 @@ public:
 
 	Vec3d translation;
 	Vec3d rotation;
+	double scale;
 	
 	int port;
 	TyzxTCPreceiver *receiver;
 
-	unsigned short *zImage;
 	int imgWidth;
 	int imgHeight;
 
@@ -36,9 +50,8 @@ public:
 	double tMatrix[12];
 	CamParams params;
 
-	
 
-	TyzxCam(string name,  Vec3d translation,  Vec3d rotation, string camIP, int port = TCP_EXAMPLE_PORT);
+	TyzxCam(string name,  Vec3d translation,  Vec3d rotation, double scale, string camIP, int port = TCP_EXAMPLE_PORT);
 	~TyzxCam();
 
 //	void translate(Vec3d trans);
@@ -50,7 +63,9 @@ public:
 
 	void applyRotation(Vec3f euler);
 
-	void setTransform(Vec3d translation, Vec3d rotation);
+	void setTransform(Vec3d translation, Vec3d rotation, double scale);
+
+	void setScale(double scale) { this->scale = scale;} 
 	void setMatrix(
 		double m0,	double m1,	double m2,
 		double m3,	double m4,	double m5,
@@ -70,7 +85,24 @@ public:
 	bool start();
 	bool grab();
 
+
+	unsigned short *getZImage();
+
 };
+
+class Grabber : public SyncedThreadLoop {
+public:
+	TyzxCam* cam;
+
+	Grabber(boost::barrier *bar, TyzxCam *cam) :  SyncedThreadLoop(bar) {
+		this->cam = cam;
+	}
+	
+	virtual void run() {
+		cam->grab();
+	}
+}
+;
 
 
 

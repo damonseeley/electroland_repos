@@ -18,8 +18,8 @@
 // this const should be defined in CUDA libs but I can't find it
 
 __device__ int getIndex(float val, float minDim, float maxDim, int divs) {
-	float divSize = (maxDim - minDim)/divs;
-	int result =  (int) (val-minDim)/divSize; // will be negative if less than bounds
+	float divSize = (maxDim - minDim)/ (float) divs;
+	int result =  (int) ((val-minDim)/divSize); // will be negative if less than bounds
 	result = (result < divs) ? result : -1; // if greater than upper bound set negative to denote out of bounds
 	return result;
 } 
@@ -171,6 +171,15 @@ __global__ void gpu_sub_kernel2(int gridSize, float* d_this, float* d_a, float* 
 		
 };
 
+__global__ void gpu_setMask_kernel(int gridSize, float* d_this, float* d_src, float* d_mask, float thresh)
+{
+	int i = (blockIdx.x * blockDim.x) + threadIdx.x;
+		
+	if(i < gridSize) 
+		d_this[i] = (d_mask[i] < thresh) ? d_src[i] : 0;
+		
+};
+
 extern "C" void gpu_sub(int gridSize, float* d_this, float* d_that)
 {
 	int theadsPerBlock = 256;
@@ -184,6 +193,14 @@ extern "C" void gpu_sub2(int gridSize, float* d_this, float* d_a, float* d_b)
 	int theadsPerBlock = 256;
 	int blocks = (int) ceilf(gridSize/(float) theadsPerBlock);
 	gpu_sub_kernel2 <<<blocks,theadsPerBlock>>> ( gridSize, d_this, d_a, d_b);
+
+};
+
+extern "C" void gpu_setMask(int gridSize, float* d_this, float* d_src, float* d_mask, float thresh)
+{
+	int theadsPerBlock = 256;
+	int blocks = (int) ceilf(gridSize/(float) theadsPerBlock);
+	gpu_setMask_kernel <<<blocks,theadsPerBlock>>> ( gridSize, d_this, d_src, d_mask, thresh);
 
 };
 
@@ -251,6 +268,41 @@ __global__ void gpu_incIfOverThresh_kernel(int gridSize, float *d_this, float* d
 };
 
 
+// zero unless there exists a neighbor 
+__global__ void gpu_noiseFilter_kernel(int gridSize, int dx, int dy, int dz, float *d_this, float *d_that, int thresh) {
+	int i = (blockIdx.x * blockDim.x) + threadIdx.x;
+	
+		int z = i / (dx * dy);
+		int r = i % (dx * dy);
+		int y = r / (dx);
+		int x = r % (dx);
+
+
+		if(((i < gridSize) && (x < dx -1)) && ((y < dy -1) && (z < dz - 1))) {
+			if(d_that[i] > 0) {
+				int minX = x <= 1 ? 0 : x -1;
+				int minY = y <= 1 ? 0 : y -1;
+				int minZ = z <= 1 ? 0 : z -1;
+				int maxX = x >= (dx-2) ? dx-1 : x +1;
+				int maxY = y >= (dy-2) ? dy-1 : y +1;
+				int maxZ = z >= (dz-2) ? dz-1 : z +1;
+				
+				int sum = 0;
+				int dxdy = dx*dy;
+				for(int xi = minX; xi < maxX; xi++) {
+					for(int yi = minY; yi < maxY; yi++) {
+						for(int zi = minZ; zi<maxZ; zi++) {
+							sum += (d_that[xi + (yi * dy) + (zi * dxdy)]) > 0 ? 1 : 0;
+						}
+					}
+				}
+				d_this[i] = sum > thresh+1 ? d_that[i] : 0.0f; // plus 1 becuase d_that[i] gets added in
+			}
+
+					
+		}
+}
+
 
 __global__ void gpu_scaleDownFrom_kernel(int gridSize, int dx, int dy, int dz, float *d_this, float *d_that) {
 	int i = (blockIdx.x * blockDim.x) + threadIdx.x;
@@ -287,6 +339,13 @@ extern "C" void gpu_incIfOverThresh(int gridSize, float *d_this, float* d_that, 
 
 };
 
+
+extern "C" void gpu_noiseFilter(int gridSize, int dx, int dy, int dz, float *d_this, float *d_that, int thresh) {
+	int theadsPerBlock = 256;
+	int blocks = (int) ceilf(gridSize/(float) theadsPerBlock);
+	gpu_noiseFilter_kernel <<<blocks,theadsPerBlock>>> ( gridSize, dx, dy, dz, d_this, d_that, thresh);
+
+}
 
 
 extern "C" void gpu_scaleDownFrom(int gridSize, int dx, int dy, int dz, float *d_this, float *d_that) {

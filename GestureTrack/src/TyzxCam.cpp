@@ -7,9 +7,14 @@
 
 
  
-TyzxCam::TyzxCam(string namestr,  Vec3d translation,  Vec3d rotation, string camIPstr, int port) {
+TyzxCam::TyzxCam(string namestr,  Vec3d translation,  Vec3d rotation, double scale, string camIPstr, int port) {
 
 
+	barrier = new boost::barrier(2);
+	grabber = new Grabber(barrier, this);
+
+
+	this->scale = scale;
 	axis = new Axis(translation, rotation);
 
 	isCamOn = false;
@@ -30,7 +35,9 @@ TyzxCam::TyzxCam(string namestr,  Vec3d translation,  Vec3d rotation, string cam
 	params.ry = rotation.y;
 	params.rz = rotation.z;
 	
-	setTransform(translation, rotation);
+	this->imgHeight = 0;
+	this->imgWidth = 0;
+	setTransform(translation, rotation, scale);
 
 	receiver = new TyzxTCPreceiver(camIP, port);
 
@@ -62,20 +69,21 @@ bool TyzxCam::start() {
 	isCamOn = true;
 
 
+	grabber->start();
+	barrier->wait(); // wait for inital grab
+
 	return true;
 
 
 }
 
+//	boost::mutex grabbingMutex;
+//	boost::mutex zImageMutex;
+
 bool TyzxCam::grab() {
 	
 	if(! 	isCamOn) return false;
 
-//	int retVal = receiver->sendRequest(GET_ONE_IMAGE);
-//	if (retVal != 0) {
-//			std::cerr << "TyzxCam::grab() unable to request image" << std::endl;
-//			return false;
-//	}
 
 	if(! receiver->grab()) {
 		std::cerr << "TyzxCam::grab()  -- grab failed for " << camIP << " on port " << port << "\n";
@@ -93,26 +101,24 @@ bool TyzxCam::grab() {
 
 	params.cx = receiver->getCx();
 	params.cy = receiver->getCy();
+	receiver->getZimageCenter(params.imageCenterU, params.imageCenterV);
+
 	zImage = receiver->getZImage();
 
 
-//	std::cout << "img " << imgWidth << "x" << imgHeight << "  cx,cy " <<receiver->getCx() << "," << receiver->getCy() << std::endl; 
-
-	receiver->getZimageCenter(params.imageCenterU, params.imageCenterV);
-	params.imageCenterU += 6;
-	params.imageCenterV += 6;
-
-	// request new image as soon as you are done getting the last so it can be buffered while the current frame is rendering
-//	int retVal = receiver->sendRequest(GET_ONE_IMAGE);
-//	if (retVal != 0) {
-//			std::cerr << "TyzxCam::grab() unable to request image" << std::endl;
-//			return false;
-//	}
 
 
 	return true;
+	// waits automatically when done
 
+}
 
+unsigned short *TyzxCam::getZImage() {
+	unsigned short *retVal = zImage;
+	barrier->wait();
+	// should return immediatly because grab should have run already
+	// but should allow loop to run again
+	return retVal;
 }
 
 
@@ -143,28 +149,33 @@ void TyzxCam::applyRotation(Vec3f euler) {
 	double *trans = transComp.array();
 	double *rot = newRot.array();
 	
-	setTransform(Vec3f(trans[0],trans[1],trans[2]), Vec3f(rot[0],rot[1],rot[2]));
+	setTransform(Vec3f(trans[0],trans[1],trans[2]), Vec3f(rot[0],rot[1],rot[2]), scale);
 
 
 }
 
 
-void TyzxCam::setTransform(Vec3d translation, Vec3d rotation) {
+void TyzxCam::setTransform(Vec3d translation, Vec3d rotation, double scale) {
 	this->translation = translation;
 	this->rotation = rotation;
 	double toRad = PI / 180.0f;
-	double *a = Tyzx3x3Matrix( rotation.x * toRad, rotation.y * toRad, rotation.z * toRad).array();
+
+	Tyzx3x3Matrix scalem = Tyzx3x3Matrix();
+	scalem.identity();
+	scalem.scaleMatrix(Tyzx3Vector(scale,scale,scale));
+	Tyzx3x3Matrix mat = scalem * Tyzx3x3Matrix( rotation.x * toRad, rotation.y * toRad, rotation.z * toRad);
+	double *a =mat.array();
 	setMatrixInternal(  a[0], a[1], a[2],
 				a[3], a[4], a[5],
 				a[6], a[7], a[8],
-				translation.x, translation.y, translation.z);
+				translation.x * scale, translation.y* scale, translation.z* scale);
 	
 	std::cout << camIP << " set from euler   T(" << translation << ")    R(" << rotation << ")" << std::endl;
 
 }
 
 void TyzxCam::updateTransform() {
-	setTransform(translation, rotation);
+	setTransform(translation, rotation, scale);
 }
 
 //	std::cerr << "TyzxCam " <<  name << " (" << camIP << ":" << port << ") T"<< translation  << "  R" << rotation<<std::endl ;

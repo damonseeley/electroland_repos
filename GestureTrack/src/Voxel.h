@@ -42,6 +42,8 @@ public:
 	void add(Voxel *vox, bool freeFromGPU = true); // result is  this[i] + vox[i]
 	void sub(Voxel *vox, bool freeFromGPU = true); // result is  this[i] * vox[i]
 	void sub(Voxel *a, Voxel *b, bool freeFromGPU = true); // result is  a-b
+	void setMask(Voxel *src, Voxel *mask, float thresh, bool freeFromGPU= true);
+	void setNoiseFilter(Voxel *src, float thresh, bool freeFromGPU= true);
 	void thresh(float t, bool freeFromGPU = true); // result is a * this[i] + b * vox[i]
 	void scalarMult(float v, bool freeFromGPU = true); 
 	void threshSet(float t, float below, float above, bool freeFromGPU = true);
@@ -49,8 +51,10 @@ public:
 	void scaleDownFrom(Voxel *doubleSize,  bool freeFromGPU=true);
 
 
+
 	void allocateGridOnGPU(bool copy = true); // if copy is false valus are zeroed
 	void deallocateGridOnGPU();
+	float* getGridOnGPU();
 	size_t voxMemSize;
 
 	void scaleDownFrom_kernel(int gridSize, int dx, int dy, int dz, float *d_this, float *d_that);

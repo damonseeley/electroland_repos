@@ -64,7 +64,7 @@ __global__ void gpu_calcPointCloud_kernel(int camCnt, int imgWidth, int imgHeigh
 	#endif
 
 	double x = isValidIndex ?  ((u - cu) *  cx * (double) z) : 0.0;
-	double y = isValidIndex ?  ((v - cv) *  cy * (double) z) : 0.0;
+	double y = isValidIndex ?  (-(v - cv) *  cy * (double) z) : 0.0;
 	
 
 // if point or pixelIndex is invalid use 0 as pixel index
@@ -86,10 +86,15 @@ __global__ void gpu_calcPointCloud_kernel(int camCnt, int imgWidth, int imgHeigh
 //	results[pixelIndex++]	=  (float) (tx * w); 
 //	results[pixelIndex++]	=  (float) (ty * w) ; 
 //	results[pixelIndex]		=  (float) (tz * w) ;
+
 double *m = &transforms[t*12];
-double tx =  m[0] * x	+  m[3] * y	+ m[6] * ((double) z) + m[9];	
-double ty =  m[1] * x	+  m[4] * y	+ m[7] * ((double) z) + m[10];	
-double tz =  m[2] * x	+  m[5] * y	+ m[8] * ((double) z) + m[11];
+double tx =  m[0] * x	+  m[1] * y	+ m[2] * ((double) z) + m[9];	
+double ty =  m[3] * x	+  m[4] * y	+ m[5] * ((double) z) + m[10];	
+double tz =  m[6] * x	+  m[7] * y	+ m[8] * ((double) z) + m[11];
+
+//double tx =  m[0] * x	+  m[3] * y	+ m[6] * ((double) z) + m[9];	
+//double ty =  m[1] * x	+  m[4] * y	+ m[7] * ((double) z) + m[10];	
+//double tz =  m[2] * x	+  m[5] * y	+ m[8] * ((double) z) + m[11];
 
 results[pixelIndex++]	=  isValidIndex ? (float) tx : 0.0f ;
 results[pixelIndex++]	=  isValidIndex ? (float) ty : 0.0f ; 
