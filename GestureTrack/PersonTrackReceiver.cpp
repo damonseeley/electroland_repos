@@ -70,6 +70,7 @@ void PersonTrackReceiver::start(){
 void PersonTrackReceiver::grab(TrackHash *hash){
 
 		stat = trax->grab();
+		hash->clear();
 
 		int	i;
 
@@ -124,14 +125,14 @@ void PersonTrackReceiver::grab(TrackHash *hash){
 			}	
 		}
 
-
+		curFrame++;
 		TrackPtType	tdType;
 		if (trax->isTrackDataEnabled(tdType))
 		{
 			int	nPoints;
 			TrackDataBlock *tdb	= trax->getTrackDataBlock(nPoints);
 			TrackPt	*tp	= tdb->trackPts;
-			hash->updateTrack(tp->id, tp->x, tp->y, tp->h);
+			hash->updateTrack(tp->id, tp->x * scale, tp->y * scale, tp->h * scale, curFrame);
 
 		}
 
