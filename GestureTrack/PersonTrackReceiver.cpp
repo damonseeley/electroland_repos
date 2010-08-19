@@ -1,3 +1,4 @@
+#include <limits.h>
 #include "PersonTrackReceiver.h"
 
 PersonTrackReceiver::PersonTrackReceiver(string moderatorIP){
@@ -131,8 +132,10 @@ void PersonTrackReceiver::grab(TrackHash *hash){
 		{
 			int	nPoints;
 			TrackDataBlock *tdb	= trax->getTrackDataBlock(nPoints);
+			for(i = 0; i < nPoints; i++, tdb++) {
 			TrackPt	*tp	= tdb->trackPts;
-			hash->updateTrack(tp->id, tp->x * scale, tp->y * scale, tp->h * scale, curFrame);
+			hash->updateTrack(tp->id, tp->x * scale, tp->y * scale, tp->h * scale, LONG_MAX );
+			}
 
 		}
 
