@@ -131,7 +131,7 @@ void PersonDetector::calc(long curFrame) {
 
 				cvZero(&cvMatContMask);
 				// draw once for display and once for mask - is there a fater way?
-				cvDrawContours( &cvMatCont, contour, cvScalarAll(255), cvScalarAll(255), -1, -1);
+				cvDrawContours( &cvMatCont, contour, cvScalarAll(100), cvScalarAll(125), -1, -1);
 				cvDrawContours( &cvMatContMask, contour, cvScalarAll(255), cvScalarAll(255), -1, -1);
 
 				CvScalar avgHeight = cvAvg(&cvMatHeights, &cvMatContMask);
@@ -244,7 +244,9 @@ void PersonDetector::calc(long curFrame) {
 
 void PersonDetector::render(float *map) {
 	if(map == NULL){
-		newTracks.render();
+//		newTracks.render();
+
+		existingTracks.render();
 //		newTrackHash-
 	} else {
 	glBegin(GL_QUADS);
