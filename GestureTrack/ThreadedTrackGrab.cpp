@@ -62,11 +62,11 @@ void ThreadedTrackGrab::trackHashUpdated(){
 }
 void ThreadedTrackGrab::grab() {
 	
-	std::cout << "before grab" <<std::endl;
+//	std::cout << "before grab" <<std::endl;
 	DWORD before =  timeGetTime();
 	receiver->grab(grabbedTrackHash);
 	DWORD after =  timeGetTime();
-	std::cout << "after grab time = " << (after-before) << std::endl;
+//	std::cout << "after grab time = " << (after-before) << std::endl;
 }
 
 void ThreadedTrackGrab::send() {

@@ -29,7 +29,7 @@ void TrackProp::buildString(ostringstream &msg){
 Track::Track() {
 	x = new TrackProp("x");
 	z = new TrackProp("z");
-	height = new TrackProp("height");
+	height = new TrackProp("h");
 	center = new TrackProp("center");
 
 
@@ -69,8 +69,11 @@ void Track::updatePropValidity(long curFrame) {
 
 void Track::updateTyzxTrack(float x, float z, float h, long validUntillFrame) {
 	this->x->updateValue(x, validUntillFrame);
+	this->x->isValidBool = true;
 	this->z->updateValue(z, validUntillFrame);
+	this->z->isValidBool = true;
 	this->height->updateValue(h, validUntillFrame);
+	this->height->isValidBool = true;
 }
 
 void Track::merge(Track *track, long curFrame) {
@@ -106,15 +109,15 @@ void Track::buildString(ostringstream &msg) {
 	x->buildString(msg);
 	z->buildString(msg);
 	height->buildString(msg);
-	center->buildString(msg);
-	lhX->buildString(msg);
-	lhY->buildString(msg);
-	lhZ->buildString(msg);
-	rhX->buildString(msg);
-	rhY->buildString(msg);
-	rhZ->buildString(msg);
-	jump->buildString(msg);
-	activity->buildString(msg);
+//	center->buildString(msg);
+//	lhX->buildString(msg);
+//	lhY->buildString(msg);
+//	lhZ->buildString(msg);
+//	rhX->buildString(msg);
+//	rhY->buildString(msg);
+//	rhZ->buildString(msg);
+//	jump->buildString(msg);
+//	activity->buildString(msg);
 	msg << "}";
 }
 
