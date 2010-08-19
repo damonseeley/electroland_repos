@@ -5,8 +5,7 @@
 
 UDPSender::UDPSender(string ipStr, int port) {
 
-	buffSize = 0;
-		WORD wVersionRequested = MAKEWORD(1,1);
+	WORD wVersionRequested = MAKEWORD(1,1);
 	WSADATA	wsaData;
 	int	nRet;
 	//
@@ -20,9 +19,8 @@ UDPSender::UDPSender(string ipStr, int port) {
 		std::cout << "Wrong version or winsock";
 	}
 
-		char* ip = new char[ipStr.size() + 1];
+	char* ip = new char[ipStr.size() + 1];
 	strcpy(ip, ipStr.c_str());
-
 
 	printf("\nTUB sending to: %s on	port: %d", ip, port);
 	LPHOSTENT lpHostEntry;
@@ -47,8 +45,8 @@ UDPSender::UDPSender(string ipStr, int port) {
 		std::cout <<"unable to open socket";
 	}
 
-
-
+//    int err = setsockopt(theSocket, SOL_SOCKET, SO_SNDBUF, (char *)&sndsize, (int)sizeof(sndsize));
+//	std::cout << "set opt " << sndsize << std::endl;
 
 
 	//
@@ -68,16 +66,9 @@ void UDPSender::sendString(const char *szBuf)
 {
 	int	nRet;
 
-	std::cout << theSocket << " size " << strlen(szBuf) << " " << "sending " << std::endl << szBuf << std::endl;
+//	std::cout << theSocket << "sending " <<  szBuf << std::endl;
 
-	if(strlen(szBuf) >= buffSize) {
-		buffSize = strlen(szBuf)+1;
-		int msgSize = buffSize * 8;
-		setsockopt( theSocket, SOL_SOCKET, SO_SNDBUF, (char*)&msgSize, sizeof msgSize ) ;
-		std::cout << "increasing buffer size to "<< buffSize << std::endl;
-	}
 
-//		int msgSize=MAX_MSG_SIZE;
 
 
 	nRet = sendto(theSocket,				// Socket

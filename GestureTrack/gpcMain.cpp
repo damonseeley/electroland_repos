@@ -55,17 +55,25 @@ Host code
 #include <cutil_gl_error.h>
 #include <cuda_gl_interop.h>
 #include <vector_types.h>
+#include <sstream>
+#include <iostream>
 
 #include <libconfig.h++>
 
+#include "Globals.h"
 #include "Guicon.h"
 #include "TyzxCam.h"
 #include "PersonTrackReceiver.h"
 #include "CloudConstructor.h"
-#include "CloudColorer.h"
 #include "Floor.h"
+#include "Voxel.h"
 #include "UDPSender.h"
 #include "TrackHash.h"
+#include "ThreadedTrackGrab.h"
+#include "FadeBlock.h"
+
+#include "Projection.h"
+#include "PersonDetector.h"
 
 #define PERSP_VIEW 0
 #define FRONT_VIEW 1
@@ -106,32 +114,57 @@ int refresh;
 bool isFullscreen = false;
 bool showOrtho = false;
 bool showAxis = true;
-bool cullOn = true;
 Config config;
 
-PersonTrackReceiver *tracker = NULL;
+ThreadedTrackGrab *trackGrab;
 TrackHash *trackHash = NULL;
-UDPSender *udpSender = NULL;
+//UDPSender *udpSender = NULL;
 
 int camCnt;
 TyzxCam **tyzxCams;
 Vec3f camWorldTrans;
 Vec3f camWorldRot;
 
-Vec3f topZero = Vec3f(100,100, 10000);
+Vec3f topZero = Vec3f(1.5,1.5, 10);
 Vec3f topBoundsMin;
 Vec3f topBoundsMax;
 Vec3f sideZero;
 Vec3f frontZero;
 
 
-
 CloudConstructor *cloudConstructor;
-CloudColorer *cloudColorer;
 
-bool drawQuads;
+enum VoxelMode         { RAW_VOXELS,	BG_VOXELS,		FG_VOXELS,		FG_DESPEC_VOXELS,		DIFF_VOXELS,	HALF_VOXELS,   QUATER_VOXELS, RUNNING, NO_VOXELS};
+char *voxelModeStr[] = {"RAW_VOXELS",	"BG_VOXELS",	"FG_VOXELS",	"FG_DESPEC_VOXELS",	"DIFF_VOXELS",	"HALF_VOXELS", "QUATER_VOXELS", "RUNNING", "NO_VOXELS"};
 
+enum DetectMode			{ HEIGHT_MAP,	HEAD_CONV,		LOCAL_MAX,		HANDS_AND_HEADS,	NO_DETECT};
+char *detectModeStr[] =	{"HEIGHT_MAP",	"HEAD_CONV",	"LOCAL_MAX",	"HANDS_AND_HEADS",	"NO_DETECT"};
+
+int voxelMode = RUNNING;
+int detectMode = NO_DETECT;
+
+float voxelThresh = 5;
+float voxelDespecThresh = 5;
+float voxelThreshSM = 5;
+float voxelDespecThreshSM = 5;
+float adaptation;
+float curAdaptation;
+
+Voxel *rawVoxel;
+Voxel *bgVoxel;
+Voxel *fgVoxel;
+Voxel *fgDespecVoxel;
+
+Voxel *rawVoxelSM;
+Voxel *bgVoxelSM;
+Voxel *fgVoxelSM;
+Voxel *fgDespecVoxelSM;
+
+Projection *projection;
+PersonDetector *personDetector;
 Floor *vFloor;
+
+//PersonDetector *personDetector;
 
 float minPointSize;
 float maxPointSize;
@@ -157,15 +190,22 @@ float translate_z = 0;
 float translate_x = 0;
 float translate_y = 0;
 
-
+bool cullOn = true;
+float cylCutX;
+float cylCutZ;
+float cylCutR;
+float cylCutCeilingHack;
 
 const int frameCheckNumber = 100;
+long curFrame = 0;
 int frameCount = 0;        // FPS count for averaging
 float fps = 30.0f;
 DWORD lastSystemTime = 0; // use for fps
 DWORD lastTime = 0;
 DWORD curTime = 0;
 float dt = 0;
+
+ostringstream netMsg;
 
 
 #define MAX(a,b) ((a > b) ? a : b)
@@ -220,11 +260,26 @@ void pauseConsol() {
 // Program main
 ////////////////////////////////////////////////////////////////////////////////
 
+//80 (with target at 45 deg)
+//After world adjust: angles 37.934022 -6.363750 -8.569449  translation 247.395505 1318.255910 -1354.591601
+
+
+//After world adjust: angles 21.276537 3.169888 6.171873  translation 28.121747 1381.796529 -2027.356740
+
+// vsm 2
+//x 192.2
+// y 104.7
+// z 1.132
 int main(int argc, char** argv)
+
 
 {
 
-	bool configOK = false;
+
+
+
+
+			bool configOK = false;
 	if(argc > 1) { // if command line arguements
 		try {
 			config.readFile(argv[1]);
@@ -282,33 +337,57 @@ void computeFPS(DWORD curTime) {
 
 void setupWorld(){
 
+	netMsg << fixed;
+	netMsg.precision(0);
+
 	const Setting& configRoot = config.getRoot();
 
 	if(configRoot.exists("net")) {
+		PersonTrackReceiver *tracker  = NULL;
+		UDPSender *udpSender = NULL;
 		const Setting &net = configRoot["net"];
 		if(net["useTrackAPI"]) {
 			string modIP;
 			net.lookupValue("moderatorIP", modIP);
 			tracker = new PersonTrackReceiver((const char*) modIP.c_str());
+			tracker->setScale((double) net["trackScale"]);
 			std::cout << "Starting Person Track" << std::endl;
-			tracker->start();
 		}
 
-		 trackHash = new TrackHash();
+		if(net["sendTracks"]) {
+			string sendIP;
+			net.lookupValue("sendIP", sendIP);
+			udpSender = new UDPSender(sendIP, net["sendPort"]);
+		}
 
-		string sendIP;
-		net.lookupValue("sendIP", sendIP);
-		udpSender = new UDPSender(sendIP, net["port"]);
+		trackGrab = new ThreadedTrackGrab(tracker, udpSender);
+
+		trackGrab->start();
+
+	}
+
+	if(configRoot.exists("cylinderCull")) {
+		const Setting &cCull = configRoot["cylinderCull"];
+		if(cCull["cullOn"]) {
+			cullOn = true;
+			cylCutX = cCull["x"];
+			cylCutZ = cCull["z"];
+			cylCutR = cCull["r"];
+			cylCutCeilingHack = cCull["ceilingCutHack"];
+		} else {
+			cullOn = false;
+		}
+
 	}
 
 
-//useTrackAPI = true;
-//	clientIP = 192.168.247.1;
-//	listenPort = 2345;
-//	sendPort = 1234;
-//	int sendIP
+	//useTrackAPI = true;
+	//	clientIP = 192.168.247.1;
+	//	listenPort = 2345;
+	//	sendPort = 1234;
+	//	int sendIP
 
-	
+
 
 
 	if(! configRoot.exists("cameras")) {
@@ -316,7 +395,7 @@ void setupWorld(){
 		exit(1);
 	} 
 
-	
+
 
 	const Setting &cameras = configRoot["cameras"];
 
@@ -332,6 +411,7 @@ void setupWorld(){
 
 		Vec3d trans(0,0,0);
 		Vec3d rot(0,0,0);
+		double scale = 1;
 
 		//MATRIXXXXX
 		if(camera.exists("matrix")) {
@@ -348,7 +428,7 @@ void setupWorld(){
 			m[9] = camera["matrix"][9];
 			m[10] = camera["matrix"][10];
 			m[11] = camera["matrix"][11];
-			tyzxCams[i] = new TyzxCam(name.c_str(), trans, rot, ip.c_str());
+			tyzxCams[i] = new TyzxCam(name.c_str(), trans, rot, scale, ip.c_str());
 
 			bool transpose = false;
 			if(camera.exists("transpose")) {
@@ -377,7 +457,7 @@ void setupWorld(){
 			rot.x = camera["rotation"][0];
 			rot.y = camera["rotation"][1];
 			rot.z = camera["rotation"][2];
-			tyzxCams[i] = new TyzxCam(name.c_str(), trans, rot, ip.c_str());
+			tyzxCams[i] = new TyzxCam(name.c_str(), trans, rot, camera["scale"], ip.c_str());
 		}
 
 
@@ -404,34 +484,71 @@ void setupWorld(){
 	float fDepth = configRoot["floor"]["depth"];
 	Vec3f fFrontColor = Vec3f(configRoot["floor"]["frontColor"][0],configRoot["floor"]["frontColor"][1],configRoot["floor"]["frontColor"][2]);
 	Vec3f fBackColor = Vec3f(configRoot["floor"]["backColor"][0],configRoot["floor"]["backColor"][1],configRoot["floor"]["backColor"][2]);
+	vFloor = new Floor(fLevel, fMinX, fMaxX, fDepth, fBackColor, fFrontColor, 10, 10);
 
 	cloudConstructor = new CloudConstructor(tyzxCams, camCnt);
 
-	cloudColorer = new CloudColorer(configRoot["pointCloud"]["minZ"], configRoot["pointCloud"]["maxZ"],
-		Vec3f(configRoot["pointCloud"]["minColor"][0],
-		configRoot["pointCloud"]["minColor"][1],
-		configRoot["pointCloud"]["minColor"][2]),
-		Vec3f(configRoot["pointCloud"]["maxColor"][0],
-		configRoot["pointCloud"]["maxColor"][1],
-		configRoot["pointCloud"]["maxColor"][2]),
-		configRoot["pointCloud"]["hsv"],
-		0.0
+	const Setting &voxSet = configRoot["voxel"];
+	Vec3f minDim;
+	Vec3f maxDim;
+	Vec3f divs;
+	minDim.x = voxSet["min"][0];
+	minDim.y = voxSet["min"][1];
+	minDim.z = voxSet["min"][2];
 
-	);
-//	if(configRoot["pointCloud"]["drawQuads"]) {
-		drawQuads = true;
-		cloudColorer->setQuads(true);
-//	} 
+	maxDim.x = voxSet["max"][0];
+	maxDim.y = voxSet["max"][1];
+	maxDim.z = voxSet["max"][2];
+
+	divs.x = voxSet["div"][0];
+	divs.y = voxSet["div"][1];
+	divs.z = voxSet["div"][2];
+
+	Vec3f divsSM;
+
+	divsSM.x = voxSet["divCoarse"][0];
+	divsSM.y = voxSet["divCoarse"][1];
+	divsSM.z = voxSet["divCoarse"][2];
+
+
+	rawVoxelSM = new Voxel(minDim, maxDim, divsSM);
+	bgVoxelSM = new Voxel(minDim, maxDim, divsSM);
+	fgVoxelSM = new Voxel(minDim, maxDim, divsSM);
+	fgDespecVoxelSM= new Voxel(minDim, maxDim, divsSM);
+
+
+	rawVoxel = new Voxel(minDim, maxDim, divs);
+	bgVoxel = new Voxel(minDim, maxDim, divs);
+	fgVoxel = new Voxel(minDim, maxDim, divs);
+	fgDespecVoxel= new Voxel(minDim, maxDim, divs);
+
+	FadeBlock::createDisplayList((maxDim-minDim)/divs);
+
+
+
+	voxelThresh = voxSet["thresh"];
+	voxelDespecThresh = voxSet["despecThresh"];
+
+	voxelThreshSM = voxSet["threshCoarse"];
+	voxelDespecThreshSM = voxSet["despecThreshCoarse"];
+	adaptation = voxSet["bgAdaptation"];
+	curAdaptation = .5f;
+
+
+//	projection = new Projection(divsSM);
+	projection = new Projection(divs);
+	std::cout << "minDim " << minDim << "    maxDim " << maxDim << std::endl;
+
+	projection->setRenderLocation(minDim, maxDim); // draw on ceiling
+
+	personDetector = new PersonDetector(projection);
 	
-	 minPointSize = configRoot["pointCloud"]["minSize"];
-	 maxPointSize = configRoot["pointCloud"]["maxSize"];
-	 pointSizeRate = configRoot["pointCloud"]["deltaPerFrame"];
-	curPointSize = minPointSize;
 
 
-		vFloor = new Floor(fLevel, fMinX, fMaxX, fDepth, fBackColor, fFrontColor, 10, 10);
 
 
+
+	
 
 
 
@@ -451,12 +568,12 @@ void setupWorld(){
 
 
 	//	topZero(
-	topBoundsMin.x =  10000+topZero.x + topZero.z;
-	topBoundsMax.x =  -10000+topZero.x - topZero.z;
-	topBoundsMin.y =  -10000+topZero.y - topZero.z;
-	topBoundsMax.y =  10000+topZero.y+topZero.z;
-	topBoundsMin.z =  10000;
-	topBoundsMax.z =  -10000;
+	topBoundsMin.x =  10  +topZero.x + topZero.z;
+	topBoundsMax.x =  -10 +topZero.x - topZero.z;
+	topBoundsMin.y =  -10 +topZero.y - topZero.z;
+	topBoundsMax.y =  10  +topZero.y +topZero.z;
+	topBoundsMin.z =  10;
+	topBoundsMax.z =  -10;
 
 
 }
@@ -480,7 +597,7 @@ CUTBoolean initGL(int argc, char **argv)
 		glutCreateWindow("Electroland Gesture Track");
 	}
 	if(window["hideCursor"]) {
-glutSetCursor(GLUT_CURSOR_NONE);
+		glutSetCursor(GLUT_CURSOR_NONE);
 	}
 
 
@@ -550,7 +667,8 @@ CUTBoolean runGL(int argc, char** argv) {
 	cudaGLSetGLDevice( cutGetMaxGflopsDeviceId() ); // set the fastest device
 
 	// register callbacks
-	glutDisplayFunc(display);
+	glutDisplayFunc(display);	std::cout << "loop called" << std::endl;
+
 	glutKeyboardFunc(keyboard);
 	glutSpecialFunc(keyboardSpecial);	
 
@@ -562,9 +680,55 @@ CUTBoolean runGL(int argc, char** argv) {
 	return CUTTrue;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//! Display callback
-////////////////////////////////////////////////////////////////////////////////
+
+void processVoxels(Voxel *raw, Voxel *bg, Voxel *fg, Voxel *despec, float adapt, float thresh, float despectThresh) {
+	bg->addScale(1.0-adapt, raw, adapt, false);
+	fg->setMask(raw, bg, thresh, false);
+	raw->deallocateGridOnGPU();
+	bg->deallocateGridOnGPU();
+	despec->setNoiseFilter(fg, despectThresh, false);
+	fg->deallocateGridOnGPU();
+}
+
+void calculate() {
+
+	cloudConstructor->calcPoints(false);
+
+	if(cullOn) 
+		cloudConstructor->cullCylinder(cylCutX,cylCutZ, cylCutR, cylCutCeilingHack);
+
+	rawVoxelSM->calcVoxel(cloudConstructor->pointCnt, cloudConstructor->getGPUPoints(), true, true);
+	rawVoxel->calcVoxel(cloudConstructor->pointCnt, cloudConstructor->getGPUPoints(), true, false);
+	cloudConstructor->freeGPUPoints();
+
+	curAdaptation -= .001;
+	curAdaptation = (curAdaptation < adaptation) ? adaptation : curAdaptation;
+	processVoxels(rawVoxel, bgVoxel, fgVoxel, fgDespecVoxel, curAdaptation, voxelThresh, voxelDespecThresh);
+	projection->calcProjection(fgDespecVoxel, voxelThresh, false);
+
+	fgDespecVoxel->deallocateGridOnGPU();
+
+	processVoxels(rawVoxelSM, bgVoxelSM, fgVoxelSM, fgDespecVoxelSM, adaptation, voxelThreshSM, voxelDespecThreshSM);
+
+//	projection->calcProjection(fgDespecVoxelSM, voxelThreshSM, false);
+	fgDespecVoxelSM->deallocateGridOnGPU();
+
+	projection->deallocateGridOnGPU();
+
+	personDetector->calc(curFrame++);
+
+	if(trackGrab) {
+		trackHash = trackGrab->getCurrentHash();
+	}
+
+	trackHash->merge(&personDetector->existingTracks, 1, curFrame);
+
+
+	if(trackGrab) {
+		trackGrab->trackHashUpdated();
+	}
+
+}
 
 void render(int view)
 {
@@ -588,6 +752,7 @@ void render(int view)
 		glRotatef(rotate_y, 0.0, 1.0, 0.0);
 		glRotatef(rotate_z, 0.0, 0.0, 1.0);
 		glTranslatef(translate_x, translate_y, translate_z);
+		//std::cout << translate_x << endl;
 	} else if (view == TOP_VIEW) {
 		glRotatef(-90, 1.0, 0.0, 0.0);
 		//		glRotatef(-90, 0.0, 1.0, 0.0);
@@ -603,119 +768,31 @@ void render(int view)
 
 
 
+	vFloor->render();
 
-		vFloor->render();
 
 
 	glColor3f( .50f, .5f, 0.5f );
 
-/*
-	glBegin(GL_LINE_STRIP);
-	glVertex3f(-65535.0f, -65535.0f, -65535.0f); //1
-	glVertex3f(-65535.0f, -65535.0f, 65535.0f); //2
-	glVertex3f(65535.0f, -65535.0f, 65535.0f); //3
-	glVertex3f(65535.0f, -65535.0f, -65535.0f); //4
-	glVertex3f(-65535.0f, -65535.0f, -65535.0f); //1
-
-
-	glVertex3f(-65535.0f, 65535.0f, -65535.0f); //1
-	glVertex3f(-65535.0f, 65535.0f, 65535.0f); //2
-	glVertex3f(65535.0f, 65535.0f, 65535.0f); //3
-	glVertex3f(65535.0f, 65535.0f, -65535.0f); //4
-	glVertex3f(-65535.0f, 65535.0f, -65535.0f); //1
-
-
-	glVertex3f(-65535.0f, -65535.0f, -65535.0f); //1
-	glVertex3f(-65535.0f, -65535.0f, 65535.0f); //2
-	glVertex3f(-65535.0f, 65535.0f, 65535.0f); //2
-	glVertex3f(65535.0f, 65535.0f, 65535.0f); //3
-	glVertex3f(65535.0f, -65535.0f, 65535.0f); //3
-	glVertex3f(65535.0f, -65535.0f, -65535.0f); //4
-	glVertex3f(65535.0f, 65535.0f, -65535.0f); //4
-
-	glEnd();
-
-*/
-
-	if(tracker) {
-		tracker->grab(trackHash);
-	}
-	// build hash here
-
-
-	for(int i =0; i < camCnt; i++) {
-		tyzxCams[i]->grab();
-
-
-	}
-
-
-	cloudConstructor->calcPoints(false);
-	//		cloudColorer->calcColors(cloudConstructor->getPointCnt(),  cloudConstructor->getPoints(), true);
-
-//	Linear CULL HERE
-	/*
-	if(cullOn) {
-	float cullx1 = 6000;
-	float cullz1 = -1000;
-	float cullx2 = 10000;
-	float cullz2 = -1000;
-	float cullfloor = 0;
-	if(selectedCam >= 0) {
-		glColor3f(1.0,0.0,1.0f);
-		glLineWidth(5.0f);
-		glBegin(GL_LINES) ;
-			glVertex3f(cullx1,0,cullz1);
-			glVertex3f(cullx2,0,cullz2);
-			glEnd();
-			glLineWidth(1.0f);
-		
-	}
-	
-	cloudConstructor->cull(cullx1,cullz1,cullx2,cullz2, cullfloor);
-	}*/
 
 	if(cullOn) {
-	float cx = 6500;
-	float cz = -1400;
-	float r = 450;
-	float ceilingHackCut = 2400;
-	cloudConstructor->cullCylinder(cx,cz, r, ceilingHackCut);
 		if(selectedCam >= 0) {
 			glColor3f(1.0,0.0,1.0f);
 			glLineWidth(5.0f);
 			glBegin(GL_LINES) ;
-			glVertex3f(cx-r, 0, cz);
-			glVertex3f(cx+r, 0, cz);
-			glVertex3f(cx, 0, cz-r);
-			glVertex3f(cx, 0, cz+r);
+			glVertex3f(cylCutX-cylCutR, 0, cylCutZ);
+			glVertex3f(cylCutX+cylCutR, 0, cylCutZ);
+			glVertex3f(cylCutX, 0, cylCutZ-cylCutR);
+			glVertex3f(cylCutX, 0, cylCutZ+cylCutR);
 			glEnd();
 			glLineWidth(1.0f);
 		}
 	}
 
-	cloudColorer->calcColors(cloudConstructor->getPointCnt(),  cloudConstructor->getGPUPoints(), true);
-	cloudConstructor->freeGPUPoints();
 
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
-	if(drawQuads) {
-		cloudColorer->calcQuads(cloudConstructor->getPointCnt(),  cloudConstructor->getPoints());
-		glVertexPointer(3, GL_FLOAT, 0, cloudColorer->quads);
-	} else {
-		glVertexPointer(3, GL_FLOAT, 0, cloudConstructor->getPoints());
-	}
-
-	glColorPointer(3, GL_FLOAT, 0,  cloudColorer->getColors());
-
-	
-	curPointSize +=pointSizeRate;
-	if(curPointSize > maxPointSize) {
-		curPointSize = minPointSize;
-	}
-	cloudColorer->size = curPointSize;
-
+	glVertexPointer(3, GL_FLOAT, 0, cloudConstructor->getPoints());
 
 	if(selectedCam >= 0) {
 		for(int i = 0; i < camCnt; i++) {
@@ -748,7 +825,6 @@ void render(int view)
 
 				glEnd();
 			}
-				glDisableClientState(GL_COLOR_ARRAY);
 
 			if ((selectedCam < 0) || (selectedCam == i )) {
 				glColor3f(1.0,0.0,0.0);
@@ -761,28 +837,51 @@ void render(int view)
 			}
 		}
 	} else {
-		if(drawQuads) {
-			glDrawArrays(GL_QUADS, 0,  cloudConstructor->imgSize * camCnt * 4);
-
-		} else {
-			glPointSize(cloudColorer->size);
+				glColor3f(.9f,0.55f,0.1f);
+		
 			glDrawArrays(GL_POINTS, 3,  cloudConstructor->imgSize * camCnt);
 		}
-	}
+			
+		
+
 	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);
+
+
+	switch(voxelMode) {
+	case RAW_VOXELS:
+		rawVoxel->draw(voxelThresh);
+		break;
+	case BG_VOXELS:
+		bgVoxel->draw(voxelThresh);
+		break;
+	case FG_VOXELS:
+		fgVoxel->draw(0);
+		break;
+	case FG_DESPEC_VOXELS:
+		fgDespecVoxel->draw(0);
+	default:
+		break;
+	}
+
+	switch(detectMode) {
+		case HEIGHT_MAP:
+			personDetector->render(personDetector->heights);
+			break;
+		case HEAD_CONV:
+			personDetector->render(personDetector->conv);
+			break;
+		case LOCAL_MAX:
+			personDetector->render(personDetector->localMax);
+			break;
+		case HANDS_AND_HEADS:
+			personDetector->render(NULL);
+		case NO_DETECT:
+		default:
+			break;
+	}
 
 
 
-
-	// other cloud stuff here
-
-	//HACK to force into drawing points in quad verticies
-		drawQuads = false;
-		cloudColorer->setQuads(false);
-
-		if(trackHash)
-		udpSender->sendString(trackHash->toString());
 }
 
 
@@ -794,13 +893,15 @@ void reshape(int w, int h) {
 }
 
 void display() {
+	calculate();
 	if(showOrtho) {
 
 		glViewport(0,  window_height/2, viewWidth/2, window_height/2);
 		glScissor(0,  window_height/2, viewWidth/2, window_height/2);
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		glFrustum(frustumSide,-frustumSide, -frustumTop, frustumTop, frustumNear, 1310700);
+		gluPerspective(FOV,(int) ((float) viewWidth / (float) window_height),0.01f,10000.0f);
+		//		glFrustum(frustumSide,-frustumSide, -frustumTop, frustumTop, frustumNear, 1310700);
 		render(PERSP_VIEW);
 
 
@@ -809,8 +910,8 @@ void display() {
 		glMatrixMode (GL_PROJECTION);								// Select The Projection Matrix
 		glLoadIdentity ();
 		//	glOrtho ( 1000 - translate_z, - 1000+translate_z,  - 1000+translate_z,  + 1000-translate_z,10000,-10000);
-		glOrtho ( 10000+frontZero.x + frontZero.z,     -10000+frontZero.x-frontZero.z, 
-			-10000+frontZero.y - frontZero.z,      10000+frontZero.y+frontZero.z, 100000,-100000);
+		glOrtho ( 10+frontZero.x + frontZero.z,     -10+frontZero.x-frontZero.z, 
+			-10+frontZero.y - frontZero.z,      10+frontZero.y+frontZero.z, 10,-10);
 		render(FRONT_VIEW);
 
 		glViewport (window_width/2,window_height/2, window_width/2, window_height/2);
@@ -826,8 +927,8 @@ void display() {
 		glScissor (window_width/2,0, window_width/2, window_height/2);
 		glMatrixMode (GL_PROJECTION);								// Select The Projection Matrix
 		glLoadIdentity ();
-		glOrtho ( 10000+sideZero.x + sideZero.z,     -10000+sideZero.x-sideZero.z, 
-			-10000+sideZero.y - sideZero.z,      10000+sideZero.y+sideZero.z, 100000,-100000);
+		glOrtho ( 10+sideZero.x + sideZero.z,     -10+sideZero.x-sideZero.z, 
+			-10+sideZero.y - sideZero.z,      10+sideZero.y+sideZero.z, 10,-10);
 		render(SIDE_VIEW);
 
 
@@ -837,7 +938,10 @@ void display() {
 
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		glFrustum(frustumSide,-frustumSide, -frustumTop, frustumTop, frustumNear, 1310700);
+		gluPerspective(FOV,(int) ((float) viewWidth / (float) window_height),0.01f,10000.0f);
+
+
+		//		glFrustum(frustumSide,-frustumSide, -frustumTop, frustumTop, frustumNear, 1310700);
 		render(PERSP_VIEW);
 	}
 
@@ -864,13 +968,14 @@ void keyboardSpecial(int key, int /*x*/, int /*y*/)
 {
 	switch(key) {
 	case(GLUT_KEY_UP):
-		cloudColorer->size++;
-		std::cout << "Point size " << cloudColorer->size;
+		voxelThresh+=.25f;
+		std::cout << "Voxel display threshold is now " << voxelThresh << std::endl;
 		break;
 
 	case(GLUT_KEY_DOWN):
-		cloudColorer->size--;
-		std::cout << "Point size " << cloudColorer->size;
+		voxelThresh-=.25f;
+		voxelThresh = (voxelThresh < 0) ? 0 : voxelThresh;
+		std::cout << "Voxel display threshold is now " << voxelThresh << std::endl;
 		break;
 	}
 }
@@ -933,14 +1038,19 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 		}
 		break;
 	case('p'):
-		if(drawQuads) {
-		cloudColorer->setQuads(false);
-		drawQuads = false;
-		}else {
-		cloudColorer->setQuads(true);
-		drawQuads = true;
-		}
 
+		break;
+	case('b'):
+		detectMode++;
+		if(detectMode > NO_DETECT) 
+			detectMode = HEIGHT_MAP;
+		std::cout << "Displaying projection " << detectModeStr[detectMode] << std::endl;
+		break;
+	case('v'):
+		voxelMode++;
+		if(voxelMode > NO_VOXELS) 
+			voxelMode = RAW_VOXELS;
+		std::cout << "Displaying raw voxels " << voxelModeStr[voxelMode] << std::endl;
 		break;
 	case('['):
 		worldCamRot = ! worldCamRot;
@@ -950,8 +1060,9 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 			std::cout << "rotating cameras in cam coords" << std::endl;
 		}
 		break;
-	case('v'):
+	case('c'):
 		cullOn = ! cullOn;
+		std::cout << "cull is " << cullOn << std::endl;
 		break;
 	default:
 		int camNum = key - '1' + 1;
@@ -959,8 +1070,6 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 			camNum = 0;
 		}
 		if((camNum >= 0) && (camNum < camCnt)) {
-				cloudColorer->setQuads(false);
-				drawQuads = false;
 			if(camNum == selectedCam) {
 				selectedCamExclusive = ! selectedCamExclusive;
 				if(selectedCamExclusive) {
@@ -1243,8 +1352,8 @@ void motion(int x, int y)
 		bool left = x< window_width/2;
 		if(top && left) {
 			if (mouse_buttons & 1) { //left
-				translate_z += dy * 100;
-				translate_x += dx * 100;
+				translate_z += dy *.1f;
+				translate_x += dx *.1f;
 			} else if (mouse_buttons & 4) { //center
 				translate_y += dy * 100;
 			}  else if (mouse_buttons & 2)   { //right
@@ -1253,17 +1362,17 @@ void motion(int x, int y)
 			}
 		} else if(top) { // top right
 			if (mouse_buttons & 1) { 
-				topZero.x += dx * 100;
-				topZero.y += dy * 100;
+				topZero.x += dx *.1f;
+				topZero.y += dy *.1f;
 			}  else {
-				topZero.z += dy * 100;
+				topZero.z += dy *.1f;
 			}
-			topBoundsMin.x =  10000+topZero.x + topZero.z;
-			topBoundsMax.x =  -10000+topZero.x - topZero.z;
-			topBoundsMin.y =  -10000+topZero.y - topZero.z;
-			topBoundsMax.y =  10000+topZero.y+topZero.z;
-			topBoundsMin.z =  10000;
-			topBoundsMax.z =  -10000;
+			topBoundsMin.x =  10+topZero.x + topZero.z;
+			topBoundsMax.x =  -10+topZero.x - topZero.z;
+			topBoundsMin.y =  -10+topZero.y - topZero.z;
+			topBoundsMax.y =  10+topZero.y+topZero.z;
+			topBoundsMin.z =  10;
+			topBoundsMax.z =  -10;
 
 			std::cout << "min " << topBoundsMin << std::endl;
 			std::cout << "max " << topBoundsMax << std::endl;
@@ -1271,26 +1380,26 @@ void motion(int x, int y)
 
 		} else if(left) { // bottom left
 			if (mouse_buttons & 1) { 
-				frontZero.x += dx * 100;
-				frontZero.y += dy * 100;
+				frontZero.x += dx *.1f;
+				frontZero.y += dy *.1f;
 			}  else {
-				frontZero.z += dy * 100;
+				frontZero.z += dy *.1f;
 			}
 		} else {
 			if (mouse_buttons & 1) { 
-				sideZero.x += dx * 100;
-				sideZero.y += dy * 100;
+				sideZero.x += dx*.1f ;
+				sideZero.y += dy*.1f ;
 			}  else {
-				sideZero.z += dy * 100;
+				sideZero.z += dy *.1f;
 			}
 		}
 
 	} else {
 		if (mouse_buttons & 1) { //left
-			translate_z += dy * 100;
-			translate_x += dx * 100;
+			translate_z += dy *.1f;
+			translate_x += dx*.1f ;
 		} else if (mouse_buttons & 4) { //center
-			translate_y += dy * 100;
+			translate_y += dy *.1f;
 		}  else if (mouse_buttons & 2)   { //right
 			rotate_x += dy * 0.2;
 			rotate_z += dx * 0.2;

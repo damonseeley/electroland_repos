@@ -11,7 +11,10 @@ using namespace std;
 class PersonTrackReceiver
 {
 public:
-	
+	long curFrame;
+
+	float scale;
+
 	float PixelsPerUnit	;
 	float LeftCoord	;
 	float Width	;
@@ -31,6 +34,7 @@ public:
 	~PersonTrackReceiver();
 	static  bool myWarningErrorFun(const char	*message);
 	static void myFatalErrorFun(const char *message);
+	void setScale(float s) { scale = s; }
 
 }
 ;
