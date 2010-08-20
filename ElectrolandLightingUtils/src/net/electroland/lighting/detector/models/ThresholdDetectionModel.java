@@ -5,7 +5,6 @@ import net.electroland.lighting.detector.DetectionModel;
 public class ThresholdDetectionModel implements DetectionModel {
 
 	private float threshold = .5f; // default is a 50% threshold
-	private int grayMax;
 	
 	public float getThreshold() {
 		return threshold;
@@ -16,7 +15,6 @@ public class ThresholdDetectionModel implements DetectionModel {
 			throw new RuntimeException("Threshold must be between 0 and 1.0");
 		}else{
 			this.threshold = threshold;
-			grayMax = (int)(255 * threshold);
 		}
 	}
 
