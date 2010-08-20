@@ -1,7 +1,7 @@
 package net.electroland.lighting.detector.animation.animations;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Properties;
 
@@ -32,7 +32,7 @@ public class StripeAnimation implements Animation {
 	public Raster getFrame()
 	{
 		BufferedImage i = (BufferedImage)raster.getRaster();
-		Graphics g = i.getGraphics();
+		Graphics2D g = i.createGraphics();
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, i.getWidth(), i.getHeight());
 		g.setColor(Color.WHITE);
