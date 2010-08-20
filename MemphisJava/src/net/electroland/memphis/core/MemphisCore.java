@@ -20,6 +20,7 @@ public class MemphisCore extends Conductor {
 
 		// use the VLM
 		this.showSimpleVLM();
+		//this.startSystem(); // headless
 	}
 	
 	public static void main(String args[])
