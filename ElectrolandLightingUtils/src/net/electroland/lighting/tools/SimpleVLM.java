@@ -4,8 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.Iterator;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -14,13 +17,20 @@ import net.electroland.lighting.detector.DetectorManager;
 import net.electroland.lighting.detector.Recipient;
 import net.electroland.lighting.detector.animation.AnimationManager;
 import net.electroland.lighting.tools.views.DetectorStates;
+import net.electroland.util.OptionException;
+
+import org.apache.log4j.Logger;
 
 public class SimpleVLM extends JFrame implements ActionListener{
+
+	private static Logger logger = Logger.getLogger(SimpleVLM.class);
 
 	private DetectorManager dm;
 	private AnimationManager am;
 	private Conductor c;
 	private JButton on, off, run, reload;
+	private JComboBox fixtureList;
+	private DetectorStates ds;
 	
 	// should pass in conductor to so that SystemStart is called.
 	// (though, that would make it impossible NOT to use the conductor).
@@ -54,12 +64,9 @@ public class SimpleVLM extends JFrame implements ActionListener{
 		
 		// just render the first recipient for now.
 		Recipient first = dm.getRecipients().iterator().next();
-		DetectorStates detectors = new DetectorStates(first);
-		am.addRecipientRepresentation(detectors);
-		this.add(detectors, BorderLayout.CENTER);		
-//		DetectorManagerJPanel dmj = new DetectorManagerJPanel(dm);
-//        am.setViewer(dmj);
-//        this.add(dmj, BorderLayout.CENTER);
+		ds = new DetectorStates(first);
+		am.addRecipientRepresentation(ds);
+		this.add(ds, BorderLayout.CENTER);		
 		
 		JPanel controls = new JPanel();
         controls.setLayout(new FlowLayout());
@@ -68,14 +75,32 @@ public class SimpleVLM extends JFrame implements ActionListener{
         run = new JButton("Start");		run.addActionListener(this);
         reload = new JButton("Reload");		reload.addActionListener(this);
         reload.setEnabled(false);
+        this.syncRunButton();
+
+		/* list of fixtures */
+		fixtureList = new JComboBox();
+		Iterator <Recipient> i = dm.getRecipients().iterator();
+
+		while (i.hasNext())
+		{
+			fixtureList.addItem(i.next().getID());
+		}
+
+		fixtureList.addActionListener(this);
+
         controls.add(on);
         controls.add(off);
         controls.add(run);
         controls.add(reload);
-        this.syncRunButton();
-
+		controls.add(fixtureList);
+        
         this.add(controls, BorderLayout.SOUTH);
 
+        try {
+			this.setTitle(dm.getPropsFile().getCanonicalPath());
+		} catch (IOException e) {
+			logger.debug(e);
+		}
         this.setSize(450, 500);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
@@ -86,9 +111,13 @@ public class SimpleVLM extends JFrame implements ActionListener{
 		if (e.getSource().equals(on))
 		{
 			dm.allOn();
+			ds.repaint();
+			
 		}else if (e.getSource().equals(off))
 		{
 			dm.allOff();
+			ds.repaint();
+
 		}else if (e.getSource().equals(run))
 		{
 			if (am.isRunning()){
@@ -103,12 +132,23 @@ public class SimpleVLM extends JFrame implements ActionListener{
 					c.startSystem();
 				else
 					am.goLive();
+				// set the latest recipient.
+				ds.setRecipient(dm.getRecipient((String)fixtureList.getSelectedItem()));
 			}
 			syncRunButton();
 
 		}else if (e.getSource().equals(reload))
 		{
-			System.out.println("not implemented yet.");
+			try {
+				dm.init(dm.getPropsFile().getAbsoluteFile());
+				am.init(am.getFPS());
+			} catch (IOException f) {
+				logger.error(f);
+			} catch (OptionException f) {
+				logger.error(f);
+			}
+		}else if (e.getSource().equals(fixtureList)){
+			ds.setRecipient(dm.getRecipient((String)fixtureList.getSelectedItem()));
 		}
 	}
 
@@ -122,7 +162,7 @@ public class SimpleVLM extends JFrame implements ActionListener{
 			run.setText("Start");
 			on.setEnabled(true);
 			off.setEnabled(true);
-			//reload.setEnabled(true);
+			reload.setEnabled(true);
 		}
 	}
 }
