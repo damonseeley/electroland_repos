@@ -8,7 +8,6 @@ import java.util.Vector;
 import net.electroland.lighting.detector.DetectorManager;
 import net.electroland.lighting.detector.animation.AnimationManager;
 import net.electroland.lighting.tools.SimpleVLM;
-import net.electroland.lighting.tools.VisualLightingManager;
 import net.electroland.sensor.SensorEvent;
 import net.electroland.sensor.SensorListener;
 import net.electroland.sensor.sensors.HaleUDPSensor;
@@ -44,20 +43,6 @@ abstract public class Conductor implements SensorListener {
 		
 	}
 
-	/**
-	 * 
-	 * @throws MissingResourcesException
-	 */
-	final public void showVLM()
-	{
-		if (am== null || dm == null)
-		{
-			throw new MissingResourcesException("VLM requires calling initAnimationManager() first.");
-		}else
-		{
-			new VisualLightingManager(am, dm);
-		}
-	}
 
 	final public void showSimpleVLM()
 	{
