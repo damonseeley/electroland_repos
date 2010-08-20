@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import net.electroland.lighting.detector.Recipient;
 import net.electroland.lighting.tools.RecipientRepresentation;
 
+@SuppressWarnings("serial")
 public class LightStates extends RecipientRepresentation {
 
 	public LightStates(Recipient r)
