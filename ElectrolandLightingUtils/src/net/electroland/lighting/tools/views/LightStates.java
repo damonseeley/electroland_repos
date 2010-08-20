@@ -13,7 +13,7 @@ public class LightStates extends RecipientRepresentation {
 	}
 
 	@Override
-	protected void paintComponent(Graphics g) {
+	public void paint(Graphics g) {
 		// TODO Auto-generated method stub
 		
 	}
