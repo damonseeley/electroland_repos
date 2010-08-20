@@ -7,7 +7,7 @@ import net.electroland.lighting.detector.DetectorManager;
 import net.electroland.lighting.detector.Recipient;
 import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.AnimationManager;
-import net.electroland.lighting.detector.animation.animations.Throb;
+import net.electroland.memphis.animation.Throb;
 import net.electroland.sensor.SensorEvent;
 
 public class TestBehavior extends Behavior {
@@ -38,7 +38,8 @@ public class TestBehavior extends Behavior {
 		if (am.getCurrentAnimation(bridge) == null){ // alternate.
 			int width = bridge.getPreferredDimensions().width;
 			int height = bridge.getPreferredDimensions().height;
-			am.startAnimation(new Throb(new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)), bridge);
+			am.startAnimation(new Throb(new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)),
+								bridge);
 		}
 	}
 
