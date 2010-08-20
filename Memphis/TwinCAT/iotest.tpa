@@ -1,2 +1,0 @@
-<?xml version="1.0"?>
-<PlcGivenDataInfo><VarConfigAddresses><VarConfigAddress><Name>MAIN.INPUT</Name><Type>BOOL</Type><IGroup>61473</IGroup><IOffset>32</IOffset><BitSize>1</BitSize></VarConfigAddress><VarConfigAddress><Name>MAIN.Output</Name><Type>BOOL</Type><IGroup>61489</IGroup><IOffset>32</IOffset><BitSize>1</BitSize></VarConfigAddress></VarConfigAddresses></PlcGivenDataInfo>
