@@ -7,28 +7,28 @@ import javax.swing.JPanel;
 import net.electroland.lighting.detector.Recipient;
 import net.electroland.lighting.detector.animation.Raster;
 
+@SuppressWarnings("serial")
 abstract public class RecipientRepresentation extends JPanel{
 
 	private Recipient recipient;
 	private Raster raster;
+	public boolean ready = false;
 
-	// crap.  really need a factory here.
 	public RecipientRepresentation(Recipient r)
 	{
 		this.setRecipient(r);
 	}
 	
 	// will be called by AnimationManager
-	public void render(Recipient recipient, Raster raster)
+	public void render(Raster r)
 	{
-		this.setRecipient(recipient);
-		this.setRaster(raster);
+		this.setRaster(r);
 		repaint();
 	}
 	
-	// user should overwrite paintComponent() to do something
-	// interesting with recipient or raster.
-	abstract protected void paintComponent(Graphics g);
+	// user should overwrite paint() to do something
+	// interesting with the raster/recipient
+	abstract public void paint(Graphics g);
 	
 	public Recipient getRecipient() {
 		return recipient;
@@ -36,6 +36,8 @@ abstract public class RecipientRepresentation extends JPanel{
 
 	public void setRecipient(Recipient recipient) {
 		this.recipient = recipient;
+		this.setRaster(null);
+		repaint();
 	}
 
 	public Raster getRaster() {
