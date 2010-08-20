@@ -1,7 +1,7 @@
 package net.electroland.lighting.detector.animation.transitions;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Properties;
 
@@ -36,7 +36,7 @@ public class LinearFade implements Animation {
 		if (raster.isJava2d())
 		{
 			BufferedImage image = (BufferedImage)raster.getRaster();
-			Graphics g = image.getGraphics();
+			Graphics2D g = image.createGraphics();
 			g.setColor(new Color(color,color,color));
 			g.fillRect(0, 0, image.getWidth(), image.getHeight());
 		}else
