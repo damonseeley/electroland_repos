@@ -13,7 +13,6 @@ public class Throb implements Animation {
 	private int i, d, c;
 	private boolean isDone = false;
 	private Raster raster;
-	private Properties props;
 
 	public Throb(BufferedImage image)
 	{
@@ -24,7 +23,6 @@ public class Throb implements Animation {
 	}
 
 	public void init(Properties props){
-		this.props = props;
 	}
 
 	public boolean isDone() 
