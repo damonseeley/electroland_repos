@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import net.electroland.lighting.detector.Recipient;
 import net.electroland.lighting.tools.RecipientRepresentation;
 
+@SuppressWarnings("serial")
 public class CurrentAnimation extends RecipientRepresentation {
 
 	public CurrentAnimation(Recipient r){
