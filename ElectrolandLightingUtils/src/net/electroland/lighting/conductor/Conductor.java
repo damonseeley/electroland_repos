@@ -120,7 +120,6 @@ abstract public class Conductor implements SensorListener {
 		behaviors.setSize(0);
 	}
 
-	@Override
 	final public void eventSensed(SensorEvent e) {
 		// go through each behavior and tell them the event occurred
 		Iterator<Behavior> i = behaviors.iterator();

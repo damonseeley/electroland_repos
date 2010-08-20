@@ -1,6 +1,5 @@
 package net.electroland.util;
 
-@SuppressWarnings("serial")
 public class OptionException extends Exception
 {
 	public OptionException(){

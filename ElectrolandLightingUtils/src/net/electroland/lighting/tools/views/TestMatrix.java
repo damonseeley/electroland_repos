@@ -5,7 +5,6 @@ import java.awt.Graphics;
 import net.electroland.lighting.detector.Recipient;
 import net.electroland.lighting.tools.RecipientRepresentation;
 
-@SuppressWarnings("serial")
 public class TestMatrix extends RecipientRepresentation {
 
 	public TestMatrix(Recipient r)
@@ -13,7 +12,6 @@ public class TestMatrix extends RecipientRepresentation {
 		super(r);
 	}
 
-	@Override
 	public void paint(Graphics g) {
 		// TODO Auto-generated method stub
 		

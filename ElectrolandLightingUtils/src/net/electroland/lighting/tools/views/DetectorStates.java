@@ -14,7 +14,6 @@ import net.electroland.lighting.detector.Recipient;
 import net.electroland.lighting.tools.RecipientRepresentation;
 import net.electroland.util.Util;
 
-@SuppressWarnings("serial")
 public class DetectorStates extends RecipientRepresentation implements MouseInputListener {
 
 	boolean showDetectors = true;
@@ -25,7 +24,6 @@ public class DetectorStates extends RecipientRepresentation implements MouseInpu
 		this.addMouseListener(this);
 	}
 	
-	@Override
 	public void paint(Graphics g) {
 
 		g.setColor(Color.LIGHT_GRAY);
@@ -60,26 +58,19 @@ public class DetectorStates extends RecipientRepresentation implements MouseInpu
 	}
 
 
-	@Override
 	public void mouseReleased(MouseEvent arg0) {
 		showDetectors = !showDetectors;
 	}
 
-	@Override
 	public void mouseClicked(MouseEvent arg0) {}
 
-	@Override
 	public void mouseEntered(MouseEvent arg0) {}
 
-	@Override
 	public void mouseExited(MouseEvent arg0) {}
 
-	@Override
 	public void mousePressed(MouseEvent arg0) {}
 
-	@Override
 	public void mouseDragged(MouseEvent arg0) {}
 
-	@Override
 	public void mouseMoved(MouseEvent arg0) {}
 }

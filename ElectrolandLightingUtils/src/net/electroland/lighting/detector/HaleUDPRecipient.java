@@ -13,12 +13,10 @@ import org.apache.log4j.Logger;
 
 public class HaleUDPRecipient extends Recipient {
 
-	@Override
 	public byte getOnVal() {
 		return (byte)255;
 	}
 
-	@Override
 	public byte getOffVal() {
 		return (byte)0;
 	}	
@@ -49,7 +47,6 @@ public class HaleUDPRecipient extends Recipient {
 		this.interPeriod = interPeriod == null ? 1 : interPeriod.intValue();
 	}
 
-	@Override
 	void send(byte[] data) {
 
 		byte[] protocolAndData = new byte[data.length + 3];

@@ -15,12 +15,10 @@ import net.electroland.util.Util;
 
 public class ArtNetRecipient extends Recipient {
 
-	@Override
 	public byte getOnVal() {
 		return (byte)255;
 	}
 
-	@Override
 	public byte getOffVal() {
 		return (byte)0;
 	}
@@ -47,8 +45,6 @@ public class ArtNetRecipient extends Recipient {
 		return universe;
 	}
 
-
-	@Override
 	public void send(byte[] data){
 		try {
 

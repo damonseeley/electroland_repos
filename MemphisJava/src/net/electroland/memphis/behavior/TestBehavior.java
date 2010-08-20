@@ -15,8 +15,6 @@ public class TestBehavior extends Behavior {
 	private Recipient bridge;
 	private AnimationManager am;
 	
-	
-	@Override
 	public void eventSensed(SensorEvent e) {
 		
 		// get the bridge and the animation manager.
@@ -43,7 +41,6 @@ public class TestBehavior extends Behavior {
 		}
 	}
 
-	@Override
 	public void completed(Animation a) {
 	}
 }

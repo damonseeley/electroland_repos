@@ -7,7 +7,6 @@ import javax.swing.JPanel;
 import net.electroland.lighting.detector.Recipient;
 import net.electroland.lighting.detector.animation.Raster;
 
-@SuppressWarnings("serial")
 abstract public class RecipientRepresentation extends JPanel{
 
 	private Recipient recipient;
