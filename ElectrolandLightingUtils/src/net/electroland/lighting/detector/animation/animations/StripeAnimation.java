@@ -3,6 +3,7 @@ package net.electroland.lighting.detector.animation.animations;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.Properties;
 
 import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.Raster;
@@ -18,6 +19,10 @@ public class StripeAnimation implements Animation {
 		x = 0;
 		raster = new Raster(image);
 		this.width = width;
+	}
+
+	public void init(Properties props){
+		
 	}
 
 	public void stop(){

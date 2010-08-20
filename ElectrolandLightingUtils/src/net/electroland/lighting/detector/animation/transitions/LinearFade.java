@@ -3,6 +3,7 @@ package net.electroland.lighting.detector.animation.transitions;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.Properties;
 
 import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.Raster;
@@ -13,6 +14,10 @@ public class LinearFade implements Animation {
 	private long finishTime, startTime;
 	private Raster raster;
 
+	public void init(Properties props){
+		
+	}
+	
 	public LinearFade(double seconds, Raster raster)
 	{
 		this.raster = raster;
