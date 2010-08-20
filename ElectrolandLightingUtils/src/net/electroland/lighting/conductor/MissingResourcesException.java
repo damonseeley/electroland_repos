@@ -1,6 +1,5 @@
 package net.electroland.lighting.conductor;
 
-@SuppressWarnings("serial")
 public class MissingResourcesException extends RuntimeException {
 	public MissingResourcesException()
 	{

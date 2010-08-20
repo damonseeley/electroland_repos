@@ -1,6 +1,5 @@
 package net.electroland.util;
 
-@SuppressWarnings("serial")
 public class NoDataException extends Exception {
 
 	public NoDataException(){

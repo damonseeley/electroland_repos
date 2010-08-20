@@ -12,12 +12,10 @@ import net.electroland.util.Util;
 
 public class FlexXMLRecipient extends Recipient {
 
-	@Override
 	public byte getOnVal() {
 		return (byte)255;
 	}
 
-	@Override
 	public byte getOffVal() {
 		return (byte)0;
 	}
@@ -49,7 +47,6 @@ public class FlexXMLRecipient extends Recipient {
 		q.add(message);
 	}
 
-	@Override
 	void send(byte[] data) {
 		/*
 		<xml>

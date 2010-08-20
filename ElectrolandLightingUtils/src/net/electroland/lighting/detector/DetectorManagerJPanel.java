@@ -14,8 +14,6 @@ import javax.swing.JPanel;
 
 import net.electroland.lighting.detector.animation.Raster;
 
-
-@SuppressWarnings("serial")
 public class DetectorManagerJPanel extends JPanel implements ActionListener {
 
 	private JComboBox fixtureList;
@@ -66,7 +64,6 @@ public class DetectorManagerJPanel extends JPanel implements ActionListener {
 		repaint();
 	}
 
-	@Override
 	protected void paintComponent(Graphics g) 
 	{
 		super.paintComponent(g);

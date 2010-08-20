@@ -21,7 +21,6 @@ import net.electroland.util.OptionException;
 
 import org.apache.log4j.Logger;
 
-@SuppressWarnings("serial")
 public class SimpleVLM extends JFrame implements ActionListener{
 
 	private static Logger logger = Logger.getLogger(SimpleVLM.class);
@@ -107,7 +106,6 @@ public class SimpleVLM extends JFrame implements ActionListener{
 		this.setVisible(true);
 	}
 
-	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(on))
 		{

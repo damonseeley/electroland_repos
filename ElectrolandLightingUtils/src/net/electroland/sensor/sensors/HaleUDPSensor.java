@@ -29,16 +29,13 @@ public class HaleUDPSensor extends Sensor implements Runnable {
 	{
 		new HaleUDPSensor(7474, 2048).startSensing();
 	}
-	
 
-	@Override
 	public void startSensing() {
 		isRunning = true;
 		thread = new Thread(this);
 		thread.start();
 	}
 
-	@Override
 	public void stopSensing() {
 		isRunning = false;
 
@@ -49,7 +46,6 @@ public class HaleUDPSensor extends Sensor implements Runnable {
 	}
 	private DatagramSocket socket = null;
 
-	@Override
 	public void run() {
 
 		try {

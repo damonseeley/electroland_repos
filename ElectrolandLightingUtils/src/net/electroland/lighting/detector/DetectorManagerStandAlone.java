@@ -25,7 +25,6 @@ import org.apache.log4j.Logger;
 import net.electroland.util.OptionException;
 import net.miginfocom.swing.MigLayout;
 
-@SuppressWarnings("serial")
 public class DetectorManagerStandAlone extends JFrame implements ChangeListener, ActionListener {
 
 	private static Logger logger = Logger.getLogger(DetectorManagerStandAlone.class);
