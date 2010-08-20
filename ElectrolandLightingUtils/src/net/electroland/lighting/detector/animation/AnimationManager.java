@@ -1,8 +1,12 @@
 package net.electroland.lighting.detector.animation;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -19,6 +23,8 @@ import org.apache.log4j.Logger;
 public class AnimationManager implements Runnable 
 {
 	private static Logger logger = Logger.getLogger(AnimationManager.class);
+
+	private String DEFAULT_PROPS = "animation.properties";
 
 	private DetectorManagerJPanel dmp;
 	// RR superceded dmp. need to properly sunset dmp, probably by
@@ -43,11 +49,44 @@ public class AnimationManager implements Runnable
 	private boolean isRunning = false;
 	private long delay; // frame delay to achieve optimal fps
 
+	private Properties props;
+	
 	public AnimationManager(int fps)
 	{
 		this.init(fps);
+		props = new Properties();
+		try {
+			InputStream is = this.getClass().getResourceAsStream(DEFAULT_PROPS);
+			if (is != null)
+			{
+				props.load(is);
+			}else{
+				System.out.println("failed to find properties file: " + DEFAULT_PROPS);
+			}
+		} catch (IOException e) {
+			logger.error(e);
+		}
 	}
 
+	public AnimationManager(int fps, String propsFileName)
+	{
+		this.init(fps);
+		props = new Properties();
+		try {
+			InputStream is = this.getClass().getResourceAsStream(propsFileName);
+			if (is != null)
+			{
+				props.load(is);
+			}else{
+				System.out.println("failed to find properties file: " + propsFileName);
+			}
+		} catch (FileNotFoundException e) {
+			logger.error(e);
+		} catch (IOException e) {
+			logger.error(e);
+		}
+	}
+	
 	/**
 	 * @deprecated
 	 * @param dmp
@@ -57,12 +96,12 @@ public class AnimationManager implements Runnable
 	{
 		this.dmp = dmp;
 		this.init(fps);
-	}
+	}	
 	
-	public void setViewer(DetectorManagerJPanel dmp)
-	{
-		this.dmp = dmp;
-	}
+//	public void setViewer(DetectorManagerJPanel dmp)
+//	{
+//		this.dmp = dmp;
+//	}
 	
 	public void init(int fps)
 	{
@@ -140,6 +179,9 @@ public class AnimationManager implements Runnable
 			throw new RuntimeException("Recipient list is null or empty.");
 		}
 
+		// pass in animation.properties, in case this animation needs it.
+		a.init(props);
+		
 		synchronized (animationRecipients)
 		{
 			// 1.) find the states for each recipient you are currently requesting.
@@ -193,6 +235,10 @@ public class AnimationManager implements Runnable
 			throw new RuntimeException("Recipient list is null or empty.");
 		}
 
+		// pass in animation.properties, in case this animation needs it.
+		a.init(props);
+		t.init(props);
+		
 		synchronized (animationRecipients)
 		{
 			animationRecipients.put(a, new AnimationRecipients(r));
@@ -206,7 +252,7 @@ public class AnimationManager implements Runnable
 				if (rState == null)
 				{
 					// if there was no animation, no transition is required.
-					recipientStates.put(rItr.next(), new RecipientState(a));
+					recipientStates.put(recip, new RecipientState(a));
 				}else
 				{
 					// if the current recipient is mid-transition...
@@ -392,6 +438,7 @@ public class AnimationManager implements Runnable
 				}
 			}
 			
+			
 			/** 
 			 * This belongs in the recipient sync section above, if we
 			 * want transitions to appear.
@@ -406,7 +453,7 @@ public class AnimationManager implements Runnable
 					Animation a = this.getCurrentAnimation(r); 
 					if (a != null && r != null){
 						AnimationRecipients ar = animationRecipients.get(a);
-						rr.render(r, ar.latestFrame);
+						rr.render(ar.latestFrame);
 					}
 				}
 			}
