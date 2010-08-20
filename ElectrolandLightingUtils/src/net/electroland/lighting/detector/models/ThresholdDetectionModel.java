@@ -5,6 +5,7 @@ import net.electroland.lighting.detector.DetectionModel;
 public class ThresholdDetectionModel implements DetectionModel {
 
 	private float threshold = .5f; // default is a 50% threshold
+	private int grayMax;
 	
 	public float getThreshold() {
 		return threshold;
@@ -14,17 +15,25 @@ public class ThresholdDetectionModel implements DetectionModel {
 		if (threshold < 0 || threshold > 1.0){
 			throw new RuntimeException("Threshold must be between 0 and 1.0");
 		}else{
-			this.threshold = threshold;			
+			this.threshold = threshold;
+			grayMax = (int)(255 * threshold);
 		}
 	}
 
 	public byte getValue(int[] pixels) {
 		float total = 0;
 		for (int i = 0; i < pixels.length; i++){
-			if (pixels[i] != 0){ // might have to actually do some bit checking here, to ignore alpha.
-				total += 1;
-			}
+
+			// separate rgb vals
+			int r = (pixels[i] >> 16) & 0xFF;
+			int g = (pixels[i] >> 8 & 0xFF);
+			int b = (pixels[i] & 0xFF);
+
+			// http://en.wikipedia.org/wiki/Grayscale
+			int gy = (int)((.3 * r) + (.59 * g) + (.11 * b));
+
+			total += gy;
 		}
-		return (total / pixels.length) >= threshold ? (byte)255 : (byte)0;
+		return (total / pixels.length) >= (threshold * 255) ? (byte)255 : (byte)0;
 	}
 }
