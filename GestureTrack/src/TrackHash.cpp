@@ -1,8 +1,15 @@
 #include "TrackHash.h"
 #include <GL/glut.h>
+#include "Tyzx3x3Matrix.h"
 
 
 TrackHash::TrackHash() {
+		rotationX =0;
+	rotationZ = 0;
+	rotationAngle=0;
+	sinAngle=0;
+	cosAngle=0;
+
 	msgCharSize = 0;
  msgChar = new char[0];
 }
@@ -180,4 +187,29 @@ void TrackHash::merge(TrackHash *otherHash, float maxDistSqr, long curFrame) {
 			}
 		}
 	
+}
+
+void TrackHash::setRotation(float angle) {
+	rotationAngle =angle;
+	sinAngle = sinf(rotationAngle / 180.0 * PI);
+	cosAngle = cosf(rotationAngle / 180.0 * PI);
+
+}
+
+void TrackHash::applyRotation() {
+	for(map<unsigned long, Track*>::iterator i = hash.begin();
+		i != hash.end();
+		i++)
+	{
+		Track *t = i->second;
+		float x = t->x->value;
+		float z = t->z->value;
+
+		if(t) {
+			t->x->value = rotationX + (cosAngle * (x - rotationX)) - (sinAngle * (z - rotationZ));
+			t->z->value = rotationZ + (sinAngle * (x - rotationX)) + (cosAngle * (z - rotationZ));
+		}
+
+	}
+
 }
