@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.Iterator;
 
 import javax.swing.JButton;
@@ -17,7 +16,6 @@ import net.electroland.lighting.detector.DetectorManager;
 import net.electroland.lighting.detector.Recipient;
 import net.electroland.lighting.detector.animation.AnimationManager;
 import net.electroland.lighting.tools.views.DetectorStates;
-import net.electroland.util.OptionException;
 
 import org.apache.log4j.Logger;
 
@@ -51,17 +49,7 @@ public class SimpleVLM extends JFrame implements ActionListener{
 	}
 	
 	public void init()
-	{
-		
-		// simple UI:
-		//Header: [title: properties file name]
-		//[drop down: recipients] [drop down: view type] (not done)
-		//
-		//               BIG IMAGE
-		//
-		//[all on] [all off] [start/stop] [reload props]
-		
-		
+	{		
 		// just render the first recipient for now.
 		Recipient first = dm.getRecipients().iterator().next();
 		ds = new DetectorStates(first);
@@ -95,12 +83,7 @@ public class SimpleVLM extends JFrame implements ActionListener{
 		controls.add(fixtureList);
         
         this.add(controls, BorderLayout.SOUTH);
-
-        try {
-			this.setTitle(dm.getPropsFile().getCanonicalPath());
-		} catch (IOException e) {
-			logger.debug(e);
-		}
+		this.setTitle("");
         this.setSize(450, 500);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
@@ -138,14 +121,14 @@ public class SimpleVLM extends JFrame implements ActionListener{
 
 		}else if (e.getSource().equals(reload))
 		{
-			try {
-				dm.init(dm.getPropsFile().getAbsoluteFile());
-				am.init(am.getFPS());
-			} catch (IOException f) {
-				logger.error(f);
-			} catch (OptionException f) {
-				logger.error(f);
-			}
+//			try {
+//				dm.init(dm.getProps());
+//				am.init(am.getFPS());
+//			} catch (IOException f) {
+//				logger.error(f);
+//			} catch (OptionException f) {
+//				logger.error(f);
+//			}
 		}else if (e.getSource().equals(fixtureList)){
 			ds.setRecipient(dm.getRecipient((String)fixtureList.getSelectedItem()));
 		}

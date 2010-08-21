@@ -43,40 +43,8 @@ public class DetectorManager {
 	private Map <String, Detector> detectors;
 	private Map <String, ByteMap> bytemaps;
 	private int fps;
-	private File propsFile;
-
-	public File getPropsFile() {
-		return propsFile;
-	}
-
-	public void setPropsFile(File propsFile) {
-		this.propsFile = propsFile;
-	}
-
-	public DetectorManager(String propsFileName) throws UnknownHostException, IOException,  UnknownHostException, OptionException
-	{
-		propsFile = new File(propsFileName);
-		init(propsFile);
-	}
 
 	public DetectorManager(Properties props) throws UnknownHostException, OptionException
-	{
-		init(props);
-	}
-
-	public void saveChanges(boolean backup)
-	{
-		// create a new props file based on the objects in memory.
-	}
-	
-	public void init(File file) throws IOException, OptionException
-	{
-		Properties systemProps = new Properties();
-		systemProps.load(new FileInputStream(file));
-		init(systemProps);		
-	}
-	
-	public void init(Properties props) throws UnknownHostException, OptionException
 	{
 		bytemaps = Collections.synchronizedMap(new HashMap<String, ByteMap>());
 		rasters = Collections.synchronizedMap(new HashMap<String, Dimension>());

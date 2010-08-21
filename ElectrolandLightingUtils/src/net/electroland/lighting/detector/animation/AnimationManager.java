@@ -24,8 +24,6 @@ public class AnimationManager implements Runnable
 {
 	private static Logger logger = Logger.getLogger(AnimationManager.class);
 
-	private String DEFAULT_PROPS = "animation.properties";
-
 	private DetectorManagerJPanel dmp;
 	// RR superceded dmp. need to properly sunset dmp, probably by
 	// having it subclass rr.
@@ -54,37 +52,12 @@ public class AnimationManager implements Runnable
 	public AnimationManager(int fps)
 	{
 		this.init(fps);
-		props = new Properties();
-		try {
-			InputStream is = this.getClass().getResourceAsStream(DEFAULT_PROPS);
-			if (is != null)
-			{
-				props.load(is);
-			}else{
-				System.out.println("failed to find properties file: " + DEFAULT_PROPS);
-			}
-		} catch (IOException e) {
-			logger.error(e);
-		}
 	}
 
-	public AnimationManager(int fps, String propsFileName)
+	public AnimationManager(int fps, Properties props)
 	{
 		this.init(fps);
-		props = new Properties();
-		try {
-			InputStream is = this.getClass().getResourceAsStream(propsFileName);
-			if (is != null)
-			{
-				props.load(is);
-			}else{
-				System.out.println("failed to find properties file: " + propsFileName);
-			}
-		} catch (FileNotFoundException e) {
-			logger.error(e);
-		} catch (IOException e) {
-			logger.error(e);
-		}
+		this.props = props;
 	}
 	
 	/**
