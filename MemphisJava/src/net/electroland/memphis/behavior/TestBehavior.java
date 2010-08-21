@@ -2,20 +2,26 @@ package net.electroland.memphis.behavior;
 
 import java.awt.image.BufferedImage;
 
+import net.electroland.input.InputDeviceEvent;
 import net.electroland.lighting.conductor.Behavior;
 import net.electroland.lighting.detector.DetectorManager;
 import net.electroland.lighting.detector.Recipient;
 import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.AnimationManager;
 import net.electroland.memphis.animation.Throb;
-import net.electroland.sensor.SensorEvent;
+import net.electroland.memphis.core.BridgeState;
 
 public class TestBehavior extends Behavior {
 
 	private Recipient bridge;
 	private AnimationManager am;
+	private BridgeState bs;
+
+	public TestBehavior(BridgeState bs){
+		this.bs = bs;
+	}
 	
-	public void eventSensed(SensorEvent e) {
+	public void inputReceived(InputDeviceEvent e) {
 		
 		// get the bridge and the animation manager.
 		// unfortunately, the am and dm aren't set until after
@@ -29,8 +35,6 @@ public class TestBehavior extends Behavior {
 			DetectorManager dm = this.getDetectorManger();
 			bridge = dm.getRecipients().iterator().next();			
 		}
-
-		//System.out.println(e); // show the packet received.
 
 		// for any event, just start a throb.
 		if (am.getCurrentAnimation(bridge) == null){ // alternate.
