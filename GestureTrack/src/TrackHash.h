@@ -12,7 +12,6 @@
 
 using namespace std;
 
-
 class TrackHash {
 public:
 
@@ -22,6 +21,13 @@ public:
 	vector<unsigned long> enters;
 	vector<unsigned long> exits;
 	map<unsigned long, Track*> hash;
+
+	float rotationX;
+	float rotationZ;
+	float rotationAngle;
+
+	float sinAngle;
+	float cosAngle;
 
 	TrackHash();
 	void clear();
@@ -41,5 +47,9 @@ public:
 	void merge(TrackHash *otherHash, float maxDistSqr, long curFrame); 
 
 	void updateValidity(long curFrame);
+
+	void setRotationPoint(float x, float z) { rotationX = x; rotationZ = z; };
+	void setRotation(float angle);
+	void applyRotation();
 };
 #endif
