@@ -71,6 +71,7 @@ Host code
 #include "TrackHash.h"
 #include "ThreadedTrackGrab.h"
 #include "FadeBlock.h"
+#include "Recorder.h"
 
 #include "Projection.h"
 #include "PersonDetector.h"
@@ -116,6 +117,12 @@ bool showOrtho = false;
 bool showAxis = true;
 Config config;
 
+float trackRotateX;
+float trackRotateZ;
+float trackRotateA;
+
+
+
 ThreadedTrackGrab *trackGrab;
 TrackHash *trackHash = NULL;
 //UDPSender *udpSender = NULL;
@@ -131,6 +138,7 @@ Vec3f topBoundsMax;
 Vec3f sideZero;
 Vec3f frontZero;
 
+Recorder *recorder;
 
 CloudConstructor *cloudConstructor;
 
@@ -335,68 +343,8 @@ void computeFPS(DWORD curTime) {
 //! Initialize GL
 ////////////////////////////////////////////////////////////////////////////////
 
-void setupWorld(){
 
-	netMsg << fixed;
-	netMsg.precision(0);
-
-	const Setting	& configRoot = config.getRoot();
-
-	if(configRoot.exists("net")) {
-		PersonTrackReceiver *tracker  = NULL;
-		UDPSender *udpSender = NULL;
-		const Setting &net = configRoot["net"];
-		if(net["useTrackAPI"]) {
-			string modIP;
-			net.lookupValue("moderatorIP", modIP);
-			tracker = new PersonTrackReceiver((const char*) modIP.c_str());
-			tracker->setScale((double) net["trackScale"]);
-			std::cout << "Starting Person Track" << std::endl;
-		}
-
-		if(net["sendTracks"]) {
-			string sendIP;
-			net.lookupValue("sendIP", sendIP);
-			udpSender = new UDPSender(sendIP, net["sendPort"]);
-		}
-
-		trackGrab = new ThreadedTrackGrab(tracker, udpSender);
-
-		trackGrab->start();
-
-	}
-
-	if(configRoot.exists("cylinderCull")) {
-		const Setting &cCull = configRoot["cylinderCull"];
-		if(cCull["cullOn"]) {
-			cullOn = true;
-			cylCutX = cCull["x"];
-			cylCutZ = cCull["z"];
-			cylCutR = cCull["r"];
-			cylCutCeilingHack = cCull["ceilingCutHack"];
-		} else {
-			cullOn = false;
-		}
-
-	}
-
-
-	//useTrackAPI = true;
-	//	clientIP = 192.168.247.1;
-	//	listenPort = 2345;
-	//	sendPort = 1234;
-	//	int sendIP
-
-
-
-
-	if(! configRoot.exists("cameras")) {
-		std::cerr << "No camera's specified in config file\n" << std::endl;
-		exit(1);
-	} 
-
-
-
+void setupCams(const Setting &configRoot) {
 	const Setting &cameras = configRoot["cameras"];
 
 	camCnt = cameras.getLength();
@@ -453,7 +401,7 @@ void setupWorld(){
 			trans.x = camera["translation"][0];
 			trans.y = camera["translation"][1];
 			trans.z = camera["translation"][2];
-
+	
 			rot.x = camera["rotation"][0];
 			rot.y = camera["rotation"][1];
 			rot.z = camera["rotation"][2];
@@ -462,11 +410,111 @@ void setupWorld(){
 
 
 
-		std::cout << "starting "  << name << " ("<< ip << ") " << std::endl;
-		if(tyzxCams[i]->start()) {
+			std::cout << "starting "  << tyzxCams[i]->name << " ("<< tyzxCams[i]->camIP << ") " << std::endl;
+			if(tyzxCams[i]->start()) {
 			std::cout << "  txzxCam started\n"  << std::endl;;
 		}
 	}
+
+}
+void setupWorld(){
+	
+	netMsg << fixed;
+	netMsg.precision(0);
+
+	const Setting	& configRoot = config.getRoot();
+
+	if(configRoot.exists("trackRotate")) {
+	 trackRotateX = configRoot["trackRotate"]["x"];
+	 trackRotateZ = configRoot["trackRotate"]["z"];
+	 trackRotateA = configRoot["trackRotate"]["angle"];
+	}
+
+	if(configRoot.exists("record")) {
+		if((bool) configRoot["record"]["record"]) {
+			setupCams(configRoot);
+			PersonTrackReceiver *tracker  = NULL;
+			const Setting &net = configRoot["net"];
+			if(net["useTrackAPI"]) {
+				string modIP;
+				net.lookupValue("moderatorIP", modIP);
+				tracker = new PersonTrackReceiver((const char*) modIP.c_str());
+				tracker->setScale((double) net["trackScale"]);
+				tracker->start();
+				std::cout << "Starting Person Track" << std::endl;
+			} else {
+				tracker = NULL;
+			}
+			
+			recorder = new Recorder("Test", camCnt, tyzxCams, tracker);
+			recorder->run( ((float)(configRoot["record"]["time"]))* 1000);
+			// will exit after run
+
+
+		}
+	}
+
+
+	if(configRoot.exists("net")) {
+		PersonTrackReceiver *tracker  = NULL;
+		UDPSender *udpSender = NULL;
+		const Setting &net = configRoot["net"];
+		if(net["useTrackAPI"]) {
+			string modIP;
+			net.lookupValue("moderatorIP", modIP);
+			tracker = new PersonTrackReceiver((const char*) modIP.c_str());
+			tracker->setScale((double) net["trackScale"]);
+			std::cout << "Starting Person Track" << std::endl;
+		}
+
+		if(net["sendTracks"]) {
+			string sendIP;
+			net.lookupValue("sendIP", sendIP);
+			udpSender = new UDPSender(sendIP, net["sendPort"]);
+		}
+
+		if(tracker || udpSender) {
+			trackGrab = new ThreadedTrackGrab(tracker, udpSender);
+			trackGrab->start();
+		}
+	
+
+
+	}
+
+	if(configRoot.exists("cylinderCull")) {
+		const Setting &cCull = configRoot["cylinderCull"];
+		if(cCull["cullOn"]) {
+			cullOn = true;
+			cylCutX = cCull["x"];
+			cylCutZ = cCull["z"];
+			cylCutR = cCull["r"];
+			cylCutCeilingHack = cCull["ceilingCutHack"];
+		} else {
+			cullOn = false;
+		}
+
+	}
+
+	setupCams(configRoot);
+
+	//useTrackAPI = true;
+	//	clientIP = 192.168.247.1;
+	//	listenPort = 2345;
+	//	sendPort = 1234;
+	//	int sendIP
+
+
+	trackHash = new TrackHash();
+
+	if(! configRoot.exists("cameras")) {
+		std::cerr << "No camera's specified in config file\n" << std::endl;
+		exit(1);
+	} 
+
+
+
+
 
 
 
@@ -715,7 +763,7 @@ void calculate() {
 
 	projection->deallocateGridOnGPU();
 
-	personDetector->calc(curFrame++);
+//	personDetector->calc(curFrame++);
 	}
 
 	if(trackGrab) {
@@ -723,7 +771,13 @@ void calculate() {
 	}
 
 	if(camCnt > 0) {
-	trackHash->merge(&personDetector->existingTracks, 1, curFrame);
+		trackHash->merge(&personDetector->existingTracks, 1, curFrame);
+	}
+
+	if(trackRotateA != 0) {
+		trackHash->setRotationPoint(trackRotateX, trackRotateZ);
+		trackHash->setRotation(trackRotateA);
+		trackHash->applyRotation();
 	}
 
 	if(trackGrab) {
@@ -969,6 +1023,12 @@ void cleanup()
 void keyboardSpecial(int key, int /*x*/, int /*y*/)
 {
 	switch(key) {
+	case(GLUT_KEY_LEFT) :
+		trackRotateA++;
+		break;
+	case(GLUT_KEY_RIGHT):
+		trackRotateA--;
+		break;
 	case(GLUT_KEY_UP):
 		voxelThresh+=.25f;
 		std::cout << "Voxel display threshold is now " << voxelThresh << std::endl;
@@ -1009,6 +1069,7 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 		std::cout << "SPACE\t\t- toggle fullscreen" << std::endl;
 		std::cout << "SHIFT and ALT modify speed of rotation and translation" << std::endl;
 		std::cout << "Arrow UP/DOWN adjust point/square size" << std::endl;
+		std::cout << "Arrow LEFT/RIGHT rotate tracks in horizontal plane before sending out on net" << std::endl;
 		std::cout << std::endl;
 		break;
 	case(27) :
@@ -1306,6 +1367,7 @@ bool wasUp = true;
 
 void mouse(int button, int state, int x, int y)
 {
+
 	if (state == GLUT_DOWN) {
 		mouse_buttons |= 1<<button;
 		if(wasUp) {
