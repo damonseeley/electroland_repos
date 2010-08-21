@@ -40,10 +40,7 @@ Recorder::Recorder(string filename, int camCnt, TyzxCam** cams, PersonTrackRecei
 			for(int i = 0; i < camCnt; i++) {
 				unsigned short *zimg = cams[i]->getZImage();
 				for(int j = 0; j < cams[i]->imgHeight * cams[i]->imgWidth;j++) {
-					unsigned short val = zimg[j];
-					if((val!=0) && (val!=65535)) {
-						fileStream << val << " ";
-					}
+						fileStream << zimg[j] << " ";
 				}
 				fileStream << endl;
 			}
