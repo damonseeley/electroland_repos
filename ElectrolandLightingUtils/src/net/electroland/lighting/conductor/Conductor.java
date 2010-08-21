@@ -1,24 +1,57 @@
 package net.electroland.lighting.conductor;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.Properties;
 import java.util.Vector;
 
+import net.electroland.input.InputDeviceEvent;
+import net.electroland.input.InputDeviceListener;
+import net.electroland.input.devices.HaleUDPInputDevice;
 import net.electroland.lighting.detector.DetectorManager;
 import net.electroland.lighting.detector.animation.AnimationManager;
 import net.electroland.lighting.tools.SimpleVLM;
-import net.electroland.sensor.SensorEvent;
-import net.electroland.sensor.SensorListener;
-import net.electroland.sensor.sensors.HaleUDPSensor;
 import net.electroland.util.OptionException;
 
-abstract public class Conductor implements SensorListener {
+import org.apache.log4j.Logger;
 
+abstract public class Conductor implements InputDeviceListener {
+
+	private static Logger logger = Logger.getLogger(Conductor.class);
 	private Vector<Behavior> behaviors = new Vector<Behavior>();
 	private AnimationManager am;
 	private DetectorManager dm;
-	private HaleUDPSensor hs;
+	private HaleUDPInputDevice hs;
+
+	public Properties getProperties(String resourcename) throws FileNotFoundException, IOException
+	{
+		Properties props = new Properties();
+		InputStream is = this.getClass().getClassLoader().getResourceAsStream(resourcename);
+		if (is != null)
+		{
+			props.load(is);
+		}else{
+			logger.warn("failed to find properties file: " + resourcename);
+		}
+		return props;
+	}
+
+	public URL locateResource(String resourcename) throws FileNotFoundException, IOException
+	{
+		Enumeration<URL> e = this.getClass().getClassLoader().getResources(resourcename);
+		if (e.hasMoreElements())
+		{
+			return e.nextElement();
+		}else
+		{
+			return null;
+		}
+	}
 	
 	final public void startSystem()
 	{
@@ -69,23 +102,21 @@ abstract public class Conductor implements SensorListener {
 	 * Start animation manager AND lighting manager.
 	 * @param propsName
 	 */
-	final public void initAnimation(String propsName)
+	final public void initAnimation(Properties aprops, Properties dprops)
 	{
 		try {
-			dm = new DetectorManager(propsName);
-			am = new AnimationManager(dm.getFps());
+			dm = new DetectorManager(dprops);
+			am = new AnimationManager(dm.getFps(), aprops);
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e);
 		} catch (OptionException e) {
-			e.printStackTrace();
+			logger.error(e);
 		}
 	}
 
 	final public void initHaleUDPSensor(int port, int bufferLength)
 	{
-		hs = new HaleUDPSensor(port, bufferLength);
+		hs = new HaleUDPInputDevice(port, bufferLength);
 		hs.addListener(this);
 	}
 	
@@ -120,11 +151,12 @@ abstract public class Conductor implements SensorListener {
 		behaviors.setSize(0);
 	}
 
-	final public void eventSensed(SensorEvent e) {
+	final public void inputReceived(InputDeviceEvent e) {
 		// go through each behavior and tell them the event occurred
 		Iterator<Behavior> i = behaviors.iterator();
 		while (i.hasNext()){
-			i.next().eventSensed(e);
+			Behavior b = i.next();
+			b.inputReceived(e);
 		}
 	}
 }

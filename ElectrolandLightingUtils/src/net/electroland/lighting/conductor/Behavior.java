@@ -1,11 +1,11 @@
 package net.electroland.lighting.conductor;
 
+import net.electroland.input.InputDeviceListener;
 import net.electroland.lighting.detector.DetectorManager;
 import net.electroland.lighting.detector.animation.AnimationListener;
 import net.electroland.lighting.detector.animation.AnimationManager;
-import net.electroland.sensor.SensorListener;
 
-abstract public class Behavior implements SensorListener, AnimationListener{
+abstract public class Behavior implements InputDeviceListener, AnimationListener{
 
 	private AnimationManager am;
 	private DetectorManager dm;
