@@ -163,10 +163,10 @@ Voxel *bgVoxel;
 Voxel *fgVoxel;
 Voxel *fgDespecVoxel;
 
-Voxel *rawVoxelSM;
-Voxel *bgVoxelSM;
-Voxel *fgVoxelSM;
-Voxel *fgDespecVoxelSM;
+//Voxel *rawVoxelSM;
+//Voxel *bgVoxelSM;
+//Voxel *fgVoxelSM;
+//Voxel *fgDespecVoxelSM;
 
 Projection *projection;
 PersonDetector *personDetector;
@@ -559,10 +559,10 @@ void setupWorld(){
 	divsSM.z = voxSet["divCoarse"][2];
 
 
-	rawVoxelSM = new Voxel(minDim, maxDim, divsSM);
-	bgVoxelSM = new Voxel(minDim, maxDim, divsSM);
-	fgVoxelSM = new Voxel(minDim, maxDim, divsSM);
-	fgDespecVoxelSM= new Voxel(minDim, maxDim, divsSM);
+//	rawVoxelSM = new Voxel(minDim, maxDim, divsSM);
+//	bgVoxelSM = new Voxel(minDim, maxDim, divsSM);
+//	fgVoxelSM = new Voxel(minDim, maxDim, divsSM);
+//	fgDespecVoxelSM= new Voxel(minDim, maxDim, divsSM);
 
 
 	rawVoxel = new Voxel(minDim, maxDim, divs);
@@ -745,7 +745,7 @@ void calculate() {
 	if(cullOn) 
 		cloudConstructor->cullCylinder(cylCutX,cylCutZ, cylCutR, cylCutCeilingHack);
 
-	rawVoxelSM->calcVoxel(cloudConstructor->pointCnt, cloudConstructor->getGPUPoints(), true, true);
+//	rawVoxelSM->calcVoxel(cloudConstructor->pointCnt, cloudConstructor->getGPUPoints(), true, true);
 	rawVoxel->calcVoxel(cloudConstructor->pointCnt, cloudConstructor->getGPUPoints(), true, false);
 	cloudConstructor->freeGPUPoints();
 
@@ -756,10 +756,10 @@ void calculate() {
 
 	fgDespecVoxel->deallocateGridOnGPU();
 
-	processVoxels(rawVoxelSM, bgVoxelSM, fgVoxelSM, fgDespecVoxelSM, adaptation, voxelThreshSM, voxelDespecThreshSM);
+//	processVoxels(rawVoxelSM, bgVoxelSM, fgVoxelSM, fgDespecVoxelSM, adaptation, voxelThreshSM, voxelDespecThreshSM);
 
 //	projection->calcProjection(fgDespecVoxelSM, voxelThreshSM, false);
-	fgDespecVoxelSM->deallocateGridOnGPU();
+//	fgDespecVoxelSM->deallocateGridOnGPU();
 
 	projection->deallocateGridOnGPU();
 
