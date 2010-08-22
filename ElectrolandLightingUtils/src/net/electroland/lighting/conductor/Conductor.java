@@ -17,21 +17,25 @@ import net.electroland.lighting.detector.DetectorManager;
 import net.electroland.lighting.detector.animation.AnimationManager;
 import net.electroland.lighting.tools.SimpleVLM;
 import net.electroland.util.OptionException;
+import net.electroland.util.Util;
 
 import org.apache.log4j.Logger;
 
 abstract public class Conductor implements InputDeviceListener {
 
+	public final static String ANIMATION_PROPS = "animation.properties";
+	public final static String LIGHT_PROPS = "lights.properties";	
+	
 	private static Logger logger = Logger.getLogger(Conductor.class);
 	private Vector<Behavior> behaviors = new Vector<Behavior>();
 	private AnimationManager am;
 	private DetectorManager dm;
 	private HaleUDPInputDevice hs;
 
-	public Properties getProperties(String resourcename) throws FileNotFoundException, IOException
+	public static Properties getProperties(String resourcename) throws FileNotFoundException, IOException
 	{
 		Properties props = new Properties();
-		InputStream is = this.getClass().getClassLoader().getResourceAsStream(resourcename);
+		InputStream is = new Util().getClass().getClassLoader().getResourceAsStream(resourcename);
 		if (is != null)
 		{
 			props.load(is);
@@ -41,9 +45,9 @@ abstract public class Conductor implements InputDeviceListener {
 		return props;
 	}
 
-	public URL locateResource(String resourcename) throws FileNotFoundException, IOException
+	public static URL locateResource(String resourcename) throws FileNotFoundException, IOException
 	{
-		Enumeration<URL> e = this.getClass().getClassLoader().getResources(resourcename);
+		Enumeration<URL> e = new Util().getClass().getClassLoader().getResources(resourcename);
 		if (e.hasMoreElements())
 		{
 			return e.nextElement();
@@ -74,8 +78,7 @@ abstract public class Conductor implements InputDeviceListener {
 			am.stop();
 		}
 		
-	}
-
+	}	
 
 	final public void showSimpleVLM()
 	{
@@ -88,33 +91,28 @@ abstract public class Conductor implements InputDeviceListener {
 		}
 		
 	}
-	
-	/**
-	 * Start Lights with no animation.
-	 * @param propsName
-	final public void initLighting(String propsName)
-	{
-		// TBD
-	}
-	 */
 
 	/**
 	 * Start animation manager AND lighting manager.
 	 * @param propsName
 	 */
-	final public void initAnimation(Properties aprops, Properties dprops)
+	final public void initAnimation()
 	{
 		try {
-			dm = new DetectorManager(dprops);
-			am = new AnimationManager(dm.getFps(), aprops);
+			dm = new DetectorManager(getProperties(LIGHT_PROPS));
+			am = new AnimationManager(dm.getFps(), getProperties(ANIMATION_PROPS));
 		} catch (UnknownHostException e) {
 			logger.error(e);
 		} catch (OptionException e) {
 			logger.error(e);
+		} catch (FileNotFoundException e) {
+			logger.error(e);
+		} catch (IOException e) {
+			logger.error(e);
 		}
 	}
 
-	final public void initHaleUDPSensor(int port, int bufferLength)
+	final public void initHaleUDPInputDeviceListener(int port, int bufferLength)
 	{
 		hs = new HaleUDPInputDevice(port, bufferLength);
 		hs.addListener(this);
@@ -158,5 +156,15 @@ abstract public class Conductor implements InputDeviceListener {
 			Behavior b = i.next();
 			b.inputReceived(e);
 		}
+	}
+	
+	final public AnimationManager getAnimationManager()
+	{
+		return am;
+	}
+	
+	final public DetectorManager getDetectorManager()
+	{
+		return dm;
 	}
 }

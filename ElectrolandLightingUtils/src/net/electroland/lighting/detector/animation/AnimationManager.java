@@ -1,8 +1,5 @@
 package net.electroland.lighting.detector.animation;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -46,7 +43,6 @@ public class AnimationManager implements Runnable
 	private CopyOnWriteArrayList<AnimationListener>listeners;
 	private boolean isRunning = false;
 	private long delay; // frame delay to achieve optimal fps
-
 	private Properties props;
 	
 	public AnimationManager(int fps)
@@ -70,11 +66,6 @@ public class AnimationManager implements Runnable
 		this.dmp = dmp;
 		this.init(fps);
 	}	
-	
-//	public void setViewer(DetectorManagerJPanel dmp)
-//	{
-//		this.dmp = dmp;
-//	}
 	
 	public void init(int fps)
 	{

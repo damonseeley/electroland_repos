@@ -1,7 +1,6 @@
 package net.electroland.lighting.tools.views;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -119,7 +118,13 @@ public class DetectorStates extends RecipientRepresentation implements MouseInpu
 
 	public void mouseReleased(MouseEvent arg0) {}
 
-	public void mouseClicked(MouseEvent arg0) {}
+	public void mouseClicked(MouseEvent arg0) {
+		
+		// TO DO: individual lights on/off mode
+		
+		// really nice to-do: zoom level.
+		
+	}
 
 	public void mouseEntered(MouseEvent arg0) {}
 
