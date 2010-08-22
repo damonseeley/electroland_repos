@@ -9,16 +9,19 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.Iterator;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import net.electroland.lighting.conductor.Conductor;
 import net.electroland.lighting.detector.DetectorManager;
@@ -29,11 +32,10 @@ import net.electroland.lighting.detector.models.GreenDetectionModel;
 import net.electroland.lighting.detector.models.RedDetectionModel;
 import net.electroland.lighting.detector.models.ThresholdDetectionModel;
 import net.electroland.lighting.tools.views.DetectorStates;
-import net.electroland.util.OptionException;
 
 import org.apache.log4j.Logger;
 
-public class SimpleVLM extends JFrame implements ActionListener, ItemListener{
+public class SimpleVLM extends JFrame implements ActionListener, ItemListener, ChangeListener{
 
 	private static Logger logger = Logger.getLogger(SimpleVLM.class);
 
@@ -50,6 +52,8 @@ public class SimpleVLM extends JFrame implements ActionListener, ItemListener{
 	private JButton on, off, run, reload;
 	private DetectorStates ds;
 	private JMenu modelsMenu, recipsMenu;
+	private JLabel fps;
+	private JSlider fpsSlider;
 	private String chosenModel;
 	private String chosenRecip;
 	
@@ -119,18 +123,25 @@ public class SimpleVLM extends JFrame implements ActionListener, ItemListener{
         
         recipsMenu = new JMenu("Recipients");
         populateRecipientList();
-		
+        
+        fpsSlider = new JSlider(JSlider.VERTICAL, 1, 99, 33);
+        fpsSlider.addChangeListener(this);
+        fps = new JLabel(getFPSReport());
+
         controls.add(on);
         controls.add(off);
         controls.add(run);
         controls.add(reload);
+        controls.add(fps);
 
         JMenuBar menus = new JMenuBar();
         menus.add(recipsMenu);
         menus.add(modelsMenu);
-        
+
         this.add(controls, BorderLayout.SOUTH);
-        this.add(menus, BorderLayout.NORTH);
+        this.add(menus, BorderLayout.NORTH);      
+        this.add(fpsSlider, BorderLayout.EAST);
+
         this.setSize(650, 500);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -181,7 +192,6 @@ public class SimpleVLM extends JFrame implements ActionListener, ItemListener{
 		}else if (e.getSource().equals(run))
 		{
 			if (am.isRunning()){
-				logger.info("Stopping...");
 				// should be calling systemStop() in Conductor.
 				if (c != null)
 					c.stopSystem();
@@ -189,7 +199,6 @@ public class SimpleVLM extends JFrame implements ActionListener, ItemListener{
 					am.stop();
 				ds.setIsRunning(false);
 			}else{
-				logger.info("Starting...");
 				// should be calling systemStart() in Conductor.
 				if (c != null){
 					c.startSystem();					
@@ -282,5 +291,29 @@ public class SimpleVLM extends JFrame implements ActionListener, ItemListener{
 		}
 	}
 
-	
+	private String getFPSReport()
+	{
+		StringBuffer sb = new StringBuffer();
+		sb.append("FPS: ");
+		sb.append(fpsSlider.getValue());
+//		sb.append("(requested) / ");
+//		
+//		if (am.isRunning()){
+//			sb.append(am.getFPS());
+//		}else{
+//			sb.append("NA");
+//		}
+//	
+//		sb.append(" (measured)");
+		
+		return sb.toString(); 
+	}
+
+	public void stateChanged(ChangeEvent e) {
+		if (e.getSource().equals(fpsSlider))
+		{
+			am.setFPS(fpsSlider.getValue());
+			fps.setText(getFPSReport());
+		}
+	}
 }

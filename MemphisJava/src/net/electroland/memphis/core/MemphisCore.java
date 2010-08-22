@@ -24,7 +24,7 @@ public class MemphisCore extends Conductor {
 		this.initHaleUDPInputDeviceListener(LISTEN_PORT, MAX_PACKET);
 		
 		// bridge state object (1 minute in ms, # of sensors)
-		BridgeState state = new BridgeState(60 * 1000, 27);
+		BridgeState state = new BridgeState(60 * 1000, 27, 0);
  
 		// alert the bridge state any time an event occurs.
 		this.addBehavior(state);
@@ -34,7 +34,7 @@ public class MemphisCore extends Conductor {
 
 		// add a behavior to control animation (that has access to what
 		// the latest bridge state is
-		this.addBehavior(new TestBehavior(state));
+		this.addBehavior(new TestBehavior(state, 1));
 
 		// use the VLM
 		this.showSimpleVLM();
