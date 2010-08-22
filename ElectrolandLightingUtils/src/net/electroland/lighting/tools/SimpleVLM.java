@@ -177,6 +177,7 @@ public class SimpleVLM extends JFrame implements ActionListener, ItemListener{
 					c.stopSystem();
 				else
 					am.stop();
+				ds.setIsRunning(false);
 			}else{
 				// should be calling systemStart() in Conductor.
 				if (c != null)
@@ -184,9 +185,11 @@ public class SimpleVLM extends JFrame implements ActionListener, ItemListener{
 				else
 					am.goLive();
 				// set the latest recipient.
+				ds.setIsRunning(true);
 				ds.setRecipient(dm.getRecipient(chosenRecip));
 			}
 			syncRunButton();
+			ds.repaint();
 
 		}else if (e.getSource().equals(reload))
 		{
