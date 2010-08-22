@@ -7,6 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.Iterator;
 
 import javax.swing.ButtonGroup;
@@ -26,6 +29,7 @@ import net.electroland.lighting.detector.models.GreenDetectionModel;
 import net.electroland.lighting.detector.models.RedDetectionModel;
 import net.electroland.lighting.detector.models.ThresholdDetectionModel;
 import net.electroland.lighting.tools.views.DetectorStates;
+import net.electroland.util.OptionException;
 
 import org.apache.log4j.Logger;
 
@@ -49,19 +53,8 @@ public class SimpleVLM extends JFrame implements ActionListener, ItemListener{
 	private String chosenModel;
 	private String chosenRecip;
 	
-	// should pass in conductor to so that SystemStart is called.
-	// (though, that would make it impossible NOT to use the conductor).
-	// perhaps a "startable()" interface and a list of startables?
-
 	public SimpleVLM(AnimationManager am, DetectorManager dm, Conductor c){
 		this.c = c;
-		this.dm = dm;
-		this.am = am;
-		init();
-	}
-	
-	public SimpleVLM(AnimationManager am, DetectorManager dm)
-	{
 		this.dm = dm;
 		this.am = am;
 		init();
@@ -124,8 +117,38 @@ public class SimpleVLM extends JFrame implements ActionListener, ItemListener{
         models.add(m6);
         m6.addItemListener(this);
         
-        ButtonGroup recips = new ButtonGroup();
         recipsMenu = new JMenu("Recipients");
+        populateRecipientList();
+		
+        controls.add(on);
+        controls.add(off);
+        controls.add(run);
+        controls.add(reload);
+
+        JMenuBar menus = new JMenuBar();
+        menus.add(recipsMenu);
+        menus.add(modelsMenu);
+        
+        this.add(controls, BorderLayout.SOUTH);
+        this.add(menus, BorderLayout.NORTH);
+        this.setSize(650, 500);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		try {
+			this.setTitle(Conductor.locateResource(Conductor.LIGHT_PROPS).toString());
+		} catch (FileNotFoundException e) {
+			logger.error(e);
+		} catch (IOException e) {
+			logger.error(e);
+		}
+		
+		this.setVisible(true);
+	}
+
+	public void populateRecipientList()
+	{
+        ButtonGroup recips = new ButtonGroup();
+		recipsMenu.removeAll();
 		Iterator <Recipient> i = dm.getRecipients().iterator();
 		boolean defaultSelected = false;
 		while (i.hasNext())
@@ -141,23 +164,9 @@ public class SimpleVLM extends JFrame implements ActionListener, ItemListener{
 			}
 	        recip.addItemListener(this);
 		}
-		
-        controls.add(on);
-        controls.add(off);
-        controls.add(run);
-        controls.add(reload);
-
-        JMenuBar menus = new JMenuBar();
-        menus.add(recipsMenu);
-        menus.add(modelsMenu);
-        
-        this.add(controls, BorderLayout.SOUTH);
-        this.add(menus, BorderLayout.NORTH);
-        this.setSize(450, 500);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setVisible(true);
 	}
-
+	
+	
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(on))
 		{
@@ -172,6 +181,7 @@ public class SimpleVLM extends JFrame implements ActionListener, ItemListener{
 		}else if (e.getSource().equals(run))
 		{
 			if (am.isRunning()){
+				logger.info("Stopping...");
 				// should be calling systemStop() in Conductor.
 				if (c != null)
 					c.stopSystem();
@@ -179,32 +189,36 @@ public class SimpleVLM extends JFrame implements ActionListener, ItemListener{
 					am.stop();
 				ds.setIsRunning(false);
 			}else{
+				logger.info("Starting...");
 				// should be calling systemStart() in Conductor.
-				if (c != null)
-					c.startSystem();
-				else
+				if (c != null){
+					c.startSystem();					
+				}
+				else{
 					am.goLive();
+				}
 				// set the latest recipient.
 				ds.setIsRunning(true);
 				ds.setRecipient(dm.getRecipient(chosenRecip));
 			}
+			
 			syncRunButton();
 			ds.repaint();
 
 		}else if (e.getSource().equals(reload))
 		{
-//			try {
-//				dm.init(dm.getProps());
-//				am.init(am.getFPS());
-//			} catch (IOException f) {
-//				logger.error(f);
-//			} catch (OptionException f) {
-//				logger.error(f);
-//			}
+			// reload Detector and AnimationManagers.
+			c.initAnimation();
+			am = c.getAnimationManager();
+			dm = c.getDetectorManager();
+
+			// reload the recipient menu.
+			populateRecipientList();
 		}
 	}
 
 	public void syncRunButton(){
+		
 		if (am.isRunning()){
 			run.setText("Stop");
 			on.setEnabled(false);
@@ -214,7 +228,7 @@ public class SimpleVLM extends JFrame implements ActionListener, ItemListener{
 			run.setText("Start");
 			on.setEnabled(true);
 			off.setEnabled(true);
-			reload.setEnabled(false);
+			reload.setEnabled(true);
 		}
 	}
 
@@ -235,7 +249,9 @@ public class SimpleVLM extends JFrame implements ActionListener, ItemListener{
 				if (containedIn(recipsMenu, (Component)e.getSource())){
 					chosenRecip = ((JRadioButtonMenuItem)e.getSource()).getText();
 					ds.setRecipient(dm.getRecipient(chosenRecip));
+
 					logger.info("Recipient: " + chosenRecip);
+
 				}else if (containedIn(modelsMenu, (Component)e.getSource())){
 					chosenModel = ((JRadioButtonMenuItem)e.getSource()).getText();
 					

@@ -12,34 +12,16 @@ public class MemphisCore extends Conductor {
 
 	private static Logger logger = Logger.getLogger(MemphisCore.class);
 
-	final static String ANIMATION_PROPS = "animation.properties";
-	final static String LIGHT_PROPS = "lights.properties";
 	final static int MAX_PACKET = 2048;
 	final static int LISTEN_PORT = 7474;
-
-	private String aFileLoc, dFileLoc;
 	
 	public MemphisCore()
 	{
-		// enable HaldUDP and animation
-		// listen port and max packet should come from a props file or args
-		try {
-			aFileLoc = this.locateResource(ANIMATION_PROPS).toString();
-			dFileLoc = this.locateResource(LIGHT_PROPS).toString();
+		// start the animation and detection mangers
+		this.initAnimation();
 
-			logger.info("Animation Properties: " + aFileLoc);
-			logger.info("Lights Properties: " + dFileLoc);
-			
-			this.initAnimation(getProperties(ANIMATION_PROPS),
-								getProperties(LIGHT_PROPS));
-
-		} catch (FileNotFoundException e) {
-			logger.error(e);
-		} catch (IOException e) {
-			logger.error(e);
-		}
-		this.initHaleUDPSensor(LISTEN_PORT, MAX_PACKET);
-
+		// start the Hale UDP Device listeners.
+		this.initHaleUDPInputDeviceListener(LISTEN_PORT, MAX_PACKET);
 		
 		// bridge state object (1 minute in ms, # of sensors)
 		BridgeState state = new BridgeState(60 * 1000, 27);
@@ -47,12 +29,12 @@ public class MemphisCore extends Conductor {
 		// alert the bridge state any time an event occurs.
 		this.addBehavior(state);
 
+		// BridgeFrame
+		new BridgeFrame(state, 2000);
+
 		// add a behavior to control animation (that has access to what
 		// the latest bridge state is
 		this.addBehavior(new TestBehavior(state));
-
-		// BridgeFrame
-		new BridgeFrame(state, 2000);
 
 		// use the VLM
 		this.showSimpleVLM();
