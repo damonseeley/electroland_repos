@@ -36,8 +36,10 @@ Recorder::Recorder(string filename, int camCnt, TyzxCam** cams, PersonTrackRecei
 
 		curTime = timeGetTime();
 		while(curTime < stopTime) {
+			fileStream << "---" << endl;
 			fileStream << curTime << endl;
 			for(int i = 0; i < camCnt; i++) {
+				fileStream << "___" << endl;
 				unsigned short *zimg = cams[i]->getZImage();
 				for(int j = 0; j < cams[i]->imgHeight * cams[i]->imgWidth;j++) {
 						fileStream << zimg[j] << " ";
@@ -55,6 +57,7 @@ Recorder::Recorder(string filename, int camCnt, TyzxCam** cams, PersonTrackRecei
 		curTime = timeGetTime();
 		while(curTime < stopTime) {
 			tracker->grab(&trackhash);
+			fileStream << "---" << endl;
 			fileStream << curTime << endl;
 			fileStream <<trackhash.getString() << endl << flush;
 			curTime = timeGetTime();
