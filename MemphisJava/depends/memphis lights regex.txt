@@ -1,0 +1,9 @@
+ADD RGB DETECTORS
+replace:
+(.+[0-9].+[0-9+].+[0-9+].+[0-9+].+[0-9+].+models\.).+(-patchgroup group1\t)(.+)
+
+with:
+$1RedDetectionModel\t$2$3\n$1GreenDetectionModel\t$2$3\n$1BlueDetectionModel\t$2$3\n
+
+
+
