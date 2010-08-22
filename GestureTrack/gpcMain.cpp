@@ -1025,9 +1025,11 @@ void keyboardSpecial(int key, int /*x*/, int /*y*/)
 	switch(key) {
 	case(GLUT_KEY_LEFT) :
 		trackRotateA++;
+		std::cout << "Track rotate " << trackRotateA << std::endl;
 		break;
 	case(GLUT_KEY_RIGHT):
 		trackRotateA--;
+		std::cout << "Track rotate " << trackRotateA << std::endl;
 		break;
 	case(GLUT_KEY_UP):
 		voxelThresh+=.25f;
