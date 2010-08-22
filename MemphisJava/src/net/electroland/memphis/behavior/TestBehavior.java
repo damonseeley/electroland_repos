@@ -16,9 +16,11 @@ public class TestBehavior extends Behavior {
 	private Recipient bridge;
 	private AnimationManager am;
 	private BridgeState bs;
+	private int priority;
 
-	public TestBehavior(BridgeState bs){
+	public TestBehavior(BridgeState bs, int priority){
 		this.bs = bs;
+		this.priority = priority;
 	}
 	
 	public void inputReceived(InputDeviceEvent e) {
@@ -46,5 +48,9 @@ public class TestBehavior extends Behavior {
 	}
 
 	public void completed(Animation a) {
+	}
+
+	public int getPriority() {
+		return priority;
 	}
 }

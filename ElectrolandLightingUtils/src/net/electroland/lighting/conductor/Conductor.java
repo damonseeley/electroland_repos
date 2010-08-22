@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -130,6 +132,7 @@ abstract public class Conductor implements InputDeviceListener {
 			am.addListener(b);
 		}
 		behaviors.add(b);
+		Collections.sort((List)behaviors, new BehaviorComparator());
 	}
 	final public void removeBehavior(Behavior b)
 	{
@@ -150,9 +153,9 @@ abstract public class Conductor implements InputDeviceListener {
 	}
 
 	final public void inputReceived(InputDeviceEvent e) {
-		// go through each behavior and tell them the event occurred
-		Iterator<Behavior> i = behaviors.iterator();
-		while (i.hasNext()){
+
+		Iterator<Behavior> i = behaviors.listIterator();
+		while (i.hasNext()){			
 			Behavior b = i.next();
 			b.inputReceived(e);
 		}

@@ -11,13 +11,15 @@ public class BridgeState extends Behavior {
 
 	private long duration;
 	private Bay[] bays;
-	
-	public BridgeState(long duration, int totalBays){
+	private int priority;
+
+	public BridgeState(long duration, int totalBays, int priority){
 		bays = new Bay[totalBays];
 		for (int i = 0; i < bays.length; i++){
 			bays[i] = new Bay("bay " + i);
 		}
 		this.duration = duration;
+		this.priority = priority;
 	}	
 
 	public void inputReceived(InputDeviceEvent e) {
@@ -94,5 +96,11 @@ public class BridgeState extends Behavior {
 
 	public void completed(Animation a) {
 		// meh.
+	}
+
+	@Override
+	public int getPriority() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }
