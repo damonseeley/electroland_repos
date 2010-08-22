@@ -25,7 +25,6 @@ public class Throb implements Animation {
 
 	public void init(Properties props){
 		this.props = props;
-		System.out.println("animation.properties test: hello=" + this.props.getProperty("hello"));
 	}
 
 	public boolean isDone() 

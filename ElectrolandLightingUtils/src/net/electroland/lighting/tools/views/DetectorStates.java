@@ -9,6 +9,7 @@ import java.util.Iterator;
 import javax.swing.JPanel;
 import javax.swing.event.MouseInputListener;
 
+import net.electroland.lighting.detector.DetectionModel;
 import net.electroland.lighting.detector.Detector;
 import net.electroland.lighting.detector.Recipient;
 import net.electroland.lighting.tools.RecipientRepresentation;
@@ -16,12 +17,40 @@ import net.electroland.util.Util;
 
 public class DetectorStates extends RecipientRepresentation implements MouseInputListener {
 
-	boolean showDetectors = true;
+	private boolean showDetectors = true;
+	private String modelName;
 
-	public DetectorStates(Recipient r)
+	/**
+	 * @param r
+	 * @param showDetectors - if true, overlay the detectors on the animation frame
+	 * @param showModel - if non-null, limit the display to only show detectors of 
+	 * 					  the specified type of DetectionModel.
+	 */
+	public DetectorStates(Recipient r, boolean showDetectors, DetectionModel showModel)
 	{
 		super(r);
+		this.limitDisplayToModel(showModel);
+		this.showDetectors = showDetectors;
 		this.addMouseListener(this);
+	}
+	
+	public void limitDisplayToModel(DetectionModel model)
+	{
+		if (model != null){
+			modelName = model.getClass().getName();			
+		}else{
+			showAllModels();
+		}
+	}
+
+	public void showAllModels()
+	{
+		modelName = null;
+	}
+
+	public void setShowDetectors(boolean b)
+	{
+		this.showDetectors = b;
 	}
 	
 	public void paint(Graphics g) {
@@ -30,13 +59,13 @@ public class DetectorStates extends RecipientRepresentation implements MouseInpu
 		g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
 
-			if (getRaster() != null){
-				// seriously: rename getRaster() in the parent.
-				BufferedImage image = (BufferedImage)getRaster().getRaster();
-				g.drawImage(image, 0, 0, 
-						image.getWidth((JPanel)this), 
-						image.getHeight((JPanel)this), this);				
-			}
+		if (getFrame() != null){
+			BufferedImage image = (BufferedImage)getFrame().getRaster();
+			
+			g.drawImage(image, 0, 0, 
+					image.getWidth((JPanel)this), 
+					image.getHeight((JPanel)this), this);				
+		}
 			
 		if (showDetectors){
 			// draw each detector
@@ -45,22 +74,25 @@ public class DetectorStates extends RecipientRepresentation implements MouseInpu
 			Iterator<Detector> i = fixture.getDetectors().iterator();
 			while (i.hasNext()){
 				Detector d = i.next();
-				Byte b = fixture.getLastEvaluatedValue(d);
-				if (b != null){
-					int rgb = Util.unsignedByteToInt(fixture.getLastEvaluatedValue(d));
-					g.setColor(new Color(rgb,rgb,rgb));
-					g.fillRect(d.getX(), d.getY(), d.getWidth(), d.getHeight());					
-					g.setColor(Color.GRAY);
-					g.drawRect(d.getX(), d.getY(), d.getWidth(), d.getHeight());					
-				}
+				// if you get a NullPointerException here, it's probably because there
+				// you forgot to patch a channel in your fixture.
+				if (modelName == null || modelName.equals(d.getModel().getClass().getName()))
+				{
+					Byte b = fixture.getLastEvaluatedValue(d);
+					if (b != null){
+						int rgb = Util.unsignedByteToInt(fixture.getLastEvaluatedValue(d));
+						g.setColor(new Color(rgb,rgb,rgb));
+						g.fillRect(d.getX(), d.getY(), d.getWidth(), d.getHeight());					
+						g.setColor(Color.GRAY);
+						g.drawRect(d.getX(), d.getY(), d.getWidth(), d.getHeight());					
+					}					
+				}				
 			}
 		}
 	}
 
 
-	public void mouseReleased(MouseEvent arg0) {
-		showDetectors = !showDetectors;
-	}
+	public void mouseReleased(MouseEvent arg0) {}
 
 	public void mouseClicked(MouseEvent arg0) {}
 
