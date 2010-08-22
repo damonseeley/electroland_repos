@@ -360,7 +360,7 @@ public class AnimationManager implements Runnable
 									Recipient recipient = recipients.next();
 									RecipientState rState = recipientStates.get(recipient);
 									// for each recipient that was transitioning:
-									if (rState.target != null){
+									if (rState != null && rState.target != null){
 										// 1.) jump straight to the new Animation
 										rState.transition = null;
 										rState.current = rState.target;

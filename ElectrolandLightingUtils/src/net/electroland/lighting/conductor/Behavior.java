@@ -9,7 +9,9 @@ abstract public class Behavior implements InputDeviceListener, AnimationListener
 
 	private AnimationManager am;
 	private DetectorManager dm;
-
+	
+	abstract public int getPriority();
+	
 	final public void setAnimationManager(AnimationManager am)
 	{
 		this.am = am;
