@@ -21,9 +21,9 @@ public class CurrentAnimation extends RecipientRepresentation {
 		g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
 		// draw raster
-		if (this.getRaster() != null)
+		if (this.getFrame() != null)
 		{
-			BufferedImage raster = (BufferedImage)((this.getRaster().getRaster()));
+			BufferedImage raster = (BufferedImage)((this.getFrame().getRaster()));
 			g.drawImage(raster, 0, 0, raster.getWidth((JPanel)this), 
 										raster.getHeight((JPanel)this), this);
 			
