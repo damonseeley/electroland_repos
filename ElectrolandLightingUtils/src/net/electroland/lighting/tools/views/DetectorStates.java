@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
@@ -18,6 +19,9 @@ import net.electroland.lighting.detector.Detector;
 import net.electroland.lighting.detector.Recipient;
 import net.electroland.lighting.tools.RecipientRepresentation;
 import net.electroland.util.Util;
+import processing.core.PFont;
+import processing.core.PGraphics;
+import processing.core.PImage;
 
 public class DetectorStates extends RecipientRepresentation implements MouseInputListener {
 
@@ -72,11 +76,18 @@ public class DetectorStates extends RecipientRepresentation implements MouseInpu
 
 
 			if (getFrame() != null){
-				BufferedImage image = (BufferedImage)getFrame().getRaster();
-				
-				g.drawImage(image, 0, 0, 
-						image.getWidth((JPanel)this), 
-						image.getHeight((JPanel)this), this);				
+				if (getFrame().isJava2d()){
+					BufferedImage image = (BufferedImage)getFrame().getRaster();
+					
+					g.drawImage(image, 0, 0, 
+							image.getWidth((JPanel)this), 
+							image.getHeight((JPanel)this), this);									
+				}else{
+					PImage image = ((PImage)getFrame().getRaster());
+					g.drawImage(image.getImage(), 0, 0, 
+							image.width, 
+							image.height, this);									
+				}
 			}
 				
 			if (showDetectors){
@@ -114,8 +125,7 @@ public class DetectorStates extends RecipientRepresentation implements MouseInpu
 			tl.draw(g2, (int)((this.getWidth() - tl.getAdvance()) / 2), (int)(this.getHeight()/2));
 		}
 	}
-
-
+	
 	public void mouseReleased(MouseEvent arg0) {}
 
 	public void mouseClicked(MouseEvent arg0) {
