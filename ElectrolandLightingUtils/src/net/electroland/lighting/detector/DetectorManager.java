@@ -49,7 +49,11 @@ public class DetectorManager {
 		detectors = Collections.synchronizedMap(new HashMap<String, Detector>());
 
 		// fps
-		fps = Integer.parseInt(props.getProperty("fps"));
+		try{
+			fps = Integer.parseInt(props.getProperty("fps"));			
+		}catch(NumberFormatException e){
+			fps = 33;
+		}
 
 		double scalePositions = 1.0;
 
@@ -230,8 +234,13 @@ public class DetectorManager {
 	{
 		Map<String,Object> options = OptionParser.parse(str);
 		//	raster.id = -width int -height int
-		int width = Integer.parseInt(getOption(options, "-width", id, true));
-		int height = Integer.parseInt(getOption(options, "-height", id, true));
+		int width, height;
+		try{
+			width = Integer.parseInt(getOption(options, "-width", id, true));
+			height = Integer.parseInt(getOption(options, "-height", id, true));			
+		}catch(NumberFormatException e){
+			throw new OptionException("Number Format Error in recipient " + id);
+		}
 		return new Dimension(width, height);
 	}
 
