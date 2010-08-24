@@ -3,6 +3,8 @@ package net.electroland.memphis.core;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import net.electroland.input.InputDeviceEvent;
+import net.electroland.input.events.HaleUDPInputDeviceEvent;
 import net.electroland.lighting.conductor.Conductor;
 import net.electroland.memphis.behavior.MemphisBehavior;
 import net.electroland.memphis.behavior.TestBehavior;
@@ -40,7 +42,12 @@ public class MemphisCore extends Conductor {
 		// add a behavior to control animation (that has access to what
 		// the latest bridge state is
 		//this.addBehavior(new TestBehavior(state, 1));
-		this.addBehavior(new MemphisBehavior(p5, state, 1));
+		p5 = new PApplet();
+		p5.init();
+		MemphisBehavior mb = new MemphisBehavior(p5, state, 1);
+		this.addBehavior(mb);
+		mb.inputReceived(new HaleUDPInputDeviceEvent("", new byte[0]));
+		
 		
 		// use the VLM
 		this.showSimpleVLM();

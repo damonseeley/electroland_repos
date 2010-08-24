@@ -1,15 +1,18 @@
 package net.electroland.memphis.behavior;
 
-
 import java.awt.image.BufferedImage;
 
 import processing.core.PApplet;
+import processing.core.PConstants;
+import processing.core.PGraphics;
 import net.electroland.input.InputDeviceEvent;
+import net.electroland.input.events.HaleUDPInputDeviceEvent;
 import net.electroland.lighting.detector.DetectorManager;
 import net.electroland.lighting.detector.Recipient;
 import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.AnimationManager;
 import net.electroland.memphis.animation.Throb;
+import net.electroland.memphis.animation.Wave;
 import net.electroland.memphis.core.BridgeState;
 
 public class MemphisBehavior extends MemphisProcessingBehavior {
@@ -31,18 +34,24 @@ public class MemphisBehavior extends MemphisProcessingBehavior {
 
 	public void inputReceived(InputDeviceEvent e) {
 		// must grab AM and DM on first input event after behavior is instantiated
-		if (bridge == null){
-			am = this.getAnimationManager();
-			// get a handle on the bridge
-			DetectorManager dm = this.getDetectorManger();
-			bridge = dm.getRecipients().iterator().next();			
-		}
-		
-		if (am.getCurrentAnimation(bridge) == null){ // alternate.
-			int width = bridge.getPreferredDimensions().width;
-			int height = bridge.getPreferredDimensions().height;
-			am.startAnimation(new Throb(new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)),
-								bridge);
+		if(!((HaleUDPInputDeviceEvent)e).isValid()){	// if not valid, must be the first dummy event
+			System.out.println("input received");
+			if (bridge == null){
+				System.out.println("bridge is null");
+				am = this.getAnimationManager();
+				// get a handle on the bridge
+				DetectorManager dm = this.getDetectorManger();
+				bridge = dm.getRecipients().iterator().next();			
+			}
+			
+			if (am.getCurrentAnimation(bridge) == null){ // alternate.
+				System.out.println("start new animation");
+				int width = bridge.getPreferredDimensions().width;
+				int height = bridge.getPreferredDimensions().height;
+				//PGraphics pg = p5.createGraphics(width, height, PConstants.P3D);
+				am.startAnimation(new Wave(p5.createGraphics(width, height, PConstants.P3D)), bridge);
+				//am.startAnimation(new Throb(new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)), bridge);
+			}
 		}
 		
 	}
