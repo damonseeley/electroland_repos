@@ -4,9 +4,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import net.electroland.lighting.conductor.Conductor;
+import net.electroland.memphis.behavior.MemphisBehavior;
 import net.electroland.memphis.behavior.TestBehavior;
 
 import org.apache.log4j.Logger;
+
+import processing.core.PApplet;
+import processing.core.PConstants;
 
 public class MemphisCore extends Conductor {
 
@@ -14,6 +18,7 @@ public class MemphisCore extends Conductor {
 
 	final static int MAX_PACKET = 2048;
 	final static int LISTEN_PORT = 7474;
+	PApplet p5;
 	
 	public MemphisCore()
 	{
@@ -34,8 +39,9 @@ public class MemphisCore extends Conductor {
 
 		// add a behavior to control animation (that has access to what
 		// the latest bridge state is
-		this.addBehavior(new TestBehavior(state, 1));
-
+		//this.addBehavior(new TestBehavior(state, 1));
+		this.addBehavior(new MemphisBehavior(p5, state, 1));
+		
 		// use the VLM
 		this.showSimpleVLM();
 		//this.startSystem(); // headless		
