@@ -42,7 +42,7 @@ abstract public class Conductor implements InputDeviceListener {
 		{
 			props.load(is);
 		}else{
-			logger.warn("failed to find properties file: " + resourcename);
+			System.out.println("Conductor: failed to find properties file: " + resourcename);
 		}
 		return props;
 	}
