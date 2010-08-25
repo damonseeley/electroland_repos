@@ -9,8 +9,8 @@ public class BridgeFrame extends JFrame implements Runnable{
 
 	private BridgeState bs;
 	private long delay;
-	private JLabel[] last;
-	private JLabel[] count;
+	private JLabel[] tripped;
+	private JLabel[] processed;
 
 	public BridgeFrame(BridgeState bs, long delay){
 
@@ -19,21 +19,21 @@ public class BridgeFrame extends JFrame implements Runnable{
 		this.setSize(75, 650);
 
 		int bays = bs.getSize();
-		last = new JLabel[bays];
-		count = new JLabel[bays];
+		tripped = new JLabel[bays];
+		processed = new JLabel[bays];
 
 		this.setLayout(new MigLayout());
 
-		this.add(new JLabel("BAY"));
-		this.add(new JLabel("LAST"));
-		this.add(new JLabel("COUNT"),"wrap");
+		this.add(new JLabel("bay"));
+		this.add(new JLabel("tripped"));
+		this.add(new JLabel("proc'd"),"wrap");
 
 		for (int i = 0; i < bays; i++){
 			this.add(new JLabel("bay " + i));
-			last[i] = new JLabel("NA");
-			this.add(last[i]);
-			count[i] = new JLabel("NA");
-			this.add(count[i],"wrap");
+			tripped[i] = new JLabel("NA");
+			this.add(tripped[i]);
+			processed[i] = new JLabel("NA");
+			this.add(processed[i],"wrap");
 		}
 
 		this.setVisible(true);
@@ -47,8 +47,8 @@ public class BridgeFrame extends JFrame implements Runnable{
 				int bays = bs.getSize();
 				for (int i = 0; i < bays; i++)
 				{
-					last[i].setText("" + bs.getTimeSinceLast(i));
-					count[i].setText("" + bs.getHitCount(i));
+					tripped[i].setText("" + bs.getTimeSinceTripped(i));
+					processed[i].setText("" + bs.getTimeSinceProcessed(i));
 				}
 			}
 			
