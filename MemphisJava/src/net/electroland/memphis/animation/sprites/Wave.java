@@ -30,17 +30,22 @@ public class Wave extends Sprite {
 			c.pushMatrix();
 			c.tint(r,g,b,alpha);
 			if(switchDirection){
+				y = height;
 				x = c.width - (((System.currentTimeMillis() - startTime) / (float)duration) * (c.width+width));
 				if(x <= 0-width){
 					die();
 				}
+				c.translate(x,y);
+				c.rotate((float)Math.PI);	// flip it
 			} else {
+				y = 0;
 				x = (((System.currentTimeMillis() - startTime) / (float)duration) * (c.width+width));
 				if(x >= c.width+width){
 					die();
 				}
+				c.translate(x,y);
 			}
-			c.image(image, x, 0, width, height);
+			c.image(image, 0, 0, width, height);
 			c.tint(255,255,255,255);	// set back to opaque, since processing has a bug with tint
 			c.popMatrix();
 		}
