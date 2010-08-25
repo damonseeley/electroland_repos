@@ -1,18 +1,12 @@
 package net.electroland.memphis.core;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import net.electroland.input.InputDeviceEvent;
 import net.electroland.input.events.HaleUDPInputDeviceEvent;
 import net.electroland.lighting.conductor.Conductor;
 import net.electroland.memphis.behavior.MemphisBehavior;
-import net.electroland.memphis.behavior.TestBehavior;
 
 import org.apache.log4j.Logger;
 
 import processing.core.PApplet;
-import processing.core.PConstants;
 
 public class MemphisCore extends Conductor {
 
@@ -30,14 +24,15 @@ public class MemphisCore extends Conductor {
 		// start the Hale UDP Device listeners.
 		this.initHaleUDPInputDeviceListener(LISTEN_PORT, MAX_PACKET);
 		
-		// bridge state object (1 minute in ms, # of sensors)
-		BridgeState state = new BridgeState(60 * 1000, 27, 0);
+		// bridge state object
+		//  first argument is the threshold sensor
+		BridgeState state = new BridgeState(500, 5000, 27, 0);
  
 		// alert the bridge state any time an event occurs.
 		this.addBehavior(state);
 
-		// BridgeFrame
-		new BridgeFrame(state, 2000);
+		// BridgeFrame (200 is the delay before updating the numbers in the bridge state sidebar)
+		new BridgeFrame(state, 200);
 
 		// add a behavior to control animation (that has access to what
 		// the latest bridge state is
