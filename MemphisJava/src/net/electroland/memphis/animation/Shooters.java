@@ -5,16 +5,16 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
-import processing.core.PApplet;
-import processing.core.PConstants;
-import processing.core.PGraphics;
-import processing.core.PImage;
-
 import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.Raster;
 import net.electroland.memphis.animation.sprites.Shooter;
 import net.electroland.memphis.animation.sprites.Sprite;
 import net.electroland.memphis.animation.sprites.SpriteListener;
+import net.electroland.memphis.core.BridgeState;
+import processing.core.PApplet;
+import processing.core.PConstants;
+import processing.core.PGraphics;
+import processing.core.PImage;
 
 public class Shooters implements Animation, SpriteListener {
 	
@@ -30,8 +30,12 @@ public class Shooters implements Animation, SpriteListener {
 	private int shooterDuration;
 	private int shooterFrequency;
 	private long startTime;
+	private BridgeState state; // bridge state
 	
-	public Shooters(PApplet p5, String propsFileName){
+	// BRADLEY: Modifed to pass bridge state in.  See last section of getFrame().
+	public Shooters(PApplet p5, String propsFileName, BridgeState state){
+		
+		this.state = state;
 		props = new Properties();
 		try{
 			props.load(new FileInputStream(propsFileName));
@@ -81,9 +85,23 @@ public class Shooters implements Animation, SpriteListener {
 			sprite.draw();
 		}
 		c.endDraw();
+		
+		/** BRADLEY: Example case for polling for which sensors to process */
+		for (int i = 0; i < state.getSize(); i++){
+			if (state.requiresNewSprite(i)){ // see if any sensor is ready for action.
+				
+				// start a new srpite for bridge at position i here.
+
+				state.spriteStarted(i); // let the bridge state know you started some action for that sensor.
+			}
+		}
+		
+		/*******************************/
+
 		return raster;
 	}
-
+	long processTime;
+	
 	public void init(Properties props) {
 		this.props = props;
 	}
