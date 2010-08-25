@@ -20,6 +20,7 @@ public class Shooter extends Sprite {
 		this.duration = duration;
 		this.switchDirection = switchDirection;
 		alpha = 255;
+		r = g = b = 255;	// default white
 		fadeDuration = 250;
 		fadeOut = false;
 		startTime = System.currentTimeMillis();
