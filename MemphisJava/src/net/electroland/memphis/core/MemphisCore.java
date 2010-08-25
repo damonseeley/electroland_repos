@@ -14,7 +14,7 @@ public class MemphisCore extends Conductor {
 
 	final static int MAX_PACKET = 2048;
 	final static int LISTEN_PORT = 7474;
-	PApplet p5;
+	private PApplet p5;
 	
 	public MemphisCore()
 	{
@@ -46,7 +46,7 @@ public class MemphisCore extends Conductor {
 		
 		// use the VLM
 		this.showSimpleVLM();
-		//this.startSystem(); // headless		
+		//this.startSystem(); // headless	
 	}
 	
 	public static void main(String args[])
