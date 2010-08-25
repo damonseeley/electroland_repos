@@ -37,9 +37,7 @@ public class BridgeState extends Behavior {
 
 		for (int i = 0; i < bays.length; i++)
 		{
-			if (data[i] == (byte)253){
-				bays[i].tripped();
-			}
+			bays[i].tripped(data[i]);
 		}
 	}
 
@@ -62,6 +60,11 @@ public class BridgeState extends Behavior {
 	public void spriteStarted(int bay)
 	{
 		bays[bay].processed();
+	}
+	
+	public boolean isOccupied(int bay, double threshold)
+	{
+		return bays[bay].isSmoothlyOccupied(threshold);
 	}
 	
 	
@@ -107,6 +110,8 @@ public class BridgeState extends Behavior {
 		private long lastProcessed = -1;
 		private long tripThreshold = -1;
 		private long processThreshold = -1;
+		private int occupiedChecks = 0;
+		private double totalChecks = 0;
 
 		protected Bay(String id, long tripThreshold, long processThreshold)
 		{
@@ -115,13 +120,24 @@ public class BridgeState extends Behavior {
 			this.processThreshold = processThreshold;
 		}
 		
-		protected void tripped()
+		protected void tripped(byte current)
 		{
-			this.lastTripped = System.currentTimeMillis();
+			this.totalChecks++;
+			if (current == (byte)253){
+				this.lastTripped = System.currentTimeMillis();
+				this.occupiedChecks++;
+			}
 		}
 
+		protected boolean isSmoothlyOccupied(double threshold)
+		{
+			return totalChecks == 0 ? false : (occupiedChecks / totalChecks) > threshold;
+		}
+		
 		protected void processed(){
 			this.lastProcessed = System.currentTimeMillis();
+			this.totalChecks = 0;
+			this.occupiedChecks = 0;
 		}
 		
 		protected long getTimeSinceTripped()
