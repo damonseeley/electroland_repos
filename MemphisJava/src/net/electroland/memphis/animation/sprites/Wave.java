@@ -7,9 +7,9 @@ import net.electroland.lighting.detector.animation.Raster;
 public class Wave extends Sprite {
 	
 	private PImage image;
-	private int duration, fadeDuration;
-	private long startTime, fadeStartTime;
-	private boolean switchDirection, fadeOut;
+	private int duration;
+	private long startTime;
+	private boolean switchDirection;
 	private float r, g, b, alpha;
 
 	public Wave(int id, Raster raster, float x, float y, PImage image, float width, float height, int duration, boolean switchDirection) {
@@ -21,8 +21,6 @@ public class Wave extends Sprite {
 		this.switchDirection = switchDirection;
 		alpha = 255;
 		r = g = b = 255;	// default white
-		fadeDuration = 250;
-		fadeOut = false;
 		startTime = System.currentTimeMillis();
 	}
 
