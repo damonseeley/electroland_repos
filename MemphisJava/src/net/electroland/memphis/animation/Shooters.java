@@ -53,7 +53,16 @@ public class Shooters implements Animation, SpriteListener {
 	public Raster getFrame() {
 		if(System.currentTimeMillis() - startTime > shooterFrequency){
 			float ypos = (float)Math.floor((Math.random() * 4) * 9);
-			Shooter shooter = new Shooter(spriteIndex, raster, shooterImage, 0, ypos, shooterLength, shooterWidth, shooterDuration, false);
+			boolean flip = false;
+			if(Math.random() > 0.5){
+				flip = true;
+			}
+			Shooter shooter = new Shooter(spriteIndex, raster, shooterImage, 0, ypos, shooterLength, shooterWidth, shooterDuration, flip);
+			if(flip){	// blue hues
+				shooter.setColor(0.0f, (float)Math.random() * 255, 255.0f);
+			} else {	// green hues
+				shooter.setColor(0.0f, 255.0f, (float)Math.random() * 255);
+			}
 			shooter.addListener(this);
 			sprites.put(spriteIndex, shooter);
 			spriteIndex++;
