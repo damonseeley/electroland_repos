@@ -1,10 +1,6 @@
 package net.electroland.memphis.behavior;
 
-import java.awt.image.BufferedImage;
-
 import processing.core.PApplet;
-import processing.core.PConstants;
-import processing.core.PGraphics;
 import net.electroland.input.InputDeviceEvent;
 import net.electroland.input.events.HaleUDPInputDeviceEvent;
 import net.electroland.lighting.detector.DetectorManager;
@@ -12,7 +8,6 @@ import net.electroland.lighting.detector.Recipient;
 import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.AnimationManager;
 import net.electroland.memphis.animation.MemphisAnimation;
-import net.electroland.memphis.animation.Throb;
 import net.electroland.memphis.core.BridgeState;
 
 public class MemphisBehavior extends MemphisProcessingBehavior {
@@ -43,8 +38,8 @@ public class MemphisBehavior extends MemphisProcessingBehavior {
 			}
 			
 			if (am.getCurrentAnimation(bridge) == null){ // alternate.
-				int width = bridge.getPreferredDimensions().width;
-				int height = bridge.getPreferredDimensions().height;
+				//int width = bridge.getPreferredDimensions().width;
+				//int height = bridge.getPreferredDimensions().height;
 				//PGraphics pg = p5.createGraphics(width, height, PConstants.P3D);
 				//am.startAnimation(new Wave(p5, "depends/wave.properties"), bridge);
 				// BRADLEY: Modifed to pass the bridge state in to the Animation 8/25
@@ -56,8 +51,7 @@ public class MemphisBehavior extends MemphisProcessingBehavior {
 	}
 
 	public void completed(Animation a) {
-		// TODO Auto-generated method stub
-		
+		// may never be called if we only use one continuous animation
 	}
 
 }

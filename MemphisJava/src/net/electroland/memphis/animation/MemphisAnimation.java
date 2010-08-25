@@ -92,8 +92,10 @@ public class MemphisAnimation implements Animation, SpriteListener {
 	}
 
 	public Raster getFrame() {
+		PGraphics c = (PGraphics)raster.getRaster();
+		
 		if(System.currentTimeMillis() - startTime > shooterFrequency){
-			float ypos = (float)Math.floor((Math.random() * 4) * 9);
+			float ypos = (float)Math.floor((Math.random() * 4)) * c.height/4;
 			boolean flip = false;
 			if(Math.random() > 0.5){
 				flip = true;
@@ -102,7 +104,8 @@ public class MemphisAnimation implements Animation, SpriteListener {
 			if(flip){	// blue hues
 				shooter.setColor(0.0f, (float)Math.random() * shooterBrightness, shooterBrightness);
 			} else {	// green hues
-				shooter.setColor(0.0f, shooterBrightness, (float)Math.random() * shooterBrightness);
+				shooter.setColor(0.0f, (float)Math.random() * shooterBrightness, shooterBrightness);
+				//shooter.setColor(0.0f, shooterBrightness, (float)Math.random() * shooterBrightness);
 			}
 			shooter.addListener(this);
 			sprites.put(spriteIndex, shooter);
@@ -111,7 +114,6 @@ public class MemphisAnimation implements Animation, SpriteListener {
 		}
 		
 		// render current state of animation
-		PGraphics c = (PGraphics)raster.getRaster();
 		c.colorMode(PConstants.RGB, 255, 255, 255, 255);
 		c.beginDraw();
 		c.background(0);
