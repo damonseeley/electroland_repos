@@ -40,10 +40,12 @@ public class MemphisAnimation implements Animation, SpriteListener {
 	private float tickerLength, tickerWidth;
 	private int tickerDuration;
 	private int tickerOffset;
+	private float[] tickerColor = new float[3];
 	// wave variables
 	private PImage waveImage;
 	private int waveDuration;
 	private float waveWidth;
+	private float[] waveColor = new float[3];
 	
 	// BRADLEY: Modifed to pass bridge state in.  See last section of getFrame().
 	public MemphisAnimation(PApplet p5, String propsFileName, BridgeState state){
@@ -73,10 +75,18 @@ public class MemphisAnimation implements Animation, SpriteListener {
 		tickerWidth = Float.parseFloat(props.getProperty("tickerWidth"));
 		tickerDuration = Integer.parseInt(props.getProperty("tickerDuration"));
 		tickerOffset = Integer.parseInt(props.getProperty("tickerOffset"));
+		String[] tc = props.getProperty("tickerColor").split(",");
+		tickerColor[0] = Float.parseFloat(tc[0]);
+		tickerColor[1] = Float.parseFloat(tc[1]);
+		tickerColor[2] = Float.parseFloat(tc[2]);
 		// wave variables
 		waveImage = p5.loadImage(props.getProperty("waveImage"));
 		waveDuration = Integer.parseInt(props.getProperty("waveDuration"));
 		waveWidth = Float.parseFloat(props.getProperty("waveWidth"));
+		String[] wc = props.getProperty("waveColor").split(",");
+		waveColor[0] = Float.parseFloat(wc[0]);
+		waveColor[1] = Float.parseFloat(wc[1]);
+		waveColor[2] = Float.parseFloat(wc[2]);
 		
 		startTime = System.currentTimeMillis();	// timer controls frequency of shooters emitted in background
 	}
@@ -120,17 +130,20 @@ public class MemphisAnimation implements Animation, SpriteListener {
 				// start a new sprite for bridge at position i here.
 				float xpos = ((width/27) * i) + tickerOffset;
 				Ticker ticker = new Ticker(spriteIndex, raster, xpos, 0.0f, tickerImage, tickerWidth, tickerLength, tickerDuration, false);
+				ticker.setColor(tickerColor[0], tickerColor[1], tickerColor[2]);
 				sprites.put(spriteIndex, ticker);
 				spriteIndex++;
 
 				if(i == 0){
 					// if first sensor, send a big sprite down the whole length of the bridge
 					Wave wave = new Wave(spriteIndex, raster, xpos, 0.0f, waveImage, waveWidth, height, waveDuration, false);
+					wave.setColor(waveColor[0], waveColor[1], waveColor[2]);
 					sprites.put(spriteIndex, wave);
 					spriteIndex++;
 				} else if(i == 26){
 					// if last sensor, send a big sprite down the whole length of the bridge
 					Wave wave = new Wave(spriteIndex, raster, xpos, 0.0f, waveImage, waveWidth, height, waveDuration, true);
+					wave.setColor(waveColor[0], waveColor[1], waveColor[2]);
 					sprites.put(spriteIndex, wave);
 					spriteIndex++;
 				}
