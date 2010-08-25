@@ -10,13 +10,15 @@ import net.electroland.lighting.detector.animation.Raster;
 import net.electroland.memphis.animation.sprites.Shooter;
 import net.electroland.memphis.animation.sprites.Sprite;
 import net.electroland.memphis.animation.sprites.SpriteListener;
+import net.electroland.memphis.animation.sprites.Ticker;
+import net.electroland.memphis.animation.sprites.Wave;
 import net.electroland.memphis.core.BridgeState;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PImage;
 
-public class Shooters implements Animation, SpriteListener {
+public class MemphisAnimation implements Animation, SpriteListener {
 	
 
 	private boolean isDone = false;
@@ -25,15 +27,26 @@ public class Shooters implements Animation, SpriteListener {
 	private ConcurrentHashMap<Integer,Sprite> sprites;
 	private int spriteIndex = 0;	// used as ID # for sprite
 	private int width, height;
+	private long startTime;
+	private BridgeState state; // bridge state
+	// shooter variables
 	private PImage shooterImage;
 	private float shooterLength, shooterWidth;
 	private int shooterDuration;
 	private int shooterFrequency;
-	private long startTime;
-	private BridgeState state; // bridge state
+	private int shooterBrightness;
+	// ticker variables
+	private PImage tickerImage;
+	private float tickerLength, tickerWidth;
+	private int tickerDuration;
+	private int tickerOffset;
+	// wave variables
+	private PImage waveImage;
+	private int waveDuration;
+	private float waveWidth;
 	
 	// BRADLEY: Modifed to pass bridge state in.  See last section of getFrame().
-	public Shooters(PApplet p5, String propsFileName, BridgeState state){
+	public MemphisAnimation(PApplet p5, String propsFileName, BridgeState state){
 		
 		this.state = state;
 		props = new Properties();
@@ -45,13 +58,27 @@ public class Shooters implements Animation, SpriteListener {
 		sprites = new ConcurrentHashMap<Integer,Sprite>();
 		width = Integer.parseInt(props.getProperty("width"));
 		height = Integer.parseInt(props.getProperty("height"));
+		raster = new Raster(p5.createGraphics(width, height, PConstants.P3D));
+		
+		// shooter variables
+		shooterImage = p5.loadImage(props.getProperty("shooterImage"));
 		shooterLength = Float.parseFloat(props.getProperty("shooterLength"));
 		shooterWidth = Float.parseFloat(props.getProperty("shooterWidth"));
 		shooterDuration = Integer.parseInt(props.getProperty("shooterDuration"));
 		shooterFrequency = Integer.parseInt(props.getProperty("shooterFrequency"));
-		raster = new Raster(p5.createGraphics(width, height, PConstants.P3D));
-		shooterImage = p5.loadImage(props.getProperty("image"));
-		startTime = System.currentTimeMillis();
+		shooterBrightness = Integer.parseInt(props.getProperty("shooterBrightness"));
+		// ticker variables
+		tickerImage = p5.loadImage(props.getProperty("tickerImage"));
+		tickerLength = Float.parseFloat(props.getProperty("tickerLength"));
+		tickerWidth = Float.parseFloat(props.getProperty("tickerWidth"));
+		tickerDuration = Integer.parseInt(props.getProperty("tickerDuration"));
+		tickerOffset = Integer.parseInt(props.getProperty("tickerOffset"));
+		// wave variables
+		waveImage = p5.loadImage(props.getProperty("waveImage"));
+		waveDuration = Integer.parseInt(props.getProperty("waveDuration"));
+		waveWidth = Float.parseFloat(props.getProperty("waveWidth"));
+		
+		startTime = System.currentTimeMillis();	// timer controls frequency of shooters emitted in background
 	}
 
 	public Raster getFrame() {
@@ -63,9 +90,9 @@ public class Shooters implements Animation, SpriteListener {
 			}
 			Shooter shooter = new Shooter(spriteIndex, raster, shooterImage, 0, ypos, shooterLength, shooterWidth, shooterDuration, flip);
 			if(flip){	// blue hues
-				shooter.setColor(0.0f, (float)Math.random() * 255, 255.0f);
+				shooter.setColor(0.0f, (float)Math.random() * shooterBrightness, shooterBrightness);
 			} else {	// green hues
-				shooter.setColor(0.0f, 255.0f, (float)Math.random() * 255);
+				shooter.setColor(0.0f, shooterBrightness, (float)Math.random() * shooterBrightness);
 			}
 			shooter.addListener(this);
 			sprites.put(spriteIndex, shooter);
@@ -90,8 +117,24 @@ public class Shooters implements Animation, SpriteListener {
 		for (int i = 0; i < state.getSize(); i++){
 			if (state.requiresNewSprite(i)){ // see if any sensor is ready for action.
 				
-				// start a new srpite for bridge at position i here.
+				// start a new sprite for bridge at position i here.
+				float xpos = ((width/27) * i) + tickerOffset;
+				Ticker ticker = new Ticker(spriteIndex, raster, xpos, 0.0f, tickerImage, tickerWidth, tickerLength, tickerDuration, false);
+				sprites.put(spriteIndex, ticker);
+				spriteIndex++;
 
+				if(i == 0){
+					// if first sensor, send a big sprite down the whole length of the bridge
+					Wave wave = new Wave(spriteIndex, raster, xpos, 0.0f, waveImage, waveWidth, height, waveDuration, false);
+					sprites.put(spriteIndex, wave);
+					spriteIndex++;
+				} else if(i == 26){
+					// if last sensor, send a big sprite down the whole length of the bridge
+					Wave wave = new Wave(spriteIndex, raster, xpos, 0.0f, waveImage, waveWidth, height, waveDuration, true);
+					sprites.put(spriteIndex, wave);
+					spriteIndex++;
+				}
+				
 				state.spriteStarted(i); // let the bridge state know you started some action for that sensor.
 			}
 		}

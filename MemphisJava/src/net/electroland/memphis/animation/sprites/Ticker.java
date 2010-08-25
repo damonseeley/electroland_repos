@@ -1,18 +1,23 @@
 package net.electroland.memphis.animation.sprites;
 
-import net.electroland.lighting.detector.animation.Raster;
 import processing.core.PGraphics;
 import processing.core.PImage;
+import net.electroland.lighting.detector.animation.Raster;
 
-public class Shooter extends Sprite {
-
+public class Ticker extends Sprite {
+	
+	/*
+	 * Ticker.java
+	 * Just like Shooter, but slow, soft, sideways, and looping.
+	 */
+	
 	private PImage image;
 	private int duration, fadeDuration;
 	private long startTime, fadeStartTime;
 	private boolean switchDirection, fadeOut;
 	private float r, g, b, alpha;
-	
-	public Shooter(int id, Raster raster, PImage image, float x, float y, float width, float height, int duration, boolean switchDirection){
+
+	public Ticker(int id, Raster raster, float x, float y, PImage image, float width, float height, int duration, boolean switchDirection) {
 		super(id, raster, x, y);
 		this.width = width;
 		this.height = height;
@@ -25,35 +30,30 @@ public class Shooter extends Sprite {
 		fadeOut = false;
 		startTime = System.currentTimeMillis();
 	}
-	
-	public void draw(){
+
+	public void draw() {
 		if(raster.isProcessing()){
 			PGraphics c = (PGraphics)raster.getRaster();
 			c.pushMatrix();
 			c.tint(r,g,b,alpha);
-			//System.out.println(id +" x: "+ x +" y: "+ y +" width: "+ width +" height: "+ height);
-			if(switchDirection){
-				if(!fadeOut){
-					x = c.width - (((System.currentTimeMillis() - startTime) / (float)duration) * (c.width+width));
-					if(x <= 0-width){
+			
+			if(!fadeOut){
+				if(switchDirection){
+					y = c.height - (((System.currentTimeMillis() - startTime) / (float)duration) * (c.height+height));
+					if(y <= 0-height){
 						die();
 					}
+					c.translate(x, y);
+					c.rotate((float)Math.PI);	// flip it
+					c.image(image, 0,  0-height, width, height);
+				} else {
+					y = (((System.currentTimeMillis() - startTime) / (float)duration) * (c.height+height));
+					if(y >= c.height+height){
+						die();
+					}
+					c.image(image, x, y-height, width, height);
 				}
-				c.translate(x, y);
-				c.rotate((float)Math.PI);	// flip it
-				c.image(image, 0-width,  0-(height/2), width, height);
-				//c.image(image, 0-sweepLength,  0, sweepLength, height);
 			} else {
-				if(!fadeOut){
-					x = (((System.currentTimeMillis() - startTime) / (float)duration) * (c.width+width));
-					if(x >= c.width+width){
-						die();
-					}
-				}
-				c.image(image, x-width, y-(height/2), width, height);
-				//c.image(image, x-sweepLength, y, sweepLength, height);
-			}
-			if(fadeOut){
 				alpha = 255 - (((System.currentTimeMillis() - fadeStartTime) / fadeDuration) * 255);
 				if(alpha <= 0){
 					die();
@@ -63,11 +63,11 @@ public class Shooter extends Sprite {
 			c.popMatrix();
 		}
 	}
-	
+
 	public void setColor(float r, float g, float b){
 		this.r = r;
 		this.g = g;
 		this.b = b;
 	}
-	
+
 }
