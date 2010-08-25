@@ -11,9 +11,8 @@ import net.electroland.lighting.detector.DetectorManager;
 import net.electroland.lighting.detector.Recipient;
 import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.AnimationManager;
-import net.electroland.memphis.animation.Shooters;
+import net.electroland.memphis.animation.MemphisAnimation;
 import net.electroland.memphis.animation.Throb;
-import net.electroland.memphis.animation.Wave;
 import net.electroland.memphis.core.BridgeState;
 
 public class MemphisBehavior extends MemphisProcessingBehavior {
@@ -49,7 +48,7 @@ public class MemphisBehavior extends MemphisProcessingBehavior {
 				//PGraphics pg = p5.createGraphics(width, height, PConstants.P3D);
 				//am.startAnimation(new Wave(p5, "depends/wave.properties"), bridge);
 				// BRADLEY: Modifed to pass the bridge state in to the Animation 8/25
-				am.startAnimation(new Shooters(p5, "depends/shooters.properties", bs), bridge);
+				am.startAnimation(new MemphisAnimation(p5, "depends/memphisanimation.properties", bs), bridge);
 				//am.startAnimation(new Throb(new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)), bridge);
 			}
 		}
