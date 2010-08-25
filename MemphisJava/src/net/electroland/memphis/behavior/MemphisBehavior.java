@@ -48,7 +48,8 @@ public class MemphisBehavior extends MemphisProcessingBehavior {
 				int height = bridge.getPreferredDimensions().height;
 				//PGraphics pg = p5.createGraphics(width, height, PConstants.P3D);
 				//am.startAnimation(new Wave(p5, "depends/wave.properties"), bridge);
-				am.startAnimation(new Shooters(p5, "depends/shooters.properties"), bridge);
+				// BRADLEY: Modifed to pass the bridge state in to the Animation 8/25
+				am.startAnimation(new Shooters(p5, "depends/shooters.properties", bs), bridge);
 				//am.startAnimation(new Throb(new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)), bridge);
 			}
 		}
