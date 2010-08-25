@@ -13,7 +13,7 @@ public class MemphisCore extends Conductor {
 	private static Logger logger = Logger.getLogger(MemphisCore.class);
 
 	final static int MAX_PACKET = 2048;
-	final static int LISTEN_PORT = 7474;
+	final static int LISTEN_PORT = 1001;
 	private PApplet p5;
 	
 	public MemphisCore()
