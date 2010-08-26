@@ -185,7 +185,7 @@ public class MemphisAnimation implements Animation, SpriteListener {
 		
 		/** BRADLEY: Example case for polling for which sensors to process */
 		for (int i = 0; i < state.getSize(); i++){
-			if (state.requiresNewSprite(i, .75)){ // see if any sensor is ready for action.
+			if (state.requiresNewSprite(i)){ // see if any sensor is ready for action.
 				
 				// start a new sprite for bridge at position i here.
 				float xpos = ((width/27) * i) + tickerOffset;

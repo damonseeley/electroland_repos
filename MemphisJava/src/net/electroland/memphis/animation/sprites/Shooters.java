@@ -80,7 +80,7 @@ public class Shooters extends Sprite implements SpriteListener {
 			c.popMatrix();
 		}
 		
-		if(!state.isOccupied(bay, occupiedThreshold)){
+		if(!state.isOccupied(bay)){
 			fadeOutAndDie = true;
 		}
 	}

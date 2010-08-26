@@ -9,190 +9,109 @@ public class BridgeState extends Behavior {
 
 	private Bay[] bays;
 	private int priority;
-
-	/**
-	 * 
-	 * @param tripThreshold - The maximum time to wait on a sensor before
-	 * 							we think the event is too old to consider worth
-	 * 							processing.
-	 * 
-	 * @param processThreshold - The time out required before you should start
-	 * 							a new Sprite for a bay sensor.
-	 * 
-	 * @param totalBays - how many sensors the data packet represents.
-	 * 
-	 * @param priority - ignore me.
-	 */
+	
 	public BridgeState(long tripThreshold, long processThreshold, int totalBays, int priority){
 		bays = new Bay[totalBays];
-		for (int i = 0; i < bays.length; i++){
-			bays[i] = new Bay("bay " + i, tripThreshold, processThreshold);
+		for (int i = 0; i < totalBays; i++){
+			bays[i] = new Bay(processThreshold);
 		}
 		this.priority = priority;
-	}	
-
-	public void inputReceived(InputDeviceEvent e) {
-
+	}
+	
+	public BridgeState(int length)
+	{
+		bays = new Bay[length];
+	}
+	
+	public void inputReceived(InputDeviceEvent e)
+	{
 		if (e instanceof HaleUDPInputDeviceEvent)
 		{
 			byte[] data = ((HaleUDPInputDeviceEvent)e).getData();
 	
 			for (int i = 0; i < bays.length; i++)
 			{
-				if (data[i] == (byte)253){
-					bays[i].tripped();
-				}
+				bays[i].event(data[i]);
 			}
 		}
 	}
 
-	/**
-	 * Use this to figure out if you need to start an animation for any
-	 * given bay.
-	 * 
-	 * @param bay
-	 * @return
-	 */
-	public boolean requiresNewSprite(int bay, double threshold)
-	{
-		return bays[bay].requiresNewSprite(threshold);
+	public long getTimeSinceTripped(int bay){
+		return bays[bay].lastOn == -1 ? -1 : System.currentTimeMillis() - bays[bay].lastOn;
 	}
 
-	/** 
-	 * Call this after you start a sprite on any bay!
-	 * @param bay
-	 */
-	public void spriteStarted(int bay)
-	{
-		bays[bay].processed();
+	public long getTimeSinceTrippedOff(int bay){
+		return bays[bay].lastOff == -1 ? -1 : System.currentTimeMillis() - bays[bay].lastOff;
+	}
+
+	public long getTimeSinceProcessed(int bay){
+		return bays[bay].lastProcessed == -1 ? -1 : System.currentTimeMillis() - bays[bay].lastProcessed;
 	}
 	
-	public boolean isOccupied(int bay, double threshold)
+	/**
+	 * @param bay
+	 * @param threshold - ignored
+	 * @return
+	 */
+	public boolean requiresNewSprite(int bay)
 	{
-		return bays[bay].isSmoothlyOccupied(threshold);		
+		return bays[bay].readyToProcess();
 	}
 
-	public double isOccupied(int bay){
-		return bays[bay].isSmoothlyOccupied();
+
+	public void spriteStarted(int bay)
+	{
+		bays[bay].process();
+	}
+
+	public boolean isOccupied(int bay)
+	{
+		return bays[bay].isOn();
 	}
 	
 	public int getSize(){
 		return bays.length;
 	}
-
-	/**
-	 * only use this for diagnostic output.
-	 * @param bay
-	 * @return
-	 */
-	public long getTimeSinceTripped(int bay)
-	{
-		return bays[bay].getTimeSinceTripped();
-	}
-
-	/**
-	 * only use this for diagnostic output.
-	 * @param bay
-	 * @return
-	 */
-	public long getTimeSinceProcessed(int bay)
-	{
-		return bays[bay].getTimeSinceProcessed();
-	}
-
-	// not used, but required by interface.
-	public void completed(Animation a) {
-		// meh.
-	}
-
-	// not used, but required by interface.
-	public int getPriority() {
-		return 0; // meh.
-	}
-
 	
-	protected class Bay{
+	class Bay{
 
-		protected String id;
-		private long lastTripped = -1;
-		private long lastProcessed = -1;
-		private long tripThreshold = -1;
-		private long processThreshold = -1;
-		private int occupiedChecks = 0;
-		private double totalChecks = 0;
+		long lastOn = - 1;
+		long lastOff = - 1;
+		long lastProcessed = -1;
 
-		protected Bay(String id, long tripThreshold, long processThreshold)
-		{
-			this.id = id;
-			this.tripThreshold = tripThreshold;
-			this.processThreshold = processThreshold;
-		}
+		long processTimeout;
 		
-		protected void tripped()
-		{
-			this.lastTripped = System.currentTimeMillis();
+		public Bay(long processTimeout){
+			this.processTimeout = processTimeout;
 		}
 
-		protected boolean isSmoothlyOccupied(double threshold)
-		{
-			double test = isSmoothlyOccupied();
-			return test > threshold;
-		}
-
-		protected double isSmoothlyOccupied()
-		{
-			return totalChecks == 0 ? -1 : (occupiedChecks / totalChecks);
-		}
-		
-		protected void processed(){
-			this.lastProcessed = System.currentTimeMillis();
-			this.totalChecks = 0;
-			this.occupiedChecks = 0;
-		}
-		
-		protected long getTimeSinceTripped()
-		{
-			if (lastTripped == -1)
-				return -1;
-			else
-				return System.currentTimeMillis() - lastTripped;
-		}
-
-		protected long getTimeSinceProcessed()
-		{
-			if (lastProcessed == -1)
-				return -1;
-			else
-				return System.currentTimeMillis() - lastProcessed;			
-		}
-
-		protected boolean requiresNewSprite(double threshold)
-		{
-			long proc = getTimeSinceProcessed();
-			long last = getTimeSinceTripped();
-			boolean occupied = last > 0 && last < tripThreshold;
-			
-
-			// for smoothing presence detection over the longhaul.
-			totalChecks++;
-			if (occupied){
-				occupiedChecks++;
+		public void event(byte b){
+			if (b == (byte)253){
+				lastOn = System.currentTimeMillis();
+			}else{
+				lastOff = System.currentTimeMillis();
 			}
+		}
 
-			// if it's been at least X milliseconds since we processed this bay's
-			// detector (or we never processed it)...			
-			if (proc == -1 || proc > processThreshold){
-				// return whether or not it is occupied.
-				// -------------------------------------------------------------
-				// Open question:  return the state in the datapacket, or
-				// return a threshold check against totalChecks / totalChecks?
-				// Currently, we return the first option.
-				// -------------------------------------------------------------
-				return occupied;
-			}
-			return false;
-			// alternate (read above)
-			//return occupiedChecks / totalChecks > threshold;
+		public void process(){
+			lastProcessed = System.currentTimeMillis();
+		}
+		
+		// simple logic (that will break if we don't get a packet) is
+		// that it's on if the lastOn event is later than the lastOff event.
+		public boolean isOn(){
+			return lastOn > lastOff;
+		}
+
+		// if there is a double tap:
+		// off < on < processed < off < on
+		// last processed is < on.
+		// easiest fix: insist on a delay before the second on counts.
+		public boolean readyToProcess(){
+			return System.currentTimeMillis() - lastProcessed > processTimeout && isOn();
 		}
 	}
+
+	public void completed(Animation a) {}
+	public int getPriority() {return priority;}
 }
