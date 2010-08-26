@@ -130,16 +130,16 @@ public class MemphisAnimation implements Animation, SpriteListener {
 			cloudA.setColor(cloudColorA[0], cloudColorA[1], cloudColorA[2], cloudAlpha);
 			clouds.put(spriteIndex, cloudA);
 			spriteIndex++;
-			cloudDuration = (int)((float)Math.random() * (cloudDurationMax - cloudDurationMin)) + cloudDurationMin;
-			Cloud cloudB = new Cloud(spriteIndex, raster, 0 - (float)Math.random()*(cloudImage.width/2), 0, cloudImage, cloudDuration);
-			cloudB.setColor(cloudColorB[0], cloudColorB[1], cloudColorB[2], cloudAlpha);
-			clouds.put(spriteIndex, cloudB);
-			spriteIndex++;
 			//cloudDuration = (int)((float)Math.random() * (cloudDurationMax - cloudDurationMin)) + cloudDurationMin;
-			//Cloud cloudC = new Cloud(spriteIndex, raster, 0 - (float)Math.random()*(cloudImage.width/2), 0, cloudImage, cloudDuration);
-			//cloudC.setColor(cloudColorC[0], cloudColorC[1], cloudColorC[2], cloudAlpha);
-			//clouds.put(spriteIndex, cloudC);
+			//Cloud cloudB = new Cloud(spriteIndex, raster, 0 - (float)Math.random()*(cloudImage.width/2), 0, cloudImage, cloudDuration);
+			//cloudB.setColor(cloudColorB[0], cloudColorB[1], cloudColorB[2], cloudAlpha);
+			//clouds.put(spriteIndex, cloudB);
 			//spriteIndex++;
+			cloudDuration = (int)((float)Math.random() * (cloudDurationMax - cloudDurationMin)) + cloudDurationMin;
+			Cloud cloudC = new Cloud(spriteIndex, raster, 0 - (float)Math.random()*(cloudImage.width/2), 0, cloudImage, cloudDuration);
+			cloudC.setColor(cloudColorC[0], cloudColorC[1], cloudColorC[2], cloudAlpha);
+			clouds.put(spriteIndex, cloudC);
+			spriteIndex++;
 			
 			startTime = System.currentTimeMillis();	// timer controls frequency of shooters emitted in background
 		}
@@ -194,12 +194,12 @@ public class MemphisAnimation implements Animation, SpriteListener {
 				sprites.put(spriteIndex, ticker);
 				spriteIndex++;
 				
-				/*
+				
 				// start a new sprite for shooters at position i
 				Shooters shooters = new Shooters(spriteIndex, raster, xpos, 0, shooterImage, shooterLength, shooterWidth, shooterDuration, shooterFrequency, shooterBrightness, state, i);
 				sprites.put(spriteIndex, shooters);
 				spriteIndex++;
-				*/
+				
 				
 				if(i == 0){
 					// if first sensor, send a big sprite down the whole length of the bridge

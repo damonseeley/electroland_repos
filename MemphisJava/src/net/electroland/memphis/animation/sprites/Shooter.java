@@ -27,6 +27,7 @@ public class Shooter extends Sprite {
 	}
 	
 	public void draw(){
+		System.out.println("shooter "+id);
 		if(raster.isProcessing()){
 			PGraphics c = (PGraphics)raster.getRaster();
 			c.pushMatrix();

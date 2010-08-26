@@ -16,6 +16,8 @@ public class Ticker extends Sprite {
 	private long startTime, fadeStartTime;
 	private boolean switchDirection, fadeOut;
 	private float r, g, b, alpha;
+	private int totalLoops = 1;
+	private int numLoops = 0;
 
 	public Ticker(int id, Raster raster, float x, float y, PImage image, float width, float height, int duration, boolean switchDirection) {
 		super(id, raster, x, y);
@@ -41,7 +43,13 @@ public class Ticker extends Sprite {
 				if(switchDirection){
 					y = c.height - (((System.currentTimeMillis() - startTime) / (float)duration) * (c.height+height));
 					if(y <= 0-height){
-						die();
+						numLoops++;
+						if(numLoops >= totalLoops){
+							die();
+						} else {
+							y = c.height;
+							startTime = System.currentTimeMillis();
+						}
 					}
 					c.translate(x, y);
 					c.rotate((float)Math.PI);	// flip it
@@ -49,7 +57,13 @@ public class Ticker extends Sprite {
 				} else {
 					y = (((System.currentTimeMillis() - startTime) / (float)duration) * (c.height+height));
 					if(y >= c.height+height){
-						die();
+						numLoops++;
+						if(numLoops >= totalLoops){
+							die();
+						} else {
+							y = 0 - height;
+							startTime = System.currentTimeMillis();
+						}
 					}
 					c.image(image, x, y-height, width, height);
 				}
