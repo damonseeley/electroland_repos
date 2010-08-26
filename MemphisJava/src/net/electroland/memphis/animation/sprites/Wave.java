@@ -31,7 +31,7 @@ public class Wave extends Sprite {
 			c.tint(r,g,b,alpha);
 			if(switchDirection){
 				y = height;
-				x = c.width - (((System.currentTimeMillis() - startTime) / (float)duration) * (c.width+width));
+				x = c.width - (((System.currentTimeMillis() - startTime) / (float)duration) * (c.width+width)) + width;
 				if(x <= 0-width){
 					die();
 				}
@@ -39,8 +39,8 @@ public class Wave extends Sprite {
 				c.rotate((float)Math.PI);	// flip it
 			} else {
 				y = 0;
-				x = (((System.currentTimeMillis() - startTime) / (float)duration) * (c.width+width));
-				if(x >= c.width+width){
+				x = (((System.currentTimeMillis() - startTime) / (float)duration) * c.width) - width;
+				if(x >= c.width){
 					die();
 				}
 				c.translate(x,y);
