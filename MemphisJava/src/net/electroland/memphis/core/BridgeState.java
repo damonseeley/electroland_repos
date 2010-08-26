@@ -10,10 +10,10 @@ public class BridgeState extends Behavior {
 	private Bay[] bays;
 	private int priority;
 	
-	public BridgeState(long tripThreshold, long processThreshold, int totalBays, int priority){
+	public BridgeState(long tripThreshold, int totalBays, int priority){
 		bays = new Bay[totalBays];
 		for (int i = 0; i < totalBays; i++){
-			bays[i] = new Bay(processThreshold);
+			bays[i] = new Bay(tripThreshold);
 		}
 		this.priority = priority;
 	}
