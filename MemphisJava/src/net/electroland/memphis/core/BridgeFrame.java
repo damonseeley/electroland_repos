@@ -11,29 +11,34 @@ public class BridgeFrame extends JFrame implements Runnable{
 	private long delay;
 	private JLabel[] tripped;
 	private JLabel[] processed;
+	private JLabel[] occupied;
 
 	public BridgeFrame(BridgeState bs, long delay){
 
 		this.bs = bs;
 		this.delay = delay;
-		this.setSize(75, 650);
+		this.setSize(100, 650);
 
 		int bays = bs.getSize();
 		tripped = new JLabel[bays];
 		processed = new JLabel[bays];
+		occupied = new JLabel[bays];
 
 		this.setLayout(new MigLayout());
 
 		this.add(new JLabel("bay"));
 		this.add(new JLabel("tripped"));
-		this.add(new JLabel("proc'd"),"wrap");
+		this.add(new JLabel("proc'd"));
+		this.add(new JLabel("occupied"),"wrap");
 
 		for (int i = 0; i < bays; i++){
 			this.add(new JLabel("bay " + i));
 			tripped[i] = new JLabel("NA");
 			this.add(tripped[i]);
 			processed[i] = new JLabel("NA");
-			this.add(processed[i],"wrap");
+			this.add(processed[i]);
+			occupied[i] = new JLabel("NA");
+			this.add(occupied[i],"wrap");
 		}
 
 		this.setVisible(true);
@@ -49,6 +54,7 @@ public class BridgeFrame extends JFrame implements Runnable{
 				{
 					tripped[i].setText("" + bs.getTimeSinceTripped(i));
 					processed[i].setText("" + bs.getTimeSinceProcessed(i));
+					occupied[i].setText("" + bs.isOccupied(i));
 				}
 			}
 			
