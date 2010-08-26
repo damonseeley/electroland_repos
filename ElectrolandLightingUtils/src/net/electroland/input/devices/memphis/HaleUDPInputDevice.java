@@ -6,7 +6,6 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 
 import net.electroland.input.InputDevice;
-import net.electroland.input.events.HaleUDPInputDeviceEvent;
 
 import org.apache.log4j.Logger;
 

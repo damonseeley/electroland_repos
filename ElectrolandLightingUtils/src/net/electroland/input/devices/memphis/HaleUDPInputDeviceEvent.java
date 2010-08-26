@@ -1,4 +1,4 @@
-package net.electroland.input.events;
+package net.electroland.input.devices.memphis;
 
 import net.electroland.input.InputDeviceEvent;
 import net.electroland.util.Util;
