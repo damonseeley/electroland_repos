@@ -48,13 +48,14 @@ public class Shooters extends Sprite implements SpriteListener {
 			// calculate fade out time for each shooter
 			fadeDuration = ((System.currentTimeMillis() - fadeStartTime) / 1000) * fadeIncrease;
 			// see if it's time to create a new shooter
-			if(System.currentTimeMillis() - startTime > shooterFrequency){
+			if(System.currentTimeMillis() - startTime > shooterFrequency && !fadeOutAndDie){
+				float xpos = bay * (c.width/27);
 				float ypos = (float)Math.floor((Math.random() * 4)) * c.height/4;
 				boolean flip = false;
 				if(Math.random() > 0.5){
 					flip = true;
 				}
-				Shooter shooter = new Shooter(spriteIndex, raster, image, 0, ypos, width, height, duration, flip);
+				Shooter shooter = new Shooter(spriteIndex, raster, image, 0, 0, width, height, duration, flip);
 				shooter.setFadeDuration((int)fadeDuration);
 				if(flip){	// blue hues
 					shooter.setColor(0.0f, (float)Math.random() * shooterBrightness, shooterBrightness);
@@ -70,6 +71,7 @@ public class Shooters extends Sprite implements SpriteListener {
 			
 			c.pushMatrix();
 			// draw shooters
+			c.translate(x, y);
 			Iterator<Sprite> iter = sprites.values().iterator();
 			while(iter.hasNext()){
 				Sprite sprite = (Sprite)iter.next();

@@ -33,8 +33,8 @@ public class Shooter extends Sprite {
 			c.tint(r,g,b,alpha);
 			//System.out.println(id +" x: "+ x +" y: "+ y +" width: "+ width +" height: "+ height);
 			if(switchDirection){
-				x = c.width - (((System.currentTimeMillis() - startTime) / (float)duration) * (c.width+width));
-				if(x <= 0-width){
+				x = 0 - (((System.currentTimeMillis() - startTime) / (float)duration) * (c.width+width));
+				if(x <= 0-(c.width+width)){
 					die();
 				}
 				c.translate(x, y);
