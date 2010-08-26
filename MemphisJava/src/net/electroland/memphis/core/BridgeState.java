@@ -66,9 +66,12 @@ public class BridgeState extends Behavior {
 	
 	public boolean isOccupied(int bay, double threshold)
 	{
-		return bays[bay].isSmoothlyOccupied(threshold);
+		return bays[bay].isSmoothlyOccupied(threshold);		
 	}
-	
+
+	public double isOccupied(int bay){
+		return bays[bay].isSmoothlyOccupied();
+	}
 	
 	public int getSize(){
 		return bays.length;
@@ -129,7 +132,13 @@ public class BridgeState extends Behavior {
 
 		protected boolean isSmoothlyOccupied(double threshold)
 		{
-			return totalChecks == 0 ? false : (occupiedChecks / totalChecks) > threshold;
+			double test = isSmoothlyOccupied();
+			return test > threshold;
+		}
+
+		protected double isSmoothlyOccupied()
+		{
+			return totalChecks == 0 ? -1 : (occupiedChecks / totalChecks);
 		}
 		
 		protected void processed(){
@@ -157,8 +166,9 @@ public class BridgeState extends Behavior {
 		protected boolean requiresNewSprite(double threshold)
 		{
 			long proc = getTimeSinceProcessed();
-			long last = getTimeSinceTripped();	
+			long last = getTimeSinceTripped();
 			boolean occupied = last > 0 && last < tripThreshold;
+			
 
 			// for smoothing presence detection over the longhaul.
 			totalChecks++;
