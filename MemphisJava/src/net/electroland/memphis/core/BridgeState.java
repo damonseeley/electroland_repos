@@ -170,9 +170,9 @@ public class BridgeState extends Behavior {
 			}
 			if (totalOn < 1){ // case 3: history started with 'off' val
 				totalOn = samplePeriodMs + totalOn;
-				System.out.println("invert: " + totalOn);
+				//System.out.println("invert: " + totalOn);
 			}
-			System.out.println("totalOn: " + totalOn + " samplePeriodMS: " + samplePeriodMs);
+			//System.out.println("totalOn: " + totalOn + " samplePeriodMS: " + samplePeriodMs);
 			return (totalOn / samplePeriodMs) > threshold;
 		}
 
