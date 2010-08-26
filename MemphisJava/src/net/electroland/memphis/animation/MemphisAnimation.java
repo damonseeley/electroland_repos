@@ -9,6 +9,7 @@ import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.Raster;
 import net.electroland.memphis.animation.sprites.Cloud;
 import net.electroland.memphis.animation.sprites.Shooter;
+import net.electroland.memphis.animation.sprites.Shooters;
 import net.electroland.memphis.animation.sprites.Sprite;
 import net.electroland.memphis.animation.sprites.SpriteListener;
 import net.electroland.memphis.animation.sprites.Ticker;
@@ -174,7 +175,7 @@ public class MemphisAnimation implements Animation, SpriteListener {
 			Sprite sprite = (Sprite)cloudIter.next();
 			sprite.draw();
 		}
-		// draw shooters
+		// draw sprites
 		Iterator<Sprite> iter = sprites.values().iterator();
 		while(iter.hasNext()){
 			Sprite sprite = (Sprite)iter.next();
@@ -192,7 +193,12 @@ public class MemphisAnimation implements Animation, SpriteListener {
 				ticker.setColor(tickerColor[0], tickerColor[1], tickerColor[2]);
 				sprites.put(spriteIndex, ticker);
 				spriteIndex++;
-
+				
+				// start a new sprite for shooters at position i
+				Shooters shooters = new Shooters(spriteIndex, raster, xpos, 0, shooterImage, shooterLength, shooterWidth, shooterDuration, shooterFrequency, shooterBrightness, state, i);
+				sprites.put(spriteIndex, shooters);
+				spriteIndex++;
+				
 				if(i == 0){
 					// if first sensor, send a big sprite down the whole length of the bridge
 					Wave wave = new Wave(spriteIndex, raster, xpos, 0.0f, waveImage, waveWidth, height, waveDuration, false);
