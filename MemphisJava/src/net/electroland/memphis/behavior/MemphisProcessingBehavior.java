@@ -1,11 +1,9 @@
 package net.electroland.memphis.behavior;
 
-import processing.core.PApplet;
-import processing.core.PGraphics;
 import net.electroland.input.InputDeviceEvent;
 import net.electroland.lighting.conductor.Behavior;
 import net.electroland.lighting.detector.animation.Animation;
-import net.electroland.memphis.core.BridgeState;
+import processing.core.PApplet;
 
 public class MemphisProcessingBehavior extends Behavior {
 	

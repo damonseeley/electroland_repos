@@ -27,9 +27,9 @@ public class BridgeFrame extends JFrame implements Runnable{
 		this.setLayout(new MigLayout());
 
 		this.add(new JLabel("bay"));
-		this.add(new JLabel("tripped"));
-		this.add(new JLabel("proc'd"));
-		this.add(new JLabel("occupied"),"wrap");
+		this.add(new JLabel("isOn"));
+		this.add(new JLabel("readyToProcess"));
+		this.add(new JLabel("standing"),"wrap");
 
 		for (int i = 0; i < bays; i++){
 			this.add(new JLabel("bay " + i));
@@ -54,7 +54,7 @@ public class BridgeFrame extends JFrame implements Runnable{
 				{
 					tripped[i].setText("" + bs.getTimeSinceTripped(i));
 					processed[i].setText("" + bs.getTimeSinceProcessed(i));
-					occupied[i].setText("" + bs.isOccupied(i));
+					occupied[i].setText("" + bs.isStanding(i));
 				}
 			}
 			

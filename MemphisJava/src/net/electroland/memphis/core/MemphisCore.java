@@ -27,8 +27,22 @@ public class MemphisCore extends Conductor {
 		this.initWeather(2000, 60000);
 
 		// bridge state object
-		//  first argument is the threshold sensor
-		BridgeState state = new BridgeState(500, 27, 0);
+		//  first argument is the threshold sensor.  SECOND IS NOW THE isStanding THREHOLD
+
+		// NEW:
+		// first arg is how long to wait (millis) afte a sensor is tripped before another
+		// 'on' should be counted.  e.g., double-tap protection.
+		
+		// the second value is a sample period (millis) to see if someone is
+		// standing there.  it's the period to do a running average for.
+		
+		// the third is the threshold over which we decide a user is standing there.
+		
+		// the fourth val is the number of bays.
+		
+		// the fifth is not used.
+		
+		BridgeState state = new BridgeState(500, 1500, .9, 27, 0);
 
 		// alert the bridge state any time an event occurs.
 		this.addBehavior(state);
