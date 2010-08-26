@@ -1,8 +1,8 @@
 package net.electroland.memphis.behavior;
 
 import net.electroland.input.InputDeviceEvent;
+import net.electroland.input.devices.memphis.HaleUDPInputDeviceEvent;
 import net.electroland.input.devices.weather.WeatherChangedEvent;
-import net.electroland.input.events.HaleUDPInputDeviceEvent;
 import net.electroland.lighting.detector.DetectorManager;
 import net.electroland.lighting.detector.Recipient;
 import net.electroland.lighting.detector.animation.Animation;
