@@ -33,12 +33,15 @@ public class BridgeState extends Behavior {
 
 	public void inputReceived(InputDeviceEvent e) {
 
-		byte[] data = ((HaleUDPInputDeviceEvent)e).getData();
-
-		for (int i = 0; i < bays.length; i++)
+		if (e instanceof HaleUDPInputDeviceEvent)
 		{
-			if (data[i] == (byte)253){
-				bays[i].tripped();
+			byte[] data = ((HaleUDPInputDeviceEvent)e).getData();
+	
+			for (int i = 0; i < bays.length; i++)
+			{
+				if (data[i] == (byte)253){
+					bays[i].tripped();
+				}
 			}
 		}
 	}
