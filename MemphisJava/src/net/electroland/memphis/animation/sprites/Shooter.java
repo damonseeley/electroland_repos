@@ -33,22 +33,18 @@ public class Shooter extends Sprite {
 			c.tint(r,g,b,alpha);
 			//System.out.println(id +" x: "+ x +" y: "+ y +" width: "+ width +" height: "+ height);
 			if(switchDirection){
-				if(!fadeOut){
-					x = c.width - (((System.currentTimeMillis() - startTime) / (float)duration) * (c.width+width));
-					if(x <= 0-width){
-						die();
-					}
+				x = c.width - (((System.currentTimeMillis() - startTime) / (float)duration) * (c.width+width));
+				if(x <= 0-width){
+					die();
 				}
 				c.translate(x, y);
 				c.rotate((float)Math.PI);	// flip it
 				c.image(image, 0-width,  0-(height/2), width, height);
 				//c.image(image, 0-sweepLength,  0, sweepLength, height);
 			} else {
-				if(!fadeOut){
-					x = (((System.currentTimeMillis() - startTime) / (float)duration) * (c.width+width));
-					if(x >= c.width+width){
-						die();
-					}
+				x = (((System.currentTimeMillis() - startTime) / (float)duration) * (c.width+width));
+				if(x >= c.width+width){
+					die();
 				}
 				c.image(image, x-width, y-(height/2), width, height);
 				//c.image(image, x-sweepLength, y, sweepLength, height);
@@ -68,6 +64,10 @@ public class Shooter extends Sprite {
 		this.r = r;
 		this.g = g;
 		this.b = b;
+	}
+	
+	public void setFadeDuration(int fadeDuration){
+		this.fadeDuration = fadeDuration;	
 	}
 	
 }
