@@ -23,11 +23,14 @@ public class MemphisCore extends Conductor {
 
 		// start the Hale UDP Device listeners.
 		this.initHaleUDPInputDeviceListener(LISTEN_PORT, MAX_PACKET);
-		
+
+		// start weather listener (startupDelay, period)
+		this.initWeather(2000, 60000);
+
 		// bridge state object
 		//  first argument is the threshold sensor
 		BridgeState state = new BridgeState(500, 5000, 27, 0);
- 
+
 		// alert the bridge state any time an event occurs.
 		this.addBehavior(state);
 
@@ -41,7 +44,10 @@ public class MemphisCore extends Conductor {
 		p5.init();
 		MemphisBehavior mb = new MemphisBehavior(p5, state, 1);
 		this.addBehavior(mb);
-		mb.inputReceived(new HaleUDPInputDeviceEvent("", new byte[0]));
+
+		// StartupInputDeviceEvent is a fake event for kicking off a non-event
+		// based Behavior.
+		mb.inputReceived(new StartupInputDeviceEvent());
 		
 		
 		// use the VLM
