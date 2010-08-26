@@ -38,7 +38,6 @@ public class MemphisBehavior extends MemphisProcessingBehavior {
 		}else if (e instanceof WeatherChangedEvent)
 		{
 			// process weather events here.
-			System.out.println("received weather state change " + (WeatherChangedEvent)e);
 		}else if (e instanceof StartupInputDeviceEvent)
 		{
 			if (bridge == null){
