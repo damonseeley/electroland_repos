@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.Raster;
+import net.electroland.memphis.animation.sprites.Cloud;
 import net.electroland.memphis.animation.sprites.Shooter;
 import net.electroland.memphis.animation.sprites.Sprite;
 import net.electroland.memphis.animation.sprites.SpriteListener;
@@ -20,10 +21,11 @@ import processing.core.PImage;
 
 public class MemphisAnimation implements Animation, SpriteListener {
 	
-
+	private boolean init = true;	// only for animations that start on launch
 	private boolean isDone = false;
 	private Raster raster;
 	private Properties props;
+	private ConcurrentHashMap<Integer,Sprite> clouds;
 	private ConcurrentHashMap<Integer,Sprite> sprites;
 	private int spriteIndex = 0;	// used as ID # for sprite
 	private int width, height;
@@ -46,6 +48,13 @@ public class MemphisAnimation implements Animation, SpriteListener {
 	private int waveDuration;
 	private float waveWidth;
 	private float[] waveColor = new float[3];
+	// cloud variables
+	private PImage cloudImage;
+	private int cloudDurationMin, cloudDurationMax;
+	private float cloudAlpha;
+	private float[] cloudColorA = new float[3];
+	private float[] cloudColorB = new float[3];
+	private float[] cloudColorC = new float[3];
 	
 	// BRADLEY: Modifed to pass bridge state in.  See last section of getFrame().
 	public MemphisAnimation(PApplet p5, String propsFileName, BridgeState state){
@@ -57,6 +66,7 @@ public class MemphisAnimation implements Animation, SpriteListener {
 		} catch(Exception e){
 			System.out.println(e);
 		}
+		clouds = new ConcurrentHashMap<Integer,Sprite>();	// for background clouds only
 		sprites = new ConcurrentHashMap<Integer,Sprite>();
 		width = Integer.parseInt(props.getProperty("width"));
 		height = Integer.parseInt(props.getProperty("height"));
@@ -87,13 +97,53 @@ public class MemphisAnimation implements Animation, SpriteListener {
 		waveColor[0] = Float.parseFloat(wc[0]);
 		waveColor[1] = Float.parseFloat(wc[1]);
 		waveColor[2] = Float.parseFloat(wc[2]);
+		// cloud variables
+		cloudImage = p5.loadImage(props.getProperty("cloudImage"));
+		cloudDurationMin = Integer.parseInt(props.getProperty("cloudDurationMin"));
+		cloudDurationMax = Integer.parseInt(props.getProperty("cloudDurationMax"));
+		cloudAlpha = Float.parseFloat(props.getProperty("cloudAlpha"));
+		String[] cc = props.getProperty("cloudColorA").split(",");
+		cloudColorA[0] = Float.parseFloat(cc[0]);
+		cloudColorA[1] = Float.parseFloat(cc[1]);
+		cloudColorA[2] = Float.parseFloat(cc[2]);
+		cc = props.getProperty("cloudColorB").split(",");
+		cloudColorB[0] = Float.parseFloat(cc[0]);
+		cloudColorB[1] = Float.parseFloat(cc[1]);
+		cloudColorB[2] = Float.parseFloat(cc[2]);
+		cc = props.getProperty("cloudColorC").split(",");
+		cloudColorC[0] = Float.parseFloat(cc[0]);
+		cloudColorC[1] = Float.parseFloat(cc[1]);
+		cloudColorC[2] = Float.parseFloat(cc[2]);
 		
-		startTime = System.currentTimeMillis();	// timer controls frequency of shooters emitted in background
 	}
 
 	public Raster getFrame() {
 		PGraphics c = (PGraphics)raster.getRaster();
 		
+		if(init){
+			init = false;
+			// create cloud sprites that will run constantly in the background
+			int cloudDuration = (int)((float)Math.random() * (cloudDurationMax - cloudDurationMin)) + cloudDurationMin;
+			Cloud cloudA = new Cloud(spriteIndex, raster, 0 - (float)Math.random()*(cloudImage.width/2), 0, cloudImage, cloudDuration);
+			//Cloud cloudA = new Cloud(spriteIndex, raster, 0, 0, cloudImage, cloudDuration);
+			cloudA.setColor(cloudColorA[0], cloudColorA[1], cloudColorA[2], cloudAlpha);
+			clouds.put(spriteIndex, cloudA);
+			spriteIndex++;
+			cloudDuration = (int)((float)Math.random() * (cloudDurationMax - cloudDurationMin)) + cloudDurationMin;
+			Cloud cloudB = new Cloud(spriteIndex, raster, 0 - (float)Math.random()*(cloudImage.width/2), 0, cloudImage, cloudDuration);
+			cloudB.setColor(cloudColorB[0], cloudColorB[1], cloudColorB[2], cloudAlpha);
+			clouds.put(spriteIndex, cloudB);
+			spriteIndex++;
+			cloudDuration = (int)((float)Math.random() * (cloudDurationMax - cloudDurationMin)) + cloudDurationMin;
+			Cloud cloudC = new Cloud(spriteIndex, raster, 0 - (float)Math.random()*(cloudImage.width/2), 0, cloudImage, cloudDuration);
+			cloudC.setColor(cloudColorC[0], cloudColorC[1], cloudColorC[2], cloudAlpha);
+			clouds.put(spriteIndex, cloudC);
+			spriteIndex++;
+			
+			startTime = System.currentTimeMillis();	// timer controls frequency of shooters emitted in background
+		}
+		
+		/*
 		if(System.currentTimeMillis() - startTime > shooterFrequency){
 			float ypos = (float)Math.floor((Math.random() * 4)) * c.height/4;
 			boolean flip = false;
@@ -112,11 +162,18 @@ public class MemphisAnimation implements Animation, SpriteListener {
 			spriteIndex++;
 			startTime = System.currentTimeMillis();
 		}
+		*/
 		
 		// render current state of animation
 		c.colorMode(PConstants.RGB, 255, 255, 255, 255);
 		c.beginDraw();
 		c.background(0);
+		// draw background clouds
+		Iterator<Sprite> cloudIter = clouds.values().iterator();
+		while(cloudIter.hasNext()){
+			Sprite sprite = (Sprite)cloudIter.next();
+			sprite.draw();
+		}
 		// draw shooters
 		Iterator<Sprite> iter = sprites.values().iterator();
 		while(iter.hasNext()){
