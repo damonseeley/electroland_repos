@@ -14,7 +14,8 @@ import java.util.Vector;
 
 import net.electroland.input.InputDeviceEvent;
 import net.electroland.input.InputDeviceListener;
-import net.electroland.input.devices.HaleUDPInputDevice;
+import net.electroland.input.devices.memphis.HaleUDPInputDevice;
+import net.electroland.input.devices.weather.WeatherCheckerInputDevice;
 import net.electroland.lighting.detector.DetectorManager;
 import net.electroland.lighting.detector.animation.AnimationManager;
 import net.electroland.lighting.tools.SimpleVLM;
@@ -33,7 +34,8 @@ abstract public class Conductor implements InputDeviceListener {
 	private AnimationManager am;
 	private DetectorManager dm;
 	private HaleUDPInputDevice hs;
-
+	private WeatherCheckerInputDevice wc;
+	
 	public static Properties getProperties(String resourcename) throws FileNotFoundException, IOException
 	{
 		Properties props = new Properties();
@@ -68,6 +70,10 @@ abstract public class Conductor implements InputDeviceListener {
 		{
 			hs.startSensing();
 		}
+		if (wc != null)
+		{
+			wc.start();
+		}
 	}
 
 	final public void stopSystem()
@@ -79,7 +85,10 @@ abstract public class Conductor implements InputDeviceListener {
 		if (am != null){
 			am.stop();
 		}
-		
+		if (wc != null)
+		{
+			wc.stop();
+		}		
 	}	
 
 	final public void showSimpleVLM()
@@ -119,6 +128,11 @@ abstract public class Conductor implements InputDeviceListener {
 		hs = new HaleUDPInputDevice(port, bufferLength);
 		hs.addListener(this);
 	}
+
+	final public void initWeather(long startupDelay, long period){
+		wc = new WeatherCheckerInputDevice(startupDelay, period);
+		wc.addListener(this);
+	}	
 	
 	final public void addBehavior(Behavior b)
 	{
