@@ -1,6 +1,5 @@
 package net.electroland.memphis.core;
 
-import net.electroland.input.devices.memphis.HaleUDPInputDeviceEvent;
 import net.electroland.lighting.conductor.Conductor;
 import net.electroland.memphis.behavior.MemphisBehavior;
 
@@ -29,7 +28,7 @@ public class MemphisCore extends Conductor {
 
 		// bridge state object
 		//  first argument is the threshold sensor
-		BridgeState state = new BridgeState(500, 5000, 27, 0);
+		BridgeState state = new BridgeState(500, 27, 0);
 
 		// alert the bridge state any time an event occurs.
 		this.addBehavior(state);
