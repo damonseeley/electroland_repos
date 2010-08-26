@@ -1,7 +1,7 @@
 package net.electroland.memphis.core;
 
 import net.electroland.input.InputDeviceEvent;
-import net.electroland.input.events.HaleUDPInputDeviceEvent;
+import net.electroland.input.devices.memphis.HaleUDPInputDeviceEvent;
 import net.electroland.lighting.conductor.Behavior;
 import net.electroland.lighting.detector.animation.Animation;
 
