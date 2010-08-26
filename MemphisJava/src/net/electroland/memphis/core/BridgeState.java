@@ -37,7 +37,9 @@ public class BridgeState extends Behavior {
 
 		for (int i = 0; i < bays.length; i++)
 		{
-			bays[i].tripped(data[i]);
+			if (data[i] == (byte)253){
+				bays[i].tripped();
+			}
 		}
 	}
 
@@ -48,9 +50,9 @@ public class BridgeState extends Behavior {
 	 * @param bay
 	 * @return
 	 */
-	public boolean requiresNewSprite(int bay)
+	public boolean requiresNewSprite(int bay, double threshold)
 	{
-		return bays[bay].requiresNewSprint();
+		return bays[bay].requiresNewSprite(threshold);
 	}
 
 	/** 
@@ -120,13 +122,9 @@ public class BridgeState extends Behavior {
 			this.processThreshold = processThreshold;
 		}
 		
-		protected void tripped(byte current)
+		protected void tripped()
 		{
-			this.totalChecks++;
-			if (current == (byte)253){
-				this.lastTripped = System.currentTimeMillis();
-				this.occupiedChecks++;
-			}
+			this.lastTripped = System.currentTimeMillis();
 		}
 
 		protected boolean isSmoothlyOccupied(double threshold)
@@ -156,19 +154,32 @@ public class BridgeState extends Behavior {
 				return System.currentTimeMillis() - lastProcessed;			
 		}
 
-		protected boolean requiresNewSprint()
+		protected boolean requiresNewSprite(double threshold)
 		{
 			long proc = getTimeSinceProcessed();
-			// it's been at least X milliseconds since we processed this bay's
-			// detector (or we never processed it)...
+			long last = getTimeSinceTripped();	
+			boolean occupied = last > 0 && last < tripThreshold;
+
+			// for smoothing presence detection over the longhaul.
+			totalChecks++;
+			if (occupied){
+				occupiedChecks++;
+			}
+
+			// if it's been at least X milliseconds since we processed this bay's
+			// detector (or we never processed it)...			
 			if (proc == -1 || proc > processThreshold){
-				long last = getTimeSinceTripped();	
-				if (last > 0 && last < tripThreshold){
-					// and the detector was tripped recently.
-					return true;
-				}
+				// return whether or not it is occupied.
+				// -------------------------------------------------------------
+				// Open question:  return the state in the datapacket, or
+				// return a threshold check against totalChecks / totalChecks?
+				// Currently, we return the first option.
+				// -------------------------------------------------------------
+				return occupied;
 			}
 			return false;
+			// alternate (read above)
+			//return occupiedChecks / totalChecks > threshold;
 		}
 	}
 }
