@@ -42,7 +42,7 @@ public class MemphisCore extends Conductor {
 		
 		// the fifth is not used.
 		
-		BridgeState state = new BridgeState(500, 1500, .9, 27, 0);
+		BridgeState state = new BridgeState(650, 1500, .9, 27, 0);
 
 		// alert the bridge state any time an event occurs.
 		this.addBehavior(state);

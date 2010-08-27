@@ -10,7 +10,7 @@ public class Shooter extends Sprite {
 	private int duration, fadeDuration;
 	private long startTime, fadeStartTime;
 	private boolean switchDirection, fadeOut;
-	private float r, g, b, alpha;
+	private float r, g, b, alpha, ypos;
 	
 	public Shooter(int id, Raster raster, PImage image, float x, float y, float width, float height, int duration, boolean switchDirection){
 		super(id, raster, x, y);
@@ -22,12 +22,17 @@ public class Shooter extends Sprite {
 		alpha = 255;
 		r = g = b = 255;	// default white
 		fadeDuration = 250;
-		fadeOut = false;
+		fadeOut = true;
 		startTime = System.currentTimeMillis();
+		fadeStartTime = System.currentTimeMillis();
+		//ypos = (float)(Math.random() * 4) * (24/4);
+		ypos = (float)Math.floor((Math.random() * 4)) * 24/4;
+		//System.out.println(id +" "+ ypos);
 	}
 	
 	public void draw(){
-		System.out.println("shooter "+id);
+		//System.out.println("shooter "+id +" fadeDuration: "+ fadeDuration);
+		//System.out.println(ypos);
 		if(raster.isProcessing()){
 			PGraphics c = (PGraphics)raster.getRaster();
 			c.pushMatrix();
@@ -38,20 +43,23 @@ public class Shooter extends Sprite {
 				if(x <= 0-(c.width+width)){
 					die();
 				}
-				c.translate(x, y);
+				c.translate(x, ypos);
 				c.rotate((float)Math.PI);	// flip it
-				c.image(image, 0-width,  0-(height/2), width, height);
+				c.image(image, 0, 0, x, height);	// stretch image
+				//c.image(image, 0-width,  0-(height/2), width, height);	// sliding image
 				//c.image(image, 0-sweepLength,  0, sweepLength, height);
 			} else {
 				x = (((System.currentTimeMillis() - startTime) / (float)duration) * (c.width+width));
 				if(x >= c.width+width){
 					die();
 				}
-				c.image(image, x-width, y-(height/2), width, height);
+				c.image(image, 0, ypos, x, height);	// stretch image instead of sliding it
+				//c.image(image, x-width, ypos-(height/2), width, height);	// sliding image
 				//c.image(image, x-sweepLength, y, sweepLength, height);
 			}
 			if(fadeOut){
-				alpha = 255 - (((System.currentTimeMillis() - fadeStartTime) / fadeDuration) * 255);
+				alpha = 255 - (((System.currentTimeMillis() - fadeStartTime) / (float)fadeDuration) * 255);
+				//System.out.println(alpha);
 				if(alpha <= 0){
 					die();
 				}

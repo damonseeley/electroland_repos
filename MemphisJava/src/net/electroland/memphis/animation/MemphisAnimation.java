@@ -8,6 +8,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.Raster;
 import net.electroland.memphis.animation.sprites.Cloud;
+import net.electroland.memphis.animation.sprites.Connectors;
+import net.electroland.memphis.animation.sprites.DoubleWave;
 import net.electroland.memphis.animation.sprites.Shooter;
 import net.electroland.memphis.animation.sprites.Shooters;
 import net.electroland.memphis.animation.sprites.Sprite;
@@ -45,7 +47,7 @@ public class MemphisAnimation implements Animation, SpriteListener {
 	private int tickerOffset;
 	private float[] tickerColor = new float[3];
 	// wave variables
-	private PImage waveImage;
+	private PImage waveImage, waveImage2;
 	private int waveDuration;
 	private float waveWidth;
 	private float[] waveColor = new float[3];
@@ -56,6 +58,8 @@ public class MemphisAnimation implements Animation, SpriteListener {
 	private float[] cloudColorA = new float[3];
 	private float[] cloudColorB = new float[3];
 	private float[] cloudColorC = new float[3];
+	// connectors variables
+	Connectors connectors;
 	
 	// BRADLEY: Modifed to pass bridge state in.  See last section of getFrame().
 	public MemphisAnimation(PApplet p5, String propsFileName, BridgeState state){
@@ -80,6 +84,7 @@ public class MemphisAnimation implements Animation, SpriteListener {
 		shooterDuration = Integer.parseInt(props.getProperty("shooterDuration"));
 		shooterFrequency = Integer.parseInt(props.getProperty("shooterFrequency"));
 		shooterBrightness = Integer.parseInt(props.getProperty("shooterBrightness"));
+		
 		// ticker variables
 		tickerImage = p5.loadImage(props.getProperty("tickerImage"));
 		tickerLength = Float.parseFloat(props.getProperty("tickerLength"));
@@ -90,14 +95,17 @@ public class MemphisAnimation implements Animation, SpriteListener {
 		tickerColor[0] = Float.parseFloat(tc[0]);
 		tickerColor[1] = Float.parseFloat(tc[1]);
 		tickerColor[2] = Float.parseFloat(tc[2]);
+		
 		// wave variables
 		waveImage = p5.loadImage(props.getProperty("waveImage"));
+		waveImage2 = p5.loadImage(props.getProperty("waveImage2"));
 		waveDuration = Integer.parseInt(props.getProperty("waveDuration"));
 		waveWidth = Float.parseFloat(props.getProperty("waveWidth"));
 		String[] wc = props.getProperty("waveColor").split(",");
 		waveColor[0] = Float.parseFloat(wc[0]);
 		waveColor[1] = Float.parseFloat(wc[1]);
 		waveColor[2] = Float.parseFloat(wc[2]);
+		
 		// cloud variables
 		cloudImage = p5.loadImage(props.getProperty("cloudImage"));
 		cloudDurationMin = Integer.parseInt(props.getProperty("cloudDurationMin"));
@@ -115,7 +123,6 @@ public class MemphisAnimation implements Animation, SpriteListener {
 		cloudColorC[0] = Float.parseFloat(cc[0]);
 		cloudColorC[1] = Float.parseFloat(cc[1]);
 		cloudColorC[2] = Float.parseFloat(cc[2]);
-		
 	}
 
 	public Raster getFrame() {
@@ -140,6 +147,13 @@ public class MemphisAnimation implements Animation, SpriteListener {
 			cloudC.setColor(cloudColorC[0], cloudColorC[1], cloudColorC[2], cloudAlpha);
 			clouds.put(spriteIndex, cloudC);
 			spriteIndex++;
+			
+			/*
+			// TODO: uncomment this to have connectors drawn between recently triggered bays
+			connectors = new Connectors(spriteIndex, raster, 0, 0, state);
+			sprites.put(spriteIndex, connectors);
+			spriteIndex++;
+			*/
 			
 			startTime = System.currentTimeMillis();	// timer controls frequency of shooters emitted in background
 		}
@@ -191,27 +205,36 @@ public class MemphisAnimation implements Animation, SpriteListener {
 				float xpos = ((width/27) * i) + tickerOffset;
 				Ticker ticker = new Ticker(spriteIndex, raster, xpos, 0.0f, tickerImage, tickerWidth, tickerLength, tickerDuration, false);
 				ticker.setColor(tickerColor[0], tickerColor[1], tickerColor[2]);
+				ticker.addListener(this);
 				sprites.put(spriteIndex, ticker);
 				spriteIndex++;
-				
-				
-				// start a new sprite for shooters at position i
-				Shooters shooters = new Shooters(spriteIndex, raster, xpos, 0, shooterImage, shooterLength, shooterWidth, shooterDuration, shooterFrequency, shooterBrightness, state, i);
-				sprites.put(spriteIndex, shooters);
-				spriteIndex++;
-				
 				
 				if(i == 0){
 					// if first sensor, send a big sprite down the whole length of the bridge
 					Wave wave = new Wave(spriteIndex, raster, xpos, 0.0f, waveImage, waveWidth, height, waveDuration, false);
 					wave.setColor(waveColor[0], waveColor[1], waveColor[2]);
+					wave.addListener(this);
 					sprites.put(spriteIndex, wave);
 					spriteIndex++;
 				} else if(i == 26){
 					// if last sensor, send a big sprite down the whole length of the bridge
 					Wave wave = new Wave(spriteIndex, raster, xpos, 0.0f, waveImage, waveWidth, height, waveDuration, true);
 					wave.setColor(waveColor[0], waveColor[1], waveColor[2]);
+					wave.addListener(this);
 					sprites.put(spriteIndex, wave);
+					spriteIndex++;
+				} else if(i == 14){
+					/*
+					// TODO: uncomment this to have shooters emit from a person when they continually trigger a sensor.
+					// start a new sprite for shooters at position i
+					Shooters shooters = new Shooters(spriteIndex, raster, xpos, 0, shooterImage, shooterLength, shooterWidth, shooterDuration, shooterFrequency, shooterBrightness, state, i);
+					shooters.addListener(this);
+					sprites.put(spriteIndex, shooters);
+					spriteIndex++;
+					*/
+					DoubleWave doublewave = new DoubleWave(spriteIndex, raster, xpos, 0, waveImage, waveImage2, waveWidth, height, waveDuration, 6000);
+					doublewave.addListener(this);
+					sprites.put(spriteIndex, doublewave);
 					spriteIndex++;
 				}
 				
