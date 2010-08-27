@@ -28,8 +28,9 @@ public class Wave extends Sprite {
 		if(raster.isProcessing()){
 			PGraphics c = (PGraphics)raster.getRaster();
 			c.pushMatrix();
-			c.tint(r,g,b,alpha);
 			if(switchDirection){
+				// TODO: move these color values to props
+				c.tint(0,255,255);
 				y = height;
 				x = c.width - (((System.currentTimeMillis() - startTime) / (float)duration) * (c.width+width)) + width;
 				if(x <= 0-width){
@@ -38,6 +39,7 @@ public class Wave extends Sprite {
 				c.translate(x,y);
 				c.rotate((float)Math.PI);	// flip it
 			} else {
+				c.tint(r,g,b,alpha);
 				y = 0;
 				x = (((System.currentTimeMillis() - startTime) / (float)duration) * c.width) - width;
 				if(x >= c.width){
