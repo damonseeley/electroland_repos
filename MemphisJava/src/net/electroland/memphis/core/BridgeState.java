@@ -42,7 +42,20 @@ public class BridgeState extends Behavior {
 			for (int i = 0; i < bays.length; i++)
 			{
 				bays[i].event(data[i]);
+				
+				
+				//damon added this logic to store the last two tripped bays
+				if (data[i] == (byte)253){  
+					//conditional is an added protection against sequential individual bay trips,
+					//...in case thresholding is not proving that protection
+					if (i != lastTwoTripped[0]) {
+						lastTwoTripped[1] = lastTwoTripped[0];
+						lastTwoTripped[0] = i;
+					}	
+				
+				}
 			}
+			
 		}
 	}
 
@@ -86,6 +99,44 @@ public class BridgeState extends Behavior {
 	public int getSize(){
 		return bays.length;
 	}
+	
+	
+	//all below added by damon to determine last two bays tripped
+	private int lastTwoTripped[] = {-1,-1};
+	private int lastTwoReportedTripped[] = {-1,-1};
+	
+	public int[] lastTwoTripped() {
+		
+		if (lastTwoTripped[0] == -1 && lastTwoTripped[1] == -1) {
+			//System.out.println("Two trips minimum not met: " + lastTwoTripped[0] + "  " + lastTwoTripped[1]);
+			lastTwoReportedTripped[0] = lastTwoTripped[0];
+			lastTwoReportedTripped[1] = lastTwoTripped[1];
+			return null;
+		} else if (lastTwoTripped[0] == -1 || lastTwoTripped[1] == -1) {
+			//System.out.println("Two trips minimum STILL not met: " + lastTwoTripped[0] + "  " + lastTwoTripped[1]);
+			lastTwoReportedTripped[0] = lastTwoTripped[0];
+			lastTwoReportedTripped[1] = lastTwoTripped[1];
+			return null; 
+		} else {
+			//System.out.println("Evaluating non -1 trips");
+			if (lastTwoTripped[0] == lastTwoReportedTripped[0] && lastTwoTripped[1] == lastTwoReportedTripped[1]) {
+				//System.out.println("No change in last trips: " + lastTwoTripped[0] + "," + lastTwoTripped[1] + " - " + lastTwoReportedTripped[0] + "," + lastTwoReportedTripped[1]);
+				return null;
+			} else {
+				lastTwoReportedTripped[0] = lastTwoTripped[0];
+				lastTwoReportedTripped[1] = lastTwoTripped[1];
+				//System.out.println("Last trips changed: " + lastTwoTripped[0] + "  " + lastTwoTripped[1]);
+				return lastTwoTripped;
+			}
+			
+			
+		}
+	}
+	
+	
+	
+	
+	/************* BAY CLASS BELOW HERE *************/
 	
 	class Bay{
 
