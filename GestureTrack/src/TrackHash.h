@@ -30,6 +30,10 @@ public:
 	float cosAngle;
 
 	TrackHash();
+
+	//copies everything into cleared other
+	void deepCloneHash(TrackHash *other);
+
 	void clear();
 	void clearEnterAndExits();
 	void addEnter(unsigned long id);
@@ -46,7 +50,6 @@ public:
 	// merges tra
 	void merge(TrackHash *otherHash, float maxDistSqr, long curFrame); 
 
-	void updateValidity(long curFrame);
 
 	void setRotationPoint(float x, float z) { rotationX = x; rotationZ = z; };
 	void setRotation(float angle);

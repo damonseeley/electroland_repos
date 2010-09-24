@@ -7,12 +7,15 @@
 #include "cv.h"
 #include "highgui.h"
 
-
+#define IMG_DISPLAY_SCALE 5
+#define MAX_TRACK_DIGITS 6
+#define MAX_TRACK 100000
 
 class PersonDetector {
 
 public:
 	CvFont font;
+	char trackLabel[MAX_TRACK_DIGITS];
 
 	long curTrackID;
 
@@ -33,6 +36,13 @@ public:
 	float maxPersonArea;
 	float minHandDist;
 	float maxMatchDistSqr;
+
+	float imageToWorldScaleX;
+	float imageToWorldScaleY;
+	float imageToWorldScaleZ;
+	float worldToImageScaleX;
+	float worldToImageScaleY;
+	float worldToImageScaleZ;
 
 
 	//static float personFilter[];

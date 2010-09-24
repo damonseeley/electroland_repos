@@ -16,7 +16,7 @@ ThreadedTrackGrab::ThreadedTrackGrab(PersonTrackReceiver *receiver, UDPSender *u
 	}
 	if(udpsender) {
 	sendBarrier = new boost::barrier(2);
-	sender = new TrackSender(sendBarrier, this);
+	sender = new TrackGrabSender(sendBarrier, this);
 }
 
 

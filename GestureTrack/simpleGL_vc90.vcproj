@@ -669,6 +669,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\ThreadedTrackSender.h"
+					>
+				</File>
+				<File
 					RelativePath=".\Track.h"
 					>
 				</File>
@@ -828,6 +832,10 @@
 				</File>
 				<File
 					RelativePath=".\ThreadedTrackGrab.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\ThreadedTrackSender.cpp"
 					>
 				</File>
 				<File

@@ -19,6 +19,16 @@ void TrackHash::clearEnterAndExits() {
 	enters.clear();
 	exits.clear();
 }
+
+void TrackHash::deepCloneHash(TrackHash *other) {
+	other->clear();
+	for(map<unsigned long, Track*>::iterator i = hash.begin(); i != hash.end(); i++) {
+		Track *t = i->second;
+		other->hash[t->id] = new Track(t);
+	}
+
+}
+
 void TrackHash::clear() {
 	enters.clear();
 	exits.clear();
@@ -133,25 +143,27 @@ void TrackHash::render() {
 
 
 }
-void TrackHash::updateValidity(long curFrame) {
-	for(map<unsigned long, Track*>::iterator i = hash.begin();
-		i != hash.end();
-		i++)
-	{
 
-		Track *t = i->second;
-		if(t) {
-			t->updatePropValidity(curFrame);
-		}
-	}
-}
 
 
 // gonna do a stupid simple find the closes free match
 void TrackHash::merge(TrackHash *otherHash, float maxDistSqr, long curFrame) {
 	matchedTracks.clear();
 
-	for(map<unsigned long, Track*>::iterator i = otherHash->hash.begin(); i != otherHash->hash.end(); i++)
+	// cull old tracks first
+	for(map<unsigned long, Track*>::iterator i = hash.begin(); i != hash.end(); ) {
+		Track *t = i->second;
+		if(t->culltime < curFrame) {
+			hash.erase(i++);
+		} else {
+			i++;
+
+		}
+	}
+
+
+
+	for(map<unsigned long, Track*>::iterator i = otherHash->hash.begin(); i != otherHash->hash.end();)
 	{
 		Track *otherTrack = i->second;
 		if(otherTrack) {
@@ -169,23 +181,31 @@ void TrackHash::merge(TrackHash *otherHash, float maxDistSqr, long curFrame) {
 				}
 			}
 			if(closest != NULL) {
-				hash.erase(closest->id);
+				hash.erase(closest->id);  // no longer in contention
 				closest->merge(otherTrack, curFrame);
 				matchedTracks.push_back(closest);
-
+				delete otherTrack;
 			} else {
 				matchedTracks.push_back(otherTrack);
 			}
+
+			otherHash->hash.erase(i++); 
+			// either the track was merged and put in matches or it was and put in matchs
+			// eitherway we are done with it
+
+			// copy the matchs into existing
+			for(int i = 0; i < matchedTracks.size(); i++) {
+				Track *t = matchedTracks[i];
+				if(t) { // why do I need this
+				hash[t->id] = t;
+			}
+		}
+
+
 		}
 		
 	}
-		for(int i = 0; i < matchedTracks.size(); i++) {
-			Track *t = matchedTracks[i];
-			if(t) {
-			otherHash->hash.erase(t->id); // remove from other hash so not deleted on clear
-			hash[t->id] = t;
-			}
-		}
+	//other tracks should be empty now
 	
 }
 

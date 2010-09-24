@@ -16,7 +16,7 @@ float PersonDetector::personFilter[] = {
 PersonDetector::PersonDetector(Projection *proj) {
 
 	cvInitFont(&font,CV_FONT_HERSHEY_SIMPLEX|CV_FONT_ITALIC, 1,1);
-
+curTrackID = 0;
 	this->projection = proj;
 	heights = new float[proj->div.x * proj->div.z];  
 	conv = new float[proj->div.x * proj->div.z];  
@@ -28,7 +28,7 @@ PersonDetector::PersonDetector(Projection *proj) {
 
 	cvMatThresh = *cvCreateMat(proj->div.z, proj->div.x, CV_8UC1);
 	cvMatCont = *cvCreateMat(proj->div.z, proj->div.x, CV_8UC1);
-	cvMatDisplay = *cvCreateMat(proj->div.z * 5, proj->div.x * 5, CV_8UC1);
+	cvMatDisplay = *cvCreateMat(proj->div.z * IMG_DISPLAY_SCALE, proj->div.x * IMG_DISPLAY_SCALE, CV_8UC1);
 	cvMatContMask = *cvCreateMat(proj->div.z, proj->div.x, CV_8UC1);
 
 	g_storage = cvCreateMemStorage(0);
@@ -43,6 +43,14 @@ PersonDetector::PersonDetector(Projection *proj) {
 	maxMatchDistSqr = 1; // in meters sqr
 	curFrame = 0;
 	 frameLife = 7;
+
+
+imageToWorldScaleX = (projection->maxLoc.x - projection->minLoc.x)/projection->div.x;
+imageToWorldScaleZ = (projection->maxLoc.z - projection->minLoc.z)/projection->div.z;
+imageToWorldScaleY = (projection->maxLoc.y - projection->minLoc.y)/projection->div.y;
+worldToImageScaleX = 1.0/ imageToWorldScaleX;
+worldToImageScaleY = 1.0/ imageToWorldScaleY;
+worldToImageScaleZ = 1.0/ imageToWorldScaleZ;
 
 
 
@@ -157,19 +165,28 @@ void PersonDetector::calc(long curFrame) {
 				imgY /= cnt;
 				*/
 
-				CvPoint center = cvPoint(imgX,imgZ);
-				cvDrawCircle(&cvMatCont, center, 2, cvScalarAll(255),1);
+
 
 				Track *t = new Track();
-				t->id = curTrackID++;
-				t->lastUpdated = curFrame;
+				curTrackID++;
+				curTrackID %= MAX_TRACK;
+				t->id = curTrackID;
+
+				
+
+				t->culltime = curFrame + Track::LIFESPAN;
+
 				// need more efficent conversion from img to world coords TODO
-				t->x->updateValue(((imgX/projection->div.x) * (projection->maxLoc.x - projection->minLoc.x)) + projection->minLoc.x, propGoodUntil);
-				t->z->updateValue(((imgZ/projection->div.z) * (projection->maxLoc.z - projection->minLoc.z)) + projection->minLoc.z, propGoodUntil);
+				t->x->updateValue(imgX * imageToWorldScaleX + projection->minLoc.x);
+				t->z->updateValue(imgZ * imageToWorldScaleZ + projection->minLoc.z);
 
-				float curCenter = ((imgY/projection->div.y)*(projection->maxLoc.y - projection->minLoc.y)) + projection->minLoc.y;
-				t->center->updateValue(curCenter , propGoodUntil);
+				float curCenter =(imgY * imageToWorldScaleX) + projection->minLoc.y;
+				t->height->updateValue(curCenter);
 
+				CvPoint center = cvPoint(imgX, imgZ);
+				cvCircle(&cvMatCont, center, 2, cvScalarAll(255));
+
+				/*
 				float distsqr = minHandDist * minHandDist;
 				CvPoint* maxPoint= NULL;
 				//CvPoint* maxPoint= CV_GET_SEQ_ELEM( CvPoint, contour, 0 );
@@ -193,6 +210,7 @@ void PersonDetector::calc(long curFrame) {
 
 
 				}
+				*/
 				newTracks.addTrack(t);
 				
 			}
@@ -218,12 +236,31 @@ void PersonDetector::calc(long curFrame) {
 
 	existingTracks.merge(&newTracks,maxMatchDistSqr, curFrame);
 
-//	cvInitFont(&font,CV_FONT_HERSHEY_SIMPLEX|CV_FONT_ITALIC, hScale,vScale,0,lineWidth);
+
+	for(map<unsigned long, Track*>::iterator i = existingTracks.hash.begin();
+		i != existingTracks.hash.end();
+		i++)
+	{
+		Track *t = i->second;
+		int id = t->id;
+		float x = t->x->value;
+		float z = t->z->value;
+ 
+		sprintf(trackLabel,"%d", id);
+		CvPoint center = cvPoint(((x - projection->minLoc.x)* worldToImageScaleX)*IMG_DISPLAY_SCALE  ,((z - projection->minLoc.z)* worldToImageScaleZ)*IMG_DISPLAY_SCALE);
+
+		cvPutText (&cvMatDisplay, trackLabel,center, &font, cvScalarAll(255));
+
+	}
+
+
+
+	//cvInitFont(&font,CV_FONT_HERSHEY_SIMPLEX|CV_FONT_ITALIC, hScale,vScale,0,lineWidth);
 
 
 
 
-	//	cvShowImage( "Contours", g_gray );
+//
 
 	cvShowImage("Contours", &cvMatDisplay);
 
