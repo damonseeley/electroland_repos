@@ -8,17 +8,13 @@
 using namespace std;
 class TrackProp {
 public:
-	bool isValidBool;
 	string name;
-	long validUntillFrame;
 	float value;
+	TrackProp(string name) { this->name = name; }
+	TrackProp(string name, float v) { this->name = name; value = v; }
+	void updateValue(float v) { value = v;}
 
-	TrackProp(string name) { this->name = name; validUntillFrame = -1; }
-	void updateValue(float v, int validUntillFrame) { value = v; this->validUntillFrame = validUntillFrame; }
-	bool isValid(long curFrame) { return curFrame <= validUntillFrame; }
-	void setIsValid(long curFrame) { isValidBool = isValid(curFrame); }
-
-	void merge(TrackProp *updateProp, float weight, long curFrame); 
+	void merge(TrackProp *updateProp, float weight); 
 
 	void buildString(ostringstream &msg);
 };
@@ -26,9 +22,10 @@ public:
 
 class Track {
 public:
+	static int LIFESPAN;
 
 
-	long lastUpdated; 
+	int culltime; 
 
 	unsigned long id;
 
@@ -36,27 +33,27 @@ public:
 	TrackProp *x;
 	TrackProp *z;
 	TrackProp *height;
-	TrackProp *center;
+//	TrackProp *center;
 
 	//left hand
-	TrackProp *lhX;
-	TrackProp *lhY;
-	TrackProp *lhZ;
+//	TrackProp *lhX;
+//	TrackProp *lhY;
+//	TrackProp *lhZ;
 
 	// right hand
-	TrackProp *rhX;
-	TrackProp *rhY;
-	TrackProp *rhZ;
+//	TrackProp *rhX;
+//	TrackProp *rhY;
+//	TrackProp *rhZ;
 
-	TrackProp *jump;
-	TrackProp *activity;
+//	TrackProp *jump;
+//	TrackProp *activity;
 
 	Track();
+	Track(Track *t);
 
 
 	void updateTyzxTrack(float x, float z, float h, long validUntillFrame);
 
-	void updatePropValidity(long curFrame);
 
 	void merge(Track *track, long curFrame);
 

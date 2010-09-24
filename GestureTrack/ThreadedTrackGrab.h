@@ -10,13 +10,13 @@
 
 
 class TrackGrabber;
-class TrackSender;
+class TrackGrabSender;
 
 
 class ThreadedTrackGrab {
 public:
 	TrackGrabber *grabber;
-	TrackSender  *sender;
+	TrackGrabSender  *sender;
 
 	boost::barrier *grabBarrier;
 	boost::barrier *sendBarrier;
@@ -57,11 +57,11 @@ public:
 
 ;
 
-class TrackSender : public SyncedThreadLoop {
+class TrackGrabSender : public SyncedThreadLoop {
 public:
 	ThreadedTrackGrab* track;
 
-	TrackSender(boost::barrier *bar, ThreadedTrackGrab *track) :  SyncedThreadLoop(bar) {
+	TrackGrabSender(boost::barrier *bar, ThreadedTrackGrab *track) :  SyncedThreadLoop(bar) {
 		this->track = track;
 	}
 	

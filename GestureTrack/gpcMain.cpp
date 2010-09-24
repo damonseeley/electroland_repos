@@ -69,7 +69,7 @@ Host code
 #include "Voxel.h"
 #include "UDPSender.h"
 #include "TrackHash.h"
-#include "ThreadedTrackGrab.h"
+#include "ThreadedTrackSender.h"
 #include "FadeBlock.h"
 #include "Recorder.h"
 
@@ -123,8 +123,8 @@ float trackRotateA;
 
 
 
-ThreadedTrackGrab *trackGrab;
-TrackHash *trackHash = NULL;
+ThreadedTrackSender *trackSender;
+//TrackHash *trackHash = NULL;
 //UDPSender *udpSender = NULL;
 
 int camCnt;
@@ -304,9 +304,11 @@ int main(int argc, char** argv)
 			config.readFile("GestureTrack.cfg");
 		} catch(const FileIOException &fioex) {
 			std::cerr << "I/O error while reading file \"GestureTrack.cfg\"" << std::endl;
+			Sleep(50000);
 			exit(1);
 		} catch(const ParseException &pex) {
 			std::cerr << "Parse error at " << pex.getFile() << ":" << pex.getLine() << " - " << pex.getError() << std::endl;
+			Sleep(50000);
 			exit(1);
 		}
 	}
@@ -424,6 +426,7 @@ void setupWorld(){
 
 	const Setting	& configRoot = config.getRoot();
 
+
 	if(configRoot.exists("trackRotate")) {
 	 trackRotateX = configRoot["trackRotate"]["x"];
 	 trackRotateZ = configRoot["trackRotate"]["z"];
@@ -454,6 +457,10 @@ void setupWorld(){
 		}
 	}
 
+	if(configRoot.exists("tracking")) {
+		Track::LIFESPAN = configRoot["tracking"]["trackPersistence"];
+	}
+
 
 	if(configRoot.exists("net")) {
 		PersonTrackReceiver *tracker  = NULL;
@@ -474,8 +481,8 @@ void setupWorld(){
 		}
 
 		if(tracker || udpSender) {
-			trackGrab = new ThreadedTrackGrab(tracker, udpSender);
-			trackGrab->start();
+			trackSender = new ThreadedTrackSender(udpSender);
+			trackSender->start();
 		}
 	
 
@@ -505,7 +512,7 @@ void setupWorld(){
 	//	int sendIP
 
 
-	trackHash = new TrackHash();
+//	trackHash = new TrackHash();
 
 	if(! configRoot.exists("cameras")) {
 		std::cerr << "No camera's specified in config file\n" << std::endl;
@@ -763,26 +770,29 @@ void calculate() {
 
 	projection->deallocateGridOnGPU();
 
-//	personDetector->calc(curFrame++);
+	personDetector->calc(curFrame++);
+	if(trackSender) {
+		trackSender->setCurrentHash(&personDetector->existingTracks);
+	}
 	}
 
-	if(trackGrab) {
-		trackHash = trackGrab->getCurrentHash();
-	}
+//	if(trackGrab) {
+//		trackHash = trackGrab->getCurrentHash();
+//	}
 
-	if(camCnt > 0) {
-		trackHash->merge(&personDetector->existingTracks, 1, curFrame);
-	}
+//	if(camCnt > 0) {
+//		trackHash->merge(&personDetector->existingTracks, 1, curFrame);
+//	}
 
-	if(trackRotateA != 0) {
-		trackHash->setRotationPoint(trackRotateX, trackRotateZ);
-		trackHash->setRotation(trackRotateA);
-		trackHash->applyRotation();
-	}
+//	if(trackRotateA != 0) {
+//		trackHash->setRotationPoint(trackRotateX, trackRotateZ);
+//		trackHash->setRotation(trackRotateA);
+//		trackHash->applyRotation();
+//	}
 
-	if(trackGrab) {
-		trackGrab->trackHashUpdated();
-	}
+//	if(trackGrab) {
+//		trackGrab->trackHashUpdated();
+//	}
 
 }
 
@@ -936,7 +946,7 @@ void render(int view)
 			break;
 	}
 
-	trackHash->render();
+	personDetector->existingTracks.render();
 
 }
 
