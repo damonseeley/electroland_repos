@@ -70,48 +70,59 @@ public class SoundManager implements SCSoundControlNotifiable {
 	private float[] lookupCoordinatesForSC(int c, float gain){
 		// this method needs a better way to switch between number
 		// of channels and the distribution of amplitude values.
-		float[] channelCoords = new float[6];
+		float[] channelCoords = new float[8];
 
+		// modified sept 2010 by DS to account for MOTU hardware
 		switch(c){
 		case 1:
-			channelCoords[0] = gain;
-			channelCoords[1] = 0;
-			channelCoords[2] = 0;
-			channelCoords[3] = 0;
-			channelCoords[4] = 0;
-			channelCoords[5] = 0;
-			break;
-		case 2:
-			channelCoords[0] = 0;
-			channelCoords[1] = gain;
-			channelCoords[2] = 0;
-			channelCoords[3] = 0;
-			channelCoords[4] = 0;
-			channelCoords[5] = 0;
-			break;
-		case 3:
 			channelCoords[0] = 0;
 			channelCoords[1] = 0;
 			channelCoords[2] = gain;
 			channelCoords[3] = 0;
 			channelCoords[4] = 0;
 			channelCoords[5] = 0;
+			channelCoords[6] = 0;
+			channelCoords[7] = 0;
 			break;
-		case 4:
+		case 2:
 			channelCoords[0] = 0;
 			channelCoords[1] = 0;
 			channelCoords[2] = 0;
 			channelCoords[3] = gain;
 			channelCoords[4] = 0;
 			channelCoords[5] = 0;
+			channelCoords[6] = 0;
+			channelCoords[7] = 0;
 			break;
-		case 5:
+		case 3:
 			channelCoords[0] = 0;
 			channelCoords[1] = 0;
 			channelCoords[2] = 0;
 			channelCoords[3] = 0;
 			channelCoords[4] = gain;
 			channelCoords[5] = 0;
+			channelCoords[6] = 0;
+			channelCoords[7] = 0;
+			break;
+		case 4:
+			channelCoords[0] = 0;
+			channelCoords[1] = 0;
+			channelCoords[2] = 0;
+			channelCoords[3] = 0;
+			channelCoords[4] = 0;
+			channelCoords[5] = gain;
+			channelCoords[6] = 0;
+			channelCoords[7] = 0;
+			break;
+		case 5:
+			channelCoords[0] = 0;
+			channelCoords[1] = 0;
+			channelCoords[2] = 0;
+			channelCoords[3] = 0;
+			channelCoords[4] = 0;
+			channelCoords[5] = 0;
+			channelCoords[6] = gain;
+			channelCoords[7] = 0;
 			break;
 		case 6:
 			channelCoords[0] = 0;
@@ -119,7 +130,9 @@ public class SoundManager implements SCSoundControlNotifiable {
 			channelCoords[2] = 0;
 			channelCoords[3] = 0;
 			channelCoords[4] = 0;
-			channelCoords[5] = gain;
+			channelCoords[5] = 0;
+			channelCoords[6] = 0;
+			channelCoords[7] = gain;
 			break;
 		}
 		
@@ -151,7 +164,7 @@ public class SoundManager implements SCSoundControlNotifiable {
 	// this is a replacement for the original playSimpleSound
 	public SoundNode playSimpleSound(String filename, int c, float gain, String comment){
 		if(!filename.equals("none") && serverIsLive){
-			int[] channels = {0,1,2,3,4,5};
+			int[] channels = {0,1,2,3,4,5,6,7};
 			float[] amplitudes = lookupCoordinatesForSC(c, gain);
 			return ss.createMonoSoundNode(soundFiles.get(absolutePath+filename), false, channels, amplitudes, 1.0f);
 		}
@@ -161,9 +174,28 @@ public class SoundManager implements SCSoundControlNotifiable {
 	// this is a replacement for the original globalSound
 	public SoundNode globalSound(int soundIDToStart, String filename, boolean loop, float gain, int duration, String comment) {
 		if(!filename.equals("none") && serverIsLive){
+			System.out.println("DEBUG - PLAYING STEREO " + filename);
 			//return ss.createMonoSoundNode(soundFiles.get(absolutePath+filename), false, new float[]{gain,gain,gain,gain,gain,gain}, 1.0f);
-			SoundNode sn = ss.createStereoSoundNodeWithLRMap(soundFiles.get(absolutePath+filename), false, new int[]{1, 0}, new int[]{0, 1}, 1.0f);
-			sn.setAmplitudes(new int[]{0,1,2,3,4,5}, new float[]{gain,gain,gain,gain,gain,gain});
+			
+			// modified by DS sept 2010 to fix MOTU out
+			//SoundNode sn = ss.createStereoSoundNodeWithLRMap(soundFiles.get(absolutePath+filename), false, new int[]{1, 0}, new int[]{0, 1}, 1.0f);
+			// ??? NOT WORKING
+			//int[] leftChannelMap = new int[]{1, 0};
+			//int[] rightChannelMap = new int[]{0, 1};
+			int[] leftChannelMap = new int[]{0, 0, 2, 3, 4, 0, 0, 0}; // note - when using "0" here it will map the sound to the Left main output on the MOTU.  That's fine, it's not in use.
+			int[] rightChannelMap = new int[]{0, 0, 0, 0, 0, 5, 6, 7};
+			float[] lChannelAmplitudes = new float[leftChannelMap.length]; 
+			float[] rChannelAmplitudes = new float[rightChannelMap.length];
+			for (int i=0; i<leftChannelMap.length; i++) {//set all to 1.0;
+				lChannelAmplitudes[leftChannelMap[i]] = 1f;
+			}
+			for (int i=0; i<rightChannelMap.length; i++) {//set all to 1.0;
+				rChannelAmplitudes[rightChannelMap[i]] = 1f;
+			}
+			SoundNode sn = ss.createStereoSoundNode(soundFiles.get(absolutePath+filename), false, leftChannelMap, lChannelAmplitudes, rightChannelMap, rChannelAmplitudes, 1.0f);
+			// end DS mods
+			
+			sn.setAmplitudes(new int[]{0,1,2,3,4,5,6,7}, new float[]{gain,gain,gain,gain,gain,gain,gain,gain}); // set L and R MAIN amps to 0
 			return sn;
 		}
 		return null;
