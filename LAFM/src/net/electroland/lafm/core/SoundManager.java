@@ -174,23 +174,27 @@ public class SoundManager implements SCSoundControlNotifiable {
 	// this is a replacement for the original globalSound
 	public SoundNode globalSound(int soundIDToStart, String filename, boolean loop, float gain, int duration, String comment) {
 		if(!filename.equals("none") && serverIsLive){
-			System.out.println("DEBUG - PLAYING STEREO " + filename);
+			//System.out.println("DEBUG - PLAYING STEREO " + filename);
 			//return ss.createMonoSoundNode(soundFiles.get(absolutePath+filename), false, new float[]{gain,gain,gain,gain,gain,gain}, 1.0f);
 			
 			// modified by DS sept 2010 to fix MOTU out
 			//SoundNode sn = ss.createStereoSoundNodeWithLRMap(soundFiles.get(absolutePath+filename), false, new int[]{1, 0}, new int[]{0, 1}, 1.0f);
-			// ??? NOT WORKING
-			//int[] leftChannelMap = new int[]{1, 0};
+			//int[] leftChannelMap = new int[]{1, 0}; // This works, but only for MOTU Main outs, which we don't use
 			//int[] rightChannelMap = new int[]{0, 1};
-			int[] leftChannelMap = new int[]{0, 0, 2, 3, 4, 0, 0, 0}; // note - when using "0" here it will map the sound to the Left main output on the MOTU.  That's fine, it's not in use.
-			int[] rightChannelMap = new int[]{0, 0, 0, 0, 0, 5, 6, 7};
+			
+			//int[] leftChannelMap = new int[]{0, 0, 2, 3, 4, 0, 0, 0}; // This works, but overloads output #1 (0) with tons of un-needed buffer
+			//int[] rightChannelMap = new int[]{0, 0, 0, 0, 0, 5, 6, 7};
+			
+			int[] leftChannelMap = new int[]{2, 3, 4}; // This does NOT work and throws a java.lang.ArrayIndexOutOfBoundsException
+			int[] rightChannelMap = new int[]{5, 6, 7};
+			
 			float[] lChannelAmplitudes = new float[leftChannelMap.length]; 
 			float[] rChannelAmplitudes = new float[rightChannelMap.length];
 			for (int i=0; i<leftChannelMap.length; i++) {//set all to 1.0;
-				lChannelAmplitudes[leftChannelMap[i]] = 1f;
+				lChannelAmplitudes[i] = 1f; // changed this to just use i as index instead of channels as index
 			}
 			for (int i=0; i<rightChannelMap.length; i++) {//set all to 1.0;
-				rChannelAmplitudes[rightChannelMap[i]] = 1f;
+				rChannelAmplitudes[i] = 1f;
 			}
 			SoundNode sn = ss.createStereoSoundNode(soundFiles.get(absolutePath+filename), false, leftChannelMap, lChannelAmplitudes, rightChannelMap, rChannelAmplitudes, 1.0f);
 			// end DS mods
