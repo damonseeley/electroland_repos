@@ -190,16 +190,16 @@ public class SoundManager implements SCSoundControlNotifiable {
 			
 			float[] lChannelAmplitudes = new float[leftChannelMap.length]; 
 			float[] rChannelAmplitudes = new float[rightChannelMap.length];
-			for (int i=0; i<leftChannelMap.length; i++) {//set all to 1.0;
-				lChannelAmplitudes[i] = 1f; // changed this to just use i as index instead of channels as index
+			for (int i=0; i<leftChannelMap.length; i++) {
+				lChannelAmplitudes[i] = gain; // changed this to just use i as index instead of channels as index
 			}
-			for (int i=0; i<rightChannelMap.length; i++) {//set all to 1.0;
-				rChannelAmplitudes[i] = 1f;
+			for (int i=0; i<rightChannelMap.length; i++) {
+				rChannelAmplitudes[i] = gain;
 			}
 			SoundNode sn = ss.createStereoSoundNode(soundFiles.get(absolutePath+filename), false, leftChannelMap, lChannelAmplitudes, rightChannelMap, rChannelAmplitudes, 1.0f);
 			// end DS mods
 			
-			sn.setAmplitudes(new int[]{0,1,2,3,4,5,6,7}, new float[]{gain,gain,gain,gain,gain,gain,gain,gain}); // set L and R MAIN amps to 0
+			//sn.setAmplitudes(new int[]{0,1,2,3,4,5,6,7}, new float[]{gain,gain,gain,gain,gain,gain,gain,gain}); // set L and R MAIN amps to 0
 			return sn;
 		}
 		return null;
