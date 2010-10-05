@@ -174,7 +174,7 @@ public class SoundManager implements SCSoundControlNotifiable {
 	// this is a replacement for the original globalSound
 	public SoundNode globalSound(int soundIDToStart, String filename, boolean loop, float gain, int duration, String comment) {
 		if(!filename.equals("none") && serverIsLive){
-			System.out.println("DEBUG - PLAYING STEREO " + filename);
+			//System.out.println("DEBUG - PLAYING STEREO " + filename);
 			//return ss.createMonoSoundNode(soundFiles.get(absolutePath+filename), false, new float[]{gain,gain,gain,gain,gain,gain}, 1.0f);
 			
 			// modified by DS sept 2010 to fix MOTU out
