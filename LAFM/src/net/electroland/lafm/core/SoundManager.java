@@ -174,7 +174,7 @@ public class SoundManager implements SCSoundControlNotifiable {
 	// this is a replacement for the original globalSound
 	public SoundNode globalSound(int soundIDToStart, String filename, boolean loop, float gain, int duration, String comment) {
 		if(!filename.equals("none") && serverIsLive){
-			//System.out.println("DEBUG - PLAYING STEREO " + filename);
+			System.out.println("DEBUG - PLAYING STEREO " + filename);
 			//return ss.createMonoSoundNode(soundFiles.get(absolutePath+filename), false, new float[]{gain,gain,gain,gain,gain,gain}, 1.0f);
 			
 			// modified by DS sept 2010 to fix MOTU out
@@ -185,8 +185,10 @@ public class SoundManager implements SCSoundControlNotifiable {
 			//int[] leftChannelMap = new int[]{0, 0, 2, 3, 4, 0, 0, 0}; // This works, but overloads output #1 (0) with tons of un-needed buffer
 			//int[] rightChannelMap = new int[]{0, 0, 0, 0, 0, 5, 6, 7};
 			
-			int[] leftChannelMap = new int[]{2, 3, 4}; // This does NOT work and throws a java.lang.ArrayIndexOutOfBoundsException
-			int[] rightChannelMap = new int[]{5, 6, 7};
+			//int[] leftChannelMap = new int[]{2, 3, 4}; 
+			int[] leftChannelMap = new int[]{2, 4, 6}; 
+			//int[] rightChannelMap = new int[]{5, 6, 7};
+			int[] rightChannelMap = new int[]{3, 5, 7};
 			
 			float[] lChannelAmplitudes = new float[leftChannelMap.length]; 
 			float[] rChannelAmplitudes = new float[rightChannelMap.length];
