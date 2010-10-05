@@ -1,2 +1,2 @@
-call WAIT 30
+call WAIT 90
 call LAFM-win.bat
