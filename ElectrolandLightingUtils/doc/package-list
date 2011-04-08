@@ -1,0 +1,15 @@
+net.electroland.broadcast.server
+net.electroland.input
+net.electroland.input.devices.memphis
+net.electroland.input.devices.weather
+net.electroland.lighting.artnet
+net.electroland.lighting.artnet.diagnostics
+net.electroland.lighting.conductor
+net.electroland.lighting.detector
+net.electroland.lighting.detector.animation
+net.electroland.lighting.detector.animation.animations
+net.electroland.lighting.detector.animation.transitions
+net.electroland.lighting.detector.models
+net.electroland.lighting.tools
+net.electroland.lighting.tools.views
+net.electroland.util
