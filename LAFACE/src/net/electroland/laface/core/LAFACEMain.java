@@ -62,6 +62,7 @@ public class LAFACEMain extends JFrame implements AnimationListener, ActionListe
 	public ImageSequenceCache imageCache;	// only needed for testing
 	private WeatherChecker weatherChecker;
 	private TimedEvent sunriseOn = new TimedEvent(5,00,00, this); // on at sunrise-1 based on weather
+	//2011_06_07 changed this from 10 AM to whatever for testing
 	private TimedEvent middayOff = new TimedEvent(10,00,00, this); // off at 10 AM for sun reasons
 	private TimedEvent sunsetOn = new TimedEvent(16,00,00, this); // on at sunset-1 based on weather
 	private TimedEvent nightOff = new TimedEvent(1,00,00, this); // off at 1 AM
