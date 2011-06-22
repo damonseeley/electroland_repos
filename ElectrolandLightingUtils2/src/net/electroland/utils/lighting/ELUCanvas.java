@@ -45,8 +45,6 @@ abstract public class ELUCanvas {
 		// TODO: Implement
 		return null;
 	}
-
-	// TODO: getFixtures and ability to turn fixtures on and off.
 	
 	/** Turn all channels attached to this Canvas on.
 	 * 
