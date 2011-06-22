@@ -1,13 +1,10 @@
 package net.electroland.utils.lighting;
 
-import java.util.Hashtable;
-import java.util.Vector;
 
 abstract class Recipient {
 	
-	private String name;
-	private Vector<Fixture> fixtures;
-	private int channels;
+	private String name;	
+	private CanvasDetector[] channels;
 
 
 	public void setName(String name){
@@ -18,11 +15,17 @@ abstract class Recipient {
 		return name;
 	}
 
-	// send data from all fixtures
-	public void sync(Hashtable<Fixture,Vector<Detector>> detectorStates){
-		// cycle through all fixtures
-		// get the values from each detector, and plop them into the byte array
-		// send(bytearray);
+	public void sync(){
+		
+		byte[] b = new byte[channels.length];
+		
+		for (int i = 0; i < channels.length; i++)
+		{
+			//  for each non-null channel, evaluate the CanvasDetector and store
+			//  the result in an array of bytes.
+		}
+		
+		send(b);
 	}
 
 	// send all "on" values
@@ -31,5 +34,6 @@ abstract class Recipient {
 	// send all "off" values
 	abstract public void allOff();
 
+	// protocol specific handling
 	abstract public void send(byte[] b);
 }
