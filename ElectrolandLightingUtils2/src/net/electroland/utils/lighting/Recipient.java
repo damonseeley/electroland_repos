@@ -1,12 +1,15 @@
 package net.electroland.utils.lighting;
 
+import java.util.Hashtable;
 
-abstract class Recipient {
+import net.electroland.utils.OptionException;
+
+
+abstract public class Recipient {
 	
 	private String name;	
 	private CanvasDetector[] channels;
-
-
+	
 	public void setName(String name){
 		this.name = name;
 	}
@@ -27,7 +30,10 @@ abstract class Recipient {
 		
 		send(b);
 	}
-
+	
+	// configure
+	abstract public void configure(Hashtable<String,String> properties) throws OptionException;
+	
 	// send all "on" values
 	abstract public void allOn();
 	
