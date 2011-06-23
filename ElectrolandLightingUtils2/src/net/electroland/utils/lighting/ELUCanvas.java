@@ -1,7 +1,9 @@
 package net.electroland.utils.lighting;
 
-import java.util.List;
+import java.util.Hashtable;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import net.electroland.utils.OptionException;
 
 
 abstract public class ELUCanvas {
@@ -36,6 +38,9 @@ abstract public class ELUCanvas {
 	 * 
 	 */
 	abstract public CanvasDetector[] sync(int[] pixels) throws InvalidPixelGrabException;
+
+	abstract public void Configure(Hashtable<String,String> properties) throws OptionException;
+	
 	
 	/**
 	 * Get all detectors attached to this detector
