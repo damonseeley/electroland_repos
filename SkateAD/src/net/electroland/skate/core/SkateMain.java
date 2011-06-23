@@ -7,7 +7,8 @@ import java.awt.image.BufferedImage;
 
 import net.electroland.skate.ui.GUIFrame;
 import net.electroland.skate.ui.GUIPanel;
-import net.electroland.utils.lighting.ElectrolandLightingManager;
+import net.electroland.utils.lighting.*;
+import net.electroland.utils.lighting.canvas.*;
 
 import org.apache.log4j.Logger;
 
@@ -21,8 +22,8 @@ public class SkateMain extends Thread {
 
 	private static Logger logger = Logger.getLogger(SkateMain.class);
 
-	private ElectrolandLightingManager elu;
-	//private Canvas2D c;
+	private ELUManager elu;
+	private ELUCanvas2D c;
 	
 	public static boolean SHOWUI;
 	public static GUIFrame guiFrame;
