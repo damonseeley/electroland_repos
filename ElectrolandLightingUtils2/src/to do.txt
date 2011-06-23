@@ -1,0 +1,24 @@
+1.) ELU parse lights.properties
+2.) recipient.sync
+3.) ELUCanvas.sync & allOn, allOff
+4.) ElectrolandLightingManager.run and allOn, allOff
+3.) ARTNetRecipient
+5.) EluCanvas2D.sync
+6.) basic GUI (including sweep, etc.)
+7.) test
+
+
+
+recipient
+  protocol meta data
+  array of channels where each channel has a pointer to a CanvasDetector
+
+Canvas
+  array of CanvasDetectors
+  
+CanvasDetector
+  array of Canvas image array index locations that should be part of the evaluation process
+  detector model
+  geometry
+  latest evaluated state
+  tags
