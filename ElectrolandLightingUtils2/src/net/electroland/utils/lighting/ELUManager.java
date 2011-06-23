@@ -1,12 +1,13 @@
 package net.electroland.utils.lighting;
 
+import java.awt.Shape;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Iterator;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Vector;
 
 import net.electroland.utils.OptionException;
 import net.electroland.utils.OptionParser;
@@ -15,7 +16,7 @@ import net.electroland.utils.Util;
 public class ELUManager implements Runnable {
 
 	private int fps;
-	private Vector<Recipient>recipients = new Vector<Recipient>();
+	private Hashtable<String, Recipient>recipients = new Hashtable<String, Recipient>();
 	
 	public static void main(String args[])
 	{
@@ -39,8 +40,8 @@ public class ELUManager implements Runnable {
 
 	public void sync()
 	{
-		Iterator<Recipient> i = recipients.iterator();
-		while (i.hasNext()){
+		Enumeration<Recipient> i = recipients.elements();
+		while (i.hasMoreElements()){
 			((Recipient)i).sync();
 		}
 	}
@@ -149,7 +150,7 @@ public class ELUManager implements Runnable {
 					String id = key.substring(idStart + 1, key.length());
 
 					// get the props
-					Map m = OptionParser.parse("" + props.get(key));
+					Map<String,String> m = OptionParser.parse("" + props.get(key));
 
 					// load the protocol-appropriate Recipient Class.
 					try {
@@ -158,7 +159,7 @@ public class ELUManager implements Runnable {
 						// name, configure, store
 						r.setName(id);
 						r.configure(m);
-						recipients.add(r);
+						recipients.put(id, r);
 					
 					// TODO: friendler error handling here.
 					} catch (InstantiationException e) {
@@ -240,4 +241,36 @@ public class ELUManager implements Runnable {
 	{
 		return null;
 	}
+}
+
+class FixtureType
+{
+	ArrayList<CanvasDetector> channels = new ArrayList<CanvasDetector>();
+	Shape boundary;
+	Class<DetectionModel> model;
+	String name;
+
+	public void configure(Map<String,String>m)
+	{
+		// name and channel might have to be set by caller
+		
+		// get channel array index?? --> can we just put channels as a flag?
+
+		// get boundary
+		
+		// get detection model
+		
+		//fixtureType.PhilipsLEDBar.channels[0] = -boundary rectangle(0,0,2,2) -model net.electroland.lighting.detector.models.RedDetectionModel
+		//fixtureType.PhilipsLEDBar.channels[1] = -boundary rectangle(2,0,2,2) -model net.electroland.lighting.detector.models.GreenDetectionModel
+		//fixtureType.PhilipsLEDBar.channels[2] = -boundary rectangle(4,0,2,2) -model net.electroland.lighting.detector.models.BlueDetectionModel		
+	}
+}
+
+class Fixture
+{
+	FixtureType type;
+	int startAddress;
+	ArrayList<String> tags = new ArrayList<String>();
+	Recipient recipient;
+	//fixture.f1 = -type PhilipsLEDBar -startAddress 0 -tags "mac:00:00:00 f1" -recipient datagate1
 }
