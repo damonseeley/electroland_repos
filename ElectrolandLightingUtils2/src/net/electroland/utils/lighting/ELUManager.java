@@ -121,13 +121,13 @@ public class ELUManager implements Runnable {
 		//     * find the fixture
 		//     * get the fixtureType from the fixture
 		//     * find the stored fixtureType
-		//     * calculate the x,y based on the offset and create a CanvasDetector
-		//     * store the width and height
-		//     * store the detector model
-		//     * calculate which pixels are covered by the boundary, and store them in the CanvasDetector 
-		//     * find the recipient and patch the CanvasDetectors in as appropriate
-		
-
+		//     for each prototype detector in the fixtureType
+		//      * create a CanvasDetector
+		//      * calculate x,y based on the offset store it in the CanvasDetector
+		//      * store the width and height
+		//      * store the detector model
+		//      * calculate which pixels are covered by the boundary, and store them in the CanvasDetector <-- BADNESS IF WE SUPPORT NON-RECTANGLES
+		//      * find the recipient and the startChannel from the fixture and the index of the prototype detector in the fixtureType. use those patch the CanvasDetector in as appropriate
 
 	}
 
