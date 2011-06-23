@@ -1,6 +1,6 @@
 package net.electroland.utils.lighting;
 
-import java.util.Hashtable;
+import java.util.Map;
 
 import net.electroland.utils.OptionException;
 
@@ -32,7 +32,7 @@ abstract public class Recipient {
 	}
 	
 	// configure
-	abstract public void configure(Hashtable<String,String> properties) throws OptionException;
+	abstract public void configure(Map<String,String> properties) throws OptionException;
 	
 	// send all "on" values
 	abstract public void allOn();
