@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 
 import net.electroland.skate.ui.GUIFrame;
 import net.electroland.skate.ui.GUIPanel;
@@ -28,6 +27,12 @@ public class SkateMain extends Thread {
 	public static boolean SHOWUI;
 	public static GUIFrame guiFrame;
 	public static GUIPanel guiPanel;
+	int GUIWidth, GUIHeight;
+	
+	int canvasHeight, canvasWidth; 
+	int viewHeight, viewWidth;
+	float viewScale;
+	
 	
 	public static boolean isRunning;
 	private static float framerate;
@@ -40,29 +45,27 @@ public class SkateMain extends Thread {
 	public SkateMain() {
 		
 		// create lighting utils
-		//elu = new ElectrolandLightingManger("lights.properties");
+		//elu = new ELUManager("lights.properties");
 		//c = elu.getCanvas();
 
-		
 		SHOWUI = true;
-		int GUIWidth = 800;
-		int GUIHeight = 800;
+		GUIWidth = 800;
+		GUIHeight = 800;
 		guiFrame = new GUIFrame(GUIWidth,GUIHeight);
 		guiPanel = new GUIPanel(GUIWidth,GUIHeight);
 		//add the panel to the top of the window
 		guiFrame.add(guiPanel);
 		
+		viewHeight = GUIHeight - (int)(GUIHeight*0.1);
+		viewWidth = GUIWidth - (int)(GUIWidth*0.1);
+		viewScale = 1.0f;
 		
-
 		//init space and lights
 		//init skaters
-		
 		//init sound controller and speakers
-		
 		
 		// start everything (e.g., start the threads for each of these subsystems)
 		//elu.start();
-		
 		
 		// thread stuff
 		framerate = 30;
@@ -80,6 +83,20 @@ public class SkateMain extends Thread {
 
 		while (isRunning) {
 
+
+			//figure out whether to add or subtract skaters
+			
+			//update sound locations
+			
+			//draw skater sprites on an image at native size
+			//flop sand scale skater image to canvas-size
+			//extract a pixel array from the canvas-sized sprite image and sync with ELU
+			//draw detectors and skater info on the local canvas image post sync
+			
+			
+			
+			
+			
 			//test
 			//BufferedImage i = new BufferedImage(400,400,ColorSpace.TYPE_RGB);
 			Graphics g = guiPanel.getGraphics();
@@ -100,14 +117,8 @@ public class SkateMain extends Thread {
 			
 			
 			
-			//figure out whether to add or subtract skaters
 			
-			//update sound locations
 			
-			//draw skater sprites on an image at native size
-			//flop sand scale skater image to canvas-size
-			//extract a pixel array from the canvas-sized sprite image and sync with ELU
-			//draw detectors and skater info on the local canvas image post sync
 			
 			
 			//logger.info(timer.sleepTime);
