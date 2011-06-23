@@ -1,12 +1,36 @@
 package net.electroland.utils.lighting;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Vector;
+
+import net.electroland.utils.OptionException;
+import net.electroland.utils.OptionParser;
+import net.electroland.utils.Util;
 
 public class ELUManager implements Runnable {
 
 	private int fps;
-	private ArrayList<Recipient>recipients;
+	private Vector<Recipient>recipients = new Vector<Recipient>();
+	
+	public static void main(String args[])
+	{
+		// test
+		try {
+			new ELUManager().load();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (OptionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 	
 	public void run()
 	{
@@ -86,17 +110,68 @@ public class ELUManager implements Runnable {
 
 	/** Configure the system using "lights.properties"
 	 * 
+	 * Currently a gross way of doing this.
+	 * 
 	 */
-	public void load()
+	public void load() throws IOException, OptionException
 	{
 		// find lights.properties
+		Properties props = new Properties();
+		InputStream is = new Util().getClass().getClassLoader().getResourceAsStream("lights.properties");
+		if (is != null)
+		{
+			props.load(is);
+		}else{
+			throw new OptionException("Please make sure lights.properties is in your classpath.");
+		}
+
+		// fps
+		try{
+			fps = Integer.parseInt(props.getProperty("fps"));			
+		}catch(NumberFormatException e){
+			fps = 33;
+		}
 
 		// parse recipients
-		//   for each recipient
-		//    * find the -class
-		//    * create an instance of that -class
-		//    * run it's configure() method.  
-		//    * store the fully configured recipient
+		Enumeration <Object> g = props.keys();
+		while (g.hasMoreElements())
+		{
+			String key = ("" + g.nextElement()).trim();
+			if (key.toLowerCase().startsWith("recipient."))
+			{
+				// validate that it has an ID
+				int idStart = key.indexOf('.');
+				if (idStart == -1 || idStart == key.length() - 1)
+				{
+					throw new OptionException("no id specified in property " + key);
+				}else{
+					// get the ID
+					String id = key.substring(idStart + 1, key.length());
+
+					// get the props
+					Map m = OptionParser.parse("" + props.get(key));
+
+					// load the protocol-appropriate Recipient Class.
+					try {
+						Recipient r = (Recipient)(new Util().getClass().getClassLoader().loadClass("" + m.get("-class")).newInstance());
+
+						// name, configure, store
+						r.setName(id);
+						r.configure(m);
+						recipients.add(r);
+					
+					// TODO: friendler error handling here.
+					} catch (InstantiationException e) {
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+				
 		
 		// parse fixtureTypes
 		//  for each fixtureType, see if the type has already been defined
