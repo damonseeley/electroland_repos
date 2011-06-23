@@ -1,5 +1,6 @@
 package net.electroland.utils.lighting;
 
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 
@@ -42,8 +43,7 @@ abstract public class ELUCanvas {
 	 */
 	public CanvasDetector[] getDetectors()
 	{
-		// TODO: Implement
-		return null;
+		return detectors.toArray(new CanvasDetector[detectors.size()]);
 	}
 	
 	/** Turn all channels attached to this Canvas on.
