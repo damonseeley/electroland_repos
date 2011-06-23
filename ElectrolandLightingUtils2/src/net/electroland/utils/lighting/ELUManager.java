@@ -3,7 +3,7 @@ package net.electroland.utils.lighting;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class ElectrolandLightingManager implements Runnable {
+public class ELUManager implements Runnable {
 
 	private int fps;
 	private ArrayList<Recipient>recipients;
@@ -90,12 +90,45 @@ public class ElectrolandLightingManager implements Runnable {
 	public void load()
 	{
 		// find lights.properties
-		// parse recipients (by supported recipient type, alphabetically)
+
+		// parse recipients
+		//   for each recipient
+		//    * find the -class
+		//    * create an instance of that -class
+		//    * run it's configure() method.  
+		//    * store the fully configured recipient
+		
 		// parse fixtureTypes
-		// parse fixtures
+		//  for each fixtureType, see if the type has already been defined
+		//    * yes? add the detector prototype to the appropriate channel
+		//    * no? -create it and store it and add the detector prototype to the appropriate channel
+
 		// parse canvases
+		//  for each Canvas
+		//    * find the -class
+		//    * create an instance of that -class
+		//    * run configure()
+		//    * case(ELUCanvas2D): 
+		//       * get the height and width and store them as dimensions.  if bad, throw OptionException.
+		//       * allocate a height x width array
+		//    * store the canvas
+
+		// parse fixtures
+		//  for each fixture, store the type, tags, recipient, start address
+		
 		// parse fixture to canvas mappings
-		//   for each fixture, 
+		//   for each fixture that is mapped
+		//     * find the fixture
+		//     * get the fixtureType from the fixture
+		//     * find the stored fixtureType
+		//     * calculate the x,y based on the offset and create a CanvasDetector
+		//     * store the width and height
+		//     * store the detector model
+		//     * calculate which pixels are covered by the boundary, and store them in the CanvasDetector 
+		//     * find the recipient and patch the CanvasDetectors in as appropriate
+		
+
+
 	}
 
 	/** 
