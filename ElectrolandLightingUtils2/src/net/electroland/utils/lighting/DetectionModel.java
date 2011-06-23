@@ -1,7 +1,6 @@
 
 package net.electroland.utils.lighting;
 
-
 /**
  * A detection model is an implementation that knows how to distill an array
  * of pixel data into a single value. See examples in net.electroland.detector.models
