@@ -9,7 +9,7 @@ public class CanvasDetector {
 	protected Shape boundary;
 	protected DetectionModel detectorModel;
 	protected byte latestState;
-	protected Vector tags;
+	protected Vector<String> tags;
 	protected CopyOnWriteArrayList<Integer>indices;
 	
 	public Shape getBoundary() {
@@ -24,7 +24,7 @@ public class CanvasDetector {
 	public void setEvaluatedValue(byte b){
 		latestState = b;
 	}
-	public Vector getTags() {
+	public Vector<String> getTags() {
 		return tags;
 	}
 	public CopyOnWriteArrayList<Integer> getIndices() {
