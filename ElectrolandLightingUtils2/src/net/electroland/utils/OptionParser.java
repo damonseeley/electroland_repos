@@ -128,7 +128,7 @@ public class OptionParser {
 	 * @return
 	 * @throws OptionException
 	 */
-	public Set<String> getObjectnames(String objectType) throws OptionException
+	public Set<String> getObjectNames(String objectType) throws OptionException
 	{
 		Map<String,Map<String,String>> type = objects.get(objectType);
 		if (type == null){
