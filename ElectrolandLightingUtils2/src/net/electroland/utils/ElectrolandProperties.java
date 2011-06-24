@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import net.electroland.utils.lighting.DetectionModel;
+
 /**
  * To do: document.  add validation handling.  log4j.  make it possible to
  *        parse a single line from a props file handed to this as two strings.
@@ -191,12 +193,72 @@ public class ElectrolandProperties {
 		
 		if (param == null)
 		{			
-			throw new OptionException("no parameter '" + paramName + "' in object named '" + objectName + "' of type '" + objectType + "' was found.");
+			throw new OptionException("no parameter value for '" + paramName + "' in object named '" + objectName + "' of type '" + objectType + "' was found.");
 		}else
 		{
 			return param;
 		}
 		
+	}
+
+	public Integer getParamAsInt(String objectType, String objectName, String paramName) throws OptionException
+	{
+		String str = getParam(objectType, objectName, paramName);
+		try
+		{
+			return str == null ? null : Integer.parseInt(str);
+		}catch(NumberFormatException e)
+		{
+			// TODO: clear exception message
+			throw new OptionException(e);
+		}
+	}
+
+	public Integer getRequiredParamAsInt(String objectType, String objectName, String paramName) throws OptionException
+	{
+		Integer i = getParamAsInt(objectType, objectName, paramName);
+		if (i == null)
+		{			
+			throw new OptionException("no parameter value for '" + paramName + "' in object named '" + objectName + "' of type '" + objectType + "' was found.");
+		}else
+		{
+			return i;
+		}
+	}
+
+	/**
+	 * for dynamic class loading.
+	 * 
+	 * @param objectType
+	 * @param objectName
+	 * @param paramName - name of class.
+	 * @return
+	 * @throws OptionException
+	 */
+	public Object getParamAsClass(String objectType, String objectName, String paramName) throws OptionException
+	{
+		String str = getParam(objectType, objectName, paramName);
+		try {
+			return new Util().getClass().getClassLoader().loadClass(str).newInstance();
+		} catch (InstantiationException e) {
+			throw new OptionException(e);
+		} catch (IllegalAccessException e) {
+			throw new OptionException(e);
+		} catch (ClassNotFoundException e) {
+			throw new OptionException(e);
+		}
+	}
+
+	public Object getRequiredParamAsClass(String objectType, String objectName, String paramName) throws OptionException
+	{
+		Object o = getParamAsClass(objectType, objectName, paramName);
+		if (o == null)
+		{			
+			throw new OptionException("no parameter value for '" + paramName + "' in object named '" + objectName + "' of type '" + objectType + "' was found.");
+		}else
+		{
+			return o;
+		}
 	}
 
 	// TODO: make this work.
@@ -250,7 +312,7 @@ public class ElectrolandProperties {
 	 * @return a Map of the keys and their values.
 	 * @throws OptionException if the string does not properly start with a flag. 
 	 */
-	public static Map<String, String> parse(String str) throws OptionException
+	private static Map<String, String> parse(String str) throws OptionException
 	{
 		HashMap <String, String> map = new HashMap<String, String>();
 		if (str == null)
