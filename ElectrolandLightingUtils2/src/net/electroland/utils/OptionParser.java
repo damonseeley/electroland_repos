@@ -24,6 +24,15 @@ public class OptionParser {
 
 		try {
 			OptionParser op = new OptionParser(p);
+
+			System.out.println(op.getObjectnames("cat"));
+			System.out.println(op.getObjectnames("dog"));
+			
+			System.out.println(op.getParams("cat", "1"));
+			System.out.println(op.getParams("dog", "mydog"));
+		
+			System.out.println(op.getParam("dog", "mydog.2", "-foo"));
+			
 		} catch (OptionException e) {
 			e.printStackTrace();
 		}
@@ -161,12 +170,16 @@ public class OptionParser {
 	public String getParam(String objectType, String objectName, String paramName) throws OptionException
 	{
 		Map<String,String> params = getParams(objectType, objectName);
-		if (params == null)
-		{
+		if (!paramName.startsWith("-")){
+			paramName = "-" + paramName;
+		}
+		String param = params.get(paramName);
+		if (param == null)
+		{			
 			throw new OptionException("no parameter '" + paramName + "' in object named '" + objectName + "' of type '" + objectType + "' was found.");
 		}else
 		{
-			return params.get(paramName);
+			return param;
 		}
 	}
 	
