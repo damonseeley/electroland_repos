@@ -31,8 +31,8 @@ public class OptionParser {
 		try {
 			OptionParser op = new OptionParser(p);
 
-			System.out.println(op.getObjectnames("cat"));
-			System.out.println(op.getObjectnames("dog"));
+			System.out.println(op.getObjectNames("cat"));
+			System.out.println(op.getObjectNames("dog"));
 			
 			System.out.println(op.getParams("cat", "1"));
 			System.out.println(op.getParams("dog", "mydog"));
