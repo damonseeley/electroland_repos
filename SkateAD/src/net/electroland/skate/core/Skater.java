@@ -19,6 +19,7 @@ public class Skater implements Cloneable {
 	public String name;
 	public String[] soundList;
 	public String fileName;
+	public int maxDim;
 	public int startTick;
 	public int endTick;
 	public int frameRate;
@@ -32,12 +33,18 @@ public class Skater implements Cloneable {
 	public HashMap[] frameData;
 
 
-	public Skater(String skaterName, String animXML, String[] sounds) {
+	public Skater(String skaterName, String animXML, String dim, String[] sounds) {
 		
 		if (skaterName != null){
 			name = skaterName;
 		} else {
 			name = "generic";
+		}
+		
+		if (dim != null){
+			maxDim = Integer.parseInt(dim);
+		} else {
+			maxDim = 1000;
 		}
 		
 		if (soundList != null){
@@ -47,7 +54,7 @@ public class Skater implements Cloneable {
 		}
 		
 		cmConversion = 2.54; //incoming files should have inch units, by default do
-		boolean debugOutput = false;
+		boolean debugOutput = true;
 
 		try {
 
@@ -133,15 +140,61 @@ public class Skater implements Cloneable {
 			e.printStackTrace();
 		}
 
-		//System.out.println(getMetricPosAtTime(3.2)[0] + " " + getMetricPosAtTime(3.2)[1] + " " + getMetricPosAtTime(3.2)[2] + " ");
-
 	}
+	
+	
+	/* -------- ANIMATION --------
+	 *  --------------------------- */
+	
 	
 	/* start animation playback by recording the start time for later comparison */
 	public void startAnim() {
 		startTime = System.currentTimeMillis();
 	}
+	
+	public double percentComplete = 0.0;
+	
+	public int curFrame = 0;
+	
+	/* update the play head based on the amount of time elapsed */
+	public void updatePlayHead() {
+		long elapsed = System.currentTimeMillis() - startTime;
+		
+		percentComplete = (elapsed/1000.0) / lengthSeconds;
+		//System.out.println(percentComplete * 100 + "%");
+		curFrame = (int)(lengthFrames * percentComplete);
+		//System.out.println(curFrame);
+		
+	}
+	
+	
 
+	
+	
+	
+	/* -------- GETTERS --------
+	 *  --------------------------- */
+	
+	public boolean isComplete = false;
+	
+	public boolean isComplete() {
+		if (curFrame > lengthFrames){
+			isComplete = true;
+		} else {
+			isComplete = false;
+		}
+		return isComplete;
+	}
+
+	/* Return the pos value in centimeters for the current frame */
+	public double[] getMetricPosNow(){
+		double[] pos = new double[3];
+		pos[0] = (Double)frameData[curFrame].get("x") * cmConversion;
+		pos[1] = (Double)frameData[curFrame].get("y") * cmConversion;
+		pos[2] = (Double)frameData[curFrame].get("z") * cmConversion;
+		return pos;
+	}
+	
 	/* Return the pos value in centimeters for given frame */
 	public double[] getMetricPosAtFrame(int index){
 		double[] pos = new double[3];
@@ -162,16 +215,23 @@ public class Skater implements Cloneable {
 		pos[2] = (Double)frameData[frame].get("z") * cmConversion;
 		return pos;
 	}
+	
+	
+	
+	
+	/* -------- PLUMBING --------
+	 *  --------------------------- */
 
 
 	public static void main(String argv[]) {
 		@SuppressWarnings("unused")
-		Skater sx = new Skater(null, "180f_pos.xaf", null);
+		Skater sx = new Skater(null, "180f_pos.xaf", null, null);
 	}
 
 	public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
+
 
 }
 

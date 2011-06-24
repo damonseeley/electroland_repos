@@ -76,7 +76,7 @@ public class SkateMain extends Thread {
 		//elu.start();
 
 		//Skater sx = new Skater("depends//180f_sample.xaf");
-		
+
 
 		try {
 			loadSkaterProps();
@@ -102,7 +102,7 @@ public class SkateMain extends Thread {
 	public void run() {
 		timer.start();
 		curTime = System.currentTimeMillis();
-		
+
 		addSkater();
 
 		while (isRunning) {
@@ -111,7 +111,17 @@ public class SkateMain extends Thread {
 			//figure out whether to add or subtract skaters
 
 			//advance all skater play heads
-			
+
+			if (!skaters.get(0).isComplete()) {
+				skaters.get(0).updatePlayHead();
+			}
+
+			// Remove dead skaters
+			if (skaters.get(0).isComplete()) {
+				skaters.remove(0);
+			}
+
+
 			//update sound locations
 			//draw skater sprites on an image at native size
 			//flop sand scale skater image to canvas-size
@@ -131,14 +141,23 @@ public class SkateMain extends Thread {
 
 			BufferedImage i = new BufferedImage(400,400,ColorSpace.TYPE_RGB);
 			Graphics gi = i.getGraphics();
-			gi.setColor(new Color(255,150,255));
+			gi.setColor(new Color(0,0,0));
+			
 			gi.fillRect(0,0,i.getWidth(),i.getHeight());
-			gi.setColor(new Color(255,0,0));
-			gi.fillRect((int)(60),(int)(60),20,20);
+			
+			
+			gi.setColor(new Color(255,255,255));
+			int skaterX = (int)(skaters.get(0).getMetricPosNow()[0]/skaters.get(0).maxDim * i.getWidth());
+			int skaterY = (int)(skaters.get(0).getMetricPosNow()[1]/skaters.get(0).maxDim * i.getHeight()) * -1;
+			//System.out.println(skaterX + ", " + skaterY);
+			gi.fillRect(skaterX,skaterY,10,10);
 
 			g.drawImage(i, 0, 0, null);
-			
+
 			// END SHAKE
+
+
+
 
 
 			//Thread ops
@@ -147,7 +166,7 @@ public class SkateMain extends Thread {
 		}
 
 	}
-	
+
 	public void addSkater() {
 		Skater sk8r = skaterDefs.get(0);
 		Skater sk8Ref;
@@ -155,12 +174,13 @@ public class SkateMain extends Thread {
 			sk8Ref = (Skater)sk8r.clone();
 			skaters.add(sk8Ref);
 			sk8Ref.startAnim();
-			System.out.println("CLONED: " + sk8Ref.name + " " + sk8Ref.lengthFrames);
+			sk8Ref.name += "--clone--";
+			System.out.println("CLONED: " + sk8Ref.name + " FROM: " + sk8r.name);
 		} catch (CloneNotSupportedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
 
@@ -172,26 +192,27 @@ public class SkateMain extends Thread {
 		OptionParser op = new OptionParser("Skaters.properties");
 
 		//System.out.println(op.getObjectNames("skater").size());
-		
+
 		Set<String> skaterNames = (op.getObjectNames("skater"));
 		Iterator iter = skaterNames.iterator();
 		while (iter.hasNext()) {
 			//System.out.println(iter);
 			String curSkater = iter.next().toString();
 			String animFile = op.getParam("skater",curSkater,"animFile");
+			String maxDim = op.getParam("skater",curSkater,"dims");
 			//System.out.println(animFile);
 			String[] soundList = op.getParam("skater",curSkater,"sounds").split(",");
 			//System.out.println(soundList.toString());
-			
-			
-			Skater sk8r = new Skater(curSkater, animFile, soundList);
+
+
+			Skater sk8r = new Skater(curSkater, animFile, maxDim, soundList);
 			skaterDefs.add(sk8r);
 		}
-		
+
 		System.out.println(skaterDefs.get(0).name);
 	}
-	
-	
+
+
 
 
 
