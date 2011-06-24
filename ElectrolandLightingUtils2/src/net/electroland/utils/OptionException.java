@@ -10,4 +10,10 @@ public class OptionException extends Exception
 	{
 		super(mssg);
 	}
+
+	// TODO: don't like this.  masks the original exception.
+	public OptionException(Exception e)
+	{
+		super(e.getMessage());
+	}
 }
