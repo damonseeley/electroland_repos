@@ -5,16 +5,13 @@ import java.awt.Graphics;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.Properties;
+import java.util.Set;
+import java.util.Vector;
 
 import net.electroland.skate.ui.GUIFrame;
 import net.electroland.skate.ui.GUIPanel;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.OptionParser;
-import net.electroland.utils.Util;
 import net.electroland.utils.lighting.ELUManager;
 import net.electroland.utils.lighting.canvas.ELUCanvas2D;
 
@@ -76,15 +73,17 @@ public class SkateMain extends Thread {
 		// start everything (e.g., start the threads for each of these subsystems)
 		//elu.start();
 
-		Skater sx = new Skater("depends//180f_sample.xaf");
+		//Skater sx = new Skater("depends//180f_sample.xaf");
+		
+
 		try {
 			loadSkaterProps();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (OptionException e) {
 			e.printStackTrace();
 		}
+
 
 
 
@@ -148,71 +147,21 @@ public class SkateMain extends Thread {
 
 	}
 
+	
+	public Vector Skaters = new Vector();
+	
 	public void loadSkaterProps() throws IOException, OptionException
 	{
-		// find lights.properties
-		Properties props = new Properties();
-		InputStream is = new Util().getClass().getClassLoader().getResourceAsStream("Skaters.properties");
+		OptionParser op = new OptionParser("Skaters.properties");
 		
-		if (is != null)
-		{
-			props.load(is);
-		} else {
-			throw new IOException("Skaters file not found!");
-		}
+		System.out.println(op.getObjectNames("skater").size());
 		
-		System.out.println(props);
-
-
-		// parse recipients
-		Enumeration <Object> g = props.keys();
-
-		while (g.hasMoreElements())
-		{
-			String key = ("" + g.nextElement()).trim();
-			System.out.println(key);
-
-			
-			if (key.toLowerCase().startsWith("skater."))
-			{
-				// validate that it has an ID
-				int idStart = key.indexOf('.');
-				if (idStart == -1 || idStart == key.length() - 1)
-				{
-					throw new OptionException("no id specified in property " + key);
-				}else{
-					// get the ID
-					String id = key.substring(idStart + 1, key.length());
-					System.out.println("ID: " + id);
-
-					// get the props
-					Map<String,String> m = OptionParser.parse("" + props.get(key));
-
-					// load the protocol-appropriate Recipient Class.
-					try {
-						System.out.println("foo");
-						//Recipient r = (Recipient)(new Util().getClass().getClassLoader().loadClass("" + m.get("-class")).newInstance());
-
-						// name, configure, store
-						//r.setName(id);
-						//r.configure(m);
-						//recipients.put(id, r);
-
-					// TODO: friendler error handling here.
-					} catch (InstantiationException e) {
-						e.printStackTrace();
-					} catch (IllegalAccessException e) {
-						e.printStackTrace();
-					} catch (ClassNotFoundException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-			 
-		}
+		
+		//Skater sk8r = new Skater();
 
 	}
 
+	
 
 
 
