@@ -1,6 +1,7 @@
 package net.electroland.utils.lighting;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -20,6 +21,8 @@ public class ELUManager implements Runnable {
 				= new Hashtable<String, FixtureType>();
 	private Hashtable<String, ELUCanvas>canvases
 				= new Hashtable<String, ELUCanvas>();
+	private Hashtable<String, Fixture>fixtures
+				= new Hashtable<String, Fixture>();
 	
 	public static void main(String args[])
 	{
@@ -177,14 +180,33 @@ public class ELUManager implements Runnable {
 			String canvasName = canvasNames.next();
 			ELUCanvas ec = (ELUCanvas)ep.getRequiredParamAsClass("canvas", canvasName, "class");
 			ec.configure(ep.getParams("canvas", canvasName));
+			ec.setName(canvasName);
 			canvases.put(canvasName, ec);
 			// TODO: allocate a height x width array?
 		}
 
 		// parse fixtures
-		//  for each fixture, store the type, tags, recipient, start address
-		// (verify that the fixture and recipient exist.)
-		// then patch in the detectors
+		Iterator <String> fixtureNames = ep.getObjectNames("fixture").iterator();		
+		while (fixtureNames.hasNext())
+		{
+			String fixtureName = fixtureNames.next();
+			String typeStr = ep.getRequiredParam("fixture", fixtureName, "fixtureType");
+			FixtureType type = types.get(typeStr);
+			if (type == null){
+				throw new OptionException("fixtureType '" + typeStr + "' for object '" + fixtureName + "' of type 'fixture' could not be found.");
+			}
+			int startAddress = ep.getRequiredParamAsInt("fixture", fixtureName, "startAddress");
+			String recipStr = ep.getRequiredParam("fixture", fixtureName, "recipient");
+			Recipient recipient = recipients.get(recipStr);
+			if (recipient == null){
+				throw new OptionException("recipient '" + recipStr + "' for object '" + fixtureName + "' of type 'fixture' could not be found.");				
+			}
+			String[] tags = ep.getRequiredParam("fixture", fixtureName, "tags").split(" ");
+			Fixture fixture = new Fixture(type, startAddress, recipient, tags);
+			fixtures.put(fixtureName, fixture);
+			
+			// TODO: then patch in the detectors
+		}
 		
 		// parse fixture to canvas mappings
 		//   for each fixture that is mapped
@@ -257,10 +279,10 @@ class Fixture
 	Recipient recipient;
 	
 	
-	public Fixture(FixtureType type, int startAddress, Vector<String> tags, Recipient recipient){
+	public Fixture(FixtureType type, int startAddress, Recipient recipient, String[] tags){
 		this.type = type;
 		this.startAddress = startAddress;
-		this.tags = tags;
+		this.tags.addAll(Arrays.asList(tags));
 		this.recipient = recipient;
 	}
 }
