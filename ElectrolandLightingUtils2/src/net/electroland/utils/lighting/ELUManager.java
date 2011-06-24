@@ -177,19 +177,18 @@ public class ELUManager implements Runnable {
 			ELUCanvas ec = (ELUCanvas)ep.getRequiredParamAsClass("canvas", canvasName, "class");
 			ec.configure(ep.getParams("canvas", canvasName));
 			canvases.put(canvasName, ec);
-			//       * allocate a height x width array
+			// TODO: allocate a height x width array?
 		}
-		
 
 		// parse fixtures
 		//  for each fixture, store the type, tags, recipient, start address
+		// (verify that the fixture and recipient exist.)
+		// then patch in the detectors
 		
 		// parse fixture to canvas mappings
 		//   for each fixture that is mapped
 		//     * find the fixture
-		//     * get the fixtureType from the fixture
-		//     * find the stored fixtureType
-		//     for each prototype detector in the fixtureType
+		//     for each prototype detector in the fixture
 		//      * create a CanvasDetector
 		//      * calculate x,y based on the offset store it in the CanvasDetector
 		//      * store the width and height
@@ -253,6 +252,14 @@ class Fixture
 	FixtureType type;
 	int startAddress;
 	Vector<String> tags = new Vector<String>();
+	Vector<Detector> detectors = new Vector<Detector>();
 	Recipient recipient;
-	//fixture.f1 = -type PhilipsLEDBar -startAddress 0 -tags "mac:00:00:00 f1" -recipient datagate1
+	
+	
+	public Fixture(FixtureType type, int startAddress, Vector<String> tags, Recipient recipient){
+		this.type = type;
+		this.startAddress = startAddress;
+		this.tags = tags;
+		this.recipient = recipient;
+	}
 }
