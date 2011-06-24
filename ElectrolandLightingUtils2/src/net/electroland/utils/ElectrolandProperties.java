@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import net.electroland.utils.lighting.DetectionModel;
-
 /**
  * To do: document.  add validation handling.  log4j.  make it possible to
  *        parse a single line from a props file handed to this as two strings.
@@ -41,8 +39,8 @@ public class ElectrolandProperties {
 			System.out.println(op.getParams("cat", "1"));
 			System.out.println(op.getParams("dog", "mydog"));
 		
-			System.out.println(op.getParam("dog", "mydog.2", "-fooe"));
-			System.out.println(op.getRequiredParam("dog", "mydog.2", "-fooe"));
+			System.out.println(op.getParam("dog", "mydog.2", "-foo"));
+			System.out.println(op.getRequiredParam("dog", "mydog.2", "-foo"));
 			
 		} catch (OptionException e) {
 			e.printStackTrace();
