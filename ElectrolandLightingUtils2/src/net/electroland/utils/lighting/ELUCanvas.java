@@ -1,6 +1,6 @@
 package net.electroland.utils.lighting;
 
-import java.util.Hashtable;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import net.electroland.utils.OptionException;
@@ -39,7 +39,7 @@ abstract public class ELUCanvas {
 	 */
 	abstract public CanvasDetector[] sync(int[] pixels) throws InvalidPixelGrabException;
 
-	abstract public void Configure(Hashtable<String,String> properties) throws OptionException;
+	abstract public void configure(Map<String,String> properties) throws OptionException;
 
 	abstract public void map(Detector d) throws OptionException;
 	
