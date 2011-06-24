@@ -1,18 +1,24 @@
 package net.electroland.utils.lighting;
 
-import java.util.Vector;
 
+/**
+ * an ABSTRACT detector. it is in the coordinate space of a Fixture.
+ * @author bradley
+ *
+ */
 public class Detector {
 
 	protected int x, y, width, height;
 	protected DetectionModel model;
-	protected Vector<Integer>pixels;
 
-	protected boolean isOn;
-	
-	public void setState(boolean isOn){
-		this.isOn = isOn;
+	public Detector(int x, int y, int width, int height, DetectionModel model){
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+		this.model = model;
 	}
+	
 	public int getX() {
 		return x;
 	}
@@ -29,7 +35,4 @@ public class Detector {
 		return model;
 	}
 	
-	public CanvasDetector evaluate(){
-		return null;
-	}
 }
