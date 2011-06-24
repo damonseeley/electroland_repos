@@ -9,11 +9,17 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+/**
+ * To do: document.  add validation handling.
+ * @author bradley
+ *
+ */
+
 public class OptionParser {
 
 	private static String ARG_MARKER = " -";
 
-	
+	// main is just a unit test
 	public static void main(String args[]){
 		Properties p = new Properties();
 		p.put("cat.1", "-class goober -width 700");
@@ -193,6 +199,30 @@ public class OptionParser {
 
 	// TODO: make this work.
 	public void save()
+	{
+	
+	}
+
+	// TODO: make this work.
+	public void setParam(String objectType, String objectName, String paramName, String paramValue)
+	{
+	
+	}
+
+	// TODO: make this work.
+	public void setParams(String objectType, String objectName, Map<String,String> params)
+	{
+		
+	}
+	
+	// TODO: make this work.
+	public void addObjectType(String objectType)
+	{
+		
+	}
+
+	// TODO: make this work.
+	public void addNamedObject(String objectType, String objectName)
 	{
 		
 	}
