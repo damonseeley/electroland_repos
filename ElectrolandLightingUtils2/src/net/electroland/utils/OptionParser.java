@@ -210,7 +210,7 @@ public class OptionParser {
 	 * @return a Map of the keys and their values.
 	 * @throws OptionException if the string does not properly start with a flag. 
 	 */
-	public static Map<String, String> parse(String str) throws OptionException
+	private static Map<String, String> parse(String str) throws OptionException
 	{
 		HashMap <String, String> map = new HashMap<String, String>();
 		if (str == null)
