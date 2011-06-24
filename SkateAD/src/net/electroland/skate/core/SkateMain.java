@@ -112,13 +112,14 @@ public class SkateMain extends Thread {
 
 			//advance all skater play heads
 
-			if (!skaters.get(0).isComplete()) {
-				skaters.get(0).updatePlayHead();
-			}
-
+			
+			skaters.get(0).updatePlayHead();
+		
 			// Remove dead skaters
-			if (skaters.get(0).isComplete()) {
-				skaters.remove(0);
+			if (skaters.get(0).isLive()) {
+				// something
+			} else {
+				//skaters.remove(0);
 			}
 
 
@@ -133,26 +134,26 @@ public class SkateMain extends Thread {
 
 
 			// JUST SHAKING OFF THE JAVA2D RUST HERE
-			//BufferedImage i = new BufferedImage(400,400,ColorSpace.TYPE_RGB);
 			Graphics g = guiPanel.getGraphics();
-			//g.setColor(new Color(255,0,0));
-			//g.fillRect((int)(20),(int)(20),20,20);
-			//logger.info("Drew something?");
 
+			// Draw a big black rect on the image
 			BufferedImage i = new BufferedImage(400,400,ColorSpace.TYPE_RGB);
 			Graphics gi = i.getGraphics();
 			gi.setColor(new Color(0,0,0));
-			
 			gi.fillRect(0,0,i.getWidth(),i.getHeight());
-			
-			
-			gi.setColor(new Color(255,255,255));
-			int skaterX = (int)(skaters.get(0).getMetricPosNow()[0]/skaters.get(0).maxDim * i.getWidth());
-			int skaterY = (int)(skaters.get(0).getMetricPosNow()[1]/skaters.get(0).maxDim * i.getHeight()) * -1;
-			//System.out.println(skaterX + ", " + skaterY);
-			gi.fillRect(skaterX,skaterY,10,10);
 
-			g.drawImage(i, 0, 0, null);
+			if (skaters.get(0).isLive()) {
+				gi.setColor(new Color(255,255,255));
+				int skaterX = (int)(skaters.get(0).getMetricPosNow()[0]/skaters.get(0).maxDim * i.getWidth());
+				//flip y to account for UCS diffs between 3D and Java
+				int skaterY = (int)(skaters.get(0).getMetricPosNow()[1]/skaters.get(0).maxDim * i.getHeight()) * -1;
+				//System.out.println(skaterX + ", " + skaterY);
+				gi.fillRect(skaterX,skaterY,10,10);
+				gi.setColor(new Color(128,128,128));
+				gi.drawString(skaters.get(0).curFrame + "", skaterX, skaterY);			
+
+				g.drawImage(i, 0, 0, null);
+			}
 
 			// END SHAKE
 

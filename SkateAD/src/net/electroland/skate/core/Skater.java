@@ -164,7 +164,6 @@ public class Skater implements Cloneable {
 		//System.out.println(percentComplete * 100 + "%");
 		curFrame = (int)(lengthFrames * percentComplete);
 		//System.out.println(curFrame);
-		
 	}
 	
 	
@@ -175,15 +174,12 @@ public class Skater implements Cloneable {
 	/* -------- GETTERS --------
 	 *  --------------------------- */
 	
-	public boolean isComplete = false;
-	
-	public boolean isComplete() {
-		if (curFrame > lengthFrames){
-			isComplete = true;
+	public boolean isLive() {
+		if (curFrame <= lengthFrames){
+			return true;
 		} else {
-			isComplete = false;
+			return false;
 		}
-		return isComplete;
 	}
 
 	/* Return the pos value in centimeters for the current frame */
