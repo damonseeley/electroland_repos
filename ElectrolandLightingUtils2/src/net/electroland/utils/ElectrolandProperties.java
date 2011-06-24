@@ -241,6 +241,7 @@ public class ElectrolandProperties {
 		try {
 			return new Util().getClass().getClassLoader().loadClass(str).newInstance();
 		} catch (InstantiationException e) {
+			// TODO: instead of wrapping these, throw a clean exception message.
 			throw new OptionException(e);
 		} catch (IllegalAccessException e) {
 			throw new OptionException(e);
