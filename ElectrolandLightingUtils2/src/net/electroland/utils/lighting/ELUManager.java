@@ -1,22 +1,23 @@
 package net.electroland.utils.lighting;
 
-import java.awt.Shape;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Map;
-import java.util.Properties;
+import java.util.Iterator;
+import java.util.Vector;
 
+import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
-import net.electroland.utils.OptionParser;
 import net.electroland.utils.Util;
 
 public class ELUManager implements Runnable {
 
 	private int fps;
-	private Hashtable<String, Recipient>recipients = new Hashtable<String, Recipient>();
+	
+	private Hashtable<String, Recipient>recipients 
+				= new Hashtable<String, Recipient>();
+	private Hashtable<String, FixtureType>types 
+				= new Hashtable<String, FixtureType>();
 	
 	public static void main(String args[])
 	{
@@ -116,68 +117,76 @@ public class ELUManager implements Runnable {
 	 */
 	public void load() throws IOException, OptionException
 	{
-		// find lights.properties
-		Properties props = new Properties();
-		InputStream is = new Util().getClass().getClassLoader().getResourceAsStream("lights.properties");
-		if (is != null)
-		{
-			props.load(is);
-		}else{
-			throw new OptionException("Please make sure lights.properties is in your classpath.");
-		}
+		ElectrolandProperties ep = new ElectrolandProperties("lights.properties");
 
-		// fps
+		// get fps
 		try{
-			fps = Integer.parseInt(props.getProperty("fps"));			
+			fps = Integer.parseInt(ep.getParam("settings","global","fps"));			
 		}catch(NumberFormatException e){
 			fps = 33;
 		}
-
+		
 		// parse recipients
-		Enumeration <Object> g = props.keys();
-		while (g.hasMoreElements())
+		Iterator <String> recipientNames = ep.getObjectNames("recipient").iterator();
+		while (recipientNames.hasNext())
 		{
-			String key = ("" + g.nextElement()).trim();
-			if (key.toLowerCase().startsWith("recipient."))
-			{
-				// validate that it has an ID
-				int idStart = key.indexOf('.');
-				if (idStart == -1 || idStart == key.length() - 1)
-				{
-					throw new OptionException("no id specified in property " + key);
-				}else{
-					// get the ID
-					String id = key.substring(idStart + 1, key.length());
-
-					// get the props
-					Map<String,String> m = OptionParser.parse("" + props.get(key));
-
-					// load the protocol-appropriate Recipient Class.
-					try {
-						Recipient r = (Recipient)(new Util().getClass().getClassLoader().loadClass("" + m.get("-class")).newInstance());
-
-						// name, configure, store
-						r.setName(id);
-						r.configure(m);
-						recipients.put(id, r);
-					
-					// TODO: friendler error handling here.
-					} catch (InstantiationException e) {
-						e.printStackTrace();
-					} catch (IllegalAccessException e) {
-						e.printStackTrace();
-					} catch (ClassNotFoundException e) {
-						e.printStackTrace();
-					}
-				}
+			String name = recipientNames.next();			
+			String rClass = ep.getRequiredParam("recipient", name, "class");
+			
+			Recipient r;
+			try {
+				r = (Recipient)(new Util().getClass().getClassLoader().loadClass(rClass).newInstance());
+			} catch (InstantiationException e) {
+				throw new OptionException(e);
+			} catch (IllegalAccessException e) {
+				throw new OptionException(e);
+			} catch (ClassNotFoundException e) {
+				throw new OptionException(e);
 			}
+
+			// name, configure, store
+			r.setName(name);
+			r.configure(ep.getParams("recipient", name));
+			recipients.put(name, r);
 		}
 				
-		
 		// parse fixtureTypes
-		//  for each fixtureType, see if the type has already been defined
-		//    * yes? add the detector prototype to the appropriate channel
-		//    * no? -create it and store it and add the detector prototype to the appropriate channel
+		Iterator <String> fixtureTypeNames = ep.getObjectNames("fixtureType").iterator();
+		while (fixtureTypeNames.hasNext())
+		{
+			String name = fixtureTypeNames.next();
+			types.put(name, new FixtureType(name, Integer.parseInt(ep.getRequiredParam("fixtureType", name, "channels"))));
+		}
+		
+		// patch channels into each fixtureType
+		Iterator <String> detectorNames = ep.getObjectNames("detector").iterator();		
+		while (detectorNames.hasNext())
+		{
+			String dname = detectorNames.next();
+			int x = Integer.parseInt(ep.getRequiredParam("detector", dname, "x"));
+			int y = Integer.parseInt(ep.getRequiredParam("detector", dname, "y"));
+			int width = Integer.parseInt(ep.getRequiredParam("detector", dname, "w"));
+			int height = Integer.parseInt(ep.getRequiredParam("detector", dname, "h"));
+			String mname = ep.getRequiredParam("detector", dname, "model");
+			DetectionModel dm;
+			try {
+				dm = (DetectionModel)(new Util().getClass().getClassLoader().loadClass(mname).newInstance());
+			} catch (InstantiationException e) {
+				throw new OptionException(e);
+			} catch (IllegalAccessException e) {
+				throw new OptionException(e);
+			} catch (ClassNotFoundException e) {
+				throw new OptionException(e);
+			}
+
+			String ftname = ep.getRequiredParam("detector", dname, "fixtureType");
+			int index = Integer.parseInt(ep.getRequiredParam("detector", dname, "index"));
+
+			// TODO: need to verify that it isn't null
+			FixtureType ft = (FixtureType)types.get(ftname);
+			ft.detectors.set(index, new Detector(x,y,width,height,dm));
+		}
+
 
 		// parse canvases
 		//  for each Canvas
@@ -245,24 +254,14 @@ public class ELUManager implements Runnable {
 
 class FixtureType
 {
-	ArrayList<CanvasDetector> channels = new ArrayList<CanvasDetector>();
-	Shape boundary;
-	Class<DetectionModel> model;
-	String name;
-
-	public void configure(Map<String,String>m)
+	protected String name;
+	protected Vector<Detector> detectors;
+	
+	public FixtureType(String name, int channels)
 	{
-		// name and channel might have to be set by caller
-		
-		// get channel array index?? --> can we just put channels as a flag?
-
-		// get boundary
-		
-		// get detection model
-		
-		//fixtureType.PhilipsLEDBar.channels[0] = -boundary rectangle(0,0,2,2) -model net.electroland.lighting.detector.models.RedDetectionModel
-		//fixtureType.PhilipsLEDBar.channels[1] = -boundary rectangle(2,0,2,2) -model net.electroland.lighting.detector.models.GreenDetectionModel
-		//fixtureType.PhilipsLEDBar.channels[2] = -boundary rectangle(4,0,2,2) -model net.electroland.lighting.detector.models.BlueDetectionModel		
+		this.name = name;
+		detectors = new Vector<Detector>();
+		detectors.setSize(channels);
 	}
 }
 
@@ -270,7 +269,7 @@ class Fixture
 {
 	FixtureType type;
 	int startAddress;
-	ArrayList<String> tags = new ArrayList<String>();
+	Vector<String> tags = new Vector<String>();
 	Recipient recipient;
 	//fixture.f1 = -type PhilipsLEDBar -startAddress 0 -tags "mac:00:00:00 f1" -recipient datagate1
 }
