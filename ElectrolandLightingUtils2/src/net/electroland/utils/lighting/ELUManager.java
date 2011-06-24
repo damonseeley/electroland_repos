@@ -8,7 +8,6 @@ import java.util.Vector;
 
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
-import net.electroland.utils.Util;
 
 public class ELUManager implements Runnable {
 
@@ -18,6 +17,8 @@ public class ELUManager implements Runnable {
 				= new Hashtable<String, Recipient>();
 	private Hashtable<String, FixtureType>types 
 				= new Hashtable<String, FixtureType>();
+	private Hashtable<String, ELUCanvas>canvases
+				= new Hashtable<String, ELUCanvas>();
 	
 	public static void main(String args[])
 	{
@@ -126,7 +127,9 @@ public class ELUManager implements Runnable {
 		Iterator <String> recipientNames = ep.getObjectNames("recipient").iterator();
 		while (recipientNames.hasNext())
 		{
-			String name = recipientNames.next();			
+			String name = recipientNames.next();
+			
+			// TODO: Catch ClassCastException here.
 			Recipient r = (Recipient)ep.getRequiredParamAsClass("recipient", name, "class");
 
 			// name, configure, store
@@ -153,6 +156,8 @@ public class ELUManager implements Runnable {
 			int y = ep.getRequiredParamAsInt("detector", dname, "y");
 			int width = ep.getRequiredParamAsInt("detector", dname, "w");
 			int height = ep.getRequiredParamAsInt("detector", dname, "h");
+
+			// TODO: Catch ClassCastException here.
 			DetectionModel dm = (DetectionModel)ep.getRequiredParamAsClass("detector", dname, "model");
 
 			// patch information
@@ -164,16 +169,17 @@ public class ELUManager implements Runnable {
 			ft.detectors.set(index, new Detector(x,y,width,height,dm));
 		}
 
-
 		// parse canvases
-		//  for each Canvas
-		//    * find the -class
-		//    * create an instance of that -class
-		//    * run configure()
-		//    * case(ELUCanvas2D): 
-		//       * get the height and width and store them as dimensions.  if bad, throw OptionException.
-		//       * allocate a height x width array
-		//    * store the canvas
+		Iterator <String> canvasNames = ep.getObjectNames("canvas").iterator();		
+		while (canvasNames.hasNext())
+		{
+			String canvasName = canvasNames.next();
+			ELUCanvas ec = (ELUCanvas)ep.getRequiredParamAsClass("canvas", canvasName, "class");
+			ec.configure(ep.getParams("canvas", canvasName));
+			canvases.put(canvasName, ec);
+			//       * allocate a height x width array
+		}
+		
 
 		// parse fixtures
 		//  for each fixture, store the type, tags, recipient, start address
