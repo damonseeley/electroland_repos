@@ -5,6 +5,8 @@ import java.awt.Graphics;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
 
@@ -40,10 +42,10 @@ public class SkateMain extends Thread {
 	float viewScale;
 
 
+	//Thread stuff
 	public static boolean isRunning;
 	private static float framerate;
 	private static Timer timer;
-
 	public static long curTime = System.currentTimeMillis(); //  time of frame start to aviod lots of calls to System.getcurentTime()
 	public static long elapsedTime = -1; //  time between start of cur frame and last frame to avoid re calculating passage of time allover the place
 
@@ -100,14 +102,17 @@ public class SkateMain extends Thread {
 	public void run() {
 		timer.start();
 		curTime = System.currentTimeMillis();
+		
+		addSkater();
 
 		while (isRunning) {
 
 
 			//figure out whether to add or subtract skaters
 
+			//advance all skater play heads
+			
 			//update sound locations
-
 			//draw skater sprites on an image at native size
 			//flop sand scale skater image to canvas-size
 			//extract a pixel array from the canvas-sized sprite image and sync with ELU
@@ -117,7 +122,7 @@ public class SkateMain extends Thread {
 
 
 
-			//test
+			// JUST SHAKING OFF THE JAVA2D RUST HERE
 			//BufferedImage i = new BufferedImage(400,400,ColorSpace.TYPE_RGB);
 			Graphics g = guiPanel.getGraphics();
 			//g.setColor(new Color(255,0,0));
@@ -132,36 +137,63 @@ public class SkateMain extends Thread {
 			gi.fillRect((int)(60),(int)(60),20,20);
 
 			g.drawImage(i, 0, 0, null);
+			
+			// END SHAKE
 
 
-
-
-
-
-
-
-
+			//Thread ops
 			//logger.info(timer.sleepTime);
 			timer.block();
 		}
 
 	}
+	
+	public void addSkater() {
+		Skater sk8r = skaterDefs.get(0);
+		Skater sk8Ref;
+		try {
+			sk8Ref = (Skater)sk8r.clone();
+			skaters.add(sk8Ref);
+			sk8Ref.startAnim();
+			System.out.println("CLONED: " + sk8Ref.name + " " + sk8Ref.lengthFrames);
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 
-	
-	public Vector Skaters = new Vector();
-	
+
+	public Vector<Skater> skaterDefs = new Vector<Skater>();
+	public Vector<Skater> skaters = new Vector<Skater>();
+
 	public void loadSkaterProps() throws IOException, OptionException
 	{
 		OptionParser op = new OptionParser("Skaters.properties");
-		
-		System.out.println(op.getObjectNames("skater").size());
-		
-		
-		//Skater sk8r = new Skater();
 
+		//System.out.println(op.getObjectNames("skater").size());
+		
+		Set<String> skaterNames = (op.getObjectNames("skater"));
+		Iterator iter = skaterNames.iterator();
+		while (iter.hasNext()) {
+			//System.out.println(iter);
+			String curSkater = iter.next().toString();
+			String animFile = op.getParam("skater",curSkater,"animFile");
+			//System.out.println(animFile);
+			String[] soundList = op.getParam("skater",curSkater,"sounds").split(",");
+			//System.out.println(soundList.toString());
+			
+			
+			Skater sk8r = new Skater(curSkater, animFile, soundList);
+			skaterDefs.add(sk8r);
+		}
+		
+		System.out.println(skaterDefs.get(0).name);
 	}
-
 	
+	
+
+
 
 
 
