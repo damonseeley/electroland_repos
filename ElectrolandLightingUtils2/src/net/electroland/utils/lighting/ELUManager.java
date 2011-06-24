@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 import net.electroland.utils.ElectrolandProperties;
@@ -221,16 +222,16 @@ public class ELUManager implements Runnable {
 	 */
 	public ELUCanvas getCanvas(String name)
 	{
-		return null;
+		return canvases.get(name);
 	}
 
 	/**
-	 * return all canvases.
+	 * return all canvases (mapped to names)
 	 * @return
 	 */
-	public ELUCanvas[] getCanvases()
+	public Map<String, ELUCanvas> getCanvases()
 	{
-		return null;
+		return canvases;
 	}
 }
 
