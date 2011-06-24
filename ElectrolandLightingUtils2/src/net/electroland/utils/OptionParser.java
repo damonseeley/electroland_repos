@@ -31,7 +31,8 @@ public class OptionParser {
 			System.out.println(op.getParams("cat", "1"));
 			System.out.println(op.getParams("dog", "mydog"));
 		
-			System.out.println(op.getParam("dog", "mydog.2", "-foo"));
+			System.out.println(op.getParam("dog", "mydog.2", "-fooe"));
+			System.out.println(op.getRequiredParam("dog", "mydog.2", "-fooe"));
 			
 		} catch (OptionException e) {
 			e.printStackTrace();
@@ -173,7 +174,13 @@ public class OptionParser {
 		if (!paramName.startsWith("-")){
 			paramName = "-" + paramName;
 		}
-		String param = params.get(paramName);
+		return params.get(paramName);
+	}
+
+	public String getRequiredParam(String objectType, String objectName, String paramName) throws OptionException
+	{
+		String param = getParam(objectType, objectName, paramName);
+		
 		if (param == null)
 		{			
 			throw new OptionException("no parameter '" + paramName + "' in object named '" + objectName + "' of type '" + objectType + "' was found.");
@@ -181,8 +188,9 @@ public class OptionParser {
 		{
 			return param;
 		}
+		
 	}
-	
+
 	// TODO: make this work.
 	public void save()
 	{
@@ -210,7 +218,7 @@ public class OptionParser {
 	 * @return a Map of the keys and their values.
 	 * @throws OptionException if the string does not properly start with a flag. 
 	 */
-	private static Map<String, String> parse(String str) throws OptionException
+	public static Map<String, String> parse(String str) throws OptionException
 	{
 		HashMap <String, String> map = new HashMap<String, String>();
 		if (str == null)
