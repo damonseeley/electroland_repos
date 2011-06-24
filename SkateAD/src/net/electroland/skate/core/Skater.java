@@ -1,18 +1,23 @@
 package net.electroland.skate.core;
 
 import java.io.File;
+import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import net.electroland.utils.Util;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class Skater {
+public class Skater implements Cloneable {
 
+	public String name;
+	public String[] soundList;
 	public String fileName;
 	public int startTick;
 	public int endTick;
@@ -20,20 +25,34 @@ public class Skater {
 	public int ticksPerFrame;
 	public double lengthSeconds;
 	public int lengthFrames;
+	public long startTime;
 
 	public double cmConversion;
 
 	public HashMap[] frameData;
 
 
-	public Skater(String XMLfile) {
-
+	public Skater(String skaterName, String animXML, String[] sounds) {
+		
+		if (skaterName != null){
+			name = skaterName;
+		} else {
+			name = "generic";
+		}
+		
+		if (soundList != null){
+			name = skaterName;
+		} else {
+			soundList = sounds;
+		}
+		
 		cmConversion = 2.54; //incoming files should have inch units, by default do
 		boolean debugOutput = false;
 
 		try {
 
-			File fXmlFile = new File(XMLfile);
+			//File fXmlFile = new File(animXML);
+			InputStream fXmlFile = new Util().getClass().getClassLoader().getResourceAsStream(animXML);
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(fXmlFile);
@@ -117,6 +136,11 @@ public class Skater {
 		//System.out.println(getMetricPosAtTime(3.2)[0] + " " + getMetricPosAtTime(3.2)[1] + " " + getMetricPosAtTime(3.2)[2] + " ");
 
 	}
+	
+	/* start animation playback by recording the start time for later comparison */
+	public void startAnim() {
+		startTime = System.currentTimeMillis();
+	}
 
 	/* Return the pos value in centimeters for given frame */
 	public double[] getMetricPosAtFrame(int index){
@@ -142,9 +166,12 @@ public class Skater {
 
 	public static void main(String argv[]) {
 		@SuppressWarnings("unused")
-		Skater sx = new Skater("depends//180f_pos.xaf");
+		Skater sx = new Skater(null, "180f_pos.xaf", null);
 	}
 
+	public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 
 }
 
