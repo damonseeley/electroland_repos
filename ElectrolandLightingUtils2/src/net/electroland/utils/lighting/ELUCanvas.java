@@ -40,7 +40,8 @@ abstract public class ELUCanvas {
 	abstract public CanvasDetector[] sync(int[] pixels) throws InvalidPixelGrabException;
 
 	abstract public void Configure(Hashtable<String,String> properties) throws OptionException;
-	
+
+	abstract public void map(Detector d) throws OptionException;
 	
 	/**
 	 * Get all detectors attached to this detector
