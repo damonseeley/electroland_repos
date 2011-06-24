@@ -120,29 +120,14 @@ public class ELUManager implements Runnable {
 		ElectrolandProperties ep = new ElectrolandProperties("lights.properties");
 
 		// get fps
-		try{
-			fps = Integer.parseInt(ep.getParam("settings","global","fps"));			
-		}catch(NumberFormatException e){
-			fps = 33;
-		}
+		fps = ep.getRequiredParamAsInt("settings","global","fps");			
 		
 		// parse recipients
 		Iterator <String> recipientNames = ep.getObjectNames("recipient").iterator();
 		while (recipientNames.hasNext())
 		{
 			String name = recipientNames.next();			
-			String rClass = ep.getRequiredParam("recipient", name, "class");
-			
-			Recipient r;
-			try {
-				r = (Recipient)(new Util().getClass().getClassLoader().loadClass(rClass).newInstance());
-			} catch (InstantiationException e) {
-				throw new OptionException(e);
-			} catch (IllegalAccessException e) {
-				throw new OptionException(e);
-			} catch (ClassNotFoundException e) {
-				throw new OptionException(e);
-			}
+			Recipient r = (Recipient)ep.getRequiredParamAsClass("recipient", name, "class");
 
 			// name, configure, store
 			r.setName(name);
@@ -155,32 +140,24 @@ public class ELUManager implements Runnable {
 		while (fixtureTypeNames.hasNext())
 		{
 			String name = fixtureTypeNames.next();
-			types.put(name, new FixtureType(name, Integer.parseInt(ep.getRequiredParam("fixtureType", name, "channels"))));
+			types.put(name, new FixtureType(name, ep.getRequiredParamAsInt("fixtureType", name, "channels")));
 		}
 		
 		// patch channels into each fixtureType
 		Iterator <String> detectorNames = ep.getObjectNames("detector").iterator();		
 		while (detectorNames.hasNext())
 		{
+			// detector information
 			String dname = detectorNames.next();
-			int x = Integer.parseInt(ep.getRequiredParam("detector", dname, "x"));
-			int y = Integer.parseInt(ep.getRequiredParam("detector", dname, "y"));
-			int width = Integer.parseInt(ep.getRequiredParam("detector", dname, "w"));
-			int height = Integer.parseInt(ep.getRequiredParam("detector", dname, "h"));
-			String mname = ep.getRequiredParam("detector", dname, "model");
-			DetectionModel dm;
-			try {
-				dm = (DetectionModel)(new Util().getClass().getClassLoader().loadClass(mname).newInstance());
-			} catch (InstantiationException e) {
-				throw new OptionException(e);
-			} catch (IllegalAccessException e) {
-				throw new OptionException(e);
-			} catch (ClassNotFoundException e) {
-				throw new OptionException(e);
-			}
+			int x = ep.getRequiredParamAsInt("detector", dname, "x");
+			int y = ep.getRequiredParamAsInt("detector", dname, "y");
+			int width = ep.getRequiredParamAsInt("detector", dname, "w");
+			int height = ep.getRequiredParamAsInt("detector", dname, "h");
+			DetectionModel dm = (DetectionModel)ep.getRequiredParamAsClass("detector", dname, "model");
 
+			// patch information
 			String ftname = ep.getRequiredParam("detector", dname, "fixtureType");
-			int index = Integer.parseInt(ep.getRequiredParam("detector", dname, "index"));
+			int index = ep.getRequiredParamAsInt("detector", dname, "index");
 
 			// TODO: need to verify that it isn't null
 			FixtureType ft = (FixtureType)types.get(ftname);
