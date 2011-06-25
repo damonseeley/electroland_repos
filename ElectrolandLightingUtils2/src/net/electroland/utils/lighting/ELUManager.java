@@ -236,6 +236,13 @@ public class ELUManager implements Runnable {
 			if (canvas == null){				
 				throw new OptionException("canvas '" + cnvsName + "' for object '" + cmapName + "' of type 'canvasFixture' could not be found.");
 			}
+
+			// counter for recipient mappings
+			int channel = fixture.startAddress;			
+
+			//	   * find the recipient
+			Recipient recipient = fixture.recipient;	
+
 			
 			//     for each prototype detector in the fixture (get from FixtureType)
 			Iterator<Detector> dtrs = fixture.type.detectors.iterator();
@@ -243,6 +250,7 @@ public class ELUManager implements Runnable {
 				//      * create a CanvasDetector
 				CanvasDetector cd = new CanvasDetector();
 				Detector dtr = dtrs.next();
+				
 
 				//      * calculate x,y based on the offset store it in the CanvasDetector
 				int offsetX = ep.getRequiredInt("canvasFixture", cmapName, "x");
@@ -257,25 +265,10 @@ public class ELUManager implements Runnable {
 				cd.detectorModel = dtr.model;
 
 				// map the CanvasDetectors to pixel locations in the pixelgrab
-				canvas.map(cd);				
-				
-				// does it make more sense to do canvas.map(detector, fixture, fixtureType);
-				// (same as map.(fixture)) <-- but CanvasDetector should be internally generated
+				canvas.map(cd);
 
-				//	   * find the recipient
-				Recipient recipient = fixture.recipient;
-				int channel = fixture.startAddress;
-				Iterator<Detector> channelDetectors = fixture.type.detectors.iterator();
-				while (channelDetectors.hasNext()){
-//					recipient.map(channel++, CanvasDetector);					
-				}
-				
-				// recipient.map(fixture);
-				//      * find the recipient and the startChannel from the 
-				//		  fixture and the index of the prototype detector 
-				//		  in the fixtureType. use those patch the CanvasDetector 
-				//		  in as appropriate					
-
+				// map the CanvasDetector to a channel in the recipient.
+				recipient.map(channel++, cd);
 			}
 		}
 	}
