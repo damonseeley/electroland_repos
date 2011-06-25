@@ -153,17 +153,24 @@ public class Skater implements Cloneable {
 	}
 	
 	public double percentComplete = 0.0;
-	
-	public int curFrame = 0;
+	public int curFrame = 0; //array index so start at 0
+	public long elapsed;
+	public boolean animComplete;
 	
 	/* update the play head based on the amount of time elapsed */
-	public void updatePlayHead() {
-		long elapsed = System.currentTimeMillis() - startTime;
-		
+	public void animate() {
+		elapsed = System.currentTimeMillis() - startTime;
 		percentComplete = (elapsed/1000.0) / lengthSeconds;
 		//System.out.println(percentComplete * 100 + "%");
 		curFrame = (int)(lengthFrames * percentComplete);
 		//System.out.println(curFrame);
+		
+		if (curFrame < lengthFrames){
+			animComplete = false;
+		} else {
+			animComplete = true;
+		}
+		
 	}
 	
 	
@@ -175,7 +182,7 @@ public class Skater implements Cloneable {
 	 *  --------------------------- */
 	
 	public boolean isLive() {
-		if (curFrame <= lengthFrames){
+		if (animComplete){
 			return true;
 		} else {
 			return false;
