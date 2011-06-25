@@ -8,8 +8,10 @@ import java.util.HashMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.Util;
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -31,7 +33,8 @@ public class Skater implements Cloneable {
 	public double cmConversion;
 
 	public HashMap[] frameData;
-
+	
+	private static Logger logger = Logger.getLogger(SkateMain.class);
 
 	public Skater(String skaterName, String animXML, String dim, String[] sounds) {
 		
@@ -67,13 +70,13 @@ public class Skater implements Cloneable {
 
 			// SETUP SCENE INFO
 			if (debugOutput){
-			System.out.println("---------- SCENE INFO ----------");
+				logger.info("---------- SCENE INFO ----------");
 			}
 
 			// Parse out SceneInfo attribs into object vars
 			NodeList SIlist = doc.getElementsByTagName("SceneInfo");
-			//System.out.println(SIlist.getLength());
-			//System.out.println(SIlist.item(0).getNodeName());
+			//logger.info(SIlist.getLength());
+			//logger.info(SIlist.item(0).getNodeName());
 
 			Element SIel = (Element)SIlist.item(0);
 			fileName = SIel.getAttribute("fileName");
@@ -88,15 +91,15 @@ public class Skater implements Cloneable {
 			lengthSeconds = (double)nl.getLength()/(double)frameRate;
 
 			if (debugOutput){
-				System.out.println("origin fileName: " + fileName);
-				System.out.println("startTick: " + startTick);
-				System.out.println("endTick: " + endTick);
-				System.out.println("frameRate: " + frameRate);
-				System.out.println("ticksPerFrame: " + ticksPerFrame);
-				System.out.println("length (in frames): " + lengthFrames);
-				System.out.println("length (in seconds): " + lengthSeconds);
-				System.out.println("-------- END SCENE INFO --------");
-				System.out.println("---------- ANIM DATA ----------");
+				logger.info("origin fileName: " + fileName);
+				logger.info("startTick: " + startTick);
+				logger.info("endTick: " + endTick);
+				logger.info("frameRate: " + frameRate);
+				logger.info("ticksPerFrame: " + ticksPerFrame);
+				logger.info("length (in frames): " + lengthFrames);
+				logger.info("length (in seconds): " + lengthSeconds);
+				logger.info("-------- END SCENE INFO --------");
+				logger.info("---------- ANIM DATA ----------");
 			}
 
 			//create an array of hashtables to store frame data
@@ -125,15 +128,15 @@ public class Skater implements Cloneable {
 					ht.put("x", Double.parseDouble(vs[9]));
 
 					frameData[i] = ht;
-					//System.out.println(i);
+					//logger.info(i);
 				}
 			}
 
 			
 			//test print
-			//System.out.println(frameData[96]);
+			//logger.info(frameData[96]);
 			if (debugOutput){
-				System.out.println("-------- END ANIM DATA --------");
+				logger.info("-------- END ANIM DATA --------");
 			}
 
 		} catch (Exception e) {
@@ -161,9 +164,9 @@ public class Skater implements Cloneable {
 	public void animate() {
 		elapsed = System.currentTimeMillis() - startTime;
 		percentComplete = (elapsed/1000.0) / lengthSeconds;
-		//System.out.println(percentComplete * 100 + "%");
+		//logger.info(percentComplete * 100 + "%");
 		curFrame = (int)(lengthFrames * percentComplete);
-		//System.out.println(curFrame);
+		//logger.info(curFrame);
 		
 		if (curFrame < lengthFrames){
 			animComplete = false;

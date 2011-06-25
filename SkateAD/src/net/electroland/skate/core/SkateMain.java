@@ -96,11 +96,11 @@ public class SkateMain extends Thread {
 
 
 		/////////////// THREAD STUFF
-		framerate = 30;
+		framerate = 45;
 		isRunning = true;
 		timer = new Timer(framerate);
 		start();
-		logger.info("Skate 1.0 started up");
+		logger.info("Skate 1.0 started up at framerate = " + framerate);
 
 
 	}
@@ -121,7 +121,7 @@ public class SkateMain extends Thread {
 
 			//advance all skater play heads
 			for (Skater sk8r : skaters) {
-				System.out.println("ANIMATING: " + sk8r.name);
+				//System.out.println("ANIMATING: " + sk8r.name);
 				sk8r.animate();
 			}
 
@@ -130,15 +130,14 @@ public class SkateMain extends Thread {
 
 
 			// Remove dead skaters
-			if(skaters.size() > 0){
-				Iterator<Skater> s = skaters.iterator();
-				while (s.hasNext()){
-					Skater sk8r = s.next();
-					if (!sk8r.animComplete) {
-						s.remove();
-					}
+			Iterator<Skater> s = skaters.iterator();
+			while (s.hasNext()){
+				Skater sk8r = s.next();
+				if (sk8r.animComplete) {
+					s.remove();
 				}
 			}
+
 	
 	
 			//update sound locations
@@ -164,22 +163,22 @@ public class SkateMain extends Thread {
 			gi.setColor(new Color(0,0,0));
 			gi.fillRect(0,0,i.getWidth(),i.getHeight());
 
-			// Draw skaters
+			// Draw skaters, only if there are skaters
 			for (Skater sk8r : skaters)
 			{
-				if (!sk8r.animComplete) {
-					gi.setColor(new Color(255,255,255));
-					int skaterX = (int)(sk8r.getMetricPosNow()[0]/sk8r.maxDim * i.getWidth());
-					//flip y to account for UCS diffs between 3D and Java
-					int skaterY = (int)(sk8r.getMetricPosNow()[1]/sk8r.maxDim * i.getHeight()) * -1;
-					//System.out.println(skaterX + ", " + skaterY);
-					gi.fillRect(skaterX,skaterY,10,10);
-					gi.setColor(new Color(128,128,128));
-					gi.drawString(sk8r.curFrame + "", skaterX, skaterY);			
+				gi.setColor(new Color(255,255,255));
+				int skaterX = (int)(sk8r.getMetricPosNow()[0]/sk8r.maxDim * i.getWidth());
+				//flip y to account for UCS diffs between 3D and Java
+				int skaterY = (int)(sk8r.getMetricPosNow()[1]/sk8r.maxDim * i.getHeight()) * -1;
+				//System.out.println(skaterX + ", " + skaterY);
+				gi.fillRect(skaterX,skaterY,10,10);
+				gi.setColor(new Color(128,128,128));
+				gi.drawString(sk8r.curFrame + "", skaterX + 12, skaterY + 9);			
 
-					g.drawImage(i, 0, 0, null);
-				}
 			}
+			
+			//draw the image no matter what to overwrite leftover frames
+			g.drawImage(i, 0, 0, null);
 
 
 
@@ -207,8 +206,8 @@ public class SkateMain extends Thread {
 			skaters.add(sk8Ref);
 			globalSkaterCount++;
 			sk8Ref.startAnim();
-			sk8Ref.name += "-clone" + globalSkaterCount;
-			System.out.println("CLONED: " + sk8Ref.name + " FROM: " + sk8r.name);
+			sk8Ref.name += globalSkaterCount;
+			logger.info("CLONED: " + sk8Ref.name + " FROM: " + sk8r.name + " with frameLength = " + sk8r.lengthFrames);
 		} catch (CloneNotSupportedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
