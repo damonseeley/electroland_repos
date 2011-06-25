@@ -34,8 +34,9 @@ public class ELUCanvas2D extends ELUCanvas {
 	}
 
 	@Override
-	public void map(Detector d) throws OptionException {
+	public void map(CanvasDetector d) throws OptionException {
 		// TODO Auto-generated method stub
+		//      * calculate which pixels are covered by the boundary, and store them in the CanvasDetector <-- BADNESS IF WE SUPPORT NON-RECTANGLES
 		
 	}
 

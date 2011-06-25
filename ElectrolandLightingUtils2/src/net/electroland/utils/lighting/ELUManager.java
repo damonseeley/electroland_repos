@@ -130,7 +130,7 @@ public class ELUManager implements Runnable {
 		ElectrolandProperties ep = new ElectrolandProperties("lights.properties");
 
 		// get fps
-		fps = ep.getRequiredParamAsInt("settings","global","fps");			
+		fps = ep.getRequiredAsInt("settings","global","fps");			
 		
 		// parse recipients
 		Iterator <String> recipientNames = ep.getObjectNames("recipient").iterator();
@@ -139,7 +139,7 @@ public class ELUManager implements Runnable {
 			String name = recipientNames.next();
 			
 			// TODO: Catch ClassCastException here.
-			Recipient r = (Recipient)ep.getRequiredParamAsClass("recipient", name, "class");
+			Recipient r = (Recipient)ep.getRequiredAsClass("recipient", name, "class");
 
 			// name, configure, store
 			r.setName(name);
@@ -152,7 +152,7 @@ public class ELUManager implements Runnable {
 		while (fixtureTypeNames.hasNext())
 		{
 			String name = fixtureTypeNames.next();
-			types.put(name, new FixtureType(name, ep.getRequiredParamAsInt("fixtureType", name, "channels")));
+			types.put(name, new FixtureType(name, ep.getRequiredAsInt("fixtureType", name, "channels")));
 		}
 		
 		// patch channels into each fixtureType (e.g., detectors)
@@ -161,17 +161,17 @@ public class ELUManager implements Runnable {
 		{
 			// detector information
 			String dname = detectorNames.next();
-			int x = ep.getRequiredParamAsInt("detector", dname, "x");
-			int y = ep.getRequiredParamAsInt("detector", dname, "y");
-			int width = ep.getRequiredParamAsInt("detector", dname, "w");
-			int height = ep.getRequiredParamAsInt("detector", dname, "h");
+			int x = ep.getRequiredAsInt("detector", dname, "x");
+			int y = ep.getRequiredAsInt("detector", dname, "y");
+			int width = ep.getRequiredAsInt("detector", dname, "w");
+			int height = ep.getRequiredAsInt("detector", dname, "h");
 
 			// TODO: Catch ClassCastException here.
-			DetectionModel dm = (DetectionModel)ep.getRequiredParamAsClass("detector", dname, "model");
+			DetectionModel dm = (DetectionModel)ep.getRequiredAsClass("detector", dname, "model");
 
 			// patch information
-			String ftname = ep.getRequiredParam("detector", dname, "fixtureType");
-			int index = ep.getRequiredParamAsInt("detector", dname, "index");
+			String ftname = ep.getRequired("detector", dname, "fixtureType");
+			int index = ep.getRequiredAsInt("detector", dname, "index");
 
 			// TODO: need to verify that it isn't null
 			FixtureType ft = (FixtureType)types.get(ftname);
@@ -183,7 +183,7 @@ public class ELUManager implements Runnable {
 		while (canvasNames.hasNext())
 		{
 			String canvasName = canvasNames.next();
-			ELUCanvas ec = (ELUCanvas)ep.getRequiredParamAsClass("canvas", canvasName, "class");
+			ELUCanvas ec = (ELUCanvas)ep.getRequiredAsClass("canvas", canvasName, "class");
 			ec.configure(ep.getParams("canvas", canvasName));
 			ec.setName(canvasName);
 			canvases.put(canvasName, ec);
@@ -194,18 +194,18 @@ public class ELUManager implements Runnable {
 		while (fixtureNames.hasNext())
 		{
 			String fixtureName = fixtureNames.next();
-			String typeStr = ep.getRequiredParam("fixture", fixtureName, "fixtureType");
+			String typeStr = ep.getRequired("fixture", fixtureName, "fixtureType");
 			FixtureType type = types.get(typeStr);
 			if (type == null){
 				throw new OptionException("fixtureType '" + typeStr + "' for object '" + fixtureName + "' of type 'fixture' could not be found.");
 			}
-			int startAddress = ep.getRequiredParamAsInt("fixture", fixtureName, "startAddress");
-			String recipStr = ep.getRequiredParam("fixture", fixtureName, "recipient");
+			int startAddress = ep.getRequiredAsInt("fixture", fixtureName, "startAddress");
+			String recipStr = ep.getRequired("fixture", fixtureName, "recipient");
 			Recipient recipient = recipients.get(recipStr);
 			if (recipient == null){
 				throw new OptionException("recipient '" + recipStr + "' for object '" + fixtureName + "' of type 'fixture' could not be found.");				
 			}
-			List<String> tags = ep.getParamAsArray("fixture", fixtureName, "tags");
+			List<String> tags = ep.getAsArray("fixture", fixtureName, "tags");
 			Fixture fixture = new Fixture(fixtureName, type, startAddress, recipient, tags);
 			
 			fixtures.put(fixtureName, fixture);
@@ -219,14 +219,14 @@ public class ELUManager implements Runnable {
 			String cmapName = cmapNames.next();
 
 			//     * find the fixture
-			String fixtureName = ep.getRequiredParam("canvasFixture", cmapName, "fixture");
+			String fixtureName = ep.getRequired("canvasFixture", cmapName, "fixture");
 			Fixture fixture = fixtures.get(fixtureName);
 			if (fixture == null){				
 				throw new OptionException("fixture '" + fixtureName + "' for object '" + cmapName + "' of type 'canvasFixture' could not be found.");
 			}
 
 			//	   * find the canvas
-			String cnvsName = ep.getRequiredParam("canvasFixture", cmapName, "canvas");
+			String cnvsName = ep.getRequired("canvasFixture", cmapName, "canvas");
 			ELUCanvas canvas = canvases.get(cnvsName);
 			if (canvas == null){				
 				throw new OptionException("canvas '" + cnvsName + "' for object '" + cmapName + "' of type 'canvasFixture' could not be found.");
@@ -240,8 +240,8 @@ public class ELUManager implements Runnable {
 				Detector dtr = dtrs.next();
 
 				//      * calculate x,y based on the offset store it in the CanvasDetector
-				int offsetX = ep.getRequiredParamAsInt("canvasFixture", cmapName, "x");
-				int offsetY = ep.getRequiredParamAsInt("canvasFixture", cmapName, "y");
+				int offsetX = ep.getRequiredAsInt("canvasFixture", cmapName, "x");
+				int offsetY = ep.getRequiredAsInt("canvasFixture", cmapName, "y");
 				
 				Rectangle boundary = new Rectangle(dtr.x + offsetX,
 													dtr.y + offsetY,
@@ -252,13 +252,25 @@ public class ELUManager implements Runnable {
 				cd.detectorModel = dtr.model;
 
 				// map the CanvasDetectors to pixel locations in the pixelgrab
-				//cd.map(...);
-				//      * calculate which pixels are covered by the boundary, and store them in the CanvasDetector <-- BADNESS IF WE SUPPORT NON-RECTANGLES
+				canvas.map(cd);				
+				
+				// does it make more sense to do canvas.map(detector, fixture, fixtureType);
+				// (same as map.(fixture)) <-- but CanvasDetector should be internally generated
 
 				//	   * find the recipient
 				Recipient recipient = fixture.recipient;
+				int channel = fixture.startAddress;
+				Iterator<Detector> channelDetectors = fixture.type.detectors.iterator();
+				while (channelDetectors.hasNext()){
+//					recipient.map(channel++, CanvasDetector);					
+				}
+				
+				// recipient.map(fixture);
+				//      * find the recipient and the startChannel from the 
+				//		  fixture and the index of the prototype detector 
+				//		  in the fixtureType. use those patch the CanvasDetector 
+				//		  in as appropriate					
 
-				//      * find the recipient and the startChannel from the fixture and the index of the prototype detector in the fixtureType. use those patch the CanvasDetector in as appropriate					
 			}
 		}
 	}
