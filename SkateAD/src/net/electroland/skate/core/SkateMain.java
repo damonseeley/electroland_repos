@@ -70,6 +70,15 @@ public class SkateMain extends Thread {
 
 		///////// Create lighting utils
 		elu = new ELUManager();
+		try {
+			elu.load("SkateELU.properties");
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (OptionException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		canvas = (ELUCanvas2D)elu.getCanvas("my2d");
 
 		///////// Init sound controller and speakers
@@ -230,11 +239,9 @@ public class SkateMain extends Thread {
 		while (iter.hasNext()) {
 			//System.out.println(iter);
 			String curSkater = iter.next().toString();
-			String animFile = op.getParam("skater",curSkater,"animFile");
-			String maxDim = op.getParam("skater",curSkater,"dims");
-			//System.out.println(animFile);
-			String[] soundList = op.getParam("skater",curSkater,"sounds").split(",");
-			//System.out.println(soundList.toString());
+			String animFile = op.getRequired("skater",curSkater,"animFile");
+			String maxDim = op.getRequired("skater",curSkater,"dims");
+			String[] soundList = op.getOptional("skater",curSkater,"sounds").split(",");
 
 
 			Skater sk8r = new Skater(curSkater, animFile, maxDim, soundList);
