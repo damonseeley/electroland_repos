@@ -19,7 +19,7 @@ public class ELUManager implements Runnable {
 	// TODO: outbourd load() as ELUProperties
 	
 	private static Logger logger = Logger.getLogger(ELUManager.class);	
-	
+		
 	private int fps;
 	
 	private Hashtable<String, Recipient>recipients 
@@ -30,7 +30,7 @@ public class ELUManager implements Runnable {
 				= new Hashtable<String, ELUCanvas>();
 	private Hashtable<String, Fixture>fixtures
 				= new Hashtable<String, Fixture>();
-	
+		
 	public static void main(String args[])
 	{
 		// Unittest
@@ -120,14 +120,19 @@ public class ELUManager implements Runnable {
 		
 	}
 
+	public void load() throws IOException, OptionException
+	{
+		load("lights.properties");
+	}
+	
 	/** Configure the system using "lights.properties"
 	 * 
 	 * Currently a gross way of doing this.
 	 * 
 	 */
-	public void load() throws IOException, OptionException
+	public void load(String propFileName) throws IOException, OptionException
 	{
-		ElectrolandProperties ep = new ElectrolandProperties("lights.properties");
+		ElectrolandProperties ep = new ElectrolandProperties(propFileName);
 
 		// get fps
 		fps = ep.getRequiredInt("settings","global","fps");			
@@ -143,7 +148,7 @@ public class ELUManager implements Runnable {
 
 			// name, configure, store
 			r.setName(name);
-			r.configure(ep.getParams("recipient", name));
+			r.configure(ep.getAll("recipient", name));
 			recipients.put(name, r);
 		}
 				
@@ -184,7 +189,7 @@ public class ELUManager implements Runnable {
 		{
 			String canvasName = canvasNames.next();
 			ELUCanvas ec = (ELUCanvas)ep.getRequiredClass("canvas", canvasName, "class");
-			ec.configure(ep.getParams("canvas", canvasName));
+			ec.configure(ep.getAll("canvas", canvasName));
 			ec.setName(canvasName);
 			canvases.put(canvasName, ec);
 		}
@@ -205,7 +210,7 @@ public class ELUManager implements Runnable {
 			if (recipient == null){
 				throw new OptionException("recipient '" + recipStr + "' for object '" + fixtureName + "' of type 'fixture' could not be found.");				
 			}
-			List<String> tags = ep.getArray("fixture", fixtureName, "tags");
+			List<String> tags = ep.getOptionalArray("fixture", fixtureName, "tags");
 			Fixture fixture = new Fixture(fixtureName, type, startAddress, recipient, tags);
 			
 			fixtures.put(fixtureName, fixture);

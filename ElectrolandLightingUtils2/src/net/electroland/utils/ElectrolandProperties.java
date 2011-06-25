@@ -55,10 +55,10 @@ public class ElectrolandProperties {
 			System.out.println(op.getObjectNames("cat"));
 			System.out.println(op.getObjectNames("dog"));
 			
-			System.out.println(op.getParams("cat", "1"));
-			System.out.println(op.getParams("dog", "mydog"));
+			System.out.println(op.getAll("cat", "1"));
+			System.out.println(op.getAll("dog", "mydog"));
 		
-			System.out.println(op.get("dog", "mydog.2", "-foo"));
+			System.out.println(op.getOptional("dog", "mydog.2", "-foo"));
 			System.out.println(op.getRequired("dog", "mydog.2", "-foo"));
 
 			System.out.println(op.getRequiredArray("dog", "mydog3","names"));
@@ -174,7 +174,7 @@ public class ElectrolandProperties {
 	 * @return
 	 * @throws OptionException
 	 */
-	public Map<String,String> getParams(String objectType, String objectName) throws OptionException
+	public Map<String,String> getAll(String objectType, String objectName) throws OptionException
 	{
 		Map<String,Map<String,String>> type = objects.get(objectType);
 		if (type == null){
@@ -201,9 +201,9 @@ public class ElectrolandProperties {
 	 * @return
 	 * @throws OptionException
 	 */
-	public String get(String objectType, String objectName, String paramName) throws OptionException
+	public String getOptional(String objectType, String objectName, String paramName) throws OptionException
 	{
-		Map<String,String> params = getParams(objectType, objectName);
+		Map<String,String> params = getAll(objectType, objectName);
 		if (!paramName.startsWith("-")){
 			paramName = "-" + paramName;
 		}
@@ -214,7 +214,7 @@ public class ElectrolandProperties {
 
 	public String getRequired(String objectType, String objectName, String paramName) throws OptionException
 	{
-		String param = get(objectType, objectName, paramName);
+		String param = getOptional(objectType, objectName, paramName);
 		
 		if (param == null)
 		{			
@@ -226,9 +226,9 @@ public class ElectrolandProperties {
 		
 	}
 
-	public Integer getInt(String objectType, String objectName, String paramName) throws OptionException
+	public Integer getOptionalInt(String objectType, String objectName, String paramName) throws OptionException
 	{
-		String str = get(objectType, objectName, paramName);
+		String str = getOptional(objectType, objectName, paramName);
 		try
 		{
 			return str == null ? null : Integer.parseInt(str);
@@ -241,7 +241,7 @@ public class ElectrolandProperties {
 
 	public Integer getRequiredInt(String objectType, String objectName, String paramName) throws OptionException
 	{
-		Integer i = getInt(objectType, objectName, paramName);
+		Integer i = getOptionalInt(objectType, objectName, paramName);
 		if (i == null)
 		{			
 			throw new OptionException("no parameter value for '" + paramName + "' in object named '" + objectName + "' of type '" + objectType + "' was found.");
@@ -260,9 +260,9 @@ public class ElectrolandProperties {
 	 * @return
 	 * @throws OptionException
 	 */
-	public Object getClass(String objectType, String objectName, String paramName) throws OptionException
+	public Object getOptionalClass(String objectType, String objectName, String paramName) throws OptionException
 	{
-		String str = get(objectType, objectName, paramName);
+		String str = getOptional(objectType, objectName, paramName);
 		try {
 			return new Util().getClass().getClassLoader().loadClass(str).newInstance();
 		} catch (InstantiationException e) {
@@ -277,7 +277,7 @@ public class ElectrolandProperties {
 
 	public Object getRequiredClass(String objectType, String objectName, String paramName) throws OptionException
 	{
-		Object o = getClass(objectType, objectName, paramName);
+		Object o = getOptionalClass(objectType, objectName, paramName);
 		if (o == null)
 		{			
 			throw new OptionException("no parameter value for '" + paramName + "' in object named '" + objectName + "' of type '" + objectType + "' was found.");
@@ -287,11 +287,11 @@ public class ElectrolandProperties {
 		}
 	}
 
-	public List<String> getArray(String objectType, String objectName, String paramName) throws OptionException
+	public List<String> getOptionalArray(String objectType, String objectName, String paramName) throws OptionException
 	{
 		// not rigorous.  doesn't match quotes.  should just get a CSV parser
 		// class and use it here.
-		String tags = get(objectType, objectName, paramName);
+		String tags = getOptional(objectType, objectName, paramName);
 		ArrayList<String> tagList = new ArrayList<String>();
 		if (tags == null){
 			return null;
@@ -318,7 +318,7 @@ public class ElectrolandProperties {
 	}
 	public List<String> getRequiredArray(String objectType, String objectName, String paramName) throws OptionException
 	{
-		List<String>tagList = getArray(objectType, objectName, paramName);
+		List<String>tagList = getOptionalArray(objectType, objectName, paramName);
 		if (tagList == null) // TODO: nulls in the tagArray
 		{			
 			throw new OptionException("no parameter value(s) for '" + paramName + "' in object named '" + objectName + "' of type '" + objectType + "' was found.");
