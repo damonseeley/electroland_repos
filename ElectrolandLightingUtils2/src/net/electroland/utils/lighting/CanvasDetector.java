@@ -1,16 +1,15 @@
 package net.electroland.utils.lighting;
 
 import java.awt.Shape;
-import java.util.Vector;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.ArrayList;
 
 public class CanvasDetector {
 
 	protected Shape boundary;
 	protected DetectionModel detectorModel;
 	protected byte latestState;
-	protected Vector<String> tags;
-	protected CopyOnWriteArrayList<Integer>indices;
+	protected ArrayList<String> tags;
+	protected ArrayList<Integer>indices;
 	
 	public Shape getBoundary() {
 		return boundary;
@@ -24,10 +23,10 @@ public class CanvasDetector {
 	public void setEvaluatedValue(byte b){
 		latestState = b;
 	}
-	public Vector<String> getTags() {
+	public ArrayList<String> getTags() {
 		return tags;
 	}
-	public CopyOnWriteArrayList<Integer> getIndices() {
+	public ArrayList<Integer> getIndices() {
 		return indices;
 	}
 }
