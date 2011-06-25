@@ -1,4 +1,4 @@
-<MaxAnimation version="1.00" date="Sat Jun 25 15:49:00 2011">
+<MaxAnimation version="1.00" date="Sat Jun 25 15:49:12 2011">
     <SceneInfo fileName="SKATERS_vs006.max" startTick="0" endTick="28800" frameRate="30" ticksPerFrame="160" />
     <CustomData />
     <Node name="SkaterDummy02" parentNode="Scene Root" parentNodeIndex="12" numChildren="0">
