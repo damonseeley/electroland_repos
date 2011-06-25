@@ -5,7 +5,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Shape;
+import java.awt.Image;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -14,12 +14,14 @@ import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.swing.ImageIcon;
+
 import net.electroland.skate.ui.GUIFrame;
 import net.electroland.skate.ui.GUIPanel;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
-import net.electroland.utils.lighting.CanvasDetector;
 import net.electroland.utils.lighting.ELUManager;
+import net.electroland.utils.lighting.InvalidPixelGrabException;
 import net.electroland.utils.lighting.canvas.ELUCanvas2D;
 
 import org.apache.log4j.Logger;
@@ -133,7 +135,6 @@ public class SkateMain extends Thread {
 
 			// Advance all skater play heads
 			for (Skater sk8r : skaters) {
-				//System.out.println("ANIMATING: " + sk8r.name);
 				sk8r.animate();
 			}
 
@@ -165,14 +166,18 @@ public class SkateMain extends Thread {
 			 * Create a canvas image (ci) that will be synced to ELU
 			 */
 			BufferedImage ci = new BufferedImage(skatearea.width,skatearea.height,ColorSpace.TYPE_RGB);
-			Graphics gci = ci.getGraphics();
+			Graphics2D gci = (Graphics2D) ci.getGraphics();
 			// Draw a big black rect
 			gci.setColor(new Color(0,0,0));
 			gci.fillRect(0,0,ci.getWidth(),ci.getHeight());
 
+			
+			Image dot = new ImageIcon("depends/whiteDot.png").getImage();
+			
 			// Draw skaters, only if there are skaters
 			for (Skater sk8r : skaters)
 			{
+
 				gci.setColor(new Color(255,255,255));
 				// Draw a square (for now) where the skater is located, scaled for xml file max dim
 				// and then sized to the canvas width/height
@@ -180,18 +185,30 @@ public class SkateMain extends Thread {
 				//flip y to account for UCS diffs between 3DSMax and Java
 				int skaterY = (int)(sk8r.getMetricPosNow()[1]/sk8r.maxDim * skatearea.height) * -1;
 				// Draw the square (for now)
-				gci.fillRect(skaterX,skaterY,10,10);		
+				//gci.fillOval(skaterX,skaterY,10,10);	
+				gci.drawImage(dot, skaterX, skaterY, 48, 48, null);
 			}
+			
+			
 			
 			/*
 			 * Sync ci image with ELU
-			 */
-			// STUFF HERE
-			//canvas.sync(pixels);
+			 */	
+			int w = ci.getWidth(null);
+			int h = ci.getHeight(null);
+			int[] rgbs = new int[w*h];
+			ci.getRGB(0, 0, w, h, rgbs, 0, w);
+			try {
+				canvas.sync(rgbs);
+			} catch (InvalidPixelGrabException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			
 			
 			/*
-			 * NOW draw a guide info on top
+			 * NOW draw a guide/overlay info on top
 			 */
 			for (Skater sk8r : skaters)
 			{
@@ -202,30 +219,29 @@ public class SkateMain extends Thread {
 				gci.setColor(new Color(128,128,128));
 				Font afont = new Font("afont",Font.PLAIN,10);
 				gci.setFont(afont);
-				gci.drawString(sk8r.name + " @f" + sk8r.curFrame, skaterX + 12, skaterY + 9);			
+				gci.drawString(sk8r.name + " @f" + sk8r.curFrame, skaterX + 32, skaterY + 9);			
 			}
+			
 			
 			
 			/*
 			 * Draw the CanvasDetectors
 			 */
+			/*
 			gci.setColor(new Color(0,0,128));
 			for (CanvasDetector d : canvas.getDetectors()) {
 				Shape dShape = d.getBoundary();
-				gci.drawRect(dShape.getBounds().x,dShape.getBounds().y,dShape.getBounds().width,dShape.getBounds().height);
+				//gci.drawRect(dShape.getBounds().x,dShape.getBounds().y,dShape.getBounds().width,dShape.getBounds().height);
 			}
+			*/
 			
 			
 			
 			
-			// Get this so we can paint on it later
-			Graphics g = guiPanel.getGraphics();
-			//draw the image no matter what to overwrite leftover frames
-			g.drawImage(ci, 0, 0, null);
-
-
-
-			// END SHAKE
+			
+			//draw the final image into the jPanel GUI
+			Graphics gp = guiPanel.getGraphics();
+			gp.drawImage(ci, 0, 0, null);
 
 
 
@@ -242,7 +258,6 @@ public class SkateMain extends Thread {
 	public int globalSkaterCount = 0;
 
 	public void addSkater() {
-		//System.out.println("RANDOM INT: " + generator.nextInt(skaterDefs.size()));
 		Skater sk8r = skaterDefs.get(generator.nextInt(skaterDefs.size()));
 		try {
 			Skater sk8Ref = (Skater)sk8r.clone();
@@ -265,13 +280,9 @@ public class SkateMain extends Thread {
 	public void loadSkaterProps() throws IOException, OptionException
 	{
 		ElectrolandProperties op = new ElectrolandProperties("Skaters.properties");
-
-		//System.out.println(op.getObjectNames("skater").size());
-
 		Set<String> skaterNames = (op.getObjectNames("skater"));
 		Iterator iter = skaterNames.iterator();
 		while (iter.hasNext()) {
-			//System.out.println(iter);
 			String curSkater = iter.next().toString();
 			String animFile = op.getRequired("skater",curSkater,"animFile");
 			String maxDim = op.getRequired("skater",curSkater,"dims");
@@ -281,8 +292,6 @@ public class SkateMain extends Thread {
 			Skater sk8r = new Skater(curSkater, animFile, maxDim, soundList);
 			skaterDefs.add(sk8r);
 		}
-
-		System.out.println(skaterDefs.get(0).name);
 	}
 
 
