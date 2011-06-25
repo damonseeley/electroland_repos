@@ -1,18 +1,25 @@
 package net.electroland.utils.lighting;
 
+import java.awt.Rectangle;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
 
+import org.apache.log4j.Logger;
+
 public class ELUManager implements Runnable {
 
+	// TODO: Enumerate object names.
+	// TODO: outbourd load() as ELUProperties
+	
+	private static Logger logger = Logger.getLogger(ELUManager.class);	
+	
 	private int fps;
 	
 	private Hashtable<String, Recipient>recipients 
@@ -26,14 +33,12 @@ public class ELUManager implements Runnable {
 	
 	public static void main(String args[])
 	{
-		// test
+		// Unittest
 		try {
 			new ELUManager().load();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (OptionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -150,7 +155,7 @@ public class ELUManager implements Runnable {
 			types.put(name, new FixtureType(name, ep.getRequiredParamAsInt("fixtureType", name, "channels")));
 		}
 		
-		// patch channels into each fixtureType
+		// patch channels into each fixtureType (e.g., detectors)
 		Iterator <String> detectorNames = ep.getObjectNames("detector").iterator();		
 		while (detectorNames.hasNext())
 		{
@@ -182,7 +187,6 @@ public class ELUManager implements Runnable {
 			ec.configure(ep.getParams("canvas", canvasName));
 			ec.setName(canvasName);
 			canvases.put(canvasName, ec);
-			// TODO: allocate a height x width array?
 		}
 
 		// parse fixtures
@@ -201,24 +205,62 @@ public class ELUManager implements Runnable {
 			if (recipient == null){
 				throw new OptionException("recipient '" + recipStr + "' for object '" + fixtureName + "' of type 'fixture' could not be found.");				
 			}
-			String[] tags = ep.getRequiredParam("fixture", fixtureName, "tags").split(" ");
-			Fixture fixture = new Fixture(type, startAddress, recipient, tags);
-			fixtures.put(fixtureName, fixture);
+			List<String> tags = ep.getParamAsArray("fixture", fixtureName, "tags");
+			Fixture fixture = new Fixture(fixtureName, type, startAddress, recipient, tags);
 			
-			// TODO: then patch in the detectors
+			fixtures.put(fixtureName, fixture);
 		}
 		
-		// parse fixture to canvas mappings
-		//   for each fixture that is mapped
-		//     * find the fixture
-		//     for each prototype detector in the fixture
-		//      * create a CanvasDetector
-		//      * calculate x,y based on the offset store it in the CanvasDetector
-		//      * store the width and height
-		//      * store the detector model
-		//      * calculate which pixels are covered by the boundary, and store them in the CanvasDetector <-- BADNESS IF WE SUPPORT NON-RECTANGLES
-		//      * find the recipient and the startChannel from the fixture and the index of the prototype detector in the fixtureType. use those patch the CanvasDetector in as appropriate
+		// parse fixture to canvas mappings (this is the meat of everything)
+		Iterator <String> cmapNames = ep.getObjectNames("canvasFixture").iterator();		
+		while (fixtureNames.hasNext())
+		{
+			//   for each fixture to canvas mapping
+			String cmapName = cmapNames.next();
 
+			//     * find the fixture
+			String fixtureName = ep.getRequiredParam("canvasFixture", cmapName, "fixture");
+			Fixture fixture = fixtures.get(fixtureName);
+			if (fixture == null){				
+				throw new OptionException("fixture '" + fixtureName + "' for object '" + cmapName + "' of type 'canvasFixture' could not be found.");
+			}
+
+			//	   * find the canvas
+			String cnvsName = ep.getRequiredParam("canvasFixture", cmapName, "canvas");
+			ELUCanvas canvas = canvases.get(cnvsName);
+			if (canvas == null){				
+				throw new OptionException("canvas '" + cnvsName + "' for object '" + cmapName + "' of type 'canvasFixture' could not be found.");
+			}
+			
+			//     for each prototype detector in the fixture (get from FixtureType)
+			Iterator<Detector> dtrs = fixture.type.detectors.iterator();
+			while (dtrs.hasNext()){
+				//      * create a CanvasDetector
+				CanvasDetector cd = new CanvasDetector();
+				Detector dtr = dtrs.next();
+
+				//      * calculate x,y based on the offset store it in the CanvasDetector
+				int offsetX = ep.getRequiredParamAsInt("canvasFixture", cmapName, "x");
+				int offsetY = ep.getRequiredParamAsInt("canvasFixture", cmapName, "y");
+				
+				Rectangle boundary = new Rectangle(dtr.x + offsetX,
+													dtr.y + offsetY,
+													dtr.width,
+													dtr.height);
+				cd.boundary = boundary;
+				//      * store the detector model
+				cd.detectorModel = dtr.model;
+
+				// map the CanvasDetectors to pixel locations in the pixelgrab
+				//cd.map(...);
+				//      * calculate which pixels are covered by the boundary, and store them in the CanvasDetector <-- BADNESS IF WE SUPPORT NON-RECTANGLES
+
+				//	   * find the recipient
+				Recipient recipient = fixture.recipient;
+
+				//      * find the recipient and the startChannel from the fixture and the index of the prototype detector in the fixtureType. use those patch the CanvasDetector in as appropriate					
+			}
+		}
 	}
 
 	/** 
@@ -254,35 +296,5 @@ public class ELUManager implements Runnable {
 	public Map<String, ELUCanvas> getCanvases()
 	{
 		return canvases;
-	}
-}
-
-class FixtureType
-{
-	protected String name;
-	protected Vector<Detector> detectors;
-	
-	public FixtureType(String name, int channels)
-	{
-		this.name = name;
-		detectors = new Vector<Detector>();
-		detectors.setSize(channels);
-	}
-}
-
-class Fixture
-{
-	FixtureType type;
-	int startAddress;
-	Vector<String> tags = new Vector<String>();
-	Vector<Detector> detectors = new Vector<Detector>();
-	Recipient recipient;
-	
-	
-	public Fixture(FixtureType type, int startAddress, Recipient recipient, String[] tags){
-		this.type = type;
-		this.startAddress = startAddress;
-		this.tags.addAll(Arrays.asList(tags));
-		this.recipient = recipient;
 	}
 }

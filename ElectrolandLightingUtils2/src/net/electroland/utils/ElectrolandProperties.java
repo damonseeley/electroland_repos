@@ -3,12 +3,16 @@ package net.electroland.utils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 /**
  * To do: document.  add validation handling.  log4j.  make it possible to
@@ -19,7 +23,18 @@ import java.util.Set;
 
 public class ElectrolandProperties {
 
+	// TODO: shorten common names:
+	//  getParm 			-> get
+	//  getRequiredParm 	-> getRequired
+	//  getAsInt 			-> getInt
+	//  getAsRequireInt 	-> getReqiredInt
+	//  getAsArray			-> getArray
+	//  getAsRequiredArray	-> getRequiredArray
+	//	getAsClass			-> getClass
+	// 	getAsRequiredClass	-> getRequiredClass
+	
 	private static String ARG_MARKER = " -";
+	private static Logger logger = Logger.getLogger(ElectrolandProperties.class);
 
 	// main is just a unit test
 	public static void main(String args[]){
@@ -29,10 +44,14 @@ public class ElectrolandProperties {
 		p.put("dog.mydog", "-weight 600");
 		p.put("dog.mydog.2", "-weight 400 -foo phi");
 		p.put("dog.fixture[0]", "-weight 400");
+		p.put("dog.mydog3", "-names jack,,");
 
 		try {
 			ElectrolandProperties op = new ElectrolandProperties(p);
 
+			// TODO: add Asserts and tests for conditions that should 
+			// fail predictably.
+			
 			System.out.println(op.getObjectNames("cat"));
 			System.out.println(op.getObjectNames("dog"));
 			
@@ -41,6 +60,8 @@ public class ElectrolandProperties {
 		
 			System.out.println(op.getParam("dog", "mydog.2", "-foo"));
 			System.out.println(op.getRequiredParam("dog", "mydog.2", "-foo"));
+
+			System.out.println(op.getRequiredParamAsArray("dog", "mydog3","names"));
 			
 		} catch (OptionException e) {
 			e.printStackTrace();
@@ -101,12 +122,16 @@ public class ElectrolandProperties {
 				throw new OptionException("object '" + key + "' requires a name.");
 			}
 
+			StringBuffer output = new StringBuffer();
+			
 			String objectType = key.substring(0,endOfName);
-			System.out.print("objectType: '" + objectType);
+			output.append("objectType: '").append(objectType);
 			String objectName = key.substring(endOfName + 1, key.length());
-			System.out.print("', objectName: '" + objectName);
+			output.append("', objectName: '").append(objectName);
 			Map<String,String> params = parse("" + p.get(key));
-			System.out.println("', params: " + params);
+			output.append("', params: ").append(params);
+			
+			logger.debug(output.toString());
 			
 			// see if the objectType exists or not:
 			Map<String,Map<String,String>> names = objects.get(objectType);
@@ -182,6 +207,8 @@ public class ElectrolandProperties {
 		if (!paramName.startsWith("-")){
 			paramName = "-" + paramName;
 		}
+		// TODO: remove quotes from ends (unless there are more than two quotes total).
+		// (if that's the case, we have an array)
 		return params.get(paramName);
 	}
 
@@ -260,6 +287,47 @@ public class ElectrolandProperties {
 		}
 	}
 
+	public List<String> getParamAsArray(String objectType, String objectName, String paramName) throws OptionException
+	{
+		// not rigorous.  doesn't match quotes.  should just get a CSV parser
+		// class and use it here.
+		String tags = getParam(objectType, objectName, paramName);
+		ArrayList<String> tagList = new ArrayList<String>();
+		if (tags == null){
+			return null;
+		}else
+		{
+			String[] tagArray = tags.split(",");
+			for (int i = 0; i< tagArray.length; i++)
+			{
+				if (tagArray[i] != null){
+					tagArray[i] = tagArray[i].trim();
+					if (tagArray[i].startsWith("\"") &&
+						tagArray[i].endsWith("\""))
+					{
+						tagArray[i] = tagArray[i].substring(1, tagArray[i].length()-1);
+					}
+					if (tagArray[i].length() != 0){
+						tagList.add(tagArray[i]);
+					}
+				}
+			}
+			
+			return tagList.size() == 0 ? null : tagList;			
+		}
+	}
+	public List<String> getRequiredParamAsArray(String objectType, String objectName, String paramName) throws OptionException
+	{
+		List<String>tagList = getParamAsArray(objectType, objectName, paramName);
+		if (tagList == null) // TODO: nulls in the tagArray
+		{			
+			throw new OptionException("no parameter value(s) for '" + paramName + "' in object named '" + objectName + "' of type '" + objectType + "' was found.");
+		}else
+		{
+			return tagList;
+		}
+	}
+	
 	// TODO: make this work.
 	public void save(File target)
 	{
