@@ -1,14 +1,15 @@
 package net.electroland.skate.core;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
@@ -17,6 +18,7 @@ import net.electroland.skate.ui.GUIFrame;
 import net.electroland.skate.ui.GUIPanel;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
+import net.electroland.utils.lighting.CanvasDetector;
 import net.electroland.utils.lighting.ELUManager;
 import net.electroland.utils.lighting.canvas.ELUCanvas2D;
 
@@ -120,23 +122,20 @@ public class SkateMain extends Thread {
 
 		while (isRunning) {
 
-			if (Math.random() < .05 ){
+			if (Math.random() < .01 ){
 				addSkater();
 			}
 
 
-			//figure out whether to add or subtract skaters
+			/*
+			 * figure out whether to add or subtract skaters
+			 */
 
-
-			//advance all skater play heads
+			// Advance all skater play heads
 			for (Skater sk8r : skaters) {
 				//System.out.println("ANIMATING: " + sk8r.name);
 				sk8r.animate();
 			}
-
-
-
-
 
 			// Remove dead skaters
 			Iterator<Skater> s = skaters.iterator();
@@ -159,35 +158,70 @@ public class SkateMain extends Thread {
 
 
 
-			int skateAreaWidth = (int)(GUIWidth * 0.75);
-			int skateAreaHeight = (int)(GUIHeight * 0.75);
+			Dimension skatearea = canvas.getDimensions();
 
 
-			// JUST SHAKING OFF THE JAVA2D RUST HERE
-			Graphics g = guiPanel.getGraphics();
-
-			// Draw a big black rect on the panel
-			BufferedImage i = new BufferedImage(skateAreaWidth,skateAreaHeight,ColorSpace.TYPE_RGB);
-			Graphics gi = i.getGraphics();
-			gi.setColor(new Color(0,0,0));
-			gi.fillRect(0,0,i.getWidth(),i.getHeight());
+			/*
+			 * Create a canvas image (ci) that will be synced to ELU
+			 */
+			BufferedImage ci = new BufferedImage(skatearea.width,skatearea.height,ColorSpace.TYPE_RGB);
+			Graphics gci = ci.getGraphics();
+			// Draw a big black rect
+			gci.setColor(new Color(0,0,0));
+			gci.fillRect(0,0,ci.getWidth(),ci.getHeight());
 
 			// Draw skaters, only if there are skaters
 			for (Skater sk8r : skaters)
 			{
-				gi.setColor(new Color(255,255,255));
-				int skaterX = (int)(sk8r.getMetricPosNow()[0]/sk8r.maxDim * i.getWidth());
-				//flip y to account for UCS diffs between 3D and Java
-				int skaterY = (int)(sk8r.getMetricPosNow()[1]/sk8r.maxDim * i.getHeight()) * -1;
-				//System.out.println(skaterX + ", " + skaterY);
-				gi.fillRect(skaterX,skaterY,10,10);
-				gi.setColor(new Color(128,128,128));
-				gi.drawString(sk8r.curFrame + "", skaterX + 12, skaterY + 9);			
-
+				gci.setColor(new Color(255,255,255));
+				// Draw a square (for now) where the skater is located, scaled for xml file max dim
+				// and then sized to the canvas width/height
+				int skaterX = (int)(sk8r.getMetricPosNow()[0]/sk8r.maxDim * skatearea.width);
+				//flip y to account for UCS diffs between 3DSMax and Java
+				int skaterY = (int)(sk8r.getMetricPosNow()[1]/sk8r.maxDim * skatearea.height) * -1;
+				// Draw the square (for now)
+				gci.fillRect(skaterX,skaterY,10,10);		
 			}
 			
+			/*
+			 * Sync ci image with ELU
+			 */
+			// STUFF HERE
+			//canvas.sync(pixels);
+			
+			
+			/*
+			 * NOW draw a guide info on top
+			 */
+			for (Skater sk8r : skaters)
+			{
+				// draw text labels to show where skaters are located
+				int skaterX = (int)(sk8r.getMetricPosNow()[0]/sk8r.maxDim * skatearea.width);
+				//flip y to account for UCS diffs between 3DSMax and Java
+				int skaterY = (int)(sk8r.getMetricPosNow()[1]/sk8r.maxDim * skatearea.height) * -1;
+				gci.setColor(new Color(128,128,128));
+				Font afont = new Font("afont",Font.PLAIN,10);
+				gci.setFont(afont);
+				gci.drawString(sk8r.name + " @f" + sk8r.curFrame, skaterX + 12, skaterY + 9);			
+			}
+			
+			
+			/*
+			 * Draw the CanvasDetectors
+			 */
+			gci.setColor(new Color(0,0,128));
+			for (CanvasDetector d : canvas.getDetectors()) {
+				Shape dShape = d.getBoundary();
+				gci.drawRect(dShape.getBounds().x,dShape.getBounds().y,dShape.getBounds().width,dShape.getBounds().height);
+			}
+			
+			
+			
+			
+			// Get this so we can paint on it later
+			Graphics g = guiPanel.getGraphics();
 			//draw the image no matter what to overwrite leftover frames
-			g.drawImage(i, 0, 0, null);
+			g.drawImage(ci, 0, 0, null);
 
 
 
