@@ -30,9 +30,13 @@ abstract public class Recipient {
 		
 		send(b);
 	}
+
 	
 	// configure
 	abstract public void configure(Map<String,String> properties) throws OptionException;
+
+	// configure
+	abstract public void map(int channel, CanvasDetector cd) throws OptionException;
 	
 	// send all "on" values
 	abstract public void allOn();
