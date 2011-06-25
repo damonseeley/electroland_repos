@@ -61,7 +61,7 @@ public class ElectrolandProperties {
 			System.out.println(op.get("dog", "mydog.2", "-foo"));
 			System.out.println(op.getRequired("dog", "mydog.2", "-foo"));
 
-			System.out.println(op.getRequiredAsArray("dog", "mydog3","names"));
+			System.out.println(op.getRequiredArray("dog", "mydog3","names"));
 			
 		} catch (OptionException e) {
 			e.printStackTrace();
@@ -226,7 +226,7 @@ public class ElectrolandProperties {
 		
 	}
 
-	public Integer getAsInt(String objectType, String objectName, String paramName) throws OptionException
+	public Integer getInt(String objectType, String objectName, String paramName) throws OptionException
 	{
 		String str = get(objectType, objectName, paramName);
 		try
@@ -239,9 +239,9 @@ public class ElectrolandProperties {
 		}
 	}
 
-	public Integer getRequiredAsInt(String objectType, String objectName, String paramName) throws OptionException
+	public Integer getRequiredInt(String objectType, String objectName, String paramName) throws OptionException
 	{
-		Integer i = getAsInt(objectType, objectName, paramName);
+		Integer i = getInt(objectType, objectName, paramName);
 		if (i == null)
 		{			
 			throw new OptionException("no parameter value for '" + paramName + "' in object named '" + objectName + "' of type '" + objectType + "' was found.");
@@ -260,7 +260,7 @@ public class ElectrolandProperties {
 	 * @return
 	 * @throws OptionException
 	 */
-	public Object getAsClass(String objectType, String objectName, String paramName) throws OptionException
+	public Object getClass(String objectType, String objectName, String paramName) throws OptionException
 	{
 		String str = get(objectType, objectName, paramName);
 		try {
@@ -275,9 +275,9 @@ public class ElectrolandProperties {
 		}
 	}
 
-	public Object getRequiredAsClass(String objectType, String objectName, String paramName) throws OptionException
+	public Object getRequiredClass(String objectType, String objectName, String paramName) throws OptionException
 	{
-		Object o = getAsClass(objectType, objectName, paramName);
+		Object o = getClass(objectType, objectName, paramName);
 		if (o == null)
 		{			
 			throw new OptionException("no parameter value for '" + paramName + "' in object named '" + objectName + "' of type '" + objectType + "' was found.");
@@ -287,7 +287,7 @@ public class ElectrolandProperties {
 		}
 	}
 
-	public List<String> getAsArray(String objectType, String objectName, String paramName) throws OptionException
+	public List<String> getArray(String objectType, String objectName, String paramName) throws OptionException
 	{
 		// not rigorous.  doesn't match quotes.  should just get a CSV parser
 		// class and use it here.
@@ -316,9 +316,9 @@ public class ElectrolandProperties {
 			return tagList.size() == 0 ? null : tagList;			
 		}
 	}
-	public List<String> getRequiredAsArray(String objectType, String objectName, String paramName) throws OptionException
+	public List<String> getRequiredArray(String objectType, String objectName, String paramName) throws OptionException
 	{
-		List<String>tagList = getAsArray(objectType, objectName, paramName);
+		List<String>tagList = getArray(objectType, objectName, paramName);
 		if (tagList == null) // TODO: nulls in the tagArray
 		{			
 			throw new OptionException("no parameter value(s) for '" + paramName + "' in object named '" + objectName + "' of type '" + objectType + "' was found.");
