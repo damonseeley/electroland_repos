@@ -18,7 +18,7 @@ abstract public class Recipient {
 		return name;
 	}
 
-	public void sync(){
+	protected void sync(){
 		
 		byte[] b = new byte[channels.length];
 		
