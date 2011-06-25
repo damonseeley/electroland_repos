@@ -1,17 +1,21 @@
 package net.electroland.utils.lighting.canvas;
 
 import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import net.electroland.utils.OptionException;
 import net.electroland.utils.lighting.CanvasDetector;
-import net.electroland.utils.lighting.Detector;
 import net.electroland.utils.lighting.ELUCanvas;
 import net.electroland.utils.lighting.InvalidPixelGrabException;
 
 public class ELUCanvas2D extends ELUCanvas {
 
-	protected Dimension d;
+	protected Dimension d;	
+	protected List<CanvasDetector>detectors = Collections.synchronizedList(new ArrayList<CanvasDetector>());
 	
 	@Override
 	public void configure(Map<String, String> p)
@@ -24,8 +28,6 @@ public class ELUCanvas2D extends ELUCanvas {
 
 			// set dimensions
 			d = new Dimension(width,height);
-
-			// TODO: allocate array of pixels (for pixel to detetor mappings)
 			
 			
 		}catch(NumberFormatException e){
@@ -35,8 +37,17 @@ public class ELUCanvas2D extends ELUCanvas {
 
 	@Override
 	public void map(CanvasDetector d) throws OptionException {
-		// TODO Auto-generated method stub
-		//      * calculate which pixels are covered by the boundary, and store them in the CanvasDetector <-- BADNESS IF WE SUPPORT NON-RECTANGLES
+		detectors.add(d);
+		
+		// for each index, get the array indices contained within the boundary
+		// and store them in the CanvasDetector.
+		Rectangle boundary = (Rectangle)d.getBoundary();
+		int x = boundary.x;
+		int y = boundary.y;
+		int w = boundary.width;
+		int h = boundary.height;
+		
+		// fuck i hate this.
 		
 	}
 
