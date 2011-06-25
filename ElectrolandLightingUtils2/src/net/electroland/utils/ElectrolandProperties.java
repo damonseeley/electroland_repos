@@ -226,6 +226,31 @@ public class ElectrolandProperties {
 		
 	}
 
+	public Double getOptionalDouble(String objectType, String objectName, String paramName) throws OptionException
+	{
+		String str = getOptional(objectType, objectName, paramName);
+		try
+		{
+			return str == null ? null : Double.parseDouble(str);
+		}catch(NumberFormatException e)
+		{
+			// TODO: clear exception message
+			throw new OptionException(e);
+		}
+	}
+
+	public Double getRequiredDouble(String objectType, String objectName, String paramName) throws OptionException
+	{
+		Double i = getOptionalDouble(objectType, objectName, paramName);
+		if (i == null)
+		{			
+			throw new OptionException("no parameter value for '" + paramName + "' in object named '" + objectName + "' of type '" + objectType + "' was found.");
+		}else
+		{
+			return i;
+		}
+	}
+	
 	public Integer getOptionalInt(String objectType, String objectName, String paramName) throws OptionException
 	{
 		String str = getOptional(objectType, objectName, paramName);
