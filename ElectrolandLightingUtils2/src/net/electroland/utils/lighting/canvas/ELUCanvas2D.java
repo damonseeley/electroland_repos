@@ -41,14 +41,25 @@ public class ELUCanvas2D extends ELUCanvas {
 		
 		// for each index, get the array indices contained within the boundary
 		// and store them in the CanvasDetector.
+
 		Rectangle boundary = (Rectangle)d.getBoundary();
-		int x = boundary.x;
-		int y = boundary.y;
-		int w = boundary.width;
-		int h = boundary.height;
+		int x1 = boundary.x;
+		int y1 = boundary.y;
+		int x2 = x1 + boundary.width;
+		int y2 = y1 + boundary.height;
+		int pixels = boundary.width * boundary.height;
 		
-		// fuck i hate this.
 		
+		for (int y = y1; y <= y2; y++)
+		{
+			for (int x = x1; x1 <= x2; x++){
+				int current = (y * boundary.width) + x;
+				 // don't include offscreen pixels
+				if (current > 0 && current < pixels){
+					d.getIndices().add(current);
+				}
+			}			
+		}
 	}
 
 	@Override
