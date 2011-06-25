@@ -63,15 +63,15 @@ public class SkateMain extends Thread {
 		viewHeight = GUIHeight - (int)(GUIHeight*0.1);
 		viewWidth = GUIWidth - (int)(GUIWidth*0.1);
 		viewScale = 1.0f;
-		
-		
+
+
 		///////// Create lighting utils
 		elu = new ELUManager();
 		canvas = (ELUCanvas2D)elu.getCanvas("my2d");
 
 		///////// Init sound controller and speakers
-		
-		
+
+
 		///////// Load props and create skaters
 		try {
 			loadSkaterProps();
@@ -80,17 +80,17 @@ public class SkateMain extends Thread {
 		} catch (OptionException e) {
 			e.printStackTrace();
 		}
-		
-		
 
-		
+
+
+
 		///////// Start ELU Syncing
 		//elu.start();
-		
-		
+
+
 		// TEMP for now just add one skater
 		addSkater();
-		
+
 
 		/////////////// THREAD STUFF
 		framerate = 30;
@@ -107,27 +107,33 @@ public class SkateMain extends Thread {
 		curTime = System.currentTimeMillis();
 
 		while (isRunning) {
-			
-			if (Math.random() < .1 ){
+
+			if (Math.random() < .05 ){
 				addSkater();
 			}
 
 
 			//figure out whether to add or subtract skaters
 
+
 			//advance all skater play heads
-			for (Skater sk8r : skaters)
-			{
-				sk8r.updatePlayHead();
+			for (Skater sk8r : skaters) {
+				System.out.println("ANIMATING: " + sk8r.name);
+				sk8r.animate();
 			}
 
-			
-		
+
+
+
+
 			// Remove dead skaters
-			if (skaters.get(0).isLive()) {
-				// something
-			} else {
-				//skaters.remove(0);
+			//BRADLEY - why a concurrendmodexception here?  Not doing anything else with the Vector right now.
+			if(skaters.size() > 0){
+				for (Skater sk8r : skaters) {
+					if (!sk8r.animComplete) {
+						skaters.remove(sk8r);
+					}
+				}
 			}
 
 
@@ -140,7 +146,7 @@ public class SkateMain extends Thread {
 
 
 
-			
+
 			int skateAreaWidth = (int)(GUIWidth * 0.75);
 			int skateAreaHeight = (int)(GUIHeight * 0.75);
 
@@ -154,11 +160,11 @@ public class SkateMain extends Thread {
 			gi.setColor(new Color(0,0,0));
 			gi.fillRect(0,0,i.getWidth(),i.getHeight());
 
-			
+
 			// Draw skaters
 			for (Skater sk8r : skaters)
 			{
-				if (sk8r.isLive()) {
+				if (!sk8r.animComplete) {
 					gi.setColor(new Color(255,255,255));
 					int skaterX = (int)(sk8r.getMetricPosNow()[0]/sk8r.maxDim * i.getWidth());
 					//flip y to account for UCS diffs between 3D and Java
@@ -171,9 +177,9 @@ public class SkateMain extends Thread {
 					g.drawImage(i, 0, 0, null);
 				}
 			}
-			
-			
-			
+
+
+
 
 			// END SHAKE
 
@@ -187,8 +193,9 @@ public class SkateMain extends Thread {
 		}
 
 	}
-	
+
 	Random generator = new Random();
+	public int globalSkaterCount = 0;
 
 	public void addSkater() {
 		//System.out.println("RANDOM INT: " + generator.nextInt(skaterDefs.size()));
@@ -196,8 +203,9 @@ public class SkateMain extends Thread {
 		try {
 			Skater sk8Ref = (Skater)sk8r.clone();
 			skaters.add(sk8Ref);
+			globalSkaterCount++;
 			sk8Ref.startAnim();
-			sk8Ref.name += "--clone--";
+			sk8Ref.name += "-clone" + globalSkaterCount;
 			System.out.println("CLONED: " + sk8Ref.name + " FROM: " + sk8r.name);
 		} catch (CloneNotSupportedException e) {
 			// TODO Auto-generated catch block
