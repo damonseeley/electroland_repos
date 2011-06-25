@@ -5,15 +5,15 @@ import java.awt.Graphics;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
 
 import net.electroland.skate.ui.GUIFrame;
 import net.electroland.skate.ui.GUIPanel;
+import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
-import net.electroland.utils.OptionParser;
 import net.electroland.utils.lighting.ELUManager;
 import net.electroland.utils.lighting.canvas.ELUCanvas2D;
 
@@ -30,7 +30,7 @@ public class SkateMain extends Thread {
 	private static Logger logger = Logger.getLogger(SkateMain.class);
 
 	private ELUManager elu;
-	private ELUCanvas2D c;
+	private ELUCanvas2D canvas;
 
 	public static boolean SHOWUI;
 	public static GUIFrame guiFrame;
@@ -52,10 +52,6 @@ public class SkateMain extends Thread {
 
 	public SkateMain() {
 
-		// create lighting utils
-		//elu = new ELUManager("lights.properties");
-		//c = elu.getCanvas();
-
 		SHOWUI = true;
 		GUIWidth = 800;
 		GUIHeight = 800;
@@ -67,17 +63,16 @@ public class SkateMain extends Thread {
 		viewHeight = GUIHeight - (int)(GUIHeight*0.1);
 		viewWidth = GUIWidth - (int)(GUIWidth*0.1);
 		viewScale = 1.0f;
+		
+		
+		///////// Create lighting utils
+		elu = new ELUManager();
+		canvas = (ELUCanvas2D)elu.getCanvas("my2d");
 
-		//init space and lights
-		//init skaters
-		//init sound controller and speakers
-
-		// start everything (e.g., start the threads for each of these subsystems)
-		//elu.start();
-
-		//Skater sx = new Skater("depends//180f_sample.xaf");
-
-
+		///////// Init sound controller and speakers
+		
+		
+		///////// Load props and create skaters
 		try {
 			loadSkaterProps();
 		} catch (IOException e) {
@@ -85,9 +80,17 @@ public class SkateMain extends Thread {
 		} catch (OptionException e) {
 			e.printStackTrace();
 		}
+		
+		
 
-
-
+		
+		///////// Start ELU Syncing
+		//elu.start();
+		
+		
+		// TEMP for now just add one skater
+		addSkater();
+		
 
 		/////////////// THREAD STUFF
 		framerate = 30;
@@ -103,17 +106,22 @@ public class SkateMain extends Thread {
 		timer.start();
 		curTime = System.currentTimeMillis();
 
-		addSkater();
-
 		while (isRunning) {
+			
+			if (Math.random() < .1 ){
+				addSkater();
+			}
 
 
 			//figure out whether to add or subtract skaters
 
 			//advance all skater play heads
+			for (Skater sk8r : skaters)
+			{
+				sk8r.updatePlayHead();
+			}
 
 			
-			skaters.get(0).updatePlayHead();
 		
 			// Remove dead skaters
 			if (skaters.get(0).isLive()) {
@@ -132,28 +140,40 @@ public class SkateMain extends Thread {
 
 
 
+			
+			int skateAreaWidth = (int)(GUIWidth * 0.75);
+			int skateAreaHeight = (int)(GUIHeight * 0.75);
+
 
 			// JUST SHAKING OFF THE JAVA2D RUST HERE
 			Graphics g = guiPanel.getGraphics();
 
-			// Draw a big black rect on the image
-			BufferedImage i = new BufferedImage(400,400,ColorSpace.TYPE_RGB);
+			// Draw a big black rect on the panel
+			BufferedImage i = new BufferedImage(skateAreaWidth,skateAreaHeight,ColorSpace.TYPE_RGB);
 			Graphics gi = i.getGraphics();
 			gi.setColor(new Color(0,0,0));
 			gi.fillRect(0,0,i.getWidth(),i.getHeight());
 
-			if (skaters.get(0).isLive()) {
-				gi.setColor(new Color(255,255,255));
-				int skaterX = (int)(skaters.get(0).getMetricPosNow()[0]/skaters.get(0).maxDim * i.getWidth());
-				//flip y to account for UCS diffs between 3D and Java
-				int skaterY = (int)(skaters.get(0).getMetricPosNow()[1]/skaters.get(0).maxDim * i.getHeight()) * -1;
-				//System.out.println(skaterX + ", " + skaterY);
-				gi.fillRect(skaterX,skaterY,10,10);
-				gi.setColor(new Color(128,128,128));
-				gi.drawString(skaters.get(0).curFrame + "", skaterX, skaterY);			
+			
+			// Draw skaters
+			for (Skater sk8r : skaters)
+			{
+				if (sk8r.isLive()) {
+					gi.setColor(new Color(255,255,255));
+					int skaterX = (int)(sk8r.getMetricPosNow()[0]/sk8r.maxDim * i.getWidth());
+					//flip y to account for UCS diffs between 3D and Java
+					int skaterY = (int)(sk8r.getMetricPosNow()[1]/sk8r.maxDim * i.getHeight()) * -1;
+					//System.out.println(skaterX + ", " + skaterY);
+					gi.fillRect(skaterX,skaterY,10,10);
+					gi.setColor(new Color(128,128,128));
+					gi.drawString(sk8r.curFrame + "", skaterX, skaterY);			
 
-				g.drawImage(i, 0, 0, null);
+					g.drawImage(i, 0, 0, null);
+				}
 			}
+			
+			
+			
 
 			// END SHAKE
 
@@ -167,12 +187,14 @@ public class SkateMain extends Thread {
 		}
 
 	}
+	
+	Random generator = new Random();
 
 	public void addSkater() {
-		Skater sk8r = skaterDefs.get(0);
-		Skater sk8Ref;
+		//System.out.println("RANDOM INT: " + generator.nextInt(skaterDefs.size()));
+		Skater sk8r = skaterDefs.get(generator.nextInt(skaterDefs.size()));
 		try {
-			sk8Ref = (Skater)sk8r.clone();
+			Skater sk8Ref = (Skater)sk8r.clone();
 			skaters.add(sk8Ref);
 			sk8Ref.startAnim();
 			sk8Ref.name += "--clone--";
@@ -190,7 +212,7 @@ public class SkateMain extends Thread {
 
 	public void loadSkaterProps() throws IOException, OptionException
 	{
-		OptionParser op = new OptionParser("Skaters.properties");
+		ElectrolandProperties op = new ElectrolandProperties("Skaters.properties");
 
 		//System.out.println(op.getObjectNames("skater").size());
 
