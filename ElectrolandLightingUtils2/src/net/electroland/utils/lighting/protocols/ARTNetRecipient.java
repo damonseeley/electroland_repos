@@ -1,16 +1,19 @@
 package net.electroland.utils.lighting.protocols;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import net.electroland.utils.OptionException;
+import net.electroland.utils.lighting.CanvasDetector;
 import net.electroland.utils.lighting.Recipient;
 
 
 public class ARTNetRecipient extends Recipient {
 
 	public static int ART_NET_PORT = 6454; // port should be fixed for art net.
-	protected int channels, channelBits = 8, universe;
+	protected int totalChannels, channelBits = 8, universe;
 	protected String address;
+	private ArrayList<CanvasDetector> channels;
 	
 	@Override
 	public void configure(Map<String, String> properties)
@@ -18,14 +21,19 @@ public class ARTNetRecipient extends Recipient {
 
 		// Typical: -channels 512 channelBits 16 -address 127.0.0.1 -universe 1
 
-		// get channels (must be 1-512)
+		// get total channels (must be 1-512)
 		try{
 			Integer channels = Integer.parseInt(properties.get("-channels"));
 			if (channels.intValue() < 1 || channels.intValue() > 512)
 			{
 				throw new OptionException("recipient.channel must be between 1 and 512.");			
 			}
-			this.channels = channels.intValue();
+			this.totalChannels = channels.intValue();
+			
+			// allocate channels
+			this.channels = new ArrayList<CanvasDetector>();
+			this.channels.ensureCapacity(totalChannels);
+
 		}catch(NumberFormatException e)
 		{
 			throw new OptionException("bad channel value. " + e.getMessage());
@@ -66,6 +74,16 @@ public class ARTNetRecipient extends Recipient {
 		{
 			throw new OptionException("bad channel value. " + e.getMessage());
 		}
+	}
+
+	@Override
+	public void map(int channel, CanvasDetector cd) throws OptionException {
+		if (channel >= 0 && channel < totalChannels)
+		{
+			channels.set(channel, cd);
+		}else{
+			throw new OptionException("Attempt to map to channel " + channel + " in " + this.getName() + " is out of bounds.");
+		}		
 	}
 
 	@Override
