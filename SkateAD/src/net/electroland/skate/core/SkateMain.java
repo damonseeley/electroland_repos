@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import net.electroland.skate.ui.GUIFrame;
 import net.electroland.skate.ui.GUIPanel;
@@ -117,9 +118,9 @@ public class SkateMain extends Thread {
 
 
 			//advance all skater play heads
-			for (Skater sk8r : skaters) {
-				System.out.println("ANIMATING: " + sk8r.name);
-				sk8r.animate();
+			for (Object sk8r : skaters) {
+				System.out.println("ANIMATING: " + ((Skater)sk8r).name);
+				((Skater)sk8r).animate();
 			}
 
 
@@ -127,16 +128,15 @@ public class SkateMain extends Thread {
 
 
 			// Remove dead skaters
-			//BRADLEY - why a concurrendmodexception here?  Not doing anything else with the Vector right now.
 			if(skaters.size() > 0){
-				for (Skater sk8r : skaters) {
-					if (!sk8r.animComplete) {
+				for (Object sk8r : skaters) {
+					if (!((Skater)sk8r).animComplete) {
 						skaters.remove(sk8r);
 					}
 				}
 			}
-
-
+	
+	
 			//update sound locations
 			//draw skater sprites on an image at native size
 			//flop sand scale skater image to canvas-size
@@ -160,24 +160,22 @@ public class SkateMain extends Thread {
 			gi.setColor(new Color(0,0,0));
 			gi.fillRect(0,0,i.getWidth(),i.getHeight());
 
-
 			// Draw skaters
-			for (Skater sk8r : skaters)
+			for (Object sk8r : skaters)
 			{
-				if (!sk8r.animComplete) {
+				if (!((Skater)sk8r).animComplete) {
 					gi.setColor(new Color(255,255,255));
-					int skaterX = (int)(sk8r.getMetricPosNow()[0]/sk8r.maxDim * i.getWidth());
+					int skaterX = (int)(((Skater)sk8r).getMetricPosNow()[0]/((Skater)sk8r).maxDim * i.getWidth());
 					//flip y to account for UCS diffs between 3D and Java
-					int skaterY = (int)(sk8r.getMetricPosNow()[1]/sk8r.maxDim * i.getHeight()) * -1;
+					int skaterY = (int)(((Skater)sk8r).getMetricPosNow()[1]/((Skater)sk8r).maxDim * i.getHeight()) * -1;
 					//System.out.println(skaterX + ", " + skaterY);
 					gi.fillRect(skaterX,skaterY,10,10);
 					gi.setColor(new Color(128,128,128));
-					gi.drawString(sk8r.curFrame + "", skaterX, skaterY);			
+					gi.drawString(((Skater)sk8r).curFrame + "", skaterX, skaterY);			
 
 					g.drawImage(i, 0, 0, null);
 				}
 			}
-
 
 
 
@@ -211,12 +209,11 @@ public class SkateMain extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 
 
 	public Vector<Skater> skaterDefs = new Vector<Skater>();
-	public Vector<Skater> skaters = new Vector<Skater>();
+	public Set skaters = new CopyOnWriteArraySet();
 
 	public void loadSkaterProps() throws IOException, OptionException
 	{
