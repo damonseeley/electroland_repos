@@ -5,11 +5,13 @@ import java.awt.Graphics;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import net.electroland.skate.ui.GUIFrame;
 import net.electroland.skate.ui.GUIPanel;
@@ -129,9 +131,11 @@ public class SkateMain extends Thread {
 
 			// Remove dead skaters
 			if(skaters.size() > 0){
-				for (Skater sk8r : skaters) {
+				Iterator<Skater> s = skaters.iterator();
+				while (s.hasNext()){
+					Skater sk8r = s.next();
 					if (!sk8r.animComplete) {
-						skaters.remove(sk8r);
+						s.remove();
 					}
 				}
 			}
@@ -213,8 +217,9 @@ public class SkateMain extends Thread {
 
 
 	public Vector<Skater> skaterDefs = new Vector<Skater>();
-	public Set<Skater> skaters = new CopyOnWriteArraySet<Skater>();
-
+//	public Set<Skater> skaters = new CopyOnWriteArraySet<Skater>();
+	public Vector<Skater> skaters = new Vector<Skater>();
+	
 	public void loadSkaterProps() throws IOException, OptionException
 	{
 		ElectrolandProperties op = new ElectrolandProperties("Skaters.properties");
