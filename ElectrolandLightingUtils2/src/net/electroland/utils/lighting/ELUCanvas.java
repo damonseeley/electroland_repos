@@ -41,7 +41,7 @@ abstract public class ELUCanvas {
 
 	abstract public void configure(Map<String,String> properties) throws OptionException;
 
-	abstract public void map(Detector d) throws OptionException;
+	abstract public void map(CanvasDetector d) throws OptionException;
 	
 	/**
 	 * Get all detectors attached to this detector
