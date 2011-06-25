@@ -255,11 +255,15 @@ public class ELUManager implements Runnable {
 				//      * calculate x,y based on the offset store it in the CanvasDetector
 				int offsetX = ep.getRequiredInt("canvasFixture", cmapName, "x");
 				int offsetY = ep.getRequiredInt("canvasFixture", cmapName, "y");
+
+				// TODO: scaleX and scaleY.
+				double scaleX = ep.getRequiredDouble("canvasFixture", cmapName, "xScale");
+				double scaleY = ep.getRequiredDouble("canvasFixture", cmapName, "yScale");
 				
 				Rectangle boundary = new Rectangle(dtr.x + offsetX,
 													dtr.y + offsetY,
-													dtr.width,
-													dtr.height);
+													(int)(dtr.width * scaleX),
+													(int)(dtr.height * scaleY));
 				cd.boundary = boundary;
 				//      * store the detector model
 				cd.detectorModel = dtr.model;
