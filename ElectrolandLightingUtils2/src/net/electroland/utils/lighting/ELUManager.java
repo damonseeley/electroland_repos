@@ -56,6 +56,7 @@ public class ELUManager implements Runnable {
 			commands.put("quit", 8);
 			commands.put("on", 9);
 			commands.put("off", 10);
+			commands.put("set", 11);
 
 			while(isOn)
 			{
@@ -83,6 +84,7 @@ public class ELUManager implements Runnable {
 						System.out.println("\talloff");
 						System.out.println("\ton [tag]");
 						System.out.println("\toff [tag]");
+						System.out.println("\tset [tag] [value 0-255]");
 						System.out.println("\tsweep");
 						System.out.println("\tquit");
 					}else{
@@ -136,6 +138,24 @@ public class ELUManager implements Runnable {
 							break;
 						case(10):
 							elu.off(input[1]);
+							break;
+						case(11):
+							if (input.length == 3)
+							{
+								try{
+									int val = Integer.parseInt(input[2]);
+									if (val > -1 && val < 256)
+										elu.set(input[1],(byte)val);
+									else
+										System.out.println("usage: set [tag] [value(0-255)]");
+								}catch(NumberFormatException e)
+								{
+									System.out.println("usage: set [tag] [value(0-255)]");
+								}
+							}else
+							{
+								System.out.println("usage: set [tag] [value(0-255)]");
+							}
 							break;
 						}
 					}
@@ -261,12 +281,6 @@ public class ELUManager implements Runnable {
 			r.allOn();
 		}
 	}
-
-	public void on(String tag)
-	{
-		// TODO: implement
-		this.syncAllLights();
-	}
 	
 	/**
 	 * Turn all channels on all fixtures off.
@@ -279,9 +293,27 @@ public class ELUManager implements Runnable {
 		}
 	}
 
+	public void on(String tag)
+	{
+		set(tag, (byte)255);
+	}
 	public void off(String tag)
 	{
-		// TODO: implement
+		set(tag, (byte)0);
+	}
+
+	public void set(String tag, byte value)
+	{
+		for (Recipient r : recipients.values())
+		{
+			for (CanvasDetector cd : r.getChannels())
+			{
+				if (cd != null && cd.tags.contains(tag))
+				{
+					cd.setValue(value);
+				}
+			}
+		}
 		this.syncAllLights();
 	}
 
