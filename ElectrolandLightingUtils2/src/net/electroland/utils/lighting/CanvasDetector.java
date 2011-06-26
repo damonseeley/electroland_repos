@@ -11,9 +11,7 @@ public class CanvasDetector {
 	protected byte latestState;
 	protected List<String> tags;
 	protected ArrayList<Integer>pixelIndices = new ArrayList<Integer>();
-
-	protected boolean isEvalOverridden = false, overrideValue = false;
-
+	
 	public Shape getBoundary() {
 		return boundary;
 	}
@@ -35,6 +33,7 @@ public class CanvasDetector {
 
 	public synchronized void eval(int pixels[])
 	{
+
 		// copy all the pixels that are in my range
 		int[] mypixels = new int[pixelIndices.size()];
 		int ptr = 0;
