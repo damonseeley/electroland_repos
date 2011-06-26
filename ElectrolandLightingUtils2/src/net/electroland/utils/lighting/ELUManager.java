@@ -167,7 +167,10 @@ public class ELUManager implements Runnable {
 	 */
 	public void allOn()
 	{
-		// TODO: implement
+		for (Recipient r : recipients.values())
+		{
+			r.allOn();
+		}
 	}
 
 	public void on(String tag)
@@ -180,7 +183,10 @@ public class ELUManager implements Runnable {
 	 */
 	public void allOff()
 	{
-		// TODO: implement
+		for (Recipient r : recipients.values())
+		{
+			r.allOff();
+		}
 	}
 
 	public void off(String tag)
@@ -350,6 +356,9 @@ public class ELUManager implements Runnable {
 				recipient.map(channel++, cd);
 			}
 		}
+
+		Runtime.getRuntime().addShutdownHook(new BlackOutThread(this));
+		
 		return this;
 	}
 		
@@ -383,5 +392,18 @@ public class ELUManager implements Runnable {
 		for (Recipient r : recipients.values()){
 			r.debug();
 		}		
+	}
+}
+
+class BlackOutThread extends Thread{
+	private ELUManager elu;
+	public BlackOutThread(ELUManager elu)
+	{
+		this.elu = elu;
+	}
+	public void run()
+	{
+		elu.stop();
+		elu.allOff();
 	}
 }
