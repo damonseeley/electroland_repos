@@ -328,7 +328,7 @@ public class ElectrolandProperties {
 	public List<String> getRequiredArray(String objectType, String objectName, String paramName) throws OptionException
 	{
 		List<String>tagList = getOptionalArray(objectType, objectName, paramName);
-		if (tagList == null) // TODO: nulls in the tagArray
+		if (tagList == null)
 		{			
 			throw new OptionException("no parameter value(s) for '" + paramName + "' in object named '" + objectName + "' of type '" + objectType + "' was found.");
 		}else
