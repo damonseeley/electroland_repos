@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Shape;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import net.electroland.skate.ui.GUIFrame;
 import net.electroland.skate.ui.GUIPanel;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
+import net.electroland.utils.lighting.CanvasDetector;
 import net.electroland.utils.lighting.ELUManager;
 import net.electroland.utils.lighting.InvalidPixelGrabException;
 import net.electroland.utils.lighting.canvas.ELUCanvas2D;
@@ -227,13 +229,14 @@ public class SkateMain extends Thread {
 			/*
 			 * Draw the CanvasDetectors
 			 */
-			/*
+			
 			gci.setColor(new Color(0,0,128));
 			for (CanvasDetector d : canvas.getDetectors()) {
 				Shape dShape = d.getBoundary();
-				//gci.drawRect(dShape.getBounds().x,dShape.getBounds().y,dShape.getBounds().width,dShape.getBounds().height);
+				gci.drawRect(dShape.getBounds().x,dShape.getBounds().y,dShape.getBounds().width,dShape.getBounds().height);
 			}
-			*/
+			System.out.println(canvas.getDetectors().length);
+			
 			
 			
 			
