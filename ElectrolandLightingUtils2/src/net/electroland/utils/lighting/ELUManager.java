@@ -44,6 +44,19 @@ public class ELUManager implements Runnable {
 			ELUManager elu = new ELUManager();
 			boolean isOn = true;
 
+			Map<String,Integer> commands = new HashMap<String,Integer>();
+			commands.put("start", 0);
+			commands.put("stop", 1);
+			commands.put("fps", 2);
+			commands.put("allon", 3);
+			commands.put("alloff", 4);
+			commands.put("list", 5);
+			commands.put("load", 6);
+			commands.put("sweep", 7);
+			commands.put("quit", 8);
+			commands.put("on", 9);
+			commands.put("off", 10);
+
 			while(isOn)
 			{
 				try{
@@ -54,24 +67,24 @@ public class ELUManager implements Runnable {
 									new java.io.InputStreamReader(System.in));
 
 					String input[] = stdin.readLine().split(" ");
-					
-					Map<String,Integer> commands = new HashMap<String,Integer>();
-					commands.put("start", 0);
-					commands.put("stop", 1);
-					commands.put("fps", 2);
-					commands.put("allon", 3);
-					commands.put("alloff", 4);
-					commands.put("list", 5);
-					commands.put("load", 6);
-					commands.put("sweep", 7);
-					commands.put("quit", 8);
-					commands.put("on", 9);
-					commands.put("off", 10);
+					Integer i = commands.get(input[0].toLowerCase());
 
-					Integer i = commands.get(input[0]);
-					if (i == null){
+					if (i == null || input[0] == "?"){
 						System.out.println("unknown command " + input[0]);
-						// spit out help
+						System.out.println("--");
+						System.out.println("The following commands are valid:");
+						System.out.println("\tload [light properties file name]");
+						System.out.println("\tlist");
+						System.out.println("\tstart");
+						System.out.println("\tstop");
+						System.out.println("\tfps");
+						System.out.println("\tfps [desired fps]");						
+						System.out.println("\tallon");
+						System.out.println("\talloff");
+						System.out.println("\ton [tag]");
+						System.out.println("\toff [tag]");
+						System.out.println("\tsweep");
+						System.out.println("\tquit");
 					}else{
 						switch(i.intValue()){
 						case(0):
@@ -84,7 +97,7 @@ public class ELUManager implements Runnable {
 							if (input.length == 1)
 								System.out.println("Current measured fps = " + elu.getMeasuredFPS());
 							else
-								// set to number here
+								// TODO: set to number here
 							break;
 						case(3):
 							elu.allOn();
@@ -102,17 +115,17 @@ public class ELUManager implements Runnable {
 								elu.load(input[1]);
 							break;
 						case(7):
-							// sweep here
+							// TODO: sweep here
 							break;
 						case(8):
 							elu.stop();
 							isOn = false;
 							break;
 						case(9):
-							// on [tag]
+							// TODO: on [tag]
 							break;
 						case(10):
-							// off [tag]
+							// TODO: off [tag]
 							break;
 						}
 					}
