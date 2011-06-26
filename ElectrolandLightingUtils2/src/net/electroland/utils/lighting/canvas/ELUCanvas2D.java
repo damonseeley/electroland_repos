@@ -47,13 +47,15 @@ public class ELUCanvas2D extends ELUCanvas {
 		int y1 = boundary.y;
 		int x2 = x1 + boundary.width;
 		int y2 = y1 + boundary.height;
-		int pixels = boundary.width * boundary.height;
+		int pixels = this.d.width * this.d.height;
 		
+		System.out.println("mapping " + x1 + "," + y1 + "," + x2 + "," + y2);
 		
 		for (int y = y1; y <= y2; y++)
 		{
 			for (int x = x1; x <= x2; x++){
-				int current = (y * boundary.width) + x;
+				int current = (y * this.d.width) + x; //<-- should be CANVAS width
+				System.out.println("testing " + current);
 				 // don't include offscreen pixels
 				if (current > 0 && current < pixels){
 					d.getPixelIndices().add(current);
