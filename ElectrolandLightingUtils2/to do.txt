@@ -1,12 +1,10 @@
-1.) EluCanvas2D.sync (sync all pixels.  store state and push it to the recipients.)
-
-3.) ELUManager.allOn, allOff
-4.) ELUManager.run (get the latest states and push them)
-5.) sweep
-6.) tag operations
+2.) CanvasDetector on/off
+3.) ELUManager.allOn, allOff, on, off 
+4.) ELUCanvas.allOn/allOff
+5.) sweep (requires canvasDetector on/off)
+6.) shutdown thread (requires ELUManager.allOff)
+7.) clean/debug
 8.) diagnostic ELUCanvas.sync routine that sets pixels explicitly
-7.) Canvas.allOn/allOff of less than the whole system.
-8.) clean/debug
 
 GUI
 +-----------------------------------------+

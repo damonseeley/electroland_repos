@@ -70,8 +70,8 @@ abstract public class ELUCanvas {
 	 */
 	public void allOn()
 	{
-		for (CanvasDetector d : detectors)
-		{
+//		for (CanvasDetector d : detectors)
+//		{
 			// how is this going to work?  allOn is a protocol specific call, 
 			// so this needs to go to ARTNetRecipient.
 			
@@ -80,7 +80,7 @@ abstract public class ELUCanvas {
 			
 			// recipient can call useSync 
 			
-		}
+//		}
 		// TODO: Implement.  This is a wrapper around
 		// setting all CanvasDetectors to ON and calling sync.
 	}
