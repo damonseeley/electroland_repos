@@ -248,6 +248,7 @@ public class ELUManager implements Runnable {
 			while (dtrs.hasNext()){
 				//      * create a CanvasDetector
 				CanvasDetector cd = new CanvasDetector();
+				cd.tags = fixture.tags;
 				Detector dtr = dtrs.next();
 
 				//      * calculate x,y based on the offset store it in the CanvasDetector
