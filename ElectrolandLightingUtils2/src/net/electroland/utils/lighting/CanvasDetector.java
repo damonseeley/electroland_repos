@@ -2,13 +2,14 @@ package net.electroland.utils.lighting;
 
 import java.awt.Shape;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CanvasDetector {
 
 	protected Shape boundary;
 	protected DetectionModel detectorModel;
 	protected byte latestState;
-	protected ArrayList<String> tags;
+	protected List<String> tags;
 	protected ArrayList<Integer>pixelIndices = new ArrayList<Integer>(); // TODO: this seems like a funny place for this.
 	
 	public Shape getBoundary() {
@@ -23,10 +24,10 @@ public class CanvasDetector {
 	public void setEvaluatedValue(byte b){
 		latestState = b;
 	}
-	public ArrayList<String> getTags() {
+	public List<String> getTags() {
 		return tags;
 	}
-	public ArrayList<Integer> getPixelIndices() {
+	public List<Integer> getPixelIndices() {
 		return pixelIndices;
 	}
 	
