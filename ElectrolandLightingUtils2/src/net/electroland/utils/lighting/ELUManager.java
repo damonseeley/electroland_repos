@@ -11,14 +11,12 @@ import java.util.Map;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
 
-import org.apache.log4j.Logger;
-
 public class ELUManager implements Runnable {
 
 	// TODO: Enumerate object names.
 	// TODO: outbourd load() as ELUProperties
 	
-	private static Logger logger = Logger.getLogger(ELUManager.class);	
+	//private static Logger logger = Logger.getLogger(ELUManager.class);	
 		
 	private int fps;
 	
@@ -120,9 +118,9 @@ public class ELUManager implements Runnable {
 		
 	}
 
-	public void load() throws IOException, OptionException
+	public ELUManager load() throws IOException, OptionException
 	{
-		load("lights.properties");
+		return load("lights.properties");
 	}
 	
 	/** Configure the system using "lights.properties"
@@ -130,7 +128,7 @@ public class ELUManager implements Runnable {
 	 * Currently a gross way of doing this.
 	 * 
 	 */
-	public void load(String propFileName) throws IOException, OptionException
+	public ELUManager load(String propFileName) throws IOException, OptionException
 	{
 		ElectrolandProperties ep = new ElectrolandProperties(propFileName);
 
@@ -217,9 +215,9 @@ public class ELUManager implements Runnable {
 		}
 		
 		// parse fixture to canvas mappings (this is the meat of everything)
-		Iterator <String> cmapNames = ep.getObjectNames("canvasFixture").iterator();		
-		while (fixtureNames.hasNext())
-		{
+		Iterator <String> cmapNames = ep.getObjectNames("canvasFixture").iterator();
+		while (cmapNames.hasNext())
+		{			
 			//   for each fixture to canvas mapping
 			String cmapName = cmapNames.next();
 
@@ -250,18 +248,18 @@ public class ELUManager implements Runnable {
 				//      * create a CanvasDetector
 				CanvasDetector cd = new CanvasDetector();
 				Detector dtr = dtrs.next();
-				
 
 				//      * calculate x,y based on the offset store it in the CanvasDetector
-				int offsetX = ep.getRequiredInt("canvasFixture", cmapName, "x");
-				int offsetY = ep.getRequiredInt("canvasFixture", cmapName, "y");
+				double offsetX = ep.getRequiredDouble("canvasFixture", cmapName, "x");
+				double offsetY = ep.getRequiredDouble("canvasFixture", cmapName, "y");
 
-				// TODO: scaleX and scaleY.
 				double scaleX = ep.getRequiredDouble("canvasFixture", cmapName, "xScale");
-				double scaleY = ep.getRequiredDouble("canvasFixture", cmapName, "yScale");
-				
-				Rectangle boundary = new Rectangle(dtr.x + offsetX,
-													dtr.y + offsetY,
+				double scaleY = ep.getRequiredDouble("canvasFixture", cmapName, "yScale");				
+
+
+				// TODO: scaleX and scaleY should scale x,y translation, not just width and height!				
+				Rectangle boundary = new Rectangle((int)((scaleX * (dtr.x + offsetX))),
+													(int)((scaleY * (dtr.y + offsetY))),
 													(int)(dtr.width * scaleX),
 													(int)(dtr.height * scaleY));
 				cd.boundary = boundary;
@@ -269,12 +267,13 @@ public class ELUManager implements Runnable {
 				cd.detectorModel = dtr.model;
 
 				// map the CanvasDetectors to pixel locations in the pixelgrab
-				canvas.map(cd);
-
+				canvas.addDetector(cd);
+				
 				// map the CanvasDetector to a channel in the recipient.
 				recipient.map(channel++, cd);
 			}
 		}
+		return this;
 	}
 
 	/** 

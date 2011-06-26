@@ -2,9 +2,6 @@ package net.electroland.utils.lighting.canvas;
 
 import java.awt.Dimension;
 import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import net.electroland.utils.OptionException;
@@ -15,7 +12,6 @@ import net.electroland.utils.lighting.InvalidPixelGrabException;
 public class ELUCanvas2D extends ELUCanvas {
 
 	protected Dimension d;	
-	protected List<CanvasDetector>detectors = Collections.synchronizedList(new ArrayList<CanvasDetector>());
 	
 	@Override
 	public void configure(Map<String, String> p)
@@ -36,8 +32,7 @@ public class ELUCanvas2D extends ELUCanvas {
 	}
 
 	@Override
-	public void map(CanvasDetector d) throws OptionException {
-		detectors.add(d);
+	public void map(CanvasDetector d) throws OptionException {		
 		
 		// for each index, get the array indices contained within the boundary
 		// and store them in the CanvasDetector.
@@ -52,7 +47,7 @@ public class ELUCanvas2D extends ELUCanvas {
 		
 		for (int y = y1; y <= y2; y++)
 		{
-			for (int x = x1; x1 <= x2; x++){
+			for (int x = x1; x <= x2; x++){
 				int current = (y * boundary.width) + x;
 				 // don't include offscreen pixels
 				if (current > 0 && current < pixels){

@@ -12,8 +12,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
-
 /**
  * To do: document.  add validation handling.  log4j.  make it possible to
  *        parse a single line from a props file handed to this as two strings.
@@ -22,19 +20,8 @@ import org.apache.log4j.Logger;
  */
 
 public class ElectrolandProperties {
-
-	// TODO: shorten common names:
-	//  getParm 			-> get
-	//  getRequiredParm 	-> getRequired
-	//  getAsInt 			-> getInt
-	//  getAsRequireInt 	-> getReqiredInt
-	//  getAsArray			-> getArray
-	//  getAsRequiredArray	-> getRequiredArray
-	//	getAsClass			-> getClass
-	// 	getAsRequiredClass	-> getRequiredClass
 	
 	private static String ARG_MARKER = " -";
-	private static Logger logger = Logger.getLogger(ElectrolandProperties.class);
 
 	// main is just a unit test
 	public static void main(String args[]){
@@ -50,8 +37,7 @@ public class ElectrolandProperties {
 			ElectrolandProperties op = new ElectrolandProperties(p);
 
 			// TODO: add Asserts and tests for conditions that should 
-			// fail predictably.
-			
+			// fail predictably.			
 			System.out.println(op.getObjectNames("cat"));
 			System.out.println(op.getObjectNames("dog"));
 			
@@ -130,8 +116,6 @@ public class ElectrolandProperties {
 			output.append("', objectName: '").append(objectName);
 			Map<String,String> params = parse("" + p.get(key));
 			output.append("', params: ").append(params);
-			
-			logger.debug(output.toString());
 			
 			// see if the objectType exists or not:
 			Map<String,Map<String,String>> names = objects.get(objectType);
@@ -252,7 +236,7 @@ public class ElectrolandProperties {
 	}
 	
 	public Integer getOptionalInt(String objectType, String objectName, String paramName) throws OptionException
-	{
+	{		
 		String str = getOptional(objectType, objectName, paramName);
 		try
 		{
