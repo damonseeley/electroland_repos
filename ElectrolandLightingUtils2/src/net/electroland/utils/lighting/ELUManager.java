@@ -28,14 +28,8 @@ public class ELUManager implements Runnable {
 
 	private int fps;
 	
-	private HashMap<String, Recipient>recipients 
-				= new HashMap<String, Recipient>();
-	private HashMap<String, ELUCanvas>canvases
-				= new HashMap<String, ELUCanvas>();
-	private HashMap<String, Fixture>fixtures
-				= new HashMap<String, Fixture>();
-	private HashMap<String, FixtureType>types 
-				= new HashMap<String, FixtureType>();
+	private HashMap<String, Recipient> recipients;
+	private HashMap<String, ELUCanvas>canvases;
 
 	private Thread thread;
 	boolean isRunning = false;
@@ -46,15 +40,87 @@ public class ELUManager implements Runnable {
 	public static void main(String args[])
 	{
 		try {
-			new ELUManager().load().debug();
 
-			while(true)
+			ELUManager elu = new ELUManager();
+			boolean isOn = true;
+
+			while(isOn)
 			{
-				// TODO: implement
+				try{
+					System.out.print(">");
+
+					java.io.BufferedReader stdin = 
+							new java.io.BufferedReader(
+									new java.io.InputStreamReader(System.in));
+
+					String input[] = stdin.readLine().split(" ");
+					
+					Map<String,Integer> commands = new HashMap<String,Integer>();
+					commands.put("start", 0);
+					commands.put("stop", 1);
+					commands.put("fps", 2);
+					commands.put("allon", 3);
+					commands.put("alloff", 4);
+					commands.put("list", 5);
+					commands.put("load", 6);
+					commands.put("sweep", 7);
+					commands.put("quit", 8);
+					commands.put("on", 9);
+					commands.put("off", 10);
+
+					Integer i = commands.get(input[0]);
+					if (i == null){
+						System.out.println("unknown command " + input[0]);
+						// spit out help
+					}else{
+						switch(i.intValue()){
+						case(0):
+							elu.start();
+							break;
+						case(1):
+							elu.stop();
+							break;
+						case(2):
+							if (input.length == 1)
+								System.out.println("Current measured fps = " + elu.getMeasuredFPS());
+							else
+								// set to number here
+							break;
+						case(3):
+							elu.allOn();
+							break;
+						case(4):
+							elu.allOff();
+							break;
+						case(5):
+							elu.debug();
+							break;
+						case(6):
+							if (input.length == 1)
+								elu.load("lights.properties");
+							else
+								elu.load(input[1]);
+							break;
+						case(7):
+							// sweep here
+							break;
+						case(8):
+							elu.stop();
+							isOn = false;
+							break;
+						case(9):
+							// on [tag]
+							break;
+						case(10):
+							// off [tag]
+							break;
+						}
+					}
+				}catch (java.io.IOException e){
+					e.printStackTrace();
+				}			
 			}
 			
-		} catch (IOException e) {
-			e.printStackTrace();
 		} catch (OptionException e) {
 			e.printStackTrace();
 		}
@@ -209,6 +275,13 @@ public class ELUManager implements Runnable {
 		logger.info("ELUManager loading " + propFileName);
 		ElectrolandProperties ep = new ElectrolandProperties(propFileName);
 
+		recipients = new HashMap<String, Recipient>();
+		canvases = new HashMap<String, ELUCanvas>();
+
+		HashMap<String, Fixture>fixtures = new HashMap<String, Fixture>();
+		HashMap<String, FixtureType>types = new HashMap<String, FixtureType>();
+		
+		
 		// get fps
 		fps = ep.getRequiredInt("settings","global",FPS);			
 		
