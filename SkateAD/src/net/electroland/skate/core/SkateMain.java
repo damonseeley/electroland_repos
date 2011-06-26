@@ -21,6 +21,7 @@ import net.electroland.skate.ui.GUIFrame;
 import net.electroland.skate.ui.GUIPanel;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
+import net.electroland.utils.Util;
 import net.electroland.utils.lighting.CanvasDetector;
 import net.electroland.utils.lighting.ELUManager;
 import net.electroland.utils.lighting.InvalidPixelGrabException;
@@ -111,7 +112,7 @@ public class SkateMain extends Thread {
 
 
 		/////////////// THREAD STUFF
-		framerate = 45;
+		//framerate = 45; <-- Bradley: I am setting this in properties now.
 		isRunning = true;
 		timer = new Timer(framerate);
 		start();
@@ -226,12 +227,15 @@ public class SkateMain extends Thread {
 
 				for (CanvasDetector d : evaled) { // draw the results of our sync.
 					Shape dShape = d.getBoundary();
-					gci.setColor(new Color(d.getLatestState(),d.getLatestState(),d.getLatestState()));
+					int dColor = Util.unsignedByteToInt(d.getLatestState());
+					gci.setColor(new Color(dColor,dColor,dColor));
 					gci.fillRect(dShape.getBounds().x,dShape.getBounds().y,dShape.getBounds().width,dShape.getBounds().height);
 					gci.setColor(new Color(0,0,128));
 					gci.drawRect(dShape.getBounds().x,dShape.getBounds().y,dShape.getBounds().width,dShape.getBounds().height);
 					
 				}
+				
+				elu.syncAllLights();
 				//System.out.println(canvas.getDetectors().length);				
 			
 			} catch (InvalidPixelGrabException e) {
@@ -287,12 +291,12 @@ public class SkateMain extends Thread {
 	public Vector<Skater> skaters = new Vector<Skater>();
 	
 	public void loadSkaterProps() throws IOException, OptionException
-	{
+	{		
 		ElectrolandProperties op = new ElectrolandProperties("Skaters.properties");
 		Set<String> skaterNames = (op.getObjectNames("skater"));
-		Iterator iter = skaterNames.iterator();
+		Iterator<String> iter = skaterNames.iterator();
 		while (iter.hasNext()) {
-			String curSkater = iter.next().toString();
+			String curSkater = iter.next();
 			String animFile = op.getRequired("skater",curSkater,"animFile");
 			String maxDim = op.getRequired("skater",curSkater,"dims");
 			String[] soundList = op.getOptional("skater",curSkater,"sounds").split(",");
@@ -301,6 +305,7 @@ public class SkateMain extends Thread {
 			Skater sk8r = new Skater(curSkater, animFile, maxDim, soundList);
 			skaterDefs.add(sk8r);
 		}
+		framerate = op.getRequiredInt("settings", "global", "fps");		
 	}
 
 
