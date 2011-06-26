@@ -35,7 +35,7 @@ public class CanvasDetector {
 	{
 		StringBuffer sb = new StringBuffer("CanvasDetector[");
 		sb.append(boundary).append(',');
-		sb.append("tags[").append(tags).append("],latestEval=");
+		sb.append("tags").append(tags).append(",latestEval=");
 		sb.append(latestState).append(',').append(detectorModel).append(']');
 		return sb.toString();
 	}

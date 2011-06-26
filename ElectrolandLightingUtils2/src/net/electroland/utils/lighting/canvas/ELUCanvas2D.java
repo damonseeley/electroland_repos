@@ -43,21 +43,19 @@ public class ELUCanvas2D extends ELUCanvas {
 		// and store them in the CanvasDetector.
 
 		Rectangle boundary = (Rectangle)d.getBoundary();
+		
 		int x1 = boundary.x;
 		int y1 = boundary.y;
-		int x2 = x1 + boundary.width;
-		int y2 = y1 + boundary.height;
+		int x2 = x1 + boundary.width - 1;
+		int y2 = y1 + boundary.height - 1;
 		int pixels = this.d.width * this.d.height;
-		
-		System.out.println("mapping " + x1 + "," + y1 + "," + x2 + "," + y2);
 		
 		for (int y = y1; y <= y2; y++)
 		{
 			for (int x = x1; x <= x2; x++){
-				int current = (y * this.d.width) + x; //<-- should be CANVAS width
-				System.out.println("testing " + current);
+				int current = (y * this.d.width) + x;
 				 // don't include offscreen pixels
-				if (current > 0 && current < pixels){
+				if (current > -1 && current < pixels){
 					d.getPixelIndices().add(current);
 				}
 			}			
@@ -80,7 +78,7 @@ public class ELUCanvas2D extends ELUCanvas {
 		Iterator<CanvasDetector> i = this.detectors.iterator();
 		while (i.hasNext()){
 			CanvasDetector cd = i.next();
-			logger.debug("ELUCanvas2D '" + this.getName() + "' channel[" + i + "] contains " + cd);
+			logger.debug("ELUCanvas2D '" + this.getName() + "' contains " + cd);
 			logger.debug("\tis mapped to pixels " + cd.getPixelIndices());
 		}
 	}

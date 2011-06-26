@@ -81,8 +81,8 @@ abstract public class ELUCanvas {
 	{
 		// TODO: Implement
 		// setting all CanvasDetectors to OFF and calling sync.
-	}	
-	
+	}
+
 	/**
 	 * For DIAGNOSTIC USE ONLY, you can set the state of any detector to either
 	 * ON or OFF.

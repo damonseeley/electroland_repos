@@ -14,9 +14,17 @@ import net.electroland.utils.OptionException;
 import org.apache.log4j.Logger;
 
 public class ELUManager implements Runnable {
+
+	final public static String FIXTURE = "fixture"; 
+	final public static String FIXTURE_TYPE = "fixtureType"; 
+	final public static String FPS = "fps"; 
+	final public static String RECIPIENT = "recipient"; 
+	final public static String DETECTOR = "detector"; 
+	final public static String CANVAS = "canvas"; 
+	final public static String CANVAS_FIXTURE = "canvasFixture"; 
 	
 	private static Logger logger = Logger.getLogger(ELUManager.class);	
-		
+
 	private int fps;
 	
 	private Hashtable<String, Recipient>recipients 
@@ -134,103 +142,110 @@ public class ELUManager implements Runnable {
 		ElectrolandProperties ep = new ElectrolandProperties(propFileName);
 
 		// get fps
-		fps = ep.getRequiredInt("settings","global","fps");			
+		fps = ep.getRequiredInt("settings","global",FPS);			
 		
 		// parse recipients
-		Iterator <String> recipientNames = ep.getObjectNames("recipient").iterator();
+		Iterator <String> recipientNames = ep.getObjectNames(RECIPIENT).iterator();
 		while (recipientNames.hasNext())
 		{
 			String name = recipientNames.next();
 			
 			// TODO: Catch ClassCastException here.
-			Recipient r = (Recipient)ep.getRequiredClass("recipient", name, "class");
+			Recipient r = (Recipient)ep.getRequiredClass(RECIPIENT, name, "class");
 
 			// name, configure, store
 			r.setName(name);
-			r.configure(ep.getAll("recipient", name));
+			r.configure(ep.getAll(RECIPIENT, name));
 			recipients.put(name, r);
 		}
 				
 		// parse fixtureTypes
-		Iterator <String> fixtureTypeNames = ep.getObjectNames("fixtureType").iterator();
+		Iterator <String> fixtureTypeNames = ep.getObjectNames(FIXTURE_TYPE).iterator();
 		while (fixtureTypeNames.hasNext())
 		{
 			String name = fixtureTypeNames.next();
-			types.put(name, new FixtureType(name, ep.getRequiredInt("fixtureType", name, "channels")));
+			types.put(name, new FixtureType(name, ep.getRequiredInt(FIXTURE_TYPE, name, "channels")));
 		}
 		
 		// patch channels into each fixtureType (e.g., detectors)
-		Iterator <String> detectorNames = ep.getObjectNames("detector").iterator();		
+		Iterator <String> detectorNames = ep.getObjectNames(DETECTOR).iterator();		
 		while (detectorNames.hasNext())
 		{
 			// detector information
 			String dname = detectorNames.next();
-			int x = ep.getRequiredInt("detector", dname, "x");
-			int y = ep.getRequiredInt("detector", dname, "y");
-			int width = ep.getRequiredInt("detector", dname, "w");
-			int height = ep.getRequiredInt("detector", dname, "h");
+			int x = ep.getRequiredInt(DETECTOR, dname, "x");
+			int y = ep.getRequiredInt(DETECTOR, dname, "y");
+			int width = ep.getRequiredInt(DETECTOR, dname, "w");
+			int height = ep.getRequiredInt(DETECTOR, dname, "h");
 
-			// TODO: Catch ClassCastException here.
-			DetectionModel dm = (DetectionModel)ep.getRequiredClass("detector", dname, "model");
+			try{
+				DetectionModel dm = (DetectionModel)ep.getRequiredClass(DETECTOR, dname, "model");				
 
-			// patch information
-			String ftname = ep.getRequired("detector", dname, "fixtureType");
-			int index = ep.getRequiredInt("detector", dname, "index");
+				// patch information
+				String ftname = ep.getRequired(DETECTOR, dname, FIXTURE_TYPE);
+				int index = ep.getRequiredInt(DETECTOR, dname, "index");
 
-			// TODO: need to verify that it isn't null
-			FixtureType ft = (FixtureType)types.get(ftname);
-			ft.detectors.set(index, new Detector(x,y,width,height,dm));
+				// TODO: need to verify that it isn't null
+				FixtureType ft = (FixtureType)types.get(ftname);
+				ft.detectors.set(index, new Detector(x,y,width,height,dm));
+
+			}catch(ClassCastException e)
+			{
+				// TODO: Proper error message
+				throw new OptionException(e);
+			}
+
 		}
 
 		// parse canvases
-		Iterator <String> canvasNames = ep.getObjectNames("canvas").iterator();		
+		Iterator <String> canvasNames = ep.getObjectNames(CANVAS).iterator();		
 		while (canvasNames.hasNext())
 		{
 			String canvasName = canvasNames.next();
-			ELUCanvas ec = (ELUCanvas)ep.getRequiredClass("canvas", canvasName, "class");
-			ec.configure(ep.getAll("canvas", canvasName));
+			ELUCanvas ec = (ELUCanvas)ep.getRequiredClass(CANVAS, canvasName, "class");
+			ec.configure(ep.getAll(CANVAS, canvasName));
 			ec.setName(canvasName);
 			canvases.put(canvasName, ec);
 		}
 
 		// parse fixtures
-		Iterator <String> fixtureNames = ep.getObjectNames("fixture").iterator();		
+		Iterator <String> fixtureNames = ep.getObjectNames(FIXTURE).iterator();		
 		while (fixtureNames.hasNext())
 		{
 			String fixtureName = fixtureNames.next();
-			String typeStr = ep.getRequired("fixture", fixtureName, "fixtureType");
+			String typeStr = ep.getRequired(FIXTURE, fixtureName, FIXTURE_TYPE);
 			FixtureType type = types.get(typeStr);
 			if (type == null){
 				throw new OptionException("fixtureType '" + typeStr + "' for object '" + fixtureName + "' of type 'fixture' could not be found.");
 			}
-			int startAddress = ep.getRequiredInt("fixture", fixtureName, "startAddress");
-			String recipStr = ep.getRequired("fixture", fixtureName, "recipient");
+			int startAddress = ep.getRequiredInt(FIXTURE, fixtureName, "startAddress");
+			String recipStr = ep.getRequired(FIXTURE, fixtureName, RECIPIENT);
 			Recipient recipient = recipients.get(recipStr);
 			if (recipient == null){
 				throw new OptionException("recipient '" + recipStr + "' for object '" + fixtureName + "' of type 'fixture' could not be found.");				
 			}
-			List<String> tags = ep.getOptionalArray("fixture", fixtureName, "tags");
+			List<String> tags = ep.getOptionalArray(FIXTURE, fixtureName, "tags");
 			Fixture fixture = new Fixture(fixtureName, type, startAddress, recipient, tags);
 			
 			fixtures.put(fixtureName, fixture);
 		}
 		
 		// parse fixture to canvas mappings (this is the meat of everything)
-		Iterator <String> cmapNames = ep.getObjectNames("canvasFixture").iterator();
+		Iterator <String> cmapNames = ep.getObjectNames(CANVAS_FIXTURE).iterator();
 		while (cmapNames.hasNext())
 		{			
 			//   for each fixture to canvas mapping
 			String cmapName = cmapNames.next();
 
 			//     * find the fixture
-			String fixtureName = ep.getRequired("canvasFixture", cmapName, "fixture");
+			String fixtureName = ep.getRequired(CANVAS_FIXTURE, cmapName, FIXTURE);
 			Fixture fixture = fixtures.get(fixtureName);
 			if (fixture == null){				
 				throw new OptionException("fixture '" + fixtureName + "' for object '" + cmapName + "' of type 'canvasFixture' could not be found.");
 			}
 
 			//	   * find the canvas
-			String cnvsName = ep.getRequired("canvasFixture", cmapName, "canvas");
+			String cnvsName = ep.getRequired(CANVAS_FIXTURE, cmapName, CANVAS);
 			ELUCanvas canvas = canvases.get(cnvsName);
 			if (canvas == null){				
 				throw new OptionException("canvas '" + cnvsName + "' for object '" + cmapName + "' of type 'canvasFixture' could not be found.");
@@ -252,11 +267,11 @@ public class ELUManager implements Runnable {
 				Detector dtr = dtrs.next();
 
 				//      * calculate x,y based on the offset store it in the CanvasDetector
-				double offsetX = ep.getRequiredDouble("canvasFixture", cmapName, "x");
-				double offsetY = ep.getRequiredDouble("canvasFixture", cmapName, "y");
+				double offsetX = ep.getRequiredDouble(CANVAS_FIXTURE, cmapName, "x");
+				double offsetY = ep.getRequiredDouble(CANVAS_FIXTURE, cmapName, "y");
 
-				double scaleX = ep.getRequiredDouble("canvasFixture", cmapName, "xScale");
-				double scaleY = ep.getRequiredDouble("canvasFixture", cmapName, "yScale");				
+				double scaleX = ep.getRequiredDouble(CANVAS_FIXTURE, cmapName, "xScale");
+				double scaleY = ep.getRequiredDouble(CANVAS_FIXTURE, cmapName, "yScale");				
 
 				Rectangle boundary = new Rectangle((int)((scaleX * (dtr.x + offsetX))),
 													(int)((scaleY * (dtr.y + offsetY))),

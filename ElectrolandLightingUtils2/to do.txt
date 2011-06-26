@@ -1,6 +1,7 @@
-0.) fix problem with detector to index mappings
-1.) replace all "fixture", "recipient", etc. with CONSTANTS.
-2.) Recipient.sync
+0.) replace param names with CONSTANTS
+1.) replace all variable names with CONSTANTS in ARTNetRecipient
+2.) replace object types with CONSTANTS in option error messages
+2.) Recipient.sync allOn allOff
 3.) ELUCanvas.sync & allOn, allOff
 4.) ElectrolandLightingManager.run and allOn, allOff
 3.) ARTNetRecipient.send
