@@ -21,17 +21,17 @@ import java.util.Set;
 
 public class ElectrolandProperties {
 	
-	private static String ARG_MARKER = " -";
+	private static String ARG_MARKER = " $";
 
 	// main is just a unit test
 	public static void main(String args[]){
 		Properties p = new Properties();
-		p.put("cat.1", "-class goober -width 700");
-		p.put("cat.name with pace", "-height 600");
-		p.put("dog.mydog", "-weight 600");
-		p.put("dog.mydog.2", "-weight 400 -foo phi");
-		p.put("dog.fixture[0]", "-weight 400");
-		p.put("dog.mydog3", "-names jack,,");
+		p.put("dog.mydog.2", "$weight 400 $foo phi");
+		p.put("cat.1", "$class goober $width 700");
+		p.put("cat.name with pace", "$height 600");
+		p.put("dog.mydog", "$weight 600");
+		p.put("dog.fixture[0]", "$weight 400");
+		p.put("dog.mydog3", "$names jack,,");
 
 		try {
 			ElectrolandProperties op = new ElectrolandProperties(p);
@@ -42,10 +42,10 @@ public class ElectrolandProperties {
 			System.out.println(op.getObjectNames("dog"));
 			
 			System.out.println(op.getAll("cat", "1"));
-			System.out.println(op.getAll("dog", "mydog"));
+			System.out.println(op.getAll("dog", "mydog.2"));
 		
-			System.out.println(op.getOptional("dog", "mydog.2", "-foo"));
-			System.out.println(op.getRequired("dog", "mydog.2", "-foo"));
+			System.out.println(op.getOptional("dog", "mydog.2", "weight"));
+			System.out.println(op.getRequired("dog", "mydog.2", "foo"));
 
 			System.out.println(op.getRequiredArray("dog", "mydog3","names"));
 			
@@ -188,8 +188,8 @@ public class ElectrolandProperties {
 	public String getOptional(String objectType, String objectName, String paramName) throws OptionException
 	{
 		Map<String,String> params = getAll(objectType, objectName);
-		if (!paramName.startsWith("-")){
-			paramName = "-" + paramName;
+		if (!paramName.startsWith(ARG_MARKER.trim())){
+			paramName = ARG_MARKER.trim() + paramName;
 		}
 		// TODO: remove quotes from ends (unless there are more than two quotes total).
 		// (if that's the case, we have an array)

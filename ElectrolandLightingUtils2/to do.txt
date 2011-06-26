@@ -1,12 +1,14 @@
-2.) CanvasDetector on/off
-3.) ELUManager.allOn, allOff, on, off 
-4.) ELUCanvas.allOn/allOff
-5.) sweep (requires canvasDetector on/off)
-6.) shutdown thread (requires ELUManager.allOff)
-7.) clean/debug
-8.) diagnostic ELUCanvas.sync routine that sets pixels explicitly
-
-GUI
+0.) CanvasDetector on/off
+1.) ELUCanvas.allOn/allOff
+2.) ELUManager.on, off (tags) 
+3.) diagnostic ELUCanvas.sync routine that sets pixels explicitly
+4.) sweep (requires canvasDetector on/off)
+5.) clean/debug
+6.) CLI debug mode (on tag, off tag, set tag value, start, stop, alloff, allon, list, sweep) in ELUManager main.
+    (http://chatley.com/kenya/thesis/java/)
+7.) replace "-" in properties files.
+8.) have ElectrolandProperties extend Properties?
+9.) GUI
 +-----------------------------------------+
 |[ - select canvas - ]                    | <-- drop down  
 +-----------------------------------------+
