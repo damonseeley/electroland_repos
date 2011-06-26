@@ -229,8 +229,7 @@ public class SkateMain extends Thread {
 			/*
 			 * Draw the CanvasDetectors
 			 */
-			
-			
+
 			for (CanvasDetector d : canvas.getDetectors()) {
 				Shape dShape = d.getBoundary();
 				gci.setColor(new Color(d.getLatestState(),d.getLatestState(),d.getLatestState()));
@@ -239,7 +238,7 @@ public class SkateMain extends Thread {
 				gci.drawRect(dShape.getBounds().x,dShape.getBounds().y,dShape.getBounds().width,dShape.getBounds().height);
 				
 			}
-			System.out.println(canvas.getDetectors().length);
+			//System.out.println(canvas.getDetectors().length);
 			
 			
 			
