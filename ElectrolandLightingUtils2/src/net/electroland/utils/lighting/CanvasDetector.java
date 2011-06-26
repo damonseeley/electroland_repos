@@ -9,7 +9,7 @@ public class CanvasDetector {
 	protected DetectionModel detectorModel;
 	protected byte latestState;
 	protected ArrayList<String> tags;
-	protected ArrayList<Integer>indices;
+	protected ArrayList<Integer>indices = new ArrayList<Integer>(); // TODO: this seems like a funny place for this.
 	
 	public Shape getBoundary() {
 		return boundary;
@@ -28,5 +28,13 @@ public class CanvasDetector {
 	}
 	public ArrayList<Integer> getIndices() {
 		return indices;
+	}
+	
+	public String toString()
+	{
+		StringBuffer sb = new StringBuffer("CanvasDetector[");
+		sb.append(tags).append(',').append(tags);
+		sb.append(boundary).append(']');
+		return sb.toString();
 	}
 }

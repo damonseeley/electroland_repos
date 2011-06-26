@@ -1,6 +1,5 @@
 package net.electroland.utils.lighting.protocols;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 import net.electroland.utils.OptionException;
@@ -13,7 +12,7 @@ public class ARTNetRecipient extends Recipient {
 	public static int ART_NET_PORT = 6454; // port should be fixed for art net.
 	protected int totalChannels, channelBits = 8, universe;
 	protected String address;
-	private ArrayList<CanvasDetector> channels;
+	private CanvasDetector[] channels;
 	
 	@Override
 	public void configure(Map<String, String> properties)
@@ -31,8 +30,7 @@ public class ARTNetRecipient extends Recipient {
 			this.totalChannels = channels.intValue();
 			
 			// allocate channels
-			this.channels = new ArrayList<CanvasDetector>();
-			this.channels.ensureCapacity(totalChannels);
+			this.channels = new CanvasDetector[totalChannels];
 
 		}catch(NumberFormatException e)
 		{
@@ -78,9 +76,9 @@ public class ARTNetRecipient extends Recipient {
 
 	@Override
 	public void map(int channel, CanvasDetector cd) throws OptionException {
-		if (channel >= 0 && channel < totalChannels)
+		if (channel >= 0 && channel < channels.length)
 		{
-			channels.set(channel, cd);
+			channels[channel] = cd;
 		}else{
 			throw new OptionException("Attempt to map to channel " + channel + " in " + this.getName() + " is out of bounds.");
 		}		

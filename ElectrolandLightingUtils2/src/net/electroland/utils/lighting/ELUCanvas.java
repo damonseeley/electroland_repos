@@ -1,7 +1,9 @@
 package net.electroland.utils.lighting;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import net.electroland.utils.OptionException;
 
@@ -9,7 +11,7 @@ import net.electroland.utils.OptionException;
 abstract public class ELUCanvas {
 
 	private String name;
-	protected CopyOnWriteArrayList<CanvasDetector>detectors;
+	protected List<CanvasDetector>detectors = Collections.synchronizedList(new ArrayList<CanvasDetector>());
 	
 	public String getName() {
 		return name;
@@ -50,6 +52,12 @@ abstract public class ELUCanvas {
 	public CanvasDetector[] getDetectors()
 	{
 		return detectors.toArray(new CanvasDetector[detectors.size()]);
+	}
+
+	public void addDetector(CanvasDetector cd) throws OptionException
+	{
+		detectors.add(cd);
+		map(cd);
 	}
 	
 	/** Turn all channels attached to this Canvas on.
