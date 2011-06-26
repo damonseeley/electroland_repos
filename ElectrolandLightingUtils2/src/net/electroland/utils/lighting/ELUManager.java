@@ -96,8 +96,18 @@ public class ELUManager implements Runnable {
 						case(2):
 							if (input.length == 1)
 								System.out.println("Current measured fps = " + elu.getMeasuredFPS());
-							else
-								// TODO: set to number here
+							else{
+								try{
+									int fps = Integer.parseInt(input[1]);
+									if (fps > 0)
+										elu.fps = fps;
+									else
+										System.out.println("Illegal fps: " + input[1]);
+								}catch(NumberFormatException e)
+								{
+									System.out.println("Illegal fps: " + input[1]);
+								}
+							}
 							break;
 						case(3):
 							elu.allOn();
@@ -115,17 +125,17 @@ public class ELUManager implements Runnable {
 								elu.load(input[1]);
 							break;
 						case(7):
-							// TODO: sweep here
+								elu.sweep();
 							break;
 						case(8):
 							elu.stop();
 							isOn = false;
 							break;
 						case(9):
-							// TODO: on [tag]
+							elu.on(input[1]);
 							break;
 						case(10):
-							// TODO: off [tag]
+							elu.off(input[1]);
 							break;
 						}
 					}
@@ -254,7 +264,8 @@ public class ELUManager implements Runnable {
 
 	public void on(String tag)
 	{
-		// TODO: implement		
+		// TODO: implement
+		this.syncAllLights();
 	}
 	
 	/**
@@ -271,8 +282,19 @@ public class ELUManager implements Runnable {
 	public void off(String tag)
 	{
 		// TODO: implement
+		this.syncAllLights();
 	}
 
+	public void sweep()
+	{
+		// create a thread with a pointer to this ELU.
+		// iterate through each recipient
+		// set the CanvasDetector in each sequential channel on one at a time
+		// at the prescribed fps.
+		// 
+		// TODO: implement
+	}	
+	
 	public ELUManager load() throws IOException, OptionException
 	{
 		return load("lights.properties");
@@ -304,13 +326,17 @@ public class ELUManager implements Runnable {
 		{
 			String name = recipientNames.next();
 			
-			// TODO: Catch ClassCastException here.
-			Recipient r = (Recipient)ep.getRequiredClass(RECIPIENT, name, "class");
+			try{
+				Recipient r = (Recipient)ep.getRequiredClass(RECIPIENT, name, "class");
+				// name, configure, store
+				r.setName(name);
+				r.configure(ep.getAll(RECIPIENT, name));
+				recipients.put(name, r);
 
-			// name, configure, store
-			r.setName(name);
-			r.configure(ep.getAll(RECIPIENT, name));
-			recipients.put(name, r);
+			}catch(ClassCastException e)
+			{
+				throw new OptionException(name + "' is not a Recipient.");
+			}
 		}
 				
 		// parse fixtureTypes
@@ -339,14 +365,15 @@ public class ELUManager implements Runnable {
 				String ftname = ep.getRequired(DETECTOR, dname, FIXTURE_TYPE);
 				int index = ep.getRequiredInt(DETECTOR, dname, "index");
 
-				// TODO: need to verify that it isn't null
 				FixtureType ft = (FixtureType)types.get(ftname);
+				if (ft== null){
+					throw new OptionException("fixtureType '" + ftname + "' cannot be found for " + DETECTOR + "'" + dname + "'.");
+				}
 				ft.detectors.set(index, new Detector(x,y,width,height,dm));
 
 			}catch(ClassCastException e)
 			{
-				// TODO: Proper error message
-				throw new OptionException(e);
+				throw new OptionException(dname + " is not a DetectionModel.");
 			}
 
 		}

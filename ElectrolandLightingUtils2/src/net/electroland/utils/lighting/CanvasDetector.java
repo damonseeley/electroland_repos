@@ -10,8 +10,6 @@ public class CanvasDetector {
 	protected DetectionModel model;
 	protected byte latestState;
 	protected List<String> tags;
-	// TODO: this probably needs to be synchronized (in case multiple threads
-	//       attempt to sync simultaneously)
 	protected ArrayList<Integer>pixelIndices = new ArrayList<Integer>();
 
 	protected boolean isEvalOverridden = false, overrideValue = false;
