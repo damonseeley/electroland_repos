@@ -201,7 +201,39 @@ public class SkateMain extends Thread {
 			int[] rgbs = new int[w*h];
 			ci.getRGB(0, 0, w, h, rgbs, 0, w);
 			try {
-				canvas.sync(rgbs);
+				CanvasDetector[] evaled = canvas.sync(rgbs);
+
+				/*
+				 * NOW draw a guide/overlay info on top
+				 */
+				for (Skater sk8r : skaters)
+				{
+					// draw text labels to show where skaters are located
+					int skaterX = (int)(sk8r.getMetricPosNow()[0]/sk8r.maxDim * skatearea.width);
+					//flip y to account for UCS diffs between 3DSMax and Java
+					int skaterY = (int)(sk8r.getMetricPosNow()[1]/sk8r.maxDim * skatearea.height) * -1;
+					gci.setColor(new Color(128,128,128));
+					Font afont = new Font("afont",Font.PLAIN,10);
+					gci.setFont(afont);
+					gci.drawString(sk8r.name + " @f" + sk8r.curFrame, skaterX + 32, skaterY + 9);			
+				}
+				
+				
+				
+				/*
+				 * Draw the CanvasDetectors
+				 */
+
+				for (CanvasDetector d : evaled) { // draw the results of our sync.
+					Shape dShape = d.getBoundary();
+					gci.setColor(new Color(d.getLatestState(),d.getLatestState(),d.getLatestState()));
+					gci.fillRect(dShape.getBounds().x,dShape.getBounds().y,dShape.getBounds().width,dShape.getBounds().height);
+					gci.setColor(new Color(0,0,128));
+					gci.drawRect(dShape.getBounds().x,dShape.getBounds().y,dShape.getBounds().width,dShape.getBounds().height);
+					
+				}
+				//System.out.println(canvas.getDetectors().length);				
+			
 			} catch (InvalidPixelGrabException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -209,36 +241,7 @@ public class SkateMain extends Thread {
 			
 			
 			
-			/*
-			 * NOW draw a guide/overlay info on top
-			 */
-			for (Skater sk8r : skaters)
-			{
-				// draw text labels to show where skaters are located
-				int skaterX = (int)(sk8r.getMetricPosNow()[0]/sk8r.maxDim * skatearea.width);
-				//flip y to account for UCS diffs between 3DSMax and Java
-				int skaterY = (int)(sk8r.getMetricPosNow()[1]/sk8r.maxDim * skatearea.height) * -1;
-				gci.setColor(new Color(128,128,128));
-				Font afont = new Font("afont",Font.PLAIN,10);
-				gci.setFont(afont);
-				gci.drawString(sk8r.name + " @f" + sk8r.curFrame, skaterX + 32, skaterY + 9);			
-			}
-			
-			
-			
-			/*
-			 * Draw the CanvasDetectors
-			 */
 
-			for (CanvasDetector d : canvas.getDetectors()) {
-				Shape dShape = d.getBoundary();
-				gci.setColor(new Color(d.getLatestState(),d.getLatestState(),d.getLatestState()));
-				gci.fillRect(dShape.getBounds().x,dShape.getBounds().y,dShape.getBounds().width,dShape.getBounds().height);
-				gci.setColor(new Color(0,0,128));
-				gci.drawRect(dShape.getBounds().x,dShape.getBounds().y,dShape.getBounds().width,dShape.getBounds().height);
-				
-			}
-			//System.out.println(canvas.getDetectors().length);
 			
 			
 			
