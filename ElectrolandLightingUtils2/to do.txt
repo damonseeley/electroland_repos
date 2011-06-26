@@ -1,16 +1,12 @@
-0.) replace param names with CONSTANTS
-1.) replace all variable names with CONSTANTS in ARTNetRecipient
-2.) replace object types with CONSTANTS in option error messages
-2.) Recipient.sync allOn allOff
-3.) ELUCanvas.sync & allOn, allOff
-4.) ElectrolandLightingManager.run and allOn, allOff
-3.) ARTNetRecipient.send
-5.) EluCanvas2D.sync
-5.) change "-" to something else so we can do negative numbers.
-5.) finish validation TODOs in ELUManager
-6.) basic GUI (including sweep, etc.)
-8.) test
-9.) clean up
+1.) EluCanvas2D.sync (sync all pixels.  store state and push it to the recipients.)
+
+3.) ELUManager.allOn, allOff
+4.) ELUManager.run (get the latest states and push them)
+5.) sweep
+6.) tag operations
+8.) diagnostic ELUCanvas.sync routine that sets pixels explicitly
+7.) Canvas.allOn/allOff of less than the whole system.
+8.) clean/debug
 
 GUI
 +-----------------------------------------+
