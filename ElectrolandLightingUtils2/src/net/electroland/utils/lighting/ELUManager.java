@@ -313,6 +313,8 @@ public class ELUManager implements Runnable {
 
 	public void debug()
 	{
+		logger.debug("FPS set to " + fps);
+		
 		Enumeration<ELUCanvas> e = canvases.elements();
 		while (e.hasMoreElements())
 		{
@@ -323,21 +325,6 @@ public class ELUManager implements Runnable {
 		while (r.hasMoreElements())
 		{
 			r.nextElement().debug();
-		}
-		
-		// list each canvas
-		//  per-canvas
-		//    what are the dimensions
-		//    list of canvas detectors
-		//     per-canvas detector
-		//      x,y,w,h, detectionmodel
-		
-		// list each recipient
-		//  per-recipient
-		//   protocol info
-		//   which channels have canvas detectors bound to them
-		//    latest evaluated state
-				
+		}				
 	}
-
 }
