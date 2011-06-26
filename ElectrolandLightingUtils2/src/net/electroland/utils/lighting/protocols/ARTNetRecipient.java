@@ -6,6 +6,8 @@ import net.electroland.utils.OptionException;
 import net.electroland.utils.lighting.CanvasDetector;
 import net.electroland.utils.lighting.Recipient;
 
+import org.apache.log4j.Logger;
+
 
 public class ARTNetRecipient extends Recipient {
 
@@ -13,6 +15,7 @@ public class ARTNetRecipient extends Recipient {
 	protected int totalChannels, channelBits = 8, universe;
 	protected String address;
 	private CanvasDetector[] channels;
+	private static Logger logger = Logger.getLogger(ARTNetRecipient.class);	
 	
 	@Override
 	public void configure(Map<String, String> properties)
@@ -102,4 +105,19 @@ public class ARTNetRecipient extends Recipient {
 		
 	}
 
+	@Override
+	public void debug(){
+		logger.debug("ARTNetRecipient '" + this.getName() + "'");
+		logger.debug("\thas " + totalChannels + " channels");
+		logger.debug("\tat " + channelBits + " channelBits");
+		logger.debug("\tcommunicated to universe " + universe);
+		logger.debug("\tat address " + address);
+		
+		for (int i = 0; i < channels.length; i++)
+		{
+			if (channels[i] != null){
+				logger.debug("ARTNetRecipient '" + this.getName() + "' channel[" + i + "] contains " + channels[i]);				
+			}
+		}		
+	}
 }

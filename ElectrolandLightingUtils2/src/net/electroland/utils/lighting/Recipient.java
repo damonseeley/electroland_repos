@@ -30,7 +30,6 @@ abstract public class Recipient {
 		
 		send(b);
 	}
-
 	
 	// configure
 	abstract public void configure(Map<String,String> properties) throws OptionException;
@@ -46,4 +45,10 @@ abstract public class Recipient {
 
 	// protocol specific handling
 	abstract public void send(byte[] b);
+
+	/**
+	 * print debugging info.
+	 */
+	abstract public void debug();
+
 }

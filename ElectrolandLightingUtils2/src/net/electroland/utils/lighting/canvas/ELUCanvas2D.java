@@ -2,6 +2,7 @@ package net.electroland.utils.lighting.canvas;
 
 import java.awt.Dimension;
 import java.awt.Rectangle;
+import java.util.Iterator;
 import java.util.Map;
 
 import net.electroland.utils.OptionException;
@@ -9,7 +10,11 @@ import net.electroland.utils.lighting.CanvasDetector;
 import net.electroland.utils.lighting.ELUCanvas;
 import net.electroland.utils.lighting.InvalidPixelGrabException;
 
+import org.apache.log4j.Logger;
+
 public class ELUCanvas2D extends ELUCanvas {
+
+	private static Logger logger = Logger.getLogger(ELUCanvas2D.class);	
 
 	protected Dimension d;	
 	
@@ -51,7 +56,7 @@ public class ELUCanvas2D extends ELUCanvas {
 				int current = (y * boundary.width) + x;
 				 // don't include offscreen pixels
 				if (current > 0 && current < pixels){
-					d.getIndices().add(current);
+					d.getPixelIndices().add(current);
 				}
 			}			
 		}
@@ -65,5 +70,16 @@ public class ELUCanvas2D extends ELUCanvas {
 
 	public Dimension getDimensions() {
 		return d;
+	}
+
+	public void debug()
+	{
+		logger.debug("ELUCanvas2D '" + this.getName() + "' is " + d.width + " by " + d.height + " pixels.");
+		Iterator<CanvasDetector> i = this.detectors.iterator();
+		while (i.hasNext()){
+			CanvasDetector cd = i.next();
+			logger.debug("ELUCanvas2D '" + this.getName() + "' channel[" + i + "] contains " + cd);
+			logger.debug("\tis mapped to pixels " + cd.getPixelIndices());
+		}
 	}
 }

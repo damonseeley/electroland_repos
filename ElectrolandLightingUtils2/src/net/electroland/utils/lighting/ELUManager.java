@@ -11,29 +11,29 @@ import java.util.Map;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
 
-public class ELUManager implements Runnable {
+import org.apache.log4j.Logger;
 
-	// TODO: Enumerate object names.
-	// TODO: outbourd load() as ELUProperties
+public class ELUManager implements Runnable {
 	
-	//private static Logger logger = Logger.getLogger(ELUManager.class);	
+	private static Logger logger = Logger.getLogger(ELUManager.class);	
 		
 	private int fps;
 	
 	private Hashtable<String, Recipient>recipients 
 				= new Hashtable<String, Recipient>();
-	private Hashtable<String, FixtureType>types 
-				= new Hashtable<String, FixtureType>();
 	private Hashtable<String, ELUCanvas>canvases
 				= new Hashtable<String, ELUCanvas>();
 	private Hashtable<String, Fixture>fixtures
 				= new Hashtable<String, Fixture>();
+	private Hashtable<String, FixtureType>types 
+				= new Hashtable<String, FixtureType>();
 		
 	public static void main(String args[])
 	{
-		// Unittest
+		// Unit test
 		try {
-			new ELUManager().load();
+			new ELUManager().load().debug();
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (OptionException e) {
@@ -130,6 +130,7 @@ public class ELUManager implements Runnable {
 	 */
 	public ELUManager load(String propFileName) throws IOException, OptionException
 	{
+		logger.info("ELUManager loading " + propFileName);
 		ElectrolandProperties ep = new ElectrolandProperties(propFileName);
 
 		// get fps
@@ -256,8 +257,6 @@ public class ELUManager implements Runnable {
 				double scaleX = ep.getRequiredDouble("canvasFixture", cmapName, "xScale");
 				double scaleY = ep.getRequiredDouble("canvasFixture", cmapName, "yScale");				
 
-
-				// TODO: scaleX and scaleY should scale x,y translation, not just width and height!				
 				Rectangle boundary = new Rectangle((int)((scaleX * (dtr.x + offsetX))),
 													(int)((scaleY * (dtr.y + offsetY))),
 													(int)(dtr.width * scaleX),
@@ -310,4 +309,34 @@ public class ELUManager implements Runnable {
 	{
 		return canvases;
 	}
+
+	public void debug()
+	{
+		Enumeration<ELUCanvas> e = canvases.elements();
+		while (e.hasMoreElements())
+		{
+			e.nextElement().debug();
+		}
+
+		Enumeration<Recipient> r = recipients.elements();
+		while (r.hasMoreElements())
+		{
+			r.nextElement().debug();
+		}
+		
+		// list each canvas
+		//  per-canvas
+		//    what are the dimensions
+		//    list of canvas detectors
+		//     per-canvas detector
+		//      x,y,w,h, detectionmodel
+		
+		// list each recipient
+		//  per-recipient
+		//   protocol info
+		//   which channels have canvas detectors bound to them
+		//    latest evaluated state
+				
+	}
+
 }
