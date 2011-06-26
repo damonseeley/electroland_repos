@@ -25,8 +25,8 @@ public class ELUCanvas2D extends ELUCanvas {
 		
 		try{
 			// get dimensions from config file
-			int width = Integer.parseInt(p.get("-width"));
-			int height = Integer.parseInt(p.get("-height"));			
+			int width = Integer.parseInt(p.get("$width"));
+			int height = Integer.parseInt(p.get("$height"));			
 
 			// set dimensions
 			d = new Dimension(width,height);

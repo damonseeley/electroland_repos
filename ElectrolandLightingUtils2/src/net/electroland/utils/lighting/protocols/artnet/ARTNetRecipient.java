@@ -37,7 +37,7 @@ public class ARTNetRecipient extends Recipient {
 
 		// get total channels (must be 1-512)
 		try{
-			Integer channels = Integer.parseInt(properties.get("-channels"));
+			Integer channels = Integer.parseInt(properties.get("$channels"));
 			if (channels.intValue() < 1 || channels.intValue() > 512)
 			{
 				throw new OptionException("recipient.channel must be between 1 and 512.");			
@@ -53,7 +53,7 @@ public class ARTNetRecipient extends Recipient {
 		}
 
 		// optional port param.
-		Object portStr = properties.get("-port");
+		Object portStr = properties.get("$port");
 		if (portStr != null)
 		{
 			try{
@@ -71,7 +71,7 @@ public class ARTNetRecipient extends Recipient {
 		}
 		
 		// get channelBits - (optional) Valid values are either 8 or 16.
-		String channelBitsStr = properties.get("-channelBits");
+		String channelBitsStr = properties.get("$channelBits");
 		if (channelBitsStr != null){
 			try{
 				Integer channelBits = Integer.parseInt(channelBitsStr);
@@ -87,7 +87,7 @@ public class ARTNetRecipient extends Recipient {
 		}
 		
 		// get IP address (not validated here)
-		ipStr = properties.get("-address");
+		ipStr = properties.get("$address");
 		if (ipStr == null)
 		{
 			throw new OptionException("recipient.address must be defined.");			
@@ -101,7 +101,7 @@ public class ARTNetRecipient extends Recipient {
 		
 		// get universe (must be 0-255)
 		try{
-			Integer universe = Integer.parseInt(properties.get("-universe"));
+			Integer universe = Integer.parseInt(properties.get("$universe"));
 			if (universe.intValue() < 0 || universe.intValue() > 255)
 			{
 				throw new OptionException("recipient.universe must be between 0 and 255.");			
