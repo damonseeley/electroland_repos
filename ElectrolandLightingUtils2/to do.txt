@@ -1,14 +1,13 @@
-0.) CanvasDetector on/off
-1.) ELUCanvas.allOn/allOff
+0.) clean/debug
+1.) CanvasDetector on/off
 2.) ELUManager.on, off (tags) 
-3.) diagnostic ELUCanvas.sync routine that sets pixels explicitly
-4.) sweep (requires canvasDetector on/off)
-5.) clean/debug
-6.) CLI debug mode (on tag, off tag, set tag value, start, stop, alloff, allon, list, sweep) in ELUManager main.
+3.) sweep (requires canvasDetector on/off)
+4.) CLI debug mode (load [props], on tag, off tag, fps [value], fps (return measured fps),
+    start, stop, alloff, allon, list, sweep) in ELUManager main.
     (http://chatley.com/kenya/thesis/java/)
-7.) replace "-" in properties files.
-8.) have ElectrolandProperties extend Properties?
-9.) GUI
+5.) ELUCanvas2D and ARTNetRecipient need constants instead of "recipient"...
+6.) GUI
+7.) have ElectrolandProperties extend Properties?
 +-----------------------------------------+
 |[ - select canvas - ]                    | <-- drop down  
 +-----------------------------------------+

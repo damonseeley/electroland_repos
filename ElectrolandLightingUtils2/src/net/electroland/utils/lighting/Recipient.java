@@ -31,6 +31,15 @@ abstract public class Recipient {
 
 		send(b);
 	}
+
+	public CanvasDetector[] getChannels()
+	{
+		return channels;
+	}
+	public void setChannels(CanvasDetector[] channels)
+	{
+		this.channels = channels;
+	}
 	
 	// configure
 	abstract public void configure(Map<String,String> properties) throws OptionException;

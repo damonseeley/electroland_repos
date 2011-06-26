@@ -64,33 +64,4 @@ abstract public class ELUCanvas {
 		detectors.add(cd);
 		map(cd);
 	}
-	
-	/** Turn all channels attached to this Canvas on.
-	 * 
-	 */
-	public void allOn()
-	{
-//		for (CanvasDetector d : detectors)
-//		{
-			// how is this going to work?  allOn is a protocol specific call, 
-			// so this needs to go to ARTNetRecipient.
-			
-			// maybe have a boolean for useSync	 and another for isOn, and
-			// just set those for each detector.  then ARTNet can deal.
-			
-			// recipient can call useSync 
-			
-//		}
-		// TODO: Implement.  This is a wrapper around
-		// setting all CanvasDetectors to ON and calling sync.
-	}
-
-	/** Turn all channels attached to this Canvas off.
-	 * 
-	 */
-	public void allOff()
-	{
-		// TODO: Implement
-		// setting all CanvasDetectors to OFF and calling sync.
-	}
 }

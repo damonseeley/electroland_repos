@@ -25,7 +25,6 @@ public class ARTNetRecipient extends Recipient {
 	private int totalChannels, channelBits = 8, universe, port = ART_NET_PORT;
 	private InetAddress ip;
 	private String ipStr;
-	private CanvasDetector[] channels;
 	private static Logger logger = Logger.getLogger(ARTNetRecipient.class);	
 	private static DatagramSocket socket;
 	
@@ -45,7 +44,7 @@ public class ARTNetRecipient extends Recipient {
 			this.totalChannels = channels.intValue();
 			
 			// allocate channels
-			this.channels = new CanvasDetector[totalChannels];
+			setChannels(new CanvasDetector[totalChannels]);
 
 		}catch(NumberFormatException e)
 		{
@@ -77,13 +76,13 @@ public class ARTNetRecipient extends Recipient {
 				Integer channelBits = Integer.parseInt(channelBitsStr);
 				if (channelBits.intValue() != 8 && channelBits.intValue() != 16)
 				{
-					throw new OptionException("recipient.channelBits must be either 8 or 16.");			
+					throw new OptionException("recipient.channelBits must be either 8 or 16.");
 				}
 				this.channelBits = channelBits.intValue();
 			}catch(NumberFormatException e)
 			{
 				throw new OptionException("bad channelBits value. " + e.getMessage());
-			}			
+			}
 		}
 		
 		// get IP address (not validated here)
@@ -109,15 +108,16 @@ public class ARTNetRecipient extends Recipient {
 			this.universe = universe.intValue();
 		}catch(NumberFormatException e)
 		{
-			throw new OptionException("bad channel value. " + e.getMessage());
+			throw new OptionException("bad universe value. " + e.getMessage());
 		}
+		System.out.println("done configuring.");
 	}
 
 	@Override
 	public void map(int channel, CanvasDetector cd) throws OptionException {
-		if (channel >= 0 && channel < channels.length)
+		if (channel >= 0 && channel < getChannels().length)
 		{
-			channels[channel] = cd;
+			getChannels()[channel] = cd;
 		}else{
 			throw new OptionException("Attempt to map to channel " + channel + " in " + this.getName() + " is out of bounds.");
 		}		
@@ -151,7 +151,14 @@ public class ARTNetRecipient extends Recipient {
 				data[i] = (byte)0;
 			}
 		}
-		send(data);
+		// copy to byte[]
+		byte[] bdata = new byte[data.length];
+		
+		for (int i = 0; i < bdata.length; i++)
+		{
+			bdata[i] = data[i];
+		}
+		send(bdata);
 	}
 	
 	public void send(byte[] data){
@@ -191,10 +198,10 @@ public class ARTNetRecipient extends Recipient {
 		logger.debug("\tcommunicated to universe " + universe);
 		logger.debug("\tat address " + ipStr);
 		
-		for (int i = 0; i < channels.length; i++)
+		for (int i = 0; i < getChannels().length; i++)
 		{
-			if (channels[i] != null){
-				logger.debug("ARTNetRecipient '" + this.getName() + "' channel[" + i + "] contains " + channels[i]);				
+			if (getChannels()[i] != null){
+				logger.debug("ARTNetRecipient '" + this.getName() + "' channel[" + i + "] contains " + getChannels()[i]);				
 			}
 		}		
 	}
