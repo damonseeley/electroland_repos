@@ -25,7 +25,7 @@ public class CanvasDetector {
 	public byte getLatestState() {
 		return latestState;
 	}
-	public void setEvaluatedValue(byte b){
+	public void setValue(byte b){
 		latestState = b;
 	}
 	public List<String> getTags() {
