@@ -142,9 +142,21 @@ public class ARTNetRecipient extends Recipient {
 	}
 
 	@Override
+	public void send(Byte[] data)
+	{
+		// check for nulls in the data packet and replace with (byte)0
+		for (int i = 0; i < data.length; i++)
+		{
+			if (data[i] == null){
+				data[i] = (byte)0;
+			}
+		}
+		send(data);
+	}
+	
 	public void send(byte[] data){
-		try {
-
+		try {			
+			
 			ArtNetDMXData dmx = new ArtNetDMXData(); // could cache this.
 
 			dmx.setUniverse((byte)universe);

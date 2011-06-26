@@ -20,14 +20,15 @@ abstract public class Recipient {
 
 	protected void sync(){
 		
-		byte[] b = new byte[channels.length];
+		Byte[] b = new Byte[channels.length];
 		
 		for (int i = 0; i < channels.length; i++)
 		{
-			//  for each non-null channel, evaluate the CanvasDetector and store
-			//  the result in an array of bytes.
+			if (channels[i] != null){
+				b[i] = channels[i].latestState;
+			}
 		}
-		
+
 		send(b);
 	}
 	
@@ -44,7 +45,7 @@ abstract public class Recipient {
 	abstract public void allOff();
 
 	// protocol specific handling
-	abstract public void send(byte[] b);
+	abstract public void send(Byte[] b);
 
 	/**
 	 * print debugging info.

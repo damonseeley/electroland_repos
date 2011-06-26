@@ -16,8 +16,9 @@ public class ELUCanvas2D extends ELUCanvas {
 
 	private static Logger logger = Logger.getLogger(ELUCanvas2D.class);	
 
-	protected Dimension d;	
-	
+	protected Dimension d;
+	int[] lastpixels;
+
 	@Override
 	public void configure(Map<String, String> p)
 			throws OptionException {
@@ -64,7 +65,12 @@ public class ELUCanvas2D extends ELUCanvas {
 
 	@Override
 	public CanvasDetector[] sync(int[] pixels) throws InvalidPixelGrabException {
-		// TODO Auto-generated method stub
+		
+		for (CanvasDetector d : detectors)
+		{
+			d.eval(pixels);
+		}
+		
 		return super.getDetectors();
 	}
 

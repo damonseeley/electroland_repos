@@ -2,14 +2,15 @@ package net.electroland.utils.lighting;
 
 import java.awt.Rectangle;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import net.electroland.utils.ElectrolandProperties;
+import net.electroland.utils.NoDataException;
 import net.electroland.utils.OptionException;
+import net.electroland.utils.RunningAverage;
 
 import org.apache.log4j.Logger;
 
@@ -27,21 +28,31 @@ public class ELUManager implements Runnable {
 
 	private int fps;
 	
-	private Hashtable<String, Recipient>recipients 
-				= new Hashtable<String, Recipient>();
-	private Hashtable<String, ELUCanvas>canvases
-				= new Hashtable<String, ELUCanvas>();
-	private Hashtable<String, Fixture>fixtures
-				= new Hashtable<String, Fixture>();
-	private Hashtable<String, FixtureType>types 
-				= new Hashtable<String, FixtureType>();
-		
+	private HashMap<String, Recipient>recipients 
+				= new HashMap<String, Recipient>();
+	private HashMap<String, ELUCanvas>canvases
+				= new HashMap<String, ELUCanvas>();
+	private HashMap<String, Fixture>fixtures
+				= new HashMap<String, Fixture>();
+	private HashMap<String, FixtureType>types 
+				= new HashMap<String, FixtureType>();
+
+	private Thread thread;
+	boolean isRunning = false;
+	
+	private RunningAverage frameRateCalculator = new RunningAverage((long)5000);
+
+	// Unit test.  Does sweep continuously.
 	public static void main(String args[])
 	{
-		// Unit test
 		try {
 			new ELUManager().load().debug();
 
+			while(true)
+			{
+				// TODO: implement
+			}
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (OptionException e) {
@@ -52,15 +63,63 @@ public class ELUManager implements Runnable {
 	
 	public void run()
 	{
-		// TODO: FPS based syncing and calculate measured FPS
+		long targetDelay = (int)(1000.0 / fps);
+
+		while (isRunning)
+		{
+			// record start time
+			long start = System.currentTimeMillis();
+
+			// sync all canvases to recipients
+			this.syncAllLights();
+
+			// how long did it take to execute?
+			long duration = System.currentTimeMillis() - start;
+			
+			long delay = duration > targetDelay ? 0 : targetDelay - duration;
+
+			try {
+				Thread.sleep(delay);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		thread = null;
 	}	
 
-	public void sync()
+	/** 
+	 * Start autosyncing.  Will sync the latest array sent to each canvas with
+	 * the real world lights.
+	 */
+	public void start()
 	{
-		Enumeration<Recipient> i = recipients.elements();
-		while (i.hasMoreElements()){
-			((Recipient)i).sync();
+		isRunning = true;
+		if (thread == null){
+			thread = new Thread(this);
+			thread.start();			
 		}
+	}
+
+	/**
+	 * stop autosync
+	 */
+	public void stop()
+	{
+		isRunning = false;
+	}	
+	
+	/**
+	 * Forces a synchronization of all canvases with all recipients.  This is
+	 * what run() calls- but you can call it on your own if you don't want
+	 * ELU to be it's own thread.
+	 */
+	public void syncAllLights()
+	{		
+		for (Recipient r : recipients.values())
+		{
+			r.sync();
+		}
+		frameRateCalculator.markFrame();
 	}
 	
 	/**
@@ -94,10 +153,13 @@ public class ELUManager implements Runnable {
 	 * Return the empirically measured frame rate.
 	 * @return
 	 */
-	public int getMeasuredFPS()
+	public double getMeasuredFPS()
 	{
-		
-		return -1;
+		try {
+			return this.frameRateCalculator.getFPS();
+		} catch (NoDataException e) {
+			return -1;
+		}
 	}
 	
 	/**
@@ -105,12 +167,12 @@ public class ELUManager implements Runnable {
 	 */
 	public void allOn()
 	{
-		
+		// TODO: implement
 	}
 
 	public void on(String tag)
 	{
-		
+		// TODO: implement		
 	}
 	
 	/**
@@ -118,12 +180,12 @@ public class ELUManager implements Runnable {
 	 */
 	public void allOff()
 	{
-		
+		// TODO: implement
 	}
 
 	public void off(String tag)
 	{
-		
+		// TODO: implement
 	}
 
 	public ELUManager load() throws IOException, OptionException
@@ -279,7 +341,7 @@ public class ELUManager implements Runnable {
 													(int)(dtr.height * scaleY));
 				cd.boundary = boundary;
 				//      * store the detector model
-				cd.detectorModel = dtr.model;
+				cd.model = dtr.model;
 
 				// map the CanvasDetectors to pixel locations in the pixelgrab
 				canvas.addDetector(cd);
@@ -289,22 +351,6 @@ public class ELUManager implements Runnable {
 			}
 		}
 		return this;
-	}
-
-	/** 
-	 * Start autosyncing.  Will sync the latest array sent to each canvas with
-	 * the real world lights.
-	 */
-	public void start()
-	{
-	}
-
-	/**
-	 * stop autosync
-	 */
-	public void stop()
-	{
-		
 	}
 		
 	/**
@@ -330,16 +376,12 @@ public class ELUManager implements Runnable {
 	{
 		logger.debug("FPS set to " + fps);
 		
-		Enumeration<ELUCanvas> e = canvases.elements();
-		while (e.hasMoreElements())
-		{
-			e.nextElement().debug();
+		for (ELUCanvas c : canvases.values()){
+			c.debug();
 		}
-
-		Enumeration<Recipient> r = recipients.elements();
-		while (r.hasMoreElements())
-		{
-			r.nextElement().debug();
-		}				
+		
+		for (Recipient r : recipients.values()){
+			r.debug();
+		}		
 	}
 }
