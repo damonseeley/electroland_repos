@@ -175,7 +175,7 @@ public class SkateMain extends Thread {
 			gci.fillRect(0,0,ci.getWidth(),ci.getHeight());
 
 			
-			Image dot = new ImageIcon("depends/whiteDot.png").getImage();
+			Image dot = new ImageIcon("depends/whiteDot_trans.png").getImage();
 			
 			// Draw skaters, only if there are skaters
 			for (Skater sk8r : skaters)
@@ -189,7 +189,7 @@ public class SkateMain extends Thread {
 				int skaterY = (int)(sk8r.getMetricPosNow()[1]/sk8r.maxDim * skatearea.height) * -1;
 				// Draw the square (for now)
 				//gci.fillOval(skaterX,skaterY,10,10);	
-				gci.drawImage(dot, skaterX, skaterY, 48, 48, null);
+				gci.drawImage(dot, skaterX, skaterY, 128, 128, null);
 			}
 			
 			
