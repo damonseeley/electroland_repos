@@ -164,7 +164,6 @@ public class SkateMain extends Thread {
 
 			Dimension skatearea = canvas.getDimensions();
 
-
 			/*
 			 * Create a canvas image (ci) that will be synced to ELU
 			 */
@@ -174,8 +173,8 @@ public class SkateMain extends Thread {
 			gci.setColor(new Color(0,0,0));
 			gci.fillRect(0,0,ci.getWidth(),ci.getHeight());
 
-			
 			Image dot = new ImageIcon("depends/whiteDot_trans.png").getImage();
+			int skaterWidth = 64;
 			
 			// Draw skaters, only if there are skaters
 			for (Skater sk8r : skaters)
@@ -188,10 +187,9 @@ public class SkateMain extends Thread {
 				//flip y to account for UCS diffs between 3DSMax and Java
 				int skaterY = (int)(sk8r.getMetricPosNow()[1]/sk8r.maxDim * skatearea.height) * -1;
 				// Draw the square (for now)
-				//gci.fillOval(skaterX,skaterY,10,10);	
-				gci.drawImage(dot, skaterX, skaterY, 128, 128, null);
+				//gci.fillOval(skaterX,skaterY,10,10);
+				gci.drawImage(dot, skaterX-skaterWidth/2, skaterY-skaterWidth/2, skaterWidth, skaterWidth, null);
 			}
-			
 			
 			
 			/*
@@ -201,6 +199,11 @@ public class SkateMain extends Thread {
 			int h = ci.getHeight(null);
 			int[] rgbs = new int[w*h];
 			ci.getRGB(0, 0, w, h, rgbs, 0, w);
+			
+			elu.syncAllLights();
+			//System.out.println(canvas.getDetectors().length);				
+			
+			
 			try {
 				CanvasDetector[] evaled = canvas.sync(rgbs);
 
@@ -220,11 +223,9 @@ public class SkateMain extends Thread {
 				}
 				
 				
-				
 				/*
 				 * Draw the CanvasDetectors
 				 */
-
 				for (CanvasDetector d : evaled) { // draw the results of our sync.
 					Shape dShape = d.getBoundary();
 					int dColor = Util.unsignedByteToInt(d.getLatestState());
@@ -232,11 +233,8 @@ public class SkateMain extends Thread {
 					gci.fillRect(dShape.getBounds().x,dShape.getBounds().y,dShape.getBounds().width,dShape.getBounds().height);
 					gci.setColor(new Color(0,0,128));
 					gci.drawRect(dShape.getBounds().x,dShape.getBounds().y,dShape.getBounds().width,dShape.getBounds().height);
-					
 				}
 				
-				elu.syncAllLights();
-				//System.out.println(canvas.getDetectors().length);				
 			
 			} catch (InvalidPixelGrabException e) {
 				// TODO Auto-generated catch block
@@ -278,7 +276,7 @@ public class SkateMain extends Thread {
 			globalSkaterCount++;
 			sk8Ref.startAnim();
 			sk8Ref.name += globalSkaterCount;
-			logger.info("CLONED: " + sk8Ref.name + " FROM: " + sk8r.name + " with frameLength = " + sk8r.lengthFrames);
+			//logger.info("CLONED: " + sk8Ref.name + " FROM: " + sk8r.name + " with frameLength = " + sk8r.lengthFrames);
 		} catch (CloneNotSupportedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
