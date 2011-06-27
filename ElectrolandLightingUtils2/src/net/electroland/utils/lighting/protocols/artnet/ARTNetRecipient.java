@@ -173,7 +173,7 @@ public class ARTNetRecipient extends Recipient {
 
 			ByteBuffer b = dmx.getBytes();
 
-			logger.debug(this.getName() + ", universe " + universe + " at IP " + this.ipStr + ":" + Util.bytesToHex(b.array(), b.position()));			
+			logger.debug(this.getName() + ", universe " + universe + " at IP " + this.ipStr + " on port " + ART_NET_PORT + ": "  + Util.bytesToHex(b.array(), b.position()));			
 
 			synchronized (this){
 				if (socket == null || socket.isClosed()){
