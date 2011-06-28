@@ -169,12 +169,12 @@ public class ELUManager implements Runnable {
 						}
 					}
 				}catch (java.io.IOException e){
-					e.printStackTrace();
+					logger.error(e);
 				}			
 			}
 			
 		} catch (OptionException e) {
-			e.printStackTrace();
+			logger.error(e);
 		}
 		
 	}
@@ -199,7 +199,7 @@ public class ELUManager implements Runnable {
 			try {
 				Thread.sleep(delay);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				logger.error(e);
 			}
 		}
 		thread = null;
@@ -328,7 +328,6 @@ public class ELUManager implements Runnable {
 		this.syncAllLights();
 	}
 
-	// TODO: better name for this?
 	protected void setTestVals(String tag, byte value)
 	{
 		for (Recipient r : recipients.values())
@@ -351,7 +350,7 @@ public class ELUManager implements Runnable {
 
 	protected void testDone()
 	{
-		logger.debug("testSuite complete.");
+		System.out.println("testSuite complete.");
 		this.isRunningTest = false;
 	}
 	
@@ -592,7 +591,7 @@ public class ELUManager implements Runnable {
 
 	public void debug()
 	{
-		logger.debug("FPS set to " + fps);
+		System.out.println("FPS set to " + fps);
 		
 		for (ELUCanvas c : canvases.values()){
 			c.debug();

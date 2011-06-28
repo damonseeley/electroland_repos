@@ -33,8 +33,8 @@ public class ARTNetRecipient extends Recipient {
 			throws OptionException {
 
 		// Typical: -channels 512 channelBits 16 -address 127.0.0.1 -universe 1
-
 		// get total channels (must be 1-512)
+
 		try{
 			Integer channels = Integer.parseInt(properties.get("$channels"));
 			if (channels.intValue() < 1 || channels.intValue() > 512)
@@ -110,7 +110,6 @@ public class ARTNetRecipient extends Recipient {
 		{
 			throw new OptionException("bad universe value. " + e.getMessage());
 		}
-		System.out.println("done configuring.");
 	}
 
 	@Override
@@ -192,16 +191,16 @@ public class ARTNetRecipient extends Recipient {
 	}
 	@Override
 	public void debug(){
-		logger.debug("ARTNetRecipient '" + this.getName() + "'");
-		logger.debug("\thas " + totalChannels + " channels");
-		logger.debug("\tat " + channelBits + " channelBits");
-		logger.debug("\tcommunicated to universe " + universe);
-		logger.debug("\tat address " + ipStr);
+		System.out.println("ARTNetRecipient '" + this.getName() + "'");
+		System.out.println("\thas " + totalChannels + " channels");
+		System.out.println("\tat " + channelBits + " channelBits");
+		System.out.println("\tcommunicated to universe " + universe);
+		System.out.println("\tat address " + ipStr);
 		
 		for (int i = 0; i < getChannels().length; i++)
 		{
 			if (getChannels()[i] != null){
-				logger.debug("ARTNetRecipient '" + this.getName() + "' channel[" + i + "] contains " + getChannels()[i]);				
+				System.out.println("ARTNetRecipient '" + this.getName() + "' channel[" + i + "] contains " + getChannels()[i]);				
 			}
 		}		
 	}
