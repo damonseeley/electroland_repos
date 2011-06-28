@@ -1,13 +1,9 @@
-0.) clean/debug
-1.) CanvasDetector on/off
-2.) ELUManager.on, off (tags) 
-3.) sweep (requires canvasDetector on/off)
-4.) CLI debug mode (load [props], on tag, off tag, fps [value], fps (return measured fps),
-    start, stop, alloff, allon, list, sweep) in ELUManager main.
-    (http://chatley.com/kenya/thesis/java/)
-5.) ELUCanvas2D and ARTNetRecipient need constants instead of "recipient"...
-6.) GUI
-7.) have ElectrolandProperties extend Properties?
+1.) debug testing framework
+2.) ELUCanvas2D and ARTNetRecipient need constants instead of "recipient"...
+3.) GUI
+4.) have ElectrolandProperties extend Properties?
+5.) move configuration out of ELUManager?
+6.) any other refactoring? ENUM of propertie tags?
 +-----------------------------------------+
 |[ - select canvas - ]                    | <-- drop down  
 +-----------------------------------------+

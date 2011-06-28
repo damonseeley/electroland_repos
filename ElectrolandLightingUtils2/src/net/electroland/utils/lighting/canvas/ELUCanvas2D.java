@@ -2,7 +2,6 @@ package net.electroland.utils.lighting.canvas;
 
 import java.awt.Dimension;
 import java.awt.Rectangle;
-import java.util.Iterator;
 import java.util.Map;
 
 import net.electroland.utils.OptionException;
@@ -81,9 +80,8 @@ public class ELUCanvas2D extends ELUCanvas {
 	public void debug()
 	{
 		logger.debug("ELUCanvas2D '" + this.getName() + "' is " + d.width + " by " + d.height + " pixels.");
-		Iterator<CanvasDetector> i = this.detectors.iterator();
-		while (i.hasNext()){
-			CanvasDetector cd = i.next();
+		for (CanvasDetector cd : detectors)
+		{
 			logger.debug("ELUCanvas2D '" + this.getName() + "' contains " + cd);
 			logger.debug("\tis mapped to pixels " + cd.getPixelIndices());
 		}
