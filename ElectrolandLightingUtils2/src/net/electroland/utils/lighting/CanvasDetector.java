@@ -12,10 +12,10 @@ public class CanvasDetector {
 	protected List<String> tags;
 	protected ArrayList<Integer>pixelIndices = new ArrayList<Integer>();
 	
-	public Shape getBoundary() {
+	public final Shape getBoundary() {
 		return boundary;
 	}
-	public DetectionModel getDetectorModel() {
+	public final DetectionModel getDetectorModel() {
 		return model;
 	}
 	public byte getLatestState() {
@@ -24,14 +24,14 @@ public class CanvasDetector {
 	public void setValue(byte b){
 		latestState = b;
 	}
-	public List<String> getTags() {
+	public final List<String> getTags() {
 		return tags;
 	}
-	public List<Integer> getPixelIndices() {
+	public final List<Integer> getPixelIndices() {
 		return pixelIndices;
 	}
 
-	public synchronized void eval(int pixels[])
+	public final synchronized void eval(int pixels[])
 	{
 
 		// copy all the pixels that are in my range

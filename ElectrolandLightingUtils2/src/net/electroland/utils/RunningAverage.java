@@ -2,7 +2,6 @@ package net.electroland.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -112,13 +111,11 @@ public class RunningAverage {
 		if (isIterationAverager){
 			// pare down the size of the list to exactly as many values as
 			// the iterator.
-			Iterator <Datapoint> i;
 			while (vals.size() > maxDatapoints){
 				vals.remove(0);
 			}			
-			i = vals.iterator();
-			while (i.hasNext()){
-				Datapoint d = i.next();
+			for (Datapoint d : vals)
+			{
 				average += d.value;
 				points += 1;
 			}
@@ -126,9 +123,8 @@ public class RunningAverage {
 			// remove any values that are too old. calculate the average as it 
 			// through the list.
 			long time = System.currentTimeMillis();
-			Iterator <Datapoint> i = vals.iterator();
-			while (i.hasNext()){
-				Datapoint d = i.next();
+			for (Datapoint d : vals)
+			{
 				if (time - d.timestamp <= maxDatapointAge){
 					average += d.value;
 					points += 1;
@@ -165,9 +161,8 @@ public class RunningAverage {
 		try{
 			StringBuffer sb = new StringBuffer("RunningAverage: ");
 			sb.append(this.getAvg()).append("[");
-			Iterator <Datapoint>i = vals.iterator();
-			while (i.hasNext()){
-				Datapoint dr = i.next();
+			for (Datapoint dr : vals)
+			{
 				sb.append('[');
 				sb.append(dr.timestamp).append(", ").append(dr.value);
 				sb.append(']');
