@@ -211,10 +211,12 @@ public class ELUManager implements Runnable {
 	 */
 	public final void start()
 	{
-		isRunning = true;
-		if (thread == null){
-			thread = new Thread(this);
-			thread.start();			
+		if (!isRunning && !isRunningTest){
+			isRunning = true;
+			if (thread == null){
+				thread = new Thread(this);
+				thread.start();			
+			}			
 		}
 	}
 
@@ -326,7 +328,8 @@ public class ELUManager implements Runnable {
 		this.syncAllLights();
 	}
 
-	public void setTestVals(String tag, byte value)
+	// TODO: better name for this?
+	protected void setTestVals(String tag, byte value)
 	{
 		for (Recipient r : recipients.values())
 		{
@@ -345,6 +348,12 @@ public class ELUManager implements Runnable {
 		}
 		this.syncAllLights();
 	}
+
+	protected void testDone()
+	{
+		logger.debug("testSuite complete.");
+		this.isRunningTest = false;
+	}
 	
 	public void runTest(String tiName)
 	{
@@ -353,12 +362,12 @@ public class ELUManager implements Runnable {
 			TestSuite ti = suites.get(tiName);
 			if (ti == null)
 			{
-				// TODO: implement
+				logger.error("No such testSuite '" + tiName + "'");
 			}else{
 				isRunningTest = true;
 				ti.start();
 			}
-		}
+		}		
 	}	
 	
 	public ELUManager load() throws IOException, OptionException
@@ -548,11 +557,11 @@ public class ELUManager implements Runnable {
 					itests.add(test);					
 				}
 			}
-			
+
 			int loops = ep.getRequiredInt(TEST_SUITE, name, "loops");
 			byte color = ep.getRequiredInt(TEST_SUITE, name, "color").byteValue();
 			
-			TestSuite it = new TestSuite(this, fps, itests, loops, color);
+			TestSuite it = new TestSuite(name, this, fps, itests, loops, color);
 			suites.put(name, it);
 		}
 		
@@ -591,7 +600,12 @@ public class ELUManager implements Runnable {
 		
 		for (Recipient r : recipients.values()){
 			r.debug();
-		}		
+		}
+		
+		for (TestSuite t : suites.values())
+		{
+			t.debug();
+		}
 	}
 }
 
