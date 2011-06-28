@@ -9,11 +9,7 @@ import net.electroland.utils.lighting.CanvasDetector;
 import net.electroland.utils.lighting.ELUCanvas;
 import net.electroland.utils.lighting.InvalidPixelGrabException;
 
-import org.apache.log4j.Logger;
-
 public class ELUCanvas2D extends ELUCanvas {
-
-	private static Logger logger = Logger.getLogger(ELUCanvas2D.class);	
 
 	protected Dimension d;
 	int[] lastpixels;
@@ -79,11 +75,11 @@ public class ELUCanvas2D extends ELUCanvas {
 
 	public void debug()
 	{
-		logger.debug("ELUCanvas2D '" + this.getName() + "' is " + d.width + " by " + d.height + " pixels.");
+		System.out.println("ELUCanvas2D '" + this.getName() + "' is " + d.width + " by " + d.height + " pixels.");
 		for (CanvasDetector cd : detectors)
 		{
-			logger.debug("ELUCanvas2D '" + this.getName() + "' contains " + cd);
-			logger.debug("\tis mapped to pixels " + cd.getPixelIndices());
+			System.out.println("ELUCanvas2D '" + this.getName() + "' contains " + cd);
+			System.out.println("\tis mapped to pixels " + cd.getPixelIndices());
 		}
 	}
 }

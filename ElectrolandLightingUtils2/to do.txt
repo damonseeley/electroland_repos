@@ -1,4 +1,3 @@
-1.) debug testing framework
 2.) ELUCanvas2D and ARTNetRecipient need constants instead of "recipient"...
 3.) GUI
 4.) have ElectrolandProperties extend Properties?

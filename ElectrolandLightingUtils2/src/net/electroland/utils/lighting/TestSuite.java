@@ -9,8 +9,7 @@ import org.apache.log4j.Logger;
 public class TestSuite implements Runnable {
 
 	private static Logger logger = Logger.getLogger(TestSuite.class);
-	
-	
+
 	private int loops;
 	private int fps;
 	private Test[] tests;
@@ -44,7 +43,7 @@ public class TestSuite implements Runnable {
 					try {
 						Thread.sleep((long)(1000.0/fps));
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						logger.error(e);
 					}
 				}
 			}
@@ -72,6 +71,6 @@ public class TestSuite implements Runnable {
 		}
 		sb.append("todo: remove last comma");
 		sb.append("]]");
-		logger.debug(sb.toString());
+		System.out.println(sb.toString());
 	}
 }
