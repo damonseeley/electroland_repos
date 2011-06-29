@@ -51,6 +51,7 @@ public class SkateMain extends Thread {
 	int viewHeight, viewWidth;
 	float viewScale;
 
+	public static SoundController soundController;
 
 	//Thread stuff
 	public static boolean isRunning;
@@ -63,8 +64,8 @@ public class SkateMain extends Thread {
 	public SkateMain() {
 
 		SHOWUI = true;
-		GUIWidth = 800;
-		GUIHeight = 800;
+		GUIWidth = 580;
+		GUIHeight = 580;
 		guiFrame = new GUIFrame(GUIWidth,GUIHeight);
 		guiPanel = new GUIPanel(GUIWidth,GUIHeight);
 		//add the panel to the top of the window
@@ -89,7 +90,7 @@ public class SkateMain extends Thread {
 		canvas = (ELUCanvas2D)elu.getCanvas("my2d");
 
 		///////// Init sound controller and speakers
-
+		soundController = new SoundController("127.0.0.1",10000);
 
 		///////// Load props and create skaters
 		try {
@@ -104,7 +105,7 @@ public class SkateMain extends Thread {
 
 
 		///////// Start ELU Syncing
-		//elu.start();
+		//elu.start();  //not used in this project because we are calling sync on demand
 
 
 		// TEMP for now just add one skater
@@ -112,7 +113,6 @@ public class SkateMain extends Thread {
 
 
 		/////////////// THREAD STUFF
-		//framerate = 45; <-- Bradley: I am setting this in properties now.
 		isRunning = true;
 		timer = new Timer(framerate);
 		start();
@@ -127,21 +127,26 @@ public class SkateMain extends Thread {
 
 		while (isRunning) {
 
+			/*
+			 * Determine whether to add or subtract skaters
+			 */
 			if (Math.random() < .01 ){
 				addSkater();
 			}
 
-
+			
 			/*
-			 * figure out whether to add or subtract skaters
+			 * Animate skaters
 			 */
-
 			// Advance all skater play heads
 			for (Skater sk8r : skaters) {
 				sk8r.animate();
 			}
 
-			// Remove dead skaters
+			
+			/*
+			 * Cull dead skaters from vector
+			 */
 			Iterator<Skater> s = skaters.iterator();
 			while (s.hasNext()){
 				Skater sk8r = s.next();
@@ -193,16 +198,13 @@ public class SkateMain extends Thread {
 			
 			
 			/*
-			 * Sync ci image with ELU
+			 * generate rgbs array to sync with ELU
 			 */	
 			int w = ci.getWidth(null);
 			int h = ci.getHeight(null);
 			int[] rgbs = new int[w*h];
 			ci.getRGB(0, 0, w, h, rgbs, 0, w);
-			
-			elu.syncAllLights();
-			//System.out.println(canvas.getDetectors().length);				
-			
+
 			
 			try {
 				CanvasDetector[] evaled = canvas.sync(rgbs);
@@ -228,11 +230,15 @@ public class SkateMain extends Thread {
 				 */
 				for (CanvasDetector d : evaled) { // draw the results of our sync.
 					Shape dShape = d.getBoundary();
+					// draw detector values
 					int dColor = Util.unsignedByteToInt(d.getLatestState());
 					gci.setColor(new Color(dColor,dColor,dColor));
 					gci.fillRect(dShape.getBounds().x,dShape.getBounds().y,dShape.getBounds().width,dShape.getBounds().height);
+					// draw detector outlines
 					gci.setColor(new Color(0,0,128));
 					gci.drawRect(dShape.getBounds().x,dShape.getBounds().y,dShape.getBounds().width,dShape.getBounds().height);
+					// draw channel values
+					// can I get these from ELU for detectors?
 				}
 				
 			
@@ -287,6 +293,7 @@ public class SkateMain extends Thread {
 	public Vector<Skater> skaterDefs = new Vector<Skater>();
 //	public Set<Skater> skaters = new CopyOnWriteArraySet<Skater>();
 	public Vector<Skater> skaters = new Vector<Skater>();
+	public static boolean audioEnabled = true;
 	
 	public void loadSkaterProps() throws IOException, OptionException
 	{		
@@ -303,7 +310,8 @@ public class SkateMain extends Thread {
 			Skater sk8r = new Skater(curSkater, animFile, maxDim, soundList);
 			skaterDefs.add(sk8r);
 		}
-		framerate = op.getRequiredInt("settings", "global", "fps");		
+		framerate = op.getRequiredInt("settings", "global", "fps");
+		audioEnabled = Boolean.parseBoolean(op.getRequired("settings", "global", "audio"));
 	}
 
 
