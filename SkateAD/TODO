@@ -1,9 +1,9 @@
 SkateAD To Do
 
 Write sound controller code
-Add rotation and orientation from 3D file to java
 Or just compute vector of sprite and orient top-forward
-Get scale from 3D file
-Add x and y offsets to props file defineable per skater
+Get scale from 3D file - maybe
 Add skater spawn triggers to button listeners, random, test
 Create type for static sound in space, define in props
+
+Tell bradley about bug loading more than one settings.global objects in properties
