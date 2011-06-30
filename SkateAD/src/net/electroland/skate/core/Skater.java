@@ -20,6 +20,9 @@ public class Skater implements Cloneable {
 
 	public String name;
 	public String[] soundList;
+	public int amplitude;
+	public int soundNode;
+
 	public String fileName;
 	public int maxDim;
 	public int startTick;
@@ -153,6 +156,10 @@ public class Skater implements Cloneable {
 	/* start animation playback by recording the start time for later comparison */
 	public void startAnim() {
 		startTime = System.currentTimeMillis();
+		int startX = (int) getMetricPosNow()[0];
+		int startY = (int) getMetricPosNow()[1];
+		soundNode = SkateMain.soundController.newSoundNode(soundList[0], startX, startY, 1.0f, soundList[0]);
+		logger.info(name + " " + soundNode);
 	}
 	
 	public double percentComplete = 0.0;
@@ -173,6 +180,7 @@ public class Skater implements Cloneable {
 		} else {
 			animComplete = true;
 		}
+		//logger.info(amplitude);
 		
 	}
 	

@@ -37,7 +37,7 @@ import org.apache.log4j.Logger;
 
 public class SkateMain extends Thread {
 
-	private static Logger logger = Logger.getLogger(SkateMain.class);
+	static Logger logger = Logger.getLogger(SkateMain.class);
 
 	private ELUManager elu;
 	private ELUCanvas2D canvas;
@@ -89,9 +89,6 @@ public class SkateMain extends Thread {
 		}
 		canvas = (ELUCanvas2D)elu.getCanvas("my2d");
 
-		///////// Init sound controller and speakers
-		soundController = new SoundController("127.0.0.1",10000);
-
 		///////// Load props and create skaters
 		try {
 			loadSkaterProps();
@@ -101,6 +98,8 @@ public class SkateMain extends Thread {
 			e.printStackTrace();
 		}
 
+		///////// Init sound controller and speakers
+		soundController = new SoundController("127.0.0.1",10000,16);
 
 
 
@@ -130,7 +129,7 @@ public class SkateMain extends Thread {
 			/*
 			 * Determine whether to add or subtract skaters
 			 */
-			if (Math.random() < .01 ){
+			if (Math.random() < .02 ){
 				addSkater();
 			}
 
@@ -252,10 +251,6 @@ public class SkateMain extends Thread {
 
 			
 			
-			
-			
-			
-			
 			//draw the final image into the jPanel GUI
 			Graphics gp = guiPanel.getGraphics();
 			gp.drawImage(ci, 0, 0, null);
@@ -292,7 +287,7 @@ public class SkateMain extends Thread {
 
 	public Vector<Skater> skaterDefs = new Vector<Skater>();
 //	public Set<Skater> skaters = new CopyOnWriteArraySet<Skater>();
-	public Vector<Skater> skaters = new Vector<Skater>();
+	public static Vector<Skater> skaters = new Vector<Skater>();
 	public static boolean audioEnabled = true;
 	
 	public void loadSkaterProps() throws IOException, OptionException
