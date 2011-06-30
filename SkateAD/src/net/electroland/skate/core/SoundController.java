@@ -27,10 +27,11 @@ public class SoundController{
 	private String ipString;			// string ip address incoming
 	private int nodeID;					// incrementing sound ID
 	public float gain = 1.0f;			// default volume level
-	public int maxChannels;				// the max channels for SES operations
-	public HashMap soundChUsed;			// hashmap of currently used channels where true means in-use
+	//public int maxChannels;				// the max channels for SES operations
+	//public HashMap soundChUsed;			// hashmap of currently used channels where true means in-use
+	public ChannelPool pool; 			// pool of available channels.
 
-	private static Logger logger = Logger.getLogger(SkateMain.class);
+	private static Logger logger = Logger.getLogger(SoundController.class);
 
 	public SoundController(String ip, int port, int maxCh) {
 		try{
@@ -43,14 +44,13 @@ public class SoundController{
 			System.err.println(e);
 		}
 
-		// setup max channels and a simple boolean array to track channels in use
-		// nope use vector
-		maxChannels = maxCh;
-		soundChUsed  = new HashMap();
-		for (int i = 1; i<=maxChannels; i++) { // start at 1 to reflect real world sound channels
-			soundChUsed.put(i, false); 
-		}
-		logger.info("soundChannels hashMap : " + soundChUsed);
+		pool = new ChannelPool(maxCh);
+//		maxChannels = maxCh;
+//		soundChUsed  = new HashMap();
+//		for (int i = 1; i<=maxChannels; i++) { // start at 1 to reflect real world sound channels
+//			soundChUsed.put(i, false); 
+//		}
+//		logger.info("soundChannels hashMap : " + soundChUsed);
 
 		nodeID = 0;
 
@@ -58,15 +58,16 @@ public class SoundController{
 
 	}
 
-	private int getNewChannel() {
-		for (int i=1; i<=maxChannels; i++){
-			if ((Boolean)soundChUsed.get(i) == false){
-				soundChUsed.put(i, true);
-				return i;
-			} 
-		}
-		return -1;
-	}
+	// Bradley: this returns the first unused channel.
+//	private int getNewChannel() {
+//		for (int i=1; i<=maxChannels; i++){
+//			if ((Boolean)soundChUsed.get(i) == false){
+//				soundChUsed.put(i, true);
+//				return i;
+//			} 
+//		}
+//		return -1;
+//	}
 
 
 	/*
@@ -81,6 +82,10 @@ public class SoundController{
 
 					// Parse through skaterlist and update amplitude
 					// for some reason I can't do a simple == string compare here for conditional
+					
+					// Bradley: == is checks to see if they are the same object, which they aren't.
+					// match checks to see if they are too different Strings that contain the same data.
+					
 					if (message.getArguments()[0].toString().matches("amplitude")) {  //use matches instead
 
 						for (Skater sk8r : SkateMain.skaters) {
@@ -122,7 +127,8 @@ public class SoundController{
 		String[] newSoundArgs = new String[3];
 		newSoundArgs[0] = nodeID + "";
 		newSoundArgs[1] = soundFile;
-		int newSoundChannel = getNewChannel();
+//		int newSoundChannel = getNewChannel();
+		int newSoundChannel = pool.getFirstAvailable();
 		if (newSoundChannel == -1){
 			logger.info("Max->SES polyphony all used up - free up bus channels");
 		} else {
