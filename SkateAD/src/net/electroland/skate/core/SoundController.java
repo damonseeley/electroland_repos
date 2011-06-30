@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
@@ -27,10 +25,14 @@ public class SoundController{
 	private String ipString;			// string ip address incoming
 	private int nodeID;					// incrementing sound ID
 	public float gain = 1.0f;			// default volume level
+
+	// --- bradley: replaced channel management with ChannelPool
+	public ChannelPool pool; 			// pool of available channels.
 	//public int maxChannels;				// the max channels for SES operations
 	//public HashMap soundChUsed;			// hashmap of currently used channels where true means in-use
-	public ChannelPool pool; 			// pool of available channels.
-
+	// ---
+	
+	// --- bradley: corrected reference to get the logger of this class here.
 	private static Logger logger = Logger.getLogger(SoundController.class);
 
 	public SoundController(String ip, int port, int maxCh) {
@@ -45,20 +47,21 @@ public class SoundController{
 		}
 
 		pool = new ChannelPool(maxCh);
+		// --- bradley: ChannelPool takes care of this externally.
 //		maxChannels = maxCh;
 //		soundChUsed  = new HashMap();
 //		for (int i = 1; i<=maxChannels; i++) { // start at 1 to reflect real world sound channels
 //			soundChUsed.put(i, false); 
 //		}
 //		logger.info("soundChannels hashMap : " + soundChUsed);
-
+		// ---
 		nodeID = 0;
 
 		setupListener();
 
 	}
 
-	// Bradley: this returns the first unused channel.
+	// --- bradley: ChannelPool takes care of this.
 //	private int getNewChannel() {
 //		for (int i=1; i<=maxChannels; i++){
 //			if ((Boolean)soundChUsed.get(i) == false){
@@ -68,7 +71,7 @@ public class SoundController{
 //		}
 //		return -1;
 //	}
-
+	// ---
 
 	/*
 	 * setup listener for incoming msg
@@ -127,13 +130,19 @@ public class SoundController{
 		String[] newSoundArgs = new String[3];
 		newSoundArgs[0] = nodeID + "";
 		newSoundArgs[1] = soundFile;
-//		int newSoundChannel = getNewChannel();
+
+		// --- bradley: replaced getNewChannel() with pool.getFirstAvailable();
+		//int newSoundChannel = getNewChannel();
 		int newSoundChannel = pool.getFirstAvailable();
+		// ---
+
 		if (newSoundChannel == -1){
 			logger.info("Max->SES polyphony all used up - free up bus channels");
 		} else {
 			newSoundArgs[2] = newSoundChannel + "";
 			sendSPATF(newSoundArgs);
+			// bradley: will the recipient let us know when it is freeing up
+			// this channel?
 		}
 
 		return nodeID;
