@@ -8,11 +8,13 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.HashMap;
 import java.util.Vector;
+
+import org.apache.log4j.Logger;
 
 import com.illposed.osc.OSCListener;
 import com.illposed.osc.OSCMessage;
-import com.illposed.osc.OSCPort;
 import com.illposed.osc.OSCPortIn;
 import com.illposed.osc.OSCPortOut;
 
@@ -25,8 +27,12 @@ public class SoundController{
 	private String ipString;			// string ip address incoming
 	private int nodeID;					// incrementing sound ID
 	public float gain = 1.0f;			// default volume level
+	public int maxChannels;				// the max channels for SES operations
+	public HashMap soundChUsed;			// hashmap of currently used channels where true means in-use
 
-	public SoundController(String ip, int port) {
+	private static Logger logger = Logger.getLogger(SkateMain.class);
+
+	public SoundController(String ip, int port, int maxCh) {
 		try{
 			ipString = ip;
 			ipAddress = InetAddress.getByName(ipString);		// a bad address will throw traxess parsing errors when using send!
@@ -36,22 +42,67 @@ public class SoundController{
 		} catch (UnknownHostException e){
 			System.err.println(e);
 		}
-		nodeID = 0;	
-		
-		/*
-		 * setup listener
-		 */
+
+		// setup max channels and a simple boolean array to track channels in use
+		// nope use vector
+		maxChannels = maxCh;
+		soundChUsed  = new HashMap();
+		for (int i = 1; i<=maxChannels; i++) { // start at 1 to reflect real world sound channels
+			soundChUsed.put(i, false); 
+		}
+		logger.info("soundChannels hashMap : " + soundChUsed);
+
+		nodeID = 0;
+
+		setupListener();
+
+	}
+
+	private int getNewChannel() {
+		for (int i=1; i<=maxChannels; i++){
+			if ((Boolean)soundChUsed.get(i) == false){
+				soundChUsed.put(i, true);
+				return i;
+			} 
+		}
+		return -1;
+	}
+
+
+	/*
+	 * setup listener for incoming msg
+	 */
+	private void setupListener() {
 		OSCPortIn receiver;
 		try {
-			//receiver = new OSCPortIn(OSCPort.defaultSCOSCPort());
-			receiver = new OSCPortIn(57130);
+			receiver = new OSCPortIn(11000);
 			OSCListener listener = new OSCListener() {
 				public void acceptMessage(java.util.Date time, OSCMessage message) {
-					
-					for (Object i : message.getArguments()){
-						System.out.println(i);
+
+					// Parse through skaterlist and update amplitude
+					// for some reason I can't do a simple == string compare here for conditional
+					if (message.getArguments()[0].toString().matches("amplitude")) {  //use matches instead
+
+						for (Skater sk8r : SkateMain.skaters) {
+							if (sk8r.soundNode == Integer.parseInt(message.getArguments()[1].toString())) {
+								//System.out.println("updating incoming skater amplitude");
+								sk8r.amplitude = Integer.parseInt(message.getArguments()[2].toString());
+							}
+						}
 					}
-					
+
+					if (message.getArguments()[0].toString().matches("bufferEnd")) {
+						//do some stuff related to the buffer ending
+					}
+
+					/* for checking whole messages
+					for (Object i : message.getArguments()){
+						gSystem.out.print(i + " ");
+					}
+					System.out.println("");
+					 */
+
+
 				}
 			};
 			receiver.addListener("/skateapp", listener);
@@ -60,49 +111,53 @@ public class SoundController{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+
 	}
 
-	public Vector<String> soundNodes = new Vector<String>();
-	
-	public int newSoundNode(String filename, int x, int y, float gain, String comment){
-		
-		/*
-		 * some pcode
-		 * increment nodeID
-		 * Create a soundNode and create a local object in a vector, 
-		 * Tell SES where to place the node in space FIRST to avoid pops
 
-		 * Tell max to start playing a sound, include a nodeID for callback, max returns a node ID?
-		 * max starts playing and feeds the nodeID to an OSC return object
-		 * 
-		 * 
-		 * back in java - the OSC listener receives amplitude messages from max and parses out to the node ID in the vector
-		 * 
-		 */
-		//nodeID++;
-		//send("simple instance"+nodeID+" "+filename+" "+speaker[0]+" "+speaker[1]+" 0 "+gain+" "+comment);
+	public int newSoundNode(String filename, int x, int y, float gain, String soundFile){
+		nodeID++;
+
+		//send play command as SPATF
+		String[] newSoundArgs = new String[3];
+		newSoundArgs[0] = nodeID + "";
+		newSoundArgs[1] = soundFile;
+		int newSoundChannel = getNewChannel();
+		if (newSoundChannel == -1){
+			logger.info("Max->SES polyphony all used up - free up bus channels");
+		} else {
+			newSoundArgs[2] = newSoundChannel + "";
+			sendSPATF(newSoundArgs);
+		}
+
 		return nodeID;
+
 	}
 
 	public void updateSoundNode(int id, int x, int y, float gain){
 		/*
 		 * update the location of soundNode nodeID in SES
 		 * 
-		 */		//send("simple instance"+nodeID+" "+filename+" "+speaker[0]+" "+speaker[1]+" 0 "+gain+" "+comment);
+		 */
+		String[] newPosArgs = new String[3];
+		//Hmmmm, I think this should be a lookup of interbus channel instead
+		newPosArgs[0] = nodeID + ""; // hacky way to convert int to string?
+		newPosArgs[1] = x + "";
+		newPosArgs[2] = y + "";
+		sendSPATF(newPosArgs);
+		
 	}
 
 
 	public int globalSound(String soundFile, boolean loop, float gain, String comment) {
+		// not used now
 		nodeID++;
-		//send("global instance"+soundIDToStart+" "+soundFile+" "+gain+" "+comment);
 		return nodeID;
 	}
 
 
 	public void killSound(){
-		//send("kill"); //???
+		// to do
 	}
 
 
@@ -120,4 +175,31 @@ public class SoundController{
 		}
 	}
 
+	private void sendSPATF(String args[]){
+
+		if(SkateMain.audioEnabled){
+			String argConcat = "SPATF";
+			for (int i = 0; i<args.length; i++) {
+				argConcat += "/" + args[i];
+			}
+			//System.out.println(argConcat);
+
+			Object argToSend[] = new Object[1];
+			argToSend[0] = argConcat;
+			msg = new OSCMessage(ipString, args);
+			try {
+				sender.send(msg);
+			} catch (IOException e) {
+				System.err.println(e);
+			} 
+		}
+	}
+
+	public static void main(String[] args){
+		new SoundController("127.0.0.1",8888,16);
+	}
+
+
 }
+
+
