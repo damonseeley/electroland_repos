@@ -67,7 +67,7 @@ public class SoundController{
 
 	}
 
-	public int newSoundNode(String filename, Point2D.Double pos, float gain, String soundFile){
+	public int newSoundNode(String soundFile, Point2D.Double pos, float gain){
 		nodeID++;
 
 		//send play command as SPATF
@@ -83,7 +83,7 @@ public class SoundController{
 			logger.info("Max->SES polyphony all used up - free up bus channels");
 		} else {
 			newSoundArgs[2] = newSoundChannel + "";
-			sendSPATF(newSoundArgs);
+			sendToMax(newSoundArgs);
 		}
 		
 		// update SES position
@@ -112,7 +112,7 @@ public class SoundController{
 		newPosArgs[1] = (int) newTheta + "";
 		newPosArgs[2] = 0 + "";
 		newPosArgs[3] = (int) newDist + "";
-		sendSPATF(newPosArgs);
+		sendToSES(newPosArgs);
 
 		
 	}
@@ -185,11 +185,16 @@ public class SoundController{
 	}
 
 	
-	private void send(String command){
+	private void sendToMax(String args[]){
 
 		if(SkateMain.audioEnabled){
-			args = new Object[1];
-			args[0] = command;
+			String argConcat = "/skateapp";
+			for (int i = 0; i<args.length; i++) {
+				argConcat += "/" + args[i];
+			}
+			
+			Object argToSend[] = new Object[1];
+			argToSend[0] = argConcat;
 			msg = new OSCMessage(ipString, args);
 			try {
 				maxSender.send(msg);
@@ -199,7 +204,7 @@ public class SoundController{
 		}
 	}
 
-	private void sendSPATF(String args[]){
+	private void sendToSES(String args[]){
 
 		if(SkateMain.audioEnabled){
 			String argConcat = "SPATF";
@@ -241,8 +246,7 @@ public class SoundController{
 		new SoundController("127.0.0.1",10000,7770,16,0,0);
 	}
 	
-	// 2D (Simplified azimuth assumes that "north" is any point
-	//     with the same x as the listener.)     
+	// 2D (always assumes reference is "above" the listener)
 	public static double computeAzimuth(Point2D.Double listener, 
 										Point2D.Double object){
 
