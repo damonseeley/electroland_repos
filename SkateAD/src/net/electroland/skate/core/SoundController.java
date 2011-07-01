@@ -241,22 +241,23 @@ public class SoundController{
 		new SoundController("127.0.0.1",10000,7770,16,0,0);
 	}
 	
-	// 2D (always assumes reference is "above" the listener)
+	// 2D (Simplified azimuth assumes that "north" is any point
+	//     with the same x as the listener.)     
 	public static double computeAzimuth(Point2D.Double listener, 
 										Point2D.Double object){
 
 		// object in front (0) or behind user (180)
-		//  assuming that user on top of object is 0 degrees (or should
-		//  it throw an exception or code?)
 		if (listener.x == object.x){
-			return listener.y < object.y ? 180 : 0;
+			if (listener.y == object.y)
+				return 0;
+//				return Double.NaN; // object on top of user.
+			else
+				return listener.y < object.y ? 180 : 0;
 		}
 
-		// translate objects so listener is on origin
-		object.x -= listener.x;
-		listener.x = 0.0;
-		object.y -= listener.y;
-		listener.y = 0.0;
+		// translate so listener is on origin
+		object.x -= listener.x;	listener.x = 0.0;
+		object.y -= listener.y;	listener.y = 0.0;
 		
 		double radians = Math.atan2(object.y, object.x);
 		return 90 + (180/Math.PI) * radians;
