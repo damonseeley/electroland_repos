@@ -113,7 +113,7 @@ public class SoundController{
 		logger.info(audioListenerPos);
 		double newTheta = computeAzimuth(audioListenerPos,skaterPos);
 		double newDist = computeDistanceInMeters(audioListenerPos,skaterPos);
-		
+		logger.info("azimuth: " + newTheta);
 		int channelNum = soundNodes.get(id).soundChannel;
 		
 		String[] newPosArgs = new String[4];
@@ -267,8 +267,10 @@ public class SoundController{
 				return listener.y < object.y ? 180 : 0;
 		}
 
+		
 		double radians = Math.atan2(object.y - listener.y, object.x - listener.x);
-		return 90 + (180/Math.PI) * radians;
+		double degrees = 90 + (180/Math.PI) * radians; 
+		return degrees > 0 ? degrees : 360 + degrees;
 	}
 	
 	// 2D
