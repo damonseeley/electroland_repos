@@ -10,8 +10,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-
-import javax.vecmath.Point3d;
+import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 
@@ -29,17 +28,16 @@ public class SoundController{
 	private String ipString;			// string ip address incoming
 	private int nodeID;					// incrementing sound ID
 	public float gain = 1.0f;			// default volume level
+	double listenerX, listenerY;		// pre-computed position of the listener
+	
+	public HashMap<Integer,SoundNode> soundNodes;
 
-	// --- bradley: replaced channel management with ChannelPool
 	public ChannelPool pool; 			// pool of available channels.
-	//public int maxChannels;				// the max channels for SES operations
-	//public HashMap soundChUsed;			// hashmap of currently used channels where true means in-use
-	// ---
 	
 	// --- bradley: corrected reference to get the logger of this class here.
 	private static Logger logger = Logger.getLogger(SoundController.class);
 
-	public SoundController(String ip, int port, int maxCh) {
+	public SoundController(String ip, int port, int maxCh, double listenX, double listenY) {
 		try{
 			ipString = ip;
 			ipAddress = InetAddress.getByName(ipString);		// a bad address will throw traxess parsing errors when using send!
@@ -49,34 +47,65 @@ public class SoundController{
 		} catch (UnknownHostException e){
 			System.err.println(e);
 		}
+		
+		listenerX = listenX;
+		listenerY = listenY;
+		
+		nodeID = 0;
+		
+		soundNodes  = new HashMap<Integer,SoundNode>();
 
 		pool = new ChannelPool(maxCh);
-		// --- bradley: ChannelPool takes care of this externally.
-//		maxChannels = maxCh;
-//		soundChUsed  = new HashMap();
-//		for (int i = 1; i<=maxChannels; i++) { // start at 1 to reflect real world sound channels
-//			soundChUsed.put(i, false); 
-//		}
-//		logger.info("soundChannels hashMap : " + soundChUsed);
-		// ---
-		nodeID = 0;
 
 		setupListener();
 
 	}
 
-	// --- bradley: ChannelPool takes care of this.
-//	private int getNewChannel() {
-//		for (int i=1; i<=maxChannels; i++){
-//			if ((Boolean)soundChUsed.get(i) == false){
-//				soundChUsed.put(i, true);
-//				return i;
-//			} 
-//		}
-//		return -1;
-//	}
-	// ---
+	public int newSoundNode(String filename, int x, int y, float gain, String soundFile){
+		nodeID++;
 
+		//send play command as SPATF
+		String[] newSoundArgs = new String[3];
+		newSoundArgs[0] = nodeID + "";
+		newSoundArgs[1] = soundFile;
+
+		// --- bradley: replaced getNewChannel() with pool.getFirstAvailable();
+		//int newSoundChannel = getNewChannel();
+		int newSoundChannel = pool.getFirstAvailable();
+		logger.info("channel " + newSoundChannel + " assigned");
+
+		if (newSoundChannel == -1){
+			logger.info("Max->SES polyphony all used up - free up bus channels");
+		} else {
+			newSoundArgs[2] = newSoundChannel + "";
+			sendSPATF(newSoundArgs);
+			// bradley: will the recipient let us know when it is freeing up
+			// this channel?
+		}
+		
+		SoundNode soundNode = new SoundNode(nodeID,newSoundChannel, soundFile, 0);
+
+		soundNodes.put(nodeID, soundNode);
+		
+		return nodeID;
+
+	}
+
+	public void updateSoundNode(int id, int x, int y, float gain){
+		/*
+		 * update the location of soundNode nodeID in SES
+		 * 
+		 */
+		String[] newPosArgs = new String[3];
+		//Hmmmm, I think this should be a lookup of interbus channel instead
+		newPosArgs[0] = nodeID + ""; // hacky way to convert int to string?
+		newPosArgs[1] = x + "";
+		newPosArgs[2] = y + "";
+		sendSPATF(newPosArgs);
+		
+	}
+	
+	
 	/*
 	 * setup listener for incoming msg
 	 */
@@ -88,23 +117,19 @@ public class SoundController{
 				public void acceptMessage(java.util.Date time, OSCMessage message) {
 
 					// Parse through skaterlist and update amplitude
-					// for some reason I can't do a simple == string compare here for conditional
-					
-					// Bradley: == is checks to see if they are the same object, which they aren't.
-					// match checks to see if they are too different Strings that contain the same data.
-					
-					if (message.getArguments()[0].toString().matches("amplitude")) {  //use matches instead
-
-						for (Skater sk8r : SkateMain.skaters) {
-							if (sk8r.soundNode == Integer.parseInt(message.getArguments()[1].toString())) {
-								//System.out.println("updating incoming skater amplitude");
-								sk8r.amplitude = Integer.parseInt(message.getArguments()[2].toString());
-							}
-						}
+					if (message.getArguments()[0].toString().matches("amp")) {  //use matches instead
+						// update the amplitude value for nodeID
+						int tmpAmp = Integer.parseInt(message.getArguments()[2].toString());
+						//soundNodes.get(message.getArguments()[1]).amplitude = tmpAmp;
+						setAmp(Integer.parseInt(message.getArguments()[1].toString()),tmpAmp);
+						//logger.info(soundNodes.get(message.getArguments()[1]).amplitude);
 					}
 
 					if (message.getArguments()[0].toString().matches("bufferEnd")) {
 						//do some stuff related to the buffer ending
+						// remove the soundNode from soundNodes
+						logger.info("bufferEnd received for : " + message.getArguments()[1]);
+						removeNode(Integer.parseInt(message.getArguments()[1].toString()));
 					}
 
 					/* for checking whole messages
@@ -125,61 +150,29 @@ public class SoundController{
 		}
 
 	}
-
-
-	public int newSoundNode(String filename, int x, int y, float gain, String soundFile){
-		nodeID++;
-
-		//send play command as SPATF
-		String[] newSoundArgs = new String[3];
-		newSoundArgs[0] = nodeID + "";
-		newSoundArgs[1] = soundFile;
-
-		// --- bradley: replaced getNewChannel() with pool.getFirstAvailable();
-		//int newSoundChannel = getNewChannel();
-		int newSoundChannel = pool.getFirstAvailable();
-		// ---
-
-		if (newSoundChannel == -1){
-			logger.info("Max->SES polyphony all used up - free up bus channels");
+	
+	public void removeNode (int id){
+		if (soundNodes.containsKey(id)) {
+			soundNodes.remove(id);
 		} else {
-			newSoundArgs[2] = newSoundChannel + "";
-			sendSPATF(newSoundArgs);
-			// bradley: will the recipient let us know when it is freeing up
-			// this channel?
+			logger.info("Tried to remove non-existent soundNode: " + id);
 		}
-
-		return nodeID;
-
+	}
+	
+	public void setAmp(int id, int amp){
+		if (soundNodes.containsKey(id)) {
+			soundNodes.get(id).amplitude = amp;
+		} else {
+			logger.info("Tried to set amp value for non-existent soundNode: " + id);
+		}
+	}
+	
+	public int getAmp(int id) {
+		// do some checking here to make sure it exists?
+		return soundNodes.get(id).amplitude;
 	}
 
-	public void updateSoundNode(int id, int x, int y, float gain){
-		/*
-		 * update the location of soundNode nodeID in SES
-		 * 
-		 */
-		String[] newPosArgs = new String[3];
-		//Hmmmm, I think this should be a lookup of interbus channel instead
-		newPosArgs[0] = nodeID + ""; // hacky way to convert int to string?
-		newPosArgs[1] = x + "";
-		newPosArgs[2] = y + "";
-		sendSPATF(newPosArgs);
-		
-	}
-
-
-	public int globalSound(String soundFile, boolean loop, float gain, String comment) {
-		// not used now
-		nodeID++;
-		return nodeID;
-	}
-
-
-	public void killSound(){
-		// to do
-	}
-
-
+	
 	private void send(String command){
 
 		if(SkateMain.audioEnabled){
@@ -213,40 +206,60 @@ public class SoundController{
 			} 
 		}
 	}
+	
+	
+	
+	/* 
+	 * older stuff
+	 */
+	
+
+	public int globalSound(String soundFile, boolean loop, float gain, String comment) {
+		// not used now
+		nodeID++;
+		return nodeID;
+	}
+
+	public void killSound(){
+		// not used now
+	}
+
 
 	public static void main(String[] args){
-		new SoundController("127.0.0.1",8888,16);
-	}
-
-	// add wrapper to project onto ground and do 2D.
-	public static double computeAzimuth(Point3d listener, Point3d reference) {
-		 // compute theta in degrees where -y is up (zero degrees) and +x is left 90 degrees
-	     // by comparing the incoming position values to listenerLoc
-	     //return aximuthInDegrees;
-	     return 0.0;
-	}
-	// 2D (no divide by zero tests yet).
-	public static double computeAzimuth(Point2D.Double listener, 
-										Point2D.Double reference, 
-										Point2D.Double object){
-		Line2D.Double ltor = new Line2D.Double(listener, reference);
-		Line2D.Double ltoo = new Line2D.Double(listener, object);
-		
-		double slope1 = ltor.getY1() - ltor.getY2() / ltor.getX1() - ltor.getX2();
-        double slope2 = ltoo.getY1() - ltoo.getY2() / ltoo.getX1() - ltoo.getX2();
-        double angle = Math.atan((slope1 - slope2) / (1 - (slope1 * slope2)));
-        return angle;		
+		new SoundController("127.0.0.1",8888,16,0,0);
 	}
 	
-	// 3D
-	public static double computeDistance(Point3d listener, Point3d object) {
-		return listener.distance(object);
-	}
-	// 2D
-	public static double compueteDistance(Point2D.Double listener, Point2D.Double object)
-	{
-		return listener.distance(object);
-	}
+	// add wrapper to project onto ground and do 2D.
+		public static double computeAzimuth(Point3d listener, Point3d reference) {
+			 // compute theta in degrees where -y is up (zero degrees) and +x is left 90 degrees
+		     // by comparing the incoming position values to listenerLoc
+		     //return aximuthInDegrees;
+		     return 0.0;
+		}
+		// 2D (no divide by zero tests yet).
+		public static double computeAzimuth(Point2D.Double listener, 
+											Point2D.Double reference, 
+											Point2D.Double object){
+			Line2D.Double ltor = new Line2D.Double(listener, reference);
+			Line2D.Double ltoo = new Line2D.Double(listener, object);
+			
+			double slope1 = ltor.getY1() - ltor.getY2() / ltor.getX1() - ltor.getX2();
+	        double slope2 = ltoo.getY1() - ltoo.getY2() / ltoo.getX1() - ltoo.getX2();
+	        double angle = Math.atan((slope1 - slope2) / (1 - (slope1 * slope2)));
+	        return angle;		
+		}
+		
+		// 3D
+		public static double computeDistance(Point3d listener, Point3d object) {
+			return listener.distance(object);
+		}
+		// 2D
+		public static double compueteDistance(Point2D.Double listener, Point2D.Double object)
+		{
+			return listener.distance(object);
+		}
+
+
 }
 
 
