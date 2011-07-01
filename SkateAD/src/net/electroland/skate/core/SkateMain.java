@@ -99,7 +99,7 @@ public class SkateMain extends Thread {
 		}
 
 		///////// Init sound controller and speakers
-		soundController = new SoundController("127.0.0.1",10000,16,audioListenerX,audioListenerY);
+		soundController = new SoundController("127.0.0.1",10000,7770,16,audioListenerX,audioListenerY);
 
 
 
