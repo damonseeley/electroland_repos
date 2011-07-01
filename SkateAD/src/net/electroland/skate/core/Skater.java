@@ -24,7 +24,7 @@ public class Skater implements Cloneable {
 	public int soundNodeID;
 
 	public String fileName;
-	public int maxDim;
+	public int worldDim;
 	public int startTick;
 	public int endTick;
 	public int frameRate;
@@ -49,9 +49,9 @@ public class Skater implements Cloneable {
 		}
 		
 		if (dim != null){
-			maxDim = Integer.parseInt(dim);
+			worldDim = Integer.parseInt(dim);
 		} else {
-			maxDim = 1000;
+			worldDim = 1000;
 		}
 		
 		canvasScale = cScale;
@@ -211,20 +211,12 @@ public class Skater implements Cloneable {
 	 *     is later 
 	 */
 
-	/* Return the pos value in centimeters for the current frame */
-	public double[] getMetricPosNow(){
-		double[] pos = new double[3];
-		pos[0] = (Double)frameData[curFrame].get("x") * cmConversion;
-		pos[1] = (Double)frameData[curFrame].get("y") * cmConversion;
-		pos[2] = (Double)frameData[curFrame].get("z") * cmConversion;
-		return pos;
-	}
 	
 	/* Return the pos value in centimeters for the current frame */
 	public Point2D.Double getMetric2DPosNow(){
 		Point2D.Double pos = new Point2D.Double();
 		pos.x = (Double)frameData[curFrame].get("x") * cmConversion;
-		pos.y = (Double)frameData[curFrame].get("y") * cmConversion;
+		pos.y = (Double)frameData[curFrame].get("y") * cmConversion * -1;
 		return pos;
 	}
 	
@@ -232,7 +224,19 @@ public class Skater implements Cloneable {
 	public Point2D.Double getCanvas2DPosNow(){
 		Point2D.Double pos = new Point2D.Double();
 		pos.x = (Double)frameData[curFrame].get("x") * cmConversion * canvasScale;
-		pos.y = (Double)frameData[curFrame].get("y") * cmConversion * canvasScale;
+		pos.y = (Double)frameData[curFrame].get("y") * cmConversion * canvasScale * -1;
+		return pos;
+	}
+	
+	
+	// Position getters below this line have not been tested
+	
+	/* Return the pos value in centimeters for the current frame */
+	public double[] getMetricPosNow(){
+		double[] pos = new double[3];
+		pos[0] = (Double)frameData[curFrame].get("x") * cmConversion;
+		pos[1] = (Double)frameData[curFrame].get("y") * cmConversion * -1;
+		pos[2] = (Double)frameData[curFrame].get("z") * cmConversion;
 		return pos;
 	}
 	
@@ -240,11 +244,10 @@ public class Skater implements Cloneable {
 	public double[] getMetricPosAtFrame(int index){
 		double[] pos = new double[3];
 		pos[0] = (Double)frameData[index].get("x") * cmConversion;
-		pos[1] = (Double)frameData[index].get("y") * cmConversion;
+		pos[1] = (Double)frameData[index].get("y") * cmConversion * -1;
 		pos[2] = (Double)frameData[index].get("z") * cmConversion;
 		return pos;
 	}
-
 
 	/* Return the pos value in centimeters for given time */
 	public double[] getMetricPosAtTime(double time){
@@ -252,7 +255,7 @@ public class Skater implements Cloneable {
 		// quantize to individual frames by using int for frame value
 		int frame = (int)((time/lengthSeconds) * lengthFrames);
 		pos[0] = (Double)frameData[frame].get("x") * cmConversion;
-		pos[1] = (Double)frameData[frame].get("y") * cmConversion;
+		pos[1] = (Double)frameData[frame].get("y") * cmConversion * -1;
 		pos[2] = (Double)frameData[frame].get("z") * cmConversion;
 		return pos;
 	}

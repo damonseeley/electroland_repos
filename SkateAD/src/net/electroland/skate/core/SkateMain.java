@@ -133,7 +133,7 @@ public class SkateMain extends Thread {
 			 * Determine whether to add or subtract skaters
 			 */
 			if (Math.random() < .02 ){
-				addSkater();
+				//addSkater();
 			}
 
 			
@@ -190,11 +190,14 @@ public class SkateMain extends Thread {
 				gci.setColor(new Color(255,255,255));
 				// Draw a square (for now) where the skater is located, scaled for xml file max dim
 				// and then sized to the canvas width/height
-				int skaterX = (int)(sk8r.getMetricPosNow()[0]/sk8r.maxDim * skatearea.width);
+				//int skaterX = (int)(sk8r.getMetricPosNow()[0]/sk8r.worldDim * skatearea.width);
+				int skaterX = (int)(sk8r.getCanvas2DPosNow().x);
+
 				//flip y to account for UCS diffs between 3DSMax and Java
-				int skaterY = (int)(sk8r.getMetricPosNow()[1]/sk8r.maxDim * skatearea.height) * -1;
+				//int skaterY = (int)(sk8r.getMetricPosNow()[1]/sk8r.worldDim * skatearea.height) * -1;
+				int skaterY = (int)(sk8r.getCanvas2DPosNow().y); //all xforms now contained within skater
+
 				// Draw the square (for now)
-				//gci.fillOval(skaterX,skaterY,10,10);
 				gci.drawImage(dot, skaterX-skaterWidth/2, skaterY-skaterWidth/2, skaterWidth, skaterWidth, null);
 			}
 			
@@ -217,9 +220,9 @@ public class SkateMain extends Thread {
 				for (Skater sk8r : skaters)
 				{
 					// draw text labels to show where skaters are located
-					int skaterX = (int)(sk8r.getMetricPosNow()[0]/sk8r.maxDim * skatearea.width);
+					int skaterX = (int)(sk8r.getCanvas2DPosNow().x);
 					//flip y to account for UCS diffs between 3DSMax and Java
-					int skaterY = (int)(sk8r.getMetricPosNow()[1]/sk8r.maxDim * skatearea.height) * -1;
+					int skaterY = (int)(sk8r.getCanvas2DPosNow().y);
 					gci.setColor(new Color(128,128,128));
 					Font afont = new Font("afont",Font.PLAIN,10);
 					gci.setFont(afont);
@@ -301,11 +304,11 @@ public class SkateMain extends Thread {
 		while (iter.hasNext()) {
 			String curSkater = iter.next();
 			String animFile = op.getRequired("skater",curSkater,"animFile");
-			String maxDim = op.getRequired("skater",curSkater,"maxDim");
+			String worldDim = op.getRequired("skater",curSkater,"worldDim");
 			String[] soundList = op.getOptional("skater",curSkater,"sounds").split(",");
 
-			double canvasScale = canvasWidth/Double.parseDouble(maxDim);
-			Skater sk8r = new Skater(curSkater, animFile, maxDim, canvasScale, soundList);
+			double canvasScale = canvasWidth/Double.parseDouble(worldDim);
+			Skater sk8r = new Skater(curSkater, animFile, worldDim, canvasScale, soundList);
 			skaterDefs.add(sk8r);
 		}
 		framerate = op.getRequiredInt("settings", "global", "fps");

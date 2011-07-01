@@ -106,22 +106,18 @@ public class SoundController{
 		 * update the location of soundNode nodeID in SES
 		 * 
 		 */
-		
-		//BRADLEY - PLS HELP!!!
-		// why is this Point2D.Double 0,0 when I output it below?  The values carry through from properties
-		// and are correctly set in the constructor above.  Then they revert to 0,0 ???
-		logger.info(audioListenerPos);
+
 		double newTheta = computeAzimuth(audioListenerPos,skaterPos);
+		//logger.info("Computed Theta = " + newTheta);
 		double newDist = computeDistanceInMeters(audioListenerPos,skaterPos);
-		logger.info("azimuth: " + newTheta);
 		int channelNum = soundNodes.get(id).soundChannel;
 		
 		String[] newPosArgs = new String[4];
 		//Hmmmm, I think this should be a lookup of interbus channel instead
 		newPosArgs[0] = channelNum + ""; // hacky way to convert int to string?
-		newPosArgs[1] = (int) newTheta + "";
+		newPosArgs[1] = newTheta + "";
 		newPosArgs[2] = 0 + "";
-		newPosArgs[3] = (int) newDist + "";
+		newPosArgs[3] = newDist + "";
 		sendToSES(newPosArgs);
 
 		
