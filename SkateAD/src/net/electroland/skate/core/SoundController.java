@@ -21,7 +21,8 @@ import com.illposed.osc.OSCPortOut;
 public class SoundController{
 
 	private InetAddress ipAddress;		// machine running max/msp
-	private OSCPortOut sender;			// osc out
+	private OSCPortOut maxSender;			// osc out
+	private OSCPortOut sesSender;			// osc out to SESs
 	private OSCMessage msg;				// osc packet
 	private Object args[];				// osc content
 	private String ipString;			// string ip address incoming
@@ -36,11 +37,21 @@ public class SoundController{
 	// --- bradley: corrected reference to get the logger of this class here.
 	private static Logger logger = Logger.getLogger(SoundController.class);
 
-	public SoundController(String ip, int port, int maxCh, double listenX, double listenY) {
+	public SoundController(String ip, int maxPort, int sesPort, int maxCh, double listenX, double listenY) {
 		try{
 			ipString = ip;
 			ipAddress = InetAddress.getByName(ipString);		// a bad address will throw traxess parsing errors when using send!
-			sender = new OSCPortOut(ipAddress, port);
+			maxSender = new OSCPortOut(ipAddress, maxPort);
+		} catch (SocketException e){
+			System.err.println(e);
+		} catch (UnknownHostException e){
+			System.err.println(e);
+		}
+		
+		try{
+			ipString = ip;
+			ipAddress = InetAddress.getByName(ipString);		// a bad address will throw traxess parsing errors when using send!
+			sesSender = new OSCPortOut(ipAddress, maxPort);
 		} catch (SocketException e){
 			System.err.println(e);
 		} catch (UnknownHostException e){
@@ -94,15 +105,15 @@ public class SoundController{
 		double newTheta = computeAzimuth(listenerPos,skaterPt);
 		double newDist = computeDistance(listenerPos,skaterPt);
 		
-		/*
-		String[] newPosArgs = new String[3];
+		
+		String[] newPosArgs = new String[4];
 		//Hmmmm, I think this should be a lookup of interbus channel instead
-		newPosArgs[0] = nodeID + ""; // hacky way to convert int to string?
-		newPosArgs[1] = x + "";
-		newPosArgs[2] = y + "";
-		//sendSPATF(newPosArgs);
-		 * 
-		 */
+		newPosArgs[0] = id + ""; // hacky way to convert int to string?
+		newPosArgs[1] = (int) newTheta + "";
+		newPosArgs[2] = 0 + "";
+		newPosArgs[3] = (int) newDist + "";
+		sendSPATF(newPosArgs);
+
 		
 	}
 	
@@ -181,7 +192,7 @@ public class SoundController{
 			args[0] = command;
 			msg = new OSCMessage(ipString, args);
 			try {
-				sender.send(msg);
+				maxSender.send(msg);
 			} catch (IOException e) {
 				System.err.println(e);
 			} 
@@ -201,7 +212,7 @@ public class SoundController{
 			argToSend[0] = argConcat;
 			msg = new OSCMessage(ipString, args);
 			try {
-				sender.send(msg);
+				maxSender.send(msg);
 			} catch (IOException e) {
 				System.err.println(e);
 			} 
@@ -227,7 +238,7 @@ public class SoundController{
 
 
 	public static void main(String[] args){
-		new SoundController("127.0.0.1",8888,16,0,0);
+		new SoundController("127.0.0.1",10000,7770,16,0,0);
 	}
 	
 	// 2D (always assumes reference is "above" the listener)
