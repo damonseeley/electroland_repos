@@ -4,10 +4,13 @@ package net.electroland.skate.core;
  * Handles all of the OSC message output and keeps a ticker to track player ID's.
  */
 
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+
+import javax.vecmath.Point3d;
 
 import org.apache.log4j.Logger;
 
@@ -214,7 +217,15 @@ public class SoundController{
 		new SoundController("127.0.0.1",8888,16);
 	}
 
-
+	public static double computeAzimuth(Point3d listener, Point3d reference) {
+		 // compute theta in degrees where -y is up (zero degrees) and +x is left 90 degrees
+	     // by comparing the incoming position values to listenerLoc
+	     //return aximuthInDegrees;
+	     return 0.0;
+	}
+	public static double computeDistance(Point3d listener, Point3d reference) {
+		return listener.distance(reference);
+	}
 }
 
 
