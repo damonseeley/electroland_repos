@@ -62,7 +62,7 @@ public class Skater implements Cloneable {
 			soundList = sounds;
 		}
 		
-		boolean debugOutput = true;
+		boolean debugOutput = false;
 
 		try {
 

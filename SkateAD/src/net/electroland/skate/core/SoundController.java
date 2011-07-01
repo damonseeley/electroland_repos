@@ -23,12 +23,14 @@ public class SoundController{
 	private InetAddress ipAddress;		// machine running max/msp
 	private OSCPortOut maxSender;			// osc out
 	private OSCPortOut sesSender;			// osc out to SESs
-	private OSCMessage msg;				// osc packet
+	private OSCMessage maxMsg;				// osc packet
+	private OSCMessage sesMsg;				// osc packet
+
 	private Object args[];				// osc content
 	private String ipString;			// string ip address incoming
 	private int nodeID;					// incrementing sound ID
 	public float gain = 1.0f;			// default volume level
-	Point2D.Double listenerPos;
+	public Point2D.Double audioListenerPos = new Point2D.Double(10,10);
 	
 	public HashMap<Integer,SoundNode> soundNodes;
 
@@ -37,7 +39,7 @@ public class SoundController{
 	// --- bradley: corrected reference to get the logger of this class here.
 	private static Logger logger = Logger.getLogger(SoundController.class);
 
-	public SoundController(String ip, int maxPort, int sesPort, int maxCh, double listenX, double listenY) {
+	public SoundController(String ip, int maxPort, int sesPort, int maxCh, Point2D.Double listenPos) {
 		try{
 			ipString = ip;
 			ipAddress = InetAddress.getByName(ipString);		// a bad address will throw traxess parsing errors when using send!
@@ -51,14 +53,16 @@ public class SoundController{
 		try{
 			ipString = ip;
 			ipAddress = InetAddress.getByName(ipString);		// a bad address will throw traxess parsing errors when using send!
-			sesSender = new OSCPortOut(ipAddress, maxPort);
+			sesSender = new OSCPortOut(ipAddress, sesPort);
 		} catch (SocketException e){
 			System.err.println(e);
 		} catch (UnknownHostException e){
 			System.err.println(e);
 		}
 		
-		listenerPos = new Point2D.Double(listenX,listenY);
+		audioListenerPos.x = listenPos.x;
+		audioListenerPos.y = listenPos.y;
+		logger.info("LISTENPOS = " + audioListenerPos.x + ", INCOMING = " + listenPos.x);
 
 		nodeID = 0;
 		soundNodes  = new HashMap<Integer,SoundNode>();
@@ -85,30 +89,38 @@ public class SoundController{
 			newSoundArgs[2] = newSoundChannel + "";
 			sendToMax(newSoundArgs);
 		}
+
+		SoundNode soundNode = new SoundNode(nodeID,newSoundChannel, soundFile, 0);
+		soundNodes.put(nodeID, soundNode);
 		
 		// update SES position
 		updateSoundNode(nodeID,pos,1.0f);
 		
-		
-		SoundNode soundNode = new SoundNode(nodeID,newSoundChannel, soundFile, 0);
-		soundNodes.put(nodeID, soundNode);
 		return nodeID;
+		
+		
 
 	}
 
-	public void updateSoundNode(int id, Point2D.Double skaterPt, float gain){
+	public void updateSoundNode(int id, Point2D.Double skaterPos, float gain){
 		/*
 		 * update the location of soundNode nodeID in SES
 		 * 
 		 */
 		
-		double newTheta = computeAzimuth(listenerPos,skaterPt);
-		double newDist = computeDistance(listenerPos,skaterPt);
+		//BRADLEY - PLS HELP!!!
+		// why is this Point2D.Double 0,0 when I output it below?  The values carry through from properties
+		// and are correctly set in the constructor above.  Then they revert to 0,0 ???
+		logger.info(audioListenerPos);
+		double newTheta = computeAzimuth(audioListenerPos,skaterPos);
+		double newDist = computeDistanceInMeters(audioListenerPos,skaterPos);
+		//logger.info(newTheta + ", " + newDist);
 		
+		int channelNum = soundNodes.get(id).soundChannel;
 		
 		String[] newPosArgs = new String[4];
 		//Hmmmm, I think this should be a lookup of interbus channel instead
-		newPosArgs[0] = id + ""; // hacky way to convert int to string?
+		newPosArgs[0] = channelNum + ""; // hacky way to convert int to string?
 		newPosArgs[1] = (int) newTheta + "";
 		newPosArgs[2] = 0 + "";
 		newPosArgs[3] = (int) newDist + "";
@@ -132,26 +144,22 @@ public class SoundController{
 					if (message.getArguments()[0].toString().matches("amp")) {  //use matches instead
 						// update the amplitude value for nodeID
 						int tmpAmp = Integer.parseInt(message.getArguments()[2].toString());
-						//soundNodes.get(message.getArguments()[1]).amplitude = tmpAmp;
 						setAmp(Integer.parseInt(message.getArguments()[1].toString()),tmpAmp);
-						//logger.info(soundNodes.get(message.getArguments()[1]).amplitude);
 					}
 
 					if (message.getArguments()[0].toString().matches("bufferEnd")) {
-						//do some stuff related to the buffer ending
 						// remove the soundNode from soundNodes
 						logger.info("bufferEnd received for : " + message.getArguments()[1]);
 						removeNode(Integer.parseInt(message.getArguments()[1].toString()));
 					}
 
-					/* for checking whole messages
+					/*
+					 * for checking whole messages
 					for (Object i : message.getArguments()){
 						gSystem.out.print(i + " ");
 					}
 					System.out.println("");
 					 */
-
-
 				}
 			};
 			receiver.addListener("/skateapp", listener);
@@ -165,7 +173,9 @@ public class SoundController{
 	
 	public void removeNode (int id){
 		if (soundNodes.containsKey(id)) {
+			pool.releaseChannel(soundNodes.get(id).soundChannel);
 			soundNodes.remove(id);
+			
 		} else {
 			logger.info("Tried to remove non-existent soundNode: " + id);
 		}
@@ -188,16 +198,16 @@ public class SoundController{
 	private void sendToMax(String args[]){
 
 		if(SkateMain.audioEnabled){
-			String argConcat = "/skateapp";
+			String argConcat = "Play";
 			for (int i = 0; i<args.length; i++) {
 				argConcat += "/" + args[i];
 			}
 			
 			Object argToSend[] = new Object[1];
 			argToSend[0] = argConcat;
-			msg = new OSCMessage(ipString, args);
+			maxMsg = new OSCMessage(ipString, argToSend);
 			try {
-				maxSender.send(msg);
+				maxSender.send(maxMsg);
 			} catch (IOException e) {
 				System.err.println(e);
 			} 
@@ -215,9 +225,9 @@ public class SoundController{
 
 			Object argToSend[] = new Object[1];
 			argToSend[0] = argConcat;
-			msg = new OSCMessage(ipString, args);
+			sesMsg = new OSCMessage(ipString, argToSend);
 			try {
-				maxSender.send(msg);
+				sesSender.send(sesMsg);
 			} catch (IOException e) {
 				System.err.println(e);
 			} 
@@ -243,7 +253,7 @@ public class SoundController{
 
 
 	public static void main(String[] args){
-		new SoundController("127.0.0.1",10000,7770,16,0,0);
+		new SoundController("127.0.0.1",10000,7770,16,new Point2D.Double(0,0));
 	}
 	
 	// 2D (always assumes reference is "above" the listener)
@@ -271,5 +281,11 @@ public class SoundController{
 	public static double computeDistance(Point2D.Double listener, Point2D.Double object)
 	{
 		return listener.distance(object);
+	}
+	
+	// 2D
+	public static double computeDistanceInMeters(Point2D.Double listener, Point2D.Double object)
+	{
+		return listener.distance(object)/1000;
 	}
 }

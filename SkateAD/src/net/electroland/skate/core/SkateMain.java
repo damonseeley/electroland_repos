@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Shape;
 import java.awt.color.ColorSpace;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Iterator;
@@ -101,7 +102,7 @@ public class SkateMain extends Thread {
 		}
 
 		///////// Init sound controller and speakers
-		soundController = new SoundController("127.0.0.1",10000,7770,16,audioListenerX,audioListenerY);
+		soundController = new SoundController("127.0.0.1",10000,7770,16,audioListenerPos);
 
 
 
@@ -127,7 +128,7 @@ public class SkateMain extends Thread {
 		curTime = System.currentTimeMillis();
 
 		while (isRunning) {
-
+			
 			/*
 			 * Determine whether to add or subtract skaters
 			 */
@@ -288,11 +289,9 @@ public class SkateMain extends Thread {
 
 
 	public Vector<Skater> skaterDefs = new Vector<Skater>();
-//	public Set<Skater> skaters = new CopyOnWriteArraySet<Skater>();
 	public static Vector<Skater> skaters = new Vector<Skater>();
 	public static boolean audioEnabled = true;
-	public static double audioListenerX = 0;
-	public static double audioListenerY = 0;
+	public Point2D.Double audioListenerPos;
 	
 	public void loadSkaterProps(String skatePropsFile) throws IOException, OptionException
 	{		
@@ -306,21 +305,14 @@ public class SkateMain extends Thread {
 			String[] soundList = op.getOptional("skater",curSkater,"sounds").split(",");
 
 			double canvasScale = canvasWidth/Double.parseDouble(maxDim);
-			
-
 			Skater sk8r = new Skater(curSkater, animFile, maxDim, canvasScale, soundList);
 			skaterDefs.add(sk8r);
 		}
 		framerate = op.getRequiredInt("settings", "global", "fps");
 		audioEnabled = Boolean.parseBoolean(op.getRequired("settings", "global", "audio"));
-		audioListenerX = op.getRequiredDouble("settings", "global", "listenerX");
-		audioListenerY = op.getRequiredDouble("settings", "global", "listenerY");
+		audioListenerPos = new Point2D.Double(op.getRequiredDouble("settings", "global", "listenerX"),op.getRequiredDouble("settings", "global", "listenerY"));
+		//logger.info(audioListenerPos.x + "   " + audioListenerPos.y);
 	}
-
-
-
-
-
 
 
 
