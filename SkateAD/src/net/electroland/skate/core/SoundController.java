@@ -245,7 +245,7 @@ public class SoundController{
 	}
 	
 	// 2D
-	public static double compueteDistance(Point2D.Double listener, Point2D.Double object)
+	public static double computeDistance(Point2D.Double listener, Point2D.Double object)
 	{
 		return listener.distance(object);
 	}
