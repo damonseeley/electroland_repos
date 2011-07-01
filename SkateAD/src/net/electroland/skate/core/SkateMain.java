@@ -91,7 +91,7 @@ public class SkateMain extends Thread {
 
 		///////// Load props and create skaters
 		try {
-			loadSkaterProps();
+			loadSkaterProps("SkateApp.properties");
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (OptionException e) {
@@ -99,7 +99,7 @@ public class SkateMain extends Thread {
 		}
 
 		///////// Init sound controller and speakers
-		soundController = new SoundController("127.0.0.1",10000,16);
+		soundController = new SoundController("127.0.0.1",10000,16,audioListenerX,audioListenerY);
 
 
 
@@ -289,10 +289,12 @@ public class SkateMain extends Thread {
 //	public Set<Skater> skaters = new CopyOnWriteArraySet<Skater>();
 	public static Vector<Skater> skaters = new Vector<Skater>();
 	public static boolean audioEnabled = true;
+	public static double audioListenerX = 0;
+	public static double audioListenerY = 0;
 	
-	public void loadSkaterProps() throws IOException, OptionException
+	public void loadSkaterProps(String skatePropsFile) throws IOException, OptionException
 	{		
-		ElectrolandProperties op = new ElectrolandProperties("Skaters.properties");
+		ElectrolandProperties op = new ElectrolandProperties(skatePropsFile);
 		Set<String> skaterNames = (op.getObjectNames("skater"));
 		Iterator<String> iter = skaterNames.iterator();
 		while (iter.hasNext()) {
@@ -307,6 +309,8 @@ public class SkateMain extends Thread {
 		}
 		framerate = op.getRequiredInt("settings", "global", "fps");
 		audioEnabled = Boolean.parseBoolean(op.getRequired("settings", "global", "audio"));
+		audioListenerX = op.getRequiredDouble("settings", "global", "listenerX");
+		audioListenerY = op.getRequiredDouble("settings", "global", "listenerY");
 	}
 
 
