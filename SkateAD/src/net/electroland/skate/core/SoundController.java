@@ -4,7 +4,6 @@ package net.electroland.skate.core;
  * Handles all of the OSC message output and keeps a ticker to track player ID's.
  */
 
-import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -229,37 +228,25 @@ public class SoundController{
 		new SoundController("127.0.0.1",8888,16,0,0);
 	}
 	
-	// add wrapper to project onto ground and do 2D.
-		public static double computeAzimuth(Point3d listener, Point3d reference) {
-			 // compute theta in degrees where -y is up (zero degrees) and +x is left 90 degrees
-		     // by comparing the incoming position values to listenerLoc
-		     //return aximuthInDegrees;
-		     return 0.0;
-		}
-		// 2D (no divide by zero tests yet).
-		public static double computeAzimuth(Point2D.Double listener, 
-											Point2D.Double reference, 
-											Point2D.Double object){
-			Line2D.Double ltor = new Line2D.Double(listener, reference);
-			Line2D.Double ltoo = new Line2D.Double(listener, object);
-			
-			double slope1 = ltor.getY1() - ltor.getY2() / ltor.getX1() - ltor.getX2();
-	        double slope2 = ltoo.getY1() - ltoo.getY2() / ltoo.getX1() - ltoo.getX2();
-	        double angle = Math.atan((slope1 - slope2) / (1 - (slope1 * slope2)));
-	        return angle;		
-		}
-		
-		// 3D
-		public static double computeDistance(Point3d listener, Point3d object) {
-			return listener.distance(object);
-		}
-		// 2D
-		public static double compueteDistance(Point2D.Double listener, Point2D.Double object)
-		{
-			return listener.distance(object);
+	// 2D (always assumes reference is "above" the listener)
+	public static double computeAzimuth(Point2D.Double listener, 
+										Point2D.Double object){
+
+		// object in front (0) or behind user (180)
+		//  assuming that user on top of object is 0 degrees (or should
+		//  it throw an exception or code?)
+		if (listener.x == object.x){
+			return listener.y > object.y ? 180 : 0;
 		}
 
-
+		// slope
+		double slope = object.y - listener.y / object.x - listener.x;
+		return Math.atan(slope);
+	}
+	
+	// 2D
+	public static double compueteDistance(Point2D.Double listener, Point2D.Double object)
+	{
+		return listener.distance(object);
+	}
 }
-
-
