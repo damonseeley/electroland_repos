@@ -5,8 +5,5 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/ElectrolandLightingUtils2"/>
 	<classpathentry kind="lib" path="libraries/javaosc.jar"/>
 	<classpathentry kind="lib" path="libraries/log4j-1.2.15.jar"/>
-	<classpathentry kind="lib" path="libraries/j3dcore.jar"/>
-	<classpathentry kind="lib" path="libraries/j3dutils.jar"/>
-	<classpathentry kind="lib" path="libraries/vecmath.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
