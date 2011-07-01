@@ -30,13 +30,12 @@ public class SoundController{
 	private String ipString;			// string ip address incoming
 	private int nodeID;					// incrementing sound ID
 	public float gain = 1.0f;			// default volume level
-	public Point2D.Double audioListenerPos = new Point2D.Double(10,10);
+	private Point2D.Double audioListenerPos = new Point2D.Double(10,10);
 	
 	public HashMap<Integer,SoundNode> soundNodes;
 
 	public ChannelPool pool; 			// pool of available channels.
 	
-	// --- bradley: corrected reference to get the logger of this class here.
 	private static Logger logger = Logger.getLogger(SoundController.class);
 
 	public SoundController(String ip, int maxPort, int sesPort, int maxCh, Point2D.Double listenPos) {
@@ -114,7 +113,6 @@ public class SoundController{
 		logger.info(audioListenerPos);
 		double newTheta = computeAzimuth(audioListenerPos,skaterPos);
 		double newDist = computeDistanceInMeters(audioListenerPos,skaterPos);
-		//logger.info(newTheta + ", " + newDist);
 		
 		int channelNum = soundNodes.get(id).soundChannel;
 		
@@ -259,7 +257,7 @@ public class SoundController{
 	// 2D (always assumes reference is "above" the listener)
 	public static double computeAzimuth(Point2D.Double listener, 
 										Point2D.Double object){
-
+		
 		// object in front (0) or behind user (180)
 		if (listener.x == object.x){
 			if (listener.y == object.y)
@@ -269,11 +267,11 @@ public class SoundController{
 				return listener.y < object.y ? 180 : 0;
 		}
 
-		// translate so listener is on origin
-		object.x -= listener.x;	listener.x = 0.0;
-		object.y -= listener.y;	listener.y = 0.0;
-		
-		double radians = Math.atan2(object.y, object.x);
+		// get angle from a translatd point such that listener is at the origin
+		Point2D.Double p = new Point2D.Double(object.x - listener.x, 
+												object.y - listener.y);
+
+		double radians = Math.atan2(p.y, p.x);
 		return 90 + (180/Math.PI) * radians;
 	}
 	
