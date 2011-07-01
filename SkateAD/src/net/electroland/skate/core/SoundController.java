@@ -267,11 +267,7 @@ public class SoundController{
 				return listener.y < object.y ? 180 : 0;
 		}
 
-		// get angle from a translatd point such that listener is at the origin
-		Point2D.Double p = new Point2D.Double(object.x - listener.x, 
-												object.y - listener.y);
-
-		double radians = Math.atan2(p.y, p.x);
+		double radians = Math.atan2(object.y - listener.y, object.x - listener.x);
 		return 90 + (180/Math.PI) * radians;
 	}
 	
