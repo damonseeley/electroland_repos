@@ -47,9 +47,9 @@ public class SkateMain extends Thread {
 	public static GUIPanel guiPanel;
 	int GUIWidth, GUIHeight;
 
-	int canvasHeight, canvasWidth; 
-	int viewHeight, viewWidth;
-	float viewScale;
+	public double canvasHeight, canvasWidth; 
+	public int viewHeight, viewWidth;
+	public float viewScale;
 
 	public static SoundController soundController;
 
@@ -88,6 +88,8 @@ public class SkateMain extends Thread {
 			e1.printStackTrace();
 		}
 		canvas = (ELUCanvas2D)elu.getCanvas("my2d");
+		canvasHeight = canvas.getDimensions().getHeight();
+		canvasWidth = canvas.getDimensions().getWidth();
 
 		///////// Load props and create skaters
 		try {
@@ -300,11 +302,13 @@ public class SkateMain extends Thread {
 		while (iter.hasNext()) {
 			String curSkater = iter.next();
 			String animFile = op.getRequired("skater",curSkater,"animFile");
-			String maxDim = op.getRequired("skater",curSkater,"dims");
+			String maxDim = op.getRequired("skater",curSkater,"maxDim");
 			String[] soundList = op.getOptional("skater",curSkater,"sounds").split(",");
 
+			double canvasScale = canvasWidth/Double.parseDouble(maxDim);
+			
 
-			Skater sk8r = new Skater(curSkater, animFile, maxDim, soundList);
+			Skater sk8r = new Skater(curSkater, animFile, maxDim, canvasScale, soundList);
 			skaterDefs.add(sk8r);
 		}
 		framerate = op.getRequiredInt("settings", "global", "fps");
