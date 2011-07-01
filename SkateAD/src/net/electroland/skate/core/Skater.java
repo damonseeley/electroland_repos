@@ -1,5 +1,6 @@
 package net.electroland.skate.core;
 
+import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Array;
@@ -155,9 +156,8 @@ public class Skater implements Cloneable {
 	/* start animation playback by recording the start time for later comparison */
 	public void startAnim() {
 		startTime = System.currentTimeMillis();
-		int startX = (int) getMetricPosNow()[0];
-		int startY = (int) getMetricPosNow()[1];
-		soundNodeID = SkateMain.soundController.newSoundNode(soundList[0], startX, startY, 1.0f, soundList[0]); //right now just offer the first sound
+		Point2D.Double curPos = new Point2D.Double(getMetricPosNow()[0],getMetricPosNow()[1]);
+		soundNodeID = SkateMain.soundController.newSoundNode(soundList[0], curPos, 1.0f, soundList[0]); //right now just offer the first sound
 		logger.info(name + " " + soundNodeID);
 	}
 	
@@ -173,6 +173,10 @@ public class Skater implements Cloneable {
 		//logger.info(percentComplete * 100 + "%");
 		curFrame = (int)(lengthFrames * percentComplete);
 		//logger.info(curFrame);
+		
+		//update the sound
+		Point2D.Double curPos = get2DPosNow();
+		SkateMain.soundController.updateSoundNode(soundNodeID, curPos, 1.0f);
 		
 		if (curFrame < lengthFrames){
 			animComplete = false;
@@ -204,6 +208,14 @@ public class Skater implements Cloneable {
 		pos[0] = (Double)frameData[curFrame].get("x") * cmConversion;
 		pos[1] = (Double)frameData[curFrame].get("y") * cmConversion;
 		pos[2] = (Double)frameData[curFrame].get("z") * cmConversion;
+		return pos;
+	}
+	
+	/* Return the pos value in centimeters for the current frame */
+	public Point2D.Double get2DPosNow(){
+		Point2D.Double pos = new Point2D.Double();
+		pos.x = (Double)frameData[curFrame].get("x");
+		pos.y = (Double)frameData[curFrame].get("y");
 		return pos;
 	}
 	

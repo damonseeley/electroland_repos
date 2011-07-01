@@ -27,7 +27,7 @@ public class SoundController{
 	private String ipString;			// string ip address incoming
 	private int nodeID;					// incrementing sound ID
 	public float gain = 1.0f;			// default volume level
-	double listenerX, listenerY;		// pre-computed position of the listener
+	Point2D.Double listenerPos;
 	
 	public HashMap<Integer,SoundNode> soundNodes;
 
@@ -47,20 +47,16 @@ public class SoundController{
 			System.err.println(e);
 		}
 		
-		listenerX = listenX;
-		listenerY = listenY;
-		
+		listenerPos = new Point2D.Double(listenX,listenY);
+
 		nodeID = 0;
-		
 		soundNodes  = new HashMap<Integer,SoundNode>();
-
 		pool = new ChannelPool(maxCh);
-
 		setupListener();
 
 	}
 
-	public int newSoundNode(String filename, int x, int y, float gain, String soundFile){
+	public int newSoundNode(String filename, Point2D.Double pos, float gain, String soundFile){
 		nodeID++;
 
 		//send play command as SPATF
@@ -69,7 +65,6 @@ public class SoundController{
 		newSoundArgs[1] = soundFile;
 
 		// --- bradley: replaced getNewChannel() with pool.getFirstAvailable();
-		//int newSoundChannel = getNewChannel();
 		int newSoundChannel = pool.getFirstAvailable();
 		logger.info("channel " + newSoundChannel + " assigned");
 
@@ -78,29 +73,36 @@ public class SoundController{
 		} else {
 			newSoundArgs[2] = newSoundChannel + "";
 			sendSPATF(newSoundArgs);
-			// bradley: will the recipient let us know when it is freeing up
-			// this channel?
 		}
 		
-		SoundNode soundNode = new SoundNode(nodeID,newSoundChannel, soundFile, 0);
-
-		soundNodes.put(nodeID, soundNode);
+		// update SES position
+		updateSoundNode(nodeID,pos,1.0f);
 		
+		
+		SoundNode soundNode = new SoundNode(nodeID,newSoundChannel, soundFile, 0);
+		soundNodes.put(nodeID, soundNode);
 		return nodeID;
 
 	}
 
-	public void updateSoundNode(int id, int x, int y, float gain){
+	public void updateSoundNode(int id, Point2D.Double skaterPt, float gain){
 		/*
 		 * update the location of soundNode nodeID in SES
 		 * 
 		 */
+		
+		double newTheta = computeAzimuth(listenerPos,skaterPt);
+		double newDist = computeDistance(listenerPos,skaterPt);
+		
+		/*
 		String[] newPosArgs = new String[3];
 		//Hmmmm, I think this should be a lookup of interbus channel instead
 		newPosArgs[0] = nodeID + ""; // hacky way to convert int to string?
 		newPosArgs[1] = x + "";
 		newPosArgs[2] = y + "";
-		sendSPATF(newPosArgs);
+		//sendSPATF(newPosArgs);
+		 * 
+		 */
 		
 	}
 	
