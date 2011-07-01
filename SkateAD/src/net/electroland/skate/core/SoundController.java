@@ -249,12 +249,17 @@ public class SoundController{
 		//  assuming that user on top of object is 0 degrees (or should
 		//  it throw an exception or code?)
 		if (listener.x == object.x){
-			return listener.y > object.y ? 180 : 0;
+			return listener.y < object.y ? 180 : 0;
 		}
 
-		// slope
-		double slope = object.y - listener.y / object.x - listener.x;
-		return Math.atan(slope);
+		// translate objects so listener is on origin
+		object.x -= listener.x;
+		listener.x = 0.0;
+		object.y -= listener.y;
+		listener.y = 0.0;
+		
+		double radians = Math.atan2(object.y, object.x);
+		return 90 + (180/Math.PI) * radians;
 	}
 	
 	// 2D
