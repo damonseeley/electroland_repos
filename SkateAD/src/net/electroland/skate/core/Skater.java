@@ -1,15 +1,14 @@
 package net.electroland.skate.core;
 
+import java.awt.Image;
 import java.awt.geom.Point2D;
-import java.io.File;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.util.HashMap;
 
+import javax.swing.ImageIcon;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.Util;
 
 import org.apache.log4j.Logger;
@@ -22,6 +21,7 @@ public class Skater implements Cloneable {
 	public String name;
 	public String[] soundList;
 	public int soundNodeID;
+	public SoundNode soundNode;
 
 	public String fileName;
 	public int worldDim;
@@ -32,6 +32,8 @@ public class Skater implements Cloneable {
 	public double lengthSeconds;
 	public int lengthFrames;
 	public long startTime;
+	public String sprite;
+	public Image spriteImg;
 
 	public double cmConversion = 2.54;  //incoming files should have inch units, by default do
 	public double canvasScale;
@@ -40,7 +42,7 @@ public class Skater implements Cloneable {
 	
 	private static Logger logger = Logger.getLogger(SkateMain.class);
 
-	public Skater(String skaterName, String animXML, String dim, double cScale, String[] sounds) {
+	public Skater(String skaterName, String animXML, String dim, double cScale, String sprt, String[] sounds) {
 		
 		if (skaterName != null){
 			name = skaterName;
@@ -61,6 +63,9 @@ public class Skater implements Cloneable {
 		} else {
 			soundList = sounds;
 		}
+		
+		sprite = sprt;
+		spriteImg = new ImageIcon(sprite).getImage();
 		
 		boolean debugOutput = false;
 
@@ -160,7 +165,7 @@ public class Skater implements Cloneable {
 		startTime = System.currentTimeMillis();
 		Point2D.Double curPos = new Point2D.Double(getMetricPosNow()[0],getMetricPosNow()[1]);
 		soundNodeID = SkateMain.soundController.newSoundNode(soundList[0], curPos, 1.0f); //right now just offer the first sound
-		logger.info(name + " " + soundNodeID);
+		//logger.info(name + " " + soundNodeID);
 	}
 	
 	public double percentComplete = 0.0;
@@ -179,7 +184,7 @@ public class Skater implements Cloneable {
 		if (curFrame < lengthFrames){
 			//update the sound
 			Point2D.Double curPos = getMetric2DPosNow();
-			SkateMain.soundController.updateSoundNode(soundNodeID, curPos, 1.0f);
+			SkateMain.soundController.updateSoundNodeByID(soundNodeID, curPos, 1.0f);
 			
 			animComplete = false;
 		} else {
@@ -266,11 +271,11 @@ public class Skater implements Cloneable {
 	/* -------- PLUMBING --------
 	 *  --------------------------- */
 
-
+/*
 	public static void main(String argv[]) {
 		@SuppressWarnings("unused")
 		Skater sx = new Skater(null, "180f_pos.xaf", null, 1.0, null);
-	}
+	} */
 
 	public Object clone() throws CloneNotSupportedException {
         return super.clone();
