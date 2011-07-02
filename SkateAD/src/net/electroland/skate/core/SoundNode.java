@@ -6,9 +6,9 @@ public class SoundNode {
 	public int nodeID;
 	public int soundChannel;
 	public String soundFile;
-	public int amplitude;
+	public float amplitude;
 	
-	public SoundNode(int id, int ch, String file, int amp )
+	public SoundNode(int id, int ch, String file, float amp )
 	{
 		nodeID = id;
 		soundChannel = ch;
