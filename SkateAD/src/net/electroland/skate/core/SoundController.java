@@ -74,7 +74,8 @@ public class SoundController{
 		nodeID++;
 
 		//send play command as SPATF
-		String[] newSoundArgs = new String[3];
+		String[] newSoundArgs = new String[1];
+		// Ryan's patch only takes one number (node and/or channel baked into one)
 		newSoundArgs[0] = nodeID + "";
 		newSoundArgs[1] = soundFile;
 
@@ -137,26 +138,30 @@ public class SoundController{
 					// Parse through skaterlist and update amplitude
 					if (message.getArguments()[0].toString().matches("amp")) {  //use matches instead
 						// update the amplitude value for nodeID
-						int tmpAmp = Integer.parseInt(message.getArguments()[2].toString());
+						//logger.info(message.getArguments()[2].getClass());
+						float tmpAmp = Float.parseFloat(message.getArguments()[2].toString());
 						setAmp(Integer.parseInt(message.getArguments()[1].toString()),tmpAmp);
 					}
 
-					if (message.getArguments()[0].toString().matches("bufferEnd")) {
+					if (message.getArguments()[0].toString().matches("bufEnd")) {
 						// remove the soundNode from soundNodes
 						logger.info("bufferEnd received for : " + message.getArguments()[1]);
 						removeNode(Integer.parseInt(message.getArguments()[1].toString()));
 					}
-
+					
 					/*
-					 * for checking whole messages
+					//for checking whole messages
 					for (Object i : message.getArguments()){
-						gSystem.out.print(i + " ");
+						System.out.print(i + " ");
 					}
 					System.out.println("");
-					 */
+					*/
+					
+					
 				}
 			};
-			receiver.addListener("/skateapp", listener);
+			receiver.addListener("/skateamp", listener);
+			receiver.addListener("/skaterdone", listener);
 			receiver.startListening();
 		} catch (SocketException e) {
 			// TODO Auto-generated catch block
@@ -175,7 +180,7 @@ public class SoundController{
 		}
 	}
 	
-	public void setAmp(int id, int amp){
+	public void setAmp(int id, float amp){
 		if (soundNodes.containsKey(id)) {
 			soundNodes.get(id).amplitude = amp;
 		} else {
@@ -183,7 +188,7 @@ public class SoundController{
 		}
 	}
 	
-	public int getAmp(int id) {
+	public float getAmp(int id) {
 		// do some checking here to make sure it exists?
 		return soundNodes.get(id).amplitude;
 	}
@@ -192,14 +197,17 @@ public class SoundController{
 	private void sendToMax(String args[]){
 
 		if(SkateMain.audioEnabled){
-			String argConcat = "Play";
-			for (int i = 0; i<args.length; i++) {
-				argConcat += "/" + args[i];
+			String command = "/Play";
+			String argConcat = args[0];
+			for (int i = 1; i<args.length; i++) {
+				argConcat += " " + args[i];
 			}
+			logger.info(argConcat);
 			
 			Object argToSend[] = new Object[1];
 			argToSend[0] = argConcat;
-			maxMsg = new OSCMessage(ipString, argToSend);
+			//maxMsg = new OSCMessage(ipString, argToSend);
+			maxMsg = new OSCMessage(command,argToSend);
 			try {
 				maxSender.send(maxMsg);
 			} catch (IOException e) {
@@ -211,7 +219,7 @@ public class SoundController{
 	private void sendToSES(String args[]){
 
 		if(SkateMain.audioEnabled){
-			String argConcat = "SPATF";
+			String argConcat = "SpatDIF";
 			for (int i = 0; i<args.length; i++) {
 				argConcat += "/" + args[i];
 			}
@@ -278,6 +286,6 @@ public class SoundController{
 	// 2D
 	public static double computeDistanceInMeters(Point2D.Double listener, Point2D.Double object)
 	{
-		return listener.distance(object)/1000;
+		return listener.distance(object)/100;
 	}
 }

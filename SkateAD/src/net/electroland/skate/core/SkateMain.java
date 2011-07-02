@@ -272,10 +272,10 @@ public class SkateMain extends Thread {
 
 	}
 
-	Random generator = new Random();
-	public int globalSkaterCount = 0;
+	static Random generator = new Random();
+	public static int globalSkaterCount = 0;
 
-	public void addSkater() {
+	public static void addSkater() {
 		Skater sk8r = skaterDefs.get(generator.nextInt(skaterDefs.size()));
 		try {
 			Skater sk8Ref = (Skater)sk8r.clone();
@@ -291,7 +291,7 @@ public class SkateMain extends Thread {
 	}
 
 
-	public Vector<Skater> skaterDefs = new Vector<Skater>();
+	public static Vector<Skater> skaterDefs = new Vector<Skater>();
 	public static Vector<Skater> skaters = new Vector<Skater>();
 	public static boolean audioEnabled = true;
 	public Point2D.Double audioListenerPos;
