@@ -1,7 +1,5 @@
 package net.electroland.skate.core;
 
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class SoundNode {
 
