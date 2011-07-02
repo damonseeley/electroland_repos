@@ -41,6 +41,7 @@ public class SoundController{
 	public SoundController(String ip, int maxPort, int sesPort, int maxCh, Point2D.Double listenPos) {
 		try{
 			ipString = ip;
+			logger.info("IPSTRING = " + ipString);
 			ipAddress = InetAddress.getByName(ipString);		// a bad address will throw traxess parsing errors when using send!
 			maxSender = new OSCPortOut(ipAddress, maxPort);
 		} catch (SocketException e){
@@ -74,19 +75,19 @@ public class SoundController{
 		nodeID++;
 
 		//send play command as SPATF
-		String[] newSoundArgs = new String[1];
+		String[] newSoundArgs = new String[2];
 		// Ryan's patch only takes one number (node and/or channel baked into one)
-		newSoundArgs[0] = nodeID + "";
-		newSoundArgs[1] = soundFile;
+		//newSoundArgs[0] = nodeID + "";  // all inter-app communication is now keyed to sound channel
+		newSoundArgs[0] = soundFile;
 
 		// --- bradley: replaced getNewChannel() with pool.getFirstAvailable();
-		int newSoundChannel = pool.getFirstAvailable();
+		int newSoundChannel = pool.getFirstAvailable() + 1;  /////HAAAAACKY
 		logger.info("channel " + newSoundChannel + " assigned");
 
 		if (newSoundChannel == -1){
 			logger.info("Max->SES polyphony all used up - free up bus channels");
 		} else {
-			newSoundArgs[2] = newSoundChannel + "";
+			newSoundArgs[1] = newSoundChannel + "";
 			sendToMax(newSoundArgs);
 		}
 

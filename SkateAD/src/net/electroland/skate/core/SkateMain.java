@@ -102,7 +102,7 @@ public class SkateMain extends Thread {
 		}
 
 		///////// Init sound controller and speakers
-		soundController = new SoundController("127.0.0.1",10000,7770,16,audioListenerPos);
+		soundController = new SoundController(audioIP,10000,7770,16,audioListenerPos);
 
 
 
@@ -295,6 +295,7 @@ public class SkateMain extends Thread {
 	public static Vector<Skater> skaters = new Vector<Skater>();
 	public static boolean audioEnabled = true;
 	public Point2D.Double audioListenerPos;
+	public static String audioIP;
 	
 	public void loadSkaterProps(String skatePropsFile) throws IOException, OptionException
 	{		
@@ -314,6 +315,7 @@ public class SkateMain extends Thread {
 		framerate = op.getRequiredInt("settings", "global", "fps");
 		audioEnabled = Boolean.parseBoolean(op.getRequired("settings", "global", "audio"));
 		audioListenerPos = new Point2D.Double(op.getRequiredDouble("settings", "global", "listenerX"),op.getRequiredDouble("settings", "global", "listenerY"));
+		audioIP = op.getRequired("settings", "global", "audioIP");
 		//logger.info(audioListenerPos.x + "   " + audioListenerPos.y);
 	}
 
