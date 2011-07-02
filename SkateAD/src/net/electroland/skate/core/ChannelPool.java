@@ -26,7 +26,7 @@ public class ChannelPool {
 	public ChannelPool(int channels)
 	{
 		availableChannels = new ConcurrentLinkedQueue<Integer>();
-		for (int i = 0; i < channels; i++){
+		for (int i = 1; i <= channels; i++){
 			availableChannels.add(new Integer(i));
 		}
 	}

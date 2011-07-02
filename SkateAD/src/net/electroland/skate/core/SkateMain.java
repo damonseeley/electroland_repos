@@ -179,13 +179,12 @@ public class SkateMain extends Thread {
 			// Draw a big black rect
 			gci.setColor(new Color(0,0,0));
 			gci.fillRect(0,0,ci.getWidth(),ci.getHeight());
-
-			Image dot = new ImageIcon("depends/whiteDot_trans.png").getImage();
-			int skaterWidth = 64;
 			
 			// Draw skaters, only if there are skaters
 			for (Skater sk8r : skaters)
 			{
+				
+				int skaterWidth = 64;
 
 				gci.setColor(new Color(255,255,255));
 				// Draw a square (for now) where the skater is located, scaled for xml file max dim
@@ -198,7 +197,7 @@ public class SkateMain extends Thread {
 				int skaterY = (int)(sk8r.getCanvas2DPosNow().y); //all xforms now contained within skater
 
 				// Draw the square (for now)
-				gci.drawImage(dot, skaterX-skaterWidth/2, skaterY-skaterWidth/2, skaterWidth, skaterWidth, null);
+				gci.drawImage(sk8r.spriteImg, skaterX-skaterWidth/2, skaterY-skaterWidth/2, skaterWidth, skaterWidth, null);
 			}
 			
 			
@@ -307,11 +306,14 @@ public class SkateMain extends Thread {
 			String animFile = op.getRequired("skater",curSkater,"animFile");
 			String worldDim = op.getRequired("skater",curSkater,"worldDim");
 			String[] soundList = op.getOptional("skater",curSkater,"sounds").split(",");
-
+			String sprite = op.getRequired("skater", curSkater, "sprite");
+			
 			double canvasScale = canvasWidth/Double.parseDouble(worldDim);
-			Skater sk8r = new Skater(curSkater, animFile, worldDim, canvasScale, soundList);
+			
+			Skater sk8r = new Skater(curSkater, animFile, worldDim, canvasScale, sprite, soundList);
 			skaterDefs.add(sk8r);
 		}
+		// get global params
 		framerate = op.getRequiredInt("settings", "global", "fps");
 		audioEnabled = Boolean.parseBoolean(op.getRequired("settings", "global", "audio"));
 		audioListenerPos = new Point2D.Double(op.getRequiredDouble("settings", "global", "listenerX"),op.getRequiredDouble("settings", "global", "listenerY"));
