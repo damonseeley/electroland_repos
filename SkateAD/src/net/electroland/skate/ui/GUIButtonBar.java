@@ -3,7 +3,7 @@ package net.electroland.skate.ui;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import net.electroland.skate.core.*;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -18,10 +18,11 @@ public class GUIButtonBar extends JPanel {
 		
 		JButton button;
 		
-		button = new JButton("Button 1.1");
+		button = new JButton("Add Skater");
 		// this should look a lot like add actionlisteners to the menuItems
 		button.addActionListener(new ActionListener() { // create an action listener
 			public void actionPerformed(ActionEvent e) {
+				SkateMain.addSkater();
 				//CoopLightsMain.killLights();
 				//InstallSimMain.trackingComm.outputXforms();
 				//System.out.println("button 1 pressed(and released)");
