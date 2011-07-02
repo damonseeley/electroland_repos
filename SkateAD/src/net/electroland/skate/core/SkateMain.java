@@ -157,23 +157,13 @@ public class SkateMain extends Thread {
 				}
 			}
 
-	
-	
-			//update sound locations
-			//draw skater sprites on an image at native size
-			//flop sand scale skater image to canvas-size
-			//extract a pixel array from the canvas-sized sprite image and sync with ELU
-			//draw detectors and skater info on the local canvas image post sync
-
-
-
-
+			/*
+			 * Rendering
+			 */
 
 			Dimension skatearea = canvas.getDimensions();
 
-			/*
-			 * Create a canvas image (ci) that will be synced to ELU
-			 */
+			// Create a canvas image (ci) that will be synced to ELU
 			BufferedImage ci = new BufferedImage(skatearea.width,skatearea.height,ColorSpace.TYPE_RGB);
 			Graphics2D gci = (Graphics2D) ci.getGraphics();
 			// Draw a big black rect
@@ -183,9 +173,7 @@ public class SkateMain extends Thread {
 			// Draw skaters, only if there are skaters
 			for (Skater sk8r : skaters)
 			{
-				
-				int skaterWidth = 64;
-
+				int skaterWidth = 64; // current value for sprite size, get from props instead
 				gci.setColor(new Color(255,255,255));
 				// Draw a square (for now) where the skater is located, scaled for xml file max dim
 				// and then sized to the canvas width/height

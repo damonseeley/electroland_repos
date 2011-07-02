@@ -43,7 +43,7 @@ public class SoundController{
 		try{
 			ipString = ip;
 			logger.info("IPSTRING = " + ipString);
-			ipAddress = InetAddress.getByName(ipString);		// a bad address will throw traxess parsing errors when using send!
+			ipAddress = InetAddress.getByName(ipString);		
 			maxSender = new OSCPortOut(ipAddress, maxPort);
 		} catch (SocketException e){
 			System.err.println(e);
@@ -53,7 +53,7 @@ public class SoundController{
 
 		try{
 			ipString = ip;
-			ipAddress = InetAddress.getByName(ipString);		// a bad address will throw traxess parsing errors when using send!
+			ipAddress = InetAddress.getByName(ipString);		
 			sesSender = new OSCPortOut(ipAddress, sesPort);
 		} catch (SocketException e){
 			System.err.println(e);
@@ -94,6 +94,7 @@ public class SoundController{
 		SoundNode soundNode = new SoundNode(nodeID,newSoundChannel,soundFile,0); //id, soundChannel, file, amplitude value
 		soundNodesByChannel.put(soundNode.soundChannel,soundNode);
 		soundNodesByID.put(soundNode.nodeID, soundNode);
+		logger.info("Map sizes: byID: " + soundNodesByID.size() + " byChannel: " + soundNodesByChannel.size());
 
 		// update SES position
 		updateSoundNodeByID(nodeID,pos,1.0f);
@@ -137,6 +138,45 @@ public class SoundController{
 
 	}
 
+	// deallocate the soundChannel and 
+	// ...update the location of soundNode nodeID in SES
+	// this method is called by Skater once an Animation is complete
+	// ... rather than being called from the sound system
+	public void dellocateByID(int id, float gain){
+
+		if (soundNodesByID.containsKey(id)) {
+
+			double newTheta = 0;
+			double newDist = 300; //300 meters, super far away.
+			int channelNum = -1;
+
+			/*
+			 * Have a threadsafety issue here where it's possible that the OSCListener has removed
+			 * the soundNode from both hashmaps before the skater has stopped animating (and sending update messages)
+			 */
+			try {
+				channelNum = soundNodesByID.get(id).soundChannel;
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			String[] newPosArgs = new String[4];
+			//Hmmmm, I think this should be a lookup of interbus channel instead
+			newPosArgs[0] = channelNum + ""; // hacky way to convert int to string?
+			newPosArgs[1] = newTheta + "";
+			newPosArgs[2] = 0 + "";
+			newPosArgs[3] = newDist + "";
+			sendToSES(newPosArgs);
+			
+			// call this here to remove.  If this happens before a bufEnd call it's OK.
+			removeNodeByID(id);			
+		} else {
+			logger.info("ERROR: tried to deallocate non-existent nodeID: " + id);
+		}
+
+	}
+
 
 
 
@@ -167,10 +207,12 @@ public class SoundController{
 						logger.info("bufferEnd received for channel: " + message.getArguments()[1]);
 						int channelToRemove = Integer.parseInt(message.getArguments()[1].toString());
 						//int idToRemove = soundNodesByID;
+						// should be deallocateByChannel here!!!!
+						
 						removeNodeByChannel(channelToRemove);
 					}
 
-					printOSC(message);
+					//printOSC(message);
 
 				}
 			};
@@ -190,8 +232,9 @@ public class SoundController{
 	public void removeNodeByID (int id){
 		if (soundNodesByID.containsKey(id)) {
 			pool.releaseChannel(soundNodesByID.get(id).soundChannel);
-			soundNodesByChannel.remove(soundNodesByChannel.get(id).soundChannel);
+			soundNodesByChannel.remove(soundNodesByID.get(id).soundChannel);
 			soundNodesByID.remove(id);
+			logger.info("Removed soundNode by ID: " + id);
 		} else {
 			logger.info("Tried to remove non-existent soundNode id: " + id);
 		}
@@ -202,6 +245,7 @@ public class SoundController{
 			pool.releaseChannel(soundNodesByChannel.get(ch).soundChannel);
 			soundNodesByID.remove(soundNodesByChannel.get(ch).nodeID);
 			soundNodesByChannel.remove(ch);
+			logger.info("Removed soundNode by channel: " + ch);
 		} else {
 			logger.info("Tried to remove non-existent soundNode channel: " + ch);
 		}
@@ -223,7 +267,7 @@ public class SoundController{
 		}
 	}
 
-	public float getAmp(int id) {
+	public float getAmpByID(int id) {
 		// do some checking here to make sure it exists?
 		return soundNodesByID.get(id).amplitude;
 	}
@@ -237,7 +281,7 @@ public class SoundController{
 			for (int i = 1; i<args.length; i++) {
 				argConcat += " " + args[i];
 			}
-			logger.info("SEND TO MAX: " + command + argConcat);
+			//logger.info("SEND TO MAX: " + command + argConcat);
 
 			Object argToSend[] = new Object[1];
 			argToSend[0] = argConcat;
@@ -259,7 +303,7 @@ public class SoundController{
 			for (int i = 1; i<args.length; i++) {
 				argConcat += "/" + args[i];
 			}
-			logger.info("SEND TO SES: " + command + argConcat);
+			//logger.info("SEND TO SES: " + command + argConcat);
 
 			Object argToSend[] = new Object[1];
 			argToSend[0] = argConcat;

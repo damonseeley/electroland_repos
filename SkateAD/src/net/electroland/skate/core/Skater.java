@@ -39,23 +39,23 @@ public class Skater implements Cloneable {
 	public double canvasScale;
 
 	public HashMap[] frameData;
-	
+
 	private static Logger logger = Logger.getLogger(SkateMain.class);
 
 	public Skater(String skaterName, String animXML, String dim, double cScale, String sprt, String[] sounds) {
-		
+
 		if (skaterName != null){
 			name = skaterName;
 		} else {
 			name = "generic";
 		}
-		
+
 		if (dim != null){
 			worldDim = Integer.parseInt(dim);
 		} else {
 			worldDim = 1000;
 		}
-		
+
 		canvasScale = cScale;
 
 		if (soundList != null){
@@ -63,10 +63,10 @@ public class Skater implements Cloneable {
 		} else {
 			soundList = sounds;
 		}
-		
+
 		sprite = sprt;
 		spriteImg = new ImageIcon(sprite).getImage();
-		
+
 		boolean debugOutput = false;
 
 		try {
@@ -142,7 +142,7 @@ public class Skater implements Cloneable {
 				}
 			}
 
-			
+
 			//test print
 			//logger.info(frameData[96]);
 			if (debugOutput){
@@ -154,12 +154,16 @@ public class Skater implements Cloneable {
 		}
 
 	}
-	
-	
+
+
 	/* -------- ANIMATION --------
 	 *  --------------------------- */
-	
-	
+
+	public double percentComplete = 0.0;
+	public int curFrame = 0; //array index so start at 0
+	public long elapsed;
+	public boolean animComplete;
+
 	/* start animation playback by recording the start time for later comparison */
 	public void startAnim() {
 		startTime = System.currentTimeMillis();
@@ -167,40 +171,41 @@ public class Skater implements Cloneable {
 		soundNodeID = SkateMain.soundController.newSoundNode(soundList[0], curPos, 1.0f); //right now just offer the first sound
 		//logger.info(name + " " + soundNodeID);
 	}
-	
-	public double percentComplete = 0.0;
-	public int curFrame = 0; //array index so start at 0
-	public long elapsed;
-	public boolean animComplete;
-	
+
 	/* update the play head based on the amount of time elapsed */
 	public void animate() {
-		elapsed = System.currentTimeMillis() - startTime;
-		percentComplete = (elapsed/1000.0) / lengthSeconds;
-		//logger.info(percentComplete * 100 + "%");
-		curFrame = (int)(lengthFrames * percentComplete);
-		//logger.info(curFrame);
-		
-		if (curFrame < lengthFrames){
-			//update the sound
-			Point2D.Double curPos = getMetric2DPosNow();
-			SkateMain.soundController.updateSoundNodeByID(soundNodeID, curPos, 1.0f);
-			
-			animComplete = false;
-		} else {
-			animComplete = true;
-		}
-		//logger.info(amplitude);
-	}
-	
-	
+		// prevent anything from happening if animation is already complete
+		if (!animComplete) {
+			elapsed = System.currentTimeMillis() - startTime;
+			percentComplete = (elapsed/1000.0) / lengthSeconds;
+			//logger.info(percentComplete * 100 + "%");
+			curFrame = (int)(lengthFrames * percentComplete);
+			//logger.info(curFrame);
 
-	
-	
-	
+			if (curFrame < lengthFrames){
+				//update the sound
+				Point2D.Double curPos = getMetric2DPosNow();
+				SkateMain.soundController.updateSoundNodeByID(soundNodeID, curPos, 1.0f);
+
+				animComplete = false;
+			} else {
+				SkateMain.soundController.dellocateByID(soundNodeID, 1.0f);
+				percentComplete = 1.0;
+				animComplete = true;
+			}
+		} else {
+			//do nothing until garbage collection
+		}
+	}
+
+
+
+
+
+
 	/* -------- GETTERS --------
 	 *  --------------------------- */
-	
+
 	public boolean isLive() {
 		if (animComplete){
 			return true;
@@ -208,7 +213,7 @@ public class Skater implements Cloneable {
 			return false;
 		}
 	}
-	
+
 	/*
 	 * NOTE these Pos methods ALL deal with animation files which contain 
 	 * pos data expressed in inches within the maxDim dims of the 3D scene
@@ -216,7 +221,7 @@ public class Skater implements Cloneable {
 	 *     is later 
 	 */
 
-	
+
 	/* Return the pos value in centimeters for the current frame */
 	public Point2D.Double getMetric2DPosNow(){
 		Point2D.Double pos = new Point2D.Double();
@@ -224,7 +229,7 @@ public class Skater implements Cloneable {
 		pos.y = (Double)frameData[curFrame].get("y") * cmConversion * -1;
 		return pos;
 	}
-	
+
 	/* Return the pos value in centimeters for the current frame */
 	public Point2D.Double getCanvas2DPosNow(){
 		Point2D.Double pos = new Point2D.Double();
@@ -232,10 +237,10 @@ public class Skater implements Cloneable {
 		pos.y = (Double)frameData[curFrame].get("y") * cmConversion * canvasScale * -1;
 		return pos;
 	}
-	
-	
+
+
 	// Position getters below this line have not been tested
-	
+
 	/* Return the pos value in centimeters for the current frame */
 	public double[] getMetricPosNow(){
 		double[] pos = new double[3];
@@ -244,7 +249,7 @@ public class Skater implements Cloneable {
 		pos[2] = (Double)frameData[curFrame].get("z") * cmConversion;
 		return pos;
 	}
-	
+
 	/* Return the pos value in centimeters for given frame */
 	public double[] getMetricPosAtFrame(int index){
 		double[] pos = new double[3];
@@ -264,22 +269,22 @@ public class Skater implements Cloneable {
 		pos[2] = (Double)frameData[frame].get("z") * cmConversion;
 		return pos;
 	}
-	
-	
-	
-	
+
+
+
+
 	/* -------- PLUMBING --------
 	 *  --------------------------- */
 
-/*
+	/*
 	public static void main(String argv[]) {
 		@SuppressWarnings("unused")
 		Skater sx = new Skater(null, "180f_pos.xaf", null, 1.0, null);
 	} */
 
 	public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
+		return super.clone();
+	}
 
 
 }

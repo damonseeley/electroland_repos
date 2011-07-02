@@ -3,12 +3,16 @@ package net.electroland.skate.core;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.apache.log4j.Logger;
+
 public class ChannelPool {
 
 	// this would be a more useful class if it store Channel objects that
 	// had some kind of broadly applicable information.  Otherwise, could
 	// just put a Queue in SoundController.  Or List for that matter.
 	Queue<Integer> availableChannels;
+	
+	private static Logger logger = Logger.getLogger(ChannelPool.class);
 
 	public static void main(String args[]){
 		
@@ -39,5 +43,6 @@ public class ChannelPool {
 	public void releaseChannel(int channel)
 	{
 		availableChannels.offer(channel);
+		logger.info("Pool successfully released channel " + channel);
 	}
 }
