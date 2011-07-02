@@ -2,16 +2,13 @@ package net.electroland.skate.ui;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Rectangle2D;
-import java.util.Enumeration;
+
 import javax.swing.JPanel;
 
 public class GUIPanel extends JPanel implements MouseMotionListener { // change mouselistener to mousemotionlistener to allow smooth drags

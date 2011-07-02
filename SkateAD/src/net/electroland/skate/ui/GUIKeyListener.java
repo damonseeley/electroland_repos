@@ -2,7 +2,6 @@ package net.electroland.skate.ui;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.Random;
 
 
 public class GUIKeyListener implements KeyListener {
