@@ -170,6 +170,8 @@ public class SkateMain extends Thread {
 			gci.setColor(new Color(0,0,0));
 			gci.fillRect(0,0,ci.getWidth(),ci.getHeight());
 			
+
+			
 			// Draw skaters, only if there are skaters
 			for (Skater sk8r : skaters)
 			{
@@ -186,7 +188,24 @@ public class SkateMain extends Thread {
 				int skaterY = (int)(sk8r.getCanvas2DPosNow().y); //all xforms now contained within skater
 
 				// Draw the square (for now)
-				gci.drawImage(sk8r.spriteImg, skaterX-skaterWidth/2, skaterY-skaterWidth/2, skaterWidth, skaterWidth, null);
+				//gci.drawImage(sk8r.spriteImg, skaterX-skaterWidth/2, skaterY-skaterWidth/2, skaterWidth, skaterWidth, null);
+				
+				
+				//TEMP CODE, replace with sprites in Skater
+				Image img50 = new ImageIcon("depends/whiteDot2_25.png").getImage();
+				Image img10 = new ImageIcon("depends/whiteDot2_10.png").getImage();
+				
+				gci.drawImage(img50, skaterX-skaterWidth/2, skaterY-skaterWidth/2, skaterWidth, skaterWidth, null);
+				float amp = soundControllerP5.getAmpByID(sk8r.soundNodeID);
+				float drawMax = 20.0f;
+				int drawIter = (int)(amp*drawMax);
+				logger.info(drawIter);
+				for (int i=1; i < drawIter; i++) {
+					gci.drawImage(img10, skaterX-skaterWidth/2, skaterY-skaterWidth/2, skaterWidth, skaterWidth, null);
+				}
+				
+				
+				
 			}
 			
 			
