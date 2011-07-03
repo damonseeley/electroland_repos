@@ -168,7 +168,7 @@ public class Skater implements Cloneable {
 	public void startAnim() {
 		startTime = System.currentTimeMillis();
 		Point2D.Double curPos = new Point2D.Double(getMetricPosNow()[0],getMetricPosNow()[1]);
-		soundNodeID = SkateMain.soundController.newSoundNode(soundList[0], curPos, 1.0f); //right now just offer the first sound
+		soundNodeID = SkateMain.soundControllerP5.newSoundNode(soundList[0], curPos, 1.0f); //right now just offer the first sound
 		//logger.info(name + " " + soundNodeID);
 	}
 
@@ -185,11 +185,11 @@ public class Skater implements Cloneable {
 			if (curFrame < lengthFrames){
 				//update the sound
 				Point2D.Double curPos = getMetric2DPosNow();
-				SkateMain.soundController.updateSoundNodeByID(soundNodeID, curPos, 1.0f);
+				SkateMain.soundControllerP5.updateSoundNodeByID(soundNodeID, curPos, 1.0f);
 
 				animComplete = false;
 			} else {
-				SkateMain.soundController.dellocateByID(soundNodeID, 1.0f);
+				SkateMain.soundControllerP5.dellocateByID(soundNodeID, 1.0f);
 				percentComplete = 1.0;
 				animComplete = true;
 			}
