@@ -43,6 +43,6 @@ public class ChannelPool {
 	public void releaseChannel(int channel)
 	{
 		availableChannels.offer(channel);
-		logger.info("Pool successfully released channel " + channel);
+		logger.info("POOL: successfully released channel " + channel);
 	}
 }

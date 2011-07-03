@@ -87,7 +87,7 @@ public class SoundControllerP5 {
 
 		// Ryan's patch only takes one number (node and/or channel baked into one)
 		int newSoundChannel = pool.getFirstAvailable();
-		logger.info("channel " + newSoundChannel + " assigned");
+		logger.info("CHANNEL " + newSoundChannel + " assigned");
 		if (newSoundChannel == -1){
 			logger.info("Max->SES polyphony all used up - free up bus channels");
 		} else {
@@ -98,7 +98,7 @@ public class SoundControllerP5 {
 		SoundNode soundNode = new SoundNode(nodeID,newSoundChannel,soundFile,0); //id, soundChannel, file, amplitude value
 		soundNodesByChannel.put(soundNode.soundChannel,soundNode);
 		soundNodesByID.put(soundNode.nodeID, soundNode);
-		logger.info("Map sizes: byID: " + soundNodesByID.size() + " byChannel: " + soundNodesByChannel.size());
+		//logger.info("Map sizes: byID: " + soundNodesByID.size() + " byChannel: " + soundNodesByChannel.size());
 
 		// update SES position
 		updateSoundNodeByID(nodeID,pos,1.0f);
@@ -127,7 +127,7 @@ public class SoundControllerP5 {
 
 			sendToSES(channelNum, newTheta, newDist);
 		} else {
-			logger.info("ERROR: tried to update non-existent nodeID: " + id + "  Probably thread-safe issue");
+			logger.info("ERROR: Tried to update non-existent nodeID: " + id);
 		}
 
 	}
@@ -177,8 +177,9 @@ public class SoundControllerP5 {
 		for (Object o : msg.arguments()){
 			msgArgs += o + " ";
 		}
-		logger.info(msgArgs);
-		/*
+		logger.info("INCOMING OSC = " + msgArgs);
+		
+		
 		if (msg.arguments()[0].toString().matches("amp")) {  //use matches instead
 			// update the amplitude value for nodeID
 			//logger.info(message.getArguments()[2].getClass());
@@ -187,58 +188,30 @@ public class SoundControllerP5 {
 
 			setAmpByChannel(channelToUpdate,amp);
 		}
-		*/
+		
+		if (msg.arguments()[0].toString().matches("bufEnd")) {  //use matches instead
+			// update the amplitude value for nodeID
+			//logger.info(message.getArguments()[2].getClass());
+			int channelEnded = Integer.parseInt(msg.arguments()[1].toString());
+
+			removeNodeByChannel(channelEnded);
+		}
+		
 	}
 	
+
 	/*
-	private void setupListener() {
-		OSCPortIn receiver;
-		try {
-			receiver = new OSCPortIn(11000);
-			OSCListener listener = new OSCListener() {
-				public void acceptMessage(java.util.Date time, OSCMessage message) {
-					// Parse through skaterlist and update amplitude
-					if (message.getArguments()[0].toString().matches("amp")) {  //use matches instead
-						// update the amplitude value for nodeID
-						//logger.info(message.getArguments()[2].getClass());
-						int channelToUpdate = Integer.parseInt(message.getArguments()[1].toString());
-						float amp = Float.parseFloat(message.getArguments()[2].toString());
-
-						setAmpByChannel(channelToUpdate,amp);
-					}
-					if (message.getArguments()[0].toString().matches("bufEnd")) {
-						// remove the soundNode from soundNodes
-						logger.info("bufferEnd received for channel: " + message.getArguments()[1]);
-						int channelToRemove = Integer.parseInt(message.getArguments()[1].toString());
-						//int idToRemove = soundNodesByID;
-						// should be deallocateByChannel here!!!!
-
-						removeNodeByChannel(channelToRemove);
-					}
-					//printOSC(message);
-				}
-			};
-			receiver.addListener("/skateamp", listener);
-			receiver.addListener("/skaterdone", listener);
-			receiver.startListening();
-		} catch (SocketException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	*/
-
-
-
-
+	 * Node and node map modification methods
+	 */
+	
 	private void removeNodeByID (int id){
 		if (soundNodesByID.containsKey(id)) {
 			pool.releaseChannel(soundNodesByID.get(id).soundChannel);
 			soundNodesByChannel.remove(soundNodesByID.get(id).soundChannel);
 			soundNodesByID.remove(id);
-			logger.info("Removed soundNode by ID: " + id);
+			logger.info("REMOVED soundNode by ID: " + id);
 		} else {
-			logger.info("Tried to remove non-existent soundNode id: " + id);
+			logger.info("ERROR: Tried to remove non-existent soundNode id: " + id);
 		}
 	}
 
@@ -249,7 +222,7 @@ public class SoundControllerP5 {
 			soundNodesByChannel.remove(ch);
 			logger.info("Removed soundNode by channel: " + ch);
 		} else {
-			logger.info("Tried to remove non-existent soundNode channel: " + ch);
+			logger.info("ERROR: Tried to remove non-existent soundNode channel: " + ch);
 		}
 	}
 
@@ -257,7 +230,7 @@ public class SoundControllerP5 {
 		if (soundNodesByID.containsKey(id)) {
 			soundNodesByID.get(id).amplitude = amp;
 		} else {
-			logger.info("Tried to set amp value for non-existent soundNodeByID: " + id);
+			logger.info("ERROR: Tried to set amp value for non-existent soundNodeByID: " + id);
 		}
 	}
 
@@ -265,7 +238,7 @@ public class SoundControllerP5 {
 		if (soundNodesByChannel.containsKey(ch)) {
 			soundNodesByChannel.get(ch).amplitude = amp;
 		} else {
-			logger.info("Tried to set amp value for non-existent soundNodeByChannel: " + ch);
+			logger.info("ERROR: Tried to set amp value for non-existent soundNodeByChannel: " + ch);
 		}
 	}
 
@@ -301,9 +274,7 @@ public class SoundControllerP5 {
 			oscMsg.add((float)roundTwoDec(dist));
 			
 			oscP5SES.send(oscMsg,sesBroadcastLoc);
-			
-			//logger.info("SEND TO MAX: " + oscMsg.address() + " " + oscMsg.arguments()[0] + " " + oscMsg.arguments()[1]);
-			//logger.info("SEND TO SES: " + oscMsg.toString());
+
 		}
 	}
 	
