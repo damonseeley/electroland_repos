@@ -52,7 +52,7 @@ public class SkateMain extends Thread {
 	public int viewHeight, viewWidth;
 	public float viewScale;
 
-	public static SoundController soundController;
+	public static SoundControllerP5 soundControllerP5;
 
 	//Thread stuff
 	public static boolean isRunning;
@@ -102,7 +102,7 @@ public class SkateMain extends Thread {
 		}
 
 		///////// Init sound controller and speakers
-		soundController = new SoundController(audioIP,10000,7770,16,audioListenerPos);
+		soundControllerP5 = new SoundControllerP5(audioIP,10000,7770,16,audioListenerPos);
 
 
 
@@ -111,7 +111,7 @@ public class SkateMain extends Thread {
 
 
 		// TEMP for now just add one skater
-		addSkater();
+		//addSkater();
 
 
 		/////////////// THREAD STUFF
