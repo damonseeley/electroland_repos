@@ -49,7 +49,7 @@ public class SoundControllerP5 {
 	public SoundControllerP5(String ip, int maxPort, int sesPort, int maxCh, Point2D.Double listenPos) {
 
 		ipString = ip; // same IP for both objects since max and ses have to exist on one box
-		logger.info("IPSTRING = " + ipString);
+		//logger.info("IPSTRING = " + ipString);
 		try {
 			ipAddress = InetAddress.getByName(ipString);
 		} catch (UnknownHostException e) {
@@ -57,11 +57,13 @@ public class SoundControllerP5 {
 			e.printStackTrace();
 		}
 		
+		//logger.info("IP STRING for OSCP5: " + ipString);
+		
 		oscP5Max = new OscP5(this,11000);
-		maxBroadcastLoc = new NetAddress("127.0.0.1", 10000);
+		maxBroadcastLoc = new NetAddress(ipString, 10000);
 
 		oscP5SES = new OscP5(this,19999); //listen on some arbitrary port here
-		sesBroadcastLoc = new NetAddress("127.0.0.1", 7770);
+		sesBroadcastLoc = new NetAddress(ipString, 7770);
 
 		audioListenerPos.x = listenPos.x;
 		audioListenerPos.y = listenPos.y;
