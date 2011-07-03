@@ -132,8 +132,8 @@ public class SkateMain extends Thread {
 			/*
 			 * Determine whether to add or subtract skaters
 			 */
-			if (Math.random() < .02 ){
-				//addSkater();
+			if (Math.random() < .01 ){
+				addRandomSkater();
 			}
 
 			
@@ -173,7 +173,8 @@ public class SkateMain extends Thread {
 			// Draw skaters, only if there are skaters
 			for (Skater sk8r : skaters)
 			{
-				int skaterWidth = 64; // current value for sprite size, get from props instead
+				int skaterWidth = 128; // current value for sprite size, get from props instead
+				
 				gci.setColor(new Color(255,255,255));
 				// Draw a square (for now) where the skater is located, scaled for xml file max dim
 				// and then sized to the canvas width/height
@@ -240,10 +241,7 @@ public class SkateMain extends Thread {
 			}
 			
 			
-			
 
-			
-			
 			//draw the final image into the jPanel GUI
 			Graphics gp = guiPanel.getGraphics();
 			gp.drawImage(ci, 0, 0, null);
@@ -262,7 +260,7 @@ public class SkateMain extends Thread {
 	static Random generator = new Random();
 	public static int globalSkaterCount = 0;
 
-	public static void addSkater() {
+	public static void addRandomSkater() {
 		Skater sk8r = skaterDefs.get(generator.nextInt(skaterDefs.size()));
 		try {
 			Skater sk8Ref = (Skater)sk8r.clone();
