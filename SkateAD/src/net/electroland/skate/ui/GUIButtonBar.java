@@ -22,7 +22,7 @@ public class GUIButtonBar extends JPanel {
 		// this should look a lot like add actionlisteners to the menuItems
 		button.addActionListener(new ActionListener() { // create an action listener
 			public void actionPerformed(ActionEvent e) {
-				SkateMain.addSkater();
+				SkateMain.addRandomSkater();
 				//CoopLightsMain.killLights();
 				//InstallSimMain.trackingComm.outputXforms();
 				//System.out.println("button 1 pressed(and released)");

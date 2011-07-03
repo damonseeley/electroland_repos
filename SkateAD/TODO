@@ -1,9 +1,15 @@
 SkateAD To Do
 
-Write sound controller code
-Or just compute vector of sprite and orient top-forward
-Get scale from 3D file - maybe
-Add skater spawn triggers to button listeners, random, test
+speaker list as az and dist
+handle incoming amp and bufEnd   amp is float 0-1.0f
+draw sprites with amp value
+vectored sprites
+animate nuance
+add 3DS to laptop
+refactor maps in soundController to something better
+
+
+compute vector of sprite and orient top-forward
 Create type for static sound in space, define in props
 
-Tell bradley about bug loading more than one settings.global objects in properties
+
