@@ -296,9 +296,9 @@ public class SoundControllerP5 {
 		if(SkateMain.audioEnabled){
 			// hacky custom string for SES
 			OscMessage oscMsg = new OscMessage("/SpatDIF/source/" + ch +"/aed");
-			oscMsg.add((float)az);
+			oscMsg.add((float)roundTwoDec(az));
 			oscMsg.add(0.0f);
-			oscMsg.add((float)dist);
+			oscMsg.add((float)roundTwoDec(dist));
 			
 			oscP5SES.send(oscMsg,sesBroadcastLoc);
 			
