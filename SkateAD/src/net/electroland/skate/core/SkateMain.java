@@ -107,7 +107,7 @@ public class SkateMain extends Thread {
 
 
 		///////// Start ELU Syncing
-		//elu.start();  //not used in this project because we are calling sync on demand
+		elu.start();  //not used in this project because we are calling sync on demand
 
 
 		// TEMP for now just add one skater
