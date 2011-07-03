@@ -1,3 +1,4 @@
+package net.electroland.skate.core;
 //
 //
 //package net.electroland.skate.core;

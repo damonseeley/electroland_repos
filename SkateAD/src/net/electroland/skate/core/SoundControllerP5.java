@@ -7,6 +7,7 @@ package net.electroland.skate.core;
 import java.awt.geom.Point2D;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 
 import netP5.NetAddress;
@@ -304,6 +305,12 @@ public class SoundControllerP5 {
 			//logger.info("SEND TO MAX: " + oscMsg.address() + " " + oscMsg.arguments()[0] + " " + oscMsg.arguments()[1]);
 			//logger.info("SEND TO SES: " + oscMsg.toString());
 		}
+	}
+	
+	//Rounding
+	private double roundTwoDec(double d) {
+		DecimalFormat twoDForm = new DecimalFormat("#.##");
+		return Double.valueOf(twoDForm.format(d));
 	}
 
 	
