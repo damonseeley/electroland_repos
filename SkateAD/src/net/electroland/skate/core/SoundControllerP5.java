@@ -281,7 +281,7 @@ public class SoundControllerP5 {
 			oscMsg.add((float)roundTwoDec(dist));
 
 			oscP5SES.send(oscMsg,sesBroadcastLoc);
-			logger.info("SEND TO SES: " + oscMsg.address() + " " + oscMsg.arguments()[0] + " " + oscMsg.arguments()[1] + " " + oscMsg.arguments()[2]);
+			//logger.info("SEND TO SES: " + oscMsg.address() + " " + oscMsg.arguments()[0] + " " + oscMsg.arguments()[1] + " " + oscMsg.arguments()[2]);
 
 		}
 	}
