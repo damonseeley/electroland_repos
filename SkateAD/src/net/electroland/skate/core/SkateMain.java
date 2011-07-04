@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Shape;
 import java.awt.color.ColorSpace;
 import java.awt.geom.Point2D;
@@ -15,8 +14,7 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
-
-import javax.swing.ImageIcon;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import net.electroland.skate.ui.GUIFrame;
 import net.electroland.skate.ui.GUIPanel;
@@ -133,7 +131,7 @@ public class SkateMain extends Thread {
 			 * Determine whether to add or subtract skaters
 			 */
 			if (Math.random() < .01 ){
-				addRandomSkater();
+				//addRandomSkater();
 			}
 
 			
@@ -153,7 +151,8 @@ public class SkateMain extends Thread {
 			while (s.hasNext()){
 				Skater sk8r = s.next();
 				if (sk8r.animComplete) {
-					s.remove();
+					skaters.remove(sk8r);
+					//s.remove();
 				}
 			}
 
@@ -284,7 +283,7 @@ public class SkateMain extends Thread {
 		Skater sk8r = skaterDefs.get(generator.nextInt(skaterDefs.size()));
 		try {
 			Skater sk8Ref = (Skater)sk8r.clone();
-			skaters.add(sk8Ref);
+			skaters.add(sk8Ref);				
 			globalSkaterCount++;
 			sk8Ref.startAnim();
 			sk8Ref.name += globalSkaterCount;
@@ -297,7 +296,7 @@ public class SkateMain extends Thread {
 
 
 	public static Vector<Skater> skaterDefs = new Vector<Skater>();
-	public static Vector<Skater> skaters = new Vector<Skater>();
+	public static CopyOnWriteArrayList<Skater> skaters = new CopyOnWriteArrayList<Skater>();
 	public static boolean audioEnabled = true;
 	public Point2D.Double audioListenerPos;
 	public static String audioIP;
