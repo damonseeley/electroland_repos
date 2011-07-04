@@ -83,7 +83,7 @@ public class SoundControllerP5 {
 	 * REMOTELY CALLED METHODS
 	 */
 
-	public int newSoundNode(String soundFile, Point2D.Double pos, float gain){
+	public int newSoundNode(String soundFile, Point2D.Double pos, float gain, boolean globalSnd){
 		nodeID++;
 
 		// Ryan's patch only takes one number (node and/or channel baked into one)
@@ -91,8 +91,10 @@ public class SoundControllerP5 {
 		logger.info("CHANNEL " + newSoundChannel + " assigned");
 		if (newSoundChannel == -1){
 			logger.info("Max->SES polyphony all used up - free up bus channels");
+		} else if (!globalSnd) {
+			sendMaxPlay(soundFile, newSoundChannel);
 		} else {
-			sendToMax(soundFile, newSoundChannel);
+			sendMaxGlobal(soundFile);
 		}
 
 		//SUPER HACKY WAY OF KEEPING TRACK OF EVERYTHING RIGHT NOW
@@ -157,6 +159,9 @@ public class SoundControllerP5 {
 			}
 
 			sendToSES(channelNum, newTheta, newDist);
+			// actually remove the buffer in Max, hopefully with a ramp
+			int chToKill = soundNodesByID.get(id).soundChannel;
+			sendMaxKill(chToKill);
 
 			// call this here to remove.  If this happens before a bufEnd call it's OK.
 			removeNodeByID(id);			
@@ -258,7 +263,7 @@ public class SoundControllerP5 {
 	}
 
 
-	private void sendToMax(String soundFile, int ch){
+	private void sendMaxPlay(String soundFile, int ch){
 
 		if(SkateMain.audioEnabled){
 			OscMessage oscMsg = new OscMessage("/Play");
@@ -266,6 +271,25 @@ public class SoundControllerP5 {
 			oscMsg.add(ch);
 			oscP5Max.send(oscMsg,maxBroadcastLoc);
 			logger.info("SEND TO MAX: " + oscMsg.address() + " " + oscMsg.arguments()[0] + " " + oscMsg.arguments()[1]);
+		}
+	}
+	
+	private void sendMaxKill(int ch){
+
+		if(SkateMain.audioEnabled){
+			OscMessage oscMsg = new OscMessage("/Kill");
+			oscMsg.add(ch);
+			oscP5Max.send(oscMsg,maxBroadcastLoc);
+			logger.info("SEND TO MAX: " + oscMsg.address() + " " + oscMsg.arguments()[0]);
+		}
+	}
+	
+	private void sendMaxGlobal(String soundFile){
+
+		if(SkateMain.audioEnabled){
+			OscMessage oscMsg = new OscMessage("/Global");
+			oscP5Max.send(oscMsg,maxBroadcastLoc);
+			logger.info("SEND TO MAX: " + oscMsg.address() + " " + oscMsg.arguments()[0]);
 		}
 	}
 
