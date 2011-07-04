@@ -22,19 +22,19 @@ public class SoundControllerP5 {
 
 	private InetAddress ipAddress;		// machine running max/msp
 	private String ipString;			// string ip address incoming
-	
+
 	//OSCP5 stuff
 	private OscP5 oscP5Max;
 	private OscP5 oscP5SES;
 	private NetAddress maxBroadcastLoc;
 	private NetAddress sesBroadcastLoc;
-	
+
 	/*
 	private OSCPortOut maxSender;			// osc out
 	private OSCPortOut sesSender;			// osc out to SESs
 	private OSCMessage maxMsg;				// osc packet
 	private OSCMessage sesMsg;				// osc packet
-	*/
+	 */
 
 	private int nodeID;					// incrementing sound ID
 	public float gain = 1.0f;			// default volume level
@@ -57,9 +57,9 @@ public class SoundControllerP5 {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		//logger.info("IP STRING for OSCP5: " + ipString);
-		
+
 		oscP5Max = new OscP5(this,11000);
 		maxBroadcastLoc = new NetAddress(ipString, 10000);
 
@@ -77,7 +77,7 @@ public class SoundControllerP5 {
 		//setupListener();
 
 	}
-	
+
 	/*
 	 * REMOTELY CALLED METHODS
 	 */
@@ -127,7 +127,7 @@ public class SoundControllerP5 {
 
 			sendToSES(channelNum, newTheta, newDist);
 		} else {
-			logger.info("ERROR: Tried to update non-existent nodeID: " + id);
+			//logger.info("ERROR: Tried to update non-existent nodeID: " + id);
 		}
 
 	}
@@ -154,13 +154,13 @@ public class SoundControllerP5 {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 			sendToSES(channelNum, newTheta, newDist);
 
 			// call this here to remove.  If this happens before a bufEnd call it's OK.
 			removeNodeByID(id);			
 		} else {
-			logger.info("ERROR: tried to deallocate non-existent nodeID: " + id);
+			//logger.info("ERROR: tried to deallocate non-existent nodeID: " + id);
 		}
 
 	}
@@ -169,17 +169,17 @@ public class SoundControllerP5 {
 	/*
 	 * setup listener for incoming msg
 	 */
-	
+
 	/* incoming osc message are forwarded to the oscEvent method. */
 	void oscEvent(OscMessage msg) {
-		
+
 		String msgArgs = "";
 		for (Object o : msg.arguments()){
 			msgArgs += o + " ";
 		}
-		logger.info("INCOMING OSC = " + msgArgs);
-		
-		
+		//logger.info("INCOMING OSC = " + msgArgs);
+
+
 		if (msg.arguments()[0].toString().matches("amp")) {  //use matches instead
 			// update the amplitude value for nodeID
 			//logger.info(message.getArguments()[2].getClass());
@@ -188,7 +188,7 @@ public class SoundControllerP5 {
 
 			setAmpByChannel(channelToUpdate,amp);
 		}
-		
+
 		if (msg.arguments()[0].toString().matches("bufEnd")) {  //use matches instead
 			// update the amplitude value for nodeID
 			//logger.info(message.getArguments()[2].getClass());
@@ -196,22 +196,22 @@ public class SoundControllerP5 {
 
 			removeNodeByChannel(channelEnded);
 		}
-		
+
 	}
-	
+
 
 	/*
 	 * Node and node map modification methods
 	 */
-	
+
 	private void removeNodeByID (int id){
 		if (soundNodesByID.containsKey(id)) {
 			pool.releaseChannel(soundNodesByID.get(id).soundChannel);
 			soundNodesByChannel.remove(soundNodesByID.get(id).soundChannel);
 			soundNodesByID.remove(id);
-			logger.info("REMOVED soundNode by ID: " + id);
+			//logger.info("REMOVED soundNode by ID: " + id);
 		} else {
-			logger.info("ERROR: Tried to remove non-existent soundNode id: " + id);
+			//logger.info("ERROR: Tried to remove non-existent soundNode id: " + id);
 		}
 	}
 
@@ -222,7 +222,7 @@ public class SoundControllerP5 {
 			soundNodesByChannel.remove(ch);
 			logger.info("Removed soundNode by channel: " + ch);
 		} else {
-			logger.info("ERROR: Tried to remove non-existent soundNode channel: " + ch);
+			//logger.info("ERROR: Tried to remove non-existent soundNode channel: " + ch);
 		}
 	}
 
@@ -230,7 +230,7 @@ public class SoundControllerP5 {
 		if (soundNodesByID.containsKey(id)) {
 			soundNodesByID.get(id).amplitude = amp;
 		} else {
-			logger.info("ERROR: Tried to set amp value for non-existent soundNodeByID: " + id);
+			//logger.info("ERROR: Tried to set amp value for non-existent soundNodeByID: " + id);
 		}
 	}
 
@@ -238,7 +238,7 @@ public class SoundControllerP5 {
 		if (soundNodesByChannel.containsKey(ch)) {
 			soundNodesByChannel.get(ch).amplitude = amp;
 		} else {
-			logger.info("ERROR: Tried to set amp value for non-existent soundNodeByChannel: " + ch);
+			//logger.info("ERROR: Tried to set amp value for non-existent soundNodeByChannel: " + ch);
 		}
 	}
 
@@ -268,23 +268,31 @@ public class SoundControllerP5 {
 
 		if(SkateMain.audioEnabled){
 			// hacky custom string for SES
+			/*
 			OscMessage oscMsg = new OscMessage("/SpatDIF/source/" + ch +"/aed");
 			oscMsg.add((float)roundTwoDec(az));
 			oscMsg.add(0.0f);
 			oscMsg.add((float)roundTwoDec(dist));
-			
+			 */
+
+			OscMessage oscMsg = new OscMessage("/SES");
+			oscMsg.add(ch);
+			oscMsg.add((float)roundTwoDec(az));
+			oscMsg.add((float)roundTwoDec(dist));
+
 			oscP5SES.send(oscMsg,sesBroadcastLoc);
+			logger.info("SEND TO SES: " + oscMsg.address() + " " + oscMsg.arguments()[0] + " " + oscMsg.arguments()[1] + " " + oscMsg.arguments()[2]);
 
 		}
 	}
-	
+
 	//Rounding
 	private double roundTwoDec(double d) {
 		DecimalFormat twoDForm = new DecimalFormat("#.##");
 		return Double.valueOf(twoDForm.format(d));
 	}
 
-	
+
 
 	// 2D (always assumes reference is "above" the listener)
 	public static double computeAzimuth(Point2D.Double listener, 

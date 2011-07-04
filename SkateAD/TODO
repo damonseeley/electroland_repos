@@ -1,14 +1,26 @@
 SkateAD To Do
 
-speaker list as az and dist
-handle incoming amp and bufEnd amp is float 0-1.0f
-draw sprites with amp value
+WITH RYAN:
+amp values? -1 to 1 and relative power?
+static noise etc with SES?
+master gain for SES crank it up
+subwoofer setup in max
+Autosetup for all apps
+Static sound in space - Max element instead?
+
+
+
+SKATE APP
+create some kind of show sequencer
+associate sprites, scale, etc with each skater
 vectored sprites
+
+handle incoming amp and bufEnd amp is float 0-1.0f
+draw sprites with amp value - in progress
 animate nuance
 refactor maps in soundController to something better
 add speed param to skaters to playback at faster/slower speed
+supercollider?
 
-compute vector of sprite and orient top-forward
-Create type for static sound in space, define in props
 
 
