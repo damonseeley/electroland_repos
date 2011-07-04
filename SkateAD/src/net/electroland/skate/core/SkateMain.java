@@ -133,7 +133,7 @@ public class SkateMain extends Thread {
 			 * Determine whether to add or subtract skaters
 			 */
 			if (Math.random() < .01 ){
-				addRandomSkater();
+				//addRandomSkater();
 			}
 
 			
@@ -188,9 +188,9 @@ public class SkateMain extends Thread {
 				int skaterY = (int)(sk8r.getCanvas2DPosNow().y); //all xforms now contained within skater
 
 				// Draw the square (for now)
-				//gci.drawImage(sk8r.spriteImg, skaterX-skaterWidth/2, skaterY-skaterWidth/2, skaterWidth, skaterWidth, null);
+				gci.drawImage(sk8r.spriteImg, skaterX-skaterWidth/2, skaterY-skaterWidth/2, skaterWidth, skaterWidth, null);
 				
-				
+				/*
 				//TEMP CODE, replace with sprites in Skater
 				Image img50 = new ImageIcon("depends/whiteDot2_25.png").getImage();
 				Image img10 = new ImageIcon("depends/whiteDot2_10.png").getImage();
@@ -199,10 +199,11 @@ public class SkateMain extends Thread {
 				float amp = soundControllerP5.getAmpByID(sk8r.soundNodeID);
 				float drawMax = 20.0f;
 				int drawIter = (int)(amp*drawMax);
-				logger.info(drawIter);
+				//logger.info(drawIter);
 				for (int i=1; i < drawIter; i++) {
 					gci.drawImage(img10, skaterX-skaterWidth/2, skaterY-skaterWidth/2, skaterWidth, skaterWidth, null);
 				}
+				*/
 				
 				
 				
