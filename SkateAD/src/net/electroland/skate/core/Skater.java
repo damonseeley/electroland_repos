@@ -34,6 +34,7 @@ public class Skater implements Cloneable {
 	public long startTime;
 	public String sprite;
 	public Image spriteImg;
+	public int spriteSize;
 
 	public double cmConversion = 2.54;  //incoming files should have inch units, by default do
 	public double canvasScale;
@@ -42,7 +43,7 @@ public class Skater implements Cloneable {
 
 	private static Logger logger = Logger.getLogger(SkateMain.class);
 
-	public Skater(String skaterName, String animXML, String dim, double cScale, String sprt, String[] sounds) {
+	public Skater(String skaterName, String animXML, String dim, double cScale, String sprt, int sprtSize, String[] sounds) {
 
 		if (skaterName != null){
 			name = skaterName;
@@ -66,6 +67,7 @@ public class Skater implements Cloneable {
 
 		sprite = sprt;
 		spriteImg = new ImageIcon(sprite).getImage();
+		spriteSize = sprtSize;
 
 		boolean debugOutput = false;
 

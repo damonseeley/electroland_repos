@@ -175,7 +175,7 @@ public class SkateMain extends Thread {
 			// Draw skaters, only if there are skaters
 			for (Skater sk8r : skaters)
 			{
-				int skaterWidth = 128; // current value for sprite size, get from props instead
+				int skaterWidth = sk8r.spriteSize; // current value for sprite size, get from props instead
 				
 				gci.setColor(new Color(255,255,255));
 				// Draw a square (for now) where the skater is located, scaled for xml file max dim
@@ -310,10 +310,12 @@ public class SkateMain extends Thread {
 			String worldDim = op.getRequired("skater",curSkater,"worldDim");
 			String[] soundList = op.getOptional("skater",curSkater,"sounds").split(",");
 			String sprite = op.getRequired("skater", curSkater, "sprite");
+			int spriteSize = op.getRequiredInt("skater", curSkater, "spriteSize");
+
 			
 			double canvasScale = canvasWidth/Double.parseDouble(worldDim);
 			
-			Skater sk8r = new Skater(curSkater, animFile, worldDim, canvasScale, sprite, soundList);
+			Skater sk8r = new Skater(curSkater, animFile, worldDim, canvasScale, sprite, spriteSize, soundList);
 			skaterDefs.add(sk8r);
 		}
 		// get global params
