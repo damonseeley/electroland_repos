@@ -133,7 +133,7 @@ public class SkateMain extends Thread {
 			 * Determine whether to add or subtract skaters
 			 */
 			if (Math.random() < .01 ){
-				//addRandomSkater();
+				addRandomSkater();
 			}
 
 			

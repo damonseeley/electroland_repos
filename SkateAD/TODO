@@ -1,12 +1,16 @@
 SkateAD To Do
 
-WITH RYAN:
-amp values? -1 to 1 and relative power?
-static noise etc with SES?
-master gain for SES crank it up
+AUDIO:
 subwoofer setup in max
+amp values? -1 to 1 and relative power?
+killBuffer command from Java to Max
+	/Kill ch
+global sound (Max)
+	/Global soundfile.wav   (only one of these at a time)
+static spatial sound
+
+Cuemix
 Autosetup for all apps
-Static sound in space - Max element instead?
 
 
 
@@ -14,12 +18,25 @@ SKATE APP
 create some kind of show sequencer
 associate sprites, scale, etc with each skater
 vectored sprites
-
-handle incoming amp and bufEnd amp is float 0-1.0f
 draw sprites with amp value - in progress
-animate nuance
+handle incoming amp and bufEnd amp is float 0-1.0f
 refactor maps in soundController to something better
 add speed param to skaters to playback at faster/slower speed
+
+
+DESIGN
+new shows: 
+	big bar
+	massive wave
+	allon
+
+sound design
+animate nuance
+
+
+
+
+OTHER
 supercollider?
 
 
