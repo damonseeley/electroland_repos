@@ -193,20 +193,17 @@ public class SkateMain extends Thread {
 				// AMPLITUDE BASED DRAWING
 				// this code is hacky, need a way to draw the image once with an alpha value!!!
 				
+				// draw the base sprite
 				gci.drawImage(sk8r.spriteImg, skaterX-skaterWidth/2, skaterY-skaterWidth/2, skaterWidth, skaterWidth, null);
 				float amp = soundControllerP5.getAmpByID(sk8r.soundNodeID);
-				//logger.info("AMP for skater " + sk8r.name + " = " + amp);
 				// determine how many versions of the sprite to draw
 				float drawMax = 5.0f;
 				int drawIter = (int)(amp*drawMax);
-				//logger.info(drawIter);
+				// draw the sprite drawIter more times
 				for (int i=1; i < drawIter; i++) {
 					gci.drawImage(sk8r.spriteImg, skaterX-skaterWidth/2, skaterY-skaterWidth/2, skaterWidth, skaterWidth, null);
 				}
-				
-				
-				
-				
+
 			}
 			
 			
