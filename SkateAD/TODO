@@ -15,13 +15,17 @@ Autosetup for all apps
 
 
 SKATE APP
+
 finish all amp value stuff
+
 create some kind of show sequencer
+
 associate sprites, scale, etc with each skater
+
 vectored sprites
-draw sprites with amp value - in progress
-handle incoming amp and bufEnd amp is float 0-1.0f
+
 refactor maps in soundController to something better
+
 add speed param to skaters to playback at faster/slower speed
 
 
