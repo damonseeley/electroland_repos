@@ -74,6 +74,7 @@ public class SoundControllerP5 {
 		soundNodesByID  = new HashMap<Integer,SoundNode>();
 		soundNodesByChannel  = new HashMap<Integer,SoundNode>();
 		pool = new ChannelPool(maxCh);
+		
 		//setupListener();
 
 	}
@@ -244,23 +245,27 @@ public class SoundControllerP5 {
 
 	public float getAmpByID(int id) {
 		// do some checking here to make sure it exists?
-		return soundNodesByID.get(id).amplitude;
+		if (soundNodesByID.containsKey(id)) {
+			// normalize to -0.2 - 0.2
+			float normalizedAmp = (soundNodesByID.get(id).amplitude + 0.2f)/0.4f;
+			if (normalizedAmp < 0.0f){
+				normalizedAmp = 0.0f;
+			}
+			return normalizedAmp;
+		} else {
+			return 0;
+		}
 	}
 
 
 	private void sendToMax(String soundFile, int ch){
 
 		if(SkateMain.audioEnabled){
-			// hacky custom string for SES
 			OscMessage oscMsg = new OscMessage("/Play");
 			oscMsg.add(soundFile);
 			oscMsg.add(ch);
-
 			oscP5Max.send(oscMsg,maxBroadcastLoc);
-
 			logger.info("SEND TO MAX: " + oscMsg.address() + " " + oscMsg.arguments()[0] + " " + oscMsg.arguments()[1]);
-
-
 		}
 	}
 
@@ -279,7 +284,6 @@ public class SoundControllerP5 {
 			oscMsg.add(ch);
 			oscMsg.add((float)roundTwoDec(az));
 			oscMsg.add((float)roundTwoDec(dist));
-
 			oscP5SES.send(oscMsg,sesBroadcastLoc);
 			//logger.info("SEND TO SES: " + oscMsg.address() + " " + oscMsg.arguments()[0] + " " + oscMsg.arguments()[1] + " " + oscMsg.arguments()[2]);
 
