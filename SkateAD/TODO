@@ -1,37 +1,30 @@
 SkateAD To Do
 
 AUDIO:
-subwoofer setup in max
-amp values? -1 to 1 and relative power?
-killBuffer command from Java to Max
-	/Kill ch
-global sound (Max)
-	/Global soundfile.wav   (only one of these at a time)
 static spatial sound
-
-Cuemix
-Autosetup for all apps
-
 
 
 SKATE APP
 
-handle global sound instances
-
+handle global sound instances, make sure a killbuf is sent for them
+handle global amp values, search for skater to update
+check for whether skaters have global sounds on sound update
 finish all amp value stuff
-
-create some kind of show sequencer
-
-associate sprites, scale, etc with each skater
-
+associate sprite scale, etc with each skater?
 vectored sprites
-
 refactor maps in soundController to something better
-
 add speed param to skaters to playback at faster/slower speed
 
 
 DESIGN
+
+Scratch dj sound
+Heartbeat
+Thumps and bumps
+Cheer and boo
+Flanged, chorus etc
+Thunder and rain
+
 new shows: 
 	big bar
 	massive wave
@@ -39,7 +32,6 @@ new shows:
 
 sound design
 animate nuance
-
 
 
 

@@ -183,7 +183,7 @@ public class SoundControllerP5 {
 		for (Object o : msg.arguments()){
 			msgArgs += o + " ";
 		}
-		//logger.info("INCOMING OSC = " + msgArgs);
+		logger.info("INCOMING OSC = " + msgArgs);
 
 
 		if (msg.arguments()[0].toString().matches("amp")) {  //use matches instead
@@ -193,6 +193,14 @@ public class SoundControllerP5 {
 			float amp = Float.parseFloat(msg.arguments()[2].toString());
 
 			setAmpByChannel(channelToUpdate,amp);
+		}
+		
+		float globalAmplitude = 0.0f;
+		
+		if (msg.arguments()[0].toString().matches("globalamp")) {  //use matches instead
+			// update the amplitude value for nodeID
+			//logger.info(message.getArguments()[2].getClass());
+			globalAmplitude = Float.parseFloat(msg.arguments()[1].toString());
 		}
 
 		if (msg.arguments()[0].toString().matches("bufEnd")) {  //use matches instead
