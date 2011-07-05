@@ -73,7 +73,7 @@ public class SoundControllerP5 {
 		nodeID = 0;
 		soundNodesByID  = new HashMap<Integer,SoundNode>();
 		soundNodesByChannel  = new HashMap<Integer,SoundNode>();
-		pool = new ChannelPool(maxCh);
+		pool = new ChannelPool(14);
 		
 		//setupListener();
 
@@ -98,10 +98,9 @@ public class SoundControllerP5 {
 		}
 
 		//SUPER HACKY WAY OF KEEPING TRACK OF EVERYTHING RIGHT NOW
-		SoundNode soundNode = new SoundNode(nodeID,newSoundChannel,soundFile,0); //id, soundChannel, file, amplitude value
+		SoundNode soundNode = new SoundNode(nodeID,newSoundChannel,soundFile,0,globalSnd); //id, soundChannel, file, amplitude value
 		soundNodesByChannel.put(soundNode.soundChannel,soundNode);
 		soundNodesByID.put(soundNode.nodeID, soundNode);
-		//logger.info("Map sizes: byID: " + soundNodesByID.size() + " byChannel: " + soundNodesByChannel.size());
 
 		// update SES position
 		updateSoundNodeByID(nodeID,pos,1.0f);
@@ -112,23 +111,26 @@ public class SoundControllerP5 {
 	public void updateSoundNodeByID(int id, Point2D.Double skaterPos, float gain){
 
 		if (soundNodesByID.containsKey(id)) {
+			if (!soundNodesByID.get(id).globalSound) {
+				double newTheta = computeAzimuth(audioListenerPos,skaterPos);
+				double newDist = computeDistanceInMeters(audioListenerPos,skaterPos);
+				int channelNum = -1;
 
-			double newTheta = computeAzimuth(audioListenerPos,skaterPos);
-			double newDist = computeDistanceInMeters(audioListenerPos,skaterPos);
-			int channelNum = -1;
-
-			/*
-			 * Have a threadsafety issue here where it's possible that the OSCListener has removed
-			 * the soundNode from both hashmaps before the skater has stopped animating (and sending update messages)
-			 */
-			try {
-				channelNum = soundNodesByID.get(id).soundChannel;
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				/*
+				 * Have a threadsafety issue here where it's possible that the OSCListener has removed
+				 * the soundNode from both hashmaps before the skater has stopped animating (and sending update messages)
+				 */
+				try {
+					channelNum = soundNodesByID.get(id).soundChannel;
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				sendToSES(channelNum, newTheta, newDist);
+			} else {
+				//logger.info("no SES update for global sound");
 			}
-
-			sendToSES(channelNum, newTheta, newDist);
 		} else {
 			//logger.info("ERROR: Tried to update non-existent nodeID: " + id);
 		}
@@ -175,7 +177,7 @@ public class SoundControllerP5 {
 	/*
 	 * setup listener for incoming msg
 	 */
-
+	
 	/* incoming osc message are forwarded to the oscEvent method. */
 	void oscEvent(OscMessage msg) {
 
@@ -183,7 +185,7 @@ public class SoundControllerP5 {
 		for (Object o : msg.arguments()){
 			msgArgs += o + " ";
 		}
-		logger.info("INCOMING OSC = " + msgArgs);
+		//logger.info("INCOMING OSC = " + msgArgs);
 
 
 		if (msg.arguments()[0].toString().matches("amp")) {  //use matches instead
@@ -195,12 +197,13 @@ public class SoundControllerP5 {
 			setAmpByChannel(channelToUpdate,amp);
 		}
 		
-		float globalAmplitude = 0.0f;
 		
 		if (msg.arguments()[0].toString().matches("globalamp")) {  //use matches instead
 			// update the amplitude value for nodeID
 			//logger.info(message.getArguments()[2].getClass());
-			globalAmplitude = Float.parseFloat(msg.arguments()[1].toString());
+			// NOTE for now we store this locally in soundController instead of searching
+			float amp = Float.parseFloat(msg.arguments()[1].toString());
+			setGlobalAmp(amp);
 		}
 
 		if (msg.arguments()[0].toString().matches("bufEnd")) {  //use matches instead
@@ -255,16 +258,33 @@ public class SoundControllerP5 {
 			//logger.info("ERROR: Tried to set amp value for non-existent soundNodeByChannel: " + ch);
 		}
 	}
+	
+	// find and update the amp for global nodes
+	// note that at present max only plays one global node
+	private void setGlobalAmp(float amp) {
+		for (int key : soundNodesByID.keySet()) {
+			if (soundNodesByID.get(key).globalSound) {
+				soundNodesByID.get(key).amplitude = amp;
+				//logger.info("Found and updated amp in global node " + key + " to amp " + amp);
+			}
+		}
+	}
 
 	public float getAmpByID(int id) {
 		// do some checking here to make sure it exists?
 		if (soundNodesByID.containsKey(id)) {
+			/* 
+			 * Maybe don't need to normalize now
+			
 			// normalize to -0.2 - 0.2
 			float normalizedAmp = (soundNodesByID.get(id).amplitude + 0.2f)/0.4f;
 			if (normalizedAmp < 0.0f){
 				normalizedAmp = 0.0f;
 			}
 			return normalizedAmp;
+			 */
+			
+			return soundNodesByID.get(id).amplitude;
 		} else {
 			return 0;
 		}
@@ -364,21 +384,9 @@ public class SoundControllerP5 {
 
 
 
-	/* 
-	 * older stuff
+	/**
+	 * main()
 	 */
-
-
-	public int globalSound(String soundFile, boolean loop, float gain, String comment) {
-		// not used now
-		nodeID++;
-		return nodeID;
-	}
-
-	public void killSound(){
-		// not used now
-	}
-
 
 	public static void main(String[] args){
 		//new SoundController("127.0.0.1",10000,7770,16,new Point2D.Double(0,0));

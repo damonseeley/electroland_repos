@@ -105,7 +105,8 @@ public class SkateMain extends Thread {
 		}
 
 		///////// Init sound controller and speakers
-		soundControllerP5 = new SoundControllerP5(audioIP,10000,7770,16,audioListenerPos);
+		// channels 15 & 16 reserved for static spatial sound for now
+		soundControllerP5 = new SoundControllerP5(audioIP,10000,7770,14,audioListenerPos);
 
 
 
@@ -220,6 +221,7 @@ public class SkateMain extends Thread {
 				// draw the base sprite
 				gci.drawImage(sk8r.spriteImg, skaterX-skaterWidth/2, skaterY-skaterWidth/2, skaterWidth, skaterWidth, null);
 				float amp = soundControllerP5.getAmpByID(sk8r.soundNodeID);
+				//logger.info(amp);
 				// determine how many versions of the sprite to draw
 				float drawMax = 5.0f;
 				int drawIter = (int)(amp*drawMax);
@@ -337,11 +339,11 @@ public class SkateMain extends Thread {
 			String[] soundList = op.getOptional("skater",curSkater,"sounds").split(",");
 			String sprite = op.getRequired("skater", curSkater, "sprite");
 			int spriteSize = op.getRequiredInt("skater", curSkater, "spriteSize");
-
+			boolean glSound = Boolean.parseBoolean(op.getRequired("skater", curSkater, "globalSound"));
 			
 			double canvasScale = canvasWidth/Double.parseDouble(worldDim);
 			
-			Skater sk8r = new Skater(curSkater, animFile, worldDim, canvasScale, sprite, spriteSize, soundList);
+			Skater sk8r = new Skater(curSkater, animFile, worldDim, canvasScale, sprite, spriteSize, soundList, glSound);
 			skaterDefs.add(sk8r);
 			skaterDict.put(curSkater, sk8r);
 		}
