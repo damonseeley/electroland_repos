@@ -141,28 +141,24 @@ public class SkateMain extends Thread {
 			 */
 			if (currSeq != null)
 			{
+				// get any skaters that are ready to go
+				List<SkaterSequenceStep> toRun = currSeq.getStartable(System.currentTimeMillis());
+				// start 'em.
+				for (SkaterSequenceStep step : toRun){
+					try {
+						// borrowed from Damon.  I don't like this!!
+						Skater sk8Ref;
+						sk8Ref = (Skater)((step.skater).clone());
+						skaters.add(sk8Ref);
+						globalSkaterCount++; // this isn't calculated by the size of the List??
+						sk8Ref.startAnim();
+						sk8Ref.name += globalSkaterCount; // gah?!?!?
+					} catch (CloneNotSupportedException e) {
+						e.printStackTrace();
+					}
+				}				
 				// see if the current sequence needs to move on to the nextShow
 				currSeq = currSeq.getCurrentSequence();
-
-				if (currSeq != null)
-				{
-					// get any skaters that are ready to go
-					List<SkaterSequenceStep> toRun = currSeq.getStartable(System.currentTimeMillis());
-					// start 'em.
-					for (SkaterSequenceStep step : toRun){
-						try {
-							// borrowed from Damon.  I don't like this!!
-							Skater sk8Ref;
-							sk8Ref = (Skater)((step.skater).clone());
-							skaters.add(sk8Ref);
-							globalSkaterCount++; // this isn't calculated by the size of the List??
-							sk8Ref.startAnim();
-							sk8Ref.name += globalSkaterCount; // gah?!?!?
-						} catch (CloneNotSupportedException e) {
-							e.printStackTrace();
-						}				
-					}					
-				}
 			}
 			
 			
