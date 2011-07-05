@@ -9,6 +9,7 @@ import java.awt.Shape;
 import java.awt.color.ColorSpace;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.RescaleOp;
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -212,12 +213,17 @@ public class SkateMain extends Thread {
 				//int skaterY = (int)(sk8r.getMetricPosNow()[1]/sk8r.worldDim * skatearea.height) * -1;
 				int skaterY = (int)(sk8r.getCanvas2DPosNow().y); //all xforms now contained within skater
 
-				// SIMPLE DRAWING
+				// SIMPLE SPRITE FOR TEST
 				//gci.drawImage(sk8r.spriteImg, skaterX-skaterWidth/2, skaterY-skaterWidth/2, skaterWidth, skaterWidth, null);
 				
 				// AMPLITUDE BASED DRAWING
 				// this code is hacky, need a way to draw the image once with an alpha value!!!
 				
+				/**
+				 * Drawing technique with multiple overlaid sprites
+				 */
+				
+				/*
 				// draw the base sprite
 				gci.drawImage(sk8r.spriteImg, skaterX-skaterWidth/2, skaterY-skaterWidth/2, skaterWidth, skaterWidth, null);
 				float amp = soundControllerP5.getAmpByID(sk8r.soundNodeID);
@@ -229,6 +235,26 @@ public class SkateMain extends Thread {
 				for (int i=1; i < drawIter; i++) {
 					gci.drawImage(sk8r.spriteImg, skaterX-skaterWidth/2, skaterY-skaterWidth/2, skaterWidth, skaterWidth, null);
 				}
+				*/
+				
+				
+				/**
+				 * Drawing with alpha
+				 * NEED to be fixed to draw in the right place
+				 */
+				
+				// Create a rescale filter op that makes the image 50% opaque
+				float amp = soundControllerP5.getAmpByID(sk8r.soundNodeID);
+				float alpha = 0.25f + amp*0.75f;
+				float[] scales = { 1f, 1f, 1f, alpha }; // where amp is a float from the audio system
+				float[] offsets = new float[4];
+				RescaleOp rop = new RescaleOp(scales, offsets, null);
+				
+				// Draw the image, applying the filter 
+				gci.drawImage(sk8r.spriteImg, rop, skaterX-skaterWidth/2, skaterY-skaterWidth/2);
+				
+
+				
 
 			}
 			

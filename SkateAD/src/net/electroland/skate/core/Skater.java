@@ -1,11 +1,14 @@
 package net.electroland.skate.core;
 
-import java.awt.Image;
+import java.awt.Graphics;
 import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
-import javax.swing.ImageIcon;
+import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -32,8 +35,8 @@ public class Skater implements Cloneable {
 	public double lengthSeconds;
 	public int lengthFrames;
 	public long startTime;
-	public String sprite;
-	public Image spriteImg;
+	public String spriteFile;
+	public BufferedImage spriteImg;
 	public int spriteSize;
 	public boolean globalSound = false;
 
@@ -66,8 +69,29 @@ public class Skater implements Cloneable {
 			soundList = sounds;
 		}
 
-		sprite = sprt;
-		spriteImg = new ImageIcon(sprite).getImage();
+		spriteFile = sprt;
+		
+		//spriteImg = new ImageIcon(sprite).getImage();
+		
+		BufferedImage img;
+		try {
+			//InputStream imgIS = new Util().getClass().getClassLoader().getResourceAsStream(spriteFile);
+			img = ImageIO.read(new File(spriteFile));
+			int w = img.getWidth(null);
+			int h = img.getHeight(null);
+			spriteImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+			Graphics g = spriteImg.getGraphics();
+			g.drawImage(img, 0, 0, null);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			logger.info("ERROR: cannot find sprite image");
+		}
+		
+		
+		
+		
+		
 		spriteSize = sprtSize;
 		globalSound = isGlSnd;
 

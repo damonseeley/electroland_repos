@@ -7,7 +7,6 @@ static spatial sound
 SKATE APP
 
 handle global sound instances, make sure a killbuf is sent for them
-handle global amp values, search for skater to update
 check for whether skaters have global sounds on sound update
 finish all amp value stuff
 associate sprite scale, etc with each skater?
@@ -24,6 +23,11 @@ Thumps and bumps
 Cheer and boo
 Flanged, chorus etc
 Thunder and rain
+
+ANIMS
+swirl (for noise)
+sweep left, right, down, fast and slow
+5,10,20 second circles left and right
 
 new shows: 
 	big bar
