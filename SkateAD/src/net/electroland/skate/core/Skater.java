@@ -35,6 +35,7 @@ public class Skater implements Cloneable {
 	public String sprite;
 	public Image spriteImg;
 	public int spriteSize;
+	public boolean globalSound = false;
 
 	public double cmConversion = 2.54;  //incoming files should have inch units, by default do
 	public double canvasScale;
@@ -43,7 +44,7 @@ public class Skater implements Cloneable {
 
 	private static Logger logger = Logger.getLogger(SkateMain.class);
 
-	public Skater(String skaterName, String animXML, String dim, double cScale, String sprt, int sprtSize, String[] sounds) {
+	public Skater(String skaterName, String animXML, String dim, double cScale, String sprt, int sprtSize, String[] sounds, boolean isGlSnd) {
 
 		if (skaterName != null){
 			name = skaterName;
@@ -68,6 +69,7 @@ public class Skater implements Cloneable {
 		sprite = sprt;
 		spriteImg = new ImageIcon(sprite).getImage();
 		spriteSize = sprtSize;
+		globalSound = isGlSnd;
 
 		boolean debugOutput = false;
 
@@ -170,7 +172,7 @@ public class Skater implements Cloneable {
 	public void startAnim() {
 		startTime = System.currentTimeMillis();
 		Point2D.Double curPos = new Point2D.Double(getMetricPosNow()[0],getMetricPosNow()[1]);
-		soundNodeID = SkateMain.soundControllerP5.newSoundNode(soundList[0], curPos, 1.0f, true); //right now just offer the first sound, non global
+		soundNodeID = SkateMain.soundControllerP5.newSoundNode(soundList[0], curPos, 1.0f, globalSound); //right now just offer the first sound
 		//logger.info(name + " " + soundNodeID);
 	}
 
@@ -210,6 +212,14 @@ public class Skater implements Cloneable {
 
 	public boolean isLive() {
 		if (animComplete){
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean isGlobal() {
+		if (soundNode.globalSound){
 			return true;
 		} else {
 			return false;
