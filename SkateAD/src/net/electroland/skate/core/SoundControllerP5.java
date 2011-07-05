@@ -270,7 +270,7 @@ public class SoundControllerP5 {
 			oscMsg.add(soundFile);
 			oscMsg.add(ch);
 			oscP5Max.send(oscMsg,maxBroadcastLoc);
-			logger.info("SEND TO MAX: " + oscMsg.address() + " " + oscMsg.arguments()[0] + " " + oscMsg.arguments()[1]);
+			logger.info("MAX PLAY: " + oscMsg.address() + " " + oscMsg.arguments()[0] + " " + oscMsg.arguments()[1]);
 		}
 	}
 	
@@ -280,7 +280,7 @@ public class SoundControllerP5 {
 			OscMessage oscMsg = new OscMessage("/Kill");
 			oscMsg.add(ch);
 			oscP5Max.send(oscMsg,maxBroadcastLoc);
-			logger.info("SEND TO MAX: " + oscMsg.address() + " " + oscMsg.arguments()[0]);
+			logger.info("MAX KILL: " + oscMsg.address() + " " + oscMsg.arguments()[0]);
 		}
 	}
 	
@@ -288,8 +288,9 @@ public class SoundControllerP5 {
 
 		if(SkateMain.audioEnabled){
 			OscMessage oscMsg = new OscMessage("/Global");
+			oscMsg.add(soundFile);
 			oscP5Max.send(oscMsg,maxBroadcastLoc);
-			logger.info("SEND TO MAX: " + oscMsg.address() + " " + oscMsg.arguments()[0]);
+			logger.info("MAX GLOBAL: " + oscMsg.address() + " " + oscMsg.arguments()[0]);
 		}
 	}
 
