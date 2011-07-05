@@ -5,19 +5,19 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Shape;
 import java.awt.color.ColorSpace;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.swing.ImageIcon;
 
 import net.electroland.skate.ui.GUIFrame;
 import net.electroland.skate.ui.GUIPanel;
@@ -62,7 +62,9 @@ public class SkateMain extends Thread {
 	public static long curTime = System.currentTimeMillis(); //  time of frame start to aviod lots of calls to System.getcurentTime()
 	public static long elapsedTime = -1; //  time between start of cur frame and last frame to avoid re calculating passage of time allover the place
 
-
+	private Map<String, SkaterSequence> sequences;
+	private SkaterSequence startSequence;
+		
 	public SkateMain() {
 
 		SHOWUI = true;
@@ -128,15 +130,41 @@ public class SkateMain extends Thread {
 		timer.start();
 		curTime = System.currentTimeMillis();
 
-		while (isRunning) {
-			
-			/*
-			 * Determine whether to add or subtract skaters
-			 */
-			if (Math.random() < .01 ){
-				//addRandomSkater();
-			}
+		// for sequences
+		SkaterSequence currSeq = startSequence;
+		currSeq.startSequence(); // just marks the time it started to start the timer checks.
 
+		while (isRunning) {
+
+			/*
+			 * Run start sequence (if present)
+			 */
+			if (currSeq != null)
+			{
+				// see if the current sequence needs to move on to the nextShow
+				currSeq = currSeq.getCurrentSequence();
+
+				if (currSeq != null)
+				{
+					// get any skaters that are ready to go
+					List<SkaterSequenceStep> toRun = currSeq.getStartable(System.currentTimeMillis());
+					// start 'em.
+					for (SkaterSequenceStep step : toRun){
+						try {
+							// borrowed from Damon.  I don't like this!!
+							Skater sk8Ref;
+							sk8Ref = (Skater)((step.skater).clone());
+							skaters.add(sk8Ref);
+							globalSkaterCount++; // this isn't calculated by the size of the List??
+							sk8Ref.startAnim();
+							sk8Ref.name += globalSkaterCount; // gah?!?!?
+						} catch (CloneNotSupportedException e) {
+							e.printStackTrace();
+						}				
+					}					
+				}
+			}
+			
 			
 			/*
 			 * Animate skaters
@@ -300,7 +328,8 @@ public class SkateMain extends Thread {
 	public static String audioIP;
 	
 	public void loadSkaterProps(String skatePropsFile) throws IOException, OptionException
-	{		
+	{	
+		Hashtable <String, Skater> skaterDict = new Hashtable <String, Skater>();
 		ElectrolandProperties op = new ElectrolandProperties(skatePropsFile);
 		Set<String> skaterNames = (op.getObjectNames("skater"));
 		Iterator<String> iter = skaterNames.iterator();
@@ -317,16 +346,85 @@ public class SkateMain extends Thread {
 			
 			Skater sk8r = new Skater(curSkater, animFile, worldDim, canvasScale, sprite, spriteSize, soundList);
 			skaterDefs.add(sk8r);
+			skaterDict.put(curSkater, sk8r);
 		}
+		
+		// load sequences
+		sequences = parseSequences(op, skaterDict);	
+		
 		// get global params
 		framerate = op.getRequiredInt("settings", "global", "fps");
 		audioEnabled = Boolean.parseBoolean(op.getRequired("settings", "global", "audio"));
 		audioListenerPos = new Point2D.Double(op.getRequiredDouble("settings", "global", "listenerX"),op.getRequiredDouble("settings", "global", "listenerY"));
 		audioIP = op.getRequired("settings", "global", "audioIP");
+		String startStr = op.getOptional("settings", "global", "startsequence");
+		if (startStr != null){
+			this.startSequence = sequences.get(startStr);
+		}
+		
 		//logger.info(audioListenerPos.x + "   " + audioListenerPos.y);
 	}
 
+	/**
+	 * Parses a sequence of Skaters to be run.
+	 * 
+	 * @param p
+	 * @param skaterDefs
+	 * @return
+	 * @throws OptionException
+	 */
+	private static Map<String, SkaterSequence> parseSequences(ElectrolandProperties p, Map<String,Skater> skaterDefs) throws OptionException
+	{
+		// put into dictionary first, so we can do the nextShow lookups.
+		Hashtable<String, SkaterSequence> sequences = new Hashtable<String, SkaterSequence>();
+		for (String name : p.getObjectNames("sequence"))
+		{
+			SkaterSequence newSeq = new SkaterSequence(name);
+			sequences.put(name, newSeq);
+		}
 
+		// build the objects
+		for (String name : p.getObjectNames("sequence"))
+		{
+			SkaterSequence newSeq = sequences.get(name);
+			// cuelist
+			List<String> cuelist = p.getRequiredArray("sequence", name, "cuelist");
+			
+			// make sure cuelist contains an even number of elements
+			if (cuelist.size() % 2 != 0){
+				throw new OptionException("cuelist for sequence '" + name + "' has an odd number of elements.");
+			}
+			
+			for (int i = 0; i < cuelist.size(); i+=2)
+			{
+				String skaterId = cuelist.get(i);
+				Skater skater = skaterDefs.get(skaterId);
+				if (skater == null){
+					throw new OptionException("cuelist for sequence '" + name + "' references unknown skater '" + skaterId + "'");
+				}
+				Integer delay = Integer.parseInt(cuelist.get(i + 1));
+				if (delay < 0){
+					throw new OptionException("cuelist for sequence '" + name + "' contains a negative delay value.");
+				}
+				newSeq.getSteps().add(new SkaterSequenceStep(skater, delay));
+			}
+
+			// loop (0 = no loop)
+			Double loops = p.getOptionalDouble("sequence", name, "loops");
+			newSeq.setDefaultLoops(loops != null ? loops.intValue() : 1);
+			
+			// nextShow
+			String nextStr = p.getOptional("sequence", name, "nextShow");
+			if (nextStr != null){
+				SkaterSequence next = sequences.get(nextStr);
+				if (next == null){
+					throw new OptionException("sequence '" + name + "' has unknown nextShow.");					
+				}
+				newSeq.setNextShow(next);
+			}
+		}		
+		return sequences;
+	}
 
 	public static void killTheads() {
 		stopRunning();	
