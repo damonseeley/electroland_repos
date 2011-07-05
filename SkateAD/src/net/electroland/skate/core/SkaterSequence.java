@@ -3,8 +3,12 @@ package net.electroland.skate.core;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
+
 public class SkaterSequence {
 
+	static Logger logger = Logger.getLogger(SkaterSequence.class);
+	
 	private Vector<SkaterSequenceStep> steps = new Vector<SkaterSequenceStep>();
 	private int currLoop = 0, defaultLoops;
 	private SkaterSequence nextShow;
@@ -43,6 +47,7 @@ public class SkaterSequence {
 	public void startSequence()
 	{
 		startTime = System.currentTimeMillis();
+		logger.info("starting sequence " + this.name + " loop #" + currLoop);					
 	}
 
 	/** yuck.  
@@ -56,7 +61,7 @@ public class SkaterSequence {
 		long elapsedTime = time - startTime;
 
 		for (SkaterSequenceStep s : steps){
-			if (elapsedTime > s.delay){
+			if (!s.started && elapsedTime > s.delay){
 				s.started = true;
 				startable.add(s);
 			}
@@ -75,12 +80,15 @@ public class SkaterSequence {
 		}
 		
 		if (everythingStarted){
+			logger.info("finished sequence " + this.name + " loop #" + currLoop);
 			resetSteps();
 			currLoop++;
 			if (currLoop == defaultLoops){
 				currLoop = 0; // reset for future runs.
 				resetSteps(); // reset steps
-				nextShow.startSequence(); // initialize the next run
+				if (nextShow != null){
+					nextShow.startSequence(); // initialize the next run
+				}
 				return nextShow;
 			}else{
 				// reset for next loop.
