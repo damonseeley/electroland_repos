@@ -18,7 +18,7 @@ public class GUIButtonBar extends JPanel {
 		
 		JButton button;
 		
-		button = new JButton("Add Skater");
+		button = new JButton("Add Random Skater");
 		// this should look a lot like add actionlisteners to the menuItems
 		button.addActionListener(new ActionListener() { // create an action listener
 			public void actionPerformed(ActionEvent e) {

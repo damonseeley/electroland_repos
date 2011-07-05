@@ -114,7 +114,7 @@ public class SkateMain extends Thread {
 
 
 		// TEMP for now just add one skater
-		//addSkater();
+		//addRandomSkater();
 
 
 		/////////////// THREAD STUFF
@@ -183,8 +183,8 @@ public class SkateMain extends Thread {
 				}
 			}
 
-			/*
-			 * Rendering
+			/**
+			 * DRAWING
 			 */
 
 			Dimension skatearea = canvas.getDimensions();
@@ -281,15 +281,16 @@ public class SkateMain extends Thread {
 				e.printStackTrace();
 			}
 			
-			
-
+		
 			//draw the final image into the jPanel GUI
 			Graphics gp = guiPanel.getGraphics();
 			gp.drawImage(ci, 0, 0, null);
-
-
-
-
+			
+			/**
+			 * END DRAWING
+			 */
+			
+			
 
 			//Thread ops
 			//logger.info(timer.sleepTime);
