@@ -47,7 +47,7 @@ public class SkaterSequence {
 	public void startSequence()
 	{
 		startTime = System.currentTimeMillis();
-		logger.info("starting sequence " + this.name + " loop #" + currLoop);					
+		logger.info("starting sequence " + this.name + " loop #" + (currLoop + 1));					
 	}
 
 	/** yuck.  
@@ -80,7 +80,7 @@ public class SkaterSequence {
 		}
 		
 		if (everythingStarted){
-			logger.info("finished sequence " + this.name + " loop #" + currLoop);
+			logger.info("finished sequence " + this.name + " loop #" + (currLoop + 1));
 			resetSteps();
 			currLoop++;
 			if (currLoop == defaultLoops){
