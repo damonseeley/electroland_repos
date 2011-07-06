@@ -73,28 +73,31 @@ public class Skater implements Cloneable {
 		
 		//spriteImg = new ImageIcon(sprite).getImage();
 		
+		spriteSize = sprtSize;
+		globalSound = isGlSnd;
+
+		
 		BufferedImage img;
 		try {
 			//InputStream imgIS = new Util().getClass().getClassLoader().getResourceAsStream(spriteFile);
 			img = ImageIO.read(new File(spriteFile));
-			int w = img.getWidth(null);
-			int h = img.getHeight(null);
-			spriteImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+			//int w = img.getWidth(null);
+			//int h = img.getHeight(null);
+			spriteImg = new BufferedImage(spriteSize, spriteSize, BufferedImage.TYPE_INT_ARGB);
 			Graphics g = spriteImg.getGraphics();
-			g.drawImage(img, 0, 0, null);
+			//g.drawImage(img, 0, 0, null);
+			g.drawImage(img, 0, 0, spriteSize, spriteSize, null); // so scaling works
+
+			//g.drawRect(x, y, width, height)
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			logger.info("ERROR: cannot find sprite image");
 		}
 		
+	
 		
-		
-		
-		
-		spriteSize = sprtSize;
-		globalSound = isGlSnd;
-
+	
 		boolean debugOutput = false;
 
 		try {
