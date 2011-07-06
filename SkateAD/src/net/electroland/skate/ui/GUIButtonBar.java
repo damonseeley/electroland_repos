@@ -33,16 +33,17 @@ public class GUIButtonBar extends JPanel {
 		button.setToolTipText("here is a tool tip just for fun");
 		add(button);
 		
-		button = new JButton("Button 1.2");
+		button = new JButton("Freeze");
 		// this should look a lot like add actionlisteners to the menuItems
 		button.addActionListener(new ActionListener() { // create an action listener
 			public void actionPerformed(ActionEvent e) {
+				SkateMain.freeze = !SkateMain.freeze;
 				System.out.println("button 2 pressed(and released)");
 			}
 		});
 		// yet another way to get keyboard shortcuts.
-		button.setMnemonic('2'); // respond to alt-b (actualy I'm not sure if its alt or cntr on windows)
-		button.setDisplayedMnemonicIndex(9); // uderline the 8th letter of buttons name as a hint
+		//button.setMnemonic('2'); // respond to alt-b (actualy I'm not sure if its alt or cntr on windows)
+		//button.setDisplayedMnemonicIndex(9); // uderline the 8th letter of buttons name as a hint
 		add(button);
 
 		button = new JButton("Button 1.3");

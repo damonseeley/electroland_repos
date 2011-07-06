@@ -128,6 +128,8 @@ public class SkateMain extends Thread {
 
 	}
 
+	public static boolean freeze = false;
+	
 	public void run() {
 		timer.start();
 		curTime = System.currentTimeMillis();
@@ -162,14 +164,15 @@ public class SkateMain extends Thread {
 				// see if the current sequence needs to move on to the nextShow
 				currSeq = currSeq.getCurrentSequence();
 			}
-			
-			
+
 			/*
 			 * Animate skaters
 			 */
 			// Advance all skater play heads
 			for (Skater sk8r : skaters) {
-				sk8r.animate();
+				if (!freeze) {
+					sk8r.animate();
+				}
 			}
 
 			
@@ -254,7 +257,7 @@ public class SkateMain extends Thread {
 					gci.setColor(new Color(128,128,128));
 					Font afont = new Font("afont",Font.PLAIN,10);
 					gci.setFont(afont);
-					gci.drawString(sk8r.name + " @f" + sk8r.curFrame, skaterX + 32, skaterY + 9);
+					gci.drawString("@f " + sk8r.curFrame, skaterX + 32, skaterY + 9);
 					
 					// draw image centers
 					gci.setColor(new Color(255,0,0));
@@ -283,7 +286,14 @@ public class SkateMain extends Thread {
 				Font afont = new Font("afont",Font.PLAIN,10);
 				gci.setFont(afont);
 				double elapsedTime = currSeq.getCurrentSequence().getElapsedInSeconds();
+				String nextSkater = currSeq.getCurrentSequence().getNextShow().getName();
+				String currSkaters = "";
+				for (Skater sk8r : skaters) {
+					currSkaters += sk8r.name + ", ";
+				}
 				gci.drawString("sequence " + currSeq.getCurrentSequence().getName() + " @ " + elapsedTime, 10, 20);
+				gci.drawString("next up: " + nextSkater, 10, 34);
+				gci.drawString("current skaters: " + currSkaters, 10, 48);
 				
 			
 			} catch (InvalidPixelGrabException e) {
