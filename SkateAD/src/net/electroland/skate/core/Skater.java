@@ -32,7 +32,7 @@ public class Skater implements Cloneable {
 	public int endTick;
 	public int frameRate;
 	public int ticksPerFrame;
-	public double lengthSeconds;
+	public double lengthSeconds; // TODO: this is the value that is going to be overridden.  need to keep the default around in order to do the ratio conversion.
 	public int lengthFrames;
 	public long startTime;
 	public String spriteFile;
@@ -210,6 +210,7 @@ public class Skater implements Cloneable {
 			elapsed = System.currentTimeMillis() - startTime;
 			percentComplete = (elapsed/1000.0) / lengthSeconds;
 			//logger.info(percentComplete * 100 + "%");
+			// TODO: the double here should be between the two frames.
 			curFrame = (int)(lengthFrames * percentComplete);
 			//logger.info(curFrame);
 
@@ -263,6 +264,7 @@ public class Skater implements Cloneable {
 
 	/* Return the pos value in centimeters for the current frame */
 	public Point2D.Double getMetric2DPosNow(){
+		// TODO: interpolation goes here
 		Point2D.Double pos = new Point2D.Double();
 		pos.x = (Double)frameData[curFrame].get("x") * cmConversion;
 		pos.y = (Double)frameData[curFrame].get("y") * cmConversion * -1;

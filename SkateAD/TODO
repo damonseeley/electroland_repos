@@ -6,6 +6,10 @@ static spatial sound
 
 SKATE APP
 
+networking VNC
+max patch loadbang
+
+
 handle global sound instances, make sure a killbuf is sent for them
 check for whether skaters have global sounds on sound update
 finish all amp value stuff
