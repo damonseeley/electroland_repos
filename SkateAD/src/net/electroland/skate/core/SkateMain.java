@@ -373,10 +373,16 @@ public class SkateMain extends Thread {
 			String sprite = op.getRequired("skater", curSkater, "sprite");
 			int spriteSize = op.getRequiredInt("skater", curSkater, "spriteSize");
 			boolean glSound = Boolean.parseBoolean(op.getRequired("skater", curSkater, "globalSound"));
-			
 			double canvasScale = canvasWidth/Double.parseDouble(worldDim);
 			
 			Skater sk8r = new Skater(curSkater, animFile, worldDim, canvasScale, sprite, spriteSize, soundList, glSound);
+
+			Double duration = op.getOptionalDouble("skater", curSkater, "duration");
+			if (duration != null)
+			{
+				sk8r.setLengthOverride(duration);
+			}
+			
 			skaterDefs.add(sk8r);
 			skaterDict.put(curSkater, sk8r);
 		}
