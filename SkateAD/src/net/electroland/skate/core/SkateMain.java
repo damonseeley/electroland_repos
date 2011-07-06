@@ -204,41 +204,14 @@ public class SkateMain extends Thread {
 				//int skaterWidth = sk8r.spriteSize; // current value for sprite size, get from props instead
 				
 				gci.setColor(new Color(255,255,255));
-				// Draw a square (for now) where the skater is located, scaled for xml file max dim
-				// and then sized to the canvas width/height
-				//int skaterX = (int)(sk8r.getMetricPosNow()[0]/sk8r.worldDim * skatearea.width);
 				int skaterX = (int)(sk8r.getCanvas2DPosNow().x);
-
-				//flip y to account for UCS diffs between 3DSMax and Java
-				//int skaterY = (int)(sk8r.getMetricPosNow()[1]/sk8r.worldDim * skatearea.height) * -1;
 				int skaterY = (int)(sk8r.getCanvas2DPosNow().y); //all xforms now contained within skater
 
 				// SIMPLE SPRITE FOR TEST
 				//gci.drawImage(sk8r.spriteImg, skaterX-skaterWidth/2, skaterY-skaterWidth/2, skaterWidth, skaterWidth, null);
 				
-				// AMPLITUDE BASED DRAWING
-				// this code is hacky, need a way to draw the image once with an alpha value!!!
-				
 				/**
-				 * Drawing technique with multiple overlaid sprites
-				 */
-				
-				/*
-				// draw the base sprite
-				gci.drawImage(sk8r.spriteImg, skaterX-skaterWidth/2, skaterY-skaterWidth/2, skaterWidth, skaterWidth, null);
-				float amp = soundControllerP5.getAmpByID(sk8r.soundNodeID);
-				//logger.info(amp);
-				// determine how many versions of the sprite to draw
-				float drawMax = 5.0f;
-				int drawIter = (int)(amp*drawMax);
-				// draw the sprite drawIter more times
-				for (int i=1; i < drawIter; i++) {
-					gci.drawImage(sk8r.spriteImg, skaterX-skaterWidth/2, skaterY-skaterWidth/2, skaterWidth, skaterWidth, null);
-				}
-				*/
-				
-				
-				/**
+				 * AMPLITUDE BASED DRAWING
 				 * Drawing with alpha
 				 * NEED to be fixed to draw in the right place
 				 */
@@ -253,11 +226,7 @@ public class SkateMain extends Thread {
 				RescaleOp rop = new RescaleOp(scales, offsets, null);
 				
 				// Draw the image, applying the filter 
-			
 				gci.drawImage(sk8r.spriteImg, rop, skaterX-sk8r.spriteImg.getWidth()/2, skaterY-sk8r.spriteImg.getHeight()/2);
-				
-
-				
 
 			}
 			
@@ -273,7 +242,6 @@ public class SkateMain extends Thread {
 			
 			try {
 				CanvasDetector[] evaled = canvas.sync(rgbs);
-
 				/*
 				 * NOW draw a guide/overlay info on top
 				 */
@@ -293,7 +261,6 @@ public class SkateMain extends Thread {
 					gci.fillRect(skaterX,skaterY,2,2);
 				}
 				
-				
 				/*
 				 * Draw the CanvasDetectors
 				 */
@@ -306,9 +273,17 @@ public class SkateMain extends Thread {
 					// draw detector outlines
 					gci.setColor(new Color(0,0,128));
 					gci.drawRect(dShape.getBounds().x,dShape.getBounds().y,dShape.getBounds().width,dShape.getBounds().height);
-					// draw channel values
-					// can I get these from ELU for detectors?
 				}
+				
+				/**
+				 * Draw show info
+				 */
+				
+				gci.setColor(new Color(128,128,128));
+				Font afont = new Font("afont",Font.PLAIN,10);
+				gci.setFont(afont);
+				double elapsedTime = currSeq.getCurrentSequence().getElapsedInSeconds();
+				gci.drawString("sequence " + currSeq.getCurrentSequence().getName() + " @ " + elapsedTime, 10, 20);
 				
 			
 			} catch (InvalidPixelGrabException e) {

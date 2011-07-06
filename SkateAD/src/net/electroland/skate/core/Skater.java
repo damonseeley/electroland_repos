@@ -206,7 +206,9 @@ public class Skater implements Cloneable {
 	/* start animation playback by recording the start time for later comparison */
 	public void startAnim() {
 		startTime = System.currentTimeMillis();
-		Point2D.Double curPos = new Point2D.Double(getMetricPosNow()[0],getMetricPosNow()[1]);
+		// Commented out because previous method did not tween
+		//Point2D.Double curPos = new Point2D.Double(getMetricPosNow()[0],getMetricPosNow()[1]);
+		Point2D.Double curPos = getMetric2DPosNow();
 		soundNodeID = SkateMain.soundControllerP5.newSoundNode(soundList[0], curPos, 1.0f, globalSound); //right now just offer the first sound
 		//logger.info(name + " " + soundNodeID);
 	}

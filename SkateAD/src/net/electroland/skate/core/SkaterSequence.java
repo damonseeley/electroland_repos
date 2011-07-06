@@ -18,6 +18,10 @@ public class SkaterSequence {
 	public int getDefaultLoops() {
 		return defaultLoops;
 	}
+	
+	public double getElapsedInSeconds() {
+		return (System.currentTimeMillis() - startTime)/1000.0;
+	}
 
 	public void setDefaultLoops(int defaultLoops) {
 		this.defaultLoops = defaultLoops;
