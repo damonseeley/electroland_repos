@@ -32,7 +32,7 @@ public class Skater implements Cloneable {
 	public int endTick;
 	public int frameRate;
 	public int ticksPerFrame;
-	public double lengthSeconds; // TODO: this is the value that is going to be overridden.  need to keep the default around in order to do the ratio conversion.
+	public double lengthSeconds;
 	public int lengthFrames;
 	public long startTime;
 	public String spriteFile;
@@ -44,7 +44,7 @@ public class Skater implements Cloneable {
 	public double canvasScale;
 
 	public HashMap[] frameData;
-
+	
 	private static Logger logger = Logger.getLogger(SkateMain.class);
 
 	public Skater(String skaterName, String animXML, String dim, double cScale, String sprt, int sprtSize, String[] sounds, boolean isGlSnd) {
@@ -186,7 +186,15 @@ public class Skater implements Cloneable {
 
 	}
 
-
+	/**
+	 * if a custom duration was specified.
+	 * @param lengthSeconds
+	 */
+	public void setLengthOverride(double lengthSeconds)
+	{
+		this.lengthSeconds = lengthSeconds;
+	}
+	
 	/* -------- ANIMATION --------
 	 *  --------------------------- */
 
@@ -210,11 +218,10 @@ public class Skater implements Cloneable {
 			elapsed = System.currentTimeMillis() - startTime;
 			percentComplete = (elapsed/1000.0) / lengthSeconds;
 			//logger.info(percentComplete * 100 + "%");
-			// TODO: the double here should be between the two frames.
 			curFrame = (int)(lengthFrames * percentComplete);
 			//logger.info(curFrame);
 
-			if (curFrame < lengthFrames){
+			if (curFrame < lengthFrames - 1){ // TODO: make sure we don't allow 1 frame shows!
 				//update the sound
 				Point2D.Double curPos = getMetric2DPosNow();
 				SkateMain.soundControllerP5.updateSoundNodeByID(soundNodeID, curPos, 1.0f);
@@ -264,24 +271,49 @@ public class Skater implements Cloneable {
 
 	/* Return the pos value in centimeters for the current frame */
 	public Point2D.Double getMetric2DPosNow(){
-		// TODO: interpolation goes here
-		Point2D.Double pos = new Point2D.Double();
-		pos.x = (Double)frameData[curFrame].get("x") * cmConversion;
-		pos.y = (Double)frameData[curFrame].get("y") * cmConversion * -1;
+
+		// get the percent of the way between frames that we are.
+		elapsed = System.currentTimeMillis() - startTime;
+		percentComplete = (elapsed/1000.0) / lengthSeconds;
+		double appxFrame = lengthFrames * percentComplete;
+		double percent = appxFrame - curFrame;
+
+		Point2D.Double one = new Point2D.Double(); // last quantized position
+		Point2D.Double two = new Point2D.Double(); // next quantized position
+		Point2D.Double pos = new Point2D.Double(); // tween position
+
+		if (curFrame == appxFrame){
+			// special case: no interpolation required
+			pos.x = (Double)frameData[curFrame].get("x");
+			pos.y = (Double)frameData[curFrame].get("y");
+		}else{
+			one.x = (Double)frameData[curFrame].get("x");
+			one.y = (Double)frameData[curFrame].get("y");
+			two.x = (Double)frameData[curFrame + 1].get("x");
+			two.y = (Double)frameData[curFrame + 1].get("y");
+		}
+		// interpolate
+		pos.x = (percent * (two.x - one.x)) + one.x;
+		pos.y = (percent * (two.y - one.y)) + one.y;
+		
+		// do conversions
+		pos.x *= cmConversion;
+		pos.y *= cmConversion;
+		pos.y *= -1;
+		
 		return pos;
 	}
 
-	/* Return the pos value in centimeters for the current frame */
 	public Point2D.Double getCanvas2DPosNow(){
-		Point2D.Double pos = new Point2D.Double();
-		pos.x = (Double)frameData[curFrame].get("x") * cmConversion * canvasScale;
-		pos.y = (Double)frameData[curFrame].get("y") * cmConversion * canvasScale * -1;
-		return pos;
+		Point2D.Double cpos = getMetric2DPosNow();
+		cpos.x = cpos.x * canvasScale;
+		cpos.y = cpos.y * canvasScale;
+		return cpos;
 	}
-
 
 	// Position getters below this line have not been tested
 
+	// WARNING: NO TWEENING HERE!
 	/* Return the pos value in centimeters for the current frame */
 	public double[] getMetricPosNow(){
 		double[] pos = new double[3];
@@ -291,16 +323,18 @@ public class Skater implements Cloneable {
 		return pos;
 	}
 
-	/* Return the pos value in centimeters for given frame */
+	// THIS METHOD DOES NOT TWEEN
+	/* Return the pos value in centimeters for given frame 
 	public double[] getMetricPosAtFrame(int index){
 		double[] pos = new double[3];
 		pos[0] = (Double)frameData[index].get("x") * cmConversion;
 		pos[1] = (Double)frameData[index].get("y") * cmConversion * -1;
 		pos[2] = (Double)frameData[index].get("z") * cmConversion;
 		return pos;
-	}
+	}*/
 
-	/* Return the pos value in centimeters for given time */
+	// THIS METHOD DOES NOT TWEEN
+	/* Return the pos value in centimeters for given time 
 	public double[] getMetricPosAtTime(double time){
 		double[] pos = new double[3];
 		// quantize to individual frames by using int for frame value
@@ -309,7 +343,7 @@ public class Skater implements Cloneable {
 		pos[1] = (Double)frameData[frame].get("y") * cmConversion * -1;
 		pos[2] = (Double)frameData[frame].get("z") * cmConversion;
 		return pos;
-	}
+	}*/
 
 
 
