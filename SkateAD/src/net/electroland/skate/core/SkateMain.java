@@ -201,7 +201,7 @@ public class SkateMain extends Thread {
 			// Draw skaters, only if there are skaters
 			for (Skater sk8r : skaters)
 			{
-				int skaterWidth = sk8r.spriteSize; // current value for sprite size, get from props instead
+				//int skaterWidth = sk8r.spriteSize; // current value for sprite size, get from props instead
 				
 				gci.setColor(new Color(255,255,255));
 				// Draw a square (for now) where the skater is located, scaled for xml file max dim
@@ -246,12 +246,15 @@ public class SkateMain extends Thread {
 				// Create a rescale filter op that makes the image 50% opaque
 				float amp = soundControllerP5.getAmpByID(sk8r.soundNodeID);
 				float alpha = 0.25f + amp*0.75f;
-				float[] scales = { 1f, 1f, 1f, alpha }; // where amp is a float from the audio system
+				//float spriteScale = (sk8r.spriteSize*1.0f)/sk8r.spriteImg.getWidth();
+				//logger.info(sk8r.spriteSize + "  " + sk8r.spriteImg.getWidth() + "  " + spriteScale);
+				float[] scales = { 1.0f, 1.0f, 1.0f, alpha }; // where amp is a float from the audio system
 				float[] offsets = new float[4];
 				RescaleOp rop = new RescaleOp(scales, offsets, null);
 				
 				// Draw the image, applying the filter 
-				gci.drawImage(sk8r.spriteImg, rop, skaterX-skaterWidth/2, skaterY-skaterWidth/2);
+			
+				gci.drawImage(sk8r.spriteImg, rop, skaterX-sk8r.spriteImg.getWidth()/2, skaterY-sk8r.spriteImg.getHeight()/2);
 				
 
 				
@@ -283,7 +286,11 @@ public class SkateMain extends Thread {
 					gci.setColor(new Color(128,128,128));
 					Font afont = new Font("afont",Font.PLAIN,10);
 					gci.setFont(afont);
-					gci.drawString(sk8r.name + " @f" + sk8r.curFrame, skaterX + 32, skaterY + 9);			
+					gci.drawString(sk8r.name + " @f" + sk8r.curFrame, skaterX + 32, skaterY + 9);
+					
+					// draw image centers
+					gci.setColor(new Color(255,0,0));
+					gci.fillRect(skaterX,skaterY,2,2);
 				}
 				
 				
