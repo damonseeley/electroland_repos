@@ -69,8 +69,8 @@ public class SkateMain extends Thread {
 	public SkateMain() {
 
 		SHOWUI = true;
-		GUIWidth = 540;
-		GUIHeight = 600;
+		GUIWidth = 500;
+		GUIHeight = 562;
 		guiFrame = new GUIFrame(GUIWidth,GUIHeight);
 		guiPanel = new GUIPanel(GUIWidth,GUIHeight);
 		//add the panel to the top of the window

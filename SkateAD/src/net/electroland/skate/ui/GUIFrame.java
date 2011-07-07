@@ -145,7 +145,7 @@ public class GUIFrame extends JFrame implements KeyEventDispatcher {
 
 		menuBar.add(menu); // add new menut to the menubar
 
-		setJMenuBar(menuBar); //after the menubar is done add it to the jfame
+		//setJMenuBar(menuBar); //after the menubar is done add it to the jfame
 
 	}
 
