@@ -187,7 +187,7 @@ public class SoundControllerP5 {
 		for (Object o : msg.arguments()){
 			msgArgs += o + " ";
 		}
-		logger.info("INCOMING OSC = " + msgArgs);
+		//logger.info("INCOMING OSC = " + msgArgs);
 
 
 		if (msg.arguments()[0].toString().matches("amp")) {  //use matches instead
