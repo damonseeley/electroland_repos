@@ -92,6 +92,8 @@ public class SoundControllerP5 {
 		if (newSoundChannel == -1){
 			logger.info("Max->SES polyphony all used up - free up bus channels");
 		} else if (!globalSnd) {
+			// SUUUUUUUUUUUUUUUPER HACKY have to do this to make the max patch work
+			sendMaxPlay(soundFile, newSoundChannel);
 			sendMaxPlay(soundFile, newSoundChannel);
 		} else {
 			sendMaxGlobal(soundFile);
@@ -185,7 +187,7 @@ public class SoundControllerP5 {
 		for (Object o : msg.arguments()){
 			msgArgs += o + " ";
 		}
-		//logger.info("INCOMING OSC = " + msgArgs);
+		logger.info("INCOMING OSC = " + msgArgs);
 
 
 		if (msg.arguments()[0].toString().matches("amp")) {  //use matches instead
