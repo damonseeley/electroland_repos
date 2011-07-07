@@ -233,7 +233,7 @@ public class Skater implements Cloneable {
 				animComplete = false; // is this not defaulted already?
 			} else {
 				SkateMain.soundControllerP5.dellocateByID(soundNodeID, 1.0f);
-				percentComplete = 1.0;
+				percentComplete = 1.0; // why not use this instead of animComplete?
 				animComplete = true;									
 			}		
 		}
@@ -287,10 +287,20 @@ public class Skater implements Cloneable {
 		Point2D.Double two = new Point2D.Double(); // next quantized position
 		Point2D.Double pos = new Point2D.Double(); // tween position
 
-		if (curFrame == appxFrame || percentComplete == 1.0){
+		// not sure why we get bad values here, but this is a quick patch fix.
+		if (curFrame >= frameData.length){
+			curFrame = curFrame - 1;
+			appxFrame = curFrame;
+		}
+		if (isReversed && curFrame < 1){
+			curFrame = 0;  appxFrame = 0;
+		}
+
+		
+		if (curFrame == appxFrame || percentComplete == 1.0 || percentComplete == 0.0){
 			// special case: no interpolation required
-			pos.x = (Double)frameData[curFrame].get("x");
-			pos.y = (Double)frameData[curFrame].get("y");
+				pos.x = (Double)frameData[curFrame].get("x");
+				pos.y = (Double)frameData[curFrame].get("y");
 		}else{
 			if (isReversed){				
 				two.x = (Double)frameData[curFrame].get("x");
@@ -307,12 +317,11 @@ public class Skater implements Cloneable {
 		// interpolate
 		pos.x = (percent * (two.x - one.x)) + one.x;
 		pos.y = (percent * (two.y - one.y)) + one.y;
-		
 		// do conversions
 		pos.x *= cmConversion;
 		pos.y *= cmConversion;
 		pos.y *= -1;
-		
+
 		return pos;
 	}
 
