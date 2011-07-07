@@ -157,6 +157,7 @@ public class SkateMain extends Thread {
 						globalSkaterCount++; // this isn't calculated by the size of the List??
 						sk8Ref.startAnim();
 						sk8Ref.name += globalSkaterCount; // gah?!?!?
+						logger.info("skaters.size():" + skaters.size());
 					} catch (CloneNotSupportedException e) {
 						e.printStackTrace();
 					}

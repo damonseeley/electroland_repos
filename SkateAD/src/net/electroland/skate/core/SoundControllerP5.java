@@ -93,7 +93,7 @@ public class SoundControllerP5 {
 			logger.info("Max->SES polyphony all used up - free up bus channels");
 		} else if (!globalSnd) {
 			// SUUUUUUUUUUUUUUUPER HACKY have to do this to make the max patch work
-			sendMaxPlay(soundFile, newSoundChannel);
+			//sendMaxPlay(soundFile, newSoundChannel);
 			sendMaxPlay(soundFile, newSoundChannel);
 		} else {
 			sendMaxGlobal(soundFile);
@@ -103,6 +103,7 @@ public class SoundControllerP5 {
 		SoundNode soundNode = new SoundNode(nodeID,newSoundChannel,soundFile,0,globalSnd); //id, soundChannel, file, amplitude value
 		soundNodesByChannel.put(soundNode.soundChannel,soundNode);
 		soundNodesByID.put(soundNode.nodeID, soundNode);
+		logger.info("Sound maps sizes: " + soundNodesByChannel.size() + ", " + soundNodesByID.size());
 
 		// update SES position
 		updateSoundNodeByID(nodeID,pos,1.0f);
