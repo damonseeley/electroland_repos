@@ -224,7 +224,7 @@ public class Skater implements Cloneable {
 				percentComplete = 1.0 - percentComplete;
 			}
 			
-			curFrame = (int)(lengthFrames * percentComplete);
+			curFrame = (int)((lengthFrames -1) * percentComplete);
 
 			if ((isReversed && curFrame > 1) || (!isReversed && curFrame < lengthFrames - 1)){
 				//update the sound
@@ -278,24 +278,14 @@ public class Skater implements Cloneable {
 		elapsed = System.currentTimeMillis() - startTime;
 		percentComplete = (elapsed/1000.0) / lengthSeconds;
 		if (isReversed){
-			percentComplete = 1.0 - percentComplete;
+			percentComplete = 1.0 - percentComplete; 
 		}
-		double appxFrame = lengthFrames * percentComplete;		
+		double appxFrame = (lengthFrames - 1) * percentComplete;		
 		double percent = appxFrame - curFrame;
 
 		Point2D.Double one = new Point2D.Double(); // last quantized position
 		Point2D.Double two = new Point2D.Double(); // next quantized position
 		Point2D.Double pos = new Point2D.Double(); // tween position
-
-		// not sure why we get bad values here, but this is a quick patch fix.
-		if (curFrame >= frameData.length){
-			curFrame = curFrame - 1;
-			appxFrame = curFrame;
-		}
-		if (isReversed && curFrame < 1){
-			curFrame = 0;  appxFrame = 0;
-		}
-
 		
 		if (curFrame == appxFrame || percentComplete == 1.0 || percentComplete == 0.0){
 			// special case: no interpolation required
