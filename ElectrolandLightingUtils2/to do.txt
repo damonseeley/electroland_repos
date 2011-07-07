@@ -1,8 +1,9 @@
 2.) ELUCanvas2D and ARTNetRecipient need constants instead of "recipient"...
 3.) GUI
 4.) have ElectrolandProperties extend Properties?
-5.) move configuration out of ELUManager?
+5.) move configuration out of ELUManager (so you can save, for example).
 6.) any other refactoring? ENUM of propertie tags?
+7.) other protocols to ELU
 +-----------------------------------------+
 |[ - select canvas - ]                    | <-- drop down  
 +-----------------------------------------+
