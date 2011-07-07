@@ -368,6 +368,12 @@ public class SkateMain extends Thread {
 				sk8r.setLengthOverride(duration);
 			}
 			
+			String reverse = op.getOptional("skater", curSkater, "reverse");
+			if (reverse != null && reverse.equalsIgnoreCase("true"))
+			{
+				sk8r.isReversed = true;
+			}
+			
 			skaterDefs.add(sk8r);
 			skaterDict.put(curSkater, sk8r);
 		}

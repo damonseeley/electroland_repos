@@ -39,7 +39,7 @@ public class Skater implements Cloneable {
 	public BufferedImage spriteImg;
 	public int spriteSize;
 	public boolean globalSound = false;
-
+	protected boolean isReversed = false;
 	public double cmConversion = 2.54;  //incoming files should have inch units, by default do
 	public double canvasScale;
 
@@ -218,24 +218,24 @@ public class Skater implements Cloneable {
 		// prevent anything from happening if animation is already complete
 		if (!animComplete) {
 			elapsed = System.currentTimeMillis() - startTime;
-			percentComplete = (elapsed/1000.0) / lengthSeconds;
-			//logger.info(percentComplete * 100 + "%");
-			curFrame = (int)(lengthFrames * percentComplete);
-			//logger.info(curFrame);
+			percentComplete = (elapsed/1000.0) / lengthSeconds;								
 
-			if (curFrame < lengthFrames - 1){ // TODO: make sure we don't allow 1 frame shows!
+			if (isReversed){
+				percentComplete = 1.0 - percentComplete;
+			}
+			
+			curFrame = (int)(lengthFrames * percentComplete);
+
+			if ((isReversed && curFrame > 1) || (!isReversed && curFrame < lengthFrames - 1)){
 				//update the sound
 				Point2D.Double curPos = getMetric2DPosNow();
 				SkateMain.soundControllerP5.updateSoundNodeByID(soundNodeID, curPos, 1.0f);
-
-				animComplete = false;
+				animComplete = false; // is this not defaulted already?
 			} else {
 				SkateMain.soundControllerP5.dellocateByID(soundNodeID, 1.0f);
 				percentComplete = 1.0;
-				animComplete = true;
-			}
-		} else {
-			//do nothing until garbage collection
+				animComplete = true;									
+			}		
 		}
 	}
 
@@ -277,22 +277,32 @@ public class Skater implements Cloneable {
 		// get the percent of the way between frames that we are.
 		elapsed = System.currentTimeMillis() - startTime;
 		percentComplete = (elapsed/1000.0) / lengthSeconds;
-		double appxFrame = lengthFrames * percentComplete;
+		if (isReversed){
+			percentComplete = 1.0 - percentComplete;
+		}
+		double appxFrame = lengthFrames * percentComplete;		
 		double percent = appxFrame - curFrame;
 
 		Point2D.Double one = new Point2D.Double(); // last quantized position
 		Point2D.Double two = new Point2D.Double(); // next quantized position
 		Point2D.Double pos = new Point2D.Double(); // tween position
 
-		if (curFrame == appxFrame){
+		if (curFrame == appxFrame || percentComplete == 1.0){
 			// special case: no interpolation required
 			pos.x = (Double)frameData[curFrame].get("x");
 			pos.y = (Double)frameData[curFrame].get("y");
 		}else{
-			one.x = (Double)frameData[curFrame].get("x");
-			one.y = (Double)frameData[curFrame].get("y");
-			two.x = (Double)frameData[curFrame + 1].get("x");
-			two.y = (Double)frameData[curFrame + 1].get("y");
+			if (isReversed){				
+				two.x = (Double)frameData[curFrame].get("x");
+				two.y = (Double)frameData[curFrame].get("y");
+				one.x = (Double)frameData[curFrame - 1].get("x");
+				one.y = (Double)frameData[curFrame - 1].get("y");				
+			}else{
+				one.x = (Double)frameData[curFrame].get("x");
+				one.y = (Double)frameData[curFrame].get("y");
+				two.x = (Double)frameData[curFrame + 1].get("x");
+				two.y = (Double)frameData[curFrame + 1].get("y");				
+			}
 		}
 		// interpolate
 		pos.x = (percent * (two.x - one.x)) + one.x;
