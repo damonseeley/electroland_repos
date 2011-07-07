@@ -213,7 +213,7 @@ public class SoundControllerP5 {
 			// update the amplitude value for nodeID
 			//logger.info(message.getArguments()[2].getClass());
 			int channelEnded = Integer.parseInt(msg.arguments()[1].toString());
-
+			logger.info("BUFFER END FROM MAX for ch: " + channelEnded);
 			removeNodeByChannel(channelEnded);
 		}
 
@@ -258,7 +258,7 @@ public class SoundControllerP5 {
 		if (soundNodesByChannel.containsKey(ch)) {
 			soundNodesByChannel.get(ch).amplitude = amp;
 		} else {
-			//logger.info("ERROR: Tried to set amp value for non-existent soundNodeByChannel: " + ch);
+			logger.info("ERROR: Tried to set amp value for non-existent soundNodeByChannel: " + ch);
 		}
 	}
 	
