@@ -102,9 +102,9 @@ public class ELUManager implements Runnable {
 							elu.stop();
 							break;
 						case(2):
-//							if (input.length == 1)
-//								System.out.println("Current measured fps = " + elu.getMeasuredFPS());
-//							else{
+							if (input.length == 1)
+								System.out.println("Current measured fps = " + elu.getMeasuredFPS());
+							else{
 								try{
 									int fps = Integer.parseInt(input[1]);
 									if (fps > 0)
@@ -115,7 +115,7 @@ public class ELUManager implements Runnable {
 								{
 									System.out.println("Illegal fps: " + input[1]);
 								}
-//							}
+							}
 							break;
 						case(3):
 							elu.allOn();
