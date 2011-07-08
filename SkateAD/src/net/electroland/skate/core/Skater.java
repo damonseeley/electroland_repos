@@ -79,8 +79,8 @@ public class Skater implements Cloneable {
 		
 		BufferedImage img;
 		try {
-			//InputStream imgIS = new Util().getClass().getClassLoader().getResourceAsStream(spriteFile);
-			img = ImageIO.read(new File(spriteFile));
+			InputStream imgIS = new Util().getClass().getClassLoader().getResourceAsStream(spriteFile);
+			img = ImageIO.read(imgIS);
 			//int w = img.getWidth(null);
 			//int h = img.getHeight(null);
 			spriteImg = new BufferedImage(spriteSize, spriteSize, BufferedImage.TYPE_INT_ARGB);
