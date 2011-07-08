@@ -8,9 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import net.electroland.utils.ElectrolandProperties;
-import net.electroland.utils.NoDataException;
+import net.electroland.utils.FrameRateRingBuffer;
 import net.electroland.utils.OptionException;
-import net.electroland.utils.RunningAverage;
 
 import org.apache.log4j.Logger;
 
@@ -40,7 +39,8 @@ public class ELUManager implements Runnable {
 	boolean isRunning = false;
 	boolean isRunningTest = false;
 	
-	private RunningAverage frameRateCalculator = new RunningAverage((long)5000);
+	// assume a general 45 fps over 10 seconds.
+	private FrameRateRingBuffer fpsBuffer = new FrameRateRingBuffer(45 * 10);
 
 	// Unit test.  Does sweep continuously.
 	public static void main(String args[])
@@ -102,9 +102,9 @@ public class ELUManager implements Runnable {
 							elu.stop();
 							break;
 						case(2):
-							if (input.length == 1)
-								System.out.println("Current measured fps = " + elu.getMeasuredFPS());
-							else{
+//							if (input.length == 1)
+//								System.out.println("Current measured fps = " + elu.getMeasuredFPS());
+//							else{
 								try{
 									int fps = Integer.parseInt(input[1]);
 									if (fps > 0)
@@ -115,7 +115,7 @@ public class ELUManager implements Runnable {
 								{
 									System.out.println("Illegal fps: " + input[1]);
 								}
-							}
+//							}
 							break;
 						case(3):
 							elu.allOn();
@@ -239,7 +239,7 @@ public class ELUManager implements Runnable {
 		{
 			r.sync();
 		}
-		frameRateCalculator.markFrame();
+		fpsBuffer.markFrame();
 	}
 	
 	/**
@@ -272,14 +272,10 @@ public class ELUManager implements Runnable {
 	/**
 	 * Return the empirically measured frame rate.
 	 * @return
-	 */
+	 */ 
 	public double getMeasuredFPS()
 	{
-		try {
-			return this.frameRateCalculator.getFPS();
-		} catch (NoDataException e) {
-			return -1;
-		}
+		return this.fpsBuffer.getFPS();
 	}
 	
 	/**
