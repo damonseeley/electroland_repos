@@ -230,8 +230,11 @@ public class SkateMain extends Thread {
 				RescaleOp rop = new RescaleOp(scales, offsets, null);
 				
 				// Draw the image, applying the filter 
-				gci.drawImage(sk8r.spriteImg, rop, skaterX-sk8r.spriteImg.getWidth()/2, skaterY-sk8r.spriteImg.getHeight()/2);
-
+				try{
+					gci.drawImage(sk8r.spriteImg, rop, skaterX-sk8r.spriteImg.getWidth()/2, skaterY-sk8r.spriteImg.getHeight()/2);					
+				}catch(NullPointerException e){
+					e.printStackTrace();
+				}
 			}
 			
 			
