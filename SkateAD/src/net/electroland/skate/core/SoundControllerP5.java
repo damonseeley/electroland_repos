@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 
 import oscP5.OscMessage;
 import oscP5.OscP5;
-import processing.core.PApplet;
 
 public class SoundControllerP5 {
 
