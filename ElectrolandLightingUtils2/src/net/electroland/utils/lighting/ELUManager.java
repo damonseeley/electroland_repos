@@ -100,7 +100,7 @@ public class ELUManager implements Runnable {
 							break;
 						case(1):
 							elu.stop();
-							break;
+						break;
 						case(2):
 							if (input.length == 1)
 								System.out.println("Current measured fps = " + elu.getMeasuredFPS());
