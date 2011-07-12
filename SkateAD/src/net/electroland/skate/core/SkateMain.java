@@ -198,14 +198,8 @@ public class SkateMain extends Thread {
 			// Create a canvas image (ci) that will be synced to ELU
 			BufferedImage ci = new BufferedImage(skatearea.width,skatearea.height,ColorSpace.TYPE_RGB);
 			Graphics2D gci = (Graphics2D) ci.getGraphics();
-			
-			
 			// Draw a big black rect
-			//gci.setColor(new Color(0,0,0));
-			// TEMP - draw a grey rect for photography
-			gci.setColor(new Color(128,128,128));
-			
-			
+			gci.setColor(new Color(0,0,0));
 			gci.fillRect(0,0,ci.getWidth(),ci.getHeight());
 			
 			// Draw skaters, only if there are skaters
