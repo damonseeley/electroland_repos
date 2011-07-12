@@ -198,8 +198,14 @@ public class SkateMain extends Thread {
 			// Create a canvas image (ci) that will be synced to ELU
 			BufferedImage ci = new BufferedImage(skatearea.width,skatearea.height,ColorSpace.TYPE_RGB);
 			Graphics2D gci = (Graphics2D) ci.getGraphics();
+			
+			
 			// Draw a big black rect
-			gci.setColor(new Color(0,0,0));
+			//gci.setColor(new Color(0,0,0));
+			// TEMP - draw a grey rect for photography
+			gci.setColor(new Color(128,128,128));
+			
+			
 			gci.fillRect(0,0,ci.getWidth(),ci.getHeight());
 			
 			// Draw skaters, only if there are skaters
@@ -223,6 +229,7 @@ public class SkateMain extends Thread {
 				// Create a rescale filter op that makes the image 50% opaque
 				float amp = soundControllerP5.getAmpByID(sk8r.soundNodeID);
 				float alpha = 0.25f + amp*0.75f;
+				//logger.info("Alpha = " + alpha);
 				//float spriteScale = (sk8r.spriteSize*1.0f)/sk8r.spriteImg.getWidth();
 				//logger.info(sk8r.spriteSize + "  " + sk8r.spriteImg.getWidth() + "  " + spriteScale);
 				float[] scales = { 1.0f, 1.0f, 1.0f, alpha }; // where amp is a float from the audio system
