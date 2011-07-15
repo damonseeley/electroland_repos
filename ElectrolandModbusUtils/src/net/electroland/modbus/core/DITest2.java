@@ -3,7 +3,7 @@ package net.electroland.modbus.core;
 import net.wimpi.modbus.ModbusException;
 import net.wimpi.modbus.facade.ModbusTCPMaster;
 import net.wimpi.modbus.procimg.InputRegister;
-import net.wimpi.modbus.util.ModbusUtil;
+import net.wimpi.modbus.util.BitVector;
 
 public class DITest2  extends Thread {
 
@@ -29,7 +29,7 @@ public class DITest2  extends Thread {
 		}
 
 		/////////////// THREAD STUFF
-		framerate = 4;
+		framerate = 30;
 		isRunning = true;
 		timer = new Timer(framerate);
 		start();
@@ -48,18 +48,25 @@ public class DITest2  extends Thread {
 				 * just have to parse it out
 				 */
 				InputRegister[] regs = mtm.readInputRegisters(0, 1);
+				//BitVector bv1 = mtm.readCoils(0, 8);
+				//System.out.println(bv1.toString());
 				//BitVector discretes = mtm.readInputDiscretes(0, 1);
+				
+				//byte[] bts = regs[0].toBytes();
+				
+				BitVector bv = BitVector.createBitVector(regs[0].toBytes());
+				
+				System.out.println(bv.toString());
+				
 
 				for (InputRegister ir : regs){
-					String s = ir.toString();
+					//System.out.println(ir.getValue());
+					//for inputs 1-8, set high serially returns:
+					// 1,2,4,8,16,32,64,128
+					//System.out.println(Integer.toBinaryString(0x10000 | ir.getValue()).substring(1));
 
-					byte[] bts = ModbusUtil.toHex(ir.getValue());
-					for (int i=0; i<bts.length; i++) {
-						System.out.print(ModbusUtil.toHex(bts));
-					}
-					System.out.print(" ");
 				}
-				System.out.println("");
+				//System.out.println("");
 
 				/** END parsing work
 				 * 
