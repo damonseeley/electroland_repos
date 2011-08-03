@@ -199,7 +199,8 @@ public class SkateMain extends Thread {
 			BufferedImage ci = new BufferedImage(skatearea.width,skatearea.height,ColorSpace.TYPE_RGB);
 			Graphics2D gci = (Graphics2D) ci.getGraphics();
 			// Draw a big black rect
-			gci.setColor(new Color(0,0,0));
+			int baseBright = (int)(baseBrightness * 255);
+			gci.setColor(new Color(baseBright,baseBright,baseBright));
 			gci.fillRect(0,0,ci.getWidth(),ci.getHeight());
 			
 			// Draw skaters, only if there are skaters
@@ -348,6 +349,7 @@ public class SkateMain extends Thread {
 	public static boolean audioEnabled = true;
 	public Point2D.Double audioListenerPos;
 	public static String audioIP;
+	public static double baseBrightness;
 	
 	public void loadSkaterProps(String skatePropsFile) throws IOException, OptionException
 	{	
@@ -391,6 +393,8 @@ public class SkateMain extends Thread {
 		audioEnabled = Boolean.parseBoolean(op.getRequired("settings", "global", "audio"));
 		audioListenerPos = new Point2D.Double(op.getRequiredDouble("settings", "global", "listenerX"),op.getRequiredDouble("settings", "global", "listenerY"));
 		audioIP = op.getRequired("settings", "global", "audioIP");
+		baseBrightness = op.getRequiredDouble("settings", "global", "baseBrightness");
+		//System.out.println(baseBrightness);
 		String startStr = op.getOptional("settings", "global", "startsequence");
 		if (startStr != null){
 			this.startSequence = sequences.get(startStr);
