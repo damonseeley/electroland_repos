@@ -98,7 +98,7 @@ public class SkateMain extends Thread {
 
 		///////// Load props and create skaters
 		try {
-			loadSkaterProps("SkateApp.properties");
+			loadSkaterProps("WalkApp.properties");
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (OptionException e) {
