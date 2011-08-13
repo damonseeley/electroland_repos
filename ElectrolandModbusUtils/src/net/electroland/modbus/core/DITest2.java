@@ -1,5 +1,9 @@
 package net.electroland.modbus.core;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import net.wimpi.modbus.ModbusException;
 import net.wimpi.modbus.facade.ModbusTCPMaster;
 import net.wimpi.modbus.procimg.InputRegister;
@@ -15,7 +19,8 @@ public class DITest2  extends Thread {
 	private static Timer timer;
 	public static long curTime = System.currentTimeMillis(); //  time of frame start to aviod lots of calls to System.getcurentTime()
 	public static long elapsedTime = -1; //  time between start of cur frame and last frame to avoid re calculating passage of time allover the place
-
+	InputStreamReader isr;
+    BufferedReader br;
 
 	public DITest2() {
 
@@ -27,13 +32,16 @@ public class DITest2  extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
 		/////////////// THREAD STUFF
 		framerate = 30;
 		isRunning = true;
 		timer = new Timer(framerate);
 		start();
 	}
+	
+	public int trips = 0;
+	public boolean tripped = false;
 
 	public void run() {
 		timer.start();
@@ -41,6 +49,20 @@ public class DITest2  extends Thread {
 
 		while (isRunning) {
 			try {
+				
+				/*
+				isr = new InputStreamReader(System.in);
+			    br = new BufferedReader(isr);
+			    
+			    try {
+					String s = br.readLine();
+					System.out.println(trips);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				*/
+				
 				//System.out.println(mtm.readInputRegisters(0, 8).getClass());
 				//System.out.println("Length = " + mtm.readInputRegisters(0, 8).length);
 
@@ -56,8 +78,22 @@ public class DITest2  extends Thread {
 				
 				BitVector bv = BitVector.createBitVector(regs[0].toBytes());
 				
-				System.out.println(bv.toString());
+				//System.out.println(bv.toString());
+				//System.out.println(bv.toString().charAt(14));
+				if (bv.toString().charAt(14) == "1".charAt(0)) {
+
+				if (!tripped) {
+						trips++;
+						tripped = true;
+						System.out.println(trips);
+					}
+					
+				}
 				
+				if (bv.toString().charAt(14) == "0".charAt(0)) {
+					tripped = false;
+				}
+
 
 				for (InputRegister ir : regs){
 					//System.out.println(ir.getValue());
@@ -66,8 +102,8 @@ public class DITest2  extends Thread {
 					//System.out.println(Integer.toBinaryString(0x10000 | ir.getValue()).substring(1));
 
 				}
-				//System.out.println("");
 
+			    
 				/** END parsing work
 				 * 
 				 */
