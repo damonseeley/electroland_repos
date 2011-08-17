@@ -34,7 +34,7 @@ public class DITest2  extends Thread {
 		}
 		
 		/////////////// THREAD STUFF
-		framerate = 30;
+		framerate = 60;
 		isRunning = true;
 		timer = new Timer(framerate);
 		start();
@@ -79,8 +79,8 @@ public class DITest2  extends Thread {
 				BitVector bv = BitVector.createBitVector(regs[0].toBytes());
 				
 				//System.out.println(bv.toString());
-				//System.out.println(bv.toString().charAt(14));
-				if (bv.toString().charAt(14) == "1".charAt(0)) {
+				//System.out.println(bv.toString().charAt(9));
+				if (bv.toString().charAt(9) == "1".charAt(0)) {
 
 				if (!tripped) {
 						trips++;
@@ -90,7 +90,7 @@ public class DITest2  extends Thread {
 					
 				}
 				
-				if (bv.toString().charAt(14) == "0".charAt(0)) {
+				if (bv.toString().charAt(9) == "0".charAt(0)) {
 					tripped = false;
 				}
 
