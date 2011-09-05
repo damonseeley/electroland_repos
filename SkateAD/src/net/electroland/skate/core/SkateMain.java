@@ -98,7 +98,7 @@ public class SkateMain extends Thread {
 
 		///////// Load props and create skaters
 		try {
-			loadSkaterProps("WalkApp.properties");
+			loadSkaterProps("SkateApp.properties");
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (OptionException e) {
@@ -223,8 +223,10 @@ public class SkateMain extends Thread {
 				
 				// Create a rescale filter op that makes the image 50% opaque
 				float amp = soundControllerP5.getAmpByID(sk8r.soundNodeID);
-				//float alpha = 0.25f + amp*0.75f;
-				float alpha = 0.1f + amp*0.9f;
+				//float alpha = 0.25f + amp*0.75f; //original skate calc
+				//ampComponent
+				//float alpha = 0.1f + amp*0.9f; //rethink calculation
+				float alpha = (1.0f-ampComponent) + amp*ampComponent;
 				//logger.info("Alpha = " + alpha);
 				//float spriteScale = (sk8r.spriteSize*1.0f)/sk8r.spriteImg.getWidth();
 				//logger.info(sk8r.spriteSize + "  " + sk8r.spriteImg.getWidth() + "  " + spriteScale);
@@ -351,6 +353,7 @@ public class SkateMain extends Thread {
 	public Point2D.Double audioListenerPos;
 	public static String audioIP;
 	public static double baseBrightness;
+	public static float ampComponent;
 	
 	public void loadSkaterProps(String skatePropsFile) throws IOException, OptionException
 	{	
@@ -395,6 +398,8 @@ public class SkateMain extends Thread {
 		audioListenerPos = new Point2D.Double(op.getRequiredDouble("settings", "global", "listenerX"),op.getRequiredDouble("settings", "global", "listenerY"));
 		audioIP = op.getRequired("settings", "global", "audioIP");
 		baseBrightness = op.getRequiredDouble("settings", "global", "baseBrightness");
+		ampComponent = Float.parseFloat(op.getRequired("settings", "global", "ampComponent"));
+		logger.info("ampComponent = " + ampComponent);
 		//System.out.println(baseBrightness);
 		String startStr = op.getOptional("settings", "global", "startsequence");
 		if (startStr != null){
