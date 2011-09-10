@@ -47,7 +47,7 @@ public class DITest2  extends Thread {
 		}
 		
 		/////////////// THREAD STUFF
-		framerate = 60;
+		framerate = 30;
 		isRunning = true;
 		timer = new Timer(framerate);
 		start();
@@ -89,15 +89,22 @@ public class DITest2  extends Thread {
 				//byte[] bts = regs[0].toBytes();
 
 				BitVector bv = BitVector.createBitVector(regs[0].toBytes());
-
-				//System.out.println(bv.toString());
+				
+				for (int i=0; i < bv.size(); i++)
+				{
+					if (bv.getBit(i)){
+						System.out.println("ON on channel " + i);
+					}
+				}
+//				System.out.println();
+//				System.out.println(bv.toString());
 				//System.out.println(bv.toString().charAt(9));
 				for (int i=0; i<sensors.length; i++){
 				if (bv.toString().charAt(i) == "1".charAt(0)) {
 					if (!sensors[i]) {
 						tripTimes[i] = System.currentTimeMillis();
 						sensors[i] = true;
-						logger.info("CH " + i + " ON");
+//						logger.info("CH " + i + " ON");
 					}
 				}
 				
