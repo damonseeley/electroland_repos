@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 
 public class DITest2  extends Thread {
 
-	ModbusTCPMaster mtm;
+	ModbusTCPMaster mtm1,mtm2;
 
 	//Thread stuff
 	public static boolean isRunning;
@@ -30,10 +30,14 @@ public class DITest2  extends Thread {
 
 	public DITest2() {
 
-		mtm = new ModbusTCPMaster("192.168.1.61");
+		mtm1 = new ModbusTCPMaster("192.168.1.61");
+		mtm2 = new ModbusTCPMaster("10.22.33.120");
 
+		
+		
 		try {
-			mtm.connect();
+			mtm1.connect();
+			mtm2.connect();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -62,76 +66,15 @@ public class DITest2  extends Thread {
 		while (isRunning) {
 			try {
 
-				/*
-				isr = new InputStreamReader(System.in);
-			    br = new BufferedReader(isr);
-
-			    try {
-					String s = br.readLine();
-					System.out.println(trips);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				 */
-
-				//System.out.println(mtm.readInputRegisters(0, 8).getClass());
-				//System.out.println("Length = " + mtm.readInputRegisters(0, 8).length);
-
 				/** JOANNA - work in here.  The readInputRegisters delivers the data, then we
 				 * just have to parse it out
 				 */
-				InputRegister[] regs = mtm.readInputRegisters(0, 1);
-				//BitVector bv1 = mtm.readCoils(0, 8);
-				//System.out.println(bv1.toString());
-				//BitVector discretes = mtm.readInputDiscretes(0, 1);
+				InputRegister[] regs1 = mtm1.readInputRegisters(0, 1);
+				InputRegister[] regs2 = mtm2.readInputRegisters(0, 1);
 
-				//byte[] bts = regs[0].toBytes();
-
-				BitVector bv = BitVector.createBitVector(regs[0].toBytes());
-				
-				for (int i=0; i < bv.size(); i++)
-				{
-					if (bv.getBit(i)){
-						System.out.println("ON on channel " + i);
-					}
-				}
-//				System.out.println();
-//				System.out.println(bv.toString());
-				//System.out.println(bv.toString().charAt(9));
-				for (int i=0; i<sensors.length; i++){
-				if (bv.toString().charAt(i) == "1".charAt(0)) {
-					if (!sensors[i]) {
-						tripTimes[i] = System.currentTimeMillis();
-						sensors[i] = true;
-//						logger.info("CH " + i + " ON");
-					}
-				}
-				
-
-				if (bv.toString().charAt(i) == "0".charAt(0)) {
-					if (sensors[i]) {
-						double duration = (System.currentTimeMillis() - tripTimes[i])/1000;
-						logger.info("CH " + i + " OFF, duration: " + duration);
-					}
-					sensors[i] = false;
-				}
-				}
-
-
-				for (InputRegister ir : regs){
-					//System.out.println(ir.getValue());
-					//for inputs 1-8, set high serially returns:
-					// 1,2,4,8,16,32,64,128
-					//System.out.println(Integer.toBinaryString(0x10000 | ir.getValue()).substring(1));
-
-				}
-
-
-				/** END parsing work
-				 * 
-				 */
-
+				printOutput(regs1[0].toBytes(), "phoenix" + regs1.length);
+				printOutput(regs2[0].toBytes(), "beckoff" + regs2.length);
+				System.out.println(regs1[0].toBytes().length);
 
 			} catch (ModbusException e) {
 				// TODO Auto-generated catch block
@@ -146,6 +89,23 @@ public class DITest2  extends Thread {
 
 	}
 
+	public static void printOutput(byte[] bytes, String label)
+	{
+		BitVector bv = BitVector.createBitVector(bytes);
+		
+		for (int i=0; i < bv.size(); i++)
+		{
+			System.out.print(bv.getBit(i) ? '1' : '0');
+			if ((i+1) % 8 == 0){
+				System.out.print(' ');
+			}
+		}
+		System.out.println("<-- us on " + label);
+//		System.out.println(bv.toString() + " " + label);
+//		System.out.println(Util.bytesToHex(bytes, bytes.length)  + " " + label);
+		
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		DITest2 dit = new DITest2();
