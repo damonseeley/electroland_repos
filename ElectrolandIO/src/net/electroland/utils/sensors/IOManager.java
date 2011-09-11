@@ -2,9 +2,7 @@ package net.electroland.utils.sensors;
 
 import java.net.InetAddress;
 
-public class IOManager implements Runnable {
-
-	private Thread thread;
+public class IOManager {
 	
 	public void init()
 	{
@@ -13,12 +11,6 @@ public class IOManager implements Runnable {
 	
 	public void init(String propsFileName)
 	{
-		
-	}
-
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
 		
 	}
 
