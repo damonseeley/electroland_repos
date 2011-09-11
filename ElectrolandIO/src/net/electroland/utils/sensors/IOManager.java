@@ -4,6 +4,12 @@ import java.net.InetAddress;
 
 public class IOManager {
 	
+	// for diagnostic purposes
+	public static void main(String[] args)
+	{
+		
+	}
+	
 	public void init()
 	{
 		init("sensor.properties");
