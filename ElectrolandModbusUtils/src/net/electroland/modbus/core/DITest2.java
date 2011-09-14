@@ -30,13 +30,13 @@ public class DITest2  extends Thread {
 
 	public DITest2() {
 
-		mtm1 = new ModbusTCPMaster("192.168.1.61");
+		//mtm1 = new ModbusTCPMaster("192.168.1.61");
 		mtm2 = new ModbusTCPMaster("10.22.33.120");
 
 		
 		
 		try {
-			mtm1.connect();
+			//mtm1.connect();
 			mtm2.connect();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -51,17 +51,23 @@ public class DITest2  extends Thread {
 		}
 		
 		/////////////// THREAD STUFF
-		framerate = 30;
+		framerate = 999;
 		isRunning = true;
 		timer = new Timer(framerate);
 		start();
 	}
 
 	
-
+	private double lastframe;
+	private double execTime;
+	private int cycle = 0;
+	private int reportFreq = 100;
+	private double[] execAvg = new double[reportFreq];
+	
 	public void run() {
 		timer.start();
 		curTime = System.currentTimeMillis();
+		lastframe = curTime;
 
 		while (isRunning) {
 			try {
@@ -69,17 +75,30 @@ public class DITest2  extends Thread {
 				/** JOANNA - work in here.  The readInputRegisters delivers the data, then we
 				 * just have to parse it out
 				 */
-				InputRegister[] regs1 = mtm1.readInputRegisters(0, 1);
+				//InputRegister[] regs1 = mtm1.readInputRegisters(0, 1);
 				InputRegister[] regs2 = mtm2.readInputRegisters(0, 1);
 
-				printOutput(regs1[0].toBytes(), "phoenix" + regs1.length);
-				printOutput(regs2[0].toBytes(), "beckoff" + regs2.length);
-				System.out.println(regs1[0].toBytes().length);
+				if (cycle >= reportFreq){
+					double rateAvg = 0.0;
+					for (int i=0; i< execAvg.length; i++){
+						rateAvg += execAvg[i];
+					}
+					rateAvg  = rateAvg/execAvg.length;
+					//printOutput(regs1[0].toBytes(), "phoenix" + regs1.length);
+					printOutput(regs2[0].toBytes(), "beckoff " + regs2.length);
+					System.out.println("Frame Exec avg " + rateAvg + " ms");
+					cycle = 0;
+				}
+
 
 			} catch (ModbusException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			execAvg[cycle] = System.currentTimeMillis() - lastframe;
+			lastframe = System.currentTimeMillis();
+			cycle++;
 
 			//Thread ops
 			//logger.info(timer.sleepTime);
