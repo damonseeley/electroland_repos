@@ -7,10 +7,23 @@ import net.electroland.utils.sensors.filters.IOFilter;
 
 public abstract class IOState {
 
-	private String id;
-	private Vector<IOFilter> filters = new Vector<IOFilter>();
-	private Vector<String> tags = new Vector<String>();
+	protected String id;
+	protected Vector<IOFilter> filters = new Vector<IOFilter>();
+	protected int x,y,z;
+	protected String units;
 	
+	public int getX() {
+		return x;
+	}
+	public int getY() {
+		return y;
+	}
+	public int getZ() {
+		return z;
+	}
+	public String getUnits() {
+		return units;
+	}
 	final public String getID()
 	{
 		return id;
@@ -19,11 +32,6 @@ public abstract class IOState {
 	{
 		return filters;
 	}
-	final public Collection<String> getTags()
-	{
-		return tags;
-	}
-
 	final protected void setID(String id)
 	{
 		this.id = id;
@@ -31,9 +39,5 @@ public abstract class IOState {
 	final protected void addFilter(IOFilter filter)
 	{
 		filters.add(filter);
-	}
-	final protected void addTag(String tag)
-	{
-		tags.add(tag);
 	}
 }
