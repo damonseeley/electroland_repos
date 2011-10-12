@@ -31,7 +31,7 @@ public class DITest2  extends Thread {
 	public DITest2() {
 
 		//mtm1 = new ModbusTCPMaster("192.168.1.61");
-		mtm2 = new ModbusTCPMaster("10.22.33.120");
+		mtm2 = new ModbusTCPMaster("192.168.247.22");
 
 		
 		
