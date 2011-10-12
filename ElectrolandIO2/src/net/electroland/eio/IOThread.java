@@ -2,16 +2,16 @@ package net.electroland.eio;
 
 import java.util.Collection;
 
-import net.electroland.eio.devices.IONode;
+import net.electroland.eio.devices.IODevice;
 
 public class IOThread implements Runnable {
 
 	protected int rate = 1;
 	private Thread thread = null;
-	private Collection<IONode> devices;
+	private Collection<IODevice> devices;
 	private boolean isRunning = false;
 	
-	public IOThread(Collection<IONode> devices, int rate)
+	public IOThread(Collection<IODevice> devices, int rate)
 	{
 		this.devices = devices;
 		this.rate = rate;
@@ -21,7 +21,7 @@ public class IOThread implements Runnable {
 	public void run() {
 
 		// connect all
-		for (IONode device: devices)
+		for (IODevice device: devices)
 		{
 			device.connect();
 		}
@@ -31,7 +31,7 @@ public class IOThread implements Runnable {
 			long start = System.currentTimeMillis();
 			
 			// sync states
-			for (IONode device: devices)
+			for (IODevice device: devices)
 			{
 				device.readInput();
 				device.sendOutput();
@@ -53,7 +53,7 @@ public class IOThread implements Runnable {
 		}
 
 		// close all
-		for (IONode device: devices)
+		for (IODevice device: devices)
 		{
 			device.close();
 		}

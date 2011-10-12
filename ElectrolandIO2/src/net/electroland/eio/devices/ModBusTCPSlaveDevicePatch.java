@@ -1,10 +1,10 @@
 package net.electroland.eio.devices;
 
-public class PhoenixPatch {
+public class ModBusTCPSlaveDevicePatch {
 
     int startRef, bit;
 
-    public PhoenixPatch(int startRef, int bit)
+    public ModBusTCPSlaveDevicePatch(int startRef, int bit)
     {
         this.startRef = startRef;
         this.bit = bit;

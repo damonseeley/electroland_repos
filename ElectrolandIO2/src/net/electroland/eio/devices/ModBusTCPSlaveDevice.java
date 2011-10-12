@@ -10,10 +10,13 @@ import net.wimpi.modbus.facade.ModbusTCPMaster;
 import net.wimpi.modbus.procimg.InputRegister;
 import net.wimpi.modbus.util.BitVector;
 
-public class PhoenixIONode extends IONode {
+import org.apache.log4j.Logger;
 
+public class ModBusTCPSlaveDevice extends IODevice {
+
+    private static Logger logger = Logger.getLogger(ModBusTCPSlaveDevice.class);
     protected String address;
-    protected Collection <PhoenixRegister> registers;
+    protected Collection <ModBusTCPSlaveDeviceRegister> registers;
     protected HashMap <String, Integer> portToRegisterBit = new HashMap<String, Integer>();
     protected HashMap <Integer, IOState> registerBitToState = new HashMap <Integer, IOState>();
  
@@ -40,7 +43,7 @@ public class PhoenixIONode extends IONode {
     @Override
     public synchronized void readInput() 
     {
-        for (PhoenixRegister r : registers){
+        for (ModBusTCPSlaveDeviceRegister r : registers){
             try {
                 InputRegister[] data = connection.readInputRegisters(r.startRef, r.length);
                 // for now, we're only doing the first word. 
@@ -48,13 +51,17 @@ public class PhoenixIONode extends IONode {
                 byte[] b = data[0].toBytes();
 
                 BitVector bv = BitVector.createBitVector(b);
-//                System.out.println(bv.toString());
+//                logger.debug(address + ":\t bits 0 to " + (bv.size()-1) + ":\t " + bv.toString());
+
                 for (int i=0; i < bv.size(); i++)
                 {
-                   IState state =  (IState)(registerBitToState.get(i + r.length));
+                   IState state =  (IState)(registerBitToState.get(i + r.startRef));
                     if (state != null)
                     {
+//                        System.out.println("setting " + (i + r.startRef) + " to " + bv.getBit(i));
                         state.setState(bv.getBit(i));
+                    }else{
+//                        System.out.println("failed " + (i + r.startRef) + " to " + bv.getBit(i));
                     }
                 }
                 // for each bit, see if a state is listening on it (+startRef)
