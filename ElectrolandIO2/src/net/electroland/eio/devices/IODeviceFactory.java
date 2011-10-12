@@ -5,7 +5,7 @@ import java.util.Map;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.ParameterMap;
 
-abstract public class IONodeFactory {
+abstract public class IODeviceFactory {
 
     /**
      * Configure the Factory using all variables assigned to this device.
@@ -38,5 +38,5 @@ abstract public class IONodeFactory {
      * @param props
      * @return
      */
-    abstract public IONode createInstance(ParameterMap params) throws OptionException;
+    abstract public IODevice createInstance(ParameterMap params) throws OptionException;
 }

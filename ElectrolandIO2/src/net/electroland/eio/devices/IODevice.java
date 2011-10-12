@@ -3,7 +3,7 @@ package net.electroland.eio.devices;
 import net.electroland.eio.IOState;
 
 // TODO: rename this to IONode
-abstract public class IONode {
+abstract public class IODevice {
 
 	abstract public void connect();
 

@@ -6,12 +6,12 @@ import java.util.Map;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.ParameterMap;
 
-public class PhoenixIONodeFactory extends IONodeFactory {
+public class ModBusTCPSlaveDeviceFactory extends IODeviceFactory {
 
     // maps port (by name) to regester start bit + offset bit (this is the actual port map)
     HashMap<String, Integer> portToRegisterBit = new HashMap<String, Integer>();
     // store registers
-    HashMap<String, PhoenixRegister> registers = new HashMap<String, PhoenixRegister>();
+    HashMap<String, ModBusTCPSlaveDeviceRegister> registers = new HashMap<String, ModBusTCPSlaveDeviceRegister>();
 
     @Override
     public void prototypeDevice(Map<String, ParameterMap> props) throws OptionException{
@@ -27,7 +27,7 @@ public class PhoenixIONodeFactory extends IONodeFactory {
                 //   store the register start bit and length
                 int startRef = props.get(s).getRequiredInt("startRef");
                 int length = props.get(s).getRequiredInt("length");
-                registers.put(s, new PhoenixRegister(startRef, length));
+                registers.put(s, new ModBusTCPSlaveDeviceRegister(startRef, length));
             }
         }
         // get patches
@@ -49,10 +49,10 @@ public class PhoenixIONodeFactory extends IONodeFactory {
     }
 
     @Override
-    public IONode createInstance(ParameterMap params) throws OptionException{
+    public IODevice createInstance(ParameterMap params) throws OptionException{
         // ionode.phoenix1 = $type phoenix4DI8D0 $ipaddress 192.168.1.61
         // create an instance of IODevice
-        PhoenixIONode node = new PhoenixIONode();
+        ModBusTCPSlaveDevice node = new ModBusTCPSlaveDevice();
         node.address = params.getRequired("ipaddress");
         node.portToRegisterBit = portToRegisterBit;
         node.registers = registers.values();
