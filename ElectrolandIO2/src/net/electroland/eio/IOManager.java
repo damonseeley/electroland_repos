@@ -19,7 +19,7 @@ public class IOManager {
 
     private IOThread inputThread;
     private int pollrate;
-    private Map<String, IODevice> ionodes;
+    private Map<String, IODevice> iodevices;
     private Map<String, List<IOState>> tags;
     private static Logger logger = Logger.getLogger(IOManager.class);    
 
@@ -119,7 +119,7 @@ public class IOManager {
     
     public void load(String propsFileName) throws OptionException
     {
-        ionodes = new HashMap<String, IODevice>();
+        iodevices = new HashMap<String, IODevice>();
         tags = new HashMap<String,List<IOState>>();
 
         ElectrolandProperties op = new ElectrolandProperties(propsFileName);
@@ -127,31 +127,31 @@ public class IOManager {
         // set global params
         pollrate = op.getRequiredInt("settings", "global", "pollrate");
 
-        // ******* IONodes *******
+        // ******* IODevices *******
         Hashtable<String,IODeviceFactory> factories = new Hashtable<String,IODeviceFactory>();
-       // ionodeTypes
+       // iodeviceTypes
         // for each type
         //    find the type's factory class and store it (mapped to type)
-        for (String name : op.getObjectNames("ionodeType"))
+        for (String name : op.getObjectNames("iodeviceType"))
         {
-            IODeviceFactory factory = (IODeviceFactory)op.getRequiredClass("ionodeType", name, "factory");
+            IODeviceFactory factory = (IODeviceFactory)op.getRequiredClass("iodeviceType", name, "factory");
             //  call prototypeDevice(ALL_VARIABLES_RELATED_TO_PROTOTYPE)
             factory.prototypeDevice(op.getObjects(name));
             factories.put(name, factory);
         }
 
-        // ionodes
-        // get all ionode objects
-        for (String name: op.getObjectNames("ionodedevice"))
+        // iodevices
+        // get all iodevice objects
+        for (String name: op.getObjectNames("iodevice"))
         {
-            String type = op.getRequired("ionodedevice", name, "type");
+            String type = op.getRequired("iodevice", name, "type");
             //  find the factory for the type (as appropriate)
             IODeviceFactory factory = factories.get(type);
             System.out.println("Creating instance of " + type);
             //  call createInstance(REST_OF_INODE_PARAMS)
-            IODevice node = factory.createInstance(op.getParams("ionodedevice", name));
+            IODevice node = factory.createInstance(op.getParams("iodevice", name));
             //  store the Device, hashed against it's name
-            ionodes.put(name, node);
+            iodevices.put(name, node);
         }
 
         // ******* IOStates *******
@@ -197,8 +197,8 @@ public class IOManager {
                     states.add(state);
                 }
             }
-            //   find the ionode
-            IODevice node = ionodes.get(op.getRequired("istate", name, "ionode"));
+            //   find the iodevice
+            IODevice node = iodevices.get(op.getRequired("istate", name, "iodevice"));
             //   call patch(state, port)
             node.patch(state, op.getRequired("istate", name, "port"));
         }
@@ -208,9 +208,9 @@ public class IOManager {
 
     public void start()
     {
-        if (inputThread == null && ionodes != null)
+        if (inputThread == null && iodevices != null)
         {
-            inputThread = new IOThread(ionodes.values(), pollrate);
+            inputThread = new IOThread(iodevices.values(), pollrate);
             inputThread.start();
         }
     }
@@ -246,7 +246,7 @@ public class IOManager {
 
     public void debug()
     {
-        logger.info(ionodes);
+        logger.info(iodevices);
         logger.info(tags);
     }
 }
