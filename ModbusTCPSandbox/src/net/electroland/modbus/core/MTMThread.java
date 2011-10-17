@@ -1,6 +1,7 @@
 package net.electroland.modbus.core;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 
 import net.wimpi.modbus.ModbusException;
@@ -10,9 +11,9 @@ import net.wimpi.modbus.util.BitVector;
 
 import org.apache.log4j.Logger;
 
-public class DITest2  extends Thread {
+public class MTMThread  extends Thread {
 
-	ModbusTCPMaster mtm1,mtm2;
+	ModbusTCPMaster mtm;
 
 	//Thread stuff
 	public static boolean isRunning;
@@ -23,21 +24,20 @@ public class DITest2  extends Thread {
 	InputStreamReader isr;
 	BufferedReader br;
 
-	static Logger logger = Logger.getLogger(DITest2.class);
+	static Logger logger = Logger.getLogger(MTMThread.class);
 	
 	public boolean[] sensors = new boolean[18];
 	public double[] tripTimes = new double[sensors.length];
 
-	public DITest2() {
-
-		//mtm1 = new ModbusTCPMaster("192.168.1.61");
-		mtm2 = new ModbusTCPMaster("192.168.247.22");
-
+	public MTMThread(String ip, int fr) {
 		
+		framerate = fr;
+
+		mtm = new ModbusTCPMaster(ip);
+
 		
 		try {
-			//mtm1.connect();
-			mtm2.connect();
+			mtm.connect();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -51,7 +51,6 @@ public class DITest2  extends Thread {
 		}
 		
 		/////////////// THREAD STUFF
-		framerate = 999;
 		isRunning = true;
 		timer = new Timer(framerate);
 		start();
@@ -76,17 +75,18 @@ public class DITest2  extends Thread {
 				 * just have to parse it out
 				 */
 				//InputRegister[] regs1 = mtm1.readInputRegisters(0, 1);
-				InputRegister[] regs2 = mtm2.readInputRegisters(0, 1);
+				InputRegister[] regs = mtm.readInputRegisters(0, 1);
 
 				if (cycle >= reportFreq){
 					double rateAvg = 0.0;
+					
 					for (int i=0; i< execAvg.length; i++){
 						rateAvg += execAvg[i];
 					}
 					rateAvg  = rateAvg/execAvg.length;
-					//printOutput(regs1[0].toBytes(), "phoenix" + regs1.length);
-					printOutput(regs2[0].toBytes(), "beckoff " + regs2.length);
-					System.out.println("Frame Exec avg " + rateAvg + " ms");
+					
+					printOutput(regs[0].toBytes(), "phoenix" + regs.length);
+					//System.out.println("Frame Exec avg " + rateAvg + " ms");
 					cycle = 0;
 				}
 
@@ -101,7 +101,6 @@ public class DITest2  extends Thread {
 			cycle++;
 
 			//Thread ops
-			//logger.info(timer.sleepTime);
 			timer.block();
 		}
 
@@ -119,16 +118,15 @@ public class DITest2  extends Thread {
 				System.out.print(' ');
 			}
 		}
-		System.out.println("<-- us on " + label);
 //		System.out.println(bv.toString() + " " + label);
 //		System.out.println(Util.bytesToHex(bytes, bytes.length)  + " " + label);
 		
 	}
 	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		DITest2 dit = new DITest2();
-
+	public void stopClean(){
+		
+		//isRunning = false;
+		//mtm.disconnect();
 	}
 
 }
