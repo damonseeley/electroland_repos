@@ -1,117 +1,125 @@
 package net.electroland.modbus.core;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import net.wimpi.modbus.ModbusException;
-import net.wimpi.modbus.facade.ModbusTCPMaster;
-import net.wimpi.modbus.procimg.InputRegister;
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JSeparator;
+import javax.swing.JSlider;
+import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import net.miginfocom.swing.MigLayout;
 import net.wimpi.modbus.util.BitVector;
 
 import org.apache.log4j.Logger;
 
-public class EIAInstallTool  extends Thread {
+public class EIAInstallTool extends JFrame{
 
-	ModbusTCPMaster mtm1,mtm2;
+protected JButton startButton, stopButton;
+protected JTextField ipAddressInput;
+protected ButtonGroup buttonGroup;
+protected JLabel ipCmds, sensorOutput;
 
-	//Thread stuff
-	public static boolean isRunning;
-	private static float framerate;
-	private static Timer timer;
-	public static long curTime = System.currentTimeMillis(); //  time of frame start to aviod lots of calls to System.getcurentTime()
-	public static long elapsedTime = -1; //  time between start of cur frame and last frame to avoid re calculating passage of time allover the place
-	InputStreamReader isr;
-	BufferedReader br;
-
+private MTMThread mtmt;
+private String startIP;
+private int startFramerate;
+	
 	static Logger logger = Logger.getLogger(EIAInstallTool.class);
-	
-	public boolean[] sensors = new boolean[18];
-	public double[] tripTimes = new double[sensors.length];
 
-	public EIAInstallTool() {
-
-		//mtm1 = new ModbusTCPMaster("192.168.1.61");
-		mtm2 = new ModbusTCPMaster("192.168.247.22");
+	public EIAInstallTool(int width, int height) {
+		
+		super("EIA Setup Tool");
+		
+		startIP = "192.168.247.22";
+		startFramerate = 60;
+		
+		JPanel ipPanel = new JPanel();
+		ipPanel.setBorder(BorderFactory.createTitledBorder("IP Address Info"));
+		this.setLayout(new MigLayout(""));
+		this.add(ipPanel, "center, growx, wrap");
+		
+		ipPanel.setLayout(new MigLayout(""));
 
 		
+		ipAddressInput = new JTextField();
+		ipPanel.add(ipAddressInput, "span2 ,growx, wrap");
+		ipPanel.add(new JSeparator(), "span, growx, wrap");
+		startButton = new JButton("Start");
+		ipPanel.add(startButton, "center");
+		stopButton = new JButton("Stop");
+		ipPanel.add(stopButton, "center");
 		
-		try {
-			//mtm1.connect();
-			mtm2.connect();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		startButton.addActionListener(new ActionListener(){
+	        public void actionPerformed(ActionEvent e) {
+	        	resetMTMT("0.0.0.0");
+	        }
+		});
 		
-		double startTime = System.currentTimeMillis();
+		stopButton.addActionListener(new ActionListener(){
+	        public void actionPerformed(ActionEvent e) {
+	        	//logger.info(e);
+	        	killMTMT();
+	        }
+		});
 		
-		for (int i=0; i<sensors.length; i++) {
-			sensors[i] = false;
-			tripTimes[i] = startTime;
-		}
+		//setup window
+		this.setVisible(true);
+		this.setSize(width, height);
+
+		this.addWindowListener(
+			new java.awt.event.WindowAdapter() {
+			    public void windowClosing(WindowEvent winEvt) {
+			    	//fix
+			    	//close();
+			    }
+		});
 		
-		/////////////// THREAD STUFF
-		framerate = 999;
-		isRunning = true;
-		timer = new Timer(framerate);
-		start();
-	}
-
-	
-	private double lastframe;
-	private double execTime;
-	private int cycle = 0;
-	private int reportFreq = 100;
-	private double[] execAvg = new double[reportFreq];
-	
-	public void run() {
-		timer.start();
-		curTime = System.currentTimeMillis();
-		lastframe = curTime;
-
-		while (isRunning) {
-			try {
-
-				/** JOANNA - work in here.  The readInputRegisters delivers the data, then we
-				 * just have to parse it out
-				 */
-				//InputRegister[] regs1 = mtm1.readInputRegisters(0, 1);
-				InputRegister[] regs2 = mtm2.readInputRegisters(0, 1);
-
-				if (cycle >= reportFreq){
-					double rateAvg = 0.0;
-					for (int i=0; i< execAvg.length; i++){
-						rateAvg += execAvg[i];
-					}
-					rateAvg  = rateAvg/execAvg.length;
-					//printOutput(regs1[0].toBytes(), "phoenix" + regs1.length);
-					printOutput(regs2[0].toBytes(), "beckoff " + regs2.length);
-					System.out.println("Frame Exec avg " + rateAvg + " ms");
-					cycle = 0;
-				}
-
-
-			} catch (ModbusException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			execAvg[cycle] = System.currentTimeMillis() - lastframe;
-			lastframe = System.currentTimeMillis();
-			cycle++;
-
-			//Thread ops
-			//logger.info(timer.sleepTime);
-			timer.block();
-		}
-
+		mtmt = new MTMThread(startIP,startFramerate);
+		
+		
+		
 
 	}
+	
+	private void resetMTMT(String newip){
+		logger.info("Resetting MTMT");
+		mtmt.stopClean();
+		//mtmt = new MTMThread(newip,startFramerate);
+	}
+	
+	private void killMTMT() {
+		logger.info("Killing MTMT");
+		mtmt.stopClean();
+	}
 
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public static void printOutput(byte[] bytes, String label)
 	{
 		BitVector bv = BitVector.createBitVector(bytes);
-		
+
 		for (int i=0; i < bv.size(); i++)
 		{
 			System.out.print(bv.getBit(i) ? '1' : '0');
@@ -120,14 +128,19 @@ public class EIAInstallTool  extends Thread {
 			}
 		}
 		System.out.println("<-- us on " + label);
-//		System.out.println(bv.toString() + " " + label);
-//		System.out.println(Util.bytesToHex(bytes, bytes.length)  + " " + label);
-		
+
 	}
+	
+
+	private void close(){
+		mtmt.stopClean();
+		System.exit(0);
+	}
+	
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		EIAInstallTool dit = new EIAInstallTool();
+		EIAInstallTool eiait = new EIAInstallTool(1024, 768);
 
 	}
 
