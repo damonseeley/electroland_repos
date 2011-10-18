@@ -17,7 +17,7 @@ import java.util.Set;
  */
 
 public class ElectrolandProperties {
-    
+
     private static String ARG_MARKER = " $";
 
     // main is just a unit test
@@ -53,7 +53,7 @@ public class ElectrolandProperties {
         }
         
     }
-    
+
     //  objectType -> named_object -> parameters (key value pairs)
     private Map<String,Map<String,ParameterMap>> objects;
 
@@ -93,7 +93,7 @@ public class ElectrolandProperties {
         // java generics syntax is bullshit and a half!
         Hashtable<String,Map<String,ParameterMap>> objects 
                 = new Hashtable<String,Map<String,ParameterMap>>();
-        
+
         // get every named properties from the props file
         Enumeration <Object> g = p.keys();
         while (g.hasMoreElements())
@@ -162,7 +162,6 @@ public class ElectrolandProperties {
     // PROBLEM: getAll() returned a map where the keys started with '$', so you'd
     // have to go massage all the keys before returning int.
     // Therefore: see if anyone is using getAll().  Probably better to just update those code bases.
-
 
     public ParameterMap getParams(String objectType, String objectName) throws OptionException
     {
