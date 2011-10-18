@@ -1,8 +1,7 @@
 package net.electroland.utils.lighting;
 
-import java.util.Map;
-
 import net.electroland.utils.OptionException;
+import net.electroland.utils.ParameterMap;
 
 
 abstract public class Recipient {
@@ -42,8 +41,8 @@ abstract public class Recipient {
 	}
 	
 	// configure
-	abstract public void configure(Map<String,String> properties) throws OptionException;
-
+	abstract public void configure(ParameterMap params) throws OptionException;
+	
 	// configure
 	abstract public void map(int channel, CanvasDetector cd) throws OptionException;
 	

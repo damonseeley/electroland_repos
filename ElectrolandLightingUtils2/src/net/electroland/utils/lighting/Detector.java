@@ -1,5 +1,7 @@
 package net.electroland.utils.lighting;
 
+import java.util.List;
+
 
 /**
  * an ABSTRACT detector. it is in the coordinate space of a Fixture.
@@ -10,13 +12,15 @@ public class Detector {
 
 	protected int x, y, width, height;
 	protected DetectionModel model;
+	protected List<String> tags;
 
-	public Detector(int x, int y, int width, int height, DetectionModel model){
+	public Detector(int x, int y, int width, int height, DetectionModel model, List<String>tags){
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
 		this.model = model;
+		this.tags = tags;
 	}
 	
 	public int getX() {
