@@ -46,11 +46,11 @@ public class EIAInstallTool extends JFrame implements Runnable  {
 
 		windowWidth = 1024;
 		windowHeight = 768;
-		sensorWidth = windowWidth;
+		sensorWidth = 992;
 		sensorHeight = 600;
 
 		startIP = "192.168.247.61";
-		startFramerate = 30;
+		startFramerate = 100;
 
 		JPanel ipPanel = new JPanel();
 		ipPanel.setBorder(BorderFactory.createTitledBorder("IP Address Info"));
@@ -61,7 +61,8 @@ public class EIAInstallTool extends JFrame implements Runnable  {
 
 
 		ipAddressInput = new JTextField();
-		ipPanel.add(ipAddressInput, "span2 ,growx, wrap");
+		ipAddressInput.setText(startIP);
+		ipPanel.add(ipAddressInput, "span ,growx, wrap");
 		ipPanel.add(new JSeparator(), "span, growx, wrap");
 		startButton = new JButton("Start");
 		ipPanel.add(startButton, "center");
@@ -70,7 +71,7 @@ public class EIAInstallTool extends JFrame implements Runnable  {
 
 		startButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				resetMTMT("0.0.0.0");
+				resetMTMT(ipAddressInput.getText());
 			}
 		});
 
@@ -116,7 +117,7 @@ public class EIAInstallTool extends JFrame implements Runnable  {
 	private void resetMTMT(String newip){
 		logger.info("Resetting MTMT");
 		mtmt.stopClean();
-		//mtmt = new MTMThread(newip,startFramerate);
+		mtmt = new MTMThread(newip,startFramerate,sp);
 	}
 
 	private void killMTMT() {
