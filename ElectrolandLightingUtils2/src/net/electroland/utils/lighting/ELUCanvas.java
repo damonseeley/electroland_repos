@@ -3,9 +3,9 @@ package net.electroland.utils.lighting;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import net.electroland.utils.OptionException;
+import net.electroland.utils.ParameterMap;
 
 
 abstract public class ELUCanvas {
@@ -41,7 +41,7 @@ abstract public class ELUCanvas {
 	 */
 	abstract public CanvasDetector[] sync(int[] pixels) throws InvalidPixelGrabException;
 
-	abstract public void configure(Map<String,String> properties) throws OptionException;
+	abstract public void configure(ParameterMap params) throws OptionException;
 
 	abstract public void map(CanvasDetector d) throws OptionException;
 
