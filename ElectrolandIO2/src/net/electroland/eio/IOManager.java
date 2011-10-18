@@ -17,11 +17,11 @@ import org.apache.log4j.Logger;
 
 public class IOManager {
 
-    private IOThread inputThread;
-    private int pollrate;
     private Map<String, IODevice> iodevices;
     private Map<String, List<IOState>> tags;
-    private static Logger logger = Logger.getLogger(IOManager.class);    
+    private int pollrate;
+    private IOThread inputThread;
+    private static Logger logger = Logger.getLogger(IOManager.class);
 
     // for diagnostic purposes
     public static void main(String[] args)
@@ -69,6 +69,7 @@ public class IOManager {
                             break;
                         case(1):
                             iom.stop();
+                            break;
                         case(2):
                             if (input.length == 1)
                                 System.out.println("Current desired fps = " + iom.pollrate);
@@ -108,7 +109,6 @@ public class IOManager {
         } catch (OptionException e) {
             logger.error(e);
         }
-        
     }
 
 
@@ -129,26 +129,21 @@ public class IOManager {
 
         // ******* IODevices *******
         Hashtable<String,IODeviceFactory> factories = new Hashtable<String,IODeviceFactory>();
-       // iodeviceTypes
         // for each type
-        //    find the type's factory class and store it (mapped to type)
         for (String name : op.getObjectNames("iodeviceType"))
         {
+            // find the type's factory class and store it (mapped to type)
             IODeviceFactory factory = (IODeviceFactory)op.getRequiredClass("iodeviceType", name, "factory");
-            //  call prototypeDevice(ALL_VARIABLES_RELATED_TO_PROTOTYPE)
             factory.prototypeDevice(op.getObjects(name));
             factories.put(name, factory);
         }
 
-        // iodevices
         // get all iodevice objects
         for (String name: op.getObjectNames("iodevice"))
         {
             String type = op.getRequired("iodevice", name, "type");
             //  find the factory for the type (as appropriate)
             IODeviceFactory factory = factories.get(type);
-            System.out.println("Creating instance of " + type);
-            //  call createInstance(REST_OF_INODE_PARAMS)
             IODevice node = factory.createInstance(op.getParams("iodevice", name));
             //  store the Device, hashed against it's name
             iodevices.put(name, node);
@@ -197,6 +192,7 @@ public class IOManager {
                     states.add(state);
                 }
             }
+
             //   find the iodevice
             IODevice node = iodevices.get(op.getRequired("istate", name, "iodevice"));
             //   call patch(state, port)
