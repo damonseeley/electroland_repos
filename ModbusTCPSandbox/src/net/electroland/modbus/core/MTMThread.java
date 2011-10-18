@@ -29,8 +29,10 @@ public class MTMThread  extends Thread {
 	static Logger logger = Logger.getLogger(MTMThread.class);
 
 	public boolean[] sensorStates = new boolean[8];
+	public boolean[] sensorChanged = new boolean[8];
 	private int[] sensorBits = new int[16];
 	public double[] tripTimes = new double[sensorBits.length];
+	public double[] tripTimesCalc = new double[sensorBits.length];
 
 	public MTMThread(String ip, int fr, SensorPanel sp) {
 
@@ -38,9 +40,8 @@ public class MTMThread  extends Thread {
 		this.sp = sp;
 
 		mtm = new ModbusTCPMaster(ip);
-
-
 		try {
+			logger.info("Attempting to connect to IP: " + ip);
 			mtm.connect();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -51,16 +52,20 @@ public class MTMThread  extends Thread {
 
 		for (int i=0; i<sensorStates.length; i++) {
 			sensorStates[i] = false;
-			tripTimes[i] = startTime;
+			sensorChanged[i] = false;
 		}
 		for (int i=0; i<sensorBits.length; i++){
 			sensorBits[i] = 0;
+			tripTimes[i] = startTime;
 		}
+		
+		sp.paintSensors(sensorStates, sensorChanged);
 
 		/////////////// THREAD STUFF
 		isRunning = true;
 		timer = new Timer(framerate);
 		start();
+
 	}
 
 
@@ -79,11 +84,9 @@ public class MTMThread  extends Thread {
 			try {
 				InputRegister[] regs = mtm.readInputRegisters(0, 1);
 				updateSensorStates(regs[0].toBytes());
-				sp.paintSensors(sensorStates, lastInputTripped);
 
 				if (cycle >= reportFreq){
 					double rateAvg = 0.0;
-
 					for (int i=0; i< execAvg.length; i++){
 						rateAvg += execAvg[i];
 					}
@@ -92,7 +95,6 @@ public class MTMThread  extends Thread {
 					//System.out.println("Frame Exec avg " + rateAvg + " ms");
 					cycle = 0;
 				}
-
 			} catch (ModbusException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -114,41 +116,47 @@ public class MTMThread  extends Thread {
 
 	private void updateSensorStates(byte[] bytes) {
 
-
 		BitVector bv = BitVector.createBitVector(bytes);
+		//System.out.println(bv);
 
 		boolean anyChange = false;
-		for (int i=0; i < bv.size(); i++) {
-			//System.out.println(bvs.charAt(i));
-			if (bv.getBit(i) != bvPrev.getBit(i)){
-				anyChange = true;
-				// it has changed
-				tripTimes[i] = System.currentTimeMillis();
+
+		//update sensor states
+		for (int i=0; i < sensorStates.length; i++) {
+			if (bv.getBit(i+8) == true){
+				sensorStates[i] = true;
 			} else {
-				//nothing
+				sensorStates[i] = false;
+			}
+			if (bv.getBit(i+8) != bvPrev.getBit(i+8)){
+				anyChange = true;
+				sensorChanged[i] = true;
+				tripTimes[i] = System.currentTimeMillis();
 			}
 		}
 
 		bvPrev = bv.createBitVector(bv.getBytes());
 
-		for (int i=0; i < sensorStates.length; i++) {
-			if (bv.getBit(i+8) == true){
-				sensorStates[i] = true;
-				if (tripTimes[i+8] > tripTimes[lastInputTripped]){
-					lastInputTripped = i;
-				}
-			} else {
-				sensorStates[i] = false;
-			}
+		/*
+		//calculate trip times as time elapsed
+		double tempTime = System.currentTimeMillis();
+		for (int i=0; i < tripTimes.length; i++) {
+			tripTimesCalc[i] =  tempTime - tripTimes[i];
 		}
+		 */
 
 		if (anyChange) {
-			printSensorStates();
-			System.out.println("Last input tripped = " + (lastInputTripped+1));
+			sp.paintSensors(sensorStates, sensorChanged);
+			//System.out.println("Last input tripped = " + (lastInputTripped+1));
 		}
 
+		//reset
+		for (int i=0; i<sensorChanged.length; i++) {
+			sensorChanged[i] = false;
+		}
 
 	}
+
 
 	private void printSensorStates() {
 		for (int i=0; i < sensorStates.length; i++) {
@@ -156,6 +164,14 @@ public class MTMThread  extends Thread {
 		}
 		System.out.println("");
 	}
+
+	private void printTripTimes() {
+		for (int i=8; i < tripTimes.length; i++) {
+			System.out.print(tripTimesCalc[i] + " - ");
+		}
+		System.out.println("---");
+	}
+
 
 	private void printSensorBits(BitVector bv) {
 		for (int i=0; i < bv.size(); i++) {
@@ -165,30 +181,11 @@ public class MTMThread  extends Thread {
 	}
 
 
-
-
-
-
-	public static void printOutput(byte[] bytes, String label)
-	{
-		BitVector bv = BitVector.createBitVector(bytes);
-
-		for (int i=0; i < bv.size(); i++)
-		{
-			System.out.print(bv.getBit(i) ? '1' : '0');
-			if ((i+1) % 8 == 0){
-				System.out.print(' ');
-			}
-		}
-		System.out.println(bv.toString() + " " + label);
-		System.out.println(Util.bytesToHex(bytes, bytes.length)  + " " + label);
-
-	}
-
 	public void stopClean(){
-
-		//isRunning = false;
-		//mtm.disconnect();
+		//logger.info(this + " is dying");
+		stop();
+		mtm.disconnect();
+		isRunning = false;
 	}
 
 }

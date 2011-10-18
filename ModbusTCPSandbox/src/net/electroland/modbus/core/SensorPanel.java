@@ -3,6 +3,7 @@ package net.electroland.modbus.core;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -22,7 +23,7 @@ public class SensorPanel extends JPanel implements MouseMotionListener { // chan
 	final static Color red = Color.red;
 	final static Color white = Color.white;
 
-	private int width, height;
+	private int width, height, cols, rows;
 	private int margin;
 	private int boxWidth;
 
@@ -36,43 +37,55 @@ public class SensorPanel extends JPanel implements MouseMotionListener { // chan
 		setPreferredSize(new Dimension(w, h)); // need both SetSize and SetPreferredSize here for some reason
 
 		addMouseMotionListener(this);
-		
+
 		margin = 32;
-		boxWidth = (width - margin - (margin/2)*3) / 4;
+		rows = 2;
+		cols = 4;
+		boxWidth = (width - margin*2 - (margin/2)*(cols-1)) / cols;
 		//int[] xLocs = new int[8];
-		
+
 	}
 
-	public void paintSensors(boolean[] states, int lastInput){
-		
+	public void paintSensors(boolean[] states, boolean[] changed){
+
 		Graphics2D gci = (Graphics2D)this.getGraphics();
 		gci.setColor(new Color(10,10,10));
 		gci.fillRect(0,0,width,height);
-		
-		for (int i=0; i<states.length; i++){
-			int yloc = margin/2;
-			if (i > 4){
-				yloc = boxWidth + margin;
-			}
-			if (states[i]) {
-				//paint a solid box
-				if (lastInput == i){
+
+		int i = 0;
+		for (int r=0; r<rows; r++){
+			for(int c=0; c<cols; c++) {
+				if (states[i]) {
 					//paint a red box
-					gci.setColor(new Color(128,0,0));
-					gci.fillRect(i*boxWidth+margin+i*margin/2,yloc,boxWidth,boxWidth);
+					if (changed[i] == true){
+						//paint a red box
+						gci.setColor(new Color(255,0,0));
+						gci.fillRect(c*boxWidth+margin+c*margin/2,r*boxWidth+margin+r*margin/2,boxWidth,boxWidth);
+					} else {
+						//paint a white box
+						gci.setColor(new Color(255,255,255));
+						gci.fillRect(c*boxWidth+margin+c*margin/2,r*boxWidth+margin+r*margin/2,boxWidth,boxWidth);
+					}
+					
+					i++;
 				} else {
-					//paint a white box
-					gci.setColor(new Color(256,256,256));
-					gci.fillRect(i%4,yloc,boxWidth,boxWidth);
+					//paint an outline
+					gci.setColor(new Color(64,64,64));
+					gci.drawRect(c*boxWidth+margin+c*margin/2,r*boxWidth+margin+r*margin/2,boxWidth,boxWidth);
+					Font afont = new Font("afont",Font.PLAIN,24);
+					gci.setFont(afont);
+					gci.drawString((i + 1)+"", c*boxWidth+margin+c*margin/2+boxWidth/2, r*boxWidth+margin+r*margin/2+boxWidth/2);
+					i++;
 				}
 			}
-		}
-		
-		
-		
 
-		
-		
+		}
+
+
+
+
+
+
 	}
 
 
