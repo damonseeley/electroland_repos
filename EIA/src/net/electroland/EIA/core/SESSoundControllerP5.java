@@ -295,7 +295,7 @@ public class SESSoundControllerP5 {
 
 	private void sendMaxPlay(String soundFile, int ch){
 
-		if(SkateMain.audioEnabled){
+		if(EIAMain.audioEnabled){
 			OscMessage oscMsg = new OscMessage("/Play");
 			oscMsg.add(soundFile);
 			oscMsg.add(ch);
@@ -306,7 +306,7 @@ public class SESSoundControllerP5 {
 	
 	private void sendMaxKill(int ch){
 
-		if(SkateMain.audioEnabled){
+		if(EIAMain.audioEnabled){
 			OscMessage oscMsg = new OscMessage("/Kill");
 			oscMsg.add(ch);
 			oscP5Max.send(oscMsg,maxBroadcastLoc);
@@ -316,7 +316,7 @@ public class SESSoundControllerP5 {
 	
 	private void sendMaxGlobal(String soundFile){
 
-		if(SkateMain.audioEnabled){
+		if(EIAMain.audioEnabled){
 			OscMessage oscMsg = new OscMessage("/Global");
 			oscMsg.add(soundFile);
 			oscP5Max.send(oscMsg,maxBroadcastLoc);
@@ -326,7 +326,7 @@ public class SESSoundControllerP5 {
 
 	private void sendToSES(int ch, double az, double dist){
 
-		if(SkateMain.audioEnabled){
+		if(EIAMain.audioEnabled){
 			// hacky custom string for SES
 			/*
 			OscMessage oscMsg = new OscMessage("/SpatDIF/source/" + ch +"/aed");

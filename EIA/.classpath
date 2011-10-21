@@ -7,5 +7,7 @@
 	<classpathentry kind="lib" path="libraries/core.jar"/>
 	<classpathentry kind="lib" path="libraries/ELU2.jar"/>
 	<classpathentry kind="lib" path="libraries/SCSoundControl.jar"/>
+	<classpathentry kind="lib" path="libraries/miglayout-4.0-javadoc.jar"/>
+	<classpathentry kind="lib" path="libraries/miglayout-4.0-swing.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

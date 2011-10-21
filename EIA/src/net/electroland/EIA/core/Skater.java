@@ -45,7 +45,7 @@ public class Skater implements Cloneable {
 
 	public HashMap[] frameData;
 	
-	private static Logger logger = Logger.getLogger(SkateMain.class);
+	private static Logger logger = Logger.getLogger(EIAMain.class);
 
 	public Skater(String skaterName, String animXML, String dim, double cScale, String sprt, int sprtSize, String[] sounds, boolean isGlSnd) {
 
@@ -209,7 +209,7 @@ public class Skater implements Cloneable {
 		// Commented out because previous method did not tween
 		//Point2D.Double curPos = new Point2D.Double(getMetricPosNow()[0],getMetricPosNow()[1]);
 		Point2D.Double curPos = getMetric2DPosNow();
-		soundNodeID = SkateMain.soundControllerP5.newSoundNode(soundList[0], curPos, 1.0f, globalSound); //right now just offer the first sound
+		soundNodeID = EIAMain.soundControllerP5.newSoundNode(soundList[0], curPos, 1.0f, globalSound); //right now just offer the first sound
 		//logger.info(name + " " + soundNodeID);
 	}
 
@@ -229,10 +229,10 @@ public class Skater implements Cloneable {
 			if ((isReversed && curFrame > 1) || (!isReversed && curFrame < lengthFrames - 1)){
 				//update the sound
 				Point2D.Double curPos = getMetric2DPosNow();
-				SkateMain.soundControllerP5.updateSoundNodeByID(soundNodeID, curPos, 1.0f);
+				EIAMain.soundControllerP5.updateSoundNodeByID(soundNodeID, curPos, 1.0f);
 				animComplete = false; // is this not defaulted already?
 			} else {
-				SkateMain.soundControllerP5.dellocateByID(soundNodeID, 1.0f);
+				EIAMain.soundControllerP5.dellocateByID(soundNodeID, 1.0f);
 				percentComplete = 1.0; // why not use this instead of animComplete?
 				animComplete = true;									
 			}		
