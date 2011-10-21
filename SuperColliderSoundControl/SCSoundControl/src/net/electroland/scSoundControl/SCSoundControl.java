@@ -561,11 +561,11 @@ public class SCSoundControl implements OSCListener, Runnable {
 	public void acceptMessage(java.util.Date time, OSCMessage message) {
 		// FOR DEBUGGING: to print the full message:
 		if (false) {
-		 debugPrint(message.getAddress());
-		 for(int i = 0; i < message.getArguments().length; i++) {
-			 debugPrint(" " + message.getArguments()[i].toString());
-		 }
-		 debugPrintln("");
+			System.out.print(message.getAddress());
+			for(int i = 0; i < message.getArguments().length; i++) {
+				System.out.print(", " + message.getArguments()[i].toString());
+			}
+			System.out.println("");
 		}
 		
 		if (message.getAddress().matches("/done")) {
@@ -627,7 +627,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 		}
 		
 		//handle /status responses (status.reply)
-		else if (message.getAddress().matches("status.*")) {
+		else if (message.getAddress().matches("/status.*")) {
 			//TODO update control panel display with status data
 			Integer numUgens = (Integer)(message.getArguments()[1]);
 			Integer numSynths = (Integer)(message.getArguments()[2]);
@@ -763,7 +763,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 	// debug output helpers
 	//*********************************
 
-	boolean _doDebug = false;
+	boolean _doDebug = true;
 
 	public void showDebugOutput(boolean state) {
 		_doDebug = state;
@@ -821,6 +821,8 @@ public class SCSoundControl implements OSCListener, Runnable {
 		Date curTime;
 		while(true) {
 			curTime = new Date();
+			
+			//System.out.println("currentTime: "+ curTime.getTime() +" prevTime: "+ _prevPingRequestTime.getTime() +" diff: " + (curTime.getTime() - _prevPingRequestTime.getTime()) +" interval: "+ _scsynthPingInterval);
 
 			//if the previous status request is still pending...
 			if (_serverLive && (_prevPingRequestTime.getTime() > _prevPingResponseTime.getTime())) {
@@ -847,6 +849,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 				if (_serverLive && !_serverBooted) { 
 					sendMessage("/notify", new Object[] { 1 });
 					sendMessage("/n_query", new Object[]{_motherGroupID});
+					//System.out.println("Querying SCSC mother node");
 					//debugPrintln("Querying SCSC mother node");
 				}
 				else {
