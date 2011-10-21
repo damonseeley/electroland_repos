@@ -38,9 +38,9 @@ import org.apache.log4j.Logger;
  * @author	Damon Seeley & Bradley Geilfuss
  */
 
-public class SkateMain extends Thread {
+public class EIAMain extends Thread {
 
-	static Logger logger = Logger.getLogger(SkateMain.class);
+	static Logger logger = Logger.getLogger(EIAMain.class);
 
 	private ELUManager elu;
 	private ELUCanvas2D canvas;
@@ -66,7 +66,7 @@ public class SkateMain extends Thread {
 	private Map<String, SkaterSequence> sequences;
 	private SkaterSequence startSequence;
 		
-	public SkateMain() {
+	public EIAMain() {
 
 		SHOWUI = true;
 		GUIWidth = 500;
@@ -486,7 +486,7 @@ public class SkateMain extends Thread {
 
 	public static void shutdown() {
 		try { // surround w/try catch block to make sure System.exit(0) gets call no matter what
-			SkateMain.killTheads();
+			EIAMain.killTheads();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -500,7 +500,7 @@ public class SkateMain extends Thread {
 
 
 	public static void main(String[] args){
-		new SkateMain();
+		new EIAMain();
 	}
 
 
