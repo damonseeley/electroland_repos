@@ -20,8 +20,6 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import net.electroland.skate.ui.GUIFrame;
-import net.electroland.skate.ui.GUIPanel;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.Util;
@@ -46,8 +44,6 @@ public class EIAMain extends Thread {
 	private ELUCanvas2D canvas;
 
 	public static boolean SHOWUI;
-	public static GUIFrame guiFrame;
-	public static GUIPanel guiPanel;
 	int GUIWidth, GUIHeight;
 
 	public double canvasHeight, canvasWidth; 
@@ -69,12 +65,12 @@ public class EIAMain extends Thread {
 	public EIAMain() {
 
 		SHOWUI = true;
-		GUIWidth = 500;
-		GUIHeight = 562;
-		guiFrame = new GUIFrame(GUIWidth,GUIHeight);
-		guiPanel = new GUIPanel(GUIWidth,GUIHeight);
+		GUIWidth = 1024;
+		GUIHeight = 768;
+		//guiFrame = new GUIFrame(GUIWidth,GUIHeight);
+		//guiPanel = new GUIPanel(GUIWidth,GUIHeight);
 		//add the panel to the top of the window
-		guiFrame.add(guiPanel);
+		//guiFrame.add(guiPanel);
 
 		viewHeight = GUIHeight - (int)(GUIHeight*0.1);
 		viewWidth = GUIWidth - (int)(GUIWidth*0.1);
@@ -96,7 +92,8 @@ public class EIAMain extends Thread {
 		canvasHeight = canvas.getDimensions().getHeight();
 		canvasWidth = canvas.getDimensions().getWidth();
 
-		///////// Load props and create skaters
+		///////// Load props for main app
+		/*
 		try {
 			loadSkaterProps("SkateApp.properties");
 		} catch (IOException e) {
@@ -104,10 +101,10 @@ public class EIAMain extends Thread {
 		} catch (OptionException e) {
 			e.printStackTrace();
 		}
+		*/
 
 		///////// Init sound controller and speakers
-		// channels 15 & 16 reserved for static spatial sound for now
-		soundControllerP5 = new SESSoundControllerP5(audioIP,10000,7770,14,audioListenerPos);
+		//soundControllerP5 = new SESSoundControllerP5(audioIP,10000,7770,14,audioListenerPos);
 
 
 
@@ -115,35 +112,34 @@ public class EIAMain extends Thread {
 		elu.start();  //not used in this project because we are calling sync on demand
 
 
-		// TEMP for now just add one skater
-		//addRandomSkater();
 
 
 		/////////////// THREAD STUFF
 		isRunning = true;
 		timer = new Timer(framerate);
 		start();
-		logger.info("Skate 1.0 started up at framerate = " + framerate);
+		logger.info("EIA started up at framerate = " + framerate);
 
 
 	}
-
-	public static boolean freeze = false;
+	
+	SkaterSequence currSeq;
 	
 	public void run() {
 		timer.start();
 		curTime = System.currentTimeMillis();
 
-		// for sequences
-		SkaterSequence currSeq = startSequence;
-		currSeq.startSequence(); // just marks the time it started to start the timer checks.
+		//for sequences
+		//SkaterSequence currSeq = startSequence;
+		//currSeq.startSequence(); // just marks the time it started to start the timer checks.
 
 		while (isRunning) {
 
 			/*
 			 * Run start sequence (if present)
 			 */
-			if (currSeq != null)
+			//if (currSeq != null)
+			/*
 			{
 				// get any skaters that are ready to go
 				List<SkaterSequenceStep> toRun = currSeq.getStartable(System.currentTimeMillis());
@@ -165,21 +161,25 @@ public class EIAMain extends Thread {
 				// see if the current sequence needs to move on to the nextShow
 				currSeq = currSeq.getCurrentSequence();
 			}
+			*/
 
 			/*
 			 * Animate skaters
 			 */
 			// Advance all skater play heads
+			/*
 			for (Skater sk8r : skaters) {
 				if (!freeze) {
 					sk8r.animate();
 				}
 			}
+			*/
 
 			
 			/*
 			 * Cull dead skaters from vector
 			 */
+			/*
 			Iterator<Skater> s = skaters.iterator();
 			while (s.hasNext()){
 				Skater sk8r = s.next();
@@ -188,144 +188,152 @@ public class EIAMain extends Thread {
 					//s.remove();
 				}
 			}
-
-			/**
-			 * DRAWING
-			 */
-
-			Dimension skatearea = canvas.getDimensions();
-
-			// Create a canvas image (ci) that will be synced to ELU
-			BufferedImage ci = new BufferedImage(skatearea.width,skatearea.height,ColorSpace.TYPE_RGB);
-			Graphics2D gci = (Graphics2D) ci.getGraphics();
-			// Draw a big black rect
-			int baseBright = (int)(baseBrightness * 255);
-			gci.setColor(new Color(baseBright,baseBright,baseBright));
-			gci.fillRect(0,0,ci.getWidth(),ci.getHeight());
+			*/
 			
-			// Draw skaters, only if there are skaters
-			for (Skater sk8r : skaters)
-			{
-				//int skaterWidth = sk8r.spriteSize; // current value for sprite size, get from props instead
-				
-				gci.setColor(new Color(255,255,255));
-				int skaterX = (int)(sk8r.getCanvas2DPosNow().x);
-				int skaterY = (int)(sk8r.getCanvas2DPosNow().y); //all xforms now contained within skater
-
-				// SIMPLE SPRITE FOR TEST
-				//gci.drawImage(sk8r.spriteImg, skaterX-skaterWidth/2, skaterY-skaterWidth/2, skaterWidth, skaterWidth, null);
-				
-				/**
-				 * AMPLITUDE BASED DRAWING
-				 * Drawing with alpha
-				 * NEED to be fixed to draw in the right place
-				 */
-				
-				// Create a rescale filter op that makes the image 50% opaque
-				float amp = soundControllerP5.getAmpByID(sk8r.soundNodeID);
-				//float alpha = 0.25f + amp*0.75f; //original skate calc
-				//ampComponent
-				//float alpha = 0.1f + amp*0.9f; //rethink calculation
-				float alpha = (1.0f-ampComponent) + amp*ampComponent;
-				//logger.info("Alpha = " + alpha);
-				//float spriteScale = (sk8r.spriteSize*1.0f)/sk8r.spriteImg.getWidth();
-				//logger.info(sk8r.spriteSize + "  " + sk8r.spriteImg.getWidth() + "  " + spriteScale);
-				float[] scales = { 1.0f, 1.0f, 1.0f, alpha }; // where amp is a float from the audio system
-				float[] offsets = new float[4];
-				RescaleOp rop = new RescaleOp(scales, offsets, null);
-				
-				// Draw the image, applying the filter 
-				try{
-					gci.drawImage(sk8r.spriteImg, rop, skaterX-sk8r.spriteImg.getWidth()/2, skaterY-sk8r.spriteImg.getHeight()/2);					
-				}catch(NullPointerException e){
-					e.printStackTrace();
-				}
-			}
-			
-			
-			/*
-			 * generate rgbs array to sync with ELU
-			 */	
-			int w = ci.getWidth(null);
-			int h = ci.getHeight(null);
-			int[] rgbs = new int[w*h];
-			ci.getRGB(0, 0, w, h, rgbs, 0, w);
-
-			
-			try {
-				CanvasDetector[] evaled = canvas.sync(rgbs);
-				/*
-				 * NOW draw a guide/overlay info on top
-				 */
-				for (Skater sk8r : skaters)
-				{
-					// draw text labels to show where skaters are located
-					int skaterX = (int)(sk8r.getCanvas2DPosNow().x);
-					//flip y to account for UCS diffs between 3DSMax and Java
-					int skaterY = (int)(sk8r.getCanvas2DPosNow().y);
-					gci.setColor(new Color(128,128,128));
-					Font afont = new Font("afont",Font.PLAIN,10);
-					gci.setFont(afont);
-					gci.drawString("@f " + sk8r.curFrame, skaterX + 32, skaterY + 9);
-					
-					// draw image centers
-					gci.setColor(new Color(255,0,0));
-					gci.fillRect(skaterX,skaterY,2,2);
-				}
-				
-				/*
-				 * Draw the CanvasDetectors
-				 */
-				for (CanvasDetector d : evaled) { // draw the results of our sync.
-					Shape dShape = d.getBoundary();
-					// draw detector values
-					int dColor = Util.unsignedByteToInt(d.getLatestState());
-					gci.setColor(new Color(dColor,dColor,dColor));
-					gci.fillRect(dShape.getBounds().x,dShape.getBounds().y,dShape.getBounds().width,dShape.getBounds().height);
-					// draw detector outlines
-					gci.setColor(new Color(0,0,128));
-					gci.drawRect(dShape.getBounds().x,dShape.getBounds().y,dShape.getBounds().width,dShape.getBounds().height);
-				}
-				
-				/**
-				 * Draw show info
-				 */
-				
-				gci.setColor(new Color(128,128,128));
-				Font afont = new Font("afont",Font.PLAIN,10);
-				gci.setFont(afont);
-				double elapsedTime = currSeq.getCurrentSequence().getElapsedInSeconds();
-				String nextSkater = currSeq.getCurrentSequence().getNextShow().getName();
-				String currSkaters = "";
-				for (Skater sk8r : skaters) {
-					currSkaters += sk8r.name + ", ";
-				}
-				gci.drawString("sequence " + currSeq.getCurrentSequence().getName() + " @ " + elapsedTime, 10, 20);
-				gci.drawString("next up: " + nextSkater, 10, 34);
-				gci.drawString("current skaters: " + currSkaters, 10, 48);
-				
-			
-			} catch (InvalidPixelGrabException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		
-			//draw the final image into the jPanel GUI
-			Graphics gp = guiPanel.getGraphics();
-			gp.drawImage(ci, 0, 0, null);
-			
-			/**
-			 * END DRAWING
-			 */
-			
-			
+			draw();
 
 			//Thread ops
 			//logger.info(timer.sleepTime);
 			timer.block();
 		}
 
+	}
+	
+	
+	
+	
+	/** COMPLETELY RETOOL THIS METHOD  */
+	private void draw() {
+		/**
+		 * DRAWING
+		 */
+
+		Dimension skatearea = canvas.getDimensions();
+
+		// Create a canvas image (ci) that will be synced to ELU
+		BufferedImage ci = new BufferedImage(skatearea.width,skatearea.height,ColorSpace.TYPE_RGB);
+		Graphics2D gci = (Graphics2D) ci.getGraphics();
+		// Draw a big black rect
+		int baseBright = (int)(baseBrightness * 255);
+		gci.setColor(new Color(baseBright,baseBright,baseBright));
+		gci.fillRect(0,0,ci.getWidth(),ci.getHeight());
+		
+		// Draw skaters, only if there are skaters
+		for (Skater sk8r : skaters)
+		{
+			//int skaterWidth = sk8r.spriteSize; // current value for sprite size, get from props instead
+			
+			gci.setColor(new Color(255,255,255));
+			int skaterX = (int)(sk8r.getCanvas2DPosNow().x);
+			int skaterY = (int)(sk8r.getCanvas2DPosNow().y); //all xforms now contained within skater
+
+			// SIMPLE SPRITE FOR TEST
+			//gci.drawImage(sk8r.spriteImg, skaterX-skaterWidth/2, skaterY-skaterWidth/2, skaterWidth, skaterWidth, null);
+			
+			/**
+			 * AMPLITUDE BASED DRAWING
+			 * Drawing with alpha
+			 * NEED to be fixed to draw in the right place
+			 */
+			
+			// Create a rescale filter op that makes the image 50% opaque
+			float amp = soundControllerP5.getAmpByID(sk8r.soundNodeID);
+			//float alpha = 0.25f + amp*0.75f; //original skate calc
+			//ampComponent
+			//float alpha = 0.1f + amp*0.9f; //rethink calculation
+			float alpha = (1.0f-ampComponent) + amp*ampComponent;
+			//logger.info("Alpha = " + alpha);
+			//float spriteScale = (sk8r.spriteSize*1.0f)/sk8r.spriteImg.getWidth();
+			//logger.info(sk8r.spriteSize + "  " + sk8r.spriteImg.getWidth() + "  " + spriteScale);
+			float[] scales = { 1.0f, 1.0f, 1.0f, alpha }; // where amp is a float from the audio system
+			float[] offsets = new float[4];
+			RescaleOp rop = new RescaleOp(scales, offsets, null);
+			
+			// Draw the image, applying the filter 
+			try{
+				gci.drawImage(sk8r.spriteImg, rop, skaterX-sk8r.spriteImg.getWidth()/2, skaterY-sk8r.spriteImg.getHeight()/2);					
+			}catch(NullPointerException e){
+				e.printStackTrace();
+			}
+		}
+		
+		
+		/*
+		 * generate rgbs array to sync with ELU
+		 */	
+		int w = ci.getWidth(null);
+		int h = ci.getHeight(null);
+		int[] rgbs = new int[w*h];
+		ci.getRGB(0, 0, w, h, rgbs, 0, w);
+
+		
+		try {
+			CanvasDetector[] evaled = canvas.sync(rgbs);
+			/*
+			 * NOW draw a guide/overlay info on top
+			 */
+			for (Skater sk8r : skaters)
+			{
+				// draw text labels to show where skaters are located
+				int skaterX = (int)(sk8r.getCanvas2DPosNow().x);
+				//flip y to account for UCS diffs between 3DSMax and Java
+				int skaterY = (int)(sk8r.getCanvas2DPosNow().y);
+				gci.setColor(new Color(128,128,128));
+				Font afont = new Font("afont",Font.PLAIN,10);
+				gci.setFont(afont);
+				gci.drawString("@f " + sk8r.curFrame, skaterX + 32, skaterY + 9);
+				
+				// draw image centers
+				gci.setColor(new Color(255,0,0));
+				gci.fillRect(skaterX,skaterY,2,2);
+			}
+			
+			/*
+			 * Draw the CanvasDetectors
+			 */
+			for (CanvasDetector d : evaled) { // draw the results of our sync.
+				Shape dShape = d.getBoundary();
+				// draw detector values
+				int dColor = Util.unsignedByteToInt(d.getLatestState());
+				gci.setColor(new Color(dColor,dColor,dColor));
+				gci.fillRect(dShape.getBounds().x,dShape.getBounds().y,dShape.getBounds().width,dShape.getBounds().height);
+				// draw detector outlines
+				gci.setColor(new Color(0,0,128));
+				gci.drawRect(dShape.getBounds().x,dShape.getBounds().y,dShape.getBounds().width,dShape.getBounds().height);
+			}
+			
+			/**
+			 * Draw show info
+			 */
+			
+			gci.setColor(new Color(128,128,128));
+			Font afont = new Font("afont",Font.PLAIN,10);
+			gci.setFont(afont);
+			double elapsedTime = currSeq.getCurrentSequence().getElapsedInSeconds();
+			String nextSkater = currSeq.getCurrentSequence().getNextShow().getName();
+			String currSkaters = "";
+			for (Skater sk8r : skaters) {
+				currSkaters += sk8r.name + ", ";
+			}
+			gci.drawString("sequence " + currSeq.getCurrentSequence().getName() + " @ " + elapsedTime, 10, 20);
+			gci.drawString("next up: " + nextSkater, 10, 34);
+			gci.drawString("current skaters: " + currSkaters, 10, 48);
+			
+		
+		} catch (InvalidPixelGrabException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	
+		//draw the final image into the jPanel GUI
+		//Graphics gp = guiPanel.getGraphics();
+		//gp.drawImage(ci, 0, 0, null);
+		
+		/**
+		 * END DRAWING
+		 */
+		
 	}
 
 	static Random generator = new Random();
