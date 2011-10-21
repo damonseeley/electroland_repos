@@ -1,4 +1,4 @@
-package net.electroland.EIA.core;
+package net.electroland.skate;
 
 import java.awt.Graphics;
 import java.awt.geom.Point2D;
@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import net.electroland.EIA.core.EIAMain;
 import net.electroland.utils.Util;
 
 import org.apache.log4j.Logger;
@@ -39,7 +40,7 @@ public class Skater implements Cloneable {
 	public BufferedImage spriteImg;
 	public int spriteSize;
 	public boolean globalSound = false;
-	protected boolean isReversed = false;
+	public boolean isReversed = false;
 	public double cmConversion = 2.54;  //incoming files should have inch units, by default do
 	public double canvasScale;
 

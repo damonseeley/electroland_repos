@@ -1,4 +1,4 @@
-package net.electroland.EIA.core;
+package net.electroland.skate;
 
 /**
  * Handles all of the OSC message output and keeps a ticker to track player ID's.
@@ -10,6 +10,7 @@ import java.net.UnknownHostException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 
+import net.electroland.EIA.core.EIAMain;
 import netP5.NetAddress;
 
 import org.apache.log4j.Logger;

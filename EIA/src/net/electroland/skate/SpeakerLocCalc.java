@@ -1,4 +1,4 @@
-package net.electroland.skate.util;
+package net.electroland.skate;
 
 /**
  * Handles all of the OSC message output and keeps a ticker to track player ID's.

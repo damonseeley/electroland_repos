@@ -20,6 +20,10 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import net.electroland.skate.SESSoundControllerP5;
+import net.electroland.skate.Skater;
+import net.electroland.skate.SkaterSequence;
+import net.electroland.skate.SkaterSequenceStep;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.Util;
@@ -207,6 +211,10 @@ public class EIAMain extends Thread {
 		/**
 		 * DRAWING
 		 */
+		
+		
+		// maybe move thie stuff into EIAPanel
+		
 
 		Dimension skatearea = canvas.getDimensions();
 
