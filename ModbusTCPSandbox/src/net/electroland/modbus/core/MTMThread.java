@@ -24,6 +24,8 @@ public class MTMThread  extends Thread {
 	InputStreamReader isr;
 	BufferedReader br;
 
+	public String ip;
+
 	public SensorPanel sp;
 
 	static Logger logger = Logger.getLogger(MTMThread.class);
@@ -38,15 +40,9 @@ public class MTMThread  extends Thread {
 
 		framerate = fr;
 		this.sp = sp;
+		this.ip = ip;
 
 		mtm = new ModbusTCPMaster(ip);
-		try {
-			logger.info("Attempting to connect to IP: " + ip);
-			mtm.connect();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 		double startTime = System.currentTimeMillis();
 
@@ -58,14 +54,43 @@ public class MTMThread  extends Thread {
 			sensorBits[i] = 0;
 			tripTimes[i] = startTime;
 		}
-		
+
 		sp.paintSensors(sensorStates, sensorChanged);
 
 		/////////////// THREAD STUFF
-		isRunning = true;
-		timer = new Timer(framerate);
-		start();
+		isRunning = false;
+		timer = new Timer(framerate);	
 
+		start();
+		//connectMTM();
+
+	}
+
+	public void connectMTM(String ip) {
+		sp.drawBlank();
+		this.ip = ip;
+		mtm.disconnect();
+		mtm = new ModbusTCPMaster(ip);
+		try {
+			logger.info("Attempting to connect to IP: " + ip);
+			mtm.connect();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		isRunning = true;
+	}
+
+	public void disconnectMTM() {
+		try {
+			logger.info("Disconnecting");
+			mtm.disconnect();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		sp.drawBlank();
+		isRunning = false;
 	}
 
 
@@ -80,30 +105,31 @@ public class MTMThread  extends Thread {
 		curTime = System.currentTimeMillis();
 		lastframe = curTime;
 
-		while (isRunning) {
-			try {
-				InputRegister[] regs = mtm.readInputRegisters(0, 1);
-				updateSensorStates(regs[0].toBytes());
+		while (true) {
+			if (isRunning) {
+				try {
+					InputRegister[] regs = mtm.readInputRegisters(0, 1);
+					updateSensorStates(regs[0].toBytes());
 
-				if (cycle >= reportFreq){
-					double rateAvg = 0.0;
-					for (int i=0; i< execAvg.length; i++){
-						rateAvg += execAvg[i];
+					if (cycle >= reportFreq){
+						double rateAvg = 0.0;
+						for (int i=0; i< execAvg.length; i++){
+							rateAvg += execAvg[i];
+						}
+						rateAvg  = rateAvg/execAvg.length;
+						// for determining frame execution time
+						//System.out.println("Frame Exec avg " + rateAvg + " ms");
+						cycle = 0;
 					}
-					rateAvg  = rateAvg/execAvg.length;
-					// for determining frame execution time
-					//System.out.println("Frame Exec avg " + rateAvg + " ms");
-					cycle = 0;
+				} catch (ModbusException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-			} catch (ModbusException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
+				execAvg[cycle] = System.currentTimeMillis() - lastframe;
+				lastframe = System.currentTimeMillis();
+				cycle++;
 			}
-
-			execAvg[cycle] = System.currentTimeMillis() - lastframe;
-			lastframe = System.currentTimeMillis();
-			cycle++;
-
 			//Thread ops
 			timer.block();
 		}
@@ -146,6 +172,7 @@ public class MTMThread  extends Thread {
 		 */
 
 		if (anyChange) {
+			//logger.info("Painting");
 			sp.paintSensors(sensorStates, sensorChanged);
 			//System.out.println("Last input tripped = " + (lastInputTripped+1));
 		}

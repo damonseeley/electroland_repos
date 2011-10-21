@@ -9,6 +9,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
@@ -47,8 +48,10 @@ public class SensorPanel extends JPanel implements MouseMotionListener { // chan
 	}
 
 	public void paintSensors(boolean[] states, boolean[] changed){
-
-		Graphics2D gci = (Graphics2D)this.getGraphics();
+		
+		//Graphics2D gci = (Graphics2D)this.getGraphics();
+		BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		Graphics2D gci = (Graphics2D)bi.getGraphics();
 		gci.setColor(new Color(10,10,10));
 		gci.fillRect(0,0,width,height);
 
@@ -80,12 +83,14 @@ public class SensorPanel extends JPanel implements MouseMotionListener { // chan
 			}
 
 		}
-
-
-
-
-
-
+		Graphics2D fgci = (Graphics2D)this.getGraphics();
+		fgci.drawImage(bi, 0, 0, null, null);
+	}
+	
+	public void drawBlank(){
+		Graphics2D gci = (Graphics2D)this.getGraphics();
+		gci.setColor(new Color(10,10,10));
+		gci.fillRect(0,0,width,height);
 	}
 
 
