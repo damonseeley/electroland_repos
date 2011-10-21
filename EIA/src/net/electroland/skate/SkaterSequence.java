@@ -1,4 +1,4 @@
-package net.electroland.EIA.core;
+package net.electroland.skate;
 
 import java.util.List;
 import java.util.Vector;

@@ -1,5 +1,12 @@
 package net.electroland.EIA.core;
 
+/**
+ * By Damon Seeley
+ * Should contain all UI elements for the EIA app in one place
+ * except for the main image area, drawn in EIAPanel
+ * 
+ */
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.color.ColorSpace;
@@ -53,7 +60,7 @@ public class EIAFrame extends JFrame  {
 
 
 		ipAddressInput = new JTextField();
-		ipAddressInput.setText(startIP);
+		ipAddressInput.setText("foo");
 		controlPanel.add(ipAddressInput, "span ,growx, wrap");
 		controlPanel.add(new JSeparator(), "span, growx, wrap");
 		startButton = new JButton("Start");
@@ -72,7 +79,7 @@ public class EIAFrame extends JFrame  {
 			}
 		});
 
-		sp = new EIAPanel(panelWidth,panelHeigh);
+		sp = new EIAPanel(panelWidth,panelHeight);
 		this.add(sp);
 
 
@@ -87,8 +94,6 @@ public class EIAFrame extends JFrame  {
 						close();
 					}
 				});
-
-
 
 
 	}

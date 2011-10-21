@@ -5,7 +5,6 @@
 	<classpathentry kind="lib" path="libraries/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="libraries/oscP5.jar"/>
 	<classpathentry kind="lib" path="libraries/core.jar"/>
-	<classpathentry kind="lib" path="libraries/ELU2.jar"/>
 	<classpathentry kind="lib" path="libraries/SCSoundControl.jar"/>
 	<classpathentry kind="lib" path="libraries/miglayout-4.0-javadoc.jar"/>
 	<classpathentry kind="lib" path="libraries/miglayout-4.0-swing.jar"/>

@@ -1,5 +1,9 @@
 package net.electroland.EIA.core;
 
+/**
+ * Draw the ELU canvas and various indicators in strips
+ */
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
