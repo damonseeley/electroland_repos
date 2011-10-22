@@ -1,5 +1,6 @@
 package net.electroland.utils.lighting;
 
+import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+
+import javax.vecmath.Point3d;
 
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.FrameRateRingBuffer;
@@ -26,11 +29,11 @@ public class ELUManager implements Runnable {
     final public static String CANVAS_FIXTURE = "canvasFixture"; 
     final public static String TEST = "test";
     final public static String TEST_SUITE = "testSuite";
-    
+
     private static Logger logger = Logger.getLogger(ELUManager.class);    
 
     private int fps;
-    
+
     private HashMap<String, Recipient> recipients;
     private HashMap<String, ELUCanvas>canvases;
     private HashMap<String, Test>tests;
@@ -39,7 +42,7 @@ public class ELUManager implements Runnable {
     private Thread thread;
     boolean isRunning = false;
     boolean isRunningTest = false;
-    
+
     // assume a general 45 fps over 10 seconds.
     private FrameRateRingBuffer fpsBuffer = new FrameRateRingBuffer(45 * 10);
 
@@ -50,6 +53,7 @@ public class ELUManager implements Runnable {
 
             ELUManager elu = new ELUManager();
             boolean isOn = true;
+            String lastFile = "lights.properties";
 
             Map<String,Integer> commands = new HashMap<String,Integer>();
             commands.put("start", 0);
@@ -59,6 +63,7 @@ public class ELUManager implements Runnable {
             commands.put("alloff", 4);
             commands.put("list", 5);
             commands.put("load", 6);
+            commands.put("l", 6);
             commands.put("test", 7);
             commands.put("quit", 8);
             commands.put("on", 9);
@@ -129,9 +134,18 @@ public class ELUManager implements Runnable {
                             break;
                         case(6):
                             if (input.length == 1)
-                                elu.load("lights.properties");
+                                try{
+                                    elu.load(lastFile);
+                                }catch(OptionException e){
+                                    e.printStackTrace();
+                                }
                             else
-                                elu.load(input[1]);
+                                try{
+                                    lastFile = input[1];
+                                    elu.load(input[1]);
+                                }catch(OptionException e){
+                                    e.printStackTrace();
+                                }
                             break;
                         case(7):
                                 if (input.length == 2)
@@ -171,15 +185,13 @@ public class ELUManager implements Runnable {
                     }
                 }catch (java.io.IOException e){
                     logger.error(e);
-                }            
+                }
             }
-            
         } catch (OptionException e) {
             logger.error(e);
         }
-        
     }
-    
+
     public final void run()
     {
         long targetDelay = (int)(1000.0 / fps);
@@ -204,7 +216,7 @@ public class ELUManager implements Runnable {
             }
         }
         thread = null;
-    }    
+    }
 
     /** 
      * Start autosyncing.  Will sync the latest array sent to each canvas with
@@ -216,8 +228,8 @@ public class ELUManager implements Runnable {
             isRunning = true;
             if (thread == null){
                 thread = new Thread(this);
-                thread.start();            
-            }            
+                thread.start();
+            }
         }
     }
 
@@ -227,22 +239,22 @@ public class ELUManager implements Runnable {
     public final void stop()
     {
         isRunning = false;
-    }    
-    
+    }
+
     /**
      * Forces a synchronization of all canvases with all recipients.  This is
      * what run() calls- but you can call it on your own if you don't want
      * ELU to be it's own thread.
      */
     public void syncAllLights()
-    {        
+    {
         for (Recipient r : recipients.values())
         {
             r.sync();
         }
         fpsBuffer.markFrame();
     }
-    
+
     /**
      * get the FPS that was requested by either lights.properties or overridden
      * using setTargetFPS.  This is the frame rate the system will do it's best
@@ -269,7 +281,7 @@ public class ELUManager implements Runnable {
     {
         this.fps = fps;
     }
-    
+
     /**
      * Return the empirically measured frame rate.
      * @return
@@ -289,7 +301,7 @@ public class ELUManager implements Runnable {
             r.allOn();
         }
     }
-    
+
     /**
      * Turn all channels on all fixtures off.
      */
@@ -363,14 +375,14 @@ public class ELUManager implements Runnable {
                 isRunningTest = true;
                 ti.start();
             }
-        }        
-    }    
+        }
+    }
 
     public ELUManager load() throws IOException, OptionException
     {
         return load("lights.properties");
     }
-    
+
     /** Configure the system using "lights.properties"
      * 
      * Currently a gross way of doing this.
@@ -391,14 +403,16 @@ public class ELUManager implements Runnable {
 
         HashMap<String, Fixture>fixtures = new HashMap<String, Fixture>();
         HashMap<String, FixtureType>types = new HashMap<String, FixtureType>();
-        
-        
+
         // get fps
+        logger.info("\tgetting settings.global." + FPS);
         fps = ep.getRequiredInt("settings","global",FPS);
-        
+
         // parse recipients
+        logger.info("\tgetting " + RECIPIENT + "s...");
         for (String name : ep.getObjectNames(RECIPIENT))
         {            
+            logger.info("\tgetting " + RECIPIENT + "." + name);
             try{
                 Recipient r = (Recipient)ep.getRequiredClass(RECIPIENT, name, "class");
                 // name, configure, store
@@ -408,19 +422,29 @@ public class ELUManager implements Runnable {
 
             }catch(ClassCastException e)
             {
-                throw new OptionException(name + "' is not a Recipient.");
+                throw new OptionException(name + "' is not of class Recipient.");
             }
         }
-                
+
         // parse fixtureTypes
+        logger.info("\tgetting " + FIXTURE_TYPE + "s...");
         for (String name : ep.getObjectNames(FIXTURE_TYPE))
         {
-            types.put(name, new FixtureType(name, ep.getRequiredInt(FIXTURE_TYPE, name, "channels")));
+            logger.info("\tgetting " + FIXTURE_TYPE + "." + name);
+            FixtureType type = new FixtureType(name, ep.getRequiredInt(FIXTURE_TYPE, name, "channels"));
+            Integer w = ep.getOptionalInt(FIXTURE_TYPE, name, "w");
+            Integer h = ep.getOptionalInt(FIXTURE_TYPE, name, "h");
+            if (w != null && h != null){
+                type.setSize(new Dimension(w,h));
+            }
+            types.put(name, type);
         }
-        
+
         // patch channels into each fixtureType (e.g., detectors)
+        logger.info("\tgetting " + DETECTOR + "s...");
         for (String name : ep.getObjectNames(DETECTOR))
         {
+            logger.info("\tgetting " + DETECTOR + "." + name);
             int x = ep.getRequiredInt(DETECTOR, name, "x");
             int y = ep.getRequiredInt(DETECTOR, name, "y");
             int width = ep.getRequiredInt(DETECTOR, name, "w");
@@ -438,18 +462,25 @@ public class ELUManager implements Runnable {
                 if (ft== null){
                     throw new OptionException("fixtureType '" + ftname + "' cannot be found for " + DETECTOR + "'" + name + "'.");
                 }
+                Detector existing = ft.detectors.get(index);
+                if (existing != null)
+                {
+                    throw new OptionException("channel at index " + index + " is already patched.");
+                }
                 ft.detectors.set(index, new Detector(x,y,width,height,dm, tags));
 
             }catch(ClassCastException e)
             {
-                throw new OptionException(name + " is not a DetectionModel.");
+                throw new OptionException(name + " is not of class DetectionModel.");
             }
 
         }
 
         // parse canvases
+        logger.info("\tgetting " + CANVAS + "s...");
         for (String name : ep.getObjectNames(CANVAS))
         {
+            logger.info("\tgetting " + CANVAS + "." + name);
             ELUCanvas ec = (ELUCanvas)ep.getRequiredClass(CANVAS, name, "class");
             ec.configure(ep.getParams(CANVAS, name));
             ec.setName(name);
@@ -457,8 +488,10 @@ public class ELUManager implements Runnable {
         }
 
         // parse fixtures
+        logger.info("\tgetting " + FIXTURE + "s...");
         for (String name : ep.getObjectNames(FIXTURE))
         {
+            logger.info("\tgetting " + FIXTURE + "." + name);
             String typeStr = ep.getRequired(FIXTURE, name, FIXTURE_TYPE);
             FixtureType type = types.get(typeStr);
             if (type == null){
@@ -470,15 +503,26 @@ public class ELUManager implements Runnable {
             if (recipient == null){
                 throw new OptionException("recipient '" + recipStr + "' for object '" + name + "' of type 'fixture' could not be found.");                
             }
-            List<String> tags = ep.getOptionalArray(FIXTURE, name, "tags");
+            List<String> tags = ep.getOptionalList(FIXTURE, name, "tags");
+
             Fixture fixture = new Fixture(name, type, startAddress, recipient, tags);
-            
+
+            Integer x = ep.getOptionalInt(FIXTURE, name, "x");
+            Integer y = ep.getOptionalInt(FIXTURE, name, "y");
+            Integer z = ep.getOptionalInt(FIXTURE, name, "z");
+            if (x != null && y != null && z != null){
+                Point3d location = new Point3d(x,y,z);
+                fixture.setLocation(location);
+            }
+
             fixtures.put(name, fixture);
         }
-        
+
         // parse fixture to canvas mappings (this is the meat of everything)
+        logger.info("\tgetting " + CANVAS_FIXTURE + "s...");
         for (String name : ep.getObjectNames(CANVAS_FIXTURE))
         {
+            logger.info("\tgetting " + CANVAS_FIXTURE + "." + name);
             //     * find the fixture
             String fixtureName = ep.getRequired(CANVAS_FIXTURE, name, FIXTURE);
             Fixture fixture = fixtures.get(fixtureName);
@@ -489,15 +533,15 @@ public class ELUManager implements Runnable {
             //       * find the canvas
             String cnvsName = ep.getRequired(CANVAS_FIXTURE, name, CANVAS);
             ELUCanvas canvas = canvases.get(cnvsName);
-            if (canvas == null){                
+            if (canvas == null){
                 throw new OptionException("canvas '" + cnvsName + "' for object '" + name + "' of type 'canvasFixture' could not be found.");
             }
 
             // counter for recipient mappings
-            int channel = fixture.startAddress;            
+            int channel = fixture.startAddress;
 
             //       * find the recipient
-            Recipient recipient = fixture.recipient;    
+            Recipient recipient = fixture.recipient;
 
             
             //     for each prototype detector in the fixture (get from FixtureType)
@@ -518,7 +562,6 @@ public class ELUManager implements Runnable {
                 double scaleX = ep.getRequiredDouble(CANVAS_FIXTURE, name, "xScale");
                 double scaleY = ep.getRequiredDouble(CANVAS_FIXTURE, name, "yScale");
 
-                System.out.println("dtr:" + dtr);
                 Rectangle boundary = new Rectangle((int)((scaleX * (dtr.x + offsetX))),
                                                     (int)((scaleY * (dtr.y + offsetY))),
                                                     (int)(dtr.width * scaleX),
@@ -536,18 +579,21 @@ public class ELUManager implements Runnable {
         }
 
         // parse Tests
+        logger.info("\tgetting " + TEST + "s...");
         for (String name : ep.getObjectNames(TEST))
         {
-            Test test = new Test(name, ep.getRequiredArray("test", name, "tags"));
+            logger.info("\tgetting " + TEST + ".name");
+            Test test = new Test(name, ep.getRequiredList("test", name, "tags"));
             tests.put(name, test);
         }
-        
-        
+
         // parse TestSuites
+        logger.info("\tgetting " + TEST_SUITE + "s...");
         for (String name : ep.getObjectNames(TEST_SUITE))
         {
+            logger.info("\tgetting " + TEST_SUITE + ".name");
             int fps = ep.getRequiredInt(TEST_SUITE, name, "fps");
-            List<String> testStrs = ep.getRequiredArray(TEST_SUITE, name, "tests");
+            List<String> testStrs = ep.getRequiredList(TEST_SUITE, name, "tests");
             ArrayList<Test> itests = new ArrayList<Test>(testStrs.size());
             
             for (String s : testStrs)
@@ -566,13 +612,12 @@ public class ELUManager implements Runnable {
             TestSuite it = new TestSuite(name, this, fps, itests, loops, color);
             suites.put(name, it);
         }
-        
-        
+
         Runtime.getRuntime().addShutdownHook(new BlackOutThread(this));
         
         return this;
     }
-        
+
     /**
      * return the canvas referenced by name in lights.properties.
      * @param name
@@ -603,7 +648,7 @@ public class ELUManager implements Runnable {
         for (Recipient r : recipients.values()){
             r.debug();
         }
-        
+
         for (TestSuite t : suites.values())
         {
             t.debug();
