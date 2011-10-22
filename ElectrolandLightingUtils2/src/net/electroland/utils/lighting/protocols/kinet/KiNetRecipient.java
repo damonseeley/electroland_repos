@@ -24,10 +24,10 @@ public class KiNetRecipient extends Recipient {
     private int totalChannels, universe, portout, port;
     private InetAddress ip;
     private String ipStr;
-    private static Logger logger = Logger.getLogger(KiNetRecipient.class); 
+    private static Logger logger = Logger.getLogger(KiNetRecipient.class);
     private static DatagramSocket socket;
 
-//    -channels 512 -address 127.0.0.1 -universe 1 -portout 1 -port 6038
+    // -channels 512 -address 127.0.0.1 -universe 1 -portout 1 -port 6038
 
     @Override
     public void configure(ParameterMap properties) throws OptionException
@@ -64,14 +64,8 @@ public class KiNetRecipient extends Recipient {
             throw new OptionException("recipient.address failed: " + e.getMessage());
         }
 
-        // get universe (must be 0-255)
-        try{
-            Integer universe = Integer.parseInt(properties.get("universe"));
-            this.universe = universe.intValue();
-        }catch(NumberFormatException e)
-        {
-            throw new OptionException("bad universe value. " + e.getMessage());
-        }
+        // get universe
+        this.universe = properties.getRequiredInt("universe");
     }
 
     @Override
