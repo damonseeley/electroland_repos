@@ -69,7 +69,6 @@ public class TestSuite implements Runnable {
 			sb.append(t.name);
 			sb.append(',');
 		}
-		sb.append("todo: remove last comma");
 		sb.append("]]");
 		System.out.println(sb.toString());
 	}
