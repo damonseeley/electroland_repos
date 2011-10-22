@@ -36,7 +36,6 @@ public class ModBusTCPSlaveDeviceFactory extends IODeviceFactory {
         {
             if (s.startsWith("patch"))
             {
-                System.out.println("patch " + s);
                 // phoenix4DI8DO.patch.0 = $register register.1 $bit 8 $port 0
                 //   find the register, store the register + bit hashed by port
                 // TODO: should check to see if register comes back null.
