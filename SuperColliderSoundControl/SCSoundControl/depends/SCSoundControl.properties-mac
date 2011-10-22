@@ -1,0 +1,15 @@
+#SCSoundControl Properties File
+#Fri Jan 29 12:45:12 PST 2010
+SuperCollider_NumberOfInputChannels=2
+SuperCollider_NumberOfOutputChannels=8
+SuperCollider_UDPportNumber=57110
+SuperCollider_RealTimeRamAllocation=8192
+SCSoundControl_MaxPolyphony=200
+SuperCollider_LoadSynthDefs=1
+#SuperCollider_AudioHardwareDeviceName=ASIO \: M-Audio FireWire ASIO
+#SuperCollider_AudioHardwareDeviceName=ASIO \: MOTU Audio ASIO
+SuperCollider_AudioHardwareDeviceName=ASIO \: ASIO4ALL v2
+#PC
+#SuperCollider_Path=C\:\\Program Files (x86)\\SuperCollider\\scsynth.exe
+#MAC
+SuperCollider_Path=/Applications/SuperCollider/scsynth
