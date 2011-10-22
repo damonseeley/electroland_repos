@@ -16,7 +16,7 @@ public class ParameterMap implements Map<String, String>{
         return params.get(name);
     }
 
-    public String getRequired(String name) throws OptionException
+    public String getRequired(String name)
     {
         Object o = params.get(name);
         if (o == null)
@@ -25,7 +25,7 @@ public class ParameterMap implements Map<String, String>{
             return o.toString();
     }
 
-    public Integer getOptionalInt(String name) throws OptionException
+    public Integer getOptionalInt(String name)
     {
         Object o = params.get(name);
         if (o == null)
@@ -39,7 +39,7 @@ public class ParameterMap implements Map<String, String>{
         }
     }
 
-    public Integer getRequiredInt(String name) throws OptionException
+    public Integer getRequiredInt(String name)
     {
         Object o = getOptionalInt(name);
         if (o == null)
@@ -48,7 +48,7 @@ public class ParameterMap implements Map<String, String>{
             return (Integer)o;
     }
 
-    public Double getOptionalDouble(String name) throws OptionException
+    public Double getOptionalDouble(String name)
     {
         Object o = params.get(name);
         if (o == null)
@@ -62,7 +62,7 @@ public class ParameterMap implements Map<String, String>{
         }
     }
 
-    public Double getRequiredDouble(String name) throws OptionException
+    public Double getRequiredDouble(String name)
     {
         Object o = getOptionalDouble(name);
         if (o == null)
@@ -71,7 +71,7 @@ public class ParameterMap implements Map<String, String>{
             return (Double)o;
     }
 
-    public List<String> getOptionalList(String name) throws OptionException
+    public List<String> getOptionalList(String name)
     {
         Object tags = params.get(name);
         ArrayList<String> tagList = new ArrayList<String>();
@@ -94,12 +94,11 @@ public class ParameterMap implements Map<String, String>{
                     }
                 }
             }
-            
             return tagList.size() == 0 ? null : tagList;
         }
     }
 
-    public List<String> getRequiredList(String name) throws OptionException
+    public List<String> getRequiredList(String name)
     {
         List<String> l = getOptionalList(name);
         if (l == null)
@@ -108,7 +107,7 @@ public class ParameterMap implements Map<String, String>{
             return l;
     }
 
-    public Object getOptionalClass(String name) throws OptionException
+    public Object getOptionalClass(String name)
     {
         Object c = params.get(name);
         if (c == null)
@@ -126,7 +125,7 @@ public class ParameterMap implements Map<String, String>{
         }
     }
 
-    public Object getRequiredClass(String name) throws OptionException
+    public Object getRequiredClass(String name)
     {
         Object o = getOptionalClass(name);
         if (o == null)
@@ -135,7 +134,7 @@ public class ParameterMap implements Map<String, String>{
             return o;
     }
 
-    public List<Object> getOptionalClassList(String name) throws OptionException
+    public List<Object> getOptionalClassList(String name)
     {
         List<String>list = getOptionalList(name);
         if (list == null)
@@ -159,7 +158,7 @@ public class ParameterMap implements Map<String, String>{
         }
     }
 
-    public List<Object> getRequiredClassList(String name) throws OptionException
+    public List<Object> getRequiredClassList(String name)
     {
         List<Object> l = getOptionalClassList(name);
         if (l == null)
