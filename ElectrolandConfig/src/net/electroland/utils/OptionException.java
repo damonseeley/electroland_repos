@@ -1,7 +1,7 @@
 package net.electroland.utils;
 
 @SuppressWarnings("serial")
-public class OptionException extends Exception
+public class OptionException extends RuntimeException
 {
     public OptionException(){
         super();

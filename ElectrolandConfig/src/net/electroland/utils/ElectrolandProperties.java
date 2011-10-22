@@ -23,35 +23,40 @@ public class ElectrolandProperties {
     // main is just a unit test
     public static void main(String args[]){
         Properties p = new Properties();
-        p.put("dog.mydog.2", "$weight 400 $foo phi");
-        p.put("cat.1", "$class goober $width 700");
-        p.put("cat.name with pace", "$height 600");
-        p.put("dog.mydog", "$weight 600");
-        p.put("dog.fixture[0]", "$weight 400");
-        p.put("dog.mydog3", "$names jack,bradley,");
-        p.put("phoenix4DI8DO.register.1", "$startRef 0");
-        p.put("phoenix4DI8DO.patch.0", "$register register.1 $bit 8 $port 0");
+        p.put("dog.betty", "$type yorkie $attitude 0 $class net.electroland.utils.Dog $tags short,frantic");
+        p.put("dog.sophie","$type mutt $attitude 10 $class net.electroland.utils.Dog $tags tall,friendly,bites,men");
+        p.put("cat.clay","$type tabby $class net.electroland.utils.Cat");
 
-        try {
-            ElectrolandProperties op = new ElectrolandProperties(p);
+        ElectrolandProperties op = new ElectrolandProperties(p);
 
-            // TODO: add Asserts and tests for conditions that should 
-            // fail predictably.            
-            System.out.println(op.getObjectNames("cat"));
-            System.out.println(op.getObjectNames("dog"));
-            
-            System.out.println(op.getParams("cat", "1"));
-            System.out.println(op.getParams("dog", "mydog.2"));
-
-            System.out.println(op.getOptional("dog", "mydog.2", "weight"));
-            //System.out.println(op.getRequired("dog", "mydog.2", "food"));
-
-            System.out.println(op.getRequiredList("dog", "mydog3","names"));
-            System.out.println(op.getObjects("phoenix4DI8DO"));
-        } catch (OptionException e) {
-            e.printStackTrace();
+        // get dog names
+        Set<String> dogNames = op.getObjectNames("dog");
+        for (String name : dogNames)
+        {
+            System.out.println(name);
         }
-        
+
+        // get all dogs (this is useful if you want to pass this subset
+        // of the properties to a class that needs to access properties
+        // for just dogs)
+        Map <String,ParameterMap> dogs = op.getObjects("dog");
+        // and tell me about Betty's type
+        ParameterMap betty = dogs.get("betty");
+        String type = betty.getRequired("type");
+        System.out.println(type);
+
+        // alternately
+        String type2 = op.getRequired("dog", "betty", "type");
+        System.out.println(type2);
+
+        // tags
+        List<String> tags = op.getRequiredList("dog", "betty", "tags");
+        System.out.println(tags);
+
+        // load an instance of the class the represents betty
+        Object c = op.getRequiredClass("dog", "betty", "class");
+        System.out.println(c);
+
     }
 
     //  objectType -> named_object -> parameters (key value pairs)
@@ -61,7 +66,7 @@ public class ElectrolandProperties {
      * Take properties file provided by client
      * @param p
      */
-    public ElectrolandProperties(Properties p) throws OptionException
+    public ElectrolandProperties(Properties p)
     {
         this.objects = init(p);
     }
@@ -70,7 +75,7 @@ public class ElectrolandProperties {
      * load resourceName from classpath
      * @param resourceName
      */
-    public ElectrolandProperties(String resourceName) throws OptionException
+    public ElectrolandProperties(String resourceName)
     {
         Properties p = new Properties();
 
@@ -88,7 +93,7 @@ public class ElectrolandProperties {
         this.objects = init(p);
     }
 
-    public static Map<String,Map<String,ParameterMap>> init(Properties p) throws OptionException
+    public static Map<String,Map<String,ParameterMap>> init(Properties p)
     {
         // java generics syntax is bullshit and a half!
         Hashtable<String,Map<String,ParameterMap>> objects 
@@ -138,7 +143,7 @@ public class ElectrolandProperties {
      * @return
      * @throws OptionException
      */
-    public Set<String> getObjectNames(String objectType) throws OptionException
+    public Set<String> getObjectNames(String objectType)
     {
         Map<String,ParameterMap> type = objects.get(objectType);
         if (type == null){
@@ -148,7 +153,7 @@ public class ElectrolandProperties {
         }
     }
 
-    public Map<String, ParameterMap> getObjects(String objectType) throws OptionException
+    public Map<String, ParameterMap> getObjects(String objectType)
     {
         Map<String,ParameterMap> type = objects.get(objectType);
         if (type == null){
@@ -163,7 +168,7 @@ public class ElectrolandProperties {
     // have to go massage all the keys before returning int.
     // Therefore: see if anyone is using getAll().  Probably better to just update those code bases.
 
-    public ParameterMap getParams(String objectType, String objectName) throws OptionException
+    public ParameterMap getParams(String objectType, String objectName)
     {
         Map<String,ParameterMap> type = objects.get(objectType);
         if (type == null){
@@ -182,62 +187,62 @@ public class ElectrolandProperties {
 
     // TODO: all of the methods below should add some debugging info to tell you which objectType and objectName
     // threw the OptionException
-    public String getOptional(String objectType, String objectName, String paramName) throws OptionException
+    public String getOptional(String objectType, String objectName, String paramName)
     {
         return getParams(objectType, objectName).getOptional(paramName);
     }
 
-    public String getRequired(String objectType, String objectName, String paramName) throws OptionException
+    public String getRequired(String objectType, String objectName, String paramName)
     {
         return getParams(objectType, objectName).getRequired(paramName);
     }
 
-    public Double getOptionalDouble(String objectType, String objectName, String paramName) throws OptionException
+    public Double getOptionalDouble(String objectType, String objectName, String paramName)
     {
         return getParams(objectType, objectName).getOptionalDouble(paramName);
     }
 
-    public Double getRequiredDouble(String objectType, String objectName, String paramName) throws OptionException
+    public Double getRequiredDouble(String objectType, String objectName, String paramName)
     {
         return getParams(objectType, objectName).getRequiredDouble(paramName);
     }
     
-    public Integer getOptionalInt(String objectType, String objectName, String paramName) throws OptionException
+    public Integer getOptionalInt(String objectType, String objectName, String paramName)
     {        
         return getParams(objectType, objectName).getOptionalInt(paramName);
     }
 
-    public Integer getRequiredInt(String objectType, String objectName, String paramName) throws OptionException
+    public Integer getRequiredInt(String objectType, String objectName, String paramName)
     {
         return getParams(objectType, objectName).getRequiredInt(paramName);
     }
 
-    public Object getOptionalClass(String objectType, String objectName, String paramName) throws OptionException
+    public Object getOptionalClass(String objectType, String objectName, String paramName)
     {
         return getParams(objectType, objectName).getOptionalClass(paramName);
     }
 
-    public Object getRequiredClass(String objectType, String objectName, String paramName) throws OptionException
+    public Object getRequiredClass(String objectType, String objectName, String paramName)
     {
         return getParams(objectType, objectName).getRequiredClass(paramName);
     }
 
-    public List<String> getOptionalList(String objectType, String objectName, String paramName) throws OptionException
+    public List<String> getOptionalList(String objectType, String objectName, String paramName)
     {
         return getParams(objectType, objectName).getOptionalList(paramName);
     }
 
-    public List<String> getRequiredList(String objectType, String objectName, String paramName) throws OptionException
+    public List<String> getRequiredList(String objectType, String objectName, String paramName)
     {
         return getParams(objectType, objectName).getRequiredList(paramName);
     }
 
-    public List<Object> getOptionalClassList(String objectType, String objectName, String paramName) throws OptionException
+    public List<Object> getOptionalClassList(String objectType, String objectName, String paramName)
     {
         return getParams(objectType, objectName).getOptionalClassList(paramName);
     }
 
-    public List<Object> getRequiredClassList(String objectType, String objectName, String paramName) throws OptionException
+    public List<Object> getRequiredClassList(String objectType, String objectName, String paramName)
     {
         return getParams(objectType, objectName).getRequiredClassList(paramName);
     }
@@ -251,7 +256,7 @@ public class ElectrolandProperties {
      * @return
      * @throws OptionException
      */
-    public List<String> getOptionalArray(String objectType, String objectName, String paramName) throws OptionException
+    public List<String> getOptionalArray(String objectType, String objectName, String paramName)
     {
         return getParams(objectType, objectName).getOptionalList(paramName);
     }
@@ -265,7 +270,7 @@ public class ElectrolandProperties {
      * @return
      * @throws OptionException
      */
-    public List<String> getRequiredArray(String objectType, String objectName, String paramName) throws OptionException
+    public List<String> getRequiredArray(String objectType, String objectName, String paramName)
     {
         return getParams(objectType, objectName).getRequiredList(paramName);
     }
@@ -291,7 +296,7 @@ public class ElectrolandProperties {
      * @return a Map of the keys and their values.
      * @throws OptionException if the string does not properly start with a flag. 
      */
-    private static ParameterMap parse(String str) throws OptionException
+    private static ParameterMap parse(String str)
     {
         ParameterMap map = new ParameterMap();
         if (str == null)
