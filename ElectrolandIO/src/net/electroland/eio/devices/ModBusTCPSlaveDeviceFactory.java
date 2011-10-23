@@ -6,7 +6,11 @@ import java.util.Map;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.ParameterMap;
 
+import org.apache.log4j.Logger;
+
 public class ModBusTCPSlaveDeviceFactory extends IODeviceFactory {
+
+    private static Logger logger = Logger.getLogger(IODeviceFactory.class);
 
     // maps port (by name) to regester start bit + offset bit (this is the actual port map)
     HashMap<String, Integer> portToRegisterBit = new HashMap<String, Integer>();
@@ -18,11 +22,14 @@ public class ModBusTCPSlaveDeviceFactory extends IODeviceFactory {
 
 
         // get registers (name starts with register: kludgy)
+        logger.info("\tconfiguring prototype...");
+        logger.info("\t\tconfiguring registers...");
         for (String s: props.keySet())
         {
             // for each register
             if (s.startsWith("register"))
             {
+                logger.info("\t\tconfiguring " + s);
                 // phoenix4DI8DO.register.1 = $startRef 0
                 //   store the register start bit and length
                 int startRef = props.get(s).getRequiredInt("startRef");
@@ -32,15 +39,22 @@ public class ModBusTCPSlaveDeviceFactory extends IODeviceFactory {
         }
         // get patches
         // for each patch
+        logger.info("\t\tconfiguring patches...");
         for (String s: props.keySet())
         {
             if (s.startsWith("patch"))
             {
+                logger.info("\t\tconfiguring " + s);
                 // phoenix4DI8DO.patch.0 = $register register.1 $bit 8 $port 0
                 //   find the register, store the register + bit hashed by port
-                // TODO: should check to see if register comes back null.
                 String port = props.get(s).getRequired("port");
-                int startRef = registers.get(props.get(s).getRequired("register")).startRef;
+                
+                ModBusTCPSlaveDeviceRegister register 
+                    =  registers.get(props.get(s).getRequired("register"));
+                if (register == null){
+                    throw new OptionException("Can't find register '" + props.get(s).getRequired("register") + '\'');
+                }
+                int startRef =register.startRef;
                 int bit = props.get(s).getRequiredInt("bit");
                 portToRegisterBit.put(port, startRef + bit);
             }

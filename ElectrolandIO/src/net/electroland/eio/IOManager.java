@@ -31,14 +31,18 @@ public class IOManager {
 
             IOManager iom = new IOManager();
             boolean isOn = true;
+            String lastFile = "io.properties";
 
             Map<String,Integer> commands = new HashMap<String,Integer>();
             commands.put("start", 0);
             commands.put("stop", 1);
             commands.put("fps", 2);
             commands.put("list", 3);
+            commands.put("ls", 3);
             commands.put("load", 4);
+            commands.put("l", 4);
             commands.put("quit", 5);
+            commands.put("q", 5);
 
             while(isOn)
             {
@@ -91,10 +95,20 @@ public class IOManager {
                             iom.debug();
                             break;
                         case(4):
-                            if (input.length == 1)
-                                iom.load("io.properties");
-                            else
-                                iom.load(input[1]);
+                            if (input.length == 1){
+                                try{
+                                    iom.load(lastFile);
+                                }catch(OptionException e){
+                                    e.printStackTrace();
+                                }
+                            } else{
+                                try{
+                                    lastFile = input[1];
+                                    iom.load(input[1]);
+                                }catch(OptionException e){
+                                    e.printStackTrace();
+                                }
+                            }
                             break;
                         case(5):
                             iom.stop();
@@ -155,6 +169,9 @@ public class IOManager {
             String type = op.getRequired("iodevice", name, "type");
             //  find the factory for the type (as appropriate)
             IODeviceFactory factory = factories.get(type);
+            if (factory == null){
+                throw new OptionException("Can't find factory '" + type + '\'');
+            }
             IODevice device = factory.createInstance(op.getParams("iodevice", name));
             device.setName(name);
             //  store the Device, hashed against it's name
@@ -192,8 +209,12 @@ public class IOManager {
             state.tags = (sTags == null) ? new Vector<String>() : sTags;
 
             //   find the iodevice
-            // TODO: throw exception if device doesn't exist.
             IODevice device = iodevices.get(op.getRequired("istate", name, "iodevice"));
+            if (device == null)
+            {
+                throw new OptionException("Can't find iodevice '" + 
+                        op.getRequired("istate", name, "iodevice") + '\'');
+            }
             state.device = device;
 
             //   call patch(state, port)
