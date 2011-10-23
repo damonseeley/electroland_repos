@@ -48,7 +48,6 @@ public class SimpleLowPass implements IOFilter {
         //  do the same thing with the erased value from the ring buffer)
         // would avoid calculating an average plus all decimal conversions.
         double average = add(b ? 1 : 0);
-        System.out.println(average);
         if (average ==.5)
         {
             return lastBool;
