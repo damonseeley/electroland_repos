@@ -17,26 +17,30 @@ public class BoxcarFilter implements IOFilter {
 
     public static void main(String args[]){
 
-        BoxcarFilter bx = new BoxcarFilter();
-        bx.data = new int[10];
+        BoxcarFilter bx1 = new BoxcarFilter();
+        BoxcarFilter bx2 = new BoxcarFilter();
+        BoxcarFilter bx3 = new BoxcarFilter();
 
-//      boolean[] samples = {true,true,true,true,true,true,false,false,true,true,false,true,false,true};
-        boolean[] samples = {true,false,false,false,true,false,true,false,true,true,false,false,false,false,
-              true,false,true,false,true,false,true,false,true,true,false,false,false,false};
-//        byte[] samples = {(byte)100,(byte)100,(byte)100,(byte)0,(byte)-1};
+        // since we can't call configure...
+        bx1.data = new int[10];
+        bx2.data = new int[10];
+        bx3.data = new int[10];
+
+      boolean[] samples = {true,true,true,true,true,true,false,false,true,true,false,true,false,true};
+//        boolean[] samples = {true,false,false,false,true,false,true,false,true,true,false,false,false,false,
+//              true,false,true,false,true,false,true,false,true,true,false,false,false,false};
+//      byte[] samples = {(byte)100,(byte)100,(byte)100,(byte)0,(byte)-1};
         
         for (int i = 0; i < samples.length; i++)
         {
-            System.out.println(bx.filter(samples[i]));
+            System.out.println("1: " + bx1.filter(samples[i]));
+            System.out.println("2: " + bx2.filter(bx3.filter(samples[i])));
         }
     }
 
     @Override
     public void configure(ParameterMap params) {
         data = new int[params.getRequiredInt("samples")];
-        for (int i = 0; i < data.length; i++){
-            data[i] = 0;
-        }
         logger.info("\t\tconfigured BoxCarFilter for " + data.length + " samples.");
     }
 
