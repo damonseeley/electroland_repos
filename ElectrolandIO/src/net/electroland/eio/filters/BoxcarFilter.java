@@ -8,11 +8,12 @@ public class BoxcarFilter implements IOFilter {
 
     private static Logger logger = Logger.getLogger(IOFilter.class);
 
-    private boolean firstpass = true; // could probably do without this.
     private int data[];
     private int index = 0;
     private double total = 0;
-    private int samples;
+    // minor bug: the total for the byte filter should default to 0.  The
+    // total for the boolean filter should default to data.length * -1. It's no
+    // big deal since it fixes itself after the first cycle.
 
     public static void main(String args[]){
 
@@ -20,9 +21,9 @@ public class BoxcarFilter implements IOFilter {
         bx.data = new int[10];
 
 //      boolean[] samples = {true,true,true,true,true,true,false,false,true,true,false,true,false,true};
-//        boolean[] samples = {true,false,false,false,true,false,true,false,true,true,false,false,false,false,
-//              true,false,true,false,true,false,true,false,true,true,false,false,false,false};
-        byte[] samples = {(byte)100,(byte)100,(byte)100,(byte)0,(byte)-1};
+        boolean[] samples = {true,false,false,false,true,false,true,false,true,true,false,false,false,false,
+              true,false,true,false,true,false,true,false,true,true,false,false,false,false};
+//        byte[] samples = {(byte)100,(byte)100,(byte)100,(byte)0,(byte)-1};
         
         for (int i = 0; i < samples.length; i++)
         {
@@ -33,40 +34,34 @@ public class BoxcarFilter implements IOFilter {
     @Override
     public void configure(ParameterMap params) {
         data = new int[params.getRequiredInt("samples")];
-        logger.info("\t\tconfigured SimpleLowPass filter for " + data.length + " samples.");
+        for (int i = 0; i < data.length; i++){
+            data[i] = 0;
+        }
+        logger.info("\t\tconfigured BoxCarFilter for " + data.length + " samples.");
     }
 
     @Override
     public byte filter(byte b) {
-        return (byte)add((int)b);
+        add((int)b);
+        return (byte)(total/data.length);
     }
 
     @Override
-    public boolean filter(boolean b) {
-        // I removed it, but somewhat more smoothing possible by special
-        // casing EQUALS .5 to return whatever the previous eval came to.
-        // FWIW, we could skip all this math for the booleans, and just count
-        // how many trues and how many falses were in the previous cycles.
-        // just can't reusing the code with the byte verions then.
-        return add(b ? 1 : 0) > .5;
+    public boolean filter(boolean b)
+    {
+        add(b ? 1 : -1);
+        return total > 0;
     }
 
     // ring buffered average
-    private double add(int sample){
+    private void add(int sample){
 
-        if (!firstpass){
-            total -= data[index];
-        }else{
-            samples = index + 1;
-        }
-
+        total -= data[index];
         total += sample;
         data[index++] = sample;
 
         if (index == data.length){
             index = 0;
-            firstpass = false;
         }
-        return total / samples;
     }
 }
