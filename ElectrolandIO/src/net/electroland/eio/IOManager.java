@@ -12,6 +12,7 @@ import net.electroland.eio.devices.IODeviceFactory;
 import net.electroland.eio.filters.IOFilter;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
+import net.electroland.utils.ParameterMap;
 
 import org.apache.log4j.Logger;
 
@@ -195,15 +196,19 @@ public class IOManager {
 
             IState state = new IState(id, x, y, z, units);
 
-            List<Object> filters = op.getOptionalClassList("istate", name, "filters");
-            for (Object filter : filters)
+            List<String> filterNames = op.getOptionalList("istate", name, "filters");
+            for (String filterName : filterNames)
             {
+                ParameterMap fParams = op.getParams("iofilter",filterName);
+                Object filter = fParams.getRequiredClass("class");
                 if (filter instanceof IOFilter)
                 {
+                    ((IOFilter)filter).configure(fParams);
                     state.filters.add((IOFilter)filter);
                 }else{
                     throw new OptionException("Invalid filter in istate." + name);
                 }
+                
             }
 
             state.tags = (sTags == null) ? new Vector<String>() : sTags;
