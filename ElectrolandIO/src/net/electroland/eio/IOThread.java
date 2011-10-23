@@ -2,10 +2,13 @@ package net.electroland.eio;
 
 import java.util.Collection;
 
+import org.apache.log4j.Logger;
+
 import net.electroland.eio.devices.IODevice;
 
 public class IOThread implements Runnable {
 
+    private static Logger logger = Logger.getLogger(IOThread.class);
     protected int rate = 1;
     private Thread thread = null;
     private Collection<IODevice> devices;
@@ -20,6 +23,7 @@ public class IOThread implements Runnable {
     @Override
     public void run() {
     
+        logger.info("IOThread: starting");
     	// connect all
         for (IODevice device: devices)
         {
@@ -58,6 +62,7 @@ public class IOThread implements Runnable {
             device.close();
         }
         thread = null;
+        logger.info("IOThread: stopped");
     }
 
     public void start()
