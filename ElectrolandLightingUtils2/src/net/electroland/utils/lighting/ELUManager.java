@@ -62,10 +62,12 @@ public class ELUManager implements Runnable {
             commands.put("allon", 3);
             commands.put("alloff", 4);
             commands.put("list", 5);
+            commands.put("ls", 5);
             commands.put("load", 6);
             commands.put("l", 6);
             commands.put("test", 7);
             commands.put("quit", 8);
+            commands.put("q", 8);
             commands.put("on", 9);
             commands.put("off", 10);
             commands.put("set", 11);
