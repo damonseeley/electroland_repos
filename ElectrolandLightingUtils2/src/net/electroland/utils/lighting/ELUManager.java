@@ -1,9 +1,9 @@
 package net.electroland.utils.lighting;
 
-import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +14,7 @@ import javax.vecmath.Point3d;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.FrameRateRingBuffer;
 import net.electroland.utils.OptionException;
+import net.electroland.utils.ReferenceDimension;
 
 import org.apache.log4j.Logger;
 
@@ -38,6 +39,7 @@ public class ELUManager implements Runnable {
     private HashMap<String, ELUCanvas>canvases;
     private HashMap<String, Test>tests;
     private HashMap<String, TestSuite>suites;
+    private HashMap<String, Fixture>fixtures;
 
     private Thread thread;
     boolean isRunning = false;
@@ -402,8 +404,8 @@ public class ELUManager implements Runnable {
         canvases = new HashMap<String, ELUCanvas>();
         tests = new HashMap<String, Test>();
         suites = new HashMap<String, TestSuite>();
+        fixtures = new HashMap<String, Fixture>();
 
-        HashMap<String, Fixture>fixtures = new HashMap<String, Fixture>();
         HashMap<String, FixtureType>types = new HashMap<String, FixtureType>();
 
         // get fps
@@ -434,10 +436,11 @@ public class ELUManager implements Runnable {
         {
             logger.info("\tgetting " + FIXTURE_TYPE + "." + name);
             FixtureType type = new FixtureType(name, ep.getRequiredInt(FIXTURE_TYPE, name, "channels"));
-            Integer w = ep.getOptionalInt(FIXTURE_TYPE, name, "w");
-            Integer h = ep.getOptionalInt(FIXTURE_TYPE, name, "h");
+            Double w = ep.getOptionalDouble(FIXTURE_TYPE, name, "realWidth");
+            Double h = ep.getOptionalDouble(FIXTURE_TYPE, name, "realHeight");
+            String u = ep.getOptional(FIXTURE_TYPE, name, "realUnits");
             if (w != null && h != null){
-                type.setSize(new Dimension(w,h));
+                type.setSize(new ReferenceDimension(w,h,u));
             }
             types.put(name, type);
         }
@@ -486,6 +489,16 @@ public class ELUManager implements Runnable {
             ELUCanvas ec = (ELUCanvas)ep.getRequiredClass(CANVAS, name, "class");
             ec.configure(ep.getParams(CANVAS, name));
             ec.setName(name);
+            
+            // optional dimensions
+            Double w = ep.getOptionalDouble(CANVAS, name, "realWidth");
+            Double h = ep.getOptionalDouble(CANVAS, name, "realHeight");
+            String u = ep.getOptional(CANVAS, name, "realUnits");
+            if (w != null && h != null){
+                ec.setRealSize(new ReferenceDimension(w,h,u));
+            }
+                
+            
             canvases.put(name, ec);
         }
 
@@ -620,6 +633,12 @@ public class ELUManager implements Runnable {
         return this;
     }
 
+    public Collection<Fixture> getFixtures()
+    {
+        return fixtures.values();
+    }
+
+
     /**
      * return the canvas referenced by name in lights.properties.
      * @param name
@@ -642,11 +661,15 @@ public class ELUManager implements Runnable {
     public void debug()
     {
         System.out.println("FPS set to " + fps);
-        
+
         for (ELUCanvas c : canvases.values()){
             c.debug();
         }
-        
+
+        for (Fixture f : fixtures.values()){
+            f.debug();
+        }
+
         for (Recipient r : recipients.values()){
             r.debug();
         }

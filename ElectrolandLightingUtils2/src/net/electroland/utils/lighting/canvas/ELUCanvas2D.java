@@ -76,6 +76,11 @@ public class ELUCanvas2D extends ELUCanvas {
     public void debug()
     {
         System.out.println("ELUCanvas2D '" + this.getName() + "' is " + d.width + " by " + d.height + " pixels.");
+        if (this.getRealDimensions() != null){
+            System.out.println("ELUCanvas2D '" + this.getName() + "' is " + this.getRealDimensions().getWidth() + " by " + this.getRealDimensions().getWidth() + " " + this.getRealDimensions().getUnits() + ".");
+        }else{
+            System.out.println("\tNo real size has been set for this canvas.");
+        }
         for (CanvasDetector cd : detectors)
         {
             System.out.println("ELUCanvas2D '" + this.getName() + "' contains " + cd);
