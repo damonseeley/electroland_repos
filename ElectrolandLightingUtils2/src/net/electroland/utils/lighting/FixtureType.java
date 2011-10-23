@@ -1,13 +1,14 @@
 package net.electroland.utils.lighting;
 
-import java.awt.Dimension;
 import java.util.Vector;
+
+import net.electroland.utils.ReferenceDimension;
 
 public class FixtureType
 {
 	protected String name;
 	protected Vector<Detector> detectors;
-	protected Dimension size;
+	protected ReferenceDimension realSize;
 
 	public FixtureType(String name, int channels)
 	{
@@ -16,12 +17,12 @@ public class FixtureType
 		detectors.setSize(channels);
 	}
 
-    public Dimension getSize() {
-        return size;
+    public ReferenceDimension getRealDimensions() {
+        return realSize;
     }
 
-    public void setSize(Dimension size) {
-        this.size = size;
+    public void setSize(ReferenceDimension realSize) {
+        this.realSize = realSize;
     }
 
 }
