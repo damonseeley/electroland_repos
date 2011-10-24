@@ -3,16 +3,15 @@ package net.electroland.eio.devices;
 import java.util.Collection;
 import java.util.HashMap;
 
-import org.apache.log4j.Logger;
-
 import net.electroland.eio.IOState;
 import net.electroland.eio.IState;
 import net.electroland.utils.OptionException;
-import net.electroland.utils.Util;
 import net.wimpi.modbus.ModbusException;
 import net.wimpi.modbus.facade.ModbusTCPMaster;
 import net.wimpi.modbus.procimg.InputRegister;
 import net.wimpi.modbus.util.BitVector;
+
+import org.apache.log4j.Logger;
 
 public class ModBusTCPSlaveDevice extends IODevice {
 
