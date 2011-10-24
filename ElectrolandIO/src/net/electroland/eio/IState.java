@@ -22,10 +22,10 @@ public class IState extends IOState{
         }
         this.state = state;
         if (state != lastState){
-        	lastState = state;
-        	long duration = System.currentTimeMillis() - lastStateChange;
-        	lastStateChange = System.currentTimeMillis();
-        	logger.info("IOState." + id + " switched to: " + state + " after " + duration + " millis.");
+            lastState = state;
+            long duration = System.currentTimeMillis() - lastStateChange;
+            lastStateChange = System.currentTimeMillis();
+            logger.info("IOState." + id + " switched to: " + state + " after " + duration + " millis.");
         }
     }
     public boolean getState()
