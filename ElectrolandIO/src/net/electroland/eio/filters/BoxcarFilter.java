@@ -6,7 +6,7 @@ import net.electroland.utils.ParameterMap;
 
 public class BoxcarFilter implements IOFilter {
 
-    private static Logger logger = Logger.getLogger(IOFilter.class);
+    private static Logger logger = Logger.getLogger(BoxcarFilter.class);
 
     private int data[];
     private int index = 0;
@@ -41,7 +41,7 @@ public class BoxcarFilter implements IOFilter {
     @Override
     public void configure(ParameterMap params) {
         data = new int[params.getRequiredInt("samples")];
-        logger.info("\t\tconfigured BoxCarFilter for " + data.length + " samples.");
+        logger.info("\t\tconfigured BoxcarFilter for " + data.length + " samples.");
     }
 
     @Override
