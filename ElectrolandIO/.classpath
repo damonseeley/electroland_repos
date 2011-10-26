@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="libraries/j3dutils.jar"/>
 	<classpathentry kind="lib" path="libraries/vecmath.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ElectrolandConfig"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ElectrolandInstallUtils"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
