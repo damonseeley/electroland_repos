@@ -25,7 +25,7 @@ public class IState extends IOState{
             lastState = state;
             long duration = System.currentTimeMillis() - lastStateChange;
             lastStateChange = System.currentTimeMillis();
-            logger.info("IOState." + id + " switched to: " + state + " after " + duration + " millis.");
+            logger.trace("IOState." + id + " switched to: " + state + " after " + duration + " millis.");
         }
     }
     public boolean getState()
