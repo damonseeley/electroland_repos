@@ -522,9 +522,9 @@ public class ELUManager implements Runnable {
 
             Fixture fixture = new Fixture(name, type, startAddress, recipient, tags);
 
-            Integer x = ep.getOptionalInt(FIXTURE, name, "x");
-            Integer y = ep.getOptionalInt(FIXTURE, name, "y");
-            Integer z = ep.getOptionalInt(FIXTURE, name, "z");
+            Double x = ep.getOptionalDouble(FIXTURE, name, "x");
+            Double y = ep.getOptionalDouble(FIXTURE, name, "y");
+            Double z = ep.getOptionalDouble(FIXTURE, name, "z");
             if (x != null && y != null && z != null){
                 Point3d location = new Point3d(x,y,z);
                 fixture.setLocation(location);
