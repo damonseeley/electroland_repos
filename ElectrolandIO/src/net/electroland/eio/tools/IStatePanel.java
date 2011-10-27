@@ -48,7 +48,7 @@ public class IStatePanel extends JComponent implements MouseListener {
         IStatePanel display = new IStatePanel(iom, scale, side);
         frame.getContentPane().add(display);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600,600);
+        frame.setSize(1024,400);
         frame.setVisible(true);
         display.addMouseListener(display);
 
@@ -72,13 +72,14 @@ public class IStatePanel extends JComponent implements MouseListener {
         {
             Point3d l = state.getLocation();
             if (((IState)state).getState()){
-                g.setColor(Color.RED);
+                g.setColor(Color.WHITE);
+                //g.setColor(Color.RED);
                 g.fillRect((int)(l.x * scale), (int)(l.y * scale),
                                                 side, side);
             }else{
-                g.setColor(Color.WHITE);
-                g.fillRect((int)(l.x * scale), (int)(l.y * scale),
-                                                side, side);
+                g.setColor(Color.GRAY);
+                //g.fillRect((int)(l.x * scale), (int)(l.y * scale), side, side);
+                g.drawRect((int)(l.x * scale), (int)(l.y * scale), side, side);
             }
         }
     }
