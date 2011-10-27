@@ -188,27 +188,29 @@ public class IOManager {
             //  for each istate
             //   store id, x,y,z,units and any filters
             String id = name;
-            int x = op.getRequiredInt("istate", name, "x");
-            int y = op.getRequiredInt("istate", name, "y");
-            int z = op.getRequiredInt("istate", name, "z");
+            double x = op.getRequiredDouble("istate", name, "x");
+            double y = op.getRequiredDouble("istate", name, "y");
+            double z = op.getRequiredDouble("istate", name, "z");
             String units = op.getRequired("istate", name, "units");
             List<String> sTags = op.getOptionalList("istate", name, "tags");
 
             IState state = new IState(id, x, y, z, units);
 
             List<String> filterNames = op.getOptionalList("istate", name, "filters");
-            for (String filterName : filterNames)
-            {
-                ParameterMap fParams = op.getParams("iofilter",filterName);
-                Object filter = fParams.getRequiredClass("class");
-                if (filter instanceof IOFilter)
+            if (filterNames != null){
+                for (String filterName : filterNames)
                 {
-                    ((IOFilter)filter).configure(fParams);
-                    state.filters.add((IOFilter)filter);
-                }else{
-                    throw new OptionException("Invalid filter in istate." + name);
+                    ParameterMap fParams = op.getParams("iofilter",filterName);
+                    Object filter = fParams.getRequiredClass("class");
+                    if (filter instanceof IOFilter)
+                    {
+                        ((IOFilter)filter).configure(fParams);
+                        state.filters.add((IOFilter)filter);
+                    }else{
+                        throw new OptionException("Invalid filter in istate." + name);
+                    }
+                    
                 }
-                
             }
 
             state.tags = (sTags == null) ? new Vector<String>() : sTags;
