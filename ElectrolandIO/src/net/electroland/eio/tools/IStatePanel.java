@@ -48,7 +48,7 @@ public class IStatePanel extends JComponent implements MouseListener {
         IStatePanel display = new IStatePanel(iom, scale, side);
         frame.getContentPane().add(display);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1024,400);
+        frame.setSize(1280,300);
         frame.setVisible(true);
         display.addMouseListener(display);
 
