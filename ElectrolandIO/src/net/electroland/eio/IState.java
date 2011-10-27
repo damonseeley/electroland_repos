@@ -11,7 +11,7 @@ public class IState extends IOState{
     boolean lastState = false;
     long lastStateChange = System.currentTimeMillis();
     
-    public IState(String id, int x, int y, int z, String units) {
+    public IState(String id, double x, double y, double z, String units) {
         super(id, x, y, z, units);
     }
     public void setState(boolean state)

@@ -19,7 +19,7 @@ public abstract class IOState {
     protected List<String>tags;
     protected IODevice device;
 
-    public IOState(String id, int x, int y, int z, String units)
+    public IOState(String id, double x, double y, double z, String units)
     {
         this.id = id;
         location = new Point3d(x,y,z);
