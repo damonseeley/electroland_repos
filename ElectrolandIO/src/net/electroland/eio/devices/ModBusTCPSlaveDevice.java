@@ -26,8 +26,8 @@ public class ModBusTCPSlaveDevice extends IODevice {
     @Override
     public void connect() 
     {
-        logger.debug("attempting to connect to " + address);
         connection = new ModbusTCPMaster(address);
+        logger.debug("attempting to connect to " + address);
         try {
             connection.connect();
         } catch (Exception e) {
@@ -73,6 +73,7 @@ public class ModBusTCPSlaveDevice extends IODevice {
 
             } catch (ModbusException e) {
                 e.printStackTrace();
+                connect();
             }
         }
     }
