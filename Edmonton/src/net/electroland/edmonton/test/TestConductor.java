@@ -31,6 +31,7 @@ public class TestConductor extends JComponent implements MouseMotionListener{
     int side = 3;
     int lightside = side*4;
     int dbrightness = 10;
+    static long delay = 1000;
 
     public TestConductor()
     {
@@ -63,7 +64,7 @@ public class TestConductor extends JComponent implements MouseMotionListener{
         while(true){
             display.repaint();
             try {
-                Thread.sleep(33);
+                Thread.sleep(delay);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -85,7 +86,7 @@ public class TestConductor extends JComponent implements MouseMotionListener{
         int height = c.getDimensions().height;
 
         // buffered image to draw on.  This will get synced with lights.
-        BufferedImage b = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        BufferedImage b = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         // paing it black
         Graphics bg = b.getGraphics();
         bg.setColor(Color.BLACK);
@@ -120,7 +121,7 @@ public class TestConductor extends JComponent implements MouseMotionListener{
         if (pixels == null){
             pixels = new int[width * height];
         }
-        b.getRGB(0, 0, width, height, pixels, 0, 0);
+        b.getRGB(0, 0, width, height, pixels, 0, width);
         try {
             c.sync(pixels);
             elu.syncAllLights();
