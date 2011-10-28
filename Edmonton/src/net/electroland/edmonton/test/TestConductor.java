@@ -30,8 +30,8 @@ public class TestConductor extends JComponent implements MouseMotionListener{
     // width to render sensors & lights
     final static int side = 3;
     final static int lightside = side * 4;
-    final static int dbrightness = 10;
-    final static long delay = 50;
+    final static int dbrightness = 64;
+    final static long delay = 33;
 
     public TestConductor()
     {
@@ -138,11 +138,11 @@ public class TestConductor extends JComponent implements MouseMotionListener{
             Point3d l = state.getLocation();
 
             if (((IState)state).getState()){
-                g.setColor(Color.RED);
+                g.setColor(Color.WHITE);
                 g.fillRect((int)(l.x), (int)(l.y), side, side);
             }else{
                 g.setColor(Color.WHITE);
-                g.fillRect((int)(l.x), (int)(l.y), side, side);
+                g.drawRect((int)(l.x), (int)(l.y), side, side);
             }
         }
         // render fixtures
@@ -150,7 +150,7 @@ public class TestConductor extends JComponent implements MouseMotionListener{
         {
             Point3d l = fix.getLocation();
             g.setColor(Color.BLUE);
-            g.fillRect((int)(l.x), (int)(l.y), side, side);
+            g.drawRect((int)(l.x), (int)(l.y), side, side);
         }
     }
     boolean mouseOn;
