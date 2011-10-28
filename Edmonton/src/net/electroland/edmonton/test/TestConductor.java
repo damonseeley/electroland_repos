@@ -23,15 +23,15 @@ import net.electroland.utils.lighting.canvas.ELUCanvas2D;
 @SuppressWarnings("serial")
 public class TestConductor extends JComponent implements MouseMotionListener{
 
-    ELUManager elu;
-    IOManager eio;
-    TestModel model;
+    private ELUManager elu;
+    private IOManager eio;
+    private TestModel model;
 
     // width to render sensors & lights
-    int side = 3;
-    int lightside = side*4;
-    int dbrightness = 10;
-    static long delay = 1000;
+    final static int side = 3;
+    final static int lightside = side*4;
+    final static int dbrightness = 10;
+    final static long delay = 1000;
 
     public TestConductor()
     {
@@ -72,7 +72,7 @@ public class TestConductor extends JComponent implements MouseMotionListener{
     }
 
     int pixels[];
-    
+
     public void paint(Graphics g)
     {
 
