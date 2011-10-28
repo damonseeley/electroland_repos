@@ -2,6 +2,8 @@ package net.electroland.edmonton.test;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -19,7 +21,7 @@ import net.electroland.utils.lighting.InvalidPixelGrabException;
 import net.electroland.utils.lighting.canvas.ELUCanvas2D;
 
 @SuppressWarnings("serial")
-public class TestConductor extends JComponent{
+public class TestConductor extends JComponent implements MouseMotionListener{
 
     ELUManager elu;
     IOManager eio;
@@ -27,7 +29,7 @@ public class TestConductor extends JComponent{
 
     // width to render sensors & lights
     int side = 3;
-    int lightside = side*3;
+    int lightside = side*4;
     int dbrightness = 10;
 
     public TestConductor()
@@ -37,6 +39,7 @@ public class TestConductor extends JComponent{
         try {
             elu.load("EIA-ELU.properties");
             eio.load("EIA-EIO.properties");
+            eio.start();
             model = new TestModel(eio.getStates(), dbrightness);
         } catch (OptionException e) {
             e.printStackTrace();
@@ -55,7 +58,8 @@ public class TestConductor extends JComponent{
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(700,50);
         frame.setVisible(true);
-        
+        display.addMouseMotionListener(display);
+
         while(true){
             display.repaint();
             try {
@@ -104,6 +108,13 @@ public class TestConductor extends JComponent{
             bg.fillRect((int)(l.x)-(lightside/2), (int)(l.y)-(lightside/2),
                     lightside, lightside);
         }
+        
+        // if mouse is dragged
+        if (mouseOn){
+            bg.setColor(Color.WHITE);
+            bg.fillRect((int)(mouseX)-(lightside/2), 0, lightside, height);
+            
+        }
 
         // sync lights
         if (pixels == null){
@@ -112,6 +123,7 @@ public class TestConductor extends JComponent{
         b.getRGB(0, 0, width, height, pixels, 0, 0);
         try {
             c.sync(pixels);
+            elu.syncAllLights();
         } catch (InvalidPixelGrabException e) {
             e.printStackTrace();
         }
@@ -139,5 +151,17 @@ public class TestConductor extends JComponent{
             g.setColor(Color.BLUE);
             g.fillRect((int)(l.x), (int)(l.y), side, side);
         }
+    }
+    boolean mouseOn;
+    int mouseX;
+    @Override
+    public void mouseDragged(MouseEvent arg0) {
+        mouseOn = true;
+        mouseX = arg0.getX();
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent arg0) {
+        mouseOn = false;
     }
 }
