@@ -29,7 +29,7 @@ public class TestConductor extends JComponent implements MouseMotionListener{
 
     // width to render sensors & lights
     final static int side = 3;
-    final static int lightside = side*4;
+    final static int lightside = side * 4;
     final static int dbrightness = 10;
     final static long delay = 1000;
 
@@ -105,11 +105,11 @@ public class TestConductor extends JComponent implements MouseMotionListener{
             if (d){
                 d = false;
             }
-            bg.setColor(new Color(brightness, brightness, brightness));
+            bg.setColor(new Color(brightness, brightness, brightness, 255/2));
             bg.fillRect((int)(l.x)-(lightside/2), (int)(l.y)-(lightside/2),
                     lightside, lightside);
         }
-        
+
         // if mouse is dragged
         if (mouseOn){
             bg.setColor(Color.WHITE);
