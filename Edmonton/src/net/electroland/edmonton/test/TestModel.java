@@ -29,6 +29,7 @@ class State
     IState state;
     int dbrightness;
     int brightness;
+    float decay;
 
     public State(IState state, int dbrightness){
         this.dbrightness = dbrightness;
@@ -44,7 +45,7 @@ class State
             }
         }else{
             // fade off
-            brightness -= dbrightness;
+            brightness -= dbrightness * 0.05;
             if (brightness < 0){
                 brightness = 0;
             }
