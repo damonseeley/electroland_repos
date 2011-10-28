@@ -31,7 +31,7 @@ public class TestConductor extends JComponent implements MouseMotionListener{
     final static int side = 3;
     final static int lightside = side * 4;
     final static int dbrightness = 10;
-    final static long delay = 1000;
+    final static long delay = 50;
 
     public TestConductor()
     {
