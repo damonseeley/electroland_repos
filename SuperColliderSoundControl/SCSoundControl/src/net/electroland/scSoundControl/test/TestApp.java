@@ -5,6 +5,7 @@ import java.util.Vector;
 import processing.core.*;
 import net.electroland.scSoundControl.*;
 
+@SuppressWarnings("serial")
 public class TestApp extends PApplet implements SCSoundControlNotifiable {
 
 	SCSoundControl ss;
@@ -14,7 +15,7 @@ public class TestApp extends PApplet implements SCSoundControlNotifiable {
 	int maxPolyphony = 200; // how many voices max to play at once
 	
 	//how many output channels. If there are more than 8 inputs, we'll need to add a variable for that too.
-	int numOutputChannels = 2; 
+	int numOutputChannels = 10; 
 	int numInputChannels = 2;
 	
 	//test parameters
@@ -83,7 +84,7 @@ public class TestApp extends PApplet implements SCSoundControlNotifiable {
 		avgCPUhistory = new Vector<Integer>();
 		
 		//SoundControl inits
-		ss = new SCSoundControl(this);
+		ss = new SCSoundControl(this, "depends/SCSoundControl.properties");
 		ss.init();
 		
 		ss.showDebugOutput(false);
@@ -154,7 +155,10 @@ public class TestApp extends PApplet implements SCSoundControlNotifiable {
 
 		//oscillate the playback rates
 		for (int i=0; i <_soundNodes.size(); i++) {
-			if (_soundNodes.get(i).isAlive()) _soundNodes.get(i).setPlaybackRate(surgeFactor);
+			// these objects are occasionally null. not sure why, but best to check for it.
+			if(_soundNodes.get(i) != null){
+				if (_soundNodes.get(i).isAlive()) _soundNodes.get(i).setPlaybackRate(surgeFactor);
+			}
 		}
 
 		
@@ -171,7 +175,7 @@ public class TestApp extends PApplet implements SCSoundControlNotifiable {
 	
 	public void keyPressed() {
 		if (key == 'q') {
-			ss.cleanup();
+			ss.shutdown();
 			System.exit(0);
 		}
 	}
@@ -179,7 +183,10 @@ public class TestApp extends PApplet implements SCSoundControlNotifiable {
 	public int getCurPolyphony() {
 		int curPolyphonyCount = 0;
 		for (int i=0; i <_soundNodes.size(); i++) {
-			if (_soundNodes.get(i).isAlive()) curPolyphonyCount++;
+			// these objects are occasionally null. not sure why, but best to check for it.
+			if(_soundNodes.get(i) != null){
+				if (_soundNodes.get(i).isAlive()) curPolyphonyCount++;
+			}
 		}
 		return curPolyphonyCount;
 	}
@@ -221,7 +228,9 @@ public class TestApp extends PApplet implements SCSoundControlNotifiable {
 		Enumeration<SoundNode> e = _soundNodes.elements();
 		while (e.hasMoreElements()) {
 			thisNode = e.nextElement();
-			if (!thisNode.isAlive()) _soundNodes.remove(thisNode);
+			if(thisNode != null){
+				if (!thisNode.isAlive()) _soundNodes.remove(thisNode);
+			}
 		}
 	}
 
