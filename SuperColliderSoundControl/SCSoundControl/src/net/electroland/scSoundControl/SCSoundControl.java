@@ -873,6 +873,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 			//for a reply, so go to sleep until it's time to ping again
 			else {
 				long sleeptime = Math.max(_scsynthPingInterval - (curTime.getTime() - _prevPingRequestTime.getTime()), 0);
+				//System.out.println("sleep " + sleeptime);
 				try {
 					Thread.sleep(sleeptime);
 				} catch (InterruptedException e) {
