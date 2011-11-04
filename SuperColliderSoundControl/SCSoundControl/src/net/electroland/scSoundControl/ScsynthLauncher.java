@@ -181,6 +181,7 @@ public class ScsynthLauncher {
 	 * This is a hard, system level kill of the process, not a quit message.
 	 */
 	public void killScsynth() {
+		System.out.println("killing scsynth.");
 		if (_scsynthProcess != null) _scsynthProcess.destroy();
 	}
 	

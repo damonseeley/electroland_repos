@@ -45,13 +45,17 @@ public class SCSoundControl implements OSCListener, Runnable {
 	
 	//we monitor the state of the server by "pinging" it on a thread.
 	private Thread _serverPingThread;
-	private int _serverResponseTimeout = 200; //the max allowable time for server to respond to /status queries.
+	// FIXME increasing _serverResponseTimeout causes less disconnections caused by (I think) a high number of synths.
+	private int _serverResponseTimeout = 2000; //200; //the max allowable time for server to respond to /status queries.
 	private int _scsynthPingInterval = 100; //in milliseconds
 	private Date _prevPingResponseTime, _prevPingRequestTime;
 
 	//the state of the scsynth server.
 	private boolean _serverLive;
 	private boolean _serverBooted;
+	
+	// set this to true for more verbose output
+	private boolean debugging = true;
 
 	//the client code, which will receive notifications of scsynth status and events
 	private SCSoundControlNotifiable _notifyListener;
@@ -560,7 +564,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 	// handle incoming messages
 	public void acceptMessage(java.util.Date time, OSCMessage message) {
 		// FOR DEBUGGING: to print the full message:
-		if (false) {
+		if (debugging) {
 			System.out.print(message.getAddress());
 			for(int i = 0; i < message.getArguments().length; i++) {
 				System.out.print(", " + message.getArguments()[i].toString());
@@ -801,7 +805,9 @@ public class SCSoundControl implements OSCListener, Runnable {
 		
 		//if (!_serverLive || !_serverBooted) {
 		if (!_serverLive) {
-			debugPrintln("scsynth is live.");
+			if(debugging){
+				System.out.println("scsynth is live.");
+			}
 			_serverLive = true;
 			this.init();
 		}
@@ -830,7 +836,11 @@ public class SCSoundControl implements OSCListener, Runnable {
 				//Have we timed out?
 				if (curTime.getTime() - _prevPingRequestTime.getTime() > _serverResponseTimeout) {
 					//We've timed out on the previous status request.
-					if (_notifyListener != null) { _notifyListener.receiveNotification_ServerStopped(); }
+					System.out.println("Timed out on previous status request.");
+
+					if (_notifyListener != null) {
+						_notifyListener.receiveNotification_ServerStopped();
+					}
 					if (_controlPanel != null && _controlPanel._statsDisplay != null) {
 						_controlPanel._statsDisplay.receiveNotification_ServerStopped();
 					}

@@ -6,6 +6,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+@SuppressWarnings("serial")
 public class SCSoundControlPanel extends JPanel {
 
 	private JTabbedPane _tabPane;
