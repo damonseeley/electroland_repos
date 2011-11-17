@@ -17,6 +17,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
+import net.electroland.installsim.core.ModelGeneric;
+
 public class EISFrame extends JFrame implements KeyEventDispatcher {
 
 	public static EISPanel eISPanel;
@@ -29,13 +31,13 @@ public class EISFrame extends JFrame implements KeyEventDispatcher {
 	
 	JPanel curButtonBar = null;
 
-	public EISFrame() {
+	public EISFrame(int w, int h, ModelGeneric m) {
 		super("Install Simulator");
 		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);   I think this causes System.exit(0) to be called ASAP
 		//so the windowAdpter doesn't have time to clean up 
 
 		DefaultKeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this); // catch key events
-		setSize(800, 600);
+		setSize(w, h);
 
 		setupMenus();
 
@@ -43,7 +45,7 @@ public class EISFrame extends JFrame implements KeyEventDispatcher {
 		setButtonBar(new EISButtonBar());
 
 		//add the coopPanel to the top of the window
-		eISPanel = new EISPanel();
+		eISPanel = new EISPanel(w,h,m);
 		getContentPane().add(eISPanel, BorderLayout.PAGE_START);
 
 		// Keyboard setup here (and in the class CoopKeyListener)
@@ -65,6 +67,10 @@ public class EISFrame extends JFrame implements KeyEventDispatcher {
 			}
 		});
 
+		// this puts the menubar in the correct place on macs (at the top of the screen vs at the top of the window) 
+		// but won't effect windows.  Its a good habit to call it before you create your frame
+		System.setProperty("apple.laf.useScreenMenuBar", "true");
+		
 		pack(); // pack the layout
 		setVisible(true);
 	}

@@ -26,11 +26,12 @@ public class Person {
 	
 
 
-	public Person(int idvalue, float xvalue, float yvalue, float zvalue) {
+	public Person(int idvalue, float xvalue, float yvalue, float zvalue, float speed) {
 		id = new Integer(idvalue); //Integer object is used by hashmap so we might as well store id as an object
 		x = xvalue;
 		y = yvalue;
 		z = zvalue;
+		this.speed = speed;
 		birthdate = System.currentTimeMillis();
 		
 		Random r = new Random();
