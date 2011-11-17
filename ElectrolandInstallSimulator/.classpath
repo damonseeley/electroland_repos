@@ -2,5 +2,10 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="libraries/oscP5.jar"/>
+	<classpathentry kind="lib" path="libraries/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="libraries/core.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ElectrolandIO"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ElectrolandConfig"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
