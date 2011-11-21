@@ -36,7 +36,7 @@ public class InstallSimEIA extends Thread {
 		model = new ModelEIA(30,0.05f,sc);
 		
 		//System.out.println("opening frame");
-		new EISFrame(800,800,model);
+		new EISFrame(1280,300,model);
 
 		// thread stuff
 		framerate = 40;

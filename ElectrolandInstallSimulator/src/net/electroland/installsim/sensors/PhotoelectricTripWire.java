@@ -1,6 +1,7 @@
 package net.electroland.installsim.sensors;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.util.Enumeration;
 import java.util.Timer;
@@ -63,7 +64,10 @@ public class PhotoelectricTripWire extends Sensor {
 		//render sensor body
 		//g.setColor(sensorColor);
 		g.drawRect((int)(x-bodyWidth),(int)(y-bodyWidth),bodyWidth*2,bodyWidth*2);
-		g.drawString("s" + this.id, (int)x-40, (int)y+2);
+		//g.drawString("s" + this.id, (int)x-40, (int)y+2);
+		Font font = new Font("Arial", Font.PLAIN, 9);
+	    g.setFont(font);
+		g.drawString("" + this.id, (int)x, (int)y-4);
 		
 		//render tripwire
 		//g.setColor(sensorColor);
@@ -76,14 +80,17 @@ public class PhotoelectricTripWire extends Sensor {
 		if (people != null){
 			Enumeration<Person> persons = people.elements();
 			
+			
+			//really broken right now, specific to vertical sensor arrangements
 			while(persons.hasMoreElements()) {
 				Person p = persons.nextElement();
 				//logger.info(p);
-				if (Math.abs(p.x - x) < (int)x+sensingVector[0]) {
+				if (Math.abs(p.x - x) < 1.0) {
+				//if (Math.abs(p.x - x) < (int)x+sensingVector[0]) {
 					// wire stroke is not the right variable here, but has to do for now
-					if (Math.abs(p.y - y) < wireStroke*2) {
+					//if (Math.abs(p.y - y) < wireStroke*2) {
 						trip();
-					}
+					//}
 				}
 			}
 		}
