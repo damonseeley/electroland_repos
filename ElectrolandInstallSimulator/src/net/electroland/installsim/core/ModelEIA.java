@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Vector;
@@ -42,7 +43,7 @@ public class ModelEIA extends ModelGeneric {
 	//private float dnVec[] = {0.0f,1.0f,0.0f};
 	private float leftVec[] = {-1.0f,0.0f,0.0f};
 
-	public int startSpawnPt[] = {600,25,0};
+	public int spawnPoint[] = {600,25,0}; //no longer need these values, change later
 
 	private int pID = 0;
 	private double moveInc = 0.4f;
@@ -51,6 +52,8 @@ public class ModelEIA extends ModelGeneric {
 	private int spawnTimeout = 30;
 	private int spawnTimer = 0;
 	private double spawnChance = 0.1;
+	
+	private double dScale;
 
 	private IOManager eio;
 
@@ -58,6 +61,12 @@ public class ModelEIA extends ModelGeneric {
 		popSize = populationSize;
 		spawnRate = sRate; // number of frames between people spawning, on average
 		this.sc = sc;
+		
+		dScale = 2.0; // hack way of spacing things out
+		spawnPoint[0] = (int)(630*dScale);
+		spawnPoint[1] = (int)(30*dScale);
+		
+		logger.info("Spawnpoint = " + spawnPoint[0]+ "," + spawnPoint[1]);
 
 		initPeople();
 		initSensors();
@@ -67,7 +76,8 @@ public class ModelEIA extends ModelGeneric {
 	public void initPeople(){
 
 		// starting first person
-		Person p = new Person(pID,startSpawnPt[0],startSpawnPt[1],startSpawnPt[2], (float)(moveInc+Math.random()*moveRnd));
+		//Person p = new Person(pID,startSpawnPt[0],startSpawnPt[1],startSpawnPt[2], (float)(moveInc+Math.random()*moveRnd));
+		Person p = getNewPerson();
 		p.setVector(leftVec);
 		people.put(pID, p);
 		pID++;
@@ -75,7 +85,8 @@ public class ModelEIA extends ModelGeneric {
 		logger.info("PEOPLE: " + people.toString());
 	}
 
-	private void initSensors() {	
+	private void initSensors() {
+		eio = new IOManager();
 		try {
 			eio.load("EIA-EIO.properties");
 			eio.start();
@@ -88,29 +99,14 @@ public class ModelEIA extends ModelGeneric {
 		int[] sensorBox = {0,45,0};
 
 		int sensNum = 0;
-		/*
+		
 		for (IOState state : eio.getStates())
 		{
 			Point3d l = state.getLocation();
-			PhotoelectricTripWire s = new PhotoelectricTripWire(sensNum,(int)l.x,(int)l.y,0,sensorBox,sc);
+			PhotoelectricTripWire s = new PhotoelectricTripWire(sensNum,(int)(l.x*dScale),(int)(l.y*dScale),0,sensorBox,sc);
 			sensors.add(s);
 			sensNum++;
 		}
-		*/
-
-		/*
-		//for now setup specific 
-		float startx = 90;
-		float starty = 80;
-		float incy = 20;
-		float incx = 0;
-
-		for (int i=0; i<27; i++) {
-			PhotoelectricTripWire s = new PhotoelectricTripWire(i,startx+incx*i,starty+incy*i,0,vec,sc);
-			sensors.add(s);
-		}
-		 */
-		
 		
 		logger.info("SENSORS: " + sensors.toString());
 
@@ -127,9 +123,13 @@ public class ModelEIA extends ModelGeneric {
 		while(persons.hasMoreElements()) {
 			Person p = persons.nextElement();
 			p.setLoc(p.x + p.speed*p.getVec()[0], p.y + p.speed*p.getVec()[1]);
-			if (p.y < 5 || p.y > 750) {
+			if (p.y < 0 || p.y > spawnPoint[1]) {
 				people.remove(p.id);
 			}
+			if (p.x < 0 || p.x > spawnPoint[0]) {
+				people.remove(p.id);
+			}
+			
 
 		}
 
@@ -138,7 +138,8 @@ public class ModelEIA extends ModelGeneric {
 				//check this math
 				//if (Math.random() > (1.0-spawnChance)) {
 				// create a down-walking person
-				Person p = new Person(pID,startSpawnPt[0],startSpawnPt[1],startSpawnPt[2],(float)(moveInc+Math.random()*moveRnd));
+				//Person p = new Person(pID,(int)(startSpawnPt[0]*dScale),(int)(startSpawnPt[1]*dScale),(int)(startSpawnPt[2]*dScale),(float)(moveInc+Math.random()*moveRnd));
+				Person p = getNewPerson();
 				p.setVector(leftVec);
 				people.put(pID, p);
 				pID++;
@@ -149,6 +150,10 @@ public class ModelEIA extends ModelGeneric {
 			spawnTimer++;
 		}
 
+	}
+	
+	private Person getNewPerson() {
+		return new Person(pID,spawnPoint[0],spawnPoint[1],spawnPoint[2],(float)(moveInc+Math.random()*moveRnd));
 	}
 
 	public void detect() {
@@ -169,21 +174,27 @@ public class ModelEIA extends ModelGeneric {
 	public void render(Graphics g) {
 
 		//logger.info("ModelEIA render loop");
+		
+		int margin = 10;
+		BufferedImage bi = new BufferedImage(spawnPoint[0]+margin, spawnPoint[1]+margin, BufferedImage.TYPE_INT_RGB);
+		
 
 		//clear(g);
-		Graphics2D g2 = (Graphics2D)g;
-
+		//Graphics2D g2 = (Graphics2D)g;
+		Graphics2D g2 = (Graphics2D)bi.getGraphics();
+		g2.setColor(Color.WHITE);  
+		g2.fillRect(0, 0, bi.getWidth(), bi.getHeight());
+		
 		//set styles
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		//g2.setStroke(dashed);
 
 		//render spawn locations
-		g.setColor(new Color(128, 128, 255));
-		g.drawRect(startSpawnPt[0]-9,startSpawnPt[1],20,2);
-		g.drawRect(startSpawnPt[0],startSpawnPt[1]-9,2,20);
+		g2.setColor(new Color(128, 128, 255));
+		g2.drawRect(spawnPoint[0]-9,spawnPoint[1],20,2);
+		g2.drawRect(spawnPoint[0],spawnPoint[1]-9,2,20);
 
-
-
+		
 		//draw sensors
 		Enumeration<Sensor> snsr = sensors.elements();
 		while(snsr.hasMoreElements()) {
@@ -199,6 +210,8 @@ public class ModelEIA extends ModelGeneric {
 			p.render(g2, p.id);
 
 		}
+		
+		g.drawImage(bi, margin, margin, null);
 
 	}
 
