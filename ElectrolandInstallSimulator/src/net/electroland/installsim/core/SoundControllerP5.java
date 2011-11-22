@@ -57,7 +57,7 @@ public class SoundControllerP5 {
 	 * REMOTELY CALLED METHODS
 	 */
 	
-	public void iStateUpdate(int id) {
+	public void iStateUpdate(String id) {
 		OscMessage oscMsg = new OscMessage("/ChOn");
 		oscMsg.add(id);
 		oscP5Max.send(oscMsg,maxBroadcastLoc);
