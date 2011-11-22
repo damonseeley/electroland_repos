@@ -17,7 +17,7 @@ public class PhotoelectricTripWire extends Sensor {
 	
 	static Logger logger = Logger.getLogger(PhotoelectricTripWire.class);
 
-	public int id;
+	public String id;
 	public float x;
 	public float y;
 	public float z;
@@ -37,7 +37,7 @@ public class PhotoelectricTripWire extends Sensor {
 //	private float uptime;  Unused EGM
 	
 	//constructor
-	public PhotoelectricTripWire(int theid, float locx, float locy, float locz, int[] vector, SoundControllerP5 sc) {
+	public PhotoelectricTripWire(String theid, float locx, float locy, float locz, int[] vector, SoundControllerP5 sc) {
 		id = theid; 
 		x = locx;
 		y = locy;

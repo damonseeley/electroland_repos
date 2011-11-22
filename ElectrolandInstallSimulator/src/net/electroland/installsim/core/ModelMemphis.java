@@ -87,7 +87,7 @@ public class ModelMemphis extends ModelGeneric {
 		//vector is not the right term here, this defines a box
 		int[] vec = {45,0,0};
 		for (int i=0; i<27; i++) {
-			PhotoelectricTripWire s = new PhotoelectricTripWire(i,startx+incx*i,starty+incy*i,0,vec,sc);
+			PhotoelectricTripWire s = new PhotoelectricTripWire(""+i,startx+incx*i,starty+incy*i,0,vec,sc);
 			sensors.add(s);
 		}
 
