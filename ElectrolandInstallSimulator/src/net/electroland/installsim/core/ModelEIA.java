@@ -51,7 +51,7 @@ public class ModelEIA extends ModelGeneric {
 
 	private double spawnTimeout = 400; //min time between spawn, in ms
 	private double spawnTime = System.currentTimeMillis();
-	private double spawnChance = 0.01; //chance of spawning a new person
+	private double spawnChance = 0.0055; //chance of spawning a new person
 
 	private double dScale;
 
