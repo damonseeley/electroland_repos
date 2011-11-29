@@ -9,7 +9,7 @@ import net.electroland.utils.ParameterMap;
 public class Fade implements Transition {
 
     @Override
-    public void config(ParameterMap config) {
+    public void config(ParameterMap primaryParams, Map<String, ParameterMap> extendedParams) {
         // TODO Auto-generated method stub
 
     }
