@@ -8,7 +8,7 @@ import net.electroland.utils.ParameterMap;
 public interface Scene {
 
     // configuration parameters from the properties file
-    public void config(ParameterMap config);
+    public void config(ParameterMap primaryParams, Map<String, ParameterMap> extendedParams);
 
     // whatever the Conductor decided you needed when you start an instance
     public void init(Map<String,Object> context);
