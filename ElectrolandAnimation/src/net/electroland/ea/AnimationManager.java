@@ -3,7 +3,9 @@ package net.electroland.ea;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.ParameterMap;
@@ -12,23 +14,25 @@ public class AnimationManager {
 
     private Dimension stageDim;
     private int fps = 33;
-    Map<String, Scene> scenes;
-    Map<String, Transition> transitions;
+    private Map<String, Scene> scenes;
+    private Map<String, Transition> transitions;
+    private Map<String, Object> context;
+    private List<SceneListener> listeners = new Vector<SceneListener>();
 
     public void setContext(Map<String, Object> context)
     {
-        
+        this.context = context;
     }
     public Map<String, Object> getContext()
     {
-        return null;
+        return context;
     }
 
     public void addSceneListener(SceneListener sl)
     {
-        
+        listeners.add(sl);
     }
-    
+
     /************* Thread management ********************/
     public void setDesiredFPS()
     {
@@ -77,18 +81,20 @@ public class AnimationManager {
     /************************** Stage managment *******************************/
     public Dimension getStageDimensions()
     {
-        return null;
+        return stageDim;
     }
     public void setStageDimensions(Dimension d)
     {
-        
+        stageDim = d;
     }
     public Image getStage()
     {
+        // generate and return the composite here.
         return null;
     }
     public int[] getStagePixels(int x, int y, int width, int height)
     {
+        // return a pixel grab from getStage
         return null;
     }
 
