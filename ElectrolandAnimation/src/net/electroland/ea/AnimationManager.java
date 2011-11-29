@@ -14,10 +14,10 @@ public class AnimationManager {
 
     private Dimension stageDim;
     private int fps = 33;
-    private Map<String, Scene> scenes;
+    private Map<String, Clip> clips;
     private Map<String, Transition> transitions;
     private Map<String, Object> context;
-    private List<SceneListener> listeners = new Vector<SceneListener>();
+    private List<ClipListener> listeners = new Vector<ClipListener>();
 
     public void setContext(Map<String, Object> context)
     {
@@ -28,7 +28,7 @@ public class AnimationManager {
         return context;
     }
 
-    public void addSceneListener(SceneListener sl)
+    public void addClipListener(ClipListener sl)
     {
         listeners.add(sl);
     }
@@ -51,17 +51,17 @@ public class AnimationManager {
         
     }
 
-    /************************* Scene management ******************************/
+    /************************* Clip management ******************************/
     /**
      * 
-     * @param scene -
-     * @param t - Transition to use (applied between the new image and the prior 
-     *        scene).  Can be null for "apply immediately".
-     * @param duration -1 for infinite (or until the scene kills itself)
+     * @param clipName -
+     * @param t - Transition to use (applied between the new clip and the prior 
+     *        clip).  Can be null for "apply immediately".
+     * @param duration -1 for infinite (or until the clip kills itself)
      * @param delay milliseconds to wait BEFORE running this animation
      * @return
      */
-    public int startScene(String scene, String transition, long duration, long delay)
+    public int startClip(String clipName, String transition, long duration, long delay)
     {
         return 0;
     }
@@ -72,8 +72,8 @@ public class AnimationManager {
         return 0;
     }
 
-    /** IMMEDIATELY kill a scene based on it's ID. **/
-    public Scene killScene(int i)
+    /** IMMEDIATELY kill a clip based on it's ID. **/
+    public Clip killClip(int i)
     {
         return null;
     }
@@ -115,16 +115,16 @@ public class AnimationManager {
         if (heightProp != null)
             stageDim.height = heightProp;
 
-        // scenes
-        scenes = new Hashtable<String,Scene>();
-        Map<String, ParameterMap> sceneParams = p.getObjects("scene");
-        for (String s : sceneParams.keySet()){
-            ParameterMap universalParams = sceneParams.get(s);
+        // clip
+        clips = new Hashtable<String,Clip>();
+        Map<String, ParameterMap> clipParams = p.getObjects("clip");
+        for (String s : clipParams.keySet()){
+            ParameterMap universalParams = clipParams.get(s);
             Map<String, ParameterMap> extendedParams = p.getObjects(s);
 
-            Scene scene = (Scene)(universalParams.getRequiredClass("class"));
-            scene.config(universalParams, extendedParams);
-            scenes.put(s, scene);
+            Clip clip = (Clip)(universalParams.getRequiredClass("class"));
+            clip.config(universalParams, extendedParams);
+            clips.put(s, clip);
         }
 
         // transitions
