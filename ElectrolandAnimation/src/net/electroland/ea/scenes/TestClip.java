@@ -3,10 +3,10 @@ package net.electroland.ea.scenes;
 import java.awt.Image;
 import java.util.Map;
 
-import net.electroland.ea.Scene;
+import net.electroland.ea.Clip;
 import net.electroland.utils.ParameterMap;
 
-public class TestScene implements Scene {
+public class TestClip extends Clip {
 
     @Override
     public void config(ParameterMap primaryParams, Map<String, ParameterMap> extendedParams) {
