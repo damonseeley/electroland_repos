@@ -55,7 +55,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 	private boolean _serverBooted;
 	
 	// set this to true for more verbose output
-	private boolean debugging = true;
+	private boolean debugging = false;
 
 	//the client code, which will receive notifications of scsynth status and events
 	private SCSoundControlNotifiable _notifyListener;
