@@ -66,7 +66,8 @@ public class ScsynthLauncher {
 			{"SuperCollider_RealTimeRamAllocation", "-m", "8192"},
 			{"SuperCollider_UDPportNumber", "-u", "57110"}, 
 			{"SuperCollider_LoadSynthDefs", "-D", "1"},
-			{"SuperCollider_AudioHardwareDeviceName", "-H", ""}
+			{"SuperCollider_AudioHardwareDeviceName", "-H", ""},
+			{"SuperCollider_SampleRate", "-S", "44100"}
 	};
 	//{"SuperCollider_AudioHardwareDeviceName", "-H", ""},
 	//{"SuperCollider_InputStreamsEnabled", "-I", "00000000"},

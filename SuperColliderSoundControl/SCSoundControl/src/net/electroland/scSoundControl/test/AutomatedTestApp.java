@@ -11,26 +11,26 @@ public class AutomatedTestApp extends PApplet implements SCSoundControlNotifiabl
 	SCSoundControl ss;
 	
 	//test behavior parameters
-	int soundSurge_period = 10; //period in seconds of a surge in number of sounds played
-	int maxPolyphony = 200; // how many voices max to play at once
+	int soundSurge_period = 5; //period in seconds of a surge in number of sounds played
+	int maxPolyphony = 64; // how many voices max to play at once
 	
 	// polyphony values for automated switching
-	int polyphonyA = 8;
-	int polyphonyB = 16;
-	int polyphonyC = 32;
-	int polyphonyD = 64;
+	int polyphonyA = 4;
+	int polyphonyB = 8;
+	int polyphonyC = 16;
+	int polyphonyD = 24;
 	int polyphonyMode = 0;
 	long lastPolyphonySwitch;
 	int polyphonyDuration = 10000;
 	int targetPolyphony;
 	
 	//how many output channels. If there are more than 8 inputs, we'll need to add a variable for that too.
-	int numOutputChannels = 10; 
+	int numOutputChannels = 22; 
 	int numInputChannels = 2;
 	
 	//test parameters
 	int numSoundFiles = 12;
-	String soundFilePath = "soundfiles/"; //path relative to processing sketch folder
+	String soundFilePath = "soundfiles/44.1/"; //path relative to processing sketch folder
 	String soundFilePrefix = "test_";
 	String soundFileSuffix = ".wav";
 	
