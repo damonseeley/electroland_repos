@@ -6,6 +6,7 @@ package net.electroland.edmonton.core;
  */
 
 import java.io.IOException;
+import java.util.Hashtable;
 
 import org.apache.log4j.Logger;
 import net.electroland.edmonton.test.TestModel;
@@ -22,8 +23,9 @@ public class EIAMainConductor extends Thread {
 	private ELUCanvas2D canvas;
 	private IOManager eio;
 	private TestModel model;
-	
+	private SoundManager soundManager;
 	public double canvasHeight, canvasWidth;
+	public Hashtable<String, Object> context;
 
 	//Thread stuff
 	public static boolean isRunning;
@@ -35,7 +37,8 @@ public class EIAMainConductor extends Thread {
 
 	public EIAMainConductor()
 	{
-
+	    context = new Hashtable<String, Object>();
+	    context.put("sound_manager", soundManager)
 
 		elu = new ELUManager();
         eio = new IOManager();
