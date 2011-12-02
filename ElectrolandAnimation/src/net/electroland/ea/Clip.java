@@ -12,9 +12,10 @@ import net.electroland.utils.ParameterMap;
 public abstract class Clip {
 
     // values used to add this clip to the scene
-    protected Rectangle area;
+    protected Dimension baseDimensions;
+    protected Rectangle area, clip;
     protected int alpha;
-    protected Dimension baseSize;
+    protected Image image;
     private Queue<Change> changes;
     private Change currentChange;
     private boolean isDeleted = false;
@@ -32,6 +33,7 @@ public abstract class Clip {
     // manager is expecting to receive the same back (should properly implement
     // manager as an image observer instead)
     abstract public Image getFrame(Image image);
+
 
     public boolean isDeleted(){
         return isDeleted;
@@ -92,12 +94,12 @@ public abstract class Clip {
     }
 
 
-    public Dimension getBaseSize()
+    public Dimension getBaseDimensions()
     {
-        return baseSize;
+        return baseDimensions;
     }
 
-    public void queueChange(Rectangle area, Integer alpha, int durationMillis, int delayMillis, boolean deleteWhenDone)
+    public void queueChange(Rectangle area, Rectangle clip, Integer alpha, int durationMillis, int delayMillis, boolean deleteWhenDone)
     {
         if (changes == null)
         {
