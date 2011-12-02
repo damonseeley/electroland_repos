@@ -75,6 +75,7 @@ public class AnimationManager {
         Clip p = clipsPrototypes.get(clipName);
         if (p != null){
             Clip c = (Clip)p.clone();
+            c.init(context);
             c.image = new BufferedImage(c.baseDimensions.width, 
                                         c.baseDimensions.height, 
                                         BufferedImage.TYPE_INT_ARGB);
