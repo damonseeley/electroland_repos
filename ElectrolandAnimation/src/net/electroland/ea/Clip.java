@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.electroland.utils.ParameterMap;
 
-public abstract class Clip {
+public abstract class Clip implements Cloneable{
 
     // values used to add this clip to the scene
     protected Dimension baseDimensions;
@@ -111,6 +111,13 @@ public abstract class Clip {
     {
         changes = new ConcurrentLinkedQueue<Change>();
     }
+    public Object clone() {
+        try
+        {
+        return super.clone();
+        }
+        catch(Exception e){ return null; }
+     }
 }
 
 class Change{

@@ -1,12 +1,13 @@
 package net.electroland.ea;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.awt.image.RescaleOp;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ public class AnimationManager {
     private Map<Integer, Clip> liveClips = new Hashtable<Integer, Clip>();
     private Color stageColor = Color.BLACK;
     private Image stage;
+    private int id = 0;
 
     public void setContext(Map<String, Object> context)
     {
@@ -70,12 +72,18 @@ public class AnimationManager {
      */
     public int startClip(String clipName, Rectangle area, int alpha)
     {
-        // TODO: find the clip prototype
-        // TODO: clone it
-        // TODO: create the image for it.
-        // TODO: throw it into the scene.
-        
-        return 0;
+        Clip p = clipsPrototypes.get(clipName);
+        if (p != null){
+            Clip c = (Clip)p.clone();
+            c.image = new BufferedImage(c.baseDimensions.width, 
+                                        c.baseDimensions.height, 
+                                        BufferedImage.TYPE_INT_ARGB);
+            liveClips.put(id, c);
+            return id++;
+        }else{
+            return -1;
+            
+        }
     }
 
     public void modifyClip(int id, Rectangle area, Rectangle clip, 
@@ -104,18 +112,18 @@ public class AnimationManager {
     public Image getStage()
     {
         // TODO: zindex
-        Graphics2D g = stage.getGraphics();
+        Graphics g = stage.getGraphics();
+        g.setColor(stageColor);
         g.fillRect(0, 0, stageDim.width, stageDim.height);
 
         for (Clip c : liveClips.values())
         {
             c.image = c.getFrame(c.image);
-
-            float[] scales = { 1f, 1f, 1f, c.alpha };
-            float[] offsets = new float[4];
-            RescaleOp rop = new RescaleOp(scales, offsets, null);
-
-            g.drawImage(c.image, rop, 0,0 );
+            BufferedImage alpha = createScaledAlpha(c.image, 
+                                                    c.area.width,
+                                                    c.area.height,
+                                                    c.alpha);
+            g.drawImage(alpha, c.area.x, c.area.y, c.area.width, c.area.height, null);
         }
         return stage;
     }
@@ -163,4 +171,22 @@ public class AnimationManager {
             clipsPrototypes.put(s, clip);
         }
     }
+
+    private static BufferedImage createScaledAlpha(Image image, int width, int height, float transperancy) {  
+        // buffer for the original (scaled)
+        BufferedImage img = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);
+        Graphics g = img.getGraphics();
+        g.drawImage(image, 0, 0, width, height, null);
+        g.dispose();
+
+        // for the alpha version
+        BufferedImage aimg = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);  
+        Graphics2D g2d = aimg.createGraphics();
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transperancy));  
+        g2d.drawImage(img, null, 0, 0);  
+        g2d.dispose();  
+
+        // Return the image  
+        return aimg;  
+    }  
 }
