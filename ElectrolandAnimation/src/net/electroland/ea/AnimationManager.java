@@ -1,8 +1,12 @@
 package net.electroland.ea;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.awt.image.RescaleOp;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -15,10 +19,12 @@ public class AnimationManager {
 
     private Dimension stageDim;
     private int fps = 33;
-    private Map<String, Clip> clips;
-    private Map<String, Transition> transitions;
+    private Map<String, Clip> clipsPrototypes;
     private Map<String, Object> context;
     private List<ClipListener> listeners = new Vector<ClipListener>();
+    private Map<Integer, Clip> liveClips = new Hashtable<Integer, Clip>();
+    private Color stageColor = Color.BLACK;
+    private Image stage;
 
     public void setContext(Map<String, Object> context)
     {
@@ -35,7 +41,7 @@ public class AnimationManager {
     }
 
     /************* Thread management ********************/
-    public void setDesiredFPS()
+    public void setDesiredFPS(int fps)
     {
         
     }
@@ -64,17 +70,25 @@ public class AnimationManager {
      */
     public int startClip(String clipName, Rectangle area, int alpha)
     {
+        // TODO: find the clip prototype
+        // TODO: clone it
+        // TODO: create the image for it.
+        // TODO: throw it into the scene.
+        
         return 0;
     }
 
-    public void modifyClip(int id, Rectangle area, Integer alpha, int durationMillis, int delayMillis)
+    public void modifyClip(int id, Rectangle area, Rectangle clip, 
+                            Integer alpha, int durationMillis, int delayMillis, 
+                            boolean deleteWhenDone)
     {
-        
+        liveClips.get(id).queueChange(area, clip, alpha, durationMillis, delayMillis, deleteWhenDone);
     }
 
-    /** IMMEDIATELY kill a clip based on it's ID. **/
     public void killClip(int i)
     {
+        liveClips.get(i).resetQueue();
+        liveClips.remove(i);
     }
 
     /************************** Stage managment *******************************/
@@ -85,16 +99,34 @@ public class AnimationManager {
     public void setStageDimensions(Dimension d)
     {
         stageDim = d;
+        stage = new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_ARGB);
     }
     public Image getStage()
     {
-        // generate and return the composite here.
-        return null;
+        // TODO: zindex
+        Graphics2D g = stage.getGraphics();
+        g.fillRect(0, 0, stageDim.width, stageDim.height);
+
+        for (Clip c : liveClips.values())
+        {
+            c.image = c.getFrame(c.image);
+
+            float[] scales = { 1f, 1f, 1f, c.alpha };
+            float[] offsets = new float[4];
+            RescaleOp rop = new RescaleOp(scales, offsets, null);
+
+            g.drawImage(c.image, rop, 0,0 );
+        }
+        return stage;
     }
     public int[] getStagePixels(int x, int y, int width, int height)
     {
         // return a pixel grab from getStage
         return null;
+    }
+    public void setStageColor(Color stageColor)
+    {
+        this.stageColor = stageColor;
     }
 
     /************************ parse props *************************************/
@@ -115,27 +147,20 @@ public class AnimationManager {
             stageDim.height = heightProp;
 
         // clip
-        clips = new Hashtable<String,Clip>();
+        clipsPrototypes = new Hashtable<String,Clip>();
         Map<String, ParameterMap> clipParams = p.getObjects("clip");
         for (String s : clipParams.keySet()){
+
             ParameterMap universalParams = clipParams.get(s);
+            int width = universalParams.getRequiredInt("width");
+            int height = universalParams.getRequiredInt("height");
+            
             Map<String, ParameterMap> extendedParams = p.getObjects(s);
 
             Clip clip = (Clip)(universalParams.getRequiredClass("class"));
+            clip.baseDimensions = new Dimension(width, height);
             clip.config(universalParams, extendedParams);
-            clips.put(s, clip);
-        }
-
-        // transitions
-        transitions = new Hashtable<String, Transition>();
-        Map<String, ParameterMap> transitionParams = p.getObjects("transition");
-        for (String s : transitionParams.keySet()){
-            ParameterMap universalParams = transitionParams.get(s);
-            Map<String, ParameterMap> extendedParams = p.getObjects(s);
-
-            Transition transition = (Transition)(universalParams.getRequiredClass("class"));
-            transition.config(universalParams, extendedParams);
-            transitions.put(s, transition);
+            clipsPrototypes.put(s, clip);
         }
     }
 }
