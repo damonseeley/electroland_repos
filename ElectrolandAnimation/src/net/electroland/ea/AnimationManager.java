@@ -2,6 +2,7 @@ package net.electroland.ea;
 
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -61,21 +62,19 @@ public class AnimationManager {
      * @param delay milliseconds to wait BEFORE running this animation
      * @return
      */
-    public int startClip(String clipName, String transition, long duration, long delay)
+    public int startClip(String clipName, Rectangle area, int alpha)
     {
         return 0;
     }
 
-    /** Transition to a static color.  e.g, for fade out. **/
-    public int transitionOut(String hexColor, String transition, long duration, long delay)
+    public void modifyClip(int id, Rectangle area, Integer alpha, int durationMillis, int delayMillis)
     {
-        return 0;
+        
     }
 
     /** IMMEDIATELY kill a clip based on it's ID. **/
-    public Clip killClip(int i)
+    public void killClip(int i)
     {
-        return null;
     }
 
     /************************** Stage managment *******************************/
