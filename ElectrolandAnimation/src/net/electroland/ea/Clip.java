@@ -16,6 +16,7 @@ public abstract class Clip implements Cloneable{
     protected Rectangle area, clip;
     protected int alpha;
     protected Image image;
+    protected int id;
     private Queue<Change> changes;
     private Change currentChange;
     private boolean isDeleted = false;

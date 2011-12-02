@@ -78,6 +78,7 @@ public class AnimationManager {
             c.image = new BufferedImage(c.baseDimensions.width, 
                                         c.baseDimensions.height, 
                                         BufferedImage.TYPE_INT_ARGB);
+            c.id = id;
             liveClips.put(id, c);
             return id++;
         }else{
@@ -118,12 +119,16 @@ public class AnimationManager {
 
         for (Clip c : liveClips.values())
         {
-            c.image = c.getFrame(c.image);
-            BufferedImage alpha = createScaledAlpha(c.image, 
-                                                    c.area.width,
-                                                    c.area.height,
-                                                    c.alpha);
-            g.drawImage(alpha, c.area.x, c.area.y, c.area.width, c.area.height, null);
+            if (c.isDeleted() || c.isDone()){
+                killClip(c.id);
+            }else{
+                c.image = c.getFrame(c.image);
+                BufferedImage alpha = createScaledAlpha(c.image, 
+                                                        c.area.width,
+                                                        c.area.height,
+                                                        c.alpha);
+                g.drawImage(alpha, c.area.x, c.area.y, c.area.width, c.area.height, null);
+            }
         }
         return stage;
     }
