@@ -39,6 +39,8 @@ public class EIAMainConductor extends Thread {
 	{
 	    context = new Hashtable<String, Object>();
 	    context.put("sound_manager", soundManager)
+	    
+	    //create reserved names 
 
 		elu = new ELUManager();
         eio = new IOManager();
