@@ -2,16 +2,15 @@ package net.electroland.ea;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.apache.log4j.Logger;
-
 import net.electroland.utils.ParameterMap;
+
+import org.apache.log4j.Logger;
 
 public abstract class Clip implements Cloneable{
 
