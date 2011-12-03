@@ -172,6 +172,7 @@ public class AnimationManager {
 
         stageDim = new Dimension(p.getRequiredInt("settings", "global", "width"),
                                 p.getRequiredInt("settings", "global", "height"));
+        setStageDimensions(stageDim);
 
         // clip
         clipsPrototypes = new Hashtable<String,Clip>();
