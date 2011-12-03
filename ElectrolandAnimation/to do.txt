@@ -4,3 +4,4 @@
 3.) clip rect is not implemented
 4.) sync is not tested to elu
 5.) implement some non image based Clips
+6.) implement "changes"
