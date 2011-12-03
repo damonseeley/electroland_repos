@@ -104,7 +104,8 @@ public class AnimationManager {
                             Double alpha, int durationMillis, int delayMillis, 
                             boolean deleteWhenDone)
     {
-        liveClips.get(id).queueChange(area, clip, alpha, durationMillis, delayMillis, deleteWhenDone);
+        liveClips.get(id).queueChange(area, clip, alpha, durationMillis, 
+                                      delayMillis, deleteWhenDone);
     }
 
     public void killClip(int i)
@@ -141,7 +142,9 @@ public class AnimationManager {
                 killClip(c.id);
             }else{
                 c.processChanges();
-                c.image = c.getFrame(c.image);
+                c.image = c.getFrame(new BufferedImage(c.baseDimensions.width, 
+                                        c.baseDimensions.height, 
+                                        BufferedImage.TYPE_INT_ARGB));
                 BufferedImage alpha = createScaledAlpha(c.image, 
                                                         c.area.width,
                                                         c.area.height,
@@ -192,7 +195,7 @@ public class AnimationManager {
             ParameterMap universalParams = clipParams.get(s);
             int width = universalParams.getRequiredInt("width");
             int height = universalParams.getRequiredInt("height");
-            
+
             Map<String, ParameterMap> extendedParams = p.getObjects(s);
 
             Clip clip = (Clip)(universalParams.getRequiredClass("class"));
@@ -202,7 +205,7 @@ public class AnimationManager {
         }
     }
 
-    private static BufferedImage createScaledAlpha(Image image, int width, int height, float transperancy) {  
+    private static BufferedImage createScaledAlpha(Image image, int width, int height, float transperancy) {
         // buffer for the original (scaled)
         BufferedImage img = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);
         Graphics g = img.getGraphics();
@@ -210,13 +213,13 @@ public class AnimationManager {
         g.dispose();
 
         // for the alpha version
-        BufferedImage aimg = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);  
+        BufferedImage aimg = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);
         Graphics2D g2d = aimg.createGraphics();
-        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transperancy));  
-        g2d.drawImage(img, null, 0, 0);  
-        g2d.dispose();  
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transperancy));
+        g2d.drawImage(img, null, 0, 0);
+        g2d.dispose();
 
-        // Return the image  
-        return aimg;  
-    }  
+        // Return the image
+        return aimg;
+    }
 }
