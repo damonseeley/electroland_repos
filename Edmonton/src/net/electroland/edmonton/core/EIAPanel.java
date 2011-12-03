@@ -13,6 +13,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.util.Hashtable;
 
 import javax.swing.JPanel;
 
@@ -30,12 +31,16 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 	private int width, height, cols, rows;
 	private int margin;
 	private int boxWidth;
+	
+	public Hashtable<String, Object> context;
 
 	//constructor
-	public EIAPanel (int w, int h) {
+	public EIAPanel (int w, int h, Hashtable context) {
 
 		this.width = w;
 		this.height = h;
+		this.context = context;
+		
 		setBackground(bg);
 		setSize(w, h);
 		setPreferredSize(new Dimension(w, h)); // need both SetSize and SetPreferredSize here for some reason
@@ -91,6 +96,10 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 
 
 	}
+	
+	public void update(){
+		//repaint here?
+	}
 
 
 
@@ -101,6 +110,9 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 		//set styles
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		//g2.setStroke(dashed);
+		
+		//test
+		g2.fillRect(50,50,100,100);
 
 		/*
 			//draw sensors
