@@ -42,24 +42,6 @@ public class AnimationManager {
         listeners.add(sl);
     }
 
-    /************* Thread management ********************/
-    public void setDesiredFPS(int fps)
-    {
-        
-    }
-    public int getMeasuredFPS()
-    {
-        return 0;
-    }
-    public void start()
-    {
-        
-    }
-    public void stop()
-    {
-        
-    }
-
     /************************* Clip management ******************************/
     /**
      * 
@@ -88,7 +70,7 @@ public class AnimationManager {
         }
     }
 
-    public void modifyClip(int id, Rectangle area, Rectangle clip, 
+    public void queueClipChange(int id, Rectangle area, Rectangle clip, 
                             Integer alpha, int durationMillis, int delayMillis, 
                             boolean deleteWhenDone)
     {
@@ -123,6 +105,7 @@ public class AnimationManager {
             if (c.isDeleted() || c.isDone()){
                 killClip(c.id);
             }else{
+                c.processChanges();
                 c.image = c.getFrame(c.image);
                 BufferedImage alpha = createScaledAlpha(c.image, 
                                                         c.area.width,
