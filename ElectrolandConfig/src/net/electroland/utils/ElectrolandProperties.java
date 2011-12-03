@@ -23,7 +23,7 @@ public class ElectrolandProperties {
     // main is just a unit test
     public static void main(String args[]){
         Properties p = new Properties();
-        p.put("dog.betty", "$type  yorkie $attitude  0 $class net.electroland.utils.Dog $tags short,frantic");
+        p.put("dog.betty", "$type   yorkie  $attitude  0 $class net.electroland.utils.Dog $tags short,frantic");
         p.put("dog.sophie","$type mutt  $attitude  10 $class net.electroland.utils.Dog $tags tall,friendly,bites,men");
         p.put("cat.clay","$type tabby $class net.electroland.utils.Cat");
 
@@ -33,7 +33,7 @@ public class ElectrolandProperties {
         Set<String> dogNames = op.getObjectNames("dog");
         for (String name : dogNames)
         {
-            System.out.println(name);
+            System.out.println(">" + name + "<");
         }
 
         // get all dogs (this is useful if you want to pass this subset
@@ -43,18 +43,18 @@ public class ElectrolandProperties {
         // and tell me about Betty's type
         ParameterMap betty = dogs.get("betty");
         String type = betty.getRequired("type");
-        System.out.println(type);
+        System.out.println(">" + type + "<");
 
         // alternately
         String type2 = op.getRequired("dog", "betty", "type");
-        System.out.println(type2);
+        System.out.println(">" + type2 + "<");
 
         // tags
         List<String> tags = op.getRequiredList("dog", "betty", "tags");
         System.out.println(tags);
 
         // load an instance of the class the represents betty
-        Object c = op.getRequiredClass("dog", "betty", "class");
+        Object c = op.getOptionalInt("dog", "betty", "attifftude");
         System.out.println(c);
 
     }
@@ -335,7 +335,7 @@ public class ElectrolandProperties {
                     map.put(tok, null); // SPECIAL CASE: flag has no value.
                 }else{
                     map.put(tok.substring(1, flagEnd), 
-                            tok.substring(flagEnd + 1, tok.length()));
+                            tok.substring(flagEnd + 1, tok.length()).trim());
                     // at some point, we should parse the values attributed to
                     // each flag into an object here.
                 }
