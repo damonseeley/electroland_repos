@@ -63,8 +63,11 @@ public abstract class Clip implements Cloneable{
 
                 if (currentChange.deleteWhenDone){
                     isDeleted = true;
+                    if (changes.size() != 0){
+                        logger.warn("WARNING: clip '" + id + "' was deleted with changes still pending.");
+                    }
                 }
-                
+
                 if (currentChange.started){
                     // apply the final area and alpha
                     this.alpha = currentChange.targetAlpha;
