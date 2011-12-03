@@ -62,8 +62,6 @@ public abstract class Clip implements Cloneable{
         {
             if (currentChange.isComplete()){
 
-                logger.debug("change on clip " + this.id + " is complete.");
-
                 if (currentChange.deleteWhenDone){
                     isDeleted = true;
                 }
@@ -76,15 +74,14 @@ public abstract class Clip implements Cloneable{
                 currentChange = null;
             }else{
                 if (currentChange.started){
-                    logger.debug("change on clip " + this.id);
                     // percent complete
                     double pc = (System.currentTimeMillis() - currentChange.start)
                                     /(double)currentChange.duration;
                     
-                    if (currentChange.initArea != currentChange.targetArea){
+                    if (currentChange.initAlpha != currentChange.targetAlpha){
                         alpha = Change.d(currentChange.initAlpha, currentChange.targetAlpha, pc);
                     }
-                    if (currentChange.initAlpha != currentChange.targetAlpha){
+                    if (currentChange.initArea != currentChange.targetArea){
                         area.x = Change.d(currentChange.initArea.x, currentChange.targetArea.x, pc);
                         area.y = Change.d(currentChange.initArea.y, currentChange.targetArea.y, pc);
                         area.width = Change.d(currentChange.initArea.width, currentChange.targetArea.width, pc);
