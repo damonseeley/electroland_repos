@@ -23,9 +23,14 @@ public class EIAMainConductor extends Thread {
 	private ELUCanvas2D canvas;
 	private IOManager eio;
 	private TestModel model;
-	private SoundManager soundManager;
+	
 	public double canvasHeight, canvasWidth;
 	public Hashtable<String, Object> context;
+	
+	//private SoundManager soundManager;
+
+	
+	public EIAFrame ef;
 
 	//Thread stuff
 	public static boolean isRunning;
@@ -37,10 +42,6 @@ public class EIAMainConductor extends Thread {
 
 	public EIAMainConductor()
 	{
-	    context = new Hashtable<String, Object>();
-	    context.put("sound_manager", soundManager)
-	    
-	    //create reserved names 
 
 		elu = new ELUManager();
         eio = new IOManager();
@@ -59,9 +60,21 @@ public class EIAMainConductor extends Thread {
 		canvas = (ELUCanvas2D)elu.getCanvas("EIAspan");
 		canvasHeight = canvas.getDimensions().getHeight();
 		canvasWidth = canvas.getDimensions().getWidth();
+		
+	    context = new Hashtable<String, Object>();
+	    //context.put("sound_manager", soundManager)
+	    context.put("eio",eio);
+	    context.put("elu",elu);
+	    context.put("canvas",canvas);
+	    //create reserved names 
 
+
+		ef = new EIAFrame(1024,768,context);
+		
 
 		////// THREAD SETUP
+		framerate = 30;
+		
 		isRunning = true;
 		timer = new Timer(framerate);
 		start();

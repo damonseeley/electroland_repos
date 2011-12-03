@@ -8,6 +8,7 @@ package net.electroland.edmonton.core;
  */
 
 import java.awt.event.WindowEvent;
+import java.util.Hashtable;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -28,17 +29,21 @@ public class EIAFrame extends JFrame  {
 	EIAPanel ep;
 
 	private int windowWidth,windowHeight;
+	public Hashtable<String, Object> context;
+	
 	private int panelWidth,panelHeight;
 
 	static Logger logger = Logger.getLogger(EIAFrame.class);
 
-	public EIAFrame(int width, int height) {
+	public EIAFrame(int width, int height, Hashtable context) {
 		super("EIA Setup Tool");
+		
+		this.context = context;
 		
 		windowWidth = width;
 		windowHeight = height;
 
-		ep = new EIAPanel(panelWidth,panelHeight);
+		ep = new EIAPanel(panelWidth,panelHeight,context);
 		this.add(ep);
 
 		//setup window
@@ -52,8 +57,10 @@ public class EIAFrame extends JFrame  {
 						close();
 					}
 				});
-
-
+	}
+	
+	public void update(){
+		ep.update();
 	}
 
 
