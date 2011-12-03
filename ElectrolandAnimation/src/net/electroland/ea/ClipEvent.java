@@ -6,7 +6,7 @@ public class ClipEvent extends EventObject {
 
     
     public int clipId;
-    public Object Clip;
+    public Object clip;
     public int type;
 
     public static final int ENDED    = 0;
