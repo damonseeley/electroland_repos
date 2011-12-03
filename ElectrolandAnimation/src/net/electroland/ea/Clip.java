@@ -114,6 +114,15 @@ public abstract class Clip implements Cloneable{
     // all sorts of alpha problems.
     public void erase()
     {
+
+        /** from http://blog.keilly.com/2007/09/clear-bufferedimage-in-java.html
+        g2D.setComposite(
+                AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
+              Rectangle2D.Double rect = 
+                new Rectangle2D.Double(0,0,width,height); 
+              g2D.fill(rect);        
+        **/
+
         Graphics g = image.getGraphics();
         g.setColor(background);
         g.fillRect(0, 0, this.baseDimensions.width, this.baseDimensions.height);

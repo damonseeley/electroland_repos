@@ -12,11 +12,12 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-
-import org.apache.log4j.Logger;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.ParameterMap;
+
+import org.apache.log4j.Logger;
 
 public class AnimationManager {
 
@@ -26,7 +27,7 @@ public class AnimationManager {
     private Map<String, Clip> clipsPrototypes;
     private Map<String, Object> context;
     private List<ClipListener> listeners = new Vector<ClipListener>();
-    private Map<Integer, Clip> liveClips = new Hashtable<Integer, Clip>();
+    private Map<Integer, Clip> liveClips = new ConcurrentHashMap<Integer, Clip>();
     private Color stageColor = Color.BLACK;
     private Image stage;
     private int id = 0;

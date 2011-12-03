@@ -40,16 +40,27 @@ public class AnimationTestFrame extends JFrame implements ClipListener{
         anim.addClipListener(f);
 
         // play a clip in the top/left quadrant
-        int clipId = anim.startClip("testClip", new Rectangle(0,0,w,h), 1.0);
+        int clipId1 = anim.startClip("testClip", new Rectangle(0,0,w,h), 1.0);
 
-        // delay 2 seconds, and then slowly expand it to full screen
-        anim.queueClipChange(clipId, new Rectangle(0,0,w*2,h*2), null, null, 1500, 1000, false);
+        // simultaneouslyplay a clip in the bottom/left quadrant
+        int clipId2 = anim.startClip("testClip", new Rectangle(0,h,w,h), 1.0);
 
-        // delay 2 seconds, and then slowly make it the bottom left quadrant
-        anim.queueClipChange(clipId, new Rectangle(w,h,w,h), null, null, 500, 1000, false);
+        // delay 2 seconds, and then slowly expand clip1 to full screen
+        anim.queueClipChange(clipId1, new Rectangle(0,0,w*2,h*2), null, null, 1500, 1000, false);
+
+        // delay 2 seconds, and then slowly make clip1 the bottom left quadrant
+        anim.queueClipChange(clipId1, new Rectangle(w,h,w,h), null, null, 500, 1000, false);
         
-        // delay 2 seconds, and then fade it out
-        anim.queueClipChange(clipId, null, null, 0.0, 1000, 1500, true);
+        // delay 2 seconds, and then fade clip1 out
+        anim.queueClipChange(clipId1, null, null, 0.0, 1000, 1500, true);
+
+        // pulse clip2
+        anim.queueClipChange(clipId2, null, null, .25, 500, 0, false);
+        anim.queueClipChange(clipId2, null, null, 1.0, 500, 0, false);
+        anim.queueClipChange(clipId2, null, null, .25, 500, 0, false);
+        anim.queueClipChange(clipId2, null, null, 1.0, 500, 0, false);
+        anim.queueClipChange(clipId2, null, null, 0.0, 500, 0, true);
+
 
         while (true){
             f.getGraphics().drawImage(anim.getStage(), 0, 0, f.getWidth(), f.getHeight(), null);
