@@ -70,7 +70,7 @@ public class AnimationManager {
      * @param delay milliseconds to wait BEFORE running this animation
      * @return
      */
-    public int startClip(String clipName, Rectangle area, int alpha)
+    public int startClip(String clipName, Rectangle area, double alpha)
     {
         Clip p = clipsPrototypes.get(clipName);
         if (p != null){
@@ -81,6 +81,8 @@ public class AnimationManager {
                                         BufferedImage.TYPE_INT_ARGB);
             c.id = id;
             liveClips.put(id, c);
+            c.area = area;
+            c.alpha = alpha;
             ClipEvent e = new ClipEvent(this);
             e.clipId = c.id;
             e.Clip = c;
@@ -94,7 +96,7 @@ public class AnimationManager {
     }
 
     public void queueClipChange(int id, Rectangle area, Rectangle clip, 
-                            Integer alpha, int durationMillis, int delayMillis, 
+                            Double alpha, int durationMillis, int delayMillis, 
                             boolean deleteWhenDone)
     {
         liveClips.get(id).queueChange(area, clip, alpha, durationMillis, delayMillis, deleteWhenDone);
@@ -138,7 +140,7 @@ public class AnimationManager {
                 BufferedImage alpha = createScaledAlpha(c.image, 
                                                         c.area.width,
                                                         c.area.height,
-                                                        c.alpha);
+                                                        (float)c.alpha);
                 g.drawImage(alpha, c.area.x, c.area.y, c.area.width, c.area.height, null);
             }
         }
