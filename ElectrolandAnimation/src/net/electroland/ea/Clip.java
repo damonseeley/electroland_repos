@@ -102,7 +102,7 @@ public abstract class Clip implements Cloneable{
                 }
             }
         }
-        if (currentChange == null && !changes.isEmpty()){
+        if (currentChange == null && changes != null && !changes.isEmpty()){
             // get the next change
             currentChange = changes.remove();
             // configure it
