@@ -162,16 +162,10 @@ public class AnimationManager {
         ElectrolandProperties p = new ElectrolandProperties(filename);
 
         // fps, stage width & height
-        Integer fpsProp = p.getOptionalInt("settings", "global", "fps");
-        this.fps = fpsProp == null ? this.fps : fpsProp;
+        this.fps = p.getRequiredInt("settings", "global", "fps");
 
-        Integer widthProp = p.getOptionalInt("settings", "global", "width");
-        if (widthProp != null)
-            stageDim.width = widthProp;
-
-        Integer heightProp = p.getOptionalInt("settings", "global", "height");
-        if (heightProp != null)
-            stageDim.height = heightProp;
+        stageDim = new Dimension(p.getRequiredInt("settings", "global", "width"),
+                                p.getRequiredInt("settings", "global", "height"));
 
         // clip
         clipsPrototypes = new Hashtable<String,Clip>();
