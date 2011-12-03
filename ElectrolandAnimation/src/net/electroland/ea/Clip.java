@@ -14,7 +14,7 @@ public abstract class Clip implements Cloneable{
     // values used to add this clip to the scene
     protected Dimension baseDimensions;
     protected Rectangle area, clip;
-    protected int alpha;
+    protected double alpha;
     protected Image image;
     protected int id;
     private Queue<Change> changes;
@@ -86,7 +86,7 @@ public abstract class Clip implements Cloneable{
                     if (System.currentTimeMillis() > currentChange.start){
                         // why don't you start me up! oh yeeeah
                         currentChange.initArea = new Rectangle(area);
-                        currentChange.initAlpha = new Integer(alpha);
+                        currentChange.initAlpha = new Double(alpha);
                         if (currentChange.targetArea == null)
                             currentChange.targetArea = currentChange.initArea;
                         if (currentChange.targetAlpha == null)
@@ -104,7 +104,7 @@ public abstract class Clip implements Cloneable{
         }
     }
 
-    protected void queueChange(Rectangle area, Rectangle clip, Integer alpha, int durationMillis, int delayMillis, boolean deleteWhenDone)
+    protected void queueChange(Rectangle area, Rectangle clip, Double alpha, int durationMillis, int delayMillis, boolean deleteWhenDone)
     {
         if (changes == null)
         {
@@ -131,12 +131,12 @@ class Change{
     int delay;
     int duration;
     Rectangle initArea, targetArea;
-    int initAlpha;
-    Integer targetAlpha;
+    double initAlpha;
+    Double targetAlpha;
     boolean started = false;
     boolean deleteWhenDone = false;
 
-    public Change(Rectangle area, Integer alpha, int duration, int delay, boolean deleteWhenDone){
+    public Change(Rectangle area, Double alpha, int duration, int delay, boolean deleteWhenDone){
         this.targetArea = area;
         this.targetAlpha = alpha;
         this.duration = duration;
@@ -150,5 +150,8 @@ class Change{
     
     public static int d(int init, int target, double complete){
         return (int)((complete * (target - init)) + init);
+    }
+    public static double d(double init, double target, double complete){
+        return (complete * (target - init)) + init;
     }
 }
