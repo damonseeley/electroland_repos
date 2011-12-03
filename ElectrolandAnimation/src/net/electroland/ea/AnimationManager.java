@@ -207,6 +207,9 @@ public class AnimationManager {
 
     private static BufferedImage createScaledAlpha(Image image, int width, int height, float transperancy) {
         // buffer for the original (scaled)
+        if (width < 1) width = 1;
+        if (height < 1) height = 1;
+
         BufferedImage img = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);
         Graphics g = img.getGraphics();
         g.drawImage(image, 0, 0, width, height, null);
