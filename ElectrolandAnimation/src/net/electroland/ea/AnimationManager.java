@@ -42,6 +42,24 @@ public class AnimationManager {
         listeners.add(sl);
     }
 
+    private void alertListeners(ClipEvent e)
+    {
+        switch(e.type){
+        case(ClipEvent.STARTED):
+            for (ClipListener listener : listeners)
+            {
+                listener.clipStarted(e);
+            }
+            break;
+        case(ClipEvent.ENDED):
+            for (ClipListener listener : listeners)
+            {
+                listener.clipEnded(e);
+            }
+            break;
+        }
+    }
+    
     /************************* Clip management ******************************/
     /**
      * 
@@ -63,6 +81,11 @@ public class AnimationManager {
                                         BufferedImage.TYPE_INT_ARGB);
             c.id = id;
             liveClips.put(id, c);
+            ClipEvent e = new ClipEvent(this);
+            e.clipId = c.id;
+            e.Clip = c;
+            e.type = ClipEvent.STARTED;
+            alertListeners(e);
             return id++;
         }else{
             return -1;
@@ -80,7 +103,12 @@ public class AnimationManager {
     public void killClip(int i)
     {
         liveClips.get(i).resetQueue();
-        liveClips.remove(i);
+        Clip removed = liveClips.remove(i);
+        ClipEvent e = new ClipEvent(this);
+        e.clipId = removed.id;
+        e.Clip = removed;
+        e.type = ClipEvent.ENDED;
+        alertListeners(e);
     }
 
     /************************** Stage managment *******************************/

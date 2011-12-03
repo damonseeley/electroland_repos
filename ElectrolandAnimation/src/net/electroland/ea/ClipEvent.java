@@ -5,8 +5,12 @@ import java.util.EventObject;
 public class ClipEvent extends EventObject {
 
     
-    int clipId;
-    Object Clip;
+    public int clipId;
+    public Object Clip;
+    public int type;
+
+    public static final int ENDED    = 0;
+    public static final int STARTED  = 1;
 
     /**
      * 
@@ -15,7 +19,5 @@ public class ClipEvent extends EventObject {
 
     public ClipEvent(Object arg0) {
         super(arg0);
-        // TODO Auto-generated constructor stub
     }
-
 }
