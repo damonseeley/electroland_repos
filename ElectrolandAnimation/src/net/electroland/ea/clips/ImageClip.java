@@ -72,8 +72,6 @@ public class ImageClip extends Clip {
 
         if (frames.length > 0)
         {
-            this.erase();
-
             Graphics g = image.getGraphics();
             g.drawImage(frames[pointer],
                         0,
