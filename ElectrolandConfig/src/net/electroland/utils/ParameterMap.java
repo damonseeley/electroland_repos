@@ -13,7 +13,7 @@ public class ParameterMap implements Map<String, String>{
 
     public String getOptional(String name) throws OptionException
     {
-        return params.get(name);
+        return params.get(name).trim();
     }
 
     public String getRequired(String name)
@@ -22,7 +22,7 @@ public class ParameterMap implements Map<String, String>{
         if (o == null)
             throw new OptionException("Required parameter '" + name + "' is missing.");
         else
-            return o.toString();
+            return o.toString().trim();
     }
 
     public Integer getOptionalInt(String name)
@@ -90,7 +90,7 @@ public class ParameterMap implements Map<String, String>{
                         tagArray[i] = tagArray[i].substring(1, tagArray[i].length()-1);
                     }
                     if (tagArray[i].length() != 0){
-                        tagList.add(tagArray[i]);
+                        tagList.add(tagArray[i].trim());
                     }
                 }
             }
@@ -114,7 +114,7 @@ public class ParameterMap implements Map<String, String>{
             return null;
         else{
             try {
-                return new Util().getClass().getClassLoader().loadClass(c.toString()).newInstance();
+                return new Util().getClass().getClassLoader().loadClass(c.toString().trim()).newInstance();
             } catch (InstantiationException e) {
                 throw new OptionException(e);
             } catch (IllegalAccessException e) {

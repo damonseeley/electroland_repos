@@ -23,8 +23,8 @@ public class ElectrolandProperties {
     // main is just a unit test
     public static void main(String args[]){
         Properties p = new Properties();
-        p.put("dog.betty", "$type yorkie $attitude 0 $class net.electroland.utils.Dog $tags short,frantic");
-        p.put("dog.sophie","$type mutt $attitude 10 $class net.electroland.utils.Dog $tags tall,friendly,bites,men");
+        p.put("dog.betty", "$type  yorkie $attitude  0 $class net.electroland.utils.Dog $tags short,frantic");
+        p.put("dog.sophie","$type mutt  $attitude  10 $class net.electroland.utils.Dog $tags tall,friendly,bites,men");
         p.put("cat.clay","$type tabby $class net.electroland.utils.Cat");
 
         ElectrolandProperties op = new ElectrolandProperties(p);
