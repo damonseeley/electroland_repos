@@ -40,7 +40,7 @@ public class AnimationTestFrame extends JFrame implements ClipListener{
         anim.addClipListener(f);
 
         // play a clip in the top/left quadrant
-        int clipId1 = anim.startClip("testClip", new Rectangle(0,0,w,h), 1.0);
+        int clipId1 = anim.startClip("testClipFast", new Rectangle(0,0,w,h), 1.0);
 
         // simultaneouslyplay a clip in the bottom/left quadrant
         int clipId2 = anim.startClip("testClip", new Rectangle(0,h,w,h), 1.0);
