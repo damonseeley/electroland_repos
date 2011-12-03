@@ -4,7 +4,6 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Map;
 import java.util.TreeSet;
 import java.util.Vector;
@@ -15,8 +14,11 @@ import net.electroland.ea.Clip;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.ParameterMap;
 
+import org.apache.log4j.Logger;
+
 public class ImageClip extends Clip {
 
+    private static Logger logger = Logger.getLogger(ImageClip.class);
     @SuppressWarnings("unused")
     private Map<String, Object> context;
     private Image[] frames;
@@ -30,14 +32,16 @@ public class ImageClip extends Clip {
         Vector<Image> framesTmp = new Vector<Image>();
 
         // load all specified images
-        TreeSet<String> alphabatizedNames = new TreeSet<String>();
+        TreeSet<String> alphabatizedNames = new TreeSet<String>(new AlphanumComparator());
         alphabatizedNames.addAll(extendedParams.keySet());
         for (String name : alphabatizedNames)
         {
             if (name.startsWith("frame."))
             {
                 try {
-                    framesTmp.add(ImageIO.read(new File(base, name)));
+                    String filename = extendedParams.get(name).getRequired("file");
+                    logger.info("loading " + base + filename);
+                    framesTmp.add(ImageIO.read(new File(base, filename)));
                 } catch (IOException e) {
                     throw new OptionException(e);
                 }
