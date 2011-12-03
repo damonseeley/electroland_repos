@@ -1,8 +1,5 @@
-1.) erase() method just paints the Clip the same color as the stage.  It 
-    should actually erase the Image (so that alpha on the edge doesn't overlap)
-2.) some kind of command line way to set stuff in motion would be nice.
-3.) clip rect is not implemented
-4.) sync is not tested to elu
-5.) implement some non image based Clips
-6.) implement "changes"
-7.) curved paths
+1.) some kind of command line way to set stuff in motion would be nice.
+2.) implement "changes"
+3.) zindex controls
+4.) clip rect is not implemented
+5.) sync is not tested to elu

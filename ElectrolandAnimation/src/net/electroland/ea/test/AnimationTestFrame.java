@@ -61,7 +61,6 @@ public class AnimationTestFrame extends JFrame implements ClipListener{
         anim.queueClipChange(clipId2, null, null, 1.0, 500, 0, false);
         anim.queueClipChange(clipId2, null, null, 0.0, 500, 0, true);
 
-
         while (true){
             f.getGraphics().drawImage(anim.getStage(), 0, 0, f.getWidth(), f.getHeight(), null);
 
