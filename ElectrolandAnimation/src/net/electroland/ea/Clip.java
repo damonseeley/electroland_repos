@@ -39,8 +39,18 @@ public abstract class Clip implements Cloneable{
     public boolean isDeleted(){
         return isDeleted;
     }
+    public Image getImage() {
+        return image;
+    }
+    public int getId() {
+        return id;
+    }
+    public Dimension getBaseDimensions()
+    {
+        return baseDimensions;
+    }
 
-    public void processChanges()
+    protected void processChanges()
     {
         if (currentChange != null)
         {
@@ -94,13 +104,7 @@ public abstract class Clip implements Cloneable{
         }
     }
 
-
-    public Dimension getBaseDimensions()
-    {
-        return baseDimensions;
-    }
-
-    public void queueChange(Rectangle area, Rectangle clip, Integer alpha, int durationMillis, int delayMillis, boolean deleteWhenDone)
+    protected void queueChange(Rectangle area, Rectangle clip, Integer alpha, int durationMillis, int delayMillis, boolean deleteWhenDone)
     {
         if (changes == null)
         {
@@ -108,7 +112,7 @@ public abstract class Clip implements Cloneable{
         }
         changes.add(new Change(area, alpha, durationMillis, delayMillis, deleteWhenDone));
     }
-    public void resetQueue()
+    protected void resetQueue()
     {
         changes = new ConcurrentLinkedQueue<Change>();
     }
