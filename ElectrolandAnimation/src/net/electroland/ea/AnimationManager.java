@@ -40,12 +40,12 @@ public class AnimationManager {
         return context;
     }
 
-    public void addClipListener(ClipListener sl)
+    public void addClipListener(ClipListener cl)
     {
-        listeners.add(sl);
+        listeners.add(cl);
     }
 
-    private void alertListeners(ClipEvent e)
+    private void notifyListeners(ClipEvent e)
     {
         switch(e.type){
         case(ClipEvent.STARTED):
@@ -89,9 +89,9 @@ public class AnimationManager {
             c.background = this.stageColor;
             ClipEvent e = new ClipEvent(this);
             e.clipId = c.id;
-            e.Clip = c;
+            e.clip = c;
             e.type = ClipEvent.STARTED;
-            alertListeners(e);
+            notifyListeners(e);
             return id++;
         }else{
             return -1;
@@ -112,9 +112,9 @@ public class AnimationManager {
         Clip removed = liveClips.remove(i);
         ClipEvent e = new ClipEvent(this);
         e.clipId = removed.id;
-        e.Clip = removed;
+        e.clip = removed;
         e.type = ClipEvent.ENDED;
-        alertListeners(e);
+        notifyListeners(e);
     }
 
     /************************** Stage managment *******************************/
