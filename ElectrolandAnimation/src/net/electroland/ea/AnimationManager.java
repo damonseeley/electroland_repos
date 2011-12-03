@@ -156,6 +156,12 @@ public class AnimationManager {
         this.stageColor = stageColor;
     }
 
+    public int getFps() {
+        return fps;
+    }
+    public void setFps(int fps) {
+        this.fps = fps;
+    }
     /************************ parse props *************************************/
     public void config(String filename)
     {

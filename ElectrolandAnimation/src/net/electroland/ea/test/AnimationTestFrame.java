@@ -52,7 +52,7 @@ public class AnimationTestFrame extends JFrame{
             // should sync ELU here.
 
             try {
-                Thread.sleep(33);
+                Thread.sleep(anim.getFps());
             } catch (InterruptedException e) {
                 System.exit(0);
             }
