@@ -191,7 +191,7 @@ public class AnimationManager {
         clipsPrototypes = new Hashtable<String,Clip>();
         Map<String, ParameterMap> clipParams = p.getObjects("clip");
         for (String s : clipParams.keySet()){
-
+            logger.info("loading clip '" + s + "'");
             ParameterMap universalParams = clipParams.get(s);
             int width = universalParams.getRequiredInt("width");
             int height = universalParams.getRequiredInt("height");
