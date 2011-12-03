@@ -67,6 +67,8 @@ public class ImageClip extends Clip {
 
         if (frames.length > 0)
         {
+            this.erase();
+
             Graphics g = image.getGraphics();
             g.drawImage(frames[pointer++],
                         0,
@@ -74,6 +76,7 @@ public class ImageClip extends Clip {
                         this.getBaseDimensions().width,
                         this.getBaseDimensions().height,
                         null);
+            g.dispose();
 
             if (pointer == frames.length)
                 pointer = 0;

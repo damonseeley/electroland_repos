@@ -1,6 +1,8 @@
 package net.electroland.ea;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.util.Map;
@@ -20,6 +22,7 @@ public abstract class Clip implements Cloneable{
     private Queue<Change> changes;
     private Change currentChange;
     private boolean isDeleted = false;
+    public Color background;
 
     // configuration parameters from the properties file
     abstract public void config(ParameterMap primaryParams, Map<String, ParameterMap> extendedParams);
@@ -102,6 +105,14 @@ public abstract class Clip implements Cloneable{
             currentChange.start = System.currentTimeMillis() + currentChange.delay;
             currentChange.finish = currentChange.start + currentChange.duration;
         }
+    }
+
+    public void erase()
+    {
+        Graphics g = image.getGraphics();
+        g.setColor(background);
+        g.fillRect(0, 0, this.baseDimensions.width, this.baseDimensions.height);
+        g.dispose();
     }
 
     protected void queueChange(Rectangle area, Rectangle clip, Double alpha, int durationMillis, int delayMillis, boolean deleteWhenDone)

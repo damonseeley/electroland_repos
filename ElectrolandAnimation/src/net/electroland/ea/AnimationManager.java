@@ -83,6 +83,7 @@ public class AnimationManager {
             liveClips.put(id, c);
             c.area = area;
             c.alpha = alpha;
+            c.background = this.stageColor;
             ClipEvent e = new ClipEvent(this);
             e.clipId = c.id;
             e.Clip = c;
@@ -144,6 +145,7 @@ public class AnimationManager {
                 g.drawImage(alpha, c.area.x, c.area.y, c.area.width, c.area.height, null);
             }
         }
+        g.dispose();
         return stage;
     }
     public int[] getStagePixels(int x, int y, int width, int height)
@@ -154,6 +156,10 @@ public class AnimationManager {
     public void setStageColor(Color stageColor)
     {
         this.stageColor = stageColor;
+        for (Clip c : liveClips.values())
+        {
+            c.background = stageColor;
+        }
     }
 
     public int getFps() {
