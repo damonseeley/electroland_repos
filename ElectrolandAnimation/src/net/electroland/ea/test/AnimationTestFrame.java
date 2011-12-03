@@ -48,6 +48,14 @@ public class AnimationTestFrame extends JFrame{
 
         while (true){
             f.getGraphics().drawImage(anim.getStage(), 0, 0, f.getWidth(), f.getHeight(), null);
+
+            // should sync ELU here.
+
+            try {
+                Thread.sleep(33);
+            } catch (InterruptedException e) {
+                System.exit(0);
+            }
         }
     }
 }
