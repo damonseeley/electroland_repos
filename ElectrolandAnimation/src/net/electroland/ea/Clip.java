@@ -9,10 +9,13 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.apache.log4j.Logger;
+
 import net.electroland.utils.ParameterMap;
 
 public abstract class Clip implements Cloneable{
 
+    private static Logger logger = Logger.getLogger(Clip.class);
     // values used to add this clip to the scene
     protected Dimension baseDimensions;
     protected Rectangle area, clip;
@@ -58,7 +61,9 @@ public abstract class Clip implements Cloneable{
         if (currentChange != null)
         {
             if (currentChange.isComplete()){
-                
+
+                logger.debug("change on clip " + this.id + " is complete.");
+
                 if (currentChange.deleteWhenDone){
                     isDeleted = true;
                 }
@@ -71,6 +76,7 @@ public abstract class Clip implements Cloneable{
                 currentChange = null;
             }else{
                 if (currentChange.started){
+                    logger.debug("change on clip " + this.id);
                     // percent complete
                     double pc = (System.currentTimeMillis() - currentChange.start)
                                     /(double)currentChange.duration;
@@ -83,7 +89,6 @@ public abstract class Clip implements Cloneable{
                         area.y = Change.d(currentChange.initArea.y, currentChange.targetArea.y, pc);
                         area.width = Change.d(currentChange.initArea.width, currentChange.targetArea.width, pc);
                         area.height = Change.d(currentChange.initArea.height, currentChange.targetArea.height, pc);
-                         
                     }
                 }else{
                     if (System.currentTimeMillis() > currentChange.start){
@@ -94,6 +99,7 @@ public abstract class Clip implements Cloneable{
                             currentChange.targetArea = currentChange.initArea;
                         if (currentChange.targetAlpha == null)
                             currentChange.targetAlpha = currentChange.initAlpha;
+                        currentChange.started = true;
                     }
                 }
             }
@@ -107,6 +113,8 @@ public abstract class Clip implements Cloneable{
         }
     }
 
+    // TODO: makes more sense to just start with a fresh image?  this will cause
+    // all sorts of alpha problems.
     public void erase()
     {
         Graphics g = image.getGraphics();
@@ -121,10 +129,12 @@ public abstract class Clip implements Cloneable{
         {
             resetQueue();
         }
+        logger.debug("change requested for clip " + this.id);
         changes.add(new Change(area, alpha, durationMillis, delayMillis, deleteWhenDone));
     }
     protected void resetQueue()
     {
+        logger.debug("change queue reset for clip " + this.id);
         changes = new ConcurrentLinkedQueue<Change>();
     }
     public Object clone() {

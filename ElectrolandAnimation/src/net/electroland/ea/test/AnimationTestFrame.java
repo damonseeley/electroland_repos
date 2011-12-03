@@ -7,11 +7,11 @@ import javax.swing.JFrame;
 
 import net.electroland.ea.AnimationManager;
 
+import org.apache.log4j.Logger;
+
 public class AnimationTestFrame extends JFrame{
 
-    /**
-     * 
-     */
+    private static Logger logger = Logger.getLogger(AnimationTestFrame.class);
     private static final long serialVersionUID = 1L;
 
     public static void main(String args[])
@@ -52,7 +52,7 @@ public class AnimationTestFrame extends JFrame{
             // should sync ELU here.
 
             try {
-                Thread.sleep(anim.getFps());
+                Thread.sleep(1000/anim.getFps());
             } catch (InterruptedException e) {
                 System.exit(0);
             }

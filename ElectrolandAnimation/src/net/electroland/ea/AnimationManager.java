@@ -13,11 +13,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
+
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.ParameterMap;
 
 public class AnimationManager {
 
+    private static Logger logger = Logger.getLogger(AnimationManager.class);
     private Dimension stageDim;
     private int fps = 33;
     private Map<String, Clip> clipsPrototypes;
