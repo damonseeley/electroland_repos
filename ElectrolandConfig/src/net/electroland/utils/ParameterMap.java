@@ -183,7 +183,7 @@ public class ParameterMap implements Map<String, String>{
     }
 
     @Override
-    public Set entrySet() {
+    public Set<Map.Entry<String,String>> entrySet() {
         return params.entrySet();
     }
 
