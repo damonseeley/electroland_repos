@@ -75,17 +75,19 @@ public abstract class Clip implements Cloneable{
             }else{
                 if (currentChange.started){
                     // percent complete
-                    double pc = (System.currentTimeMillis() - currentChange.start)
-                                    /(double)currentChange.duration;
-                    
-                    if (currentChange.initAlpha != currentChange.targetAlpha){
-                        alpha = Change.d(currentChange.initAlpha, currentChange.targetAlpha, pc);
-                    }
-                    if (currentChange.initArea != currentChange.targetArea){
-                        area.x = Change.d(currentChange.initArea.x, currentChange.targetArea.x, pc);
-                        area.y = Change.d(currentChange.initArea.y, currentChange.targetArea.y, pc);
-                        area.width = Change.d(currentChange.initArea.width, currentChange.targetArea.width, pc);
-                        area.height = Change.d(currentChange.initArea.height, currentChange.targetArea.height, pc);
+                    if (currentChange.duration != 0)
+                    {
+                        double pc = (System.currentTimeMillis() - currentChange.start)
+                                / (double)currentChange.duration;
+                        if (currentChange.initAlpha != currentChange.targetAlpha){
+                            alpha = Change.d(currentChange.initAlpha, currentChange.targetAlpha, pc);
+                        }
+                        if (currentChange.initArea != currentChange.targetArea){
+                            area.x = Change.d(currentChange.initArea.x, currentChange.targetArea.x, pc);
+                            area.y = Change.d(currentChange.initArea.y, currentChange.targetArea.y, pc);
+                            area.width = Change.d(currentChange.initArea.width, currentChange.targetArea.width, pc);
+                            area.height = Change.d(currentChange.initArea.height, currentChange.targetArea.height, pc);
+                        }
                     }
                 }else{
                     if (System.currentTimeMillis() > currentChange.start){
@@ -108,25 +110,6 @@ public abstract class Clip implements Cloneable{
             currentChange.start = System.currentTimeMillis() + currentChange.delay;
             currentChange.finish = currentChange.start + currentChange.duration;
         }
-    }
-
-    // TODO: makes more sense to just start with a fresh image?  this will cause
-    // all sorts of alpha problems.
-    public void erase()
-    {
-
-        // from http://blog.keilly.com/2007/09/clear-bufferedimage-in-java.html
-/*        
-        g2D.setComposite(
-                AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
-              Rectangle2D.Double rect = 
-                new Rectangle2D.Double(0,0,width,height); 
-              g2D.fill(rect);
-*/
-        Graphics g = image.getGraphics();
-        g.setColor(background);
-        g.fillRect(0, 0, this.baseDimensions.width, this.baseDimensions.height);
-        g.dispose();
     }
 
     protected void queueChange(Rectangle area, Rectangle clip, Double alpha, int durationMillis, int delayMillis, boolean deleteWhenDone)
