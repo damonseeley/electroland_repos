@@ -37,7 +37,7 @@ public class ImageClip extends Clip {
             if (name.startsWith("frame."))
             {
                 try {
-                    framesTmp.add(ImageIO.read(new File(base + name)));
+                    framesTmp.add(ImageIO.read(new File(base, name)));
                 } catch (IOException e) {
                     throw new OptionException(e);
                 }
