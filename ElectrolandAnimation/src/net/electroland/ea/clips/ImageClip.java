@@ -23,13 +23,18 @@ public class ImageClip extends Clip {
     private Map<String, Object> context;
     private Image[] frames;
     private int pointer = 0;
+    int delay;
+    long lastRender;
 
     @Override
     public void config(ParameterMap primaryParams,
             Map<String, ParameterMap> extendedParams) {
 
+        delay = 1000 / primaryParams.getRequiredInt("fps");
+
         String base = primaryParams.getRequired("root");
         Vector<Image> framesTmp = new Vector<Image>();
+
 
         // load all specified images
         TreeSet<String> alphabatizedNames = new TreeSet<String>(new AlphanumComparator());
@@ -70,7 +75,7 @@ public class ImageClip extends Clip {
             this.erase();
 
             Graphics g = image.getGraphics();
-            g.drawImage(frames[pointer++],
+            g.drawImage(frames[pointer],
                         0,
                         0,
                         this.getBaseDimensions().width,
@@ -78,8 +83,14 @@ public class ImageClip extends Clip {
                         null);
             g.dispose();
 
-            if (pointer == frames.length)
-                pointer = 0;
+            long currentRender = System.currentTimeMillis();
+            if (currentRender - lastRender > delay)
+            {
+                lastRender = currentRender;
+                pointer++;
+                if (pointer == frames.length)
+                    pointer = 0;
+            }
         }
 
         return image;
