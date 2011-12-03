@@ -40,30 +40,39 @@ public class AnimationTestFrame extends JFrame implements ClipListener{
         anim.addClipListener(f);
 
         // play a clip in the top/left quadrant
-        int clipId1 = anim.startClip("testClipFast", new Rectangle(0,0,w,h), 1.0);
+        int clipId0 = anim.startClip("testClipFast", new Rectangle(0,0,w,h), 1.0);
 
         // simultaneouslyplay a clip in the bottom/left quadrant
-        int clipId2 = anim.startClip("testClip", new Rectangle(0,h,w,h), 1.0);
+        int clipId1 = anim.startClip("testClip", new Rectangle(0,h,w,h), 1.0);
 
         // simultaneouslyplay a clip in the top/right quadrant
-        int clipId3 = anim.startClip("testClip", new Rectangle(w,0,w,h), 1.0);
+        int clipId2 = anim.startClip("testClip", new Rectangle(w,0,w,h), 1.0);
+
+        // simultaneouslyplay a clip in the top/right quadrant
+        int clipId3 = anim.startClip("testClip", new Rectangle(w,h,w,h), 0.0);
 
         // delay 2 seconds, and then slowly expand clip1 to full screen
-        anim.queueClipChange(clipId1, new Rectangle(0,0,w*2,h*2), null, null, 1500, 1000, false);
+        anim.queueClipChange(clipId0, new Rectangle(0,0,w*2,h*2), null, null, 1500, 1000, false);
 
         // delay 2 seconds, and then slowly make clip1 the bottom left quadrant
-        anim.queueClipChange(clipId1, new Rectangle(w,h,w,h), null, null, 500, 1000, false);
+        anim.queueClipChange(clipId0, new Rectangle(w,h,w,h), null, null, 500, 1000, false);
         
         // delay 2 seconds, and then fade clip1 out
-        anim.queueClipChange(clipId1, null, null, 0.0, 1000, 1500, true);
+        anim.queueClipChange(clipId0, null, null, 0.0, 1000, 1500, true);
 
         // pulse clip2
-        anim.queueClipChange(clipId2, null, null, .25, 500, 0, false);
-        anim.queueClipChange(clipId2, null, null, 1.0, 500, 0, false);
-        anim.queueClipChange(clipId2, null, null, .25, 500, 0, false);
-        anim.queueClipChange(clipId2, null, null, 1.0, 500, 0, false);
-        anim.queueClipChange(clipId2, new Rectangle(w,0,w,h), null, 0.0, 3000, 0, true);
-        anim.queueClipChange(clipId3, new Rectangle(w,h,0,0), null, 0.0, 3000, 6000, true);
+        anim.queueClipChange(clipId1, null, null, .25, 500, 0, false);
+        anim.queueClipChange(clipId1, null, null, 1.0, 500, 0, false);
+        anim.queueClipChange(clipId1, null, null, .25, 500, 0, false);
+        anim.queueClipChange(clipId1, null, null, 1.0, 500, 0, false);
+        anim.queueClipChange(clipId1, new Rectangle(w,0,w,h), null, 0.0, 3000, 0, true);
+
+        // clip 3
+        anim.queueClipChange(clipId2, new Rectangle(w,h,0,0), null, 0.0, 3000, 6000, true);
+
+        // clip 4
+        anim.queueClipChange(clipId3, null, null, 1.0, 3000, 0, false);
+        anim.queueClipChange(clipId3, new Rectangle(-w,-h,w*5,h*5), null, 0.0, 3000, 2000, true);
 
         while (true){
             f.getGraphics().drawImage(anim.getStage(), 0, 0, f.getWidth(), f.getHeight(), null);
