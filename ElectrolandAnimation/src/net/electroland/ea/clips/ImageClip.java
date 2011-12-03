@@ -19,8 +19,6 @@ import org.apache.log4j.Logger;
 public class ImageClip extends Clip {
 
     private static Logger logger = Logger.getLogger(ImageClip.class);
-    @SuppressWarnings("unused")
-    private Map<String, Object> context;
     private Image[] frames;
     private int pointer = 0;
     int delay;
@@ -35,8 +33,9 @@ public class ImageClip extends Clip {
         String base = primaryParams.getRequired("root");
         Vector<Image> framesTmp = new Vector<Image>();
 
-
         // load all specified images
+        // images will be played in order of their frame name, using natural
+        // sort.  E.g., frame1, frame2 ... frame9, frame 10
         TreeSet<String> alphabatizedNames = new TreeSet<String>(new AlphanumComparator());
         alphabatizedNames.addAll(extendedParams.keySet());
         for (String name : alphabatizedNames)
@@ -45,7 +44,7 @@ public class ImageClip extends Clip {
             {
                 try {
                     String filename = extendedParams.get(name).getRequired("file");
-                    logger.info("loading " + base + filename);
+                    logger.info("loading image " + filename + " from " + base);
                     framesTmp.add(ImageIO.read(new File(base, filename)));
                 } catch (IOException e) {
                     throw new OptionException(e);
@@ -58,7 +57,7 @@ public class ImageClip extends Clip {
 
     @Override
     public void init(Map<String, Object> context) {
-        this.context = context;
+        // do nothing
     }
 
     @Override
