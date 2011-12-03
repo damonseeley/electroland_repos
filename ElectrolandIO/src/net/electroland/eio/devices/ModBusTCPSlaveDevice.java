@@ -22,7 +22,7 @@ public class ModBusTCPSlaveDevice extends IODevice {
     protected HashMap <Integer, IOState> registerBitToState = new HashMap <Integer, IOState>();
  
     ModbusTCPMaster connection;
-    
+
     @Override
     public void connect() 
     {
