@@ -36,12 +36,16 @@ public class EIAFrame extends JFrame  {
 	static Logger logger = Logger.getLogger(EIAFrame.class);
 
 	public EIAFrame(int width, int height, Hashtable context) {
-		super("EIA Setup Tool");
+		super("Electroland @ EIA");
 		
 		this.context = context;
 		
 		windowWidth = width;
 		windowHeight = height;
+		
+		//for now
+		panelWidth = windowWidth;
+		panelHeight = windowHeight;
 
 		ep = new EIAPanel(panelWidth,panelHeight,context);
 		this.add(ep);

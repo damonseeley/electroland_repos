@@ -8,12 +8,15 @@ package net.electroland.edmonton.core;
 import java.io.IOException;
 import java.util.Hashtable;
 
-import org.apache.log4j.Logger;
+import net.electroland.ea.AnimationManager;
 import net.electroland.edmonton.test.TestModel;
-import net.electroland.eio.*;
+import net.electroland.eio.IOManager;
+import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
-import net.electroland.utils.lighting.*;
+import net.electroland.utils.lighting.ELUManager;
 import net.electroland.utils.lighting.canvas.ELUCanvas2D;
+
+import org.apache.log4j.Logger;
 
 public class EIAMainConductor extends Thread {
 
@@ -42,6 +45,9 @@ public class EIAMainConductor extends Thread {
 
 	public EIAMainConductor()
 	{
+		String propsFileName = "EIA.properties";
+		logger.info("EIAMain loading " + propsFileName);
+        ElectrolandProperties props = new ElectrolandProperties(propsFileName);
 
 		elu = new ELUManager();
         eio = new IOManager();
@@ -61,15 +67,26 @@ public class EIAMainConductor extends Thread {
 		canvasHeight = canvas.getDimensions().getHeight();
 		canvasWidth = canvas.getDimensions().getWidth();
 		
+		
+		
+        // create an AnimationManager
+        AnimationManager anim = new AnimationManager();
+        anim.setContext(context);
+        anim.config("EIA-anim.properties");
+        
+        
+        
+				
 	    context = new Hashtable<String, Object>();
 	    //context.put("sound_manager", soundManager)
 	    context.put("eio",eio);
 	    context.put("elu",elu);
 	    context.put("canvas",canvas);
+	    context.put("props",props);
 	    //create reserved names 
 
 
-		ef = new EIAFrame(1024,768,context);
+		ef = new EIAFrame(1400,720,context);
 		
 
 		////// THREAD SETUP
@@ -91,6 +108,8 @@ public class EIAMainConductor extends Thread {
 			/*
 			 * DO STUFF
 			 */
+			
+			ef.update();
 
 			//Thread ops
 			//logger.info(timer.sleepTime);

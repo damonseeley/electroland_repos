@@ -7,5 +7,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/ElectrolandConfig"/>
 	<classpathentry kind="lib" path="libraries/vecmath.jar"/>
 	<classpathentry kind="lib" path="libraries/log4j-1.2.15.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ElectrolandAnimation"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
