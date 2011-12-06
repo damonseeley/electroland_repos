@@ -51,7 +51,7 @@ public class SimpleClip extends Clip {
 		{
 			Graphics g = image.getGraphics();
 			g.setColor(Color.WHITE);
-			g.drawRect(0, 0, 10, 10);
+			g.fillRect(0, 0, 15, 8);
 			lastRender = System.currentTimeMillis();
 
 		}

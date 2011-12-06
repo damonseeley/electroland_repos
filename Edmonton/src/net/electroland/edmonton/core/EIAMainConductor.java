@@ -5,10 +5,13 @@ package net.electroland.edmonton.core;
  * @author	Damon Seeley & Bradley Geilfuss
  */
 
+import java.awt.Rectangle;
 import java.io.IOException;
 import java.util.Hashtable;
 
 import net.electroland.ea.AnimationManager;
+import net.electroland.ea.ClipEvent;
+import net.electroland.ea.ClipListener;
 import net.electroland.edmonton.test.TestModel;
 import net.electroland.eio.IOManager;
 import net.electroland.utils.ElectrolandProperties;
@@ -18,7 +21,7 @@ import net.electroland.utils.lighting.canvas.ELUCanvas2D;
 
 import org.apache.log4j.Logger;
 
-public class EIAMainConductor extends Thread {
+public class EIAMainConductor extends Thread implements ClipListener {
 
 	static Logger logger = Logger.getLogger(EIAMainConductor.class);
 
@@ -73,6 +76,8 @@ public class EIAMainConductor extends Thread {
         AnimationManager anim = new AnimationManager();
         anim.setContext(context);
         anim.config("EIA-anim.properties");
+     // have the frame listen for clip events
+        anim.addClipListener(this);
         
         
         
@@ -88,6 +93,9 @@ public class EIAMainConductor extends Thread {
 
 
 		ef = new EIAFrame(1400,720,context);
+		
+		 // what should this rectangle be defined as, clip size or stage size?
+        int clipId0 = anim.startClip("testClip", new Rectangle(0,0,16,16), 1.0);
 		
 
 		////// THREAD SETUP
@@ -122,6 +130,16 @@ public class EIAMainConductor extends Thread {
 		}
 
 	}
+	
+    @Override
+    public void clipEnded(ClipEvent e) {
+        logger.info("clip " + e.clipId + " of type " + e.clipId + " ended.");
+    }
+
+    @Override
+    public void clipStarted(ClipEvent e) {
+        logger.info("clip " + e.clipId + " of type " + e.clipId + " started.");
+    }
 
 	public static void killTheads() {
 		stopRunning();	
