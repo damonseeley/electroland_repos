@@ -15,6 +15,7 @@ import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.electroland.utils.ElectrolandProperties;
+import net.electroland.utils.OptionException;
 import net.electroland.utils.ParameterMap;
 
 import org.apache.log4j.Logger;
@@ -178,6 +179,7 @@ public class AnimationManager {
     /************************ parse props *************************************/
     public void config(String filename)
     {
+        logger.info("loading " + filename);
         ElectrolandProperties p = new ElectrolandProperties(filename);
 
         // fps, stage width & height
@@ -196,7 +198,12 @@ public class AnimationManager {
             int width = universalParams.getRequiredInt("width");
             int height = universalParams.getRequiredInt("height");
 
-            Map<String, ParameterMap> extendedParams = p.getObjects(s);
+            Map<String, ParameterMap> extendedParams = null;
+            try{
+                extendedParams = p.getObjects(s);
+            }catch(OptionException e){
+                // not a problem.  There might not be any extended params.
+            }
 
             Clip clip = (Clip)(universalParams.getRequiredClass("class"));
             clip.baseDimensions = new Dimension(width, height);
