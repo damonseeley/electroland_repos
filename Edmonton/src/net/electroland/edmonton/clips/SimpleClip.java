@@ -3,16 +3,10 @@ package net.electroland.edmonton.clips;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
+import java.awt.image.BufferedImage;
 import java.util.Map;
-import java.util.TreeSet;
-import java.util.Vector;
-
-import javax.imageio.ImageIO;
 
 import net.electroland.ea.Clip;
-import net.electroland.utils.OptionException;
 import net.electroland.utils.ParameterMap;
 
 import org.apache.log4j.Logger;
@@ -49,11 +43,15 @@ public class SimpleClip extends Clip {
 
 		if (System.currentTimeMillis() - lastRender > delay)
 		{
+			//Double buffer this to prevent flickering
+			BufferedImage bi = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_RGB);
+			Graphics g2 = bi.getGraphics();
+			g2.setColor(Color.WHITE);
+			g2.fillRect(0, 0, 15, 8);
+			
 			Graphics g = image.getGraphics();
-			g.setColor(Color.WHITE);
-			g.fillRect(0, 0, 15, 8);
+			g.drawImage(bi, 0, 0, null);
 			lastRender = System.currentTimeMillis();
-
 		}
 
 		return image;
