@@ -1,5 +1,6 @@
 package net.electroland.edmonton.clips;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.io.File;
@@ -18,78 +19,43 @@ import org.apache.log4j.Logger;
 
 public class SimpleClip extends Clip {
 
-    private static Logger logger = Logger.getLogger(SimpleClip.class);
-    private Image[] frames;
-    private int pointer = 0;
-    int delay;
-    long lastRender;
+	private static Logger logger = Logger.getLogger(SimpleClip.class);
+	int delay;
+	long lastRender;
 
-    @Override
-    public void config(ParameterMap primaryParams,
-            Map<String, ParameterMap> extendedParams) {
+	@Override
+	public void config(ParameterMap primaryParams,
+			Map<String, ParameterMap> extendedParams) {
 
-        delay = 1000 / primaryParams.getRequiredInt("fps");
+		delay = 1000 / primaryParams.getRequiredInt("fps");
 
-        String base = primaryParams.getRequired("root");
-        Vector<Image> framesTmp = new Vector<Image>();
+	}
 
-        // load all specified images
-        // images will be played in order of their frame name, using natural
-        // sort.  E.g., frame1, frame2 ... frame9, frame 10
-        TreeSet<String> alphabatizedNames = new TreeSet<String>(new AlphanumComparator());
-        alphabatizedNames.addAll(extendedParams.keySet());
-        for (String name : alphabatizedNames)
-        {
-            if (name.startsWith("frame."))
-            {
-                try {
-                    String filename = extendedParams.get(name).getRequired("file");
-                    logger.info("loading image " + filename + " from " + base);
-                    framesTmp.add(ImageIO.read(new File(base, filename)));
-                } catch (IOException e) {
-                    throw new OptionException(e);
-                }
-            }
-        }
-        frames = new Image[framesTmp.size()];
-        framesTmp.toArray(frames);
-    }
+	@Override
+	public void init(Map<String, Object> context) {
+		// do nothing
+		// send a soundcontroller command probably here
+	}
 
-    @Override
-    public void init(Map<String, Object> context) {
-        // do nothing
-    }
+	@Override
+	public boolean isDone() {
+		// play forever, or until someone kills this clip manually
+		return false;
+	}
 
-    @Override
-    public boolean isDone() {
-        // play forever, or until someone kills this clip manually
-        return false;
-    }
+	@Override
+	public Image getFrame(Image image) {
 
-    @Override
-    public Image getFrame(Image image) {
 
-        if (frames.length > 0)
-        {
-            Graphics g = image.getGraphics();
-            g.drawImage(frames[pointer],
-                        0,
-                        0,
-                        this.getBaseDimensions().width,
-                        this.getBaseDimensions().height,
-                        null);
-            g.dispose();
+		if (System.currentTimeMillis() - lastRender > delay)
+		{
+			Graphics g = image.getGraphics();
+			g.setColor(Color.WHITE);
+			g.drawRect(0, 0, 10, 10);
+			lastRender = System.currentTimeMillis();
 
-            long currentRender = System.currentTimeMillis();
-            if (currentRender - lastRender > delay)
-            {
-                lastRender = currentRender;
-                pointer++;
-                if (pointer == frames.length)
-                    pointer = 0;
-            }
-        }
+		}
 
-        return image;
-    }
+		return image;
+	}
 }
