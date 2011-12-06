@@ -82,6 +82,7 @@ public class EIAMainConductor extends Thread {
 	    context.put("eio",eio);
 	    context.put("elu",elu);
 	    context.put("canvas",canvas);
+	    context.put("animmanager",anim);
 	    context.put("props",props);
 	    //create reserved names 
 
@@ -109,6 +110,10 @@ public class EIAMainConductor extends Thread {
 			 * DO STUFF
 			 */
 			
+			
+			
+			
+			// Update the GUI Panel
 			ef.update();
 
 			//Thread ops

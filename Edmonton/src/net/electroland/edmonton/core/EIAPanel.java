@@ -6,7 +6,6 @@ package net.electroland.edmonton.core;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -18,6 +17,7 @@ import java.util.Hashtable;
 import javax.swing.JPanel;
 import javax.vecmath.Point3d;
 
+import net.electroland.ea.AnimationManager;
 import net.electroland.eio.IOManager;
 import net.electroland.eio.IOState;
 import net.electroland.eio.IState;
@@ -36,11 +36,6 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 	//private static BasicStroke stroke = new BasicStroke(2.0f); Never used EGM
 	final static float dash1[] = {10.0f};
 	final static BasicStroke dashed = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
-	final static Color bg = Color.white;
-	final static Color fg = Color.black;
-	final static Color red = Color.red;
-	final static Color white = Color.white;
-	final static Color black = Color.black;
 
 
 	public Hashtable<String, Object> context;
@@ -50,6 +45,7 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 	private ElectrolandProperties props;
 	private double displayScale;
 	private boolean showGraphics;
+	private AnimationManager anim;
 
 	//panel dims and margin info
 	private int width, height;
@@ -140,6 +136,8 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 			p2height = 0;
 		}
 		
+		anim = (AnimationManager)context.get("animmanager");
+		
 		
 
 
@@ -184,10 +182,11 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 			
 			
 			/*
-			 * Draw Canvas
+			 * Draw Anim/Canvas
 			 */
-			// Need an image first.  Get one from AnimationManager
+			// Get image from AnimationManager
 			
+			//g2.drawImage(anim.getStage(), 0, 0, null);
 			
 			
 			
@@ -249,7 +248,7 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 			/*
 			 * Finally, draw it all on the Panel
 			 */
-			g.setColor(black);
+			g.setColor(Color.BLACK);
 			g.fillRect(0,0,bi.getWidth()+margin,bi.getHeight()+margin);
 			g.drawImage(bi, margin, margin, null);
 
