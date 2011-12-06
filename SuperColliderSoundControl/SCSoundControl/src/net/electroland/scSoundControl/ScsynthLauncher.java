@@ -143,8 +143,8 @@ public class ScsynthLauncher {
 		args.add("-c");
 		args.add("0");
 		
-		logger.info("launching scsynth with args:");
-		logger.info(args);
+		logger.info("SCSC: launching scsynth with args:");
+		logger.info("\t"+args);
 		
 		_builder.command(args);
 		_builder.directory(new File(_execPath).getParentFile());
@@ -186,7 +186,7 @@ public class ScsynthLauncher {
 	 * This is a hard, system level kill of the process, not a quit message.
 	 */
 	public void killScsynth() {
-		logger.info("killing scsynth.");
+		logger.info("SCSC: killing scsynth.");
 		if (_scsynthProcess != null) _scsynthProcess.destroy();
 	}
 	

@@ -794,7 +794,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 	//*********************************
 	
 	protected void handleServerBooted() {
-		logger.info("scsynth is booted.");
+		logger.info("SCSC: scsynth is booted.");
 		//reinit data.
 		//this.init();
 		//notify client.
@@ -810,7 +810,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 		//if (!_serverLive || !_serverBooted) {
 		if (!_serverLive) {
 			if(debugging){
-				logger.info("scsynth is live.");
+				logger.info("SCSC: scsynth is live.");
 			}
 			_serverLive = true;
 			this.init();
@@ -840,7 +840,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 				//Have we timed out?
 				if (curTime.getTime() - _prevPingRequestTime.getTime() > _serverResponseTimeout) {
 					//We've timed out on the previous status request.
-					logger.info("Timed out on previous status request.");
+					logger.info("SCSC: Timed out on previous status request.");
 
 					if (_notifyListener != null) {
 						_notifyListener.receiveNotification_ServerStopped();
