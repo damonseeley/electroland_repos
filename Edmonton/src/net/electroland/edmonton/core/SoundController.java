@@ -1,24 +1,26 @@
 package net.electroland.edmonton.core;
 
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
 
+import net.electroland.ea.AnimationManager;
 import net.electroland.scSoundControl.SCSoundControl;
 import net.electroland.scSoundControl.SCSoundControlNotifiable;
 import net.electroland.scSoundControl.SoundNode;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
+import net.electroland.utils.ParameterMap;
 
 import org.apache.log4j.Logger;
 
 public class SoundController implements SCSoundControlNotifiable {
 
-	private Hashtable context;
+	private Hashtable<String,Object> context;
 	private ElectrolandProperties props;
+	private AnimationManager anim;
 	private String soundFilePath;
 	private boolean bypass;
-
 
 	private SCSoundControl ss;
 	private boolean serverIsLive;
@@ -30,10 +32,12 @@ public class SoundController implements SCSoundControlNotifiable {
 	static Logger logger = Logger.getLogger(SoundController.class);
 
 
-	public SoundController(Hashtable context){
+	public SoundController(Hashtable<String,Object> context){
 
 		this.context = context;
 		props = (ElectrolandProperties) context.get("props");
+		//anim = (AnimationManager) context.get("anim");
+
 		try {
 			this.soundFilePath = props.getOptional("settings", "sound", "filePath");
 			this.bypass = Boolean.parseBoolean(props.getOptional("settings", "sound", "soundBypass"));
@@ -51,7 +55,10 @@ public class SoundController implements SCSoundControlNotifiable {
 			ss = new SCSoundControl(this);
 			ss.init();
 			ss.showDebugOutput(true);
-			ss.set_serverResponseTimeout(5000);	
+			ss.set_serverResponseTimeout(5000);
+
+			// don't do this here, wait for server to report as live
+			// parseSoundFiles();
 		}
 
 
@@ -60,48 +67,48 @@ public class SoundController implements SCSoundControlNotifiable {
 
 	public void parseSoundFiles(){
 		/*
-		 * Not sure we will need this if loading is done at play time, see if that works first
-		 * change this to iterate across all animation Clips and look for soundfiles
+		 * Iterate across all animation Clips and look for soundfiles
 		 * make a list and then buffer.
 		 */
 
-		if (!bypass) {
 
-			
-			
-			
-			
-			
-			/*
-			Iterator<String> iter = systemProps.values().iterator();
-			while(iter.hasNext()){
-				String prop = (String)iter.next();
-				String[] proplist = prop.split(",");
-				for(int i=0; i<proplist.length; i++){
-					if(proplist[i].endsWith(".wav")){
-						if(!soundFiles.containsKey(proplist[i])){
-							System.out.println(proplist[i]);	// print out sound file to make sure it's working
-							soundFiles.put(soundFilePath+proplist[i], -1);	// -1 default unassigned value
-							loadBuffer(proplist[i]);
-						}
-					}
+		// load anim props and rip clips for $soundfiles
+		ElectrolandProperties p = new ElectrolandProperties(context.get("animpropsfile").toString());
+		Map<String, ParameterMap> clipParams = p.getObjects("clip");
+		for (String s : clipParams.keySet()){
+			ParameterMap params = clipParams.get(s);
+
+			String soundFilesParam = params.getOptional("soundfiles");			
+			if (soundFilesParam != null){
+				String[] fileList = soundFilesParam.split(",");
+				//logger.info("SOUNDMANAGER - clip soundFiles: " + fileList);
+				for(int i=0; i<fileList.length; i++){
+					//load the buffer
+					loadBuffer(fileList[i]);
+					// put a ref to the buffer in soundFiles to mark it as loaded later
+					soundFiles.put(soundFilePath+fileList[i], -1);	// -1 default unassigned value
 				}
 			}
-			*/
-			
-			
 		}
+		
+		
+		// debug - list the soundFiles
+		for (String s : soundFiles.keySet()){
+		    logger.info("SoundFiles key " + s + " = " + soundFiles.get(s)); 
+		}
+
+
 	}
-	
+
 	private int getMappedChannelID (int bayNum) {
 		//TO DO create a mapper specific to MOTU output here
 		return 0;
 	}
 
 	public void loadBuffer(String soundFile){
-		if (!bypass) {
+
 			ss.readBuf(soundFilePath+soundFile);
-		}
+
 	}
 
 
@@ -131,9 +138,11 @@ public class SoundController implements SCSoundControlNotifiable {
 
 			// This code attempts to load the file at playtime, we'll see if this works
 			// note that the buffer ID is assigned later when scsc reports the buffer as loaded
+			/* Disable for now and do it the old way
 			if (!soundFiles.containsKey(filename)) {
 				loadBuffer(filename);
 			}
+			 */
 
 			soundID++;
 			if(!filename.equals("none") && serverIsLive){
@@ -158,7 +167,7 @@ public class SoundController implements SCSoundControlNotifiable {
 			}
 		}
 	}
-	
+
 	public void globalSound(int soundIDToStart, String soundFile, boolean loop, float gain, int duration, String comment){
 		if (!bypass) {
 			if(!soundFile.equals("none") && serverIsLive){
@@ -176,8 +185,8 @@ public class SoundController implements SCSoundControlNotifiable {
 		soundID++;
 		return soundID;
 	}
-	
-	
+
+
 
 
 	public void killAllSounds(){
@@ -193,14 +202,14 @@ public class SoundController implements SCSoundControlNotifiable {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * NOTIFICATIONS FROM SCSC
 	 */
 
 	public void receiveNotification_BufferLoaded(int id, String filename) {
-		System.out.println("Loaded buffer " + id + ", " + filename);
+		logger.info("Loaded buffer " + id + ", " + filename);
 		if(soundFiles.containsKey(filename)){
 			soundFiles.put(filename, id);	// update the sound file reference to the buffer ID
 		}
@@ -208,8 +217,8 @@ public class SoundController implements SCSoundControlNotifiable {
 
 	public void receiveNotification_ServerRunning() {
 		serverIsLive = true;
-		// for now disable this for realtime loading
-		//parseSoundFiles();
+		//for now disable this for realtime loading
+		parseSoundFiles();
 	}
 
 	public void receiveNotification_ServerStatus(float averageCPU, float peakCPU, int numSynths) {
