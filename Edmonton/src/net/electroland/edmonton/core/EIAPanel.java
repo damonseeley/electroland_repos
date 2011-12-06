@@ -137,7 +137,7 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 			p2height = 0;
 		}
 		
-		anim = (AnimationManager)context.get("animmanager");
+		anim = (AnimationManager)context.get("anim");
 		
 		
 

@@ -25,6 +25,7 @@ public class EIAMainConductor extends Thread implements ClipListener {
 
 	static Logger logger = Logger.getLogger(EIAMainConductor.class);
 
+	private ElectrolandProperties props;
 	private ELUManager elu;
 	private ELUCanvas2D canvas;
 	private IOManager eio;
@@ -52,7 +53,7 @@ public class EIAMainConductor extends Thread implements ClipListener {
 		
 		String propsFileName = "EIA.properties";
 		logger.info("EIAMain loading " + propsFileName);
-        ElectrolandProperties props = new ElectrolandProperties(propsFileName);
+        props = new ElectrolandProperties(propsFileName);
         context.put("props",props);
         
 
@@ -85,7 +86,8 @@ public class EIAMainConductor extends Thread implements ClipListener {
         anim.config("EIA-anim.properties");
      // have the frame listen for clip events
         anim.addClipListener(this);
-        context.put("animmanager",anim);
+        context.put("anim",anim);
+        context.put("animpropsfile", "EIA-anim.properties");
         
 	    
 	   	    
@@ -95,18 +97,25 @@ public class EIAMainConductor extends Thread implements ClipListener {
 
 		ef = new EIAFrame(1400,720,context);
 		
-		
-		 // what should this rectangle be defined as, clip size or stage size?
-        int clipId0 = anim.startClip("testClip", new Rectangle(0,0,16,16), 1.0);
-		
 
-		////// THREAD SETUP
-		framerate = 30;
+		// Thread setup
+		framerate = props.getRequiredInt("settings", "global", "framerate");
 		
 		isRunning = true;
 		timer = new Timer(framerate);
 		start();
 		logger.info("EIA started up at framerate = " + framerate);
+		
+		
+		
+		
+		// TEST CLIP
+		// what should this rectangle be defined as, clip size or stage size?
+        int clipId0 = anim.startClip("testClip", new Rectangle(0,0,16,16), 1.0);
+        
+        // TEST SOUND
+        //soundController.globalSound("test_1.wav", false, 1.0f, null);
+        soundController.playTestSound("test_1.wav");
 
 	}
 
@@ -119,8 +128,6 @@ public class EIAMainConductor extends Thread implements ClipListener {
 			/*
 			 * DO STUFF
 			 */
-			
-			
 			
 			
 			// Update the GUI Panel

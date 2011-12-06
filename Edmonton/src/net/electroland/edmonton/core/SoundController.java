@@ -62,7 +62,7 @@ public class SoundController implements SCSoundControlNotifiable {
 		}
 
 
-		logger.info("SoundController started up with path " + soundFilePath + " and bypass=" + bypass);
+		logger.info("SoundController: started up with path " + soundFilePath + " and bypass=" + bypass);
 	}
 
 	public void parseSoundFiles(){
@@ -72,29 +72,54 @@ public class SoundController implements SCSoundControlNotifiable {
 		 */
 
 
-		// load anim props and rip clips for $soundfiles
+		// load anim props
 		ElectrolandProperties p = new ElectrolandProperties(context.get("animpropsfile").toString());
+		// rip clips for $soundfiles
 		Map<String, ParameterMap> clipParams = p.getObjects("clip");
 		for (String s : clipParams.keySet()){
 			ParameterMap params = clipParams.get(s);
 
-			String soundFilesParam = params.getOptional("soundfiles");			
-			if (soundFilesParam != null){
-				String[] fileList = soundFilesParam.split(",");
+			String clipFileParams = params.getOptional("soundfiles");			
+			if (clipFileParams != null){
+				String[] fileList = clipFileParams.split(",");
 				//logger.info("SOUNDMANAGER - clip soundFiles: " + fileList);
 				for(int i=0; i<fileList.length; i++){
-					//load the buffer
-					loadBuffer(fileList[i]);
-					// put a ref to the buffer in soundFiles to mark it as loaded later
-					soundFiles.put(soundFilePath+fileList[i], -1);	// -1 default unassigned value
+					if(!soundFiles.containsKey(soundFilePath+fileList[i])){ // have to include full path because that is what sc returns for check later
+						//logger.info("SoundFiles did not contain key " + soundFilePath+fileList[i]);
+						//load the buffer
+						loadBuffer(fileList[i]);
+						// put a ref to the buffer in soundFiles to mark it as loaded later
+						soundFiles.put(soundFilePath+fileList[i], -1);	// -1 default unassigned value
+					}
 				}
 			}
 		}
 		
-		
+		// rip sound.global for $soundfiles
+		Map<String, ParameterMap> soundParams = p.getObjects("sound");
+		for (String s : soundParams.keySet()){
+			ParameterMap params = soundParams.get(s);
+
+			String globalFileParams = params.getOptional("soundfiles");			
+			if (globalFileParams != null){
+				String[] fileList = globalFileParams.split(",");
+				for(int i=0; i<fileList.length; i++){
+					if(!soundFiles.containsKey(soundFilePath+fileList[i])){ // have to include full path because that is what sc returns for check later
+						//load the buffer
+						loadBuffer(fileList[i]);
+						// put a ref to the buffer in soundFiles to mark it as loaded later
+						soundFiles.put(soundFilePath+fileList[i], -1);	// -1 default unassigned value
+					}
+				}
+			}
+		}
+
+
+
 		// debug - list the soundFiles
+		logger.info("SoundController: List of ripped soundfiles"); 
 		for (String s : soundFiles.keySet()){
-		    logger.info("SoundFiles key " + s + " = " + soundFiles.get(s)); 
+			logger.info("\tkey " + s + " = " + soundFiles.get(s)); 
 		}
 
 
@@ -107,7 +132,7 @@ public class SoundController implements SCSoundControlNotifiable {
 
 	public void loadBuffer(String soundFile){
 
-			ss.readBuf(soundFilePath+soundFile);
+		ss.readBuf(soundFilePath+soundFile);
 
 	}
 
@@ -132,17 +157,21 @@ public class SoundController implements SCSoundControlNotifiable {
 	}
 	 */
 
+	public void playTestSound(String filename){
+		if (!bypass) {
 
+			soundID++;
+			if(!filename.equals("none") && serverIsLive){
+				int channel = 0; //test
+				SoundNode sn = ss.createSoundNodeOnSingleChannel(soundFiles.get(soundFilePath+filename), false, channel, 1.0f, 1.0f);
+				logger.info("SoundController: Played test sound file "+soundFilePath+filename+ " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
+			}
+		}
+	}
+	
 	public void playSimpleSound(String filename, int x, int y, float gain, String comment){
 		if (!bypass) {
 
-			// This code attempts to load the file at playtime, we'll see if this works
-			// note that the buffer ID is assigned later when scsc reports the buffer as loaded
-			/* Disable for now and do it the old way
-			if (!soundFiles.containsKey(filename)) {
-				loadBuffer(filename);
-			}
-			 */
 
 			soundID++;
 			if(!filename.equals("none") && serverIsLive){
@@ -159,24 +188,32 @@ public class SoundController implements SCSoundControlNotifiable {
 				}
 				channel -= 1; // for zero index
 				SoundNode sn = ss.createSoundNodeOnSingleChannel(soundFiles.get(soundFilePath+filename), false, channel, gain, 1.0f);
-				//float[] amplitudes = getAmplitudes(x, y, gain);
-				//SoundNode sn = ss.createMonoSoundNode(soundFiles.get(absolutePath+filename), false, amplitudes, 1.0f);
-				//if(sn == null){
-				//	System.out.println(soundFiles.get(absolutePath+filename) + " returned null");	
-				//}
+				logger.info("SoundController: Played test sound file "+soundFilePath+filename+ " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
+			}
+		}
+	}
+	
+	public void playSingleBaySound(String filename, int x, float masterGain, String comment){
+		if (!bypass) {
+
+			soundID++;
+			if(!filename.equals("none") && serverIsLive){
+				int channel = 0;
+				
+				SoundNode sn = ss.createSoundNodeOnSingleChannel(soundFiles.get(soundFilePath+filename), false, channel, masterGain, 1.0f);
+				logger.info("SoundController: Played test sound file "+soundFilePath+filename+ " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
 			}
 		}
 	}
 
-	public void globalSound(int soundIDToStart, String soundFile, boolean loop, float gain, int duration, String comment){
+	public void globalSound(String soundFile, boolean loop, float gain, String comment){
 		if (!bypass) {
 			if(!soundFile.equals("none") && serverIsLive){
 				// whoah, hacky.  let's fixt this
 				int[] channels = new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23};
 				float[] amplitudes = new float[]{gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain};
-				//float[] amplitudes = new float[]{gain,gain};
-				//SoundNode sn = ss.createStereoSoundNodeWithLRMap(soundFiles.get(absolutePath+soundFile), false, new int[]{1, 0}, new int[]{0, 1}, 1.0f);
 				SoundNode sn = ss.createMonoSoundNode(soundFiles.get(soundFilePath+soundFile), false, channels, amplitudes, 1.0f);
+				logger.info("SoundController: Played global sound file "+soundFilePath+soundFile+ " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
 			}
 		}
 	}
@@ -209,7 +246,8 @@ public class SoundController implements SCSoundControlNotifiable {
 	 */
 
 	public void receiveNotification_BufferLoaded(int id, String filename) {
-		logger.info("Loaded buffer " + id + ", " + filename);
+		logger.info("SoundController: Loaded buffer " + id + ", " + filename);
+		
 		if(soundFiles.containsKey(filename)){
 			soundFiles.put(filename, id);	// update the sound file reference to the buffer ID
 		}
