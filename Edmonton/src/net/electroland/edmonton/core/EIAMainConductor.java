@@ -29,13 +29,13 @@ public class EIAMainConductor extends Thread implements ClipListener {
 	private ELUCanvas2D canvas;
 	private IOManager eio;
 	private TestModel model;
+	private SoundController soundController;
 	
 	public double canvasHeight, canvasWidth;
 	public Hashtable<String, Object> context;
 	
 	//private SoundManager soundManager;
 
-	
 	public EIAFrame ef;
 
 	//Thread stuff
@@ -48,9 +48,13 @@ public class EIAMainConductor extends Thread implements ClipListener {
 
 	public EIAMainConductor()
 	{
+		context = new Hashtable<String, Object>();
+		
 		String propsFileName = "EIA.properties";
 		logger.info("EIAMain loading " + propsFileName);
         ElectrolandProperties props = new ElectrolandProperties(propsFileName);
+        context.put("props",props);
+        
 
 		elu = new ELUManager();
         eio = new IOManager();
@@ -65,11 +69,14 @@ public class EIAMainConductor extends Thread implements ClipListener {
             e.printStackTrace();
             System.exit(0);
         }
+        context.put("eio",eio);
+	    context.put("elu",elu);
         
+	    
 		canvas = (ELUCanvas2D)elu.getCanvas("EIAspan");
 		canvasHeight = canvas.getDimensions().getHeight();
 		canvasWidth = canvas.getDimensions().getWidth();
-		
+		context.put("canvas",canvas);
 		
 		
         // create an AnimationManager
@@ -78,21 +85,16 @@ public class EIAMainConductor extends Thread implements ClipListener {
         anim.config("EIA-anim.properties");
      // have the frame listen for clip events
         anim.addClipListener(this);
+        context.put("animmanager",anim);
         
-        
-        
-				
-	    context = new Hashtable<String, Object>();
-	    //context.put("sound_manager", soundManager)
-	    context.put("eio",eio);
-	    context.put("elu",elu);
-	    context.put("canvas",canvas);
-	    context.put("animmanager",anim);
-	    context.put("props",props);
-	    //create reserved names 
+	    
+	   	    
+	    soundController = new SoundController(context);
+	    context.put("soundController", soundController);
 
 
 		ef = new EIAFrame(1400,720,context);
+		
 		
 		 // what should this rectangle be defined as, clip size or stage size?
         int clipId0 = anim.startClip("testClip", new Rectangle(0,0,16,16), 1.0);
