@@ -181,12 +181,6 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 
 			
 			
-			/*
-			 * Draw Anim/Canvas
-			 */
-			// Get image from AnimationManager
-			
-			//g2.drawImage(anim.getStage(), 0, 0, null);
 			
 			
 			
@@ -201,6 +195,18 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 			g2.setColor(new Color(32, 64, 32));
 			g2.drawRect((int)(p1x*displayScale), (int)(p1y*displayScale),(int)(p1width*displayScale),(int)(p1height*displayScale));
 			g2.drawRect((int)(p2x*displayScale), (int)(p2y*displayScale),(int)(p2width*displayScale),(int)(p2height*displayScale));
+			
+			
+			
+
+			/*
+			 * Draw Anim/Canvas
+			 */
+			// Get image from AnimationManager
+			//NEED TO SCALE HERE
+			//logger.info("stage width and height " + anim.getStage().getWidth(null) + " " + anim.getStage().getHeight(null));
+			//g2.drawImage(anim.getStage(), 0, 0, anim.getStage().getWidth(null),anim.getStage().getHeight(null),null);
+			g2.drawImage(anim.getStage(),0,0,null);
 
 			
 
