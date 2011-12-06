@@ -23,7 +23,6 @@ public class SoundController implements SCSoundControlNotifiable {
 	private SCSoundControl ss;
 	private boolean serverIsLive;
 	private Hashtable<String, Integer> soundFiles;
-	private HashMap<String,String> systemProps;
 	private int soundID; // incrementing sound ID
 
 	public boolean audioEnabled = true;
@@ -61,13 +60,19 @@ public class SoundController implements SCSoundControlNotifiable {
 
 	public void parseSoundFiles(){
 		/*
-		 * Not sure we will need this if loading is done at 
+		 * Not sure we will need this if loading is done at play time, see if that works first
 		 * change this to iterate across all animation Clips and look for soundfiles
 		 * make a list and then buffer.
 		 */
 
 		if (!bypass) {
 
+			
+			
+			
+			
+			
+			/*
 			Iterator<String> iter = systemProps.values().iterator();
 			while(iter.hasNext()){
 				String prop = (String)iter.next();
@@ -82,7 +87,15 @@ public class SoundController implements SCSoundControlNotifiable {
 					}
 				}
 			}
+			*/
+			
+			
 		}
+	}
+	
+	private int getMappedChannelID (int bayNum) {
+		//TO DO create a mapper specific to MOTU output here
+		return 0;
 	}
 
 	public void loadBuffer(String soundFile){
@@ -112,30 +125,16 @@ public class SoundController implements SCSoundControlNotifiable {
 	}
 	 */
 
-	public void globalSound(int soundIDToStart, String soundFile, boolean loop, float gain, int duration, String comment){
-		if (!bypass) {
-			if(!soundFile.equals("none") && serverIsLive){
-				int[] channels = new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23};
-				float[] amplitudes = new float[]{gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain};
-				//float[] amplitudes = new float[]{gain,gain};
-				//SoundNode sn = ss.createStereoSoundNodeWithLRMap(soundFiles.get(absolutePath+soundFile), false, new int[]{1, 0}, new int[]{0, 1}, 1.0f);
-				SoundNode sn = ss.createMonoSoundNode(soundFiles.get(soundFilePath+soundFile), false, channels, amplitudes, 1.0f);
-				//if(sn != null){	// verify that a sound has been returned
-				//	sn.setAmplitudes(channels, amplitudes);
-				//} else {
-				//	System.out.println(soundFiles.get(absolutePath+soundFile) + " returned null");		
-				//}
-			}
-		}
-	}
-
-	public int newSoundID(){	// no longer in use, but referenced by all animations
-		soundID++;
-		return soundID;
-	}
 
 	public void playSimpleSound(String filename, int x, int y, float gain, String comment){
 		if (!bypass) {
+
+			// This code attempts to load the file at playtime, we'll see if this works
+			// note that the buffer ID is assigned later when scsc reports the buffer as loaded
+			if (!soundFiles.containsKey(filename)) {
+				loadBuffer(filename);
+			}
+
 			soundID++;
 			if(!filename.equals("none") && serverIsLive){
 				int channel = y/2;
@@ -159,14 +158,46 @@ public class SoundController implements SCSoundControlNotifiable {
 			}
 		}
 	}
-
-	public String randomSound(String[] soundfiles){
-		int filenumber = (int)(Math.random()*soundfiles.length);
-		if(filenumber == soundfiles.length){
-			filenumber--;
+	
+	public void globalSound(int soundIDToStart, String soundFile, boolean loop, float gain, int duration, String comment){
+		if (!bypass) {
+			if(!soundFile.equals("none") && serverIsLive){
+				// whoah, hacky.  let's fixt this
+				int[] channels = new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23};
+				float[] amplitudes = new float[]{gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain};
+				//float[] amplitudes = new float[]{gain,gain};
+				//SoundNode sn = ss.createStereoSoundNodeWithLRMap(soundFiles.get(absolutePath+soundFile), false, new int[]{1, 0}, new int[]{0, 1}, 1.0f);
+				SoundNode sn = ss.createMonoSoundNode(soundFiles.get(soundFilePath+soundFile), false, channels, amplitudes, 1.0f);
+			}
 		}
-		return soundfiles[filenumber];
 	}
+
+	public int newSoundID(){	// no longer in use, but referenced by all animations
+		soundID++;
+		return soundID;
+	}
+	
+	
+
+
+	public void killAllSounds(){
+		if (!bypass) {
+			ss.freeAllBuffers();	
+		}
+	}
+
+	public void shutdown(){
+		if (!bypass) {
+			if(ss != null){
+				ss.shutdown();
+			}
+		}
+	}
+	
+	
+	/**
+	 * NOTIFICATIONS FROM SCSC
+	 */
 
 	public void receiveNotification_BufferLoaded(int id, String filename) {
 		System.out.println("Loaded buffer " + id + ", " + filename);
@@ -187,20 +218,6 @@ public class SoundController implements SCSoundControlNotifiable {
 
 	public void receiveNotification_ServerStopped() {
 		serverIsLive = false;
-	}
-
-	public void killAllSounds(){
-		if (!bypass) {
-			ss.freeAllBuffers();	
-		}
-	}
-
-	public void shutdown(){
-		if (!bypass) {
-			if(ss != null){
-				ss.shutdown();
-			}
-		}
 	}
 
 
