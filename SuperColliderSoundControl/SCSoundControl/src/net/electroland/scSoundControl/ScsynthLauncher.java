@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
+
 /**
  * This class exists as a convenience container for all the scsynth process startup parameters
  * 
@@ -80,6 +82,8 @@ public class ScsynthLauncher {
 	private String _maxPolyphony = "64";
 
 	private Properties _props;
+	
+	static Logger logger = Logger.getLogger(ScsynthLauncher.class);
 
 	public ScsynthLauncher(SCSoundControl sc, Properties p) {
 		_sc = sc;
@@ -139,8 +143,8 @@ public class ScsynthLauncher {
 		args.add("-c");
 		args.add("0");
 		
-		System.out.println("launching scsynth:");
-		System.out.println(args);
+		logger.info("launching scsynth with args:");
+		logger.info(args);
 		
 		_builder.command(args);
 		_builder.directory(new File(_execPath).getParentFile());
@@ -182,7 +186,7 @@ public class ScsynthLauncher {
 	 * This is a hard, system level kill of the process, not a quit message.
 	 */
 	public void killScsynth() {
-		System.out.println("killing scsynth.");
+		logger.info("killing scsynth.");
 		if (_scsynthProcess != null) _scsynthProcess.destroy();
 	}
 	

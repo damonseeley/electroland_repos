@@ -14,6 +14,8 @@ import java.util.Vector;
 
 import javax.swing.JFrame;
 
+import org.apache.log4j.Logger;
+
 import com.illposed.osc_ELmod.*;
 
 public class SCSoundControl implements OSCListener, Runnable {
@@ -79,6 +81,8 @@ public class SCSoundControl implements OSCListener, Runnable {
 	private String _propertiesFilename;	
 	//the max polyphony, set in the properties file:
 	private int _maxPolyphony = 64;
+	
+	static Logger logger = Logger.getLogger(SCSoundControl.class);
 	
 	
 	/**
@@ -565,11 +569,11 @@ public class SCSoundControl implements OSCListener, Runnable {
 	public void acceptMessage(java.util.Date time, OSCMessage message) {
 		// FOR DEBUGGING: to print the full message:
 		if (debugging) {
-			System.out.print(message.getAddress());
+			logger.debug(message.getAddress());
 			for(int i = 0; i < message.getArguments().length; i++) {
-				System.out.print(", " + message.getArguments()[i].toString());
+				logger.debug(", " + message.getArguments()[i].toString());
 			}
-			System.out.println("");
+			logger.debug("");
 		}
 		
 		if (message.getAddress().matches("/done")) {
@@ -775,12 +779,12 @@ public class SCSoundControl implements OSCListener, Runnable {
 
 	public void debugPrint(String s) {
 		if (_doDebug)
-			System.out.print(s);
+			logger.debug(s);
 	}
 
 	public void debugPrintln(String s) {
 		if (_doDebug)
-			System.out.println(s);
+			logger.debug(s);
 	}
 
 	
@@ -790,7 +794,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 	//*********************************
 	
 	protected void handleServerBooted() {
-		debugPrintln("scsynth is booted.");
+		logger.info("scsynth is booted.");
 		//reinit data.
 		//this.init();
 		//notify client.
@@ -806,7 +810,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 		//if (!_serverLive || !_serverBooted) {
 		if (!_serverLive) {
 			if(debugging){
-				System.out.println("scsynth is live.");
+				logger.info("scsynth is live.");
 			}
 			_serverLive = true;
 			this.init();
@@ -836,7 +840,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 				//Have we timed out?
 				if (curTime.getTime() - _prevPingRequestTime.getTime() > _serverResponseTimeout) {
 					//We've timed out on the previous status request.
-					System.out.println("Timed out on previous status request.");
+					logger.info("Timed out on previous status request.");
 
 					if (_notifyListener != null) {
 						_notifyListener.receiveNotification_ServerStopped();
