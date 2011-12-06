@@ -1,0 +1,7 @@
+AudioMeter
+
+The AudioMeter is platform specific.
+(XP) Install SuperColliderSoundControl/SuperColliderSynthDefs/AudioMeter/AudioMeter_SwingOSC.sc in c:\SuperCollider\Extensions
+(OS X) Install SuperColliderSoundControl/SuperColliderSynthDefs/AudioMeter/AudioMeter.sc in (~)/Library/Application Support/SuperCollider/Extensions/
+
+To launch the audiometer on either platform, open SuperColliderSoundControl/SuperColliderSynthDefs/AudioMeter/LaunchAudioMeter.scd and evaluate the single line of code in there.
