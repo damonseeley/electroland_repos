@@ -6,6 +6,7 @@ package net.electroland.edmonton.core;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -177,12 +178,6 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 			//g2.fillRect(50,50,100,100);
 			
 			
-
-
-			
-			
-			
-			
 			
 			//outline the canvas
 			g2.setColor(new Color(48, 32, 48));
@@ -204,9 +199,10 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 			 */
 			// Get image from AnimationManager
 			//NEED TO SCALE HERE
-			//logger.info("stage width and height " + anim.getStage().getWidth(null) + " " + anim.getStage().getHeight(null));
-			//g2.drawImage(anim.getStage(), 0, 0, anim.getStage().getWidth(null),anim.getStage().getHeight(null),null);
-			g2.drawImage(anim.getStage(),0,0,null);
+			Dimension d = anim.getStageDimensions();
+			//g2.drawImage(anim.getStage(),0,0,null);
+			g2.drawImage(anim.getStage(),0,0,(int)(d.width*displayScale),(int)(d.height*displayScale),null);
+
 
 			
 
