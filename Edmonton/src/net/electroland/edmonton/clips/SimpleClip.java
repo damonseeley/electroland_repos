@@ -16,14 +16,15 @@ public class SimpleClip extends Clip {
 
 	private static Logger logger = Logger.getLogger(SimpleClip.class);
 	int delay;
+	int w,h;
 	long lastRender;
 
 	@Override
-	public void config(ParameterMap primaryParams,
-			Map<String, ParameterMap> extendedParams) {
+	public void config(ParameterMap primaryParams, Map<String, ParameterMap> extendedParams) {
 
 		delay = 1000 / primaryParams.getRequiredInt("fps");
-
+		w = primaryParams.getRequiredInt("width");
+		h = primaryParams.getRequiredInt("height");
 	}
 
 	@Override
@@ -53,7 +54,7 @@ public class SimpleClip extends Clip {
 			BufferedImage bi = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_RGB);
 			Graphics g2 = bi.getGraphics();
 			g2.setColor(Color.WHITE);
-			g2.fillRect(0, 0, 15, 8);
+			g2.fillRect(0, 0, w, h);
 
 			Graphics g = image.getGraphics();
 			g.drawImage(bi, 0, 0, null);

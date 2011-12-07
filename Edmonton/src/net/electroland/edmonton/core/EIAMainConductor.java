@@ -35,7 +35,7 @@ public class EIAMainConductor extends Thread implements ClipListener {
 	private SoundController soundController;
 	private AnimationManager anim;
 
-	public double canvasHeight, canvasWidth;
+	public int canvasHeight, canvasWidth;
 	public Hashtable<String, Object> context;
 
 	private Timer startupTestTimer;
@@ -80,8 +80,8 @@ public class EIAMainConductor extends Thread implements ClipListener {
 
 
 		canvas = (ELUCanvas2D)elu.getCanvas("EIAspan");
-		canvasHeight = canvas.getDimensions().getHeight();
-		canvasWidth = canvas.getDimensions().getWidth();
+		canvasHeight = (int)canvas.getDimensions().getHeight();
+		canvasWidth = (int)canvas.getDimensions().getWidth();
 		context.put("canvas",canvas);
 
 
@@ -119,12 +119,27 @@ public class EIAMainConductor extends Thread implements ClipListener {
 			
 			// TEST CLIP
 			// what should this rectangle be defined as, clip size or stage size?
-			int clipId0 = anim.startClip("testClip", new Rectangle(0,0,16,16), 1.0);
+			int clipId0 = anim.startClip("testClip", new Rectangle(0,0,16,16), 0.0);
+			
+			// fadein
+	        anim.queueClipChange(clipId0, null, null, 1.0, 2000, 0, false);
+			
+			// delay 2 seconds, and then slowly expand clip1 to full screen
+	        //anim.queueClipChange(clipId0, new Rectangle(0,0,(int)canvasWidth*2,(int)canvasHeight*2), null, null, 2000, 1000, false);
+	        
+	        // delay 2 seconds, and then slowly make clip1 the bottom left quadrant
+	        anim.queueClipChange(clipId0, new Rectangle(canvasWidth-16,canvasHeight-16,16,16), null, null, 3000, 300, false);
+	        
+	        // fadeout and kill
+	        anim.queueClipChange(clipId0, null, null, 0.0, 2000, 300, true);
+
 
 			// TEST SOUND
 			//soundController.globalSound("test_1.wav", false, 1.0f, null);
 			soundController.playTestSound("test_1.wav");
 			soundController.playSingleBay("test_1.wav", 560.0, 1.0f); // plays a sound out of the speaker nearest to the x value provided
+			
+			startupTestTimer.schedule(new startupTests(), 8000);
 	    }
 	  }
 	
