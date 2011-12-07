@@ -3,7 +3,12 @@
 SuperCollider_AudioHardwareDeviceName=1
 SuperCollider_SampleRate=48000
 SuperCollider_RealTimeRamAllocation=131072
+#WIN
+SuperCollider_Path=C:\\Program Files (x86)\\SuperCollider\\scsynth.exe
+#MAC
 SuperCollider_Path=/Applications/SuperCollider/scsynth
+
+#MOTU
 SuperCollider_NumberOfOutputChannels=22
 SuperCollider_NumberOfInputChannels=0
 SCSoundControl_MaxPolyphony=64

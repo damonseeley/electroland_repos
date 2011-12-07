@@ -30,6 +30,8 @@ public class SoundController implements SCSoundControlNotifiable {
 	private int soundID; // incrementing sound ID
 
 	public boolean audioEnabled = true;
+	
+	boolean debug;
 
 	static Logger logger = Logger.getLogger(SoundController.class);
 
@@ -42,14 +44,14 @@ public class SoundController implements SCSoundControlNotifiable {
 		try {
 			this.soundFilePath = props.getOptional("settings", "sound", "filePath");
 			this.bypass = Boolean.parseBoolean(props.getOptional("settings", "sound", "soundBypass"));
+			this.debug = Boolean.parseBoolean(props.getOptional("settings", "sound", "debug"));
 		} catch (OptionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			soundFilePath = "/depends/";
 			bypass = false;
+			debug = false;
 		}
-
-
 
 
 		// rip the speaker ID and locations
@@ -74,7 +76,6 @@ public class SoundController implements SCSoundControlNotifiable {
 
 
 
-
 		if (!bypass) {
 			serverIsLive = false;
 			soundFiles = new Hashtable<String, Integer>(); //fill this with soundfilenames and mark them as loaded or not
@@ -87,21 +88,26 @@ public class SoundController implements SCSoundControlNotifiable {
 			// don't do this here, wait for server to report as live
 			// parseSoundFiles();
 		}
+		
 
-		logger.info("GetClosestBay for 610.0 (bay 1): " + getClosestBay(610.0));
-		logger.info("GetClosestBay for 560.0 (bay 2): " + getClosestBay(560.0));
-		logger.info("GetClosestBay for 501.0 (bay 3): " + getClosestBay(501.0));
-		logger.info("GetClosestBay for 453.0 (bay 4): " + getClosestBay(453.0));
-		logger.info("GetClosestBay for 405.0 (bay 5): " + getClosestBay(405.0));
-		logger.info("GetClosestBay for 361.0 (bay 6): " + getClosestBay(361.0));
-		logger.info("GetClosestBay for 216.0 (bay 7): " + getClosestBay(216.0));
-		logger.info("GetClosestBay for 168.0 (bay 8): " + getClosestBay(168.0));
-		logger.info("GetClosestBay for 128.0 (bay 9): " + getClosestBay(102.0));
-		logger.info("GetClosestBay for 80.0 (bay 10): " + getClosestBay(98.0));
-		logger.info("GetClosestBay for 39.0 (bay 11): " + getClosestBay(50.0));
+		boolean testme = false;
+		if (testme) {
+			logger.info("GetClosestBay for 610.0 (bay 1): " + getClosestBay(610.0));
+			logger.info("GetClosestBay for 560.0 (bay 2): " + getClosestBay(560.0));
+			logger.info("GetClosestBay for 501.0 (bay 3): " + getClosestBay(501.0));
+			logger.info("GetClosestBay for 453.0 (bay 4): " + getClosestBay(453.0));
+			logger.info("GetClosestBay for 405.0 (bay 5): " + getClosestBay(405.0));
+			logger.info("GetClosestBay for 361.0 (bay 6): " + getClosestBay(361.0));
+			logger.info("GetClosestBay for 216.0 (bay 7): " + getClosestBay(216.0));
+			logger.info("GetClosestBay for 168.0 (bay 8): " + getClosestBay(168.0));
+			logger.info("GetClosestBay for 128.0 (bay 9): " + getClosestBay(102.0));
+			logger.info("GetClosestBay for 80.0 (bay 10): " + getClosestBay(98.0));
+			logger.info("GetClosestBay for 39.0 (bay 11): " + getClosestBay(50.0));
+		}
 
-
+		if (debug) {
 		logger.info("SoundController: started up with path " + soundFilePath + " and bypass=" + bypass);
+		}
 	}
 
 	public void parseSoundFiles(){
@@ -154,9 +160,11 @@ public class SoundController implements SCSoundControlNotifiable {
 		}
 
 		// debug - list the soundFiles
+		if (debug) {
 		logger.info("SoundController: List of ripped soundfiles"); 
 		for (String s : soundFiles.keySet()){
 			logger.info("\tkey " + s + " = " + soundFiles.get(s)); 
+		}
 		}
 
 	}
@@ -230,7 +238,9 @@ public class SoundController implements SCSoundControlNotifiable {
 			if(!filename.equals("none") && serverIsLive){
 				int channel = 0; //test
 				SoundNode sn = ss.createSoundNodeOnSingleChannel(soundFiles.get(soundFilePath+filename), false, channel, 1.0f, 1.0f);
-				logger.info("SoundController: Played test sound file "+soundFilePath+filename+ " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
+				if (debug) {
+					logger.info("SoundController: Played test sound file "+soundFilePath+filename+ " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
+				}
 			}
 		}
 	}
@@ -247,9 +257,13 @@ public class SoundController implements SCSoundControlNotifiable {
 			soundID++;
 			if(!filename.equals("none") && serverIsLive){
 				int channel = getClosestBayChannel(x);
-				logger.info("SoundController: Attempting to play sound file: " + soundFiles.get(soundFilePath+filename));
+				if (debug) {
+					logger.info("SoundController: Attempting to play sound file: " + soundFiles.get(soundFilePath+filename));
+				}
 				SoundNode sn = ss.createSoundNodeOnSingleChannel(soundFiles.get(soundFilePath+filename), false, channel, gain, 1.0f);
-				logger.info("SoundController: Played Single Bay "+soundFilePath+filename+ " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
+				if (debug) {
+					logger.info("SoundController: Played Single Bay "+soundFilePath+filename+ " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
+				}
 			}
 		}
 	}
@@ -262,7 +276,9 @@ public class SoundController implements SCSoundControlNotifiable {
 			if(!filename.equals("none") && serverIsLive){
 				channel = ??
 				SoundNode sn = ss.createSoundNodeOnSingleChannel(soundFiles.get(soundFilePath+filename), false, channel, masterGain, 1.0f);
+				if (debug) {
 				logger.info("SoundController: Played test sound file "+soundFilePath+filename+ " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
+				}
 			}
 			 */
 		}
@@ -275,7 +291,9 @@ public class SoundController implements SCSoundControlNotifiable {
 				int[] channels = new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23};
 				float[] amplitudes = new float[]{gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain};
 				SoundNode sn = ss.createMonoSoundNode(soundFiles.get(soundFilePath+soundFile), false, channels, amplitudes, 1.0f);
-				logger.info("SoundController: Played global sound file "+soundFilePath+soundFile+ " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
+				if (debug) {
+					logger.info("SoundController: Played global sound file "+soundFilePath+soundFile+ " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
+				}
 			}
 		}
 	}
@@ -317,6 +335,7 @@ public class SoundController implements SCSoundControlNotifiable {
 
 	public void receiveNotification_ServerRunning() {
 		serverIsLive = true;
+		logger.info("SoundController: Server is live");
 		//for now disable this for realtime loading
 		parseSoundFiles();
 	}
@@ -327,6 +346,7 @@ public class SoundController implements SCSoundControlNotifiable {
 
 	public void receiveNotification_ServerStopped() {
 		serverIsLive = false;
+		logger.info("SoundController: Server stopped");
 	}
 
 
