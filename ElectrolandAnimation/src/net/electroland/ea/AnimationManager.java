@@ -100,6 +100,16 @@ public class AnimationManager {
             
         }
     }
+    /**
+     * 
+     * @param id - (int) Clip ID
+     * @param area - (Rectangle) destination rect
+     * @param clip - (Rectangle) clipping rect
+     * @param alpha - (Double) destination alpha value
+     * @param durationMillis - (int) change duration in milliseconds
+     * @param delayMillis - (int) delay duration in milliseconds
+     * @param deleteWhenDone - (boolean) kill this clip when complete?
+     */
 
     public void queueClipChange(int id, Rectangle area, Rectangle clip, 
                             Double alpha, int durationMillis, int delayMillis, 
