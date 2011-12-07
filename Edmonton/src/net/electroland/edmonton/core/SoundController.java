@@ -30,8 +30,9 @@ public class SoundController implements SCSoundControlNotifiable {
 	private int soundID; // incrementing sound ID
 
 	public boolean audioEnabled = true;
-	
-	boolean debug;
+
+	private boolean debug;
+	private boolean stereoOnly;
 
 	static Logger logger = Logger.getLogger(SoundController.class);
 
@@ -45,14 +46,16 @@ public class SoundController implements SCSoundControlNotifiable {
 			this.soundFilePath = props.getOptional("settings", "sound", "filePath");
 			this.bypass = Boolean.parseBoolean(props.getOptional("settings", "sound", "soundBypass"));
 			this.debug = Boolean.parseBoolean(props.getOptional("settings", "sound", "debug"));
+			this.stereoOnly = Boolean.parseBoolean(props.getOptional("settings", "sound", "stereoOnly"));
 		} catch (OptionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			soundFilePath = "/depends/";
 			bypass = false;
 			debug = false;
+			stereoOnly = false;
 		}
-
+		
 
 		// rip the speaker ID and locations
 		speakers = new Hashtable<Integer, Speaker>(); //fill this with soundfilenames and mark them as loaded or not
@@ -88,7 +91,7 @@ public class SoundController implements SCSoundControlNotifiable {
 			// don't do this here, wait for server to report as live
 			// parseSoundFiles();
 		}
-		
+
 
 		boolean testme = false;
 		if (testme) {
@@ -106,7 +109,7 @@ public class SoundController implements SCSoundControlNotifiable {
 		}
 
 		if (debug) {
-		logger.info("SoundController: started up with path " + soundFilePath + " and bypass=" + bypass);
+			logger.info("SoundController: started up with path " + soundFilePath + " and bypass=" + bypass);
 		}
 	}
 
@@ -161,10 +164,10 @@ public class SoundController implements SCSoundControlNotifiable {
 
 		// debug - list the soundFiles
 		if (debug) {
-		logger.info("SoundController: List of ripped soundfiles"); 
-		for (String s : soundFiles.keySet()){
-			logger.info("\tkey " + s + " = " + soundFiles.get(s)); 
-		}
+			logger.info("SoundController: List of ripped soundfiles"); 
+			for (String s : soundFiles.keySet()){
+				logger.info("\tkey " + s + " = " + soundFiles.get(s)); 
+			}
 		}
 
 	}
@@ -174,9 +177,20 @@ public class SoundController implements SCSoundControlNotifiable {
 	 * Utils for mapping output to bays and channels
 	 */
 
+	/**
+	 * Return the correct device channel value for a given bay number
+	 * ... unless stereoOnly is true in which case return 0 (Left)
+	 * @param bayNum
+	 * @return
+	 */
 	private int getChID (int bayNum) {
-		//TO DO create a mapper specific to MOTU output here
-		return speakers.get(bayNum).channel;
+		//TO DO create a mapping specific to MOTU output here
+		if (stereoOnly){
+			return 1; //for this project will map to computer channel 1 (Left)
+		}
+		else{
+			return speakers.get(bayNum).channel;
+		}
 	}
 
 	private int getClosestBay (double x){
@@ -262,7 +276,7 @@ public class SoundController implements SCSoundControlNotifiable {
 				}
 				SoundNode sn = ss.createSoundNodeOnSingleChannel(soundFiles.get(soundFilePath+filename), false, channel, gain, 1.0f);
 				if (debug) {
-					logger.info("SoundController: Played Single Bay "+soundFilePath+filename+ " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
+					logger.info("SoundController: Played Single Bay "+soundFilePath+filename+ " on channel: " + channel + " with gain: "+ gain);
 				}
 			}
 		}

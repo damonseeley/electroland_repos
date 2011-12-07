@@ -97,7 +97,7 @@ public class EIAMainConductor extends Thread implements ClipListener {
 		soundController = new SoundController(context);
 		context.put("soundController", soundController);
 
-		ef = new EIAFrame(1400,720,context);
+		ef = new EIAFrame(2200,720,context);
 
 
 		// Thread setup
@@ -109,7 +109,7 @@ public class EIAMainConductor extends Thread implements ClipListener {
 		logger.info("EIA started up at framerate = " + framerate);
 		
 		startupTestTimer = new Timer();
-		startupTestTimer.schedule(new startupTests(), 2000);
+		startupTestTimer.schedule(new startupTests(), 4000);
 	}
 
 	
@@ -136,8 +136,9 @@ public class EIAMainConductor extends Thread implements ClipListener {
 
 			// TEST SOUND
 			//soundController.globalSound("test_1.wav", false, 1.0f, null);
-			soundController.playTestSound("test_1.wav");
-			soundController.playSingleBay("test_1.wav", 560.0, 1.0f); // plays a sound out of the speaker nearest to the x value provided
+			//soundController.playTestSound("test_1.wav");
+			//soundController.playSingleBay("test_1.wav", 560.0, 1.0f); // plays a sound out of the speaker nearest to the x value provided
+			soundController.playSingleBay("test_1.wav", 600.0, 1.0f); // plays a sound out of the speaker nearest to the x value provided
 			
 			startupTestTimer.schedule(new startupTests(), 8000);
 	    }

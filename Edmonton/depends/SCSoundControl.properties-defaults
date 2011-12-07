@@ -1,6 +1,9 @@
 #SCSoundControl Properties File
 #Mon Dec 05 22:42:32 PST 2011
-SuperCollider_AudioHardwareDeviceName=1
+#MAC
+#SuperCollider_AudioHardwareDeviceName=1
+#WIN
+#SuperCollider_AudioHardwareDeviceName=ASIO \: ASIO4ALL v2
 SuperCollider_SampleRate=48000
 SuperCollider_RealTimeRamAllocation=131072
 #WIN
