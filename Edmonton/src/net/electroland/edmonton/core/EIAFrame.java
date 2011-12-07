@@ -66,11 +66,11 @@ public class EIAFrame extends JFrame  {
 	public void update(){
 		ep.update();
 	}
-
-
-
+	
 
 	private void close(){
+		SoundController sc = (SoundController)context.get("soundcontroller");
+		//sc.shutdown();
 		System.exit(0);
 	}
 

@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import net.electroland.ea.AnimationManager;
+import net.electroland.eio.IState;
 import net.electroland.scSoundControl.SCSoundControl;
 import net.electroland.scSoundControl.SCSoundControlNotifiable;
 import net.electroland.scSoundControl.SoundNode;
@@ -25,12 +26,12 @@ public class SoundController implements SCSoundControlNotifiable {
 	private SCSoundControl ss;
 	private boolean serverIsLive;
 	private Hashtable<String, Integer> soundFiles;
+	private Hashtable<Integer, Speaker> speakers;
 	private int soundID; // incrementing sound ID
 
 	public boolean audioEnabled = true;
 
 	static Logger logger = Logger.getLogger(SoundController.class);
-
 
 	public SoundController(Hashtable<String,Object> context){
 
@@ -48,6 +49,32 @@ public class SoundController implements SCSoundControlNotifiable {
 			bypass = false;
 		}
 
+
+
+
+		// rip the speaker ID and locations
+		speakers = new Hashtable<Integer, Speaker>(); //fill this with soundfilenames and mark them as loaded or not
+		Map<String, ParameterMap> speakerParams = props.getObjects("speaker");
+		for (String s : speakerParams.keySet()){
+			ParameterMap sParams = speakerParams.get(s);
+
+			int bay = sParams.getRequiredInt("bay");
+			double x = sParams.getRequiredDouble("x");
+			double y = sParams.getRequiredDouble("y");
+			int channel = sParams.getRequiredInt("ch");
+
+			Speaker sp = new Speaker(bay,x,y,channel);
+			speakers.put(bay, sp);
+		}
+
+		logger.info("SoundController: List of speakers"); 
+		for (int sp : speakers.keySet()){
+			logger.info("\tbay" + sp + " x:" + speakers.get(sp).x + " y:" + speakers.get(sp).y + " ch:" + speakers.get(sp).channel); 
+		}
+
+
+
+
 		if (!bypass) {
 			serverIsLive = false;
 			soundFiles = new Hashtable<String, Integer>(); //fill this with soundfilenames and mark them as loaded or not
@@ -60,6 +87,18 @@ public class SoundController implements SCSoundControlNotifiable {
 			// don't do this here, wait for server to report as live
 			// parseSoundFiles();
 		}
+
+		logger.info("GetClosestBay for 610.0 (bay 1): " + getClosestBay(610.0));
+		logger.info("GetClosestBay for 560.0 (bay 2): " + getClosestBay(560.0));
+		logger.info("GetClosestBay for 501.0 (bay 3): " + getClosestBay(501.0));
+		logger.info("GetClosestBay for 453.0 (bay 4): " + getClosestBay(453.0));
+		logger.info("GetClosestBay for 405.0 (bay 5): " + getClosestBay(405.0));
+		logger.info("GetClosestBay for 361.0 (bay 6): " + getClosestBay(361.0));
+		logger.info("GetClosestBay for 216.0 (bay 7): " + getClosestBay(216.0));
+		logger.info("GetClosestBay for 168.0 (bay 8): " + getClosestBay(168.0));
+		logger.info("GetClosestBay for 128.0 (bay 9): " + getClosestBay(102.0));
+		logger.info("GetClosestBay for 80.0 (bay 10): " + getClosestBay(98.0));
+		logger.info("GetClosestBay for 39.0 (bay 11): " + getClosestBay(50.0));
 
 
 		logger.info("SoundController: started up with path " + soundFilePath + " and bypass=" + bypass);
@@ -94,7 +133,7 @@ public class SoundController implements SCSoundControlNotifiable {
 				}
 			}
 		}
-		
+
 		// rip sound.global for $soundfiles
 		Map<String, ParameterMap> soundParams = p.getObjects("sound");
 		for (String s : soundParams.keySet()){
@@ -114,21 +153,45 @@ public class SoundController implements SCSoundControlNotifiable {
 			}
 		}
 
-
-
 		// debug - list the soundFiles
 		logger.info("SoundController: List of ripped soundfiles"); 
 		for (String s : soundFiles.keySet()){
 			logger.info("\tkey " + s + " = " + soundFiles.get(s)); 
 		}
 
-
 	}
 
-	private int getMappedChannelID (int bayNum) {
+
+	/*
+	 * Utils for mapping output to bays and channels
+	 */
+
+	private int getChID (int bayNum) {
 		//TO DO create a mapper specific to MOTU output here
-		return 0;
+		return speakers.get(bayNum).channel;
 	}
+
+	private int getClosestBay (double x){
+		Speaker closest = speakers.get(1);
+		for (int sp : speakers.keySet()){
+			//logger.info("Closest = " + closest.bay + " and current calc = " + Math.abs(x - speakers.get(sp).x))
+			if (Math.abs(x - speakers.get(sp).x) < Math.abs(x - closest.x)) {
+				closest = speakers.get(sp);
+			}
+		}
+		return closest.bay;
+	}
+
+	private int getClosestBayChannel (double x){
+		return getChID(getClosestBay(x));
+	}
+
+
+
+
+
+
+
 
 	public void loadBuffer(String soundFile){
 
@@ -157,9 +220,12 @@ public class SoundController implements SCSoundControlNotifiable {
 	}
 	 */
 
+	/** 
+	 * play a test sound at 1.0f gain out of the first channel
+	 * @param filename
+	 */
 	public void playTestSound(String filename){
 		if (!bypass) {
-
 			soundID++;
 			if(!filename.equals("none") && serverIsLive){
 				int channel = 0; //test
@@ -168,41 +234,37 @@ public class SoundController implements SCSoundControlNotifiable {
 			}
 		}
 	}
-	
-	public void playSimpleSound(String filename, int x, int y, float gain, String comment){
+
+	/**
+	 * Plays a sound only to the speaker nearest to the x value provided
+	 * Does not provide a SoundNode reference for update
+	 * @param filename (String) the sound file to play (without path)
+	 * @param x (double) location
+	 * @param gain (float)
+	 */
+	public void playSingleBay(String filename, double x, float gain){
 		if (!bypass) {
-
-
 			soundID++;
 			if(!filename.equals("none") && serverIsLive){
-				int channel = y/2;
-				if(channel < 1){
-					channel = 1;
-				} else if(channel > 12){
-					channel = 12;
-				}
-				if(x <= 2){
-					channel = (channel*2) - 1;
-				} else {
-					channel = (channel*2);
-				}
-				channel -= 1; // for zero index
+				int channel = getClosestBayChannel(x);
+				logger.info("SoundController: Attempting to play sound file: " + soundFiles.get(soundFilePath+filename));
 				SoundNode sn = ss.createSoundNodeOnSingleChannel(soundFiles.get(soundFilePath+filename), false, channel, gain, 1.0f);
-				logger.info("SoundController: Played test sound file "+soundFilePath+filename+ " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
+				logger.info("SoundController: Played Single Bay "+soundFilePath+filename+ " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
 			}
 		}
 	}
-	
-	public void playSingleBaySound(String filename, int x, float masterGain, String comment){
-		if (!bypass) {
 
+	public void playSoundLinear (String filename, int x, float masterGain, String comment){
+		if (!bypass) {
+			//TO DO make this work
+			/*
 			soundID++;
 			if(!filename.equals("none") && serverIsLive){
-				int channel = 0;
-				
+				channel = ??
 				SoundNode sn = ss.createSoundNodeOnSingleChannel(soundFiles.get(soundFilePath+filename), false, channel, masterGain, 1.0f);
 				logger.info("SoundController: Played test sound file "+soundFilePath+filename+ " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
 			}
+			 */
 		}
 	}
 
@@ -247,7 +309,7 @@ public class SoundController implements SCSoundControlNotifiable {
 
 	public void receiveNotification_BufferLoaded(int id, String filename) {
 		logger.info("SoundController: Loaded buffer " + id + ", " + filename);
-		
+
 		if(soundFiles.containsKey(filename)){
 			soundFiles.put(filename, id);	// update the sound file reference to the buffer ID
 		}
@@ -269,4 +331,24 @@ public class SoundController implements SCSoundControlNotifiable {
 
 
 }
+
+
+class Speaker
+{
+	int bay;
+	double x;
+	double y;
+	//real channel on output device
+	int channel;
+
+	public Speaker(int b, double x, double y, int ch){
+		this.bay = b;
+		this.x = x;
+		this.y = y;
+		this.channel = ch;
+	}
+
+}
+
+
 

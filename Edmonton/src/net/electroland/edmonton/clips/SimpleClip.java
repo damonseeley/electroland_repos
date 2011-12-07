@@ -40,7 +40,8 @@ public class SimpleClip extends Clip {
 	@Override
 	public Image getFrame(Image image) {
 
-
+		//only renders if the delay time (rate) has been exceeded
+		// this should work if Clip.image is not cleared during each getFrame, but it appears that it does not
 		if (System.currentTimeMillis() - lastRender > delay)
 		{
 			//Double buffer this to prevent flickering
