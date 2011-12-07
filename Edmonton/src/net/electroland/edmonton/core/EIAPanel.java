@@ -56,8 +56,7 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 	private double p1x,p1y,p1width,p1height,p2x,p2y,p2width,p2height;
 
 	static Logger logger = Logger.getLogger(EIAFrame.class);
-
-
+	
 	//constructor
 	public EIAPanel (int w, int h, Hashtable context) {
 		//logger.info(w + " " + h);
@@ -179,6 +178,19 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 			
 			
 			
+
+			
+			
+
+			/*
+			 * Draw Anim/Canvas
+			 */
+			// Get image from AnimationManager
+			//NEED TO SCALE HERE
+			Dimension d = anim.getStageDimensions();
+			//g2.drawImage(anim.getStage(),0,0,null);
+			g2.drawImage(anim.getStage(),0,0,(int)(d.width*displayScale),(int)(d.height*displayScale),null);
+			
 			//outline the canvas
 			g2.setColor(new Color(48, 32, 48));
 			g2.drawRect(0,0,(int)(canvas.getDimensions().width*displayScale),(int)(canvas.getDimensions().height*displayScale));
@@ -191,17 +203,6 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 			g2.drawRect((int)(p1x*displayScale), (int)(p1y*displayScale),(int)(p1width*displayScale),(int)(p1height*displayScale));
 			g2.drawRect((int)(p2x*displayScale), (int)(p2y*displayScale),(int)(p2width*displayScale),(int)(p2height*displayScale));
 			
-			
-			
-
-			/*
-			 * Draw Anim/Canvas
-			 */
-			// Get image from AnimationManager
-			//NEED TO SCALE HERE
-			Dimension d = anim.getStageDimensions();
-			//g2.drawImage(anim.getStage(),0,0,null);
-			g2.drawImage(anim.getStage(),0,0,(int)(d.width*displayScale),(int)(d.height*displayScale),null);
 
 
 			

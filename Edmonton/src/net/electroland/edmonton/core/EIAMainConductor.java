@@ -8,6 +8,8 @@ package net.electroland.edmonton.core;
 import java.awt.Rectangle;
 import java.io.IOException;
 import java.util.Hashtable;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import net.electroland.ea.AnimationManager;
 import net.electroland.ea.ClipEvent;
@@ -31,10 +33,13 @@ public class EIAMainConductor extends Thread implements ClipListener {
 	private IOManager eio;
 	private TestModel model;
 	private SoundController soundController;
-	
+	private AnimationManager anim;
+
 	public double canvasHeight, canvasWidth;
 	public Hashtable<String, Object> context;
-	
+
+	private Timer startupTestTimer;
+
 	//private SoundManager soundManager;
 
 	public EIAFrame ef;
@@ -42,7 +47,7 @@ public class EIAMainConductor extends Thread implements ClipListener {
 	//Thread stuff
 	public static boolean isRunning;
 	private static float framerate;
-	private static Timer timer;
+	private static FrameTimer timer;
 	public static long curTime = System.currentTimeMillis(); //  time of frame start to aviod lots of calls to System.getcurentTime()
 	public static long elapsedTime = -1; //  time between start of cur frame and last frame to avoid re calculating passage of time allover the place
 
@@ -50,105 +55,111 @@ public class EIAMainConductor extends Thread implements ClipListener {
 	public EIAMainConductor()
 	{
 		context = new Hashtable<String, Object>();
-		
+
 		String propsFileName = "EIA.properties";
 		logger.info("EIAMain loading " + propsFileName);
-        props = new ElectrolandProperties(propsFileName);
-        context.put("props",props);
-        
+		props = new ElectrolandProperties(propsFileName);
+		context.put("props",props);
+
 
 		elu = new ELUManager();
-        eio = new IOManager();
-        try {
-            elu.load("EIA-ELU.properties");
-            eio.load("EIA-EIO.properties");
-            eio.start();
-        } catch (OptionException e) {
-            e.printStackTrace();
-            System.exit(0);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(0);
-        }
-        context.put("eio",eio);
-	    context.put("elu",elu);
-        
-	    
+		eio = new IOManager();
+		try {
+			elu.load("EIA-ELU.properties");
+			eio.load("EIA-EIO.properties");
+			eio.start();
+		} catch (OptionException e) {
+			e.printStackTrace();
+			System.exit(0);
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+		context.put("eio",eio);
+		context.put("elu",elu);
+
+
 		canvas = (ELUCanvas2D)elu.getCanvas("EIAspan");
 		canvasHeight = canvas.getDimensions().getHeight();
 		canvasWidth = canvas.getDimensions().getWidth();
 		context.put("canvas",canvas);
-		
-		
-        // create an AnimationManager
-        AnimationManager anim = new AnimationManager();
-        anim.setContext(context);
-        anim.config("EIA-anim.properties");
-     // have the frame listen for clip events
-        anim.addClipListener(this);
-        context.put("anim",anim);
-        context.put("animpropsfile", "EIA-anim.properties");
-        
-	    
-	   	    
-	    soundController = new SoundController(context);
-	    context.put("soundController", soundController);
 
+
+		// create an AnimationManager
+		anim = new AnimationManager();
+		anim.setContext(context);
+		anim.config("EIA-anim.properties");
+		// listen for clip events
+		anim.addClipListener(this);
+		context.put("anim",anim);
+		context.put("animpropsfile", "EIA-anim.properties");
+
+		soundController = new SoundController(context);
+		context.put("soundController", soundController);
 
 		ef = new EIAFrame(1400,720,context);
-		
+
 
 		// Thread setup
 		framerate = props.getRequiredInt("settings", "global", "framerate");
-		
+
 		isRunning = true;
-		timer = new Timer(framerate);
+		timer = new FrameTimer(framerate);
 		start();
 		logger.info("EIA started up at framerate = " + framerate);
 		
-		
-		
-		
-		// TEST CLIP
-		// what should this rectangle be defined as, clip size or stage size?
-        int clipId0 = anim.startClip("testClip", new Rectangle(0,0,16,16), 1.0);
-        
-        // TEST SOUND
-        //soundController.globalSound("test_1.wav", false, 1.0f, null);
-        soundController.playTestSound("test_1.wav");
-
+		startupTestTimer = new Timer();
+		startupTestTimer.schedule(new startupTests(), 2000);
 	}
+
+	
+	class startupTests extends TimerTask {
+	    public void run() {
+	    	//startupTestTimer
+			
+			// TEST CLIP
+			// what should this rectangle be defined as, clip size or stage size?
+			int clipId0 = anim.startClip("testClip", new Rectangle(0,0,16,16), 1.0);
+
+			// TEST SOUND
+			//soundController.globalSound("test_1.wav", false, 1.0f, null);
+			soundController.playTestSound("test_1.wav");
+			soundController.playSingleBay("test_1.wav", 560.0, 1.0f); // plays a sound out of the speaker nearest to the x value provided
+	    }
+	  }
+	
+	
 
 	public void run() {
 		timer.start();
 		curTime = System.currentTimeMillis();
 
 		while (isRunning) {
-
 			/*
 			 * DO STUFF
 			 */
-			
-			
+
+			//sync the animMgr to ELU here
+
+
 			// Update the GUI Panel
 			ef.update();
 
 			//Thread ops
-			//logger.info(timer.sleepTime);
 			timer.block();
 		}
 
 	}
-	
-    @Override
-    public void clipEnded(ClipEvent e) {
-        logger.info("clip " + e.clipId + " of type " + e.clipId + " ended.");
-    }
 
-    @Override
-    public void clipStarted(ClipEvent e) {
-        logger.info("clip " + e.clipId + " of type " + e.clipId + " started.");
-    }
+	@Override
+	public void clipEnded(ClipEvent e) {
+		logger.info("clip " + e.clipId + " of type " + e.clipId + " ended.");
+	}
+
+	@Override
+	public void clipStarted(ClipEvent e) {
+		logger.info("clip " + e.clipId + " of type " + e.clipId + " started.");
+	}
 
 	public static void killTheads() {
 		stopRunning();	

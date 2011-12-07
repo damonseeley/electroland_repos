@@ -1,6 +1,6 @@
 package net.electroland.edmonton.core;
 
-public class Timer extends Thread {
+public class FrameTimer extends Thread {
 	boolean isBlocking = true; 
 	private Object lock = new Object();
 	protected long sleepTime;
@@ -9,7 +9,7 @@ public class Timer extends Thread {
 	
 	protected float numErrors;
 	
-	public Timer(float framerate) {  
+	public FrameTimer(float framerate) {  
 		setFrameRate(framerate);
 		numErrors = 0;
 	}
