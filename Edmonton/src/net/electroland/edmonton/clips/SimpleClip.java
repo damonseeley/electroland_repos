@@ -49,7 +49,7 @@ public class SimpleClip extends Clip {
 			Graphics g2 = bi.getGraphics();
 			g2.setColor(Color.WHITE);
 			g2.fillRect(0, 0, 15, 8);
-			
+
 			Graphics g = image.getGraphics();
 			g.drawImage(bi, 0, 0, null);
 			lastRender = System.currentTimeMillis();
