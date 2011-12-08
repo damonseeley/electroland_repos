@@ -40,8 +40,6 @@ public class EIAMainConductor extends Thread implements ClipListener {
 
 	private Timer startupTestTimer;
 
-	//private SoundManager soundManager;
-
 	public EIAFrame ef;
 
 	//Thread stuff
@@ -77,13 +75,15 @@ public class EIAMainConductor extends Thread implements ClipListener {
 		}
 		context.put("eio",eio);
 		context.put("elu",elu);
-
+		
+		/*
+		 * create model and add watchers and listeners
+		 */
 
 		canvas = (ELUCanvas2D)elu.getCanvas("EIAspan");
 		canvasHeight = (int)canvas.getDimensions().getHeight();
 		canvasWidth = (int)canvas.getDimensions().getWidth();
 		context.put("canvas",canvas);
-
 
 		// create an AnimationManager
 		anim = new AnimationManager();
@@ -98,7 +98,6 @@ public class EIAMainConductor extends Thread implements ClipListener {
 		context.put("soundController", soundController);
 
 		ef = new EIAFrame(2200,720,context);
-
 
 		// Thread setup
 		framerate = props.getRequiredInt("settings", "global", "framerate");
@@ -125,10 +124,10 @@ public class EIAMainConductor extends Thread implements ClipListener {
 	        anim.queueClipChange(clipId0, null, null, 1.0, 2000, 0, false);
 			
 			// delay 2 seconds, and then slowly expand clip1 to full screen
-	        //anim.queueClipChange(clipId0, new Rectangle(0,0,(int)canvasWidth*2,(int)canvasHeight*2), null, null, 2000, 1000, false);
+	        anim.queueClipChange(clipId0, new Rectangle(0,0,(int)canvasWidth*2,(int)canvasHeight*2), null, null, 2000, 1000, false);
 	        
 	        // delay 2 seconds, and then slowly make clip1 the bottom left quadrant
-	        anim.queueClipChange(clipId0, new Rectangle(canvasWidth-16,canvasHeight-16,16,16), null, null, 3000, 300, false);
+	        anim.queueClipChange(clipId0, new Rectangle(canvasWidth-16,canvasHeight-16,16,16), null, null, 3000, 3000, false);
 	        
 	        // fadeout and kill
 	        anim.queueClipChange(clipId0, null, null, 0.0, 2000, 300, true);
@@ -140,7 +139,7 @@ public class EIAMainConductor extends Thread implements ClipListener {
 			//soundController.playSingleBay("test_1.wav", 560.0, 1.0f); // plays a sound out of the speaker nearest to the x value provided
 			soundController.playSingleBay("test_1.wav", 600.0, 1.0f); // plays a sound out of the speaker nearest to the x value provided
 			
-			startupTestTimer.schedule(new startupTests(), 8000);
+			startupTestTimer.schedule(new startupTests(), 10000);
 	    }
 	  }
 	
@@ -154,9 +153,11 @@ public class EIAMainConductor extends Thread implements ClipListener {
 			/*
 			 * DO STUFF
 			 */
+			
+			//model.poll();
 
 			//sync the animMgr to ELU here
-
+			//elu.sync()
 
 			// Update the GUI Panel
 			ef.update();
@@ -194,7 +195,6 @@ public class EIAMainConductor extends Thread implements ClipListener {
 	public static void main(String args[])
 	{
 		new EIAMainConductor();
-
 	}
 
 
