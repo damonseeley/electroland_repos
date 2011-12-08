@@ -1,5 +1,7 @@
 package net.electroland.edmonton.core.model;
 
+import java.util.Map;
+
 import net.electroland.eio.IState;
 import net.electroland.eio.model.ModelWatcher;
 
@@ -43,5 +45,11 @@ public class OneEventPerPeriodModelWatcher extends ModelWatcher {
         }
         // nothing to see here.
         return false;
+    }
+
+    @Override
+    public Map<String, Object> getOptionalPositiveDetails() {
+        // DO NOTHING.
+        return null;
     }
 }
