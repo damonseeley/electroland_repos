@@ -6,6 +6,8 @@ package net.electroland.edmonton.core;
  */
 
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Timer;
@@ -23,7 +25,7 @@ import net.electroland.utils.lighting.canvas.ELUCanvas2D;
 
 import org.apache.log4j.Logger;
 
-public class EIAMainConductor extends Thread implements ClipListener {
+public class EIAMainConductor extends Thread implements ClipListener, ActionListener {
 
 	static Logger logger = Logger.getLogger(EIAMainConductor.class);
 
@@ -75,7 +77,7 @@ public class EIAMainConductor extends Thread implements ClipListener {
 		}
 		context.put("eio",eio);
 		context.put("elu",elu);
-		
+
 		/*
 		 * create model and add watchers and listeners
 		 */
@@ -96,8 +98,8 @@ public class EIAMainConductor extends Thread implements ClipListener {
 
 		soundController = new SoundController(context);
 		context.put("soundController", soundController);
-		
-		
+
+
 
 		ef = new EIAFrame(Integer.parseInt(props.getRequired("settings", "global", "guiwidth")),Integer.parseInt(props.getRequired("settings", "global", "guiheight")),context);
 
@@ -108,44 +110,74 @@ public class EIAMainConductor extends Thread implements ClipListener {
 		timer = new FrameTimer(framerate);
 		start();
 		logger.info("EIA started up at framerate = " + framerate);
-		
+
 		startupTestTimer = new Timer();
 		startupTestTimer.schedule(new startupTests(), 4000);
+
+		ef.addButtonListener(this);
 	}
 
-	
-	class startupTests extends TimerTask {
-	    public void run() {
-	    	//startupTestTimer
-			
-			// TEST CLIP
-			// what should this rectangle be defined as, clip size or stage size?
-			int clipId0 = anim.startClip("testClip", new Rectangle(0,0,16,16), 0.0);
-			
-			// fadein
-	        anim.queueClipChange(clipId0, null, null, 1.0, 2000, 0, false);
-			
-			// delay 2 seconds, and then slowly expand clip1 to full screen
-	        anim.queueClipChange(clipId0, new Rectangle(0,0,(int)canvasWidth*2,(int)canvasHeight*2), null, null, 2000, 1000, false);
-	        
-	        // delay 2 seconds, and then slowly make clip1 the bottom left quadrant
-	        anim.queueClipChange(clipId0, new Rectangle(canvasWidth-16,canvasHeight-16,16,16), null, null, 3000, 3000, false);
-	        
-	        // fadeout and kill
-	        anim.queueClipChange(clipId0, null, null, 0.0, 2000, 300, true);
+	// handle the actions from test buttons
+	public void actionPerformed(ActionEvent e) {
+		logger.info(e.getActionCommand());
+		if ("shooter1".equals(e.getActionCommand())) {
+			Shooter1();
+		}
+		if ("bigfill".equals(e.getActionCommand())) {
+			BigFill();
+		}
+		if ("shooter2".equals(e.getActionCommand())) {
+			Shooter2();
+		}
 
+	}
+
+	private void Shooter1() {
+
+		int clip = anim.startClip("testClip", new Rectangle(canvasWidth-2,0,16,16), 1.0);
+		anim.queueClipChange(clip, new Rectangle(280,0,48,16), null, 0.0, 1400, 0, true);
+	}
+
+	private void Shooter2() {
+
+		int clip = anim.startClip("testClip", new Rectangle(250,0,16,16), 1.0);
+		anim.queueClipChange(clip, new Rectangle(-50,0,48,16), null, 0.0, 1200, 0, true);
+	}
+
+	private void BigFill() {
+
+		soundController.playSingleBay("test_1.wav", 600.0, 1.0f); // plays a sound out of the speaker nearest to the x value provided
+
+		// TEST CLIP
+		// create clip off stage left
+		int clip = anim.startClip("testClip", new Rectangle(-14,0,16,16), 1.0);
+
+		// expand clip1 to full screen
+		anim.queueClipChange(clip, new Rectangle(0,0,(int)canvasWidth,(int)canvasHeight), null, null, 2000, 0, false);
+
+		// retract clip to right
+		anim.queueClipChange(clip, new Rectangle(canvasWidth,0,16,16), null, null, 3000, 0, true);
+
+	}
+
+	private void Egg1() {
+
+	}
+
+
+	class startupTests extends TimerTask {
+		public void run() {
+			//startupTestTimer
 
 			// TEST SOUND
-			//soundController.globalSound("test_1.wav", false, 1.0f, null);
 			//soundController.playTestSound("test_1.wav");
-			//soundController.playSingleBay("test_1.wav", 560.0, 1.0f); // plays a sound out of the speaker nearest to the x value provided
-			soundController.playSingleBay("test_1.wav", 600.0, 1.0f); // plays a sound out of the speaker nearest to the x value provided
-			
-			startupTestTimer.schedule(new startupTests(), 10000);
-	    }
-	  }
-	
-	
+			//soundController.playSingleBay("test_1.wav", 600.0, 1.0f); // plays a sound out of the speaker nearest to the x value provided
+
+			//startupTestTimer.schedule(new startupTests(), 10000);
+		}
+	}
+
+
 
 	public void run() {
 		timer.start();
@@ -155,7 +187,7 @@ public class EIAMainConductor extends Thread implements ClipListener {
 			/*
 			 * DO STUFF
 			 */
-			
+
 			//model.poll();
 
 			//sync the animMgr to ELU here
