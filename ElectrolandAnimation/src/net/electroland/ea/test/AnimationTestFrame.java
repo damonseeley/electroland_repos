@@ -1,5 +1,6 @@
 package net.electroland.ea.test;
 
+import java.awt.Color;
 import java.awt.Rectangle;
 import java.util.Hashtable;
 
@@ -15,6 +16,7 @@ public class AnimationTestFrame extends JFrame implements ClipListener{
 
     private static Logger logger = Logger.getLogger(AnimationTestFrame.class);
     private static final long serialVersionUID = 1L;
+    AnimationManager anim;
 
     public static void main(String args[])
     {
@@ -27,6 +29,7 @@ public class AnimationTestFrame extends JFrame implements ClipListener{
         // create an AnimationManager
         AnimationManager anim = new AnimationManager();
         anim.setContext(context);
+        anim.setStageColor(Color.WHITE);
         anim.config(args.length > 0 ? args[1] : "animation.properties");
         int w = anim.getStageDimensions().width / 2;
         int h = anim.getStageDimensions().height / 2;
@@ -85,6 +88,10 @@ public class AnimationTestFrame extends JFrame implements ClipListener{
                 System.exit(0);
             }
         }
+    }
+
+    public void createClip0(){
+        
     }
 
     @Override
