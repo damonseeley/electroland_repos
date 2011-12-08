@@ -19,6 +19,7 @@ import net.electroland.ea.ClipListener;
 import net.electroland.edmonton.core.model.OneEventPerPeriodModelWatcher;
 import net.electroland.eio.IOManager;
 import net.electroland.eio.IOState;
+import net.electroland.eio.IState;
 import net.electroland.eio.model.Model;
 import net.electroland.eio.model.ModelEvent;
 import net.electroland.eio.model.ModelListener;
@@ -113,7 +114,8 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		//logger.info(i30);
 		//logger.info("Got IOState " + i30.getID() + " location " + i30.getLocation());
 	//	Collection<IState> st = Collection<IState>eio.getStates();
-		//model.addModelWatcher(test, "testWatcher", (IState)eio.getStates());
+		model.addModelWatcher(test, "testWatcher", eio.getIStates());
+		model.addModelListener(this);
 		
 
 		ef = new EIAFrame(Integer.parseInt(props.getRequired("settings", "global", "guiwidth")),Integer.parseInt(props.getRequired("settings", "global", "guiheight")),context);
@@ -130,7 +132,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		startupTestTimer.schedule(new startupTests(), 4000);
 		
 		timedShows = new Timer();
-		timedShows.schedule(new timedShowPlayer(),1000);
+		timedShows.schedule(new timedShowPlayer(),60000);
 
 
 		ef.addButtonListener(this);
@@ -143,6 +145,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 	@Override
 	public void modelChanged(ModelEvent evt) {
+		logger.info("Model Event: " + evt.getSource());
 		// TODO Auto-generated method stub
 
 	}
@@ -248,7 +251,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 			 * DO STUFF
 			 */
 
-			//model.poll();
+			model.poll();
 
 			//sync the animMgr to ELU here
 			//elu.sync()
