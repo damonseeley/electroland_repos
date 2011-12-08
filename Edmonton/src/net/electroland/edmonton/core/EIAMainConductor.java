@@ -96,8 +96,10 @@ public class EIAMainConductor extends Thread implements ClipListener {
 
 		soundController = new SoundController(context);
 		context.put("soundController", soundController);
+		
+		
 
-		ef = new EIAFrame(2200,720,context);
+		ef = new EIAFrame(Integer.parseInt(props.getRequired("settings", "global", "guiwidth")),Integer.parseInt(props.getRequired("settings", "global", "guiheight")),context);
 
 		// Thread setup
 		framerate = props.getRequiredInt("settings", "global", "framerate");
