@@ -7,17 +7,19 @@ package net.electroland.edmonton.core;
  * 
  */
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
-import net.electroland.ea.AnimationManager;
-import net.electroland.utils.ElectrolandProperties;
 import net.miginfocom.swing.MigLayout;
 
 import org.apache.log4j.Logger;
@@ -32,7 +34,8 @@ public class EIAFrame extends JFrame implements ActionListener {
 
 	private int panelWidth,panelHeight;
 
-	private JButton b1;
+	private JButton b1,b2,b3,b4;
+	private ArrayList<JButton> buttons;
 
 	static Logger logger = Logger.getLogger(EIAFrame.class);
 
@@ -44,23 +47,46 @@ public class EIAFrame extends JFrame implements ActionListener {
 		windowWidth = width;
 		windowHeight = height;
 		
-		//setup window
-		this.setVisible(true);
-		this.setSize(windowWidth, windowHeight);
-
 		ep = new EIAPanel(context);
-
-		b1 = new JButton("Entry Shooter");
-		b1.setActionCommand("entryshoot");
-		b1.addActionListener(this);
 		
+		//Font newButtonFont = new Font("Default",Font.PLAIN,13);  
 		
-		//this.setLayout(null);
-		this.setLayout(new MigLayout());
+		buttons = new ArrayList<JButton>();
+		
+		b1 = new JButton("Shooter 1");
+		b1.setActionCommand("shooter1");
+		buttons.add(b1);
+		//b1.addActionListener(this);
+		
+		b2 = new JButton("Big Fill");
+		b2.setActionCommand("bigfill");
+		buttons.add(b2);
+		//b2.addActionListener(this);
+		
+		b3 = new JButton("Easter Egg 1");
+		b3.setActionCommand("egg1");
+		buttons.add(b3);
+		//b3.addActionListener(this);
+		
+		b4 = new JButton("Shooter 2");
+		b4.setActionCommand("shooter2");
+		buttons.add(b4);
+		//b3.addActionListener(this);
+		
+		JPanel bp = new JPanel();
+		bp.setSize(ep.getWidth(),200);
+		bp.setPreferredSize(new Dimension(ep.getWidth(),200));
+		//bp.setBackground(Color.YELLOW);
+		bp.setLayout(new MigLayout("insets 8"));
+		
+		for (JButton b : buttons) {
+			bp.add(b);
+		}
+		
+		this.setLayout(new MigLayout("insets 0"));
 		this.add(ep, "wrap");
-		this.add(b1);
+		this.add(bp);
 		
-
 	    
 		this.addWindowListener(
 				new java.awt.event.WindowAdapter() {
@@ -69,6 +95,18 @@ public class EIAFrame extends JFrame implements ActionListener {
 						close();
 					}
 				});
+		
+		//setup window
+		this.setVisible(true);
+		logger.info("Setting JFrame width to " + ep.calcWidth);
+		this.setSize(ep.calcWidth, windowHeight);
+		this.setPreferredSize(new Dimension(ep.calcWidth,windowHeight));
+	}
+	
+	public void addButtonListener(ActionListener al){
+		for (JButton b : buttons) {
+			b.addActionListener(al);
+		}
 	}
 
 	public void update(){
