@@ -58,16 +58,10 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 	static Logger logger = Logger.getLogger(EIAFrame.class);
 	
 	//constructor
-	public EIAPanel (int w, int h, Hashtable context) {
-		//logger.info(w + " " + h);
-		this.width = w;
-		this.height = h;
+	public EIAPanel (Hashtable context) {
+
 		this.context = context;
-
-		//setBackground(bg);
-		//setSize(w, h);
-		//setPreferredSize(new Dimension(w, h)); // need both SetSize and SetPreferredSize here for some reason
-
+		
 		addMouseMotionListener(this);
 
 
@@ -139,8 +133,18 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 		anim = (AnimationManager)context.get("anim");
 		
 		
-
-
+		// SWING
+		
+		//eventually need to update height here for tiling
+		this.width = (int)(canvas.getDimensions().width*displayScale + (margin*2));
+		this.height = (int)(canvas.getDimensions().height*displayScale + (margin*2));
+		logger.info("EIAPanel dims: " + width + " " + height);
+		
+		setBackground(Color.BLUE);
+		this.setSize(width, height);
+		setPreferredSize(new Dimension(width, height)); // need both SetSize and SetPreferredSize here for some reason
+		
+		
 		logger.info("EIAPanel loaded with displayScale of " + displayScale);
 
 	}
