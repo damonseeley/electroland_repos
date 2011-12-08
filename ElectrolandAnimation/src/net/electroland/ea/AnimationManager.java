@@ -166,11 +166,18 @@ public class AnimationManager {
         g.dispose();
         return stage;
     }
-    public int[] getStagePixels(int x, int y, int width, int height)
+    
+    public static int[] toPixels(Image stage, int width, int height)
     {
-        // return a pixel grab from getStage
-        return null;
+        if (stage instanceof BufferedImage){
+            int[] pixels = new int[width * height];
+            ((BufferedImage)stage).getRGB(0, 0, width, height, pixels, 0, width);
+            return pixels;
+        }else{
+            throw new RuntimeException("Sorry, only works with BufferedImage.");
+        }
     }
+    
     public void setStageColor(Color stageColor)
     {
         this.stageColor = stageColor;
