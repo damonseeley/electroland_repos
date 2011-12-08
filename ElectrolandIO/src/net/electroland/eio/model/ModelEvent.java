@@ -1,10 +1,12 @@
 package net.electroland.eio.model;
 
 import java.util.EventObject;
+import java.util.Map;
 
 public class ModelEvent extends EventObject {
 
     public String watcherName;
+    public Map<String, Object> optionalPostiveDetails;
     /**
      * 
      */
