@@ -55,6 +55,7 @@ public abstract class Clip implements Cloneable{
         return baseDimensions;
     }
 
+    // maybe nice to have a short cut for zero-duration changes without delay?
     protected void processChanges()
     {
         if (currentChange != null)
