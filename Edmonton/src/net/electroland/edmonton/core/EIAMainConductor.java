@@ -5,9 +5,11 @@ package net.electroland.edmonton.core;
  * @author	Damon Seeley & Bradley Geilfuss
  */
 
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Timer;
@@ -19,7 +21,6 @@ import net.electroland.ea.ClipListener;
 import net.electroland.edmonton.core.model.OneEventPerPeriodModelWatcher;
 import net.electroland.eio.IOManager;
 import net.electroland.eio.IOState;
-import net.electroland.eio.IState;
 import net.electroland.eio.model.Model;
 import net.electroland.eio.model.ModelEvent;
 import net.electroland.eio.model.ModelListener;
@@ -27,6 +28,7 @@ import net.electroland.eio.model.ModelWatcher;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.lighting.ELUManager;
+import net.electroland.utils.lighting.InvalidPixelGrabException;
 import net.electroland.utils.lighting.canvas.ELUCanvas2D;
 
 import org.apache.log4j.Logger;
@@ -254,7 +256,17 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 			model.poll();
 
 			//sync the animMgr to ELU here
-			//elu.sync()
+			int[] pixels = new int[anim.getStageDimensions().width * anim.getStageDimensions().height];
+			Image i = anim.getStage();
+			((BufferedImage) i).getRGB(0,0,anim.getStageDimensions().width,anim.getStageDimensions().height, pixels, 0, anim.getStageDimensions().width);
+			
+			try {
+				canvas.sync(pixels);
+				
+			} catch (InvalidPixelGrabException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 			// Update the GUI Panel
 			ef.update();
