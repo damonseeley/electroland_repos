@@ -5,11 +5,9 @@ package net.electroland.edmonton.core;
  * @author	Damon Seeley & Bradley Geilfuss
  */
 
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Timer;
@@ -147,7 +145,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 	@Override
 	public void modelChanged(ModelEvent evt) {
-		logger.info("Model Event: " + evt.getSource());
+		//logger.info("Model Event: " + evt.getSource());
 		// TODO Auto-generated method stub
 
 	}
@@ -255,6 +253,9 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 			model.poll();
 
+			
+			/*
+			// first method
 			//sync the animMgr to ELU here
 			int[] pixels = new int[anim.getStageDimensions().width * anim.getStageDimensions().height];
 			Image i = anim.getStage();
@@ -262,11 +263,23 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 			
 			try {
 				canvas.sync(pixels);
-				
 			} catch (InvalidPixelGrabException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			*/
+			
+			
+			
+			// second method
+			try {
+				canvas.sync(AnimationManager.toPixels(anim.getStage(), anim.getStageDimensions().width, anim.getStageDimensions().height));
+			} catch (InvalidPixelGrabException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
 
 			// Update the GUI Panel
 			ef.update();
