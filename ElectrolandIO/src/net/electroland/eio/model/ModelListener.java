@@ -1,5 +1,5 @@
 package net.electroland.eio.model;
 
 public interface ModelListener {
-    public void eventSeen(ModelEvent evt);
+    public void modelChanged(ModelEvent evt);
 }
