@@ -1,6 +1,5 @@
 package net.electroland.edmonton.core;
 
-import java.util.Collection;
 import java.util.Hashtable;
 
 import net.electroland.ea.AnimationManager;
@@ -8,8 +7,6 @@ import net.electroland.eio.IOManager;
 import net.electroland.eio.IOState;
 import net.electroland.eio.IState;
 import net.electroland.utils.ElectrolandProperties;
-import net.electroland.utils.lighting.ELUManager;
-import net.electroland.utils.lighting.canvas.ELUCanvas2D;
 
 
 
@@ -38,7 +35,6 @@ public class EIAModel {
             state.update();
         }
     }
-
 }
 
 
