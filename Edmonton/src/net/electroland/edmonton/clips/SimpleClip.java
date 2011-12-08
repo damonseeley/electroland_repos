@@ -15,14 +15,12 @@ import org.apache.log4j.Logger;
 public class SimpleClip extends Clip {
 
 	private static Logger logger = Logger.getLogger(SimpleClip.class);
-	int delay;
 	int w,h;
 	long lastRender;
 
 	@Override
 	public void config(ParameterMap primaryParams, Map<String, ParameterMap> extendedParams) {
 
-		delay = 1000 / primaryParams.getRequiredInt("fps");
 		w = primaryParams.getRequiredInt("width");
 		h = primaryParams.getRequiredInt("height");
 	}

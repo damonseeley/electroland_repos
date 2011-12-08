@@ -16,8 +16,13 @@ import java.util.TimerTask;
 import net.electroland.ea.AnimationManager;
 import net.electroland.ea.ClipEvent;
 import net.electroland.ea.ClipListener;
-import net.electroland.edmonton.test.TestModel;
+import net.electroland.edmonton.core.model.OneEventPerPeriodModelWatcher;
 import net.electroland.eio.IOManager;
+import net.electroland.eio.IOState;
+import net.electroland.eio.model.Model;
+import net.electroland.eio.model.ModelEvent;
+import net.electroland.eio.model.ModelListener;
+import net.electroland.eio.model.ModelWatcher;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.lighting.ELUManager;
@@ -25,7 +30,7 @@ import net.electroland.utils.lighting.canvas.ELUCanvas2D;
 
 import org.apache.log4j.Logger;
 
-public class EIAMainConductor extends Thread implements ClipListener, ActionListener {
+public class EIAMainConductor extends Thread implements ClipListener, ActionListener, ModelListener {
 
 	static Logger logger = Logger.getLogger(EIAMainConductor.class);
 
@@ -33,16 +38,18 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 	private ELUManager elu;
 	private ELUCanvas2D canvas;
 	private IOManager eio;
-	private TestModel model;
+	private Model model;
 	private SoundController soundController;
 	private AnimationManager anim;
 
 	public int canvasHeight, canvasWidth;
 	public Hashtable<String, Object> context;
 
-	private Timer startupTestTimer;
+	private Timer startupTestTimer, timedShows;
 
 	public EIAFrame ef;
+	
+	private ModelWatcher test;
 
 	//Thread stuff
 	public static boolean isRunning;
@@ -100,6 +107,14 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		context.put("soundController", soundController);
 
 
+		model = new Model();
+		test = new OneEventPerPeriodModelWatcher(500);
+		IOState i30 = eio.getStateById("i30");
+		//logger.info(i30);
+		//logger.info("Got IOState " + i30.getID() + " location " + i30.getLocation());
+	//	Collection<IState> st = Collection<IState>eio.getStates();
+		//model.addModelWatcher(test, "testWatcher", (IState)eio.getStates());
+		
 
 		ef = new EIAFrame(Integer.parseInt(props.getRequired("settings", "global", "guiwidth")),Integer.parseInt(props.getRequired("settings", "global", "guiheight")),context);
 
@@ -113,9 +128,28 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 		startupTestTimer = new Timer();
 		startupTestTimer.schedule(new startupTests(), 4000);
+		
+		timedShows = new Timer();
+		timedShows.schedule(new timedShowPlayer(),1000);
+
 
 		ef.addButtonListener(this);
 	}
+	
+	
+	
+	/************************* Model Handlers ******************************/
+
+
+	@Override
+	public void modelChanged(ModelEvent evt) {
+		// TODO Auto-generated method stub
+
+	}
+
+	
+	
+	/************************* Test Event Handlers ******************************/
 
 	// handle the actions from test buttons
 	public void actionPerformed(ActionEvent e) {
@@ -129,9 +163,39 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		if ("shooter2".equals(e.getActionCommand())) {
 			Shooter2();
 		}
+		if ("egg1".equals(e.getActionCommand())) {
+			Egg1(200.0);
+		}
 
 	}
+	
+	class startupTests extends TimerTask {
+		public void run() {
+			//startupTestTimer
 
+			// TEST SOUND
+			//soundController.playTestSound("test_1.wav");
+			//soundController.playSingleBay("test_1.wav", 600.0, 1.0f); // plays a sound out of the speaker nearest to the x value provided
+
+			//startupTestTimer.schedule(new startupTests(), 10000);
+		}
+	}
+
+	
+	
+	/************************* Animations ******************************/
+
+
+	class timedShowPlayer extends TimerTask {
+		public void run() {
+			BigFill();
+			//play again in 60s
+			timedShows.schedule(new timedShowPlayer(), 60000);
+			
+		}
+	}
+
+	
 	private void Shooter1() {
 
 		int clip = anim.startClip("testClip", new Rectangle(canvasWidth-2,0,16,16), 1.0);
@@ -145,40 +209,36 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 	}
 
 	private void BigFill() {
-
-		soundController.playSingleBay("test_1.wav", 600.0, 1.0f); // plays a sound out of the speaker nearest to the x value provided
+		//soundController.playSingleBay("test_1.wav", 600.0, 1.0f); // plays a sound out of the speaker nearest to the x value provided
 
 		// TEST CLIP
 		// create clip off stage left
 		int clip = anim.startClip("testClip", new Rectangle(-14,0,16,16), 1.0);
-
 		// expand clip1 to full screen
 		anim.queueClipChange(clip, new Rectangle(0,0,(int)canvasWidth,(int)canvasHeight), null, null, 2000, 0, false);
-
 		// retract clip to right
 		anim.queueClipChange(clip, new Rectangle(canvasWidth,0,16,16), null, null, 3000, 0, true);
-
 	}
 
-	private void Egg1() {
+	private void Egg1(double x) {
+		int startWidth = 2;
+		int endWidth = 48;
+		int clip = anim.startClip("imageClipNoise", new Rectangle((int)x - startWidth/2,0,startWidth,16), 1.0);
+		
+		anim.queueClipChange(clip, new Rectangle((int)x - endWidth/2,0,endWidth,16), null, null, 1000, 0, false);
+		anim.queueClipChange(clip, new Rectangle((int)x - startWidth/2,0,startWidth,16), null, null, 500, 0, true);
 
-	}
-
-
-	class startupTests extends TimerTask {
-		public void run() {
-			//startupTestTimer
-
-			// TEST SOUND
-			//soundController.playTestSound("test_1.wav");
-			//soundController.playSingleBay("test_1.wav", 600.0, 1.0f); // plays a sound out of the speaker nearest to the x value provided
-
-			//startupTestTimer.schedule(new startupTests(), 10000);
-		}
 	}
 
 
 
+
+
+
+
+	
+	/************************* Main Loop ******************************/
+	
 	public void run() {
 		timer.start();
 		curTime = System.currentTimeMillis();
