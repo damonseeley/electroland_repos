@@ -274,6 +274,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 			// second method
 			try {
 				canvas.sync(AnimationManager.toPixels(anim.getStage(), anim.getStageDimensions().width, anim.getStageDimensions().height));
+				elu.syncAllLights();
 			} catch (InvalidPixelGrabException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
