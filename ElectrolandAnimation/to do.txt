@@ -1,5 +1,6 @@
-1.) some kind of command line way to set stuff in motion would be nice.
-2.) implement "changes"
-3.) zindex controls
-4.) clip rect is not implemented
-5.) sync is not tested to elu
+1.) sync is not tested to elu
+2.) implement "change" declarations in properties files
+3.) some kind of command line way to set stuff in motion would be nice.
+4.) z-index controls
+5.) clip rect is not implemented
+6.) allow for nested Clips
