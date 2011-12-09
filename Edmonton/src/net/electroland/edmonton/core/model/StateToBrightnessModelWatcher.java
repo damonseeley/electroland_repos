@@ -29,11 +29,6 @@ public class StateToBrightnessModelWatcher extends ModelWatcher{
     {
         StateToBrightnessModelWatcher.dbrightness = dbrightness;
         StateToBrightnessModelWatcher.ddarkness = ddarkness;
-        brightStates = new Vector<BrightState>();
-        for (IState istate : this.getStates())
-        {
-            brightStates.add(new BrightState(istate));
-        }
     }
 
     /**
@@ -44,7 +39,13 @@ public class StateToBrightnessModelWatcher extends ModelWatcher{
      */
     @Override
     public boolean poll() {
-        // as noted: ALWAYS return an event.
+        if (brightStates == null){
+            brightStates = new Vector<BrightState>();
+            for (IState state : this.getStates())
+            {
+                brightStates.add(new BrightState(state));
+            }
+        }
         return true;
     }
 
