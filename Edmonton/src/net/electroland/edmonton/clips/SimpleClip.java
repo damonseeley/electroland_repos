@@ -40,14 +40,15 @@ public class SimpleClip extends Clip {
 	@Override
 	public Image getFrame(Image image) {
 
-		BufferedImage bi = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_RGB);
-		Graphics g2 = bi.getGraphics();
-		g2.setColor(Color.WHITE);
-		g2.fillRect(0, 0, w, h);
+			BufferedImage bi = new BufferedImage(this.baseDimensions.width, 
+			        this.getBaseDimensions().height, BufferedImage.TYPE_INT_RGB);
+			Graphics g2 = bi.getGraphics();
+			g2.setColor(Color.WHITE);
+			g2.fillRect(0, 0, w, h);
 
-		Graphics g = image.getGraphics();
-		g.drawImage(bi, 0, 0, null);
-		lastRender = System.currentTimeMillis();
+			Graphics g = image.getGraphics();
+			g.drawImage(bi, 0, 0, null);
+			lastRender = System.currentTimeMillis();
 
 		return image;
 	}
