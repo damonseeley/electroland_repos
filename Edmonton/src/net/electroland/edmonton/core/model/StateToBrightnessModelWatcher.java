@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
+import net.electroland.edmonton.clips.BrightPoint;
 import net.electroland.eio.IState;
 import net.electroland.eio.model.ModelWatcher;
 
@@ -58,7 +59,9 @@ public class StateToBrightnessModelWatcher extends ModelWatcher{
         for (BrightState bright : brightStates)
         {
             bright.update();
-            bmap.put(bright.state.getID(), bright.brightness);
+            BrightPoint bp = new BrightPoint(bright.state.getLocation().x,bright.brightness);
+            //bmap.put(bright.state.getID(), bright.brightness); //previous method
+            bmap.put(bright.state.getID(), bp);
         }
         return bmap;
     }
