@@ -46,7 +46,7 @@ public class OneEventPerPeriodModelWatcher extends ModelWatcher {
                     // In this case, we're not passing any optional details.
                     return true;
                 } else {
-                	logger.info("OneEventPerPeriodModelWatcher: not enough time elapsed to fire");
+                	//logger.info("OneEventPerPeriodModelWatcher: not enough time elapsed to fire");
                 }
             }
         }
