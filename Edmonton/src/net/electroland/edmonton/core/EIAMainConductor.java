@@ -9,7 +9,9 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -18,7 +20,7 @@ import net.electroland.ea.ClipEvent;
 import net.electroland.ea.ClipListener;
 import net.electroland.edmonton.core.model.OneEventPerPeriodModelWatcher;
 import net.electroland.eio.IOManager;
-import net.electroland.eio.IOState;
+import net.electroland.eio.IState;
 import net.electroland.eio.model.Model;
 import net.electroland.eio.model.ModelEvent;
 import net.electroland.eio.model.ModelListener;
@@ -40,21 +42,21 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 	private boolean updateLighting = true;
 	private ELUCanvas2D canvas;
 	private IOManager eio;
-	
+
 	private SoundController soundController;
 	private AnimationManager anim;
 
-	
+
 	public int canvasHeight, canvasWidth;
 	public Hashtable<String, Object> context;
 
 	private Timer startupTestTimer, timedShows;
 
 	public EIAFrame ef;
-	
+
 	private Model model;
-	private ModelWatcher test;
-	FakeModel fakemodel;
+	private ModelWatcher tracer,entry1,exit1,entry2,exit2,egg1,egg2,egg3,egg4;
+	private FakeModel fakemodel;
 
 	//Thread stuff
 	public static boolean isRunning;
@@ -78,7 +80,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		eio = new IOManager();
 		try {
 			elu.load("EIA-ELU.properties");
-			eio.load("EIA-EIO.properties");
+			eio.load("EIA-EIO-playback.properties");
 			eio.start();
 		} catch (OptionException e) {
 			e.printStackTrace();
@@ -89,7 +91,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		}
 		context.put("eio",eio);
 		context.put("elu",elu);
-		
+
 		updateLighting = Boolean.parseBoolean(props.getOptional("settings", "global", "updateLighting"));
 
 		/*
@@ -115,18 +117,17 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 
 		model = new Model();
-		test = new OneEventPerPeriodModelWatcher(500);
-		//IOState i30 = eio.getStateById("i30");
-		//logger.info(i30);
-		//logger.info("Got IOState " + i30.getID() + " location " + i30.getLocation());
-	//	Collection<IState> st = Collection<IState>eio.getStates();
-		model.addModelWatcher(test, "testWatcher", eio.getIStates());
 		model.addModelListener(this);
+
+		//setup model watchers
+		tracer = new OneEventPerPeriodModelWatcher(500);
+		model.addModelWatcher(tracer, "tracer", eio.getIStates());
 		
-		
+
+
 		fakemodel = new FakeModel();
 		fakemodel.addModelListener(this);
-		
+
 
 		ef = new EIAFrame(Integer.parseInt(props.getRequired("settings", "global", "guiwidth")),Integer.parseInt(props.getRequired("settings", "global", "guiheight")),context);
 
@@ -140,28 +141,47 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 		startupTestTimer = new Timer();
 		startupTestTimer.schedule(new startupTests(), 4000);
-		
+
 		timedShows = new Timer();
 		timedShows.schedule(new timedShowPlayer(),60000);
 
 
 		ef.addButtonListener(this);
 	}
-	
-	
-	
+
+
+
 	/************************* Model Handlers ******************************/
 
 
 	@Override
 	public void modelChanged(ModelEvent evt) {
-		logger.info("Model Event: " + evt);
+		logger.info("Model Event: " + evt.watcherName + " " + evt.getSource());
+		
+		if (evt.watcherName == "tracer"){
+			ModelWatcher mw = (ModelWatcher)evt.getSource();
+			ArrayList<String> xs = new ArrayList<String>();
+			for (Iterator<IState> it = mw.getStates().iterator (); it.hasNext (); ) {
+				IState is = (IState)it.next();
+				if (is.getState()){
+					xs.add(is.getID());
+				}
+			}
+			for (Iterator<String> it2 = xs.iterator (); it2.hasNext (); ) {
+				//double tracerx = eio.getStateById(id)
+			}
+			logger.info(xs);
+		}
+		
+
+
+
 		// TODO Auto-generated method stub
 
 	}
 
-	
-	
+
+
 	/************************* Test Event Handlers ******************************/
 
 	// handle the actions from test buttons
@@ -182,9 +202,9 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		if ("tracer".equals(e.getActionCommand())) {
 			Tracer(Math.random()*635);
 		}
-		
+
 	}
-	
+
 	class startupTests extends TimerTask {
 		public void run() {
 			//startupTestTimer
@@ -197,8 +217,8 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		}
 	}
 
-	
-	
+
+
 	/************************* Animations ******************************/
 
 
@@ -207,11 +227,11 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 			BigFill();
 			//play again in 60s
 			timedShows.schedule(new timedShowPlayer(), 60000);
-			
+
 		}
 	}
 
-	
+
 	private void Shooter1() {
 
 		int clip = anim.startClip("testClip", new Rectangle(canvasWidth-2,0,16,16), 1.0);
@@ -240,16 +260,16 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		int startWidth = 2;
 		int endWidth = 48;
 		int clip = anim.startClip("imageClipNoise", new Rectangle((int)x - startWidth/2,0,startWidth,16), 1.0);
-		
+
 		anim.queueClipChange(clip, new Rectangle((int)x - endWidth/2,0,endWidth,16), null, null, 1000, 0, false);
 		anim.queueClipChange(clip, new Rectangle((int)x - startWidth/2,0,startWidth,16), null, null, 500, 0, true);
 
 	}
-	
+
 	private void Tracer(double x) {
 		int blockWidth = 10;
 		int clip = anim.startClip("testClip", new Rectangle((int)x - blockWidth/2,0,blockWidth,16), 1.0);
-		
+
 		anim.queueClipChange(clip, null, null, 0.0, 4000, 1000, true);
 
 	}
@@ -260,9 +280,9 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 
 
-	
+
 	/************************* Main Loop ******************************/
-	
+
 	public void run() {
 		timer.start();
 		curTime = System.currentTimeMillis();
@@ -288,8 +308,8 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 				}
 			}
 
-			
-			
+
+
 
 			// Update the GUI Panel
 			ef.update();
