@@ -34,7 +34,7 @@ public class EIAFrame extends JFrame implements ActionListener {
 
 	private int panelWidth,panelHeight;
 
-	private JButton b1,b2,b3,b4;
+	private JButton b1,b2,b3,b4,b5,b6,b7;
 	private ArrayList<JButton> buttons;
 
 	static Logger logger = Logger.getLogger(EIAFrame.class);
@@ -71,6 +71,11 @@ public class EIAFrame extends JFrame implements ActionListener {
 		b4 = new JButton("Shooter 2");
 		b4.setActionCommand("shooter2");
 		buttons.add(b4);
+		//b3.addActionListener(this);
+		
+		b5 = new JButton("Tracer");
+		b5.setActionCommand("tracer");
+		buttons.add(b5);
 		//b3.addActionListener(this);
 		
 		JPanel bp = new JPanel();
