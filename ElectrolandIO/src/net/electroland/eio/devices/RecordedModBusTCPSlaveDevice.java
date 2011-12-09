@@ -42,12 +42,13 @@ public class RecordedModBusTCPSlaveDevice extends IODevice {
 
             // read a line
             // 192.168.247.23:00000000 00000000
+            // 622 192.168.247.29:00000000 00000000 
             String[] data;
             try {
                 data = reader.readLine().split(":");
 
                 data[1] = data[1].replace(" ", "");
-                if (address.equals(data[0])){
+                if (address.endsWith(data[0])){
                     //System.out.println(data[0] + " : " + data[1]);
                     boolean[] bits = toBits(data[1]);
                     for (int i=0; i < bits.length; i++)
