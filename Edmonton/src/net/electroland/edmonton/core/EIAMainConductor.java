@@ -37,12 +37,14 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 	private ElectrolandProperties props;
 	private ELUManager elu;
+	private boolean updateLighting = true;
 	private ELUCanvas2D canvas;
 	private IOManager eio;
-	private Model model;
+	
 	private SoundController soundController;
 	private AnimationManager anim;
 
+	
 	public int canvasHeight, canvasWidth;
 	public Hashtable<String, Object> context;
 
@@ -50,7 +52,9 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 	public EIAFrame ef;
 	
+	private Model model;
 	private ModelWatcher test;
+	FakeModel fakemodel;
 
 	//Thread stuff
 	public static boolean isRunning;
@@ -85,6 +89,8 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		}
 		context.put("eio",eio);
 		context.put("elu",elu);
+		
+		updateLighting = Boolean.parseBoolean(props.getOptional("settings", "global", "updateLighting"));
 
 		/*
 		 * create model and add watchers and listeners
@@ -110,12 +116,16 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 		model = new Model();
 		test = new OneEventPerPeriodModelWatcher(500);
-		IOState i30 = eio.getStateById("i30");
+		//IOState i30 = eio.getStateById("i30");
 		//logger.info(i30);
 		//logger.info("Got IOState " + i30.getID() + " location " + i30.getLocation());
 	//	Collection<IState> st = Collection<IState>eio.getStates();
 		model.addModelWatcher(test, "testWatcher", eio.getIStates());
 		model.addModelListener(this);
+		
+		
+		fakemodel = new FakeModel();
+		fakemodel.addModelListener(this);
 		
 
 		ef = new EIAFrame(Integer.parseInt(props.getRequired("settings", "global", "guiwidth")),Integer.parseInt(props.getRequired("settings", "global", "guiheight")),context);
@@ -145,7 +155,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 	@Override
 	public void modelChanged(ModelEvent evt) {
-		//logger.info("Model Event: " + evt.getSource());
+		logger.info("Model Event: " + evt);
 		// TODO Auto-generated method stub
 
 	}
@@ -169,7 +179,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		if ("egg1".equals(e.getActionCommand())) {
 			Egg1(200.0);
 		}
-
+		
 	}
 	
 	class startupTests extends TimerTask {
@@ -252,33 +262,21 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 			 */
 
 			model.poll();
+			// generate some fake events
+			fakemodel.poll();
 
-			
-			/*
-			// first method
-			//sync the animMgr to ELU here
-			int[] pixels = new int[anim.getStageDimensions().width * anim.getStageDimensions().height];
-			Image i = anim.getStage();
-			((BufferedImage) i).getRGB(0,0,anim.getStageDimensions().width,anim.getStageDimensions().height, pixels, 0, anim.getStageDimensions().width);
-			
-			try {
-				canvas.sync(pixels);
-			} catch (InvalidPixelGrabException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
+			// ELU
+			if (updateLighting){
+				try {
+					canvas.sync(AnimationManager.toPixels(anim.getStage(), anim.getStageDimensions().width, anim.getStageDimensions().height));
+					elu.syncAllLights();
+				} catch (InvalidPixelGrabException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
-			*/
-			
-			
-			
-			// second method
-			try {
-				canvas.sync(AnimationManager.toPixels(anim.getStage(), anim.getStageDimensions().width, anim.getStageDimensions().height));
-				elu.syncAllLights();
-			} catch (InvalidPixelGrabException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+
 			
 			
 
