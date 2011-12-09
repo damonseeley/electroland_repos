@@ -60,7 +60,7 @@ public abstract class IOState {
         sb.append(", tags=");
         sb.append(tags);
         sb.append(", device.name=");
-        sb.append(device.getName());
+        sb.append(device != null ? device.getName() : null);
         sb.append('}');
         return sb.toString();
     }
