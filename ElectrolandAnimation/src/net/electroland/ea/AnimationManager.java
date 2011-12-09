@@ -118,6 +118,10 @@ public class AnimationManager {
         liveClips.get(id).queueChange(area, clip, alpha, durationMillis, 
                                       delayMillis, deleteWhenDone);
     }
+    public Clip getClip(int i)
+    {
+        return liveClips.get(i);
+    }
 
     public void killClip(int i)
     {
