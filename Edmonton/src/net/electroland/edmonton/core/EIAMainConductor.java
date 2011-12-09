@@ -19,6 +19,7 @@ import net.electroland.ea.AnimationManager;
 import net.electroland.ea.ClipEvent;
 import net.electroland.ea.ClipListener;
 import net.electroland.edmonton.core.model.OneEventPerPeriodModelWatcher;
+import net.electroland.edmonton.core.model.StateToBrightnessModelWatcher;
 import net.electroland.eio.IOManager;
 import net.electroland.eio.IOState;
 import net.electroland.eio.IState;
@@ -56,7 +57,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 	public EIAFrame ef;
 	
 	private Model model;
-	private ModelWatcher tracer;
+	private ModelWatcher stateToBright;
 	FakeModel fakemodel;
 
 	//Thread stuff
@@ -120,8 +121,8 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		model = new Model();
 		model.addModelListener(this);
 		
-		tracer = new OneEventPerPeriodModelWatcher(500);
-		model.addModelWatcher(tracer, "tracer", eio.getIStates());
+		stateToBright = new StateToBrightnessModelWatcher(64,64); //starting with vals of 64 which is what was used in TestConductor (single value)
+		model.addModelWatcher(stateToBright, "stateToBright", eio.getIStates());
 		
 		
 		
@@ -157,8 +158,16 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 	@Override
 	public void modelChanged(ModelEvent evt) {
 		
-		/** BRADLEY, PROBLEM IS IN HERE
-		 * 
+		if (evt.watcherName == "stateToBright"){
+			logger.info(evt.optionalPostiveDetails);
+		}
+		
+		
+		
+		
+		
+		
+		/* previous attempt at state->brightness mapping
 		if (evt.watcherName == "tracer"){
 			ModelWatcher mw = (ModelWatcher)evt.getSource();
 			ArrayList<String> xs = new ArrayList<String>();
@@ -169,12 +178,11 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 				}
 			}
 			for (Iterator<String> it2 = xs.iterator (); it2.hasNext (); ) {
-				//double tracerx = eio.getStateById(id)
+				String ss = it2.next();
 			}
 			logger.info(xs);
 		}
-		*
-		**/
+		*/
 		
 
 	}
