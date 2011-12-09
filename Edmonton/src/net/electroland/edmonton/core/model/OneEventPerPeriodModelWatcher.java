@@ -2,11 +2,16 @@ package net.electroland.edmonton.core.model;
 
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
+import net.electroland.edmonton.core.EIAMainConductor;
 import net.electroland.eio.IState;
 import net.electroland.eio.model.ModelWatcher;
 
 public class OneEventPerPeriodModelWatcher extends ModelWatcher {
 
+	static Logger logger = Logger.getLogger(OneEventPerPeriodModelWatcher.class);
+	
     private long periodMillis, timeSinceFired = 0;
 
     /**
@@ -40,6 +45,8 @@ public class OneEventPerPeriodModelWatcher extends ModelWatcher {
                     // and let the Model know that we saw something.
                     // In this case, we're not passing any optional details.
                     return true;
+                } else {
+                	logger.info("OneEventPerPeriodModelWatcher: not enough time elapsed to fire");
                 }
             }
         }
