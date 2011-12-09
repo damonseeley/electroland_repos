@@ -52,9 +52,6 @@ public class ModBusTCPSlaveDevice extends IODevice {
                 //  (need to update syntax to reference words)
                 byte[] b = data[0].toBytes();
 
-//                StringBuffer sb = new StringBuffer(address).append(':').append(Util.bytesToHex(b, b.length));
-//                logger.debug(sb);
-
                 BitVector bv = BitVector.createBitVector(b);
                 StringBuffer sb = new StringBuffer(address).append(':');
                 for (int i=0; i < bv.size(); i++)
