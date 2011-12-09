@@ -10,13 +10,9 @@ import net.electroland.eio.IOState;
 import net.electroland.eio.IState;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.Util;
-import net.wimpi.modbus.util.BitVector;
-
-import org.apache.log4j.Logger;
 
 public class RecordedModBusTCPSlaveDevice extends IODevice {
 
-    private static Logger logger = Logger.getLogger(RecordedModBusTCPSlaveDevice.class);
     protected String address;
     protected Collection <ModBusTCPSlaveDeviceRegister> registers;
     protected String filename;
