@@ -53,7 +53,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 	
 	private Model model;
 	private ModelWatcher stateToBright;
-	FakeModel fakemodel;
+	//private FakeModel fakemodel;
 	
 	private int stateToBrightnessClip;
 
@@ -118,14 +118,16 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		model = new Model();
 		model.addModelListener(this);
 		
+		//Create watchers
+		int stateToBrightnessClip = anim.startClip("stateToBrightness", new Rectangle(0,0,canvasWidth,canvasHeight), 1.0);
 		stateToBright = new StateToBrightnessModelWatcher(64,2); //starting with vals of 64 which is what was used in TestConductor (single value)
 		model.addModelWatcher(stateToBright, "stateToBright", eio.getIStates());
 		
-		int stateToBrightnessClip = anim.startClip("stateToBrightness", new Rectangle(0,0,canvasWidth,canvasHeight), 1.0);
 		
 		
-		fakemodel = new FakeModel();
-		fakemodel.addModelListener(this);
+		
+		//fakemodel = new FakeModel();
+		//fakemodel.addModelListener(this);
 		
 
 		ef = new EIAFrame(Integer.parseInt(props.getRequired("settings", "global", "guiwidth")),Integer.parseInt(props.getRequired("settings", "global", "guiheight")),context);
