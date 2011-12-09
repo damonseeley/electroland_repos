@@ -39,7 +39,7 @@ public class TestConductor extends JComponent implements MouseMotionListener{
         eio = new IOManager();
         try {
             elu.load("EIA-ELU.properties");
-            eio.load("EIA-EIO.properties");
+            eio.load("EIA-EIO-playback.properties");
             eio.start();
             model = new TestModel(eio.getStates(), dbrightness);
         } catch (OptionException e) {
