@@ -9,7 +9,9 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -17,8 +19,10 @@ import net.electroland.ea.AnimationManager;
 import net.electroland.ea.ClipEvent;
 import net.electroland.ea.ClipListener;
 import net.electroland.edmonton.clips.StateToBrightnessClip;
+import net.electroland.edmonton.core.model.OneEventPerPeriodModelWatcher;
 import net.electroland.edmonton.core.model.StateToBrightnessModelWatcher;
 import net.electroland.eio.IOManager;
+import net.electroland.eio.IState;
 import net.electroland.eio.model.Model;
 import net.electroland.eio.model.ModelEvent;
 import net.electroland.eio.model.ModelListener;
@@ -52,7 +56,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 	public EIAFrame ef;
 	
 	private Model model;
-	private ModelWatcher stateToBright;
+	private ModelWatcher stateToBright,entry1,exit1,entry2,exit2,egg1,egg2,egg3,egg4;
 	//private FakeModel fakemodel;
 	
 	private int stateToBrightnessClip;
@@ -74,7 +78,6 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		props = new ElectrolandProperties(propsFileName);
 		context.put("props",props);
 
-
 		elu = new ELUManager();
 		eio = new IOManager();
 		try {
@@ -93,10 +96,6 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		
 		updateLighting = Boolean.parseBoolean(props.getOptional("settings", "global", "updateLighting"));
 
-		/*
-		 * create model and add watchers and listeners
-		 */
-
 		canvas = (ELUCanvas2D)elu.getCanvas("EIAspan");
 		canvasHeight = (int)canvas.getDimensions().getHeight();
 		canvasWidth = (int)canvas.getDimensions().getWidth();
@@ -114,60 +113,168 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		soundController = new SoundController(context);
 		context.put("soundController", soundController);
 
-
+		
+		/******** Model, Watchers & Timers ********/
 		model = new Model();
 		model.addModelListener(this);
+		createModelWatchers();
 		
-		//Create watchers
-		int stateToBrightnessClip = anim.startClip("stateToBrightness", new Rectangle(0,0,canvasWidth,canvasHeight), 1.0);
-		stateToBright = new StateToBrightnessModelWatcher(64,2); //starting with vals of 64 which is what was used in TestConductor (single value)
-		model.addModelWatcher(stateToBright, "stateToBright", eio.getIStates());
-		
-		
-		
-		
-		//fakemodel = new FakeModel();
-		//fakemodel.addModelListener(this);
-		
-
-		ef = new EIAFrame(Integer.parseInt(props.getRequired("settings", "global", "guiwidth")),Integer.parseInt(props.getRequired("settings", "global", "guiheight")),context);
-
-		// Thread setup
-		framerate = props.getRequiredInt("settings", "global", "framerate");
-
-		isRunning = true;
-		timer = new FrameTimer(framerate);
-		start();
-		logger.info("EIA started up at framerate = " + framerate);
-
 		startupTestTimer = new Timer();
 		startupTestTimer.schedule(new startupTests(), 4000);
 		
 		timedShows = new Timer();
 		timedShows.schedule(new timedShowPlayer(),60000);
 
+		//fakemodel = new FakeModel();
+		//fakemodel.addModelListener(this);
+		
 
+		/******** GUI ********/
+		ef = new EIAFrame(Integer.parseInt(props.getRequired("settings", "global", "guiwidth")),Integer.parseInt(props.getRequired("settings", "global", "guiheight")),context);
 		ef.addButtonListener(this);
+		
+		
+		/******** Thread Setup ********/
+		framerate = props.getRequiredInt("settings", "global", "framerate");
+		isRunning = true;
+		timer = new FrameTimer(framerate);
+		start();
+		logger.info("EIA started up at framerate = " + framerate);
 	}
+	
+	
+	/************************* Test Event Handlers ******************************/
+
+	// handle the actions from test buttons
+	public void actionPerformed(ActionEvent e) {
+		logger.info(e.getActionCommand());
+		
+		if ("bigfill".equals(e.getActionCommand())) {
+			BigFill();
+		}
+		if ("tracer".equals(e.getActionCommand())) {
+			Tracer(Math.random()*635);
+		}
+		if ("entry1".equals(e.getActionCommand())) {
+			Entry1Shooter();
+		}
+		if ("exit1".equals(e.getActionCommand())) {
+			Exit1Shooter();
+		}
+		if ("egg1".equals(e.getActionCommand())) {
+			Egg1(200.0);
+		}
+		if ("egg2".equals(e.getActionCommand())) {
+			//Egg1(200.0);
+		}
+		if ("egg3".equals(e.getActionCommand())) {
+			//Egg1(200.0);
+		}
+		if ("egg4".equals(e.getActionCommand())) {
+			//Egg1(200.0);
+		}
+		if ("entry2".equals(e.getActionCommand())) {
+			Entry2Shooter();
+		}
+		if ("exit2".equals(e.getActionCommand())) {
+			Exit2Shooter();
+		}
+	}
+	
+	class startupTests extends TimerTask {
+		public void run() {
+			//startupTestTimer
+			// TEST SOUND
+			//soundController.playTestSound("test_1.wav");
+			//soundController.playSingleBay("test_1.wav", 600.0, 1.0f); // plays a sound out of the speaker nearest to the x value provide
+			//startupTestTimer.schedule(new startupTests(), 10000);
+		}
+	}
+
 	
 	
 	
 	/************************* Model Handlers ******************************/
+	
+	private void createModelWatchers(){
+		int stateToBrightnessClip = anim.startClip("stateToBrightness", new Rectangle(0,0,canvasWidth,canvasHeight), 1.0);
+		int maxBright = 192; //max brightness for pathtracer
+		stateToBright = new StateToBrightnessModelWatcher(64,2,maxBright); //starting with vals of 64 which is what was used in TestConductor (single value)
+		model.addModelWatcher(stateToBright, "stateToBright", eio.getIStates());
+		
+		entry1 = new OneEventPerPeriodModelWatcher(500);
+		ArrayList<IState> entry1states = new ArrayList<IState>();
+		entry1states.add(eio.getIStateById("i1"));
+		model.addModelWatcher(entry1, "entry1", entry1states);
+		
+		exit1 = new OneEventPerPeriodModelWatcher(500);
+		ArrayList<IState> exit1states = new ArrayList<IState>();
+		exit1states.add(eio.getIStateById("i39"));
+		model.addModelWatcher(exit1, "exit1", exit1states);
+		
+		entry2 = new OneEventPerPeriodModelWatcher(500);
+		ArrayList<IState> entry2states = new ArrayList<IState>();
+		entry2states.add(eio.getIStateById("i40"));
+		model.addModelWatcher(entry2, "entry2", entry2states);
+		
+		exit2 = new OneEventPerPeriodModelWatcher(500);
+		ArrayList<IState> exit2states = new ArrayList<IState>();
+		exit2states.add(eio.getIStateById("i71"));
+		model.addModelWatcher(exit2, "exit2", exit2states);
+		
+		egg1 = new OneEventPerPeriodModelWatcher(500);
+		ArrayList<IState> egg1states = new ArrayList<IState>();
+		//egg1states.add(eio.getIStateById("i13"));
+		egg1states.add(eio.getIStateById("i4"));
+		model.addModelWatcher(egg1, "egg1", egg1states);
+		
+		egg2 = new OneEventPerPeriodModelWatcher(500);
+		ArrayList<IState> egg2states = new ArrayList<IState>();
+		egg2states.add(eio.getIStateById("i26"));
+		model.addModelWatcher(egg2, "egg2", egg2states);
+		
+		egg3 = new OneEventPerPeriodModelWatcher(500);
+		ArrayList<IState> egg3states = new ArrayList<IState>();
+		egg3states.add(eio.getIStateById("i50"));
+		model.addModelWatcher(egg3, "egg3", egg3states);
+		
+		egg4 = new OneEventPerPeriodModelWatcher(500);
+		ArrayList<IState> egg4states = new ArrayList<IState>();
+		egg4states.add(eio.getIStateById("i60"));
+		model.addModelWatcher(egg4, "egg4", egg4states);
+	}
 
 
 	@Override
 	public void modelChanged(ModelEvent evt) {
 		
 		if (evt.watcherName == "stateToBright"){
-			//logger.info(evt.optionalPostiveDetails);
-			((StateToBrightnessClip) anim.getClip(stateToBrightnessClip)).setBrightValues(evt.optionalPostiveDetails);
+			
+			//((StateToBrightnessClip) anim.getClip(stateToBrightnessClip)).setBrightValues(evt.optionalPostiveDetails);
+			
+		} else if (evt.watcherName == "entry1"){
+			Entry1Shooter();
+		} else if (evt.watcherName == "exit1"){
+			Exit1Shooter();
+		} else if (evt.watcherName == "entry2"){
+			Entry2Shooter();
+		} else if (evt.watcherName == "exit2"){
+			Exit2Shooter();
+		} else if (evt.watcherName == "egg1"){
+			ModelWatcher mw = (ModelWatcher)evt.getSource();
+			for (Iterator<IState> it = mw.getStates().iterator (); it.hasNext (); ) {
+				IState is = (IState)it.next();
+				Egg3(is.getLocation().x);
+			}
+		} else if (evt.watcherName == "egg2"){
+			
+		} else if (evt.watcherName == "egg3"){
+			
+		} else if (evt.watcherName == "egg4"){
+			
 		}
 		
-		
-		
-		
-		
-		
+
 		/* previous attempt at state->brightness mapping
 		if (evt.watcherName == "tracer"){
 			ModelWatcher mw = (ModelWatcher)evt.getSource();
@@ -189,41 +296,6 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 	}
 
 	
-	
-	/************************* Test Event Handlers ******************************/
-
-	// handle the actions from test buttons
-	public void actionPerformed(ActionEvent e) {
-		logger.info(e.getActionCommand());
-		if ("shooter1".equals(e.getActionCommand())) {
-			Shooter1();
-		}
-		if ("bigfill".equals(e.getActionCommand())) {
-			BigFill();
-		}
-		if ("shooter2".equals(e.getActionCommand())) {
-			Shooter2();
-		}
-		if ("egg1".equals(e.getActionCommand())) {
-			Egg1(200.0);
-		}
-		if ("tracer".equals(e.getActionCommand())) {
-			Tracer(Math.random()*635);
-		}
-		
-	}
-	
-	class startupTests extends TimerTask {
-		public void run() {
-			//startupTestTimer
-
-			// TEST SOUND
-			//soundController.playTestSound("test_1.wav");
-			//soundController.playSingleBay("test_1.wav", 600.0, 1.0f); // plays a sound out of the speaker nearest to the x value provided
-
-			//startupTestTimer.schedule(new startupTests(), 10000);
-		}
-	}
 
 	
 	
@@ -240,24 +312,31 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 	}
 
 	
-	private void Shooter1() {
-
-		int clip = anim.startClip("testClip", new Rectangle(canvasWidth-2,0,16,16), 1.0);
-		anim.queueClipChange(clip, new Rectangle(280,0,48,16), null, 0.0, 1400, 0, true);
+	int shootEndWidth = 36;
+	private void Entry1Shooter() {
+		int clip = anim.startClip("simpleClip16", new Rectangle(canvasWidth-2,0,16,16), 1.0);
+		//anim.queueClipChange(clip, new Rectangle(280,0,shootEndWidth,16), null, 0.0, 1400, 0, true);
+		anim.queueClipChange(clip, new Rectangle((canvasWidth-2-280/2),0,shootEndWidth/2,16), null, 1.0, 600, 0, false);
+		anim.queueClipChange(clip, new Rectangle(280,0,shootEndWidth,16), null, 0.0, 700, 0, true);
+	}
+	private void Exit1Shooter() {
+		int clip = anim.startClip("simpleClip16", new Rectangle(340,0,16,16), 1.0);
+		anim.queueClipChange(clip, new Rectangle(canvasWidth+16,0,shootEndWidth,16), null, 0.0, 1400, 0, true);
+	}
+	private void Entry2Shooter() {
+		int clip = anim.startClip("simpleClip16", new Rectangle(240,0,16,16), 1.0);
+		anim.queueClipChange(clip, new Rectangle(0,0,shootEndWidth,16), null, 0.0, 1400, 0, true);
+	}
+	private void Exit2Shooter() {
+		int clip = anim.startClip("simpleClip16", new Rectangle(0,0,16,16), 1.0);
+		anim.queueClipChange(clip, new Rectangle(240,0,shootEndWidth,16), null, 0.0, 1400, 0, true);
 	}
 
-	private void Shooter2() {
-
-		int clip = anim.startClip("testClip", new Rectangle(250,0,16,16), 1.0);
-		anim.queueClipChange(clip, new Rectangle(-50,0,48,16), null, 0.0, 1200, 0, true);
-	}
 
 	private void BigFill() {
 		//soundController.playSingleBay("test_1.wav", 600.0, 1.0f); // plays a sound out of the speaker nearest to the x value provided
-
-		// TEST CLIP
 		// create clip off stage left
-		int clip = anim.startClip("testClip", new Rectangle(-14,0,16,16), 1.0);
+		int clip = anim.startClip("simpleClip16", new Rectangle(-14,0,16,16), 1.0);
 		// expand clip1 to full screen
 		anim.queueClipChange(clip, new Rectangle(0,0,(int)canvasWidth,(int)canvasHeight), null, null, 2000, 0, false);
 		// retract clip to right
@@ -266,12 +345,29 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 	private void Egg1(double x) {
 		int startWidth = 2;
-		int endWidth = 48;
-		int clip = anim.startClip("imageClipNoise", new Rectangle((int)x - startWidth/2,0,startWidth,16), 1.0);
+		int endWidth = 64;
+		int clip = anim.startClip("simpleClip16", new Rectangle((int)x - startWidth/2,0,startWidth,16), 1.0);
 		
-		anim.queueClipChange(clip, new Rectangle((int)x - endWidth/2,0,endWidth,16), null, null, 1000, 0, false);
-		anim.queueClipChange(clip, new Rectangle((int)x - startWidth/2,0,startWidth,16), null, null, 500, 0, true);
-
+		anim.queueClipChange(clip, new Rectangle((int)x - endWidth/2,0,endWidth,16), null, null, 400, 0, false);
+		anim.queueClipChange(clip, new Rectangle((int)x - startWidth/2,0,startWidth,16), null, null, 400, 0, true);
+		logger.info("Created Egg Expand at x = " + x);
+	}
+	
+	private void Egg2(double x){
+		int clip = anim.startClip("imageClipWave", new Rectangle((int)x,0,64,16), 1.0);
+		
+		//clip mask not working?
+		//anim.queueClipChange(clip, new Rectangle((int)x - 64/2,0,64,16), new Rectangle((int)x - 8,0,16,16), 1.0, 5, 0, false);
+		
+		anim.queueClipChange(clip, new Rectangle((int)x - 32,0,32,16), null, 1.0, 800, 0, false);
+		anim.queueClipChange(clip, null, null, 0.0, 300, 0, true);
+		logger.info("Created Egg Wave at x = " + x);
+	}
+	private void Egg3(double x){
+		int clip = anim.startClip("sparkleClip32", new Rectangle((int)x-16,0,32,16), 1.0);
+		anim.queueClipChange(clip, new Rectangle((int)x-8,0,16,16), null, 0.0, 1500, 0, false); //make it smaller
+		anim.queueClipChange(clip, null, null, 0.0, 500, 0, true); //fadeout
+		logger.info("Created Egg Sparkle at x = " + x);
 	}
 	
 	private void Tracer(double x) {
@@ -285,9 +381,6 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 
 
-
-
-
 	
 	/************************* Main Loop ******************************/
 	
@@ -296,14 +389,8 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		curTime = System.currentTimeMillis();
 
 		while (isRunning) {
-			/*
-			 * DO STUFF
-			 */
 
 			model.poll();
-			// generate some fake events
-			//fakemodel.poll();
-
 
 			// ELU
 			if (updateLighting){
@@ -315,9 +402,6 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 					e.printStackTrace();
 				}
 			}
-
-			
-			
 
 			// Update the GUI Panel
 			ef.update();

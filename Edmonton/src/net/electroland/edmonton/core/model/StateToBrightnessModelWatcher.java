@@ -12,6 +12,7 @@ public class StateToBrightnessModelWatcher extends ModelWatcher{
 
     public static int dbrightness, ddarkness;
     Vector<BrightState> brightStates;
+    public int maxBright;
 
     /**
      * This watcher replicates the behavior of 
@@ -25,10 +26,11 @@ public class StateToBrightnessModelWatcher extends ModelWatcher{
      * 
      * @param ddarkness - how fast it ramps down when the person leaves.
      */
-    public StateToBrightnessModelWatcher(int dbrightness, int ddarkness)
+    public StateToBrightnessModelWatcher(int dbrightness, int ddarkness, int max)
     {
         StateToBrightnessModelWatcher.dbrightness = dbrightness;
         StateToBrightnessModelWatcher.ddarkness = ddarkness;
+        this.maxBright = max;
     }
 
     /**
@@ -43,7 +45,7 @@ public class StateToBrightnessModelWatcher extends ModelWatcher{
             brightStates = new Vector<BrightState>();
             for (IState state : this.getStates())
             {
-                brightStates.add(new BrightState(state));
+                brightStates.add(new BrightState(state,maxBright));
             }
         }
         return true;
@@ -72,17 +74,19 @@ class BrightState
 {
     IState state;
     int brightness;
+    int maxBright;
  
-    public BrightState(IState state){
+    public BrightState(IState state, int max){
         this.state = state;
+        this.maxBright = max;
     }
     public void update()
     {
         if (state.getState()){
             // fade on
             brightness += StateToBrightnessModelWatcher.dbrightness;
-            if (brightness > 255){
-                brightness = 255;
+            if (brightness > maxBright){
+                brightness = maxBright;
             }
         }else{
             // fade off
