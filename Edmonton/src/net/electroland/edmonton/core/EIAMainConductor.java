@@ -9,20 +9,16 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import net.electroland.ea.AnimationManager;
 import net.electroland.ea.ClipEvent;
 import net.electroland.ea.ClipListener;
-import net.electroland.edmonton.core.model.OneEventPerPeriodModelWatcher;
+import net.electroland.edmonton.clips.StateToBrightnessClip;
 import net.electroland.edmonton.core.model.StateToBrightnessModelWatcher;
 import net.electroland.eio.IOManager;
-import net.electroland.eio.IOState;
-import net.electroland.eio.IState;
 import net.electroland.eio.model.Model;
 import net.electroland.eio.model.ModelEvent;
 import net.electroland.eio.model.ModelListener;
@@ -47,7 +43,6 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 	
 	private SoundController soundController;
 	private AnimationManager anim;
-
 	
 	public int canvasHeight, canvasWidth;
 	public Hashtable<String, Object> context;
@@ -59,6 +54,8 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 	private Model model;
 	private ModelWatcher stateToBright;
 	FakeModel fakemodel;
+	
+	private int stateToBrightnessClip;
 
 	//Thread stuff
 	public static boolean isRunning;
@@ -124,6 +121,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		stateToBright = new StateToBrightnessModelWatcher(64,64); //starting with vals of 64 which is what was used in TestConductor (single value)
 		model.addModelWatcher(stateToBright, "stateToBright", eio.getIStates());
 		
+		int stateToBrightnessClip = anim.startClip("stateToBrightness", new Rectangle(0,0,canvasWidth,canvasHeight), 1.0);
 		
 		
 		fakemodel = new FakeModel();
@@ -159,7 +157,8 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 	public void modelChanged(ModelEvent evt) {
 		
 		if (evt.watcherName == "stateToBright"){
-			logger.info(evt.optionalPostiveDetails);
+			//logger.info(evt.optionalPostiveDetails);
+			((StateToBrightnessClip) anim.getClip(stateToBrightnessClip)).setBrightValues(evt.optionalPostiveDetails);
 		}
 		
 		

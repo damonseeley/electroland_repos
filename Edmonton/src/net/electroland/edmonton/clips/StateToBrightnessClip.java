@@ -2,9 +2,9 @@ package net.electroland.edmonton.clips;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 import java.util.Map;
 
 import net.electroland.ea.Clip;
@@ -16,7 +16,7 @@ public class StateToBrightnessClip extends Clip {
 
 	private static Logger logger = Logger.getLogger(StateToBrightnessClip.class);
 	int w,h;
-	long lastRender;
+	Map<String, Object> bvals = new HashMap<String, Object>();
 
 	@Override
 	public void config(ParameterMap primaryParams, Map<String, ParameterMap> extendedParams) {
@@ -37,33 +37,32 @@ public class StateToBrightnessClip extends Clip {
 		return false;
 	}
 
+	public void setBrightValues(Map<String, Object> optionalPostiveDetails){
+		bvals = optionalPostiveDetails;
+	}
+
 	@Override
 	public Image getFrame(Image image) {
 
-		//only renders if the delay time (rate) has been exceeded
-		// this should work if Clip.image is not cleared during each getFrame, but it appears that it does not
-//		if (System.currentTimeMillis() - lastRender > delay)
-//		{
-	        // BELOW IS UNNECESSARY. you could just do:
-	        // Graphics g = image.getGraphics();
-	        // g.setColor(Color.WHITE);
-	        // g.fillRect(0, 0, 15,8);
-        //Double buffer this to prevent flickering // BRADLEY: THIS IS UNNECESARRY.
-			BufferedImage bi = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_RGB);
-			Graphics g2 = bi.getGraphics();
-			g2.setColor(Color.WHITE);
-			g2.fillRect(0, 0, w, h);
 
-			Graphics g = image.getGraphics();
-			g.drawImage(bi, 0, 0, null);
-			lastRender = System.currentTimeMillis();
+		BufferedImage bi = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_RGB);
+		Graphics g2 = bi.getGraphics();
+		
+		g2.setColor(Color.WHITE);
+		//g2.fillRect(0, 0, w, h);
+		for (String key : bvals.keySet()) {
+			//logger.info(key);
+			BrightPoint bp = (BrightPoint) bvals.get(key);
+			
+			//logger.info(bp.brightness);
+			//put a filled rect in each x loc
+			//need to draw with alpha here...
+			g2.fillRect((int)bp.x-5, 0, 10, 16);
+		}
 
-//		}else{
-	        // THEN NOTHING HAPPENS HERE.  E.g., nothing is painted so the
-		    // image is returned same as it was passed into getFrame, which is
-		    // to say blank.
-		    // That's causing the flicker.
-//		}
+		Graphics g = image.getGraphics();
+		g.drawImage(bi, 0, 0, null);
+
 
 		return image;
 	}
