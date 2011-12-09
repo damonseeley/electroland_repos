@@ -272,6 +272,11 @@ public class IOManager {
     {
         return iostates.get(id);
     }
+    
+    public IState getIStateById(String id)
+    {
+        return (IState)iostates.get(id);
+    }
 
     public List<IOState> getStatesForTag(String tag)
     {
