@@ -150,19 +150,19 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		logger.info(e.getActionCommand());
 		
 		if ("bigfill".equals(e.getActionCommand())) {
-			BigFill();
+			bigFill();
 		}
 		if ("tracer".equals(e.getActionCommand())) {
 			Tracer(Math.random()*635);
 		}
 		if ("entry1".equals(e.getActionCommand())) {
-			Entry1Shooter();
+			entry1Shooter();
 		}
 		if ("exit1".equals(e.getActionCommand())) {
-			Exit1Shooter();
+			exit1Shooter();
 		}
 		if ("egg1".equals(e.getActionCommand())) {
-			Egg1(200.0);
+			eggExpand(200.0);
 		}
 		if ("egg2".equals(e.getActionCommand())) {
 			//Egg1(200.0);
@@ -174,10 +174,10 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 			//Egg1(200.0);
 		}
 		if ("entry2".equals(e.getActionCommand())) {
-			Entry2Shooter();
+			entry2Shooter();
 		}
 		if ("exit2".equals(e.getActionCommand())) {
-			Exit2Shooter();
+			exit2Shooter();
 		}
 	}
 	
@@ -224,8 +224,8 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		
 		egg1 = new OneEventPerPeriodModelWatcher(500);
 		ArrayList<IState> egg1states = new ArrayList<IState>();
-		//egg1states.add(eio.getIStateById("i13"));
-		egg1states.add(eio.getIStateById("i4"));
+		egg1states.add(eio.getIStateById("i13"));
+		//egg1states.add(eio.getIStateById("i4"));
 		model.addModelWatcher(egg1, "egg1", egg1states);
 		
 		egg2 = new OneEventPerPeriodModelWatcher(500);
@@ -250,28 +250,40 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		
 		if (evt.watcherName == "stateToBright"){
 			
-			//((StateToBrightnessClip) anim.getClip(stateToBrightnessClip)).setBrightValues(evt.optionalPostiveDetails);
+			((StateToBrightnessClip) anim.getClip(stateToBrightnessClip)).setBrightValues(evt.optionalPostiveDetails);
 			
 		} else if (evt.watcherName == "entry1"){
-			Entry1Shooter();
+			entry1Shooter();
 		} else if (evt.watcherName == "exit1"){
-			Exit1Shooter();
+			exit1Shooter();
 		} else if (evt.watcherName == "entry2"){
-			Entry2Shooter();
+			entry2Shooter();
 		} else if (evt.watcherName == "exit2"){
-			Exit2Shooter();
+			exit2Shooter();
 		} else if (evt.watcherName == "egg1"){
 			ModelWatcher mw = (ModelWatcher)evt.getSource();
 			for (Iterator<IState> it = mw.getStates().iterator (); it.hasNext (); ) {
 				IState is = (IState)it.next();
-				Egg3(is.getLocation().x);
+				eggSparkle(is.getLocation().x);
 			}
 		} else if (evt.watcherName == "egg2"){
-			
+			ModelWatcher mw = (ModelWatcher)evt.getSource();
+			for (Iterator<IState> it = mw.getStates().iterator (); it.hasNext (); ) {
+				IState is = (IState)it.next();
+				eggExpand(is.getLocation().x);
+			}
 		} else if (evt.watcherName == "egg3"){
-			
+			ModelWatcher mw = (ModelWatcher)evt.getSource();
+			for (Iterator<IState> it = mw.getStates().iterator (); it.hasNext (); ) {
+				IState is = (IState)it.next();
+				eggWave(is.getLocation().x);
+			}
 		} else if (evt.watcherName == "egg4"){
-			
+			ModelWatcher mw = (ModelWatcher)evt.getSource();
+			for (Iterator<IState> it = mw.getStates().iterator (); it.hasNext (); ) {
+				IState is = (IState)it.next();
+				eggSparkle(is.getLocation().x);
+			}
 		}
 		
 
@@ -304,7 +316,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 	class timedShowPlayer extends TimerTask {
 		public void run() {
-			BigFill();
+			bigFill();
 			//play again in 60s
 			timedShows.schedule(new timedShowPlayer(), 60000);
 			
@@ -313,27 +325,33 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 	
 	int shootEndWidth = 36;
-	private void Entry1Shooter() {
+	private void entry1Shooter() {
 		int clip = anim.startClip("simpleClip16", new Rectangle(canvasWidth-2,0,16,16), 1.0);
 		//anim.queueClipChange(clip, new Rectangle(280,0,shootEndWidth,16), null, 0.0, 1400, 0, true);
-		anim.queueClipChange(clip, new Rectangle((canvasWidth-2-280/2),0,shootEndWidth/2,16), null, 1.0, 600, 0, false);
+		anim.queueClipChange(clip, new Rectangle((canvasWidth-2-280/2),0,shootEndWidth/2+16,16), null, 1.0, 700, 0, false);
 		anim.queueClipChange(clip, new Rectangle(280,0,shootEndWidth,16), null, 0.0, 700, 0, true);
 	}
-	private void Exit1Shooter() {
+	private void exit1Shooter() {
 		int clip = anim.startClip("simpleClip16", new Rectangle(340,0,16,16), 1.0);
-		anim.queueClipChange(clip, new Rectangle(canvasWidth+16,0,shootEndWidth,16), null, 0.0, 1400, 0, true);
+		//anim.queueClipChange(clip, new Rectangle(canvasWidth+16,0,shootEndWidth,16), null, 0.0, 1400, 0, true);
+		anim.queueClipChange(clip, new Rectangle(canvasWidth+16-340/2,0,shootEndWidth/2+16,16), null, 1.0, 700, 0, false);
+		anim.queueClipChange(clip, new Rectangle(canvasWidth+16,0,shootEndWidth,16), null, 0.0, 700, 0, true);
 	}
-	private void Entry2Shooter() {
+	private void entry2Shooter() {
 		int clip = anim.startClip("simpleClip16", new Rectangle(240,0,16,16), 1.0);
-		anim.queueClipChange(clip, new Rectangle(0,0,shootEndWidth,16), null, 0.0, 1400, 0, true);
+		//anim.queueClipChange(clip, new Rectangle(0,0,shootEndWidth,16), null, 0.0, 1400, 0, true);
+		anim.queueClipChange(clip, new Rectangle(240/2,0,shootEndWidth/2+16,16), null, 1.0, 700, 0, false);
+		anim.queueClipChange(clip, new Rectangle(0,0,shootEndWidth,16), null, 0.0, 700, 0, true);
 	}
-	private void Exit2Shooter() {
+	private void exit2Shooter() {
 		int clip = anim.startClip("simpleClip16", new Rectangle(0,0,16,16), 1.0);
-		anim.queueClipChange(clip, new Rectangle(240,0,shootEndWidth,16), null, 0.0, 1400, 0, true);
+		//anim.queueClipChange(clip, new Rectangle(240,0,shootEndWidth,16), null, 0.0, 1400, 0, true);
+		anim.queueClipChange(clip, new Rectangle(240/2,0,shootEndWidth/2+16,16), null, 1.0, 700, 0, false);
+		anim.queueClipChange(clip, new Rectangle(240,0,shootEndWidth,16), null, 0.0, 700, 0, true);
 	}
 
 
-	private void BigFill() {
+	private void bigFill() {
 		//soundController.playSingleBay("test_1.wav", 600.0, 1.0f); // plays a sound out of the speaker nearest to the x value provided
 		// create clip off stage left
 		int clip = anim.startClip("simpleClip16", new Rectangle(-14,0,16,16), 1.0);
@@ -343,7 +361,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		anim.queueClipChange(clip, new Rectangle(canvasWidth,0,16,16), null, null, 3000, 0, true);
 	}
 
-	private void Egg1(double x) {
+	private void eggExpand(double x) {
 		int startWidth = 2;
 		int endWidth = 64;
 		int clip = anim.startClip("simpleClip16", new Rectangle((int)x - startWidth/2,0,startWidth,16), 1.0);
@@ -353,7 +371,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		logger.info("Created Egg Expand at x = " + x);
 	}
 	
-	private void Egg2(double x){
+	private void eggWave(double x){
 		int clip = anim.startClip("imageClipWave", new Rectangle((int)x,0,64,16), 1.0);
 		
 		//clip mask not working?
@@ -363,9 +381,9 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		anim.queueClipChange(clip, null, null, 0.0, 300, 0, true);
 		logger.info("Created Egg Wave at x = " + x);
 	}
-	private void Egg3(double x){
+	private void eggSparkle(double x){
 		int clip = anim.startClip("sparkleClip32", new Rectangle((int)x-16,0,32,16), 1.0);
-		anim.queueClipChange(clip, new Rectangle((int)x-8,0,16,16), null, 0.0, 1500, 0, false); //make it smaller
+		anim.queueClipChange(clip, new Rectangle((int)x-9,0,18,16), null, 0.0, 1800, 0, false); //make it smaller
 		anim.queueClipChange(clip, null, null, 0.0, 500, 0, true); //fadeout
 		logger.info("Created Egg Sparkle at x = " + x);
 	}
