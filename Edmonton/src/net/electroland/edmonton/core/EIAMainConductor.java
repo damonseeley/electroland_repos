@@ -16,6 +16,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import net.electroland.ea.AnimationManager;
+import net.electroland.ea.Clip;
 import net.electroland.ea.ClipEvent;
 import net.electroland.ea.ClipListener;
 import net.electroland.edmonton.clips.StateToBrightnessClip;
@@ -158,6 +159,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		}
 		if ("entry1".equals(e.getActionCommand())) {
 			entry1Shooter();
+			logger.info("entry button pushed");
 		}
 		if ("exit1".equals(e.getActionCommand())) {
 			exit1Shooter();
@@ -248,14 +250,6 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 	@Override
 	public void modelChanged(ModelEvent evt) {
-		//log
-		if (evt.watcherName != "stateToBright"){
-			ModelWatcher mw2 = (ModelWatcher)evt.getSource();
-			for (Iterator<IState> it = mw2.getStates().iterator (); it.hasNext (); ) {
-				IState is = (IState)it.next();
-				logger.info(is.getID());
-			}
-		}
 
 		if (evt.watcherName == "stateToBright"){
 
@@ -434,12 +428,12 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 	@Override
 	public void clipEnded(ClipEvent e) {
-		logger.info("clip " + e.clipId + " of type " + e.clipId + " ended.");
+		//logger.info("clip " + e.clipId + " of type " + (Clip)e.clip + " ended.");
 	}
 
 	@Override
 	public void clipStarted(ClipEvent e) {
-		logger.info("clip " + e.clipId + " of type " + e.clipId + " started.");
+		logger.info("clip " + e.clipId + " of type " + (Clip)e.clip + " started.");
 	}
 
 	public static void killTheads() {
