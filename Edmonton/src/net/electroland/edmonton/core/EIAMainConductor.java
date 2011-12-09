@@ -166,13 +166,13 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 			eggExpand(200.0);
 		}
 		if ("egg2".equals(e.getActionCommand())) {
-			//Egg1(200.0);
+			eggSparkle(350.0);		
 		}
 		if ("egg3".equals(e.getActionCommand())) {
-			eggWave(150.0);
+			eggWave(100.0);
 		}
 		if ("egg4".equals(e.getActionCommand())) {
-			//Egg1(200.0);
+			eggExpand(60.0);
 		}
 		if ("entry2".equals(e.getActionCommand())) {
 			entry2Shooter();
