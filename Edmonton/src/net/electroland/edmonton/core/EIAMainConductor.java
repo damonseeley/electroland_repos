@@ -19,7 +19,7 @@ import net.electroland.ea.AnimationManager;
 import net.electroland.ea.Clip;
 import net.electroland.ea.ClipEvent;
 import net.electroland.ea.ClipListener;
-import net.electroland.edmonton.clips.StateToBrightnessClip;
+import net.electroland.edmonton.clips.StateToBrightnessImageClip;
 import net.electroland.edmonton.core.model.OneEventPerPeriodModelWatcher;
 import net.electroland.edmonton.core.model.StateToBrightnessModelWatcher;
 import net.electroland.eio.IOManager;
@@ -83,7 +83,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		eio = new IOManager();
 		try {
 			elu.load("EIA-ELU.properties");
-			eio.load("EIA-EIO.properties");
+			eio.load("EIA-EIO-playback.properties");
 			//eio.load("EIA-EIO-playback.properties");
 			eio.start();
 		} catch (OptionException e) {
@@ -125,7 +125,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		startupTestTimer.schedule(new startupTests(), 4000);
 
 		timedShows = new Timer();
-		timedShows.schedule(new timedShowPlayer(),60000);
+		//timedShows.schedule(new timedShowPlayer(),60000);
 
 		//fakemodel = new FakeModel();
 		//fakemodel.addModelListener(this);
@@ -159,7 +159,6 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		}
 		if ("entry1".equals(e.getActionCommand())) {
 			entry1Shooter();
-			logger.info("entry button pushed");
 		}
 		if ("exit1".equals(e.getActionCommand())) {
 			exit1Shooter();
@@ -200,10 +199,12 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 	/************************* Model Handlers ******************************/
 
 	private void createModelWatchers(){
-		int stateToBrightnessClip = anim.startClip("stateToBrightness", new Rectangle(0,0,canvasWidth,canvasHeight), 1.0);
+		
+		int stateToBrightnessClip = anim.startClip("stateToBrightnessImage", new Rectangle(0,0,canvasWidth,canvasHeight), 1.0);
 		int maxBright = 192; //max brightness for pathtracer
 		stateToBright = new StateToBrightnessModelWatcher(64,2,maxBright); //starting with vals of 64 which is what was used in TestConductor (single value)
 		model.addModelWatcher(stateToBright, "stateToBright", eio.getIStates());
+		
 
 		entry1 = new OneEventPerPeriodModelWatcher(500);
 		ArrayList<IState> entry1states = new ArrayList<IState>();
@@ -253,7 +254,8 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 		if (evt.watcherName == "stateToBright"){
 
-			((StateToBrightnessClip) anim.getClip(stateToBrightnessClip)).setBrightValues(evt.optionalPostiveDetails);
+			//((StateToBrightnessClip) anim.getClip(stateToBrightnessClip)).setBrightValues(evt.optionalPostiveDetails);
+			((StateToBrightnessImageClip) anim.getClip(stateToBrightnessClip)).setBrightValues(evt.optionalPostiveDetails);
 
 		} else if (evt.watcherName == "entry1"){
 			entry1Shooter();
