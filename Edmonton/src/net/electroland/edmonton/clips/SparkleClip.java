@@ -12,17 +12,14 @@ import net.electroland.utils.ParameterMap;
 
 import org.apache.log4j.Logger;
 
-public class SimpleClip extends Clip {
+public class SparkleClip extends Clip {
 
-	private static Logger logger = Logger.getLogger(SimpleClip.class);
-	int w,h;
-	long lastRender;
+	private static Logger logger = Logger.getLogger(SparkleClip.class);
+	int sparkleWidth;
 
 	@Override
 	public void config(ParameterMap primaryParams, Map<String, ParameterMap> extendedParams) {
-
-		w = primaryParams.getRequiredInt("width");
-		h = primaryParams.getRequiredInt("height");
+		sparkleWidth = primaryParams.getRequiredInt("sparkleWidth");
 	}
 
 	@Override
@@ -40,14 +37,20 @@ public class SimpleClip extends Clip {
 	@Override
 	public Image getFrame(Image image) {
 
+		int sparkles = sparkleWidth/6;
+		
 		BufferedImage bi = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_RGB);
 		Graphics g2 = bi.getGraphics();
-		g2.setColor(Color.WHITE);
-		g2.fillRect(0, 0, w, h);
+		
+		for (int i=0; i < sparkles; i++){
+			int newx = (int)(Math.random()*sparkleWidth);
+			int rndClr = (int)(Math.random()*128) + 128;
+			g2.setColor(new Color(rndClr,rndClr,rndClr));
+			g2.fillRect(newx, 0, sparkles, 16);
+		}
 
 		Graphics g = image.getGraphics();
 		g.drawImage(bi, 0, 0, null);
-		lastRender = System.currentTimeMillis();
 
 		return image;
 	}

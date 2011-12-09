@@ -34,7 +34,7 @@ public class EIAFrame extends JFrame implements ActionListener {
 
 	private int panelWidth,panelHeight;
 
-	private JButton b1,b2,b3,b4,b5,b6,b7;
+	private JButton b1,b2,b3,b4,b5,b6,b7,b8,b9,b10;
 	private ArrayList<JButton> buttons;
 
 	static Logger logger = Logger.getLogger(EIAFrame.class);
@@ -53,29 +53,49 @@ public class EIAFrame extends JFrame implements ActionListener {
 		
 		buttons = new ArrayList<JButton>();
 		
-		b1 = new JButton("Shooter 1");
-		b1.setActionCommand("shooter1");
-		buttons.add(b1);
-		//b1.addActionListener(this);
-		
 		b2 = new JButton("Big Fill");
 		b2.setActionCommand("bigfill");
 		buttons.add(b2);
 		//b2.addActionListener(this);
 		
-		b3 = new JButton("Easter Egg 1");
+		b1 = new JButton("Entry1");
+		b1.setActionCommand("entry1");
+		buttons.add(b1);
+		//b1.addActionListener(this);
+		
+		b3 = new JButton("Egg1");
 		b3.setActionCommand("egg1");
 		buttons.add(b3);
 		//b3.addActionListener(this);
 		
-		b4 = new JButton("Shooter 2");
-		b4.setActionCommand("shooter2");
+		b6 = new JButton("Egg2");
+		b6.setActionCommand("egg2");
+		buttons.add(b6);
+		//b3.addActionListener(this);
+		
+		b4 = new JButton("Exit1");
+		b4.setActionCommand("exit1");
 		buttons.add(b4);
 		//b3.addActionListener(this);
 		
-		b5 = new JButton("Tracer");
-		b5.setActionCommand("tracer");
+		b5 = new JButton("Entry2");
+		b5.setActionCommand("entry2");
 		buttons.add(b5);
+		//b3.addActionListener(this);
+		
+		b7 = new JButton("Egg3");
+		b7.setActionCommand("egg3");
+		buttons.add(b7);
+		//b3.addActionListener(this);
+		
+		b8 = new JButton("Egg4");
+		b8.setActionCommand("egg4");
+		buttons.add(b8);
+		//b3.addActionListener(this);
+		
+		b9 = new JButton("Exit2");
+		b9.setActionCommand("exit2");
+		buttons.add(b9);
 		//b3.addActionListener(this);
 		
 		JPanel bp = new JPanel();
