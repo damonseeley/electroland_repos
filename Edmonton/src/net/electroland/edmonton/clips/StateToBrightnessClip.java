@@ -48,7 +48,6 @@ public class StateToBrightnessClip extends Clip {
 		BufferedImage bi = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_RGB);
 		Graphics g2 = bi.getGraphics();
 		
-		g2.setColor(Color.WHITE);
 		//g2.fillRect(0, 0, w, h);
 		for (String key : bvals.keySet()) {
 			//logger.info(key);
@@ -57,6 +56,7 @@ public class StateToBrightnessClip extends Clip {
 			//logger.info(bp.brightness);
 			//put a filled rect in each x loc
 			//need to draw with alpha here...
+	        g2.setColor(new Color(bp.brightness, bp.brightness, bp.brightness));
 			g2.fillRect((int)bp.x-5, 0, 10, 16);
 		}
 
