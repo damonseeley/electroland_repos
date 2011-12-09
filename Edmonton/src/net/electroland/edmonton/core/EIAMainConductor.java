@@ -118,7 +118,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		model = new Model();
 		model.addModelListener(this);
 		
-		stateToBright = new StateToBrightnessModelWatcher(64,64); //starting with vals of 64 which is what was used in TestConductor (single value)
+		stateToBright = new StateToBrightnessModelWatcher(64,2); //starting with vals of 64 which is what was used in TestConductor (single value)
 		model.addModelWatcher(stateToBright, "stateToBright", eio.getIStates());
 		
 		int stateToBrightnessClip = anim.startClip("stateToBrightness", new Rectangle(0,0,canvasWidth,canvasHeight), 1.0);
