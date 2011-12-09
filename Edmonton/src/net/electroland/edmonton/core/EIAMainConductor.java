@@ -179,6 +179,9 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		if ("egg1".equals(e.getActionCommand())) {
 			Egg1(200.0);
 		}
+		if ("tracer".equals(e.getActionCommand())) {
+			Tracer(Math.random()*635);
+		}
 		
 	}
 	
@@ -242,6 +245,14 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		anim.queueClipChange(clip, new Rectangle((int)x - startWidth/2,0,startWidth,16), null, null, 500, 0, true);
 
 	}
+	
+	private void Tracer(double x) {
+		int blockWidth = 10;
+		int clip = anim.startClip("testClip", new Rectangle((int)x - blockWidth/2,0,blockWidth,16), 1.0);
+		
+		anim.queueClipChange(clip, null, null, 0.0, 4000, 1000, true);
+
+	}
 
 
 
@@ -263,7 +274,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 			model.poll();
 			// generate some fake events
-			fakemodel.poll();
+			//fakemodel.poll();
 
 
 			// ELU
