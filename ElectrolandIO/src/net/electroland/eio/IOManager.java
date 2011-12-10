@@ -256,15 +256,29 @@ public class IOManager {
     {
         return iostates.values();
     }
+
     public Collection<IState> getIStates()
     {
         List<IState> newList = new ArrayList<IState>();
-        Collection<IOState> iostatelist = getStates();
-        for (Iterator<IOState> iter = iostatelist.iterator(); iter.hasNext();) {
-            IState is = (IState) iter.next();
-            newList.add(is);
+        for (IOState ios : iostates.values())
+        {
+            if (ios instanceof IState)
+            {
+                newList.add((IState)ios);
+            }
         }
-
+        return newList;
+    }
+    public Collection<OState> getOStates()
+    {
+        List<OState> newList = new ArrayList<OState>();
+        for (IOState ios : iostates.values())
+        {
+            if (ios instanceof OState)
+            {
+                newList.add((OState)ios);
+            }
+        }
         return newList;
     }
 
@@ -272,10 +286,15 @@ public class IOManager {
     {
         return iostates.get(id);
     }
-    
+
     public IState getIStateById(String id)
     {
         return (IState)iostates.get(id);
+    }
+
+    public OState getOStateById(String id)
+    {
+        return (OState)iostates.get(id);
     }
 
     public List<IOState> getStatesForTag(String tag)
