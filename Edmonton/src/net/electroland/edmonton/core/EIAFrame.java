@@ -28,6 +28,7 @@ import org.apache.log4j.Logger;
 public class EIAFrame extends JFrame implements ActionListener {
 
 	EIAPanel ep;
+	//EIATiledPanel ep;
 
 	private int windowWidth,windowHeight;
 	public Hashtable<String, Object> context;
@@ -48,6 +49,7 @@ public class EIAFrame extends JFrame implements ActionListener {
 		windowHeight = height;
 		
 		ep = new EIAPanel(context);
+		//ep = new EIATiledPanel(context);
 		
 		//Font newButtonFont = new Font("Default",Font.PLAIN,13);  
 		
@@ -125,6 +127,7 @@ public class EIAFrame extends JFrame implements ActionListener {
 		this.setVisible(true);
 		logger.info("Setting JFrame width to " + ep.calcWidth);
 		this.setSize(ep.calcWidth, windowHeight);
+		//this.setSize(ep.panelTileWidth, windowHeight);
 		this.setPreferredSize(new Dimension(ep.calcWidth,windowHeight));
 	}
 	

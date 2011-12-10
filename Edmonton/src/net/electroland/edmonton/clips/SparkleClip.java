@@ -37,16 +37,19 @@ public class SparkleClip extends Clip {
 	@Override
 	public Image getFrame(Image image) {
 
-		int sparkles = sparkleWidth/6;
+		int sparkles = 8;
+		int oneSparkleWidth = sparkleWidth/sparkles;
 		
-		BufferedImage bi = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_RGB);
+		
+		BufferedImage bi = new BufferedImage(sparkleWidth, image.getHeight(null), BufferedImage.TYPE_INT_RGB);
 		Graphics g2 = bi.getGraphics();
 		
 		for (int i=0; i < sparkles; i++){
-			int newx = (int)(Math.random()*sparkleWidth);
+			int newx = i*oneSparkleWidth;
+			//int newx = (int)(Math.random()*sparkleWidth);
 			int rndClr = (int)(Math.random()*128) + 128;
 			g2.setColor(new Color(rndClr,rndClr,rndClr));
-			g2.fillRect(newx, 0, sparkles, 16);
+			g2.fillRect(newx, 0, oneSparkleWidth, 16);
 		}
 
 		Graphics g = image.getGraphics();
