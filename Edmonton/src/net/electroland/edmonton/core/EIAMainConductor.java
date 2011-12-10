@@ -167,7 +167,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 			eggExpand(200.0);
 		}
 		if ("egg2".equals(e.getActionCommand())) {
-			eggSparkle(350.0);		
+			eggSparkle(409.04);		
 		}
 		if ("egg3".equals(e.getActionCommand())) {
 			eggWave(100.0);
@@ -381,8 +381,8 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 	}
 	private void eggSparkle(double x){
 		int clip = anim.startClip("sparkleClip32", new Rectangle((int)x-16,0,32,16), 1.0);
-		anim.queueClipChange(clip, new Rectangle((int)x-9,0,18,16), null, 0.0, 1800, 0, false); //make it smaller
-		anim.queueClipChange(clip, null, null, 0.0, 500, 0, true); //fadeout
+		//anim.queueClipChange(clip, null, null, 1.0, 1700, 0, false); //make it smaller
+		anim.queueClipChange(clip, null, null, 0.0, 500, 1700, true); //fadeout
 		logger.info("Created Egg Sparkle at x = " + x);
 	}
 
