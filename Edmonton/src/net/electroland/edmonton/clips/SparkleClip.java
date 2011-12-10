@@ -47,7 +47,7 @@ public class SparkleClip extends Clip {
 		for (int i=0; i < sparkles; i++){
 			int newx = i*oneSparkleWidth;
 			//int newx = (int)(Math.random()*sparkleWidth);
-			int rndClr = (int)(Math.random()*128) + 128;
+			int rndClr = (int)(Math.random()*64) + 192;
 			g2.setColor(new Color(rndClr,rndClr,rndClr));
 			g2.fillRect(newx, 0, oneSparkleWidth, 16);
 		}

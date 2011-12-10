@@ -62,7 +62,9 @@ public class StateToBrightnessImageClip extends Clip {
 
 
 		BufferedImage bi = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_RGB);
-		Graphics2D g2 = (Graphics2D)bi.getGraphics();
+		Graphics g = image.getGraphics();
+		//Graphics2D g2 = (Graphics2D)bi.getGraphics();
+		Graphics2D g2 = (Graphics2D)g;
 		
 		//g2.fillRect(0, 0, w, h);
 		for (String key : bvals.keySet()) {
@@ -78,8 +80,7 @@ public class StateToBrightnessImageClip extends Clip {
 			}
 		}
 		g2.dispose();
-
-		Graphics g = image.getGraphics();
+		
 		g.drawImage(bi, 0, 0, null);
 
 

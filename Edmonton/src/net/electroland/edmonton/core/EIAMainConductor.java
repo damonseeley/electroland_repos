@@ -125,7 +125,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		startupTestTimer.schedule(new startupTests(), 4000);
 
 		timedShows = new Timer();
-		//timedShows.schedule(new timedShowPlayer(),60000);
+		timedShows.schedule(new timedShowPlayer(),60000);
 
 		//fakemodel = new FakeModel();
 		//fakemodel.addModelListener(this);
@@ -202,7 +202,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		
 		int stateToBrightnessClip = anim.startClip("stateToBrightnessImage", new Rectangle(0,0,canvasWidth,canvasHeight), 1.0);
 		int maxBright = 192; //max brightness for pathtracer
-		stateToBright = new StateToBrightnessModelWatcher(64,2,maxBright); //starting with vals of 64 which is what was used in TestConductor (single value)
+		stateToBright = new StateToBrightnessModelWatcher(16,2,maxBright); //starting with vals of 64 which is what was used in TestConductor (single value)
 		model.addModelWatcher(stateToBright, "stateToBright", eio.getIStates());
 		
 
@@ -315,26 +315,26 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 	private void entry1Shooter() {
 		int clip = anim.startClip("simpleClip16", new Rectangle(canvasWidth-2,0,16,16), 1.0);
 		//anim.queueClipChange(clip, new Rectangle(280,0,shootEndWidth,16), null, 0.0, 1400, 0, true);
-		anim.queueClipChange(clip, new Rectangle((canvasWidth-2-280/2),0,shootEndWidth/2+16,16), null, 1.0, 700, 0, false);
-		anim.queueClipChange(clip, new Rectangle(280,0,shootEndWidth,16), null, 0.0, 700, 0, true);
+		anim.queueClipChange(clip, new Rectangle((canvasWidth-2-280/2),0,shootEndWidth/2+16,16), null, 1.0, 1400, 0, false);
+		anim.queueClipChange(clip, new Rectangle(280,0,shootEndWidth,16), null, 0.0, 1400, 0, true);
 	}
 	private void exit1Shooter() {
 		int clip = anim.startClip("simpleClip16", new Rectangle(340,0,16,16), 1.0);
 		//anim.queueClipChange(clip, new Rectangle(canvasWidth+16,0,shootEndWidth,16), null, 0.0, 1400, 0, true);
-		anim.queueClipChange(clip, new Rectangle(canvasWidth+16-340/2,0,shootEndWidth/2+16,16), null, 1.0, 700, 0, false);
-		anim.queueClipChange(clip, new Rectangle(canvasWidth+16,0,shootEndWidth,16), null, 0.0, 700, 0, true);
+		anim.queueClipChange(clip, new Rectangle(canvasWidth+16-340/2,0,shootEndWidth/2+16,16), null, 1.0, 1400, 0, false);
+		anim.queueClipChange(clip, new Rectangle(canvasWidth+16,0,shootEndWidth,16), null, 0.0, 1400, 0, true);
 	}
 	private void entry2Shooter() {
 		int clip = anim.startClip("simpleClip16", new Rectangle(240,0,16,16), 1.0);
 		//anim.queueClipChange(clip, new Rectangle(0,0,shootEndWidth,16), null, 0.0, 1400, 0, true);
-		anim.queueClipChange(clip, new Rectangle(240/2,0,shootEndWidth/2+16,16), null, 1.0, 700, 0, false);
-		anim.queueClipChange(clip, new Rectangle(0,0,shootEndWidth,16), null, 0.0, 700, 0, true);
+		anim.queueClipChange(clip, new Rectangle(240/2,0,shootEndWidth/2+16,16), null, 1.0, 1400, 0, false);
+		anim.queueClipChange(clip, new Rectangle(0,0,shootEndWidth,16), null, 0.0, 1400, 0, true);
 	}
 	private void exit2Shooter() {
 		int clip = anim.startClip("simpleClip16", new Rectangle(0,0,16,16), 1.0);
 		//anim.queueClipChange(clip, new Rectangle(240,0,shootEndWidth,16), null, 0.0, 1400, 0, true);
-		anim.queueClipChange(clip, new Rectangle(240/2,0,shootEndWidth/2+16,16), null, 1.0, 700, 0, false);
-		anim.queueClipChange(clip, new Rectangle(240,0,shootEndWidth,16), null, 0.0, 700, 0, true);
+		anim.queueClipChange(clip, new Rectangle(240/2,0,shootEndWidth/2+16,16), null, 1.0, 1400, 0, false);
+		anim.queueClipChange(clip, new Rectangle(240,0,shootEndWidth,16), null, 0.0, 1400, 0, true);
 	}
 
 
@@ -343,9 +343,9 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		// create clip off stage left
 		int clip = anim.startClip("simpleClip16", new Rectangle(-14,0,16,16), 1.0);
 		// expand clip1 to full screen
-		anim.queueClipChange(clip, new Rectangle(0,0,(int)canvasWidth,(int)canvasHeight), null, null, 2000, 0, false);
+		anim.queueClipChange(clip, new Rectangle(0,0,(int)canvasWidth,(int)canvasHeight), null, null, 3000, 0, false);
 		// retract clip to right
-		anim.queueClipChange(clip, new Rectangle(canvasWidth,0,16,16), null, null, 3000, 0, true);
+		anim.queueClipChange(clip, new Rectangle(canvasWidth,0,16,16), null, null, 3000, 1000, true);
 	}
 
 	private void eggExpand(double x) {
@@ -353,36 +353,26 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		int endWidth = 64;
 		int clip = anim.startClip("simpleClip16", new Rectangle((int)x - startWidth/2,0,startWidth,16), 1.0);
 
-		anim.queueClipChange(clip, new Rectangle((int)x - endWidth/2,0,endWidth,16), null, null, 400, 0, false);
-		anim.queueClipChange(clip, new Rectangle((int)x - startWidth/2,0,startWidth,16), null, null, 400, 0, true);
+		anim.queueClipChange(clip, new Rectangle((int)x - endWidth/2,0,endWidth,16), null, null, 1200, 0, false);
+		anim.queueClipChange(clip, new Rectangle((int)x - startWidth/2,0,startWidth,16), null, null, 800, 0, true);
 		logger.info("Created Egg Expand at x = " + x);
 	}
 
 	private void eggWave(double x){
-		int clip = anim.startClip("imageClipWave", new Rectangle((int)x,0,64,16), 1.0);
-
+		int clip = anim.startClip("imageClipWave", new Rectangle((int)x-16,0,48,16), 0.0);
 		//clip mask not working?
 		//anim.queueClipChange(clip, new Rectangle((int)x - 64/2,0,64,16), new Rectangle((int)x - 8,0,16,16), 1.0, 5, 0, false);
-
-		anim.queueClipChange(clip, new Rectangle((int)x - 32,0,32,16), null, 1.0, 800, 0, false);
+		anim.queueClipChange(clip, null, null, 1.0, 800, 0, false);
+		anim.queueClipChange(clip, new Rectangle((int)x - 32,0,32,16), null, 1.0, 1600, 0, false);
 		anim.queueClipChange(clip, null, null, 0.0, 300, 0, true);
 		logger.info("Created Egg Wave at x = " + x);
 	}
-	private void eggWave2(double x){
-		int clip = anim.startClip("imageClipWave", new Rectangle((int)x,0,64,16), 1.0);
-		int clip2 = anim.startClip("imageClipWave", new Rectangle((int)x+16,0,48,16), 1.0);
 
-		anim.queueClipChange(clip, new Rectangle((int)x - 32,0,32,16), null, 1.0, 800, 0, false);
-		anim.queueClipChange(clip, null, null, 0.0, 300, 0, true);
-		anim.queueClipChange(clip2, new Rectangle((int)x - 16,0,32,16), null, 0.0, 800, 0, true);
-
-
-		logger.info("Created Egg Wave at x = " + x);
-	}
 	private void eggSparkle(double x){
-		int clip = anim.startClip("sparkleClip32", new Rectangle((int)x-16,0,32,16), 1.0);
+		int clip = anim.startClip("sparkleClip32", new Rectangle((int)x-16,0,32,16), 0.0);
 		//anim.queueClipChange(clip, null, null, 1.0, 1700, 0, false); //make it smaller
-		anim.queueClipChange(clip, null, null, 0.0, 500, 1700, true); //fadeout
+		anim.queueClipChange(clip, null, null, 1.0, 1000, 0, false); //fadein
+		anim.queueClipChange(clip, null, null, 0.0, 1000, 1200, true); //fadeout
 		logger.info("Created Egg Sparkle at x = " + x);
 	}
 
