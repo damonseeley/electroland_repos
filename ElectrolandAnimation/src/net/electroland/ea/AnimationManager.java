@@ -154,7 +154,6 @@ public class AnimationManager {
         for (Integer i : liveClips.keySet())
         {
             Clip c = liveClips.get(i);
-            System.out.print(c.id + " ");
             if (c.isDeleted() || c.isDone()){
                 killClip(c.id);
             }else{
@@ -169,7 +168,6 @@ public class AnimationManager {
                 g.drawImage(alpha, c.area.x, c.area.y, c.area.width, c.area.height, null);
             }
         }
-        System.out.println();
         g.dispose();
         return stage;
     }
