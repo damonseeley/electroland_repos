@@ -12,7 +12,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
@@ -28,7 +28,7 @@ public class AnimationManager {
     private Map<String, Clip> clipsPrototypes;
     private Map<String, Object> context;
     private List<ClipListener> listeners = new Vector<ClipListener>();
-    private Map<Integer, Clip> liveClips = new ConcurrentHashMap<Integer, Clip>();
+    private Map<Integer, Clip> liveClips = new ConcurrentSkipListMap<Integer, Clip>();
     private Color stageColor = Color.BLACK;
     private Image stage;
     private int id = 0;
@@ -75,7 +75,7 @@ public class AnimationManager {
      * @param delay milliseconds to wait BEFORE running this animation
      * @return
      */
-    public int startClip(String clipName, Rectangle area, double alpha)
+    synchronized public int startClip(String clipName, Rectangle area, double alpha)
     {
         Clip p = clipsPrototypes.get(clipName);
         if (p != null){
@@ -151,8 +151,10 @@ public class AnimationManager {
         g.setColor(stageColor);
         g.fillRect(0, 0, stageDim.width, stageDim.height);
 
-        for (Clip c : liveClips.values())
+        for (Integer i : liveClips.keySet())
         {
+            Clip c = liveClips.get(i);
+            System.out.print(c.id + " ");
             if (c.isDeleted() || c.isDone()){
                 killClip(c.id);
             }else{
@@ -167,6 +169,7 @@ public class AnimationManager {
                 g.drawImage(alpha, c.area.x, c.area.y, c.area.width, c.area.height, null);
             }
         }
+        System.out.println();
         g.dispose();
         return stage;
     }
