@@ -42,7 +42,6 @@ public class RecordedModBusTCPSlaveDevice extends IODevice {
             String[] data;
             try {
                 String line = reader.readLine();
-//                System.out.println(line);
                 data = line.split(":");
 
                 data[1] = data[1].replace(" ", "");
