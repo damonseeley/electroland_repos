@@ -21,6 +21,7 @@ public class TrackerModelWatcher extends ModelWatcher {
 
 	private List<Track> tracks;
 	private Hashtable<String, Object> context;
+	private int trackID = 0;
 
 	/**
 	 * 
@@ -33,39 +34,54 @@ public class TrackerModelWatcher extends ModelWatcher {
 		context.put("tracks", tracks);
 	}
 
+	public void newTrack(double nx){
+		tracks.add(new Track(trackID,nx));
+		trackID++;
+	}
+
 	/**
 	 *
 	 */
 	@Override
 	public boolean poll() {
 
-		// iterate through states
-		for (IState state : this.getStates())
+		// iterate through states and try to match to tracks
+		for (IState s : this.getStates())
 		{
-			if (state.getState()){
+			if (s.getState()){
+				//logger.info("state " + state.getID() + " is on");
 				// if a state is on do a search for nearby tracks, if tracks is not empty
-				if (tracks.size() > 0){
-					// search for nearby existing track
-					boolean foundTrack = false;
-					for (Track t : tracks)
-					{
-						if ((t.x - state.getLocation().x) < t.sDistRev || (state.getLocation().x - t.x) < t.sDistFwd) {
-							// if a track is found within search update the track
-							t.newTrackEvent(state.getLocation().x);
-							foundTrack = true;
-							break;
-						}
+				// search for nearby existing track
+				boolean matchedTrack = false;
+				for (Track t : tracks)
+				{
+					// check condition of being short of sensor but within dDistRev
+					double tDelta = t.x - s.getLocation().x; //signed distance from track x to sensor x
+					if (tDelta < t.sDistRev && tDelta > 0) {
+						// if a track is found within search update the track
+						logger.info("matched track " + t.id + " @x=" + t.x + " with sensor " + s.getID() + " @x=" + s.getLocation().x);
+						t.newTrackEvent(s.getLocation().x);
+						matchedTrack = true;
+						break;
 					}
-					// no track was found in the prev loop so add one
-					if (!foundTrack){
-						tracks.add(new Track(state.getLocation().x));
+					// check condition of being just past the sensor but within dDistFwd
+					if (tDelta > t.sDistFwd && tDelta < 0) {
+						// if a track is found within search update the track
+						logger.info("matched track " + t.id + " @x=" + t.x + " with sensor " + s.getID() + " @x=" + s.getLocation().x);
+						t.newTrackEvent(s.getLocation().x);
+						matchedTrack = true;
+						break;
 					}
-				} else {
-					// if not then create a new track
-					tracks.add(new Track(state.getLocation().x));
 				}
+				// no track was found in the prev loop so add one
+				if (!matchedTrack){
+					logger.info("no track found for state " + s.getID() + " so creating new track at x=" + s.getLocation().x);
+					newTrack(s.getLocation().x);
+				}
+
 			}
 		}
+
 
 
 		// update all tracks
@@ -79,11 +95,13 @@ public class TrackerModelWatcher extends ModelWatcher {
 						// update tracks if they were not updated by the previous loop
 						tr.update();
 						// remove track if x is below some threshold
-						if (tr.x < 0){
+						if (tr.x < -10){
+							logger.info("track " + tr.id + " left the scene and will be removed");
 							tracks.remove(tr);
 						}
 						//remove them if their searchtime has been exceeded
 						if (tr.isExpired()){
+							logger.info("track " + tr.id + " expired unmatched and will be removed");
 							tracks.remove(tr);
 						}
 					}
@@ -94,7 +112,7 @@ public class TrackerModelWatcher extends ModelWatcher {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
-		
+
 		//logger.info("tracks size: " + tracks.size());
 
 		return true;

@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 
 public class Track {
 
+	public int id;
 	private ArrayList<TrackEvent> trackEvents;
 	public long startTime;
 	public long lastTrackUpdate,lastUpdate;
@@ -21,16 +22,18 @@ public class Track {
 	private static Logger logger = Logger.getLogger(Track.class);
 
 
-	public Track(double x) {
+	public Track(int id, double x) {
+		this.id = id;
+		this.x = x;
 		trackEvents = new ArrayList<TrackEvent>();
 		startTime = System.currentTimeMillis();
 		lastTrackUpdate = startTime;
 		lastUpdate = startTime;
 		trackEvents.add(new TrackEvent(startTime,x));
 		sDistRev = 7.5; // slightly more than the 7.39 dist from sensor to sensor
-		sDistFwd = 2.0; //seach forward to find interpolation overshoot tracks
-		sTime = 2000; 	// (ms) start with 2 seconds
-		xSpeed = 5.8; // unit per second, based on 4.53 feet per second, in Meters * world unit multiplier (4 as of this writing)
+		sDistFwd = -3.0; //seach forward to find interpolation overshoot tracks
+		sTime = 3000; 	// (ms) start with 2 seconds
+		xSpeed = 5.9; // unit per second, based on 4.53 feet per second, in Meters * world unit multiplier (4 as of this writing)
 		speedAdjust = 1.0;
 	}
 

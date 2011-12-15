@@ -49,6 +49,7 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 	private boolean showGraphics;
 	private AnimationManager anim;
 	private List<Track> tracks;
+	private boolean showAnimation;
 
 
 	//panel dims and margin info
@@ -60,15 +61,15 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 	private double p1x,p1y,p1width,p1height,p2x,p2y,p2width,p2height;
 
 	static Logger logger = Logger.getLogger(EIAFrame.class);
-	
+
 	//constructor
 	public EIATiledPanel (Hashtable context) {
 
 		this.context = context;
-		
+
 		addMouseMotionListener(this);
 
-
+		this.anim = (AnimationManager)context.get("anim");
 		this.elu = (ELUManager)context.get("elu");
 		this.eio = (IOManager)context.get("eio");
 		this.canvas = (ELUCanvas2D)context.get("canvas");
@@ -76,29 +77,36 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 		this.tracks = (List)context.get("tracks");
 
 		try {
-			this.displayScale = props.getOptionalDouble("settings", "global", "displayScale");
+			showGraphics = Boolean.parseBoolean(props.getOptional("settings", "display", "showGraphics"));
+		} catch (OptionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			showGraphics = true;
+		}
+		try {
+			showAnimation = Boolean.parseBoolean(props.getOptional("settings", "display", "showAnimation"));
+		} catch (OptionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			showAnimation = true;
+		}
+		try {
+			this.displayScale = props.getOptionalDouble("settings", "displaymetrics", "displayScale");
 		} catch (OptionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			displayScale = 1.0;
 		}
 		try {
-			this.margin = props.getOptionalInt("settings", "global", "margin");
+			this.margin = props.getOptionalInt("settings", "displaymetrics", "margin");
 		} catch (OptionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			margin = 32;
 		}
-		try {
-			showGraphics = Boolean.parseBoolean(props.getOptional("settings", "global", "showGraphics"));
-		} catch (OptionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			showGraphics = true;
-		}
 
 		try {
-			stateSize = props.getOptionalInt("settings", "global", "IStateSize");
+			stateSize = props.getOptionalInt("settings", "displaymetrics", "IStateSize");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -106,8 +114,8 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 		}
 
 		try {
-			lightHeight = props.getOptionalInt("settings", "global", "lightHeight");
-			lightWidth = props.getOptionalInt("settings", "global", "lightWidth");
+			lightHeight = props.getOptionalInt("settings", "displaymetrics", "lightHeight");
+			lightWidth = props.getOptionalInt("settings", "displaymetrics", "lightWidth");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -135,13 +143,13 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 			p2width = 0;
 			p2height = 0;
 		}
+
 		
-		anim = (AnimationManager)context.get("anim");
-		
+
 		setDisplayScale(displayScale);
 
 	}
-	
+
 	public void setDisplayScale(double ds) {
 		this.displayScale = ds;
 		//eventually need to update height here for tiling
@@ -150,7 +158,7 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 		this.calcHeight = (int)(canvas.getDimensions().height*displayScale + (margin*2));
 		this.calcHeight = (int)((canvas.getDimensions().height*displayScale)) + margin*2;
 		//logger.info("EIAPanel dims: " + calcWidth + " " + calcHeight);
-		
+
 		setBackground(Color.BLUE);
 		//this.setSize(calcWidth, calcHeight);
 		try {
@@ -162,21 +170,21 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 		}
 		vTiles = (int)(Math.ceil((double)calcWidth/panelTileWidth));
 		//logger.info(vTiles);
-		
+
 		this.setSize(panelTileWidth, calcHeight*vTiles);
 		setPreferredSize(new Dimension(panelTileWidth, calcHeight*vTiles)); // need both SetSize and SetPreferredSize here for some reason
-		
+
 		logger.info("EIAPanel rescaled with displayScale of " + displayScale);
 	}
-	
+
 	public int getPanelWidth() {
 		return panelTileWidth;
 	}
-	
+
 	public double getDisplayScale() {
 		return displayScale;
 	}
-	
+
 
 
 	public void update(){
@@ -208,23 +216,21 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			//test
 			//g2.fillRect(50,50,100,100);
-			
-			
-			
 
-			
-			
+
 
 			/*
 			 * Draw Anim/Canvas
 			 */
-			// Get image from AnimationManager
-			Dimension d = anim.getStageDimensions();
-			g2.drawImage(anim.getStage(),0,0,(int)(d.width*displayScale),(int)(d.height*displayScale),null);
-			
-			//outline the canvas
-			g2.setColor(new Color(48, 32, 48));
-			g2.drawRect(0,0,(int)(canvas.getDimensions().width*displayScale),(int)(canvas.getDimensions().height*displayScale));
+			if (showAnimation){
+				// Get image from AnimationManager
+				Dimension d = anim.getStageDimensions();
+				g2.drawImage(anim.getStage(),0,0,(int)(d.width*displayScale),(int)(d.height*displayScale),null);
+
+				//outline the canvas
+				g2.setColor(new Color(48, 32, 48));
+				g2.drawRect(0,0,(int)(canvas.getDimensions().width*displayScale),(int)(canvas.getDimensions().height*displayScale));
+			}
 
 			
 			/*
@@ -233,7 +239,6 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 			g2.setColor(new Color(32, 64, 32));
 			g2.drawRect((int)(p1x*displayScale), (int)(p1y*displayScale),(int)(p1width*displayScale),(int)(p1height*displayScale));
 			g2.drawRect((int)(p2x*displayScale), (int)(p2y*displayScale),(int)(p2width*displayScale),(int)(p2height*displayScale));
-			
 
 
 			/*
@@ -273,7 +278,7 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 				g2.setColor(new Color(0, 0, 196));
 				g2.drawRect((int)(l.x)-lightWidth/2, (int)(l.y)-lightHeight/2, lightWidth, lightHeight);
 			}
-			
+
 			/*
 			 * Draw tracks
 			 */
@@ -289,40 +294,47 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 				int rev = (int)(tr.sDistRev*displayScale);
 				// draw search domains
 				g2.setColor(new Color(255, 0, 255));
-				g2.drawLine((int)(tl.x-fwd), (int)(tl.y), (int)(tl.x + fwd+rev), (int)(tl.y));
+				g2.drawLine((int)(tl.x-fwd), (int)(tl.y), (int)(tl.x-rev), (int)(tl.y));
+				
+				
+				
+				
+				g2.drawLine((int)(tl.x-fwd), (int)(tl.y-1), (int)(tl.x-fwd), (int)(tl.y+1));
+				g2.drawLine((int)(tl.x-rev), (int)(tl.y-1), (int)(tl.x-rev), (int)(tl.y+1));
+
 				// draw track point
 				g2.setColor(new Color(255, 0, 0));
 				g2.fillRect((int)(tl.x)-1, (int)(tl.y)-1, 3, 3);
 			}
-			
-			
+
+
 
 
 			/*
 			 * Finally, draw it all on the Panel
 			 */
-			
+
 			int tileHeight = bi.getHeight()+margin*2;
 			int tileWidth = panelTileWidth;
-			
+
 			//create a bufferedimage that is the width and height of the final tiled presentation
 			BufferedImage bi2 = new BufferedImage(panelTileWidth*vTiles,tileHeight*vTiles,BufferedImage.TYPE_INT_RGB);
 			Graphics2D g2b = (Graphics2D)bi2.getGraphics();	
-			
+
 			g2b.setColor(Color.BLACK);
-			
+
 			//logger.info("Tile Renders: " + vTiles);
 			for (int i=0; i<vTiles; i++){
 				g2b.drawImage(bi, 0, tileHeight*i, tileWidth, tileHeight*(i+1), tileWidth*i, 0, tileWidth*(i+1), tileHeight, null);
 				//logger.info(0 + "	" + tileHeight*i + "	" + tileWidth+ "	" + tileHeight*(i+1)+ "	" + tileWidth*i+ "	" + 0 + "	" + tileWidth*(i+1)+ "	" + tileHeight);
 			}
-			
-			
+
+
 			// finally, draw the tile image on the Panel image
 			g.setColor(Color.BLACK);
 			g.fillRect(0,0,g.getClipBounds().width,g.getClipBounds().height);
 			g.drawImage(bi2, margin, margin, null);
-			
+
 
 		}
 
