@@ -22,6 +22,7 @@ import net.electroland.ea.ClipListener;
 import net.electroland.edmonton.clips.StateToBrightnessImageClip;
 import net.electroland.edmonton.core.model.OneEventPerPeriodModelWatcher;
 import net.electroland.edmonton.core.model.StateToBrightnessModelWatcher;
+import net.electroland.edmonton.core.model.TrackerModelWatcher;
 import net.electroland.eio.IOManager;
 import net.electroland.eio.IState;
 import net.electroland.eio.model.Model;
@@ -58,6 +59,8 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 	private Model model;
 	private ModelWatcher stateToBright,entry1,exit1,entry2,exit2,egg1,egg2,egg3,egg4;
+	private ModelWatcher tracker;
+
 	//private FakeModel fakemodel;
 
 	private int stateToBrightnessClip;
@@ -83,8 +86,8 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		eio = new IOManager();
 		try {
 			elu.load("EIA-ELU.properties");
-			eio.load("EIA-EIO.properties");
-			//eio.load("EIA-EIO-playback.properties");
+			//eio.load("EIA-EIO.properties");
+			eio.load("EIA-EIO-playback.properties");
 			eio.start();
 		} catch (OptionException e) {
 			e.printStackTrace();
@@ -199,6 +202,9 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 	/************************* Model Handlers ******************************/
 
 	private void createModelWatchers(){
+		
+		tracker = new TrackerModelWatcher(context); //starting with vals of 64 which is what was used in TestConductor (single value)
+		model.addModelWatcher(tracker, "tracker", eio.getIStates());
 		
 		int stateToBrightnessClip = anim.startClip("stateToBrightnessImage", new Rectangle(0,0,canvasWidth,canvasHeight), 1.0);
 		int maxBright = 192; //max brightness for pathtracer

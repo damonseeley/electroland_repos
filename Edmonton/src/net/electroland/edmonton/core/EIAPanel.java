@@ -14,11 +14,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.swing.JPanel;
 import javax.vecmath.Point3d;
 
 import net.electroland.ea.AnimationManager;
+import net.electroland.edmonton.core.model.Track;
 import net.electroland.eio.IOManager;
 import net.electroland.eio.IOState;
 import net.electroland.eio.IState;
@@ -47,6 +49,7 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 	private double displayScale;
 	private boolean showGraphics;
 	private AnimationManager anim;
+	private List<Track> tracks;
 
 	//panel dims and margin info
 	public int calcWidth, calcHeight;
@@ -69,6 +72,7 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 		this.eio = (IOManager)context.get("eio");
 		this.canvas = (ELUCanvas2D)context.get("canvas");
 		this.props = (ElectrolandProperties)context.get("props");
+		this.tracks = (List)context.get("tracks");
 		try {
 			this.displayScale = props.getOptionalDouble("settings", "global", "displayScale");
 		} catch (OptionException e) {
@@ -249,6 +253,38 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 				g2.setColor(new Color(0, 0, 196));
 				g2.drawRect((int)(l.x)-lightWidth/2, (int)(l.y)-lightHeight/2, lightWidth, lightHeight);
 			}
+			
+			/*
+			 * Draw tracks
+			 */		
+
+			for (Fixture fix : elu.getFixtures())
+			{
+				Point3d l = (Point3d)fix.getLocation().clone();
+				//logger.info("orig " + (int)l.x + " " + (int)l.y);
+				l.scale(displayScale);
+				g2.setColor(new Color(0, 0, 196));
+				g2.drawRect((int)(l.x)-lightWidth/2, (int)(l.y)-lightHeight/2, lightWidth, lightHeight);
+			}
+			
+			
+			for (Track tr : tracks)
+			{
+				double trackYLoc = 22.0;
+				Point3d tl = new Point3d(tr.x,trackYLoc,0);
+				//logger.info("orig " + (int)l.x + " " + (int)l.y);
+				tl.scale(displayScale);
+				g2.setColor(new Color(255, 0, 0));
+				int trackHeight = 2;
+				int fwd = (int)(tr.sDistFwd*displayScale);
+				int rev = (int)(tr.sDistRev*displayScale);
+				g2.drawLine((int)(tl.x-fwd), (int)(tl.y), (int)(tl.x + fwd+rev), (int)(tl.y));
+				
+				g2.drawRect((int)(tl.x), (int)(tl.y), 2, 2);
+			}
+			
+			
+			
 
 
 			/*
