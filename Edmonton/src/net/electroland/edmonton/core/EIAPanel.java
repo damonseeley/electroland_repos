@@ -59,12 +59,12 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 	private double p1x,p1y,p1width,p1height,p2x,p2y,p2width,p2height;
 
 	static Logger logger = Logger.getLogger(EIAFrame.class);
-	
+
 	//constructor
 	public EIAPanel (Hashtable context) {
 
 		this.context = context;
-		
+
 		addMouseMotionListener(this);
 
 
@@ -133,23 +133,29 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 			p2width = 0;
 			p2height = 0;
 		}
-		
+
 		anim = (AnimationManager)context.get("anim");
-		
-		// SWING
-		
+
+		setDisplayScale(displayScale);
+	}
+
+	public void setDisplayScale(double ds) {
+		this.displayScale = ds;
 		//eventually need to update height here for tiling
 		this.calcWidth = (int)(canvas.getDimensions().width*displayScale + (margin*2));
 		this.calcHeight = (int)(canvas.getDimensions().height*displayScale + (margin*2));
 		logger.info("EIAPanel dims: " + calcWidth + " " + calcHeight);
-		
+
 		setBackground(Color.BLUE);
 		this.setSize(calcWidth, calcHeight);
 		setPreferredSize(new Dimension(calcWidth, calcHeight)); // need both SetSize and SetPreferredSize here for some reason
-		
-		
-		logger.info("EIAPanel loaded with displayScale of " + displayScale);
 
+
+		logger.info("EIAPanel loaded with displayScale of " + displayScale);
+	}
+	
+	public double getDisplayScale() {
+		return displayScale;
 	}
 
 
@@ -182,12 +188,12 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			//test
 			//g2.fillRect(50,50,100,100);
-			
-			
-			
 
-			
-			
+
+
+
+
+
 
 			/*
 			 * Draw Anim/Canvas
@@ -197,22 +203,22 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 			Dimension d = anim.getStageDimensions();
 			//g2.drawImage(anim.getStage(),0,0,null);
 			g2.drawImage(anim.getStage(),0,0,(int)(d.width*displayScale),(int)(d.height*displayScale),null);
-			
+
 			//outline the canvas
 			g2.setColor(new Color(48, 32, 48));
 			g2.drawRect(0,0,(int)(canvas.getDimensions().width*displayScale),(int)(canvas.getDimensions().height*displayScale));
 
-			
+
 			/*
 			 * Draw people mover and other static elements
 			 */
 			g2.setColor(new Color(32, 64, 32));
 			g2.drawRect((int)(p1x*displayScale), (int)(p1y*displayScale),(int)(p1width*displayScale),(int)(p1height*displayScale));
 			g2.drawRect((int)(p2x*displayScale), (int)(p2y*displayScale),(int)(p2width*displayScale),(int)(p2height*displayScale));
-			
 
 
-			
+
+
 
 
 
@@ -253,7 +259,7 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 				g2.setColor(new Color(0, 0, 196));
 				g2.drawRect((int)(l.x)-lightWidth/2, (int)(l.y)-lightHeight/2, lightWidth, lightHeight);
 			}
-			
+
 			/*
 			 * Draw tracks
 			 */		
@@ -266,8 +272,8 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 				g2.setColor(new Color(0, 0, 196));
 				g2.drawRect((int)(l.x)-lightWidth/2, (int)(l.y)-lightHeight/2, lightWidth, lightHeight);
 			}
-			
-			
+
+
 			for (Track tr : tracks)
 			{
 				double trackYLoc = 22.0;
@@ -279,12 +285,12 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 				int fwd = (int)(tr.sDistFwd*displayScale);
 				int rev = (int)(tr.sDistRev*displayScale);
 				g2.drawLine((int)(tl.x-fwd), (int)(tl.y), (int)(tl.x + fwd+rev), (int)(tl.y));
-				
+
 				g2.drawRect((int)(tl.x), (int)(tl.y), 2, 2);
 			}
-			
-			
-			
+
+
+
 
 
 			/*
