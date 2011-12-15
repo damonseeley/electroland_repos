@@ -132,8 +132,12 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 		
 		anim = (AnimationManager)context.get("anim");
 		
-		// SWING
-		
+		setDisplayScale(displayScale);
+
+	}
+	
+	public void setDisplayScale(double ds) {
+		this.displayScale = ds;
 		//eventually need to update height here for tiling
 		this.calcWidth = (int)(canvas.getDimensions().width*displayScale + (margin*2));
 		this.calcHeight = (int)(canvas.getDimensions().height*displayScale + (margin*2));
@@ -153,10 +157,9 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 		setPreferredSize(new Dimension(panelTileWidth, calcHeight*vTiles)); // need both SetSize and SetPreferredSize here for some reason
 		//setPreferredSize(new Dimension(panelTileWidth, 800)); // need both SetSize and SetPreferredSize here for some reason
 		
-		
 		logger.info("EIAPanel loaded with displayScale of " + displayScale);
-
 	}
+	
 
 
 	public void update(){

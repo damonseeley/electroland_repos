@@ -7,18 +7,21 @@ package net.electroland.edmonton.core;
  * 
  */
 
-import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -36,6 +39,7 @@ public class EIAFrame extends JFrame implements ActionListener {
 	private int panelWidth,panelHeight;
 
 	private JButton b1,b2,b3,b4,b5,b6,b7,b8,b9,b10;
+	private DoubleJSlider js1;
 	private ArrayList<JButton> buttons;
 
 	static Logger logger = Logger.getLogger(EIAFrame.class);
@@ -100,9 +104,39 @@ public class EIAFrame extends JFrame implements ActionListener {
 		buttons.add(b9);
 		//b3.addActionListener(this);
 		
+		
+		// displayScale slider
+		
+		JLabel dsLabel = new JLabel("Scale", JLabel.CENTER);
+		dsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+	        
+		int scaleFactor = 100;
+		int scaleMax = 10;
+		final DoubleJSlider js1 = new DoubleJSlider(0, scaleMax*scaleFactor, 0, scaleFactor);
+		js1.setValue((int)(ep.getDisplayScale()*scaleFactor));
+		js1.setMinimum(scaleFactor);
+
+		//Create the label table
+		Hashtable<Integer,JLabel> labelTable = new Hashtable<Integer,JLabel>();
+		labelTable.put( new Integer(scaleFactor), new JLabel("1.0") );
+		labelTable.put( new Integer(scaleMax*scaleFactor), new JLabel("10.0") );
+		js1.setLabelTable( labelTable );
+		js1.setPaintLabels(true);
+		
+		js1.addChangeListener(new ChangeListener(){
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                logger.info(js1.getScaledValue());
+                // change ep displayScale
+                ep.setDisplayScale(js1.getScaledValue());
+                setSize();
+            }
+        });
+		
+		
 		JPanel bp = new JPanel();
-		bp.setSize(ep.getWidth(),200);
-		bp.setPreferredSize(new Dimension(ep.getWidth(),200));
+		bp.setSize(ep.getWidth(),50);
+		bp.setPreferredSize(new Dimension(ep.getWidth(),50));
 		//bp.setBackground(Color.YELLOW);
 		bp.setLayout(new MigLayout("insets 8"));
 		
@@ -110,9 +144,19 @@ public class EIAFrame extends JFrame implements ActionListener {
 			bp.add(b);
 		}
 		
+		JPanel sp = new JPanel();
+		sp.setSize(ep.getWidth(),50);
+		sp.setPreferredSize(new Dimension(ep.getWidth(),50));
+		//bp.setBackground(Color.YELLOW);
+		sp.setLayout(new MigLayout("insets 16"));
+		sp.add(dsLabel);
+		sp.add(js1);
+		
 		this.setLayout(new MigLayout("insets 0"));
 		this.add(ep, "wrap");
-		this.add(bp);
+		this.add(bp, "wrap");
+		this.add(sp);
+
 		
 	    
 		this.addWindowListener(
@@ -126,8 +170,11 @@ public class EIAFrame extends JFrame implements ActionListener {
 		//setup window
 		this.setVisible(true);
 		logger.info("Setting JFrame width to " + ep.calcWidth);
+		setSize();
+	}
+	
+	public void setSize(){
 		this.setSize(ep.calcWidth, windowHeight);
-		//this.setSize(ep.panelTileWidth, windowHeight);
 		this.setPreferredSize(new Dimension(ep.calcWidth,windowHeight));
 	}
 	
@@ -158,3 +205,19 @@ public class EIAFrame extends JFrame implements ActionListener {
 
 
 }
+
+class DoubleJSlider extends JSlider {
+
+    final int scale;
+
+    public DoubleJSlider(int min, int max, int value, int scale) {
+        super(min, max, value);
+        this.scale = scale;
+    }
+
+    public double getScaledValue() {
+        return ((double)super.getValue()) / this.scale;
+    }
+}
+
+
