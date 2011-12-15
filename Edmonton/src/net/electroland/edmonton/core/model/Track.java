@@ -58,8 +58,7 @@ public class Track {
 			if (newSpeed > 0.5){
 				xSpeed = newSpeed * speedAdjust;
 			}
-			//xSpeed = totalDist/(totalTime/1000); //divide total distance from events by total time/1000 to get xSpeed as unit per second 
-			logger.info("Tracker: updated xSpeed " + xSpeed);
+			//logger.info("Tracker: updated xSpeed " + xSpeed);
 
 		}
 	}

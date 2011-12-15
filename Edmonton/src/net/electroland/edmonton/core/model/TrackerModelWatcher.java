@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 
 
 public class TrackerModelWatcher extends ModelWatcher {
-	
+
 	private static Logger logger = Logger.getLogger(TrackerModelWatcher.class);
 
 	private List<Track> tracks;
@@ -46,13 +46,19 @@ public class TrackerModelWatcher extends ModelWatcher {
 				// if a state is on do a search for nearby tracks, if tracks is not empty
 				if (tracks.size() > 0){
 					// search for nearby existing track
+					boolean foundTrack = false;
 					for (Track t : tracks)
 					{
 						if ((t.x - state.getLocation().x) < t.sDistRev || (state.getLocation().x - t.x) < t.sDistFwd) {
 							// if a track is found within search update the track
 							t.newTrackEvent(state.getLocation().x);
+							foundTrack = true;
 							break;
 						}
+					}
+					// no track was found in the prev loop so add one
+					if (!foundTrack){
+						tracks.add(new Track(state.getLocation().x));
 					}
 				} else {
 					// if not then create a new track
@@ -88,6 +94,8 @@ public class TrackerModelWatcher extends ModelWatcher {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
+		
+		//logger.info("tracks size: " + tracks.size());
 
 		return true;
 	}

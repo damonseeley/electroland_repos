@@ -262,17 +262,7 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 
 			/*
 			 * Draw tracks
-			 */		
-
-			for (Fixture fix : elu.getFixtures())
-			{
-				Point3d l = (Point3d)fix.getLocation().clone();
-				//logger.info("orig " + (int)l.x + " " + (int)l.y);
-				l.scale(displayScale);
-				g2.setColor(new Color(0, 0, 196));
-				g2.drawRect((int)(l.x)-lightWidth/2, (int)(l.y)-lightHeight/2, lightWidth, lightHeight);
-			}
-
+			 */
 
 			for (Track tr : tracks)
 			{
