@@ -361,7 +361,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 		anim.queueClipChange(clip, new Rectangle((int)x - endWidth/2,0,endWidth,16), null, null, 1200, 0, false);
 		anim.queueClipChange(clip, new Rectangle((int)x - startWidth/2,0,startWidth,16), null, null, 800, 0, true);
-		logger.info("Created Egg Expand at x = " + x);
+		//logger.info("Created Egg Expand at x = " + x);
 	}
 
 	private void eggWave(double x){
@@ -371,7 +371,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		anim.queueClipChange(clip, null, null, 1.0, 800, 0, false);
 		anim.queueClipChange(clip, new Rectangle((int)x - 32,0,32,16), null, 1.0, 1600, 0, false);
 		anim.queueClipChange(clip, null, null, 0.0, 300, 0, true);
-		logger.info("Created Egg Wave at x = " + x);
+		//logger.info("Created Egg Wave at x = " + x);
 	}
 
 	private void eggSparkle(double x){
@@ -379,7 +379,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		//anim.queueClipChange(clip, null, null, 1.0, 1700, 0, false); //make it smaller
 		anim.queueClipChange(clip, null, null, 1.0, 1000, 0, false); //fadein
 		anim.queueClipChange(clip, null, null, 0.0, 1000, 1200, true); //fadeout
-		logger.info("Created Egg Sparkle at x = " + x);
+		//logger.info("Created Egg Sparkle at x = " + x);
 	}
 
 	private void Tracer(double x) {
@@ -431,7 +431,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 	@Override
 	public void clipStarted(ClipEvent e) {
-		logger.info("clip " + e.clipId + " of type " + (Clip)e.clip + " started.");
+		//logger.info("clip " + e.clipId + " of type " + (Clip)e.clip + " started.");
 	}
 
 	public static void killTheads() {
