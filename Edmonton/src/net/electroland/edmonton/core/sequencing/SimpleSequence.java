@@ -7,7 +7,11 @@ import java.util.Map;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.ParameterMap;
 
+import org.apache.log4j.Logger;
+
 public class SimpleSequence implements Runnable{
+
+    static Logger logger = Logger.getLogger(SimpleSequence.class);
 
     private Map <String, Piece> pieces = new Hashtable<String, Piece>();
     private Map <String, Object> context;
@@ -29,6 +33,7 @@ public class SimpleSequence implements Runnable{
 
         for (String name : ep.getObjectNames("piece"))
         {
+            logger.info("configuring piece '" + name + "'...");
             // parse cues
             HashMap <String, Cue> pieceCues = new HashMap<String, Cue>();
             Map<String, ParameterMap> cues = ep.getObjects(name);
@@ -37,6 +42,7 @@ public class SimpleSequence implements Runnable{
                 int dot = cueName.indexOf('.');
                 String type = cueName.substring(0,dot);
                 String id = cueName.substring(dot + 1, cueName.length());
+                logger.info("cue '" + id + "' of type '" + type + "'");
                 if (type.equals("cue"))
                 {
                     pieceCues.put(id, new TimingCue(cues.get(cueName)));
@@ -89,10 +95,12 @@ public class SimpleSequence implements Runnable{
 
             if (passed > current.duration)
             {
+                System.out.println("piece over.");
                 if (current.followWith != null)
                 {
                     current.reset();
                     current = pieces.get(current.followWith);
+                    System.out.println("Starting " + current.followWith);
                     start = System.currentTimeMillis();
                 }else{
                     stop();

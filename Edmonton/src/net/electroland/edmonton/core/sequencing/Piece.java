@@ -6,8 +6,8 @@ import net.electroland.utils.ParameterMap;
 
 public class Piece {
 
-    protected String name, followWith;
     protected int duration;
+    protected String followWith;
     protected Collection<Cue>cues;
 
     public Piece(ParameterMap params)
