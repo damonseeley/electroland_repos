@@ -56,6 +56,8 @@ public class SimpleSequence implements Runnable{
                 }else if (type.equals("clipcue"))
                 {
                     nCue = new ClipCue(cues.get(cueName));
+                }else{
+                    throw new OptionException("Unknown cue type '" + type + "'");
                 }
 
                 if (nCue != null)
