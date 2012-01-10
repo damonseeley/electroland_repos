@@ -15,6 +15,7 @@ public class ClipCue extends Cue{
         super(params);
         isPerSensor = params.getRequired("mode").equalsIgnoreCase("PER_SENSOR");
         clipName = params.getRequired("clip");
+        x = params.getRequiredInt("x");
     }
 
     @Override
