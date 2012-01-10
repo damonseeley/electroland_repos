@@ -14,6 +14,12 @@ public class SimpleSequence implements Runnable{
     private Thread thread;
     private Piece current;
 
+    public static void main(String args[])
+    {
+        SimpleSequence s = new SimpleSequence("EIA-seq-LITE.properties", null);
+        s.play("myPiece");
+    }
+    
     public SimpleSequence(String propsName, Map<String,Object> context)
     {
         // requires sound manager, animation manager, model, and ELU
