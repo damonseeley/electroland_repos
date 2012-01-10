@@ -10,15 +10,16 @@ abstract public class Cue {
     protected Cue parent;
     protected String parentName;
     protected boolean played = false;
+    protected String id;
 
     public Cue(ParameterMap params)
     {
         time = params.getRequiredInt("time");
-        parentName = params.getOptional(parentName);
+        parentName = params.getOptional("cue");
     }
 
     // recursive
-    protected int getTime(){
+    protected final int getTime(){
         return parent == null ? time : time + parent.getTime();
     }
 

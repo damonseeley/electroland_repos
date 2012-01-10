@@ -5,6 +5,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import net.electroland.utils.ElectrolandProperties;
+import net.electroland.utils.OptionException;
 import net.electroland.utils.ParameterMap;
 
 import org.apache.log4j.Logger;
@@ -45,20 +46,31 @@ public class SimpleSequence implements Runnable{
                 logger.info("cue '" + id + "' of type '" + type + "'");
                 if (type.equals("cue"))
                 {
-                    pieceCues.put(id, new TimingCue(cues.get(cueName)));
+                    Cue nCue = new TimingCue(cues.get(cueName));
+                    nCue.id = id;
+                    pieceCues.put(id, nCue);
                 }else if (type.equals("soundcue"))
                 {
-                    pieceCues.put(id, new SoundCue(cues.get(cueName)));
+                    Cue nCue = new SoundCue(cues.get(cueName));
+                    nCue.id = id;
+                    pieceCues.put(id, nCue);
                 }else if (type.equals("clipcue"))
                 {
-                    pieceCues.put(id, new ClipCue(cues.get(cueName)));
+                    Cue nCue = new ClipCue(cues.get(cueName));
+                    nCue.id = id;
+                    pieceCues.put(id, nCue);
                 }
             }
             // connect cues
             for (Cue cue : pieceCues.values())
             {
                 if (cue.parentName != null){
-                    cue.parent = pieceCues.get(cue.parentName);
+                    Cue parent = pieceCues.get(cue.parentName);
+                    if (parent != null){
+                        cue.parent = parent;
+                    }else{
+                        throw new OptionException("Can't find Cue '" + cue.parentName + "' in piece '" + name + "'");
+                    }
                 }
             }
             // parse piece
@@ -92,27 +104,29 @@ public class SimpleSequence implements Runnable{
         while(thread != null)
         {
             long passed = System.currentTimeMillis() - start;
-
-            if (passed > current.duration)
-            {
-                System.out.println("piece over.");
-                if (current.followWith != null)
-                {
-                    current.reset();
-                    current = pieces.get(current.followWith);
-                    System.out.println("Starting " + current.followWith);
-                    start = System.currentTimeMillis();
-                }else{
-                    stop();
-                }
-            }
+            //logger.debug("passed=" + passed);
 
             for (Cue cue : current.cues)
             {
-                if (!cue.played && passed > cue.getTime())
+                if (!cue.played && passed >= cue.getTime())
                 {
+                    logger.debug("playing " + cue.id + " at " + passed);
                     cue.play(context);
                     cue.played = true;
+                }
+            }
+
+            if (passed >= current.duration)
+            {
+                logger.debug("piece over.");
+                if (current.followWith != null)
+                {
+                    current.reset();
+                    logger.debug("Starting piece '" + current.followWith + "'");
+                    current = pieces.get(current.followWith);
+                    start = System.currentTimeMillis();
+                }else{
+                    stop();
                 }
             }
 
