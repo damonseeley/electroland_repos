@@ -43,20 +43,23 @@ public class SimpleSequence implements Runnable{
                 int dot = cueName.indexOf('.');
                 String type = cueName.substring(0,dot);
                 String id = cueName.substring(dot + 1, cueName.length());
+
                 logger.info("cue '" + id + "' of type '" + type + "'");
+
+                Cue nCue = null;
                 if (type.equals("cue"))
                 {
-                    Cue nCue = new TimingCue(cues.get(cueName));
-                    nCue.id = id;
-                    pieceCues.put(id, nCue);
+                    nCue = new TimingCue(cues.get(cueName));
                 }else if (type.equals("soundcue"))
                 {
-                    Cue nCue = new SoundCue(cues.get(cueName));
-                    nCue.id = id;
-                    pieceCues.put(id, nCue);
+                    nCue = new SoundCue(cues.get(cueName));
                 }else if (type.equals("clipcue"))
                 {
-                    Cue nCue = new ClipCue(cues.get(cueName));
+                    nCue = new ClipCue(cues.get(cueName));
+                }
+
+                if (nCue != null)
+                {
                     nCue.id = id;
                     pieceCues.put(id, nCue);
                 }
@@ -118,11 +121,11 @@ public class SimpleSequence implements Runnable{
 
             if (passed >= current.duration)
             {
-                logger.debug("piece over.");
+                logger.info("piece over.");
                 if (current.followWith != null)
                 {
                     current.reset();
-                    logger.debug("Starting piece '" + current.followWith + "'");
+                    logger.info("Starting piece '" + current.followWith + "'");
                     current = pieces.get(current.followWith);
                     start = System.currentTimeMillis();
                 }else{
