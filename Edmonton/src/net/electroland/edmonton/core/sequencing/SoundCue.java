@@ -15,8 +15,7 @@ public class SoundCue extends Cue{
     }
 
     @Override
-    public void play(Map context) {
-        // TODO Auto-generated method stub
-        
+    public void play(Map<String, Object> context) {
+        System.out.println("playing sound " + filename + " at point " + x);
     }
 }

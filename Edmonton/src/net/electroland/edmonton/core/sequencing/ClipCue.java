@@ -6,7 +6,8 @@ import net.electroland.utils.ParameterMap;
 
 public class ClipCue extends Cue{
 
-    boolean isPerSensor;
+    private int x;
+    private boolean isPerSensor;
     private String clipName;
 
     public ClipCue(ParameterMap params)
@@ -18,6 +19,6 @@ public class ClipCue extends Cue{
 
     @Override
     public void play(Map<String,Object> context) {
-        // get the AnimationManager and play the clip.
+        System.out.println("playing clip " + clipName + " at point " + x + " isPerSensor=" + isPerSensor);
     }
 }
