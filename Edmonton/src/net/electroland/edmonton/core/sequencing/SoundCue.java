@@ -12,6 +12,8 @@ public class SoundCue extends Cue{
     public SoundCue(ParameterMap params)
     {
         super(params);
+        filename = params.getRequired("filename");
+        x = params.getRequiredInt("x");
     }
 
     @Override
