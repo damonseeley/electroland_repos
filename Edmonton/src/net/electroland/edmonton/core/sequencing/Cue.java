@@ -15,7 +15,7 @@ abstract public class Cue {
     public Cue(ParameterMap params)
     {
         time = params.getRequiredInt("time");
-        parentName = params.getOptional("cue");
+        parentName = params.getOptional("parent");
     }
 
     // recursive
