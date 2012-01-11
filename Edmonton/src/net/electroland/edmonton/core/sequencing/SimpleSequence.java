@@ -14,10 +14,10 @@ public class SimpleSequence implements Runnable{
 
     static Logger logger = Logger.getLogger(SimpleSequence.class);
 
-    private Map <String, Piece> pieces = new Hashtable<String, Piece>();
+    private Map <String, Show> shows = new Hashtable<String, Show>();
     private Map <String, Object> context;
     private Thread thread;
-    private Piece current;
+    private Show current;
 
     public static void main(String args[])
     {
@@ -32,11 +32,11 @@ public class SimpleSequence implements Runnable{
 
         ElectrolandProperties ep = new ElectrolandProperties(propsName);
 
-        for (String name : ep.getObjectNames("piece"))
+        for (String name : ep.getObjectNames("show"))
         {
-            logger.info("configuring piece '" + name + "'...");
+            logger.info("configuring show '" + name + "'...");
             // parse cues
-            HashMap <String, Cue> pieceCues = new HashMap<String, Cue>();
+            HashMap <String, Cue> showCues = new HashMap<String, Cue>();
             Map<String, ParameterMap> cues = ep.getObjects(name);
             for (String cueName : cues.keySet())
             {
@@ -63,35 +63,35 @@ public class SimpleSequence implements Runnable{
                 if (nCue != null)
                 {
                     nCue.id = id;
-                    pieceCues.put(id, nCue);
+                    showCues.put(id, nCue);
                 }
             }
             // connect cues
-            for (Cue cue : pieceCues.values())
+            for (Cue cue : showCues.values())
             {
                 if (cue.parentName != null){
-                    Cue parent = pieceCues.get(cue.parentName);
+                    Cue parent = showCues.get(cue.parentName);
                     if (parent != null){
                         cue.parent = parent;
                     }else{
-                        throw new OptionException("Can't find Cue '" + cue.parentName + "' in piece '" + name + "'");
+                        throw new OptionException("Can't find Cue '" + cue.parentName + "' in show '" + name + "'");
                     }
                 }
             }
-            // parse piece
-            Piece piece = new Piece(ep.getParams("piece", name));
-            // add cues to piece
-            piece.cues = pieceCues.values();
+            // parse show
+            Show show = new Show(ep.getParams("show", name));
+            // add cues to show
+            show.cues = showCues.values();
             // reset all cues
-            piece.reset();
+            show.reset();
             // store
-            pieces.put(name, piece);
+            shows.put(name, show);
         }
     }
 
-    public void play(String pieceName)
+    public void play(String showName)
     {
-        current = pieces.get(pieceName);
+        current = shows.get(showName);
         if (thread == null)
         {
             thread = new Thread(this);
@@ -124,12 +124,12 @@ public class SimpleSequence implements Runnable{
 
             if (passed >= current.duration)
             {
-                logger.info("piece over.");
+                logger.info("show over.");
                 if (current.followWith != null)
                 {
                     current.reset();
-                    logger.info("Starting piece '" + current.followWith + "'");
-                    current = pieces.get(current.followWith);
+                    logger.info("Starting show '" + current.followWith + "'");
+                    current = shows.get(current.followWith);
                     start = System.currentTimeMillis();
                 }else{
                     stop();
