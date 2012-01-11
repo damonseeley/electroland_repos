@@ -44,6 +44,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 	private ElectrolandProperties props;
 	private ELUManager elu;
 	private boolean updateLighting = true;
+	private boolean track;
 	private ELUCanvas2D canvas;
 	private IOManager eio;
 
@@ -100,6 +101,8 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		context.put("elu",elu);
 
 		updateLighting = Boolean.parseBoolean(props.getOptional("settings", "global", "updateLighting"));
+		track = Boolean.parseBoolean(props.getOptional("settings", "tracking", "track"));
+		
 
 		canvas = (ELUCanvas2D)elu.getCanvas("EIAspan");
 		canvasHeight = (int)canvas.getDimensions().getHeight();
@@ -203,8 +206,11 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 	private void createModelWatchers(){
 		
+		if (track) {
 		tracker = new TrackerModelWatcher(context); //starting with vals of 64 which is what was used in TestConductor (single value)
 		model.addModelWatcher(tracker, "tracker", eio.getIStates());
+		}
+		logger.info("TRACKER: " + tracker);
 		
 		int stateToBrightnessClip = anim.startClip("stateToBrightnessImage", new Rectangle(0,0,canvasWidth,canvasHeight), 1.0);
 		int maxBright = 192; //max brightness for pathtracer

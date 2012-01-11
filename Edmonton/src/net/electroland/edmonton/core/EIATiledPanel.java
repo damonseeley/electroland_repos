@@ -48,6 +48,7 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 	private double displayScale;
 	private boolean showGraphics;
 	private AnimationManager anim;
+	private boolean track; // is tracking enabled?
 	private List<Track> tracks;
 	private boolean showAnimation;
 
@@ -74,7 +75,19 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 		this.eio = (IOManager)context.get("eio");
 		this.canvas = (ELUCanvas2D)context.get("canvas");
 		this.props = (ElectrolandProperties)context.get("props");
-		this.tracks = (List)context.get("tracks");
+
+		try {
+			track = Boolean.parseBoolean(props.getOptional("settings", "tracking", "track"));
+			logger.info("Tracking is set to " + track);
+			if (track){
+				this.tracks = (List)context.get("tracks");
+			}
+
+		} catch (OptionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			showGraphics = true;
+		}
 
 		try {
 			showGraphics = Boolean.parseBoolean(props.getOptional("settings", "display", "showGraphics"));
@@ -144,7 +157,7 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 			p2height = 0;
 		}
 
-		
+
 
 		setDisplayScale(displayScale);
 
@@ -232,7 +245,7 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 				g2.drawRect(0,0,(int)(canvas.getDimensions().width*displayScale),(int)(canvas.getDimensions().height*displayScale));
 			}
 
-			
+
 			/*
 			 * Draw people mover and other static elements
 			 */
@@ -283,28 +296,30 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 			 * Draw tracks
 			 */
 
-			for (Track tr : tracks)
-			{
-				double trackYLoc = 14.0;
-				Point3d tl = new Point3d(tr.x,trackYLoc,0);
-				//logger.info("orig " + (int)l.x + " " + (int)l.y);
-				tl.scale(displayScale);
-				int trackHeight = 2;
-				int fwd = (int)(tr.sDistFwd*displayScale);
-				int rev = (int)(tr.sDistRev*displayScale);
-				// draw search domains
-				g2.setColor(new Color(255, 0, 255));
-				g2.drawLine((int)(tl.x-fwd), (int)(tl.y), (int)(tl.x-rev), (int)(tl.y));
-				
-				
-				
-				
-				g2.drawLine((int)(tl.x-fwd), (int)(tl.y-1), (int)(tl.x-fwd), (int)(tl.y+1));
-				g2.drawLine((int)(tl.x-rev), (int)(tl.y-1), (int)(tl.x-rev), (int)(tl.y+1));
+			if (track){
+				for (Track tr : tracks)
+				{
+					double trackYLoc = 14.0;
+					Point3d tl = new Point3d(tr.x,trackYLoc,0);
+					//logger.info("orig " + (int)l.x + " " + (int)l.y);
+					tl.scale(displayScale);
+					int trackHeight = 2;
+					int fwd = (int)(tr.sDistFwd*displayScale);
+					int rev = (int)(tr.sDistRev*displayScale);
+					// draw search domains
+					g2.setColor(new Color(255, 0, 255));
+					g2.drawLine((int)(tl.x-fwd), (int)(tl.y), (int)(tl.x-rev), (int)(tl.y));
 
-				// draw track point
-				g2.setColor(new Color(255, 0, 0));
-				g2.fillRect((int)(tl.x)-1, (int)(tl.y)-1, 3, 3);
+
+
+
+					g2.drawLine((int)(tl.x-fwd), (int)(tl.y-1), (int)(tl.x-fwd), (int)(tl.y+1));
+					g2.drawLine((int)(tl.x-rev), (int)(tl.y-1), (int)(tl.x-rev), (int)(tl.y+1));
+
+					// draw track point
+					g2.setColor(new Color(255, 0, 0));
+					g2.fillRect((int)(tl.x)-1, (int)(tl.y)-1, 3, 3);
+				}
 			}
 
 
