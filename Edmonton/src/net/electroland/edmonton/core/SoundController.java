@@ -287,6 +287,10 @@ public class SoundController implements SCSoundControlNotifiable {
 
 	public void playLocal(String filename, double x, float gain){
 		if (!bypass) {
+			//temp
+			playSingleChannel(filename, x, gain);
+			
+			
 			//TO DO make this work
 			/*
 			soundID++;
