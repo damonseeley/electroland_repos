@@ -40,18 +40,25 @@ public class SoundCue extends Cue{
     @Override
     public void play(Map<String, Object> context) {
 
-        SoundController sc = (SoundController)context.get("soundController");
+        if (context != null)
+        {
+            Object o = context.get("soundController");
+            if (o instanceof SoundController)
+            {
+                SoundController sc = (SoundController)o;
 
-        switch(mode){
-        case(PLAY_GLOBAL):
-            sc.playGlobal(filename, false, gain);
-            break;
-        case(PLAY_LOCAL):
-            sc.playLocal(filename, x, gain);
-            break;
-        case(PLAY_SINGLE_CHANNEL):
-            sc.playSingleChannel(filename, x, gain);
-            break;
+                switch(mode){
+                case(PLAY_GLOBAL):
+                    sc.playGlobal(filename, false, gain);
+                    break;
+                case(PLAY_LOCAL):
+                    sc.playLocal(filename, x, gain);
+                    break;
+                case(PLAY_SINGLE_CHANNEL):
+                    sc.playSingleChannel(filename, x, gain);
+                    break;
+                }
+            }
         }
     }
 }
