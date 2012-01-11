@@ -11,7 +11,7 @@ public class ClipCue extends Cue{
     final static int PER_TRACK = 1;
     final static int GLOBAL = 2;
     
-    private int x;
+    private double x;
     private int mode = -1;
     private String clipName;
 
@@ -32,7 +32,7 @@ public class ClipCue extends Cue{
         }
 
         clipName = params.getRequired("clip");
-        x = params.getRequiredInt("x");
+        x = params.getRequiredDouble("x");
     }
 
     @Override
