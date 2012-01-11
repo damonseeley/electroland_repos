@@ -19,11 +19,12 @@ public class SimpleSequencer implements Runnable{
     private Map <String, Object> context;
     private Thread thread;
     private Show current;
+    private int clipDelay = -100;
 
     public static void main(String args[])
     {
         SimpleSequencer s = new SimpleSequencer("EIA-seq-LITE.properties", null);
-        s.play("myPiece");
+        s.play("show1");
     }
     
     public SimpleSequencer(String propsName, Map<String,Object> context)
@@ -93,11 +94,17 @@ public class SimpleSequencer implements Runnable{
     public void play(String showName)
     {
         current = shows.get(showName);
-        current.reset();
-        if (thread == null)
+        if (current != null)
         {
-            thread = new Thread(this);
-            thread.start();
+            current.reset();
+            if (thread == null)
+            {
+                thread = new Thread(this);
+                thread.start();
+            }
+            
+        }else{
+            logger.error("No show '" + showName + "' has been definied.");
         }
     }
 
@@ -111,18 +118,32 @@ public class SimpleSequencer implements Runnable{
         thread = null;
     }
 
+    public int getClipDelay() {
+        return clipDelay;
+    }
+
+    public void setClipDelay(int clipDelay) {
+        this.clipDelay = clipDelay;
+    }
+
     @Override
     public void run() {
         logger.info("sequencer started.");
+
         long start = System.currentTimeMillis();
+
         while(thread != null)
         {
             long passed = System.currentTimeMillis() - start;
-            //logger.debug("passed=" + passed);
 
             for (Cue cue : current.cues)
             {
-                if (!cue.played && passed >= cue.getTime())
+                int time = cue.getTime();
+                if (cue instanceof ClipCue)
+                {
+                    time += clipDelay;
+                }
+                if (!cue.played && passed >= time)
                 {
                     logger.debug("playing " + cue.id + " at " + passed);
                     cue.play(context);
@@ -132,7 +153,7 @@ public class SimpleSequencer implements Runnable{
 
             if (passed >= current.duration)
             {
-                logger.info("show over.");
+                logger.info("show over at " + passed);
                 if (current.followWith != null)
                 {
                     current.reset();
