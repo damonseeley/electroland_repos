@@ -161,6 +161,11 @@ public class SoundController implements SCSoundControlNotifiable {
 				}
 			}
 		}
+		
+		
+		
+		
+		
 
 		// debug - list the soundFiles
 		if (debug) {
@@ -176,6 +181,10 @@ public class SoundController implements SCSoundControlNotifiable {
 	/*
 	 * Utils for mapping output to bays and channels
 	 */
+
+	private int getClosestBayChannel (double x){
+		return getChID(getClosestBay(x));
+	}
 
 	/**
 	 * Return the correct device channel value for a given bay number
@@ -204,10 +213,6 @@ public class SoundController implements SCSoundControlNotifiable {
 		return closest.bay;
 	}
 
-	private int getClosestBayChannel (double x){
-		return getChID(getClosestBay(x));
-	}
-
 
 
 
@@ -216,9 +221,7 @@ public class SoundController implements SCSoundControlNotifiable {
 
 
 	public void loadBuffer(String soundFile){
-
 		ss.readBuf(soundFilePath+soundFile);
-
 	}
 
 
@@ -282,7 +285,7 @@ public class SoundController implements SCSoundControlNotifiable {
 		}
 	}
 
-	public void playLocal(String filename, double x, float masterGain, String comment){
+	public void playLocal(String filename, double x, float gain){
 		if (!bypass) {
 			//TO DO make this work
 			/*
@@ -298,7 +301,7 @@ public class SoundController implements SCSoundControlNotifiable {
 		}
 	}
 
-	public void playGlobal(String soundFile, boolean loop, float gain, String comment){
+	public void playGlobal(String soundFile, boolean loop, float gain){
 		if (!bypass) {
 			if(!soundFile.equals("none") && serverIsLive){
 				// whoah, hacky.  let's fix this
