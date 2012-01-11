@@ -82,6 +82,7 @@ public class SimpleSequence implements Runnable{
             Piece piece = new Piece(ep.getParams("piece", name));
             // add cues to piece
             piece.cues = pieceCues.values();
+            // reset all cues
             piece.reset();
             // store
             pieces.put(name, piece);
