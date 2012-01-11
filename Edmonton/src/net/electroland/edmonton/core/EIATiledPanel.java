@@ -85,8 +85,8 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 
 		} catch (OptionException e) {
 			// TODO Auto-generated catch block
+			track = false;
 			e.printStackTrace();
-			showGraphics = true;
 		}
 
 		try {
