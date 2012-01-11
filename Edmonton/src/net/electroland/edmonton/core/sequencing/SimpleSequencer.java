@@ -19,7 +19,7 @@ public class SimpleSequencer implements Runnable{
     private Map <String, Object> context;
     private Thread thread;
     private Show current;
-    private int clipDelay = -100;
+    private int clipDelay = 0;
 
     public static void main(String args[])
     {
@@ -33,6 +33,12 @@ public class SimpleSequencer implements Runnable{
         this.context = context;
 
         ElectrolandProperties ep = new ElectrolandProperties(propsName);
+
+        Integer clipDelay = ep.getOptionalInt("global", "settings", "clip_delay");
+        if (clipDelay != null)
+        {
+            this.clipDelay = clipDelay;
+        }
 
         for (String name : ep.getObjectNames("show"))
         {
