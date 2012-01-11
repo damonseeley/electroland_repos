@@ -1,0 +1,155 @@
+package net.electroland.edmonton.core.sequencing;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+
+import net.electroland.utils.ElectrolandProperties;
+import net.electroland.utils.OptionException;
+import net.electroland.utils.ParameterMap;
+
+import org.apache.log4j.Logger;
+
+public class SimpleSequencer implements Runnable{
+
+    static Logger logger = Logger.getLogger(SimpleSequencer.class);
+
+    private Map <String, Show> shows = new Hashtable<String, Show>();
+    private Map <String, Object> context;
+    private Thread thread;
+    private Show current;
+
+    public static void main(String args[])
+    {
+        SimpleSequencer s = new SimpleSequencer("EIA-seq-LITE.properties", null);
+        s.play("myPiece");
+    }
+    
+    public SimpleSequencer(String propsName, Map<String,Object> context)
+    {
+        // requires sound manager, animation manager, model, and ELU
+        this.context = context;
+
+        ElectrolandProperties ep = new ElectrolandProperties(propsName);
+
+        for (String name : ep.getObjectNames("show"))
+        {
+            logger.info("configuring show '" + name + "'...");
+            // parse cues
+            HashMap <String, Cue> showCues = new HashMap<String, Cue>();
+            Map<String, ParameterMap> cues = ep.getObjects(name);
+            for (String cueName : cues.keySet())
+            {
+                int dot = cueName.indexOf('.');
+                String type = cueName.substring(0,dot);
+                String id = cueName.substring(dot + 1, cueName.length());
+
+                logger.info("cue '" + id + "' of type '" + type + "'");
+
+                Cue nCue = null;
+                if (type.equals("cue"))
+                {
+                    nCue = new TimingCue(cues.get(cueName));
+                }else if (type.equals("soundcue"))
+                {
+                    nCue = new SoundCue(cues.get(cueName));
+                }else if (type.equals("clipcue"))
+                {
+                    nCue = new ClipCue(cues.get(cueName));
+                }else{
+                    throw new OptionException("Unknown cue type '" + type + "'");
+                }
+
+                if (nCue != null)
+                {
+                    nCue.id = id;
+                    showCues.put(id, nCue);
+                }
+            }
+            // connect cues
+            for (Cue cue : showCues.values())
+            {
+                if (cue.parentName != null){
+                    Cue parent = showCues.get(cue.parentName);
+                    if (parent != null){
+                        cue.parent = parent;
+                    }else{
+                        throw new OptionException("Can't find Cue '" + cue.parentName + "' in show '" + name + "'");
+                    }
+                }
+            }
+            // parse show
+            Show show = new Show(ep.getParams("show", name));
+            // add cues to show
+            show.cues = showCues.values();
+            // reset all cues
+            show.reset();
+            // store
+            shows.put(name, show);
+        }
+    }
+
+    public void play(String showName)
+    {
+        current = shows.get(showName);
+        current.reset();
+        if (thread == null)
+        {
+            thread = new Thread(this);
+            thread.start();
+        }
+    }
+
+    public Collection<String> getSetList()
+    {
+    	return shows.keySet();
+    }
+    
+    public void stop()
+    {
+        thread = null;
+    }
+
+    @Override
+    public void run() {
+        logger.info("sequencer started.");
+        long start = System.currentTimeMillis();
+        while(thread != null)
+        {
+            long passed = System.currentTimeMillis() - start;
+            //logger.debug("passed=" + passed);
+
+            for (Cue cue : current.cues)
+            {
+                if (!cue.played && passed >= cue.getTime())
+                {
+                    logger.debug("playing " + cue.id + " at " + passed);
+                    cue.play(context);
+                    cue.played = true;
+                }
+            }
+
+            if (passed >= current.duration)
+            {
+                logger.info("show over.");
+                if (current.followWith != null)
+                {
+                    current.reset();
+                    logger.info("Starting show '" + current.followWith + "'");
+                    current = shows.get(current.followWith);
+                    start = System.currentTimeMillis();
+                }else{
+                    stop();
+                }
+            }
+
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        logger.info("sequencer stopped.");
+    }
+}
