@@ -101,7 +101,13 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		context.put("elu",elu);
 
 		updateLighting = Boolean.parseBoolean(props.getOptional("settings", "global", "updateLighting"));
-		track = Boolean.parseBoolean(props.getOptional("settings", "tracking", "track"));
+		try {
+			track = Boolean.parseBoolean(props.getOptional("settings", "tracking", "track"));
+		} catch (OptionException e) {
+			// TODO Auto-generated catch block
+			track = false;
+			e.printStackTrace();
+		}
 		
 
 		canvas = (ELUCanvas2D)elu.getCanvas("EIAspan");
@@ -210,7 +216,6 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		tracker = new TrackerModelWatcher(context); //starting with vals of 64 which is what was used in TestConductor (single value)
 		model.addModelWatcher(tracker, "tracker", eio.getIStates());
 		}
-		logger.info("TRACKER: " + tracker);
 		
 		int stateToBrightnessClip = anim.startClip("stateToBrightnessImage", new Rectangle(0,0,canvasWidth,canvasHeight), 1.0);
 		int maxBright = 192; //max brightness for pathtracer
