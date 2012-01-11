@@ -266,7 +266,7 @@ public class SoundController implements SCSoundControlNotifiable {
 	 * @param x (double) location
 	 * @param gain (float)
 	 */
-	public void playSingleBay(String filename, double x, float gain){
+	public void playSingleChannel(String filename, double x, float gain){
 		if (!bypass) {
 			soundID++;
 			if(!filename.equals("none") && serverIsLive){
@@ -282,7 +282,7 @@ public class SoundController implements SCSoundControlNotifiable {
 		}
 	}
 
-	public void playSoundLinear (String filename, int x, float masterGain, String comment){
+	public void playLocal(String filename, double x, float masterGain, String comment){
 		if (!bypass) {
 			//TO DO make this work
 			/*
@@ -298,10 +298,10 @@ public class SoundController implements SCSoundControlNotifiable {
 		}
 	}
 
-	public void globalSound(String soundFile, boolean loop, float gain, String comment){
+	public void playGlobal(String soundFile, boolean loop, float gain, String comment){
 		if (!bypass) {
 			if(!soundFile.equals("none") && serverIsLive){
-				// whoah, hacky.  let's fixt this
+				// whoah, hacky.  let's fix this
 				int[] channels = new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23};
 				float[] amplitudes = new float[]{gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain};
 				SoundNode sn = ss.createMonoSoundNode(soundFiles.get(soundFilePath+soundFile), false, channels, amplitudes, 1.0f);
