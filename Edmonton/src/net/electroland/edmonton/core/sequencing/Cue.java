@@ -8,9 +8,9 @@ abstract public class Cue {
 
     private int time;
     protected Cue parent;
-    protected String parentName;
     protected boolean played = false;
-    protected String id;
+    protected String parentName; // temp buffer
+    protected String id; // for debugging only
 
     public Cue(ParameterMap params)
     {
