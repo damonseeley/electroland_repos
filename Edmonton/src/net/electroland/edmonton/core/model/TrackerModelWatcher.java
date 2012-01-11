@@ -38,6 +38,10 @@ public class TrackerModelWatcher extends ModelWatcher {
 		tracks.add(new Track(trackID,nx));
 		trackID++;
 	}
+	
+	public List<Track> getAllTracks(){
+		return tracks;
+	}
 
 	/**
 	 *
@@ -59,7 +63,7 @@ public class TrackerModelWatcher extends ModelWatcher {
 					double tDelta = t.x - s.getLocation().x; //signed distance from track x to sensor x
 					if (tDelta < t.sDistRev && tDelta > 0) {
 						// if a track is found within search update the track
-						logger.info("matched track " + t.id + " @x=" + t.x + " with sensor " + s.getID() + " @x=" + s.getLocation().x);
+						///logger.info("matched track " + t.id + " @x=" + t.x + " with sensor " + s.getID() + " @x=" + s.getLocation().x);
 						t.newTrackEvent(s.getLocation().x);
 						matchedTrack = true;
 						break;
@@ -67,7 +71,7 @@ public class TrackerModelWatcher extends ModelWatcher {
 					// check condition of being just past the sensor but within dDistFwd
 					if (tDelta > t.sDistFwd && tDelta < 0) {
 						// if a track is found within search update the track
-						logger.info("matched track " + t.id + " @x=" + t.x + " with sensor " + s.getID() + " @x=" + s.getLocation().x);
+						//logger.info("matched track " + t.id + " @x=" + t.x + " with sensor " + s.getID() + " @x=" + s.getLocation().x);
 						t.newTrackEvent(s.getLocation().x);
 						matchedTrack = true;
 						break;
@@ -75,7 +79,7 @@ public class TrackerModelWatcher extends ModelWatcher {
 				}
 				// no track was found in the prev loop so add one
 				if (!matchedTrack){
-					logger.info("no track found for state " + s.getID() + " so creating new track at x=" + s.getLocation().x);
+					//logger.info("no track found for state " + s.getID() + " so creating new track at x=" + s.getLocation().x);
 					newTrack(s.getLocation().x);
 				}
 
@@ -96,12 +100,12 @@ public class TrackerModelWatcher extends ModelWatcher {
 						tr.update();
 						// remove track if x is below some threshold
 						if (tr.x < -10){
-							logger.info("track " + tr.id + " left the scene and will be removed");
+							//logger.info("track " + tr.id + " left the scene and will be removed");
 							tracks.remove(tr);
 						}
 						//remove them if their searchtime has been exceeded
 						if (tr.isExpired()){
-							logger.info("track " + tr.id + " expired unmatched and will be removed");
+							//logger.info("track " + tr.id + " expired unmatched and will be removed");
 							tracks.remove(tr);
 						}
 					}

@@ -16,13 +16,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import net.electroland.ea.AnimationManager;
-import net.electroland.ea.Clip;
 import net.electroland.ea.ClipEvent;
 import net.electroland.ea.ClipListener;
 import net.electroland.edmonton.clips.StateToBrightnessImageClip;
 import net.electroland.edmonton.core.model.OneEventPerPeriodModelWatcher;
 import net.electroland.edmonton.core.model.StateToBrightnessModelWatcher;
 import net.electroland.edmonton.core.model.TrackerModelWatcher;
+import net.electroland.edmonton.core.sequencing.SimpleSequencer;
 import net.electroland.eio.IOManager;
 import net.electroland.eio.IState;
 import net.electroland.eio.model.Model;
@@ -50,6 +50,8 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 	private SoundController soundController;
 	private AnimationManager anim;
+	private SimpleSequencer sequencer;
+	private EIAClipPlayer clipPlayer;
 
 	public int canvasHeight, canvasWidth;
 	public Hashtable<String, Object> context;
@@ -60,9 +62,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 	private Model model;
 	private ModelWatcher stateToBright,entry1,exit1,entry2,exit2,egg1,egg2,egg3,egg4;
-	private ModelWatcher tracker;
-
-	//private FakeModel fakemodel;
+	private TrackerModelWatcher tracker;
 
 	private int stateToBrightnessClip;
 
@@ -108,7 +108,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 			track = false;
 			e.printStackTrace();
 		}
-		
+
 
 		canvas = (ELUCanvas2D)elu.getCanvas("EIAspan");
 		canvasHeight = (int)canvas.getDimensions().getHeight();
@@ -127,7 +127,12 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		soundController = new SoundController(context);
 		context.put("soundController", soundController);
 
+		sequencer = new SimpleSequencer("EIA-seq-LITE.properties", context);
 
+		clipPlayer = new EIAClipPlayer(anim);
+		context.put("clipPlayer", clipPlayer);
+		
+		
 		/******** Model, Watchers & Timers ********/
 		model = new Model();
 		model.addModelListener(this);
@@ -138,10 +143,6 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 		timedShows = new Timer();
 		timedShows.schedule(new timedShowPlayer(),60000);
-
-		//fakemodel = new FakeModel();
-		//fakemodel.addModelListener(this);
-
 
 		/******** GUI ********/
 		ef = new EIAFrame(Integer.parseInt(props.getRequired("settings", "global", "guiwidth")),Integer.parseInt(props.getRequired("settings", "global", "guiheight")),context);
@@ -158,7 +159,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 
 	/************************* Test Event Handlers ******************************/
-
+    
 	// handle the actions from test buttons
 	public void actionPerformed(ActionEvent e) {
 		logger.info(e.getActionCommand());
@@ -193,6 +194,19 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		if ("exit2".equals(e.getActionCommand())) {
 			exit2Shooter();
 		}
+		if ("startSeq".equals(e.getActionCommand())) {
+			logger.info("START SEQUENCE");
+			Iterator<String> setList = sequencer.getSetList().iterator();
+			if (setList.hasNext())
+			{
+				sequencer.play(setList.next());
+			}
+		}
+		if ("stopSeq".equals(e.getActionCommand())) {
+			logger.info("STOP SEQUENCE");
+			sequencer.stop();
+		}
+
 	}
 
 	class startupTests extends TimerTask {
@@ -200,7 +214,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 			//startupTestTimer
 			// TEST SOUND
 			//soundController.playTestSound("test_1.wav");
-			//soundController.playSingleBay("test_1.wav", 600.0, 1.0f); // plays a sound out of the speaker nearest to the x value provide
+			//soundController.playSingleChannel("test_1.wav", 600.0, 1.0f); // plays a sound out of the speaker nearest to the x value provide
 			//startupTestTimer.schedule(new startupTests(), 10000);
 		}
 	}
@@ -211,17 +225,19 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 	/************************* Model Handlers ******************************/
 
 	private void createModelWatchers(){
-		
+
 		if (track) {
-		tracker = new TrackerModelWatcher(context); //starting with vals of 64 which is what was used in TestConductor (single value)
-		model.addModelWatcher(tracker, "tracker", eio.getIStates());
+			tracker = new TrackerModelWatcher(context); //starting with vals of 64 which is what was used in TestConductor (single value)
+			model.addModelWatcher(tracker, "tracker", eio.getIStates());
 		}
 		
+		context.put("tracker", tracker);
+				
 		int stateToBrightnessClip = anim.startClip("stateToBrightnessImage", new Rectangle(0,0,canvasWidth,canvasHeight), 1.0);
 		int maxBright = 192; //max brightness for pathtracer
 		stateToBright = new StateToBrightnessModelWatcher(16,2,maxBright); //starting with vals of 64 which is what was used in TestConductor (single value)
 		model.addModelWatcher(stateToBright, "stateToBright", eio.getIStates());
-		
+
 
 		entry1 = new OneEventPerPeriodModelWatcher(500);
 		ArrayList<IState> entry1states = new ArrayList<IState>();
@@ -324,7 +340,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 			//play again in 60s
 			//timedShows.schedule(new timedShowPlayer(), 60000);
 			timedShows.schedule(new timedShowPlayer(), 600000); //set to every 10 minutes during debugging
-			
+
 
 		}
 	}

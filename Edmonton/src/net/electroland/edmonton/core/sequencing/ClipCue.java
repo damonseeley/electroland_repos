@@ -1,7 +1,13 @@
 package net.electroland.edmonton.core.sequencing;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.Map;
 
+import net.electroland.edmonton.core.EIAClipPlayer;
+import net.electroland.edmonton.core.model.Track;
+import net.electroland.edmonton.core.model.TrackerModelWatcher;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.ParameterMap;
 
@@ -14,6 +20,7 @@ public class ClipCue extends Cue{
     private double x;
     private int mode = -1;
     private String clipName;
+    private EIAClipPlayer clipPlayer;
 
     public ClipCue(ParameterMap params)
     {
@@ -37,6 +44,52 @@ public class ClipCue extends Cue{
 
     @Override
     public void play(Map<String,Object> context) {
-        System.out.println("playing clip " + clipName + " at point " + x + " mode=" + mode);
+    		
+    	if (context != null)
+    	{
+    	    Object cpo = context.get("clipPlayer");
+			if (cpo instanceof EIAClipPlayer)
+			{
+				EIAClipPlayer cp = (EIAClipPlayer)cpo;
+
+				switch(mode){
+            	case(GLOBAL):
+            		playClipAt(cp, x);
+            		break;
+            	case(PER_SENSOR):
+            		// record last time all IStates were tripped and start based on time since tripping
+            		break;
+            	case(PER_TRACK):
+            		Collection<Track> c = ((TrackerModelWatcher)context.get("tracker")).getAllTracks();
+            		for (Track track : c)
+            		{
+                		playClipAt(cp, x + track.x);
+            		}
+            		break;
+            	}
+
+			}else{
+				System.out.println("no clipPlayer found.");
+			}
+    	}
+    }
+
+    private void playClipAt(EIAClipPlayer cp, double x)
+    {
+	    Method[] allMethods = cp.getClass().getDeclaredMethods();
+	    for (Method m : allMethods) {
+	    	if (m.getName().equals(clipName))
+	    	{
+	    		try {
+					m.invoke(cp, x);
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
+	    	}
+	    }
     }
 }
