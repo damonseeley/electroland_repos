@@ -322,7 +322,9 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		public void run() {
 			bigFill();
 			//play again in 60s
-			timedShows.schedule(new timedShowPlayer(), 60000);
+			//timedShows.schedule(new timedShowPlayer(), 60000);
+			timedShows.schedule(new timedShowPlayer(), 600000); //set to every 10 minutes during debugging
+			
 
 		}
 	}
