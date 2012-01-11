@@ -232,7 +232,14 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		}
 		
 		context.put("tracker", tracker);
+		
+		
+		
+		/**
+		 * disable these events for now to make debugging on future shows easier
+		 */
 				
+		/*
 		int stateToBrightnessClip = anim.startClip("stateToBrightnessImage", new Rectangle(0,0,canvasWidth,canvasHeight), 1.0);
 		int maxBright = 192; //max brightness for pathtracer
 		stateToBright = new StateToBrightnessModelWatcher(16,2,maxBright); //starting with vals of 64 which is what was used in TestConductor (single value)
@@ -279,6 +286,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		ArrayList<IState> egg4states = new ArrayList<IState>();
 		egg4states.add(eio.getIStateById("i60"));
 		model.addModelWatcher(egg4, "egg4", egg4states);
+		*/
 	}
 
 
