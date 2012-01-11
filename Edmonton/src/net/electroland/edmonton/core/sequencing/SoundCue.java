@@ -7,7 +7,7 @@ import net.electroland.utils.ParameterMap;
 public class SoundCue extends Cue{
 
     private int x;
-    private int gain;
+    private double gain;
     private String filename;
 
     public SoundCue(ParameterMap params)
@@ -15,7 +15,7 @@ public class SoundCue extends Cue{
         super(params);
         filename = params.getRequired("filename");
         x = params.getRequiredInt("x");
-        gain = params.getRequiredInt("gain");
+        gain = params.getRequiredDouble("gain");
     }
 
     @Override
