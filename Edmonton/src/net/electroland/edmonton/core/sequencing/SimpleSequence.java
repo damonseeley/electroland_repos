@@ -1,5 +1,6 @@
 package net.electroland.edmonton.core.sequencing;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -99,6 +100,11 @@ public class SimpleSequence implements Runnable{
         }
     }
 
+    public Collection<String> getSetList()
+    {
+    	return shows.keySet();
+    }
+    
     public void stop()
     {
         thread = null;
