@@ -110,7 +110,7 @@ public class SimpleSequencer implements Runnable{
             }
             
         }else{
-            logger.error("No show '" + showName + "' has been definied.");
+            logger.warn("No show '" + showName + "' has been definied.");
         }
     }
 
