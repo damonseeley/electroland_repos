@@ -19,6 +19,8 @@ public class Track {
 	public double speedAdjust;
 	public double fwdSearchDist; // distance in front of a track (and behind a sensor) to search
 	public double revSearchDist; // distance behind a track (and forward of a sensor) to search (less common)
+	private double fwdSearchOrig, revSearchOrig;
+	private double searchDistInc;
 	public long sTime; 	// timeout before tracks are deleted
 	public float staleness;
 
@@ -35,9 +37,12 @@ public class Track {
 		lastUpdate = startTime;
 		trackEvents.add(new TrackEvent(startTime,x));
 		fwdSearchDist = 7.5; // slightly more than the 7.39 dist from sensor to sensor
-		fwdSearchDist = 8.0; // slightly more than the 7.39 dist from sensor to sensor
+		fwdSearchDist = 7.0; // slightly more than the 7.39 dist from sensor to sensor
 		revSearchDist = -3.0; //seach forward to find interpolation overshoot tracks
-		revSearchDist = -8.0; //seach forward to find interpolation overshoot tracks
+		revSearchDist = -7.0; //seach forward to find interpolation overshoot tracks
+		fwdSearchOrig = fwdSearchDist;
+		revSearchOrig = revSearchDist;
+		searchDistInc = 0.1;
 		sTime = 3500; 	// (ms) start with 2 seconds
 		xSpeed = 5.5; // unit per second, based on 4.53 feet per second, in Meters * world unit multiplier (4 as of this writing)
 		speedAdjust = 1.0;
@@ -50,6 +55,10 @@ public class Track {
 		long tUpdateDelta = System.currentTimeMillis() - lastTrackUpdate;
 		staleness = 1.0f - (float)tUpdateDelta/(float)sTime;
 		//logger.info(tUpdateDelta + " " + sTime + " " + staleness);
+		
+		// grow the search distance by the increment value if no matching has occurred (well, by default)
+		fwdSearchDist += searchDistInc;
+		revSearchDist -= searchDistInc;
 
 		// update speed variable if more than three trackEvents
 		if (trackEvents.size() > 2){
@@ -85,6 +94,10 @@ public class Track {
 			this.x = nx;
 			lastIState = isID;
 		}
+		
+		//reset search distances
+		fwdSearchDist = fwdSearchOrig;
+		revSearchDist = revSearchOrig;
 		
 		//newTrackEvent(nx);
 

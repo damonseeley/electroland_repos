@@ -236,9 +236,10 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		if (track) {
 			tracker = new TrackerBasicModelWatcher(context); //starting with vals of 64 which is what was used in TestConductor (single value)
 			model.addModelWatcher(tracker, "tracker", eio.getIStates());
+			context.put("tracker", tracker);
 		}
 		
-		context.put("tracker", tracker);
+		
 		
 		
 
