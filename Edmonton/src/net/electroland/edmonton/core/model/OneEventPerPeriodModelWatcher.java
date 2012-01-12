@@ -2,11 +2,10 @@ package net.electroland.edmonton.core.model;
 
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
-import net.electroland.edmonton.core.EIAMainConductor;
 import net.electroland.eio.IState;
 import net.electroland.eio.model.ModelWatcher;
+
+import org.apache.log4j.Logger;
 
 public class OneEventPerPeriodModelWatcher extends ModelWatcher {
 
