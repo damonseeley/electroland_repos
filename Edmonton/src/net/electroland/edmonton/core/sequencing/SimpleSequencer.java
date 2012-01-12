@@ -5,13 +5,16 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
+import net.electroland.edmonton.core.model.LastTrippedModelWatcher;
+import net.electroland.eio.model.ModelEvent;
+import net.electroland.eio.model.ModelListener;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.ParameterMap;
 
 import org.apache.log4j.Logger;
 
-public class SimpleSequencer implements Runnable{
+public class SimpleSequencer implements Runnable, ModelListener{
 
     static Logger logger = Logger.getLogger(SimpleSequencer.class);
 
@@ -178,5 +181,12 @@ public class SimpleSequencer implements Runnable{
             }
         }
         logger.info("sequencer stopped.");
+    }
+
+    @Override
+    public void modelChanged(ModelEvent evt) {
+        if (evt.getSource() instanceof LastTrippedModelWatcher){
+            context.put("tripRecords",evt.optionalPostiveDetails.get(LastTrippedModelWatcher.TRIP_TIMES));
+        }
     }
 }
