@@ -27,10 +27,7 @@ public class LastTrippedModelWatcher extends ModelWatcher {
 
     @Override
     public boolean poll() {
-
-        if (details.isEmpty()){
-            details.put(TRIP_TIMES, records);
-        }
+        details.put(TRIP_TIMES, records);
 
         for (IState state : this.getStates())
         {
