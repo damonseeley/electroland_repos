@@ -7,7 +7,7 @@ import java.util.Map;
 
 import net.electroland.edmonton.core.EIAClipPlayer;
 import net.electroland.edmonton.core.model.Track;
-import net.electroland.edmonton.core.model.TrackerModelWatcher;
+import net.electroland.edmonton.core.model.TrackerBasicModelWatcher;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.ParameterMap;
 
@@ -62,9 +62,9 @@ public class ClipCue extends Cue{
                 break;
             case(PER_TRACK):
                 
-                if (context != null && context.get("tracker") instanceof TrackerModelWatcher)
+                if (context != null && context.get("tracker") instanceof TrackerBasicModelWatcher)
                 {
-                    Collection<Track> c = ((TrackerModelWatcher)
+                    Collection<Track> c = ((TrackerBasicModelWatcher)
                             context.get("tracker")).getAllTracks();
                     for (Track track : c)
                     {
