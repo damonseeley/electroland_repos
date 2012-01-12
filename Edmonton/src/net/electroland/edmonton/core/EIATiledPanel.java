@@ -296,31 +296,34 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 			 * Draw tracks
 			 */
 
+			
 			if (track){
+				double trackYLoc = 14.0;
 				for (Track tr : tracks)
 				{
-					double trackYLoc = 14.0;
 					Point3d tl = new Point3d(tr.x,trackYLoc,0);
 					//logger.info("orig " + (int)l.x + " " + (int)l.y);
 					tl.scale(displayScale);
 					int trackHeight = 2;
-					int fwd = (int)(tr.sDistFwd*displayScale);
-					int rev = (int)(tr.sDistRev*displayScale);
+					int fwd = (int)(tr.revSearchDist*displayScale);
+					int rev = (int)(tr.fwdSearchDist*displayScale);
+					
+					// draw track point
+					g2.setColor(new Color(0, 255, 0));
+					g2.fillRect((int)(tl.x)-1, (int)(tl.y)-1, 3, 3);
+					
 					// draw search domains
 					g2.setColor(new Color(255, 0, 255));
 					g2.drawLine((int)(tl.x-fwd), (int)(tl.y), (int)(tl.x-rev), (int)(tl.y));
 
-
-
-
 					g2.drawLine((int)(tl.x-fwd), (int)(tl.y-1), (int)(tl.x-fwd), (int)(tl.y+1));
 					g2.drawLine((int)(tl.x-rev), (int)(tl.y-1), (int)(tl.x-rev), (int)(tl.y+1));
-
-					// draw track point
-					g2.setColor(new Color(255, 0, 0));
-					g2.fillRect((int)(tl.x)-1, (int)(tl.y)-1, 3, 3);
+					
+					trackYLoc++;
+					
 				}
 			}
+			
 
 
 

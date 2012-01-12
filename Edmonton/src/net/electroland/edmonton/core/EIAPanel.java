@@ -272,8 +272,8 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 				tl.scale(displayScale);
 				g2.setColor(new Color(255, 0, 0));
 				int trackHeight = 2;
-				int fwd = (int)(tr.sDistFwd*displayScale);
-				int rev = (int)(tr.sDistRev*displayScale);
+				int fwd = (int)(tr.revSearchDist*displayScale);
+				int rev = (int)(tr.fwdSearchDist*displayScale);
 				g2.drawLine((int)(tl.x-fwd), (int)(tl.y), (int)(tl.x + fwd+rev), (int)(tl.y));
 
 				g2.drawRect((int)(tl.x), (int)(tl.y), 2, 2);

@@ -9,7 +9,6 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Timer;
@@ -19,9 +18,8 @@ import net.electroland.ea.AnimationManager;
 import net.electroland.ea.ClipEvent;
 import net.electroland.ea.ClipListener;
 import net.electroland.edmonton.clips.StateToBrightnessImageClip;
-import net.electroland.edmonton.core.model.OneEventPerPeriodModelWatcher;
-import net.electroland.edmonton.core.model.StateToBrightnessModelWatcher;
-import net.electroland.edmonton.core.model.TrackerModelWatcher;
+import net.electroland.edmonton.core.model.TrackerBasicModelWatcher;
+import net.electroland.edmonton.core.model.TrackerBasicModelWatcher;
 import net.electroland.edmonton.core.sequencing.SimpleSequencer;
 import net.electroland.eio.IOManager;
 import net.electroland.eio.IState;
@@ -62,7 +60,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 	private Model model;
 	private ModelWatcher stateToBright,entry1,exit1,entry2,exit2,egg1,egg2,egg3,egg4;
-	private TrackerModelWatcher tracker;
+	private TrackerBasicModelWatcher tracker;
 
 	private int stateToBrightnessClip;
 
@@ -227,7 +225,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 	private void createModelWatchers(){
 
 		if (track) {
-			tracker = new TrackerModelWatcher(context); //starting with vals of 64 which is what was used in TestConductor (single value)
+			tracker = new TrackerBasicModelWatcher(context); //starting with vals of 64 which is what was used in TestConductor (single value)
 			model.addModelWatcher(tracker, "tracker", eio.getIStates());
 		}
 		
