@@ -57,6 +57,7 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 	public int panelTileWidth;
 	public int calcWidth, calcHeight;
 	private int margin;
+	private int intMargin;
 	private int stateSize;
 	private int lightHeight, lightWidth;
 	private double p1x,p1y,p1width,p1height,p2x,p2y,p2width,p2height;
@@ -112,10 +113,12 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 		}
 		try {
 			this.margin = props.getOptionalInt("settings", "displaymetrics", "margin");
+			intMargin = margin/2;
 		} catch (OptionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			margin = 32;
+			intMargin = margin/2;
 		}
 
 		try {
@@ -157,8 +160,6 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 			p2height = 0;
 		}
 
-
-
 		setDisplayScale(displayScale);
 
 	}
@@ -166,11 +167,8 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 	public void setDisplayScale(double ds) {
 		this.displayScale = ds;
 		//eventually need to update height here for tiling
-		this.calcWidth = (int)(canvas.getDimensions().width*displayScale + (margin*2));
-		this.calcHeight = (int)(canvas.getDimensions().height*displayScale + (margin*2));
-		this.calcHeight = (int)(canvas.getDimensions().height*displayScale + (margin*2));
-		this.calcHeight = (int)((canvas.getDimensions().height*displayScale)) + margin*2;
-		//logger.info("EIAPanel dims: " + calcWidth + " " + calcHeight);
+		this.calcWidth = (int)(canvas.getDimensions().width*displayScale + (margin*2) + (intMargin*2));
+		this.calcHeight = (int)((canvas.getDimensions().height*displayScale)) + (margin*2) + (intMargin*2);
 
 		setBackground(Color.BLUE);
 		//this.setSize(calcWidth, calcHeight);
@@ -203,7 +201,6 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 	public void update(){
 		//called from Conductor
 		repaint();
-
 	}
 
 	int vTiles;
@@ -219,16 +216,17 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 			//clear image from last time
 			clear(g);
 
-			// Create BI on which to draw everything double-buffered, add the margin to total width and height
-			int biHeight = (int)((canvas.getDimensions().height*displayScale));
+			// Create BI on which to draw everything double-buffered, add the int margin to total width and height
+			int biHeight = (int)((canvas.getDimensions().height*displayScale)+(intMargin*2));
 			//make it exactly three times the panel width for ease later
-			BufferedImage bi = new BufferedImage(panelTileWidth*vTiles, biHeight, BufferedImage.TYPE_INT_RGB);		
+			BufferedImage bi = new BufferedImage(panelTileWidth*vTiles+(intMargin*2), biHeight, BufferedImage.TYPE_INT_RGB);	// maybe dont need to account for intMargin in width here???	
 
 			Graphics2D g2 = (Graphics2D)bi.getGraphics();
 			//set styles
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			//test
-			//g2.fillRect(50,50,100,100);
+			//g2.setColor(new Color(32,32,32));
+			//g2.fillRect(0,0,bi.getWidth(),bi.getHeight());
 
 
 
@@ -238,11 +236,11 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 			if (showAnimation){
 				// Get image from AnimationManager
 				Dimension d = anim.getStageDimensions();
-				g2.drawImage(anim.getStage(),0,0,(int)(d.width*displayScale),(int)(d.height*displayScale),null);
+				g2.drawImage(anim.getStage(),intMargin,intMargin,(int)(d.width*displayScale),(int)(d.height*displayScale),null);
 
 				//outline the canvas
 				g2.setColor(new Color(48, 32, 48));
-				g2.drawRect(0,0,(int)(canvas.getDimensions().width*displayScale),(int)(canvas.getDimensions().height*displayScale));
+				g2.drawRect(intMargin,intMargin,(int)(canvas.getDimensions().width*displayScale),(int)(canvas.getDimensions().height*displayScale));
 			}
 
 
@@ -250,13 +248,14 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 			 * Draw people mover and other static elements
 			 */
 			g2.setColor(new Color(32, 64, 32));
-			g2.drawRect((int)(p1x*displayScale), (int)(p1y*displayScale),(int)(p1width*displayScale),(int)(p1height*displayScale));
-			g2.drawRect((int)(p2x*displayScale), (int)(p2y*displayScale),(int)(p2width*displayScale),(int)(p2height*displayScale));
+			g2.drawRect((int)(p1x*displayScale)+intMargin, (int)(p1y*displayScale)+intMargin,(int)(p1width*displayScale),(int)(p1height*displayScale));
+			g2.drawRect((int)(p2x*displayScale)+intMargin, (int)(p2y*displayScale)+intMargin,(int)(p2width*displayScale),(int)(p2height*displayScale));
 
 
 			/*
 			 * Draw Sensors
 			 */
+			int stateY = 0;
 			for (IOState state : eio.getStates())
 			{
 				Point3d l = (Point3d) state.getLocation().clone();
@@ -271,11 +270,13 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 
 				//draw the sensor state
 				g2.setColor(new Color(brite, brite, brite));
-				g2.fillRect((int)(l.x)-(stateSize/2), (int)(l.y)-(stateSize/2),stateSize, stateSize);
+				g2.fillRect((int)(l.x)-(stateSize/2)+intMargin, (int)(l.y)-(stateSize/2)+intMargin,stateSize, stateSize);
 				//draw an outline
 				g2.setColor(new Color(64, 64, 64));
-				g2.drawRect((int)(l.x)-(stateSize/2), (int)(l.y)-(stateSize/2),stateSize, stateSize);
-
+				g2.drawRect((int)(l.x)-(stateSize/2)+intMargin, (int)(l.y)-(stateSize/2)+intMargin,stateSize, stateSize);
+				
+				//get a generic stateX for later use on tracks
+				stateY = (int)l.y-(stateSize/2);
 			}
 
 
@@ -289,7 +290,7 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 				//logger.info("orig " + (int)l.x + " " + (int)l.y);
 				l.scale(displayScale);
 				g2.setColor(new Color(0, 0, 196));
-				g2.drawRect((int)(l.x)-lightWidth/2, (int)(l.y)-lightHeight/2, lightWidth, lightHeight);
+				g2.drawRect((int)(l.x)-lightWidth/2+intMargin, (int)(l.y)-lightHeight/2+intMargin, lightWidth, lightHeight);
 			}
 
 			/*
@@ -298,28 +299,32 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 
 			
 			if (track){
-				double trackYLoc = 14.0;
+				//double trackYLoc = 16.0;
 				for (Track tr : tracks)
 				{
-					Point3d tl = new Point3d(tr.x,trackYLoc,0);
+					Point3d tl = new Point3d(tr.x,stateY,0);
 					//logger.info("orig " + (int)l.x + " " + (int)l.y);
 					tl.scale(displayScale);
+					tl.y = stateY + 9 +intMargin; // draw the tracks in y stacked order based on sensor location
 					int trackHeight = 2;
 					int fwd = (int)(tr.revSearchDist*displayScale);
 					int rev = (int)(tr.fwdSearchDist*displayScale);
 					
+					int colorStaleness = (int)(255 * tr.staleness);
+					int colorFloor = 64; // set a floor for color in the above calc;
+					
 					// draw track point
-					g2.setColor(new Color(0, 255, 0));
-					g2.fillRect((int)(tl.x)-1, (int)(tl.y)-1, 3, 3);
+					g2.setColor(new Color(0, Math.min(colorStaleness + colorFloor, 255), 0));
+					g2.fillRect((int)(tl.x)-1+intMargin, (int)(tl.y)-1, 3, 3);
 					
 					// draw search domains
-					g2.setColor(new Color(255, 0, 255));
-					g2.drawLine((int)(tl.x-fwd), (int)(tl.y), (int)(tl.x-rev), (int)(tl.y));
+					g2.setColor(new Color(Math.min(colorStaleness + colorFloor, 255), 0, Math.min(colorStaleness + colorFloor, 255)));
+					g2.drawLine((int)(tl.x-fwd)+intMargin, (int)(tl.y), (int)(tl.x-rev)+intMargin, (int)(tl.y));
 
-					g2.drawLine((int)(tl.x-fwd), (int)(tl.y-1), (int)(tl.x-fwd), (int)(tl.y+1));
-					g2.drawLine((int)(tl.x-rev), (int)(tl.y-1), (int)(tl.x-rev), (int)(tl.y+1));
+					g2.drawLine((int)(tl.x-fwd)+intMargin, (int)(tl.y-1), (int)(tl.x-fwd)+intMargin, (int)(tl.y+1));
+					g2.drawLine((int)(tl.x-rev)+intMargin, (int)(tl.y-1), (int)(tl.x-rev)+intMargin, (int)(tl.y+1));
 					
-					trackYLoc++;
+					stateY += 2;
 					
 				}
 			}
