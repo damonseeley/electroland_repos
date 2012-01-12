@@ -11,16 +11,19 @@ import net.electroland.edmonton.core.model.TrackerModelWatcher;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.ParameterMap;
 
+import org.apache.log4j.Logger;
+
 public class ClipCue extends Cue{
-    
+
+    static Logger logger = Logger.getLogger(ClipCue.class);
+
     final static int PER_SENSOR = 0;
     final static int PER_TRACK = 1;
     final static int GLOBAL = 2;
-    
+
     private double x;
     private int mode = -1;
     private String clipName;
-    private EIAClipPlayer clipPlayer;
 
     public ClipCue(ParameterMap params)
     {
@@ -44,52 +47,57 @@ public class ClipCue extends Cue{
 
     @Override
     public void play(Map<String,Object> context) {
-    		
-    	if (context != null)
-    	{
-    	    Object cpo = context.get("clipPlayer");
-			if (cpo instanceof EIAClipPlayer)
-			{
-				EIAClipPlayer cp = (EIAClipPlayer)cpo;
 
-				switch(mode){
-            	case(GLOBAL):
-            		playClipAt(cp, x);
-            		break;
-            	case(PER_SENSOR):
-            		// record last time all IStates were tripped and start based on time since tripping
-            		break;
-            	case(PER_TRACK):
-            		Collection<Track> c = ((TrackerModelWatcher)context.get("tracker")).getAllTracks();
-            		for (Track track : c)
-            		{
-                		playClipAt(cp, x + track.x);
-            		}
-            		break;
-            	}
+        if (context != null && context.get("clipPlayer") instanceof EIAClipPlayer)
+        {
+            // might be nice to store this.
+            EIAClipPlayer cp = (EIAClipPlayer)context.get("clipPlayer");
 
-			}else{
-				System.out.println("no clipPlayer found.");
-			}
-    	}
+            switch(mode){
+            case(GLOBAL):
+                playClipAt(cp, x);
+                break;
+            case(PER_SENSOR):
+                // record last time all IStates were tripped and start based on time since tripping
+                break;
+            case(PER_TRACK):
+                
+                if (context != null && context.get("tracker") instanceof TrackerModelWatcher)
+                {
+                    Collection<Track> c = ((TrackerModelWatcher)
+                            context.get("tracker")).getAllTracks();
+                    for (Track track : c)
+                    {
+                        playClipAt(cp, x + track.x);
+                    }
+                }else{
+                    logger.warn("Context is missing 'tracker'");
+                }
+
+                break;
+            }
+
+        }else{
+            logger.warn("Context is missing 'clipPlayer'");
+        }
     }
 
     private void playClipAt(EIAClipPlayer cp, double x)
     {
-	    Method[] allMethods = cp.getClass().getDeclaredMethods();
-	    for (Method m : allMethods) {
-	    	if (m.getName().equals(clipName))
-	    	{
-	    		try {
-					m.invoke(cp, x);
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				}
-	    	}
-	    }
+        Method[] allMethods = cp.getClass().getDeclaredMethods();
+        for (Method m : allMethods) {
+            if (m.getName().equals(clipName))
+            {
+                try {
+                    m.invoke(cp, x);
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }
