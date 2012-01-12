@@ -18,7 +18,7 @@ import net.electroland.ea.AnimationManager;
 import net.electroland.ea.ClipEvent;
 import net.electroland.ea.ClipListener;
 import net.electroland.edmonton.clips.StateToBrightnessImageClip;
-import net.electroland.edmonton.core.model.TrackerBasicModelWatcher;
+import net.electroland.edmonton.core.model.LastTrippedModelWatcher;
 import net.electroland.edmonton.core.model.TrackerBasicModelWatcher;
 import net.electroland.edmonton.core.sequencing.SimpleSequencer;
 import net.electroland.eio.IOManager;
@@ -61,6 +61,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 	private Model model;
 	private ModelWatcher stateToBright,entry1,exit1,entry2,exit2,egg1,egg2,egg3,egg4;
 	private TrackerBasicModelWatcher tracker;
+	private LastTrippedModelWatcher tripRecord;
 
 	private int stateToBrightnessClip;
 
@@ -125,7 +126,9 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		soundController = new SoundController(context);
 		context.put("soundController", soundController);
 
-		sequencer = new SimpleSequencer("EIA-seq-LITE.properties", context);
+        sequencer = new SimpleSequencer("EIA-seq-LITE.properties", context);
+
+
 
 		clipPlayer = new EIAClipPlayer(anim);
 		context.put("clipPlayer", clipPlayer);
@@ -142,6 +145,11 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		timedShows = new Timer();
 		timedShows.schedule(new timedShowPlayer(),60000);
 
+        tripRecord = new LastTrippedModelWatcher();
+        model.addModelWatcher(tripRecord, "tripRecord", eio.getIStates());
+        model.addModelListener(sequencer);
+		
+		
 		/******** GUI ********/
 		ef = new EIAFrame(Integer.parseInt(props.getRequired("settings", "global", "guiwidth")),Integer.parseInt(props.getRequired("settings", "global", "guiheight")),context);
 		ef.addButtonListener(this);
@@ -232,7 +240,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		context.put("tracker", tracker);
 		
 		
-		
+
 		/**
 		 * disable these events for now to make debugging on future shows easier
 		 */
