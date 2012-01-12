@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -51,28 +52,29 @@ public class TrackerBasicModelWatcher extends ModelWatcher {
 
 		// update all tracks
 		try {
-			for (Track t : tracks)
-			{
 				//  iterate through tracks
 				if (tracks.size() > 0){
-					for (Track tr : tracks)
-					{
-						// update tracks if they were not updated by the previous loop
-						tr.update();
-						// remove track if x is below some threshold
-						if (tr.x < -10){
-							logger.debug("track " + tr.id + " left the scene and will be removed");
-							tracks.remove(tr);
-						}
-						//remove them if their searchtime has been exceeded
-						if (tr.isExpired()){
-							logger.debug("track " + tr.id + " expired unmatched and will be removed");
-							tracks.remove(tr);
-						}
-					}
+
+				    Iterator<Track> itr = tracks.iterator();
+
+				    while (itr.hasNext()){
+				        Track tr = itr.next();
+
+				        // update tracks if they were not updated by the previous loop
+                        tr.update();
+
+                        if (tr.x < -10){
+                            // remove track if x is below some threshold
+                            logger.debug("track " + tr.id + " left the scene and will be removed");
+                            itr.remove();
+                        }else if (tr.isExpired()){
+                            //remove them if their searchtime has been exceeded
+                            logger.debug("track " + tr.id + " expired unmatched and will be removed");
+                            itr.remove();
+                        }
+				    }
 
 				}
-			}
 		} catch (ConcurrentModificationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
