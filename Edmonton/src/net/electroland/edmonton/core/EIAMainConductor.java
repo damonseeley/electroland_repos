@@ -142,8 +142,9 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		startupTestTimer = new Timer();
 		startupTestTimer.schedule(new startupTests(), 4000);
 
-		timedShows = new Timer();
-		timedShows.schedule(new timedShowPlayer(),60000);
+		// disabled for now
+		//timedShows = new Timer();
+		//timedShows.schedule(new timedShowPlayer(),60000);
 
         tripRecord = new LastTrippedModelWatcher();
         model.addModelWatcher(tripRecord, "tripRecord", eio.getIStates());
