@@ -20,6 +20,7 @@ public class Track {
 	public double fwdSearchDist; // distance in front of a track (and behind a sensor) to search
 	public double revSearchDist; // distance behind a track (and forward of a sensor) to search (less common)
 	public long sTime; 	// timeout before tracks are deleted
+	public float staleness;
 
 	private static Logger logger = Logger.getLogger(Track.class);
 
@@ -39,11 +40,15 @@ public class Track {
 		sTime = 3500; 	// (ms) start with 2 seconds
 		xSpeed = 5.5; // unit per second, based on 4.53 feet per second, in Meters * world unit multiplier (4 as of this writing)
 		speedAdjust = 1.0;
+		staleness = 1.0f; // where 1.0 means not stale at all
 	}
 
 	public void update() {
 
 		long tDelta = System.currentTimeMillis() - lastUpdate; // time since last update
+		long tUpdateDelta = System.currentTimeMillis() - lastTrackUpdate;
+		staleness = 1.0f - (float)tUpdateDelta/(float)sTime;
+		//logger.info(tUpdateDelta + " " + sTime + " " + staleness);
 
 		// update speed variable if more than three trackEvents
 		if (trackEvents.size() > 2){
@@ -64,10 +69,8 @@ public class Track {
 	}
 
 	public void newTrackEvent(double x) {
-
 		lastTrackUpdate = System.currentTimeMillis();
 		trackEvents.add(new TrackEvent(lastTrackUpdate,x));
-
 	}
 
 	public void newTrackEvent(double nx, String isID) {
