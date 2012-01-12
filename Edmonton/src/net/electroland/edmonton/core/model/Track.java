@@ -35,8 +35,9 @@ public class Track {
 		lastUpdate = startTime;
 		trackEvents.add(new TrackEvent(startTime,x));
 		fwdSearchDist = 7.5; // slightly more than the 7.39 dist from sensor to sensor
+		fwdSearchDist = 8.0; // slightly more than the 7.39 dist from sensor to sensor
 		revSearchDist = -3.0; //seach forward to find interpolation overshoot tracks
-		revSearchDist = -6.0; //seach forward to find interpolation overshoot tracks
+		revSearchDist = -8.0; //seach forward to find interpolation overshoot tracks
 		sTime = 3500; 	// (ms) start with 2 seconds
 		xSpeed = 5.5; // unit per second, based on 4.53 feet per second, in Meters * world unit multiplier (4 as of this writing)
 		speedAdjust = 1.0;
