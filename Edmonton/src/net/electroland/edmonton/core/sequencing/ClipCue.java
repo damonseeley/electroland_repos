@@ -8,15 +8,17 @@ import java.util.Map;
 import net.electroland.edmonton.core.EIAClipPlayer;
 import net.electroland.edmonton.core.model.Track;
 import net.electroland.edmonton.core.model.TrackerBasicModelWatcher;
+import net.electroland.eio.IState;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.ParameterMap;
 
 import org.apache.log4j.Logger;
 
-public class ClipCue extends Cue{
+public class ClipCue extends Cue {
 
     static Logger logger = Logger.getLogger(ClipCue.class);
 
+    final static int tolerance = 2000;
     final static int PER_SENSOR = 0;
     final static int PER_TRACK = 1;
     final static int GLOBAL = 2;
@@ -58,6 +60,17 @@ public class ClipCue extends Cue{
                 playClipAt(cp, x);
                 break;
             case(PER_SENSOR):
+                if (context != null && context.get("tripRecords") != null)
+                {
+                    Map<IState, Integer> tripRecords = (Map<IState, Integer>)(context.get("tripRecords"));
+                    for (IState state : tripRecords.keySet())
+                    {
+                        if (System.currentTimeMillis() - tripRecords.get(state) < tolerance)
+                        {
+                            playClipAt(cp, state.getLocation().x + x);
+                        }
+                    }
+                }
                 // record last time all IStates were tripped and start based on time since tripping
                 break;
             case(PER_TRACK):
