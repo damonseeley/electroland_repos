@@ -93,7 +93,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 			elu.load("EIA-ELU.properties");
 			//eio.load("EIA-EIO.properties");
 			eio.load("EIA-EIO-playback.properties");
-			//eio.start();
+			eio.start();
 		} catch (OptionException e) {
 			e.printStackTrace();
 			System.exit(0);
