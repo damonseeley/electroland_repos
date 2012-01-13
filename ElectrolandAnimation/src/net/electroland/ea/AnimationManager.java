@@ -47,6 +47,14 @@ public class AnimationManager {
         listeners.add(cl);
     }
 
+    public void fadeOutAll(int fadeDuration)
+    {
+        for (Clip clip : liveClips.values())
+        {
+            clip.queueChange(null, null, 0.0, fadeDuration, 0, true);
+        }
+    }
+
     private void notifyListeners(ClipEvent e)
     {
         switch(e.type){
