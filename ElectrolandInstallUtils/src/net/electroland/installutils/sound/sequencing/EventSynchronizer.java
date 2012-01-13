@@ -36,12 +36,12 @@ public class EventSynchronizer implements Runnable{
 
     private Thread thread = null;
     private long next;
-    private long sleep = 5;
+    final static private long sleep = 5;
 
     // unit testing (doesn't test asyncronous calls)
     public static void main(String args[])
     {
-        EventSynchronizer s = new EventSynchronizer(2000, null, true);
+        EventSynchronizer s = new EventSynchronizer(300, null, true);
         s.playEvent("repeater", new TestRepeatingTimeSyncedEvent("repeater", 5));
         s.playEvent("non1", new TestTimeSyncedEvent("non1"));
         s.playEvent("non1", new TestTimeSyncedEvent("non1"));
