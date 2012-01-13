@@ -62,7 +62,7 @@ public class ClipCue extends Cue {
             case(PER_SENSOR):
                 if (context != null && context.get("tripRecords") != null)
                 {
-                    Map<IState, Integer> tripRecords = (Map<IState, Integer>)(context.get("tripRecords"));
+                    Map<IState, Long> tripRecords = (Map<IState, Long>)(context.get("tripRecords"));
                     for (IState state : tripRecords.keySet())
                     {
                         if (System.currentTimeMillis() - tripRecords.get(state) < tolerance)
