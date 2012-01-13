@@ -18,7 +18,7 @@ public class ClipCue extends Cue {
 
     static Logger logger = Logger.getLogger(ClipCue.class);
 
-    final static int tolerance = 2000;
+    final static int tolerance = 1500;
     final static int PER_SENSOR = 0;
     final static int PER_TRACK = 1;
     final static int GLOBAL = 2;
