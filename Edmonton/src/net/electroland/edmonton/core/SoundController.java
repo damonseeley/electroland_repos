@@ -27,6 +27,7 @@ public class SoundController implements SCSoundControlNotifiable {
 	private boolean serverIsLive;
 	private Hashtable<String, Integer> soundFiles;
 	private Hashtable<Integer, Speaker> speakers;
+	private Hashtable<Integer, SoundNode> soundNodes;
 	private int soundID; // incrementing sound ID
 
 	public boolean audioEnabled = true;
@@ -225,39 +226,19 @@ public class SoundController implements SCSoundControlNotifiable {
 	}
 
 
-	/* this is Indy specific code I think
-	public float[] getAmplitudes(int x, int y, float gain){
-		float[] amplitudes = new float[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-		int channel = y/2;
-		if(channel < 1){
-			channel = 1;
-		} else if(channel > 12){
-			channel = 12;
-		}
-		if(x <= 2){
-			channel = (channel*2) - 1;
-		} else {
-			channel = (channel*2);
-		}
-		channel -= 1; // for zero index
-		amplitudes[channel] = gain;
-		return amplitudes;
-	}
-	 */
-
 	/** 
 	 * play a test sound at 1.0f gain out of the first channel
 	 * @param filename
 	 */
 	public void playTestSound(String filename){
 		if (!bypass) {
-			soundID++;
 			if(!filename.equals("none") && serverIsLive){
 				int channel = 0; //test
 				SoundNode sn = ss.createSoundNodeOnSingleChannel(soundFiles.get(soundFilePath+filename), false, channel, 1.0f, 1.0f);
 				if (debug) {
 					logger.info("SoundController: Played test sound file "+soundFilePath+filename+ " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
 				}
+				newSoundNode(sn);
 			}
 		}
 	}
@@ -271,7 +252,6 @@ public class SoundController implements SCSoundControlNotifiable {
 	 */
 	public void playSingleChannel(String filename, double x, float gain){
 		if (!bypass) {
-			soundID++;
 			if(!filename.equals("none") && serverIsLive){
 				int channel = getClosestBayChannel(x);
 				if (debug) {
@@ -281,6 +261,7 @@ public class SoundController implements SCSoundControlNotifiable {
 				if (debug) {
 					logger.info("SoundController: Played Single Bay "+soundFilePath+filename+ " on channel: " + channel + " with gain: "+ gain);
 				}
+				newSoundNode(sn);
 			}
 		}
 	}
@@ -289,7 +270,6 @@ public class SoundController implements SCSoundControlNotifiable {
 		if (!bypass) {
 			//temp
 			playSingleChannel(filename, x, gain);
-			
 			
 			//TO DO make this work
 			/*
@@ -309,19 +289,21 @@ public class SoundController implements SCSoundControlNotifiable {
 		if (!bypass) {
 			if(!soundFile.equals("none") && serverIsLive){
 				// whoah, hacky.  let's fix this
-				int[] channels = new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23};
-				float[] amplitudes = new float[]{gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain};
+				// what we're doing here is hard coding Edmonton channel IDs and gain values to correspond with MOTU hardware
+				int[] channels = new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
+				float[] amplitudes = new float[]{gain,gain,gain,gain,gain,gain,gain,gain,0,0,0,0,0,0,gain,gain,gain};
 				SoundNode sn = ss.createMonoSoundNode(soundFiles.get(soundFilePath+soundFile), false, channels, amplitudes, 1.0f);
 				if (debug) {
 					logger.info("SoundController: Played global sound file "+soundFilePath+soundFile+ " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
 				}
+				newSoundNode(sn);
 			}
 		}
 	}
 
-	public int newSoundID(){	// no longer in use, but referenced by all animations
+	public void newSoundNode(SoundNode sn){	// no longer in use, but referenced by all animations
 		soundID++;
-		return soundID;
+		soundNodes.put(soundID, sn);
 	}
 
 
