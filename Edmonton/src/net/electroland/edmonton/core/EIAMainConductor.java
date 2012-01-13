@@ -19,6 +19,7 @@ import net.electroland.ea.ClipEvent;
 import net.electroland.ea.ClipListener;
 import net.electroland.edmonton.clips.StateToBrightnessImageClip;
 import net.electroland.edmonton.core.model.LastTrippedModelWatcher;
+import net.electroland.edmonton.core.model.ScreenSaverModelWatcher;
 import net.electroland.edmonton.core.model.TrackerBasicModelWatcher;
 import net.electroland.edmonton.core.sequencing.SimpleSequencer;
 import net.electroland.eio.IOManager;
@@ -39,6 +40,9 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 	static Logger logger = Logger.getLogger(EIAMainConductor.class);
 
+	private int fadeDuration = 2000;
+	private int inactivityThreshold = 10;
+	
 	private ElectrolandProperties props;
 	private ELUManager elu;
 	private boolean updateLighting = true;
@@ -62,6 +66,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 	private ModelWatcher stateToBright,entry1,exit1,entry2,exit2,egg1,egg2,egg3,egg4;
 	private TrackerBasicModelWatcher tracker;
 	private LastTrippedModelWatcher tripRecord;
+	private ScreenSaverModelWatcher screenSaver;
 
 	private int stateToBrightnessClip;
 
@@ -88,7 +93,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 			elu.load("EIA-ELU.properties");
 			//eio.load("EIA-EIO.properties");
 			eio.load("EIA-EIO-playback.properties");
-			eio.start();
+			//eio.start();
 		} catch (OptionException e) {
 			e.printStackTrace();
 			System.exit(0);
@@ -149,7 +154,12 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
         tripRecord = new LastTrippedModelWatcher();
         model.addModelWatcher(tripRecord, "tripRecord", eio.getIStates());
         model.addModelListener(sequencer);
-		
+
+        // watch for screen saver switches
+        screenSaver = new ScreenSaverModelWatcher();
+        screenSaver.setTimeOut(this.inactivityThreshold);
+        model.addModelWatcher(screenSaver,  "screenSaver", eio.getIStates());
+        model.addModelListener(this);
 		
 		/******** GUI ********/
 		ef = new EIAFrame(Integer.parseInt(props.getRequired("settings", "global", "guiwidth")),Integer.parseInt(props.getRequired("settings", "global", "guiheight")),context);
@@ -202,16 +212,10 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 			exit2Shooter();
 		}
 		if ("startSeq".equals(e.getActionCommand())) {
-			logger.info("START SEQUENCE");
-			Iterator<String> setList = sequencer.getSetList().iterator();
-			if (setList.hasNext())
-			{
-				sequencer.play(setList.next());
-			}
+		    this.goLive();
 		}
 		if ("stopSeq".equals(e.getActionCommand())) {
-			logger.info("STOP SEQUENCE");
-			sequencer.stop();
+		    this.goQuiet();
 		}
 
 	}
@@ -226,8 +230,22 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		}
 	}
 
+	public void goQuiet()
+	{
+        logger.info("STOP SEQUENCE");
+	    sequencer.stop();
+	    anim.fadeOutAll(fadeDuration);
+	    //soundController; fade sound out.
+	}
 
-
+	public void goLive(){
+        logger.info("START SEQUENCE");
+        Iterator<String> setList = sequencer.getSetList().iterator();
+        if (setList.hasNext())
+        {
+            sequencer.play(setList.next());
+        }
+	}
 
 	/************************* Model Handlers ******************************/
 
@@ -300,6 +318,15 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 	@Override
 	public void modelChanged(ModelEvent evt) {
+
+	    if (evt.watcherName == "screenSaver"){
+	        if (((ScreenSaverModelWatcher)evt.getSource()).isQuiet())
+	        {
+	            this.goQuiet();
+	        }else{
+                this.goLive();
+	        }
+	    }
 
 		if (evt.watcherName == "stateToBright"){
 
