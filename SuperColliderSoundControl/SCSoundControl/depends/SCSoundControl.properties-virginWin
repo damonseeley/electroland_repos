@@ -1,6 +1,7 @@
 #SCSoundControl Properties File
 #Tue Nov 29 16:10:55 PST 2011
-SuperCollider_AudioHardwareDeviceName=ASIO \: MOTU Audio ASIO
+#SuperCollider_AudioHardwareDeviceName=ASIO \: MOTU Audio ASIO
+SuperCollider_AudioHardwareDeviceName=ASIO \: ASIO 4 All
 SuperCollider_SampleRate=48000
 SuperCollider_RealTimeRamAllocation=131072
 SuperCollider_Path=C\:\\Program Files\\SuperCollider\\scsynth.exe
