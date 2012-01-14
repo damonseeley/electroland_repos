@@ -36,6 +36,15 @@ public class TrackingSolver {
 
 	}
 	 */
+	
+	/**
+	 * Also you may want to decrease the penally to unmatched tracks if they get old/stale (if they aren't matched for a while). 
+	 * This way you can slowly "forget" a match before you delete it.  Similarly, new matches can be labeled "provisional." 
+	 * Because you aren't sure about them yet you can make then cheaper to leave unmatched and eventually delete.  
+	 * This way you can "test" a new match before committing to it. 
+	 * Then of course the is the penally for creating and distorting tracks. 
+	 * These are the type of tweaks that are domain specific.
+	 */
 
 
 
