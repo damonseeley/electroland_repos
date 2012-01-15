@@ -79,6 +79,9 @@ public class SCSoundControl implements OSCListener, Runnable {
 	//the gui control panel
 	private SCSoundControlPanel _controlPanel;
 	
+	//logger to note offline events of scsynth
+		private SCSCConnectionLogger _scsclogger;
+	
 	//load properties from a file
 	private Properties _props;
 	private String _propertiesFilename;	
@@ -169,6 +172,9 @@ public class SCSoundControl implements OSCListener, Runnable {
         frame.pack();
         frame.setSize(400, 300);
         frame.setVisible(true);
+        
+        //create logger
+        _scsclogger = new SCSCConnectionLogger();
         
 		//start the server.
 		bootScsynth();
@@ -809,6 +815,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 		if (_notifyListener != null) { _notifyListener.receiveNotification_ServerRunning(); }
 		if (_controlPanel != null && _controlPanel._statsDisplay != null) {
 				_controlPanel._statsDisplay.receiveNotification_ServerRunning();
+				_scsclogger.receiveNotification_ServerRunning();
 		}
 	}
 	
@@ -856,6 +863,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 					}
 					if (_controlPanel != null && _controlPanel._statsDisplay != null) {
 						_controlPanel._statsDisplay.receiveNotification_ServerStopped();
+						_scsclogger.receiveNotification_ServerStopped();
 					}
 
 					_serverLive = false;
