@@ -5,18 +5,21 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.concurrent.*;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
-import com.illposed.osc_ELmod.*;
+import com.illposed.osc_ELmod.OSCListener;
+import com.illposed.osc_ELmod.OSCMessage;
+import com.illposed.osc_ELmod.OSCPortIn;
+import com.illposed.osc_ELmod.OSCPortOut;
 
 public class SCSoundControl implements OSCListener, Runnable {
 
@@ -82,6 +85,10 @@ public class SCSoundControl implements OSCListener, Runnable {
 	//the max polyphony, set in the properties file:
 	private int _maxPolyphony = 64;
 	
+	// timeout values for when SCSC disconnects from SuperCollider
+	private long SCSoundControl_Timeout = 10000;
+	private long SuperColliderDisconnectTime = System.currentTimeMillis();
+	
 	static Logger logger = Logger.getLogger(SCSoundControl.class);
 	
 	
@@ -112,6 +119,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 		//setup synth launcher so that scsynth properties are handled and defaults are setup as needed.
         _scsynthLauncher = new ScsynthLauncher(this, _props);
 		_maxPolyphony = _scsynthLauncher.getMaxPolyphony();
+		SCSoundControl_Timeout = Long.parseLong(_props.getProperty("SCSoundControl_Timeout"));
 		//TODO: use maxPolyphony to check before new soundNode creation...
 
 		// find the minimum id of a private audio bus.
@@ -843,6 +851,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 					logger.info("SCSC: Timed out on previous status request.");
 
 					if (_notifyListener != null) {
+					   SuperColliderDisconnectTime = System.currentTimeMillis();
 						_notifyListener.receiveNotification_ServerStopped();
 					}
 					if (_controlPanel != null && _controlPanel._statsDisplay != null) {
@@ -865,10 +874,9 @@ public class SCSoundControl implements OSCListener, Runnable {
 					sendMessage("/n_query", new Object[]{_motherGroupID});
 					//System.out.println("Querying SCSC mother node");
 					//debugPrintln("Querying SCSC mother node");
-				}
-				else {
+				} else {
 					//if the server's booted, request a status update.
-					sendMessage("/status"); 
+					sendMessage("/status");
 				}
 				
 				_prevPingRequestTime = new Date();
@@ -876,6 +884,23 @@ public class SCSoundControl implements OSCListener, Runnable {
 			//it's not time to send, and we're not watching 
 			//for a reply, so go to sleep until it's time to ping again
 			else {
+			   if(!_serverLive && !_serverBooted){
+			      // catch the disconnect timeout and force SCSynthLauncher to cleanup and restart.
+               if(System.currentTimeMillis() - SuperColliderDisconnectTime > SCSoundControl_Timeout){
+                  System.out.println("SCSC: Disconnect timeout achieved. Rebooting SC.");
+                  logger.info("SCSC: Disconnect timeout achieved. Rebooting SC.");
+                  try {
+                     cleanup();
+                     //_scsynthLauncher.killScsynth();
+                     bootScsynth();
+                     Thread.sleep(5000);
+                     _serverLive = true;
+                     this.init();
+                  } catch (Throwable e) {
+                     e.printStackTrace();
+                  }
+               }
+			   }
 				long sleeptime = Math.max(_scsynthPingInterval - (curTime.getTime() - _prevPingRequestTime.getTime()), 0);
 				//System.out.println("sleep " + sleeptime);
 				try {

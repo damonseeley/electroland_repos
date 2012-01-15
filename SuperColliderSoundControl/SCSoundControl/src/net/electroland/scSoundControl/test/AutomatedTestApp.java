@@ -2,8 +2,12 @@ package net.electroland.scSoundControl.test;
 
 import java.util.Enumeration;
 import java.util.Vector;
-import processing.core.*;
-import net.electroland.scSoundControl.*;
+
+import net.electroland.scSoundControl.SCSoundControl;
+import net.electroland.scSoundControl.SCSoundControlNotifiable;
+import net.electroland.scSoundControl.SoundNode;
+import processing.core.PApplet;
+import processing.core.PFont;
 
 @SuppressWarnings("serial")
 public class AutomatedTestApp extends PApplet implements SCSoundControlNotifiable {
@@ -12,13 +16,13 @@ public class AutomatedTestApp extends PApplet implements SCSoundControlNotifiabl
 	
 	//test behavior parameters
 	int soundSurge_period = 5; //period in seconds of a surge in number of sounds played
-	int maxPolyphony = 64; // how many voices max to play at once
+	int maxPolyphony = 128; // how many voices max to play at once
 	
 	// polyphony values for automated switching
-	int polyphonyA = 4;
-	int polyphonyB = 8;
-	int polyphonyC = 16;
-	int polyphonyD = 24;
+	int polyphonyA = 32;
+	int polyphonyB = 64;
+	int polyphonyC = 128;
+	int polyphonyD = 192;
 	int polyphonyMode = 0;
 	long lastPolyphonySwitch;
 	int polyphonyDuration = 10000;
@@ -217,9 +221,14 @@ public class AutomatedTestApp extends PApplet implements SCSoundControlNotifiabl
 		int curPolyphonyCount = 0;
 		for (int i=0; i <_soundNodes.size(); i++) {
 			// these objects are occasionally null. not sure why, but best to check for it.
-			if(_soundNodes.get(i) != null){
-				if (_soundNodes.get(i).isAlive()) curPolyphonyCount++;
-			}
+		   try{
+   			if(_soundNodes.get(i) != null){
+   				if (_soundNodes.get(i).isAlive()) curPolyphonyCount++;
+   			}
+		   } catch(Exception e){
+		      System.out.println("ArrayIndexOutOfBounds...moving on");
+		      break;
+		   }
 		}
 		return curPolyphonyCount;
 	}
@@ -232,7 +241,12 @@ public class AutomatedTestApp extends PApplet implements SCSoundControlNotifiabl
 		int newVoicesNeeded = targetPolyphony - getCurPolyphony();
 		if (newVoicesNeeded > 0) {
 			for (int i = 0; i < newVoicesNeeded; i++) {
-				_soundNodes.add(ss.createMonoSoundNode(_bufferList.get((int)random(0,_bufferList.size())), false, generateOutputChannelArray(), generateRandomVolumeArray(), 2f));
+			   try{
+			      _soundNodes.add(ss.createMonoSoundNode(_bufferList.get((int)random(0,_bufferList.size())), false, generateOutputChannelArray(), generateRandomVolumeArray(), 2f));
+			   } catch(Exception e){
+			      System.out.println("Some IndexOutOfBoundsException in TestApp, moving on.");
+			      //e.printStackTrace();
+			   }
 			}
 		}
 	}
