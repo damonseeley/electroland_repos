@@ -10,3 +10,5 @@ SuperCollider_NumberOfInputChannels=2
 SCSoundControl_MaxPolyphony=64
 SuperCollider_LoadSynthDefs=1
 SuperCollider_UDPportNumber=57110
+#Timeout value for relaunching of scsynth, ms
+SCSoundControl_Timeout=10000
