@@ -36,7 +36,7 @@ public class SoundCue extends Cue{
         }else {
             throw new OptionException("unknown mode '" + modeStr + "'");
         }
-        filename = params.getRequired("filename");
+        filename = params.getRequired("soundfilename");
         x = params.getRequiredDouble("x");
         gain = params.getRequiredDouble("gain").floatValue();
     }
