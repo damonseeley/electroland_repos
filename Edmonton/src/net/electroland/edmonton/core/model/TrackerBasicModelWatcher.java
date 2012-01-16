@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 public class TrackerBasicModelWatcher extends ModelWatcher {
 
 	private static Logger logger = Logger.getLogger(TrackerBasicModelWatcher.class);
+	private boolean localDebug = false;
 
 	private List<Track> tracks;
 	private Hashtable<String, Object> context;
@@ -65,11 +66,11 @@ public class TrackerBasicModelWatcher extends ModelWatcher {
 
                         if (tr.x < -10){
                             // remove track if x is below some threshold
-                            logger.debug("track " + tr.id + " left the scene and will be removed");
+                            if (localDebug) logger.debug("track " + tr.id + " left the scene and will be removed");
                             itr.remove();
                         }else if (tr.isExpired()){
                             //remove them if their searchtime has been exceeded
-                            logger.debug("track " + tr.id + " expired unmatched and will be removed");
+                        	if (localDebug) logger.debug("track " + tr.id + " expired unmatched and will be removed");
                             itr.remove();
                         }
 				    }
@@ -95,7 +96,7 @@ public class TrackerBasicModelWatcher extends ModelWatcher {
 					double tDelta = t.x - s.getLocation().x; //signed distance from track x to sensor x
 					if (tDelta < t.fwdSearchDist && tDelta > 0) {
 						// if a track is found within search update the track
-						//logger.debug("matched track " + t.id + " @x=" + t.x + " with sensor " + s.getID() + " @x=" + s.getLocation().x);
+						//if (debug) logger.debug("matched track " + t.id + " @x=" + t.x + " with sensor " + s.getID() + " @x=" + s.getLocation().x);
 						t.newTrackEvent(s.getLocation().x,s.getID());
 						matchedTrack = true;
 						break;
@@ -103,7 +104,7 @@ public class TrackerBasicModelWatcher extends ModelWatcher {
 					// check condition of being just past the sensor but within revSearchDist
 					if (tDelta > t.revSearchDist && tDelta < 0) {
 						// if a track is found within search update the track
-						//logger.debug("matched track " + t.id + " @x=" + t.x + " with sensor " + s.getID() + " @x=" + s.getLocation().x);
+						//if (debug) logger.debug("matched track " + t.id + " @x=" + t.x + " with sensor " + s.getID() + " @x=" + s.getLocation().x);
 						t.newTrackEvent(s.getLocation().x,s.getID());
 						matchedTrack = true;
 						break;
@@ -111,7 +112,7 @@ public class TrackerBasicModelWatcher extends ModelWatcher {
 				}
 				// no track was found in the prev loop so add one
 				if (!matchedTrack){
-					logger.debug("no track found for state " + s.getID() + " so creating new track at x=" + s.getLocation().x);
+					if (localDebug) logger.debug("no track found for state " + s.getID() + " so creating new track at x=" + s.getLocation().x);
 					newTrack(s.getLocation().x,s.getID());
 				}
 			}
