@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -55,6 +56,30 @@ public abstract class Clip implements Cloneable{
         return baseDimensions;
     }
 
+    public void fadeOut(int duration)
+    {
+        // cheesy fade out.  Just remove all pending changes and make the last
+        // one fade (verus spreading it out over any remaining changes)
+        synchronized (changes)
+        {
+            Change head = changes.peek();
+            head.targetAlpha = 0.0;
+            head.duration = duration;
+            head.start = System.currentTimeMillis();
+            head.finish = head.start + duration;
+            head.delay = 0;
+
+            Iterator<Change> i = changes.iterator();
+            while (i.hasNext())
+            {
+                Change change = i.next();
+                if (change != head){
+                    i.remove();
+                }
+            }
+        }
+    }
+    
     // maybe nice to have a short cut for zero-duration changes without delay?
     protected void processChanges()
     {
@@ -158,7 +183,7 @@ class Change{
     }
 
     public boolean isComplete(){
-        return System.currentTimeMillis() > finish;
+        return started ? System.currentTimeMillis() > finish : false;
     }
     
     public static int d(int init, int target, double complete){
