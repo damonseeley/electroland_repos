@@ -4,9 +4,26 @@ this version is reliable for timing from 0 to about 1:24, which is the end of th
 
 The show is composed of several majorsections
 
-intro 0 -
+intro - 0
+section 1 verse 1 - 21154
+section 1 verse 2 - 42259
+bridge - 63355
+-- subject to change:
+section 2 verse 1 - 84457
+section 2 verse 2 - 105557
+section 2 verse 3 - 126652
+outro - 147756
+
+
+intro
+intro_4-1 - 63,230,435,590
+intro_4-2 - 5335 - should follow 1 timing
+intro_4-3 - 10610 
+intro_4-3stab - 13085
+intro_4-4 - 15886
+intro_4-4stab - 18525
+
 section 1 verse 1
-section 1 verse 2
-bridge
-section 2 verse 1
-section 2 verse 2
+s1v1_4-1
+s1v1_4-2
+
