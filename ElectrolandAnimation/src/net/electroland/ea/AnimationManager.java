@@ -76,12 +76,10 @@ public class AnimationManager {
     /************************* Clip management ******************************/
     /**
      * 
-     * @param clipName -
-     * @param t - Transition to use (applied between the new clip and the prior 
-     *        clip).  Can be null for "apply immediately".
-     * @param duration -1 for infinite (or until the clip kills itself)
-     * @param delay milliseconds to wait BEFORE running this animation
-     * @return
+     * @param clipName - clip to play
+     * @param area - (Rectangle) destination rect
+     * @param alpha - (Double) destination alpha value
+     * @return id (int)
      */
     synchronized public int startClip(String clipName, Rectangle area, double alpha)
     {
