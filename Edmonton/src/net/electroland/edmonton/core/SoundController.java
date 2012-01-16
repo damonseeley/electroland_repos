@@ -43,6 +43,9 @@ public class SoundController implements SCSoundControlNotifiable {
 		props = (ElectrolandProperties) context.get("props");
 		//anim = (AnimationManager) context.get("anim");
 
+		soundID = 0;
+		soundNodes = new Hashtable<Integer,SoundNode>();
+
 		try {
 			this.soundFilePath = props.getOptional("settings", "sound", "filePath");
 			this.bypass = Boolean.parseBoolean(props.getOptional("settings", "sound", "soundBypass"));
@@ -56,7 +59,7 @@ public class SoundController implements SCSoundControlNotifiable {
 			debug = false;
 			stereoOnly = false;
 		}
-		
+
 
 		// rip the speaker ID and locations
 		speakers = new Hashtable<Integer, Speaker>(); //fill this with soundfilenames and mark them as loaded or not
@@ -135,8 +138,8 @@ public class SoundController implements SCSoundControlNotifiable {
 				for(int i=0; i<fileList.length; i++){
 					if(!soundFiles.containsKey(soundFilePath+fileList[i])){ // have to include full path because that is what sc returns for check later
 						//logger.info("SoundFiles did not contain key " + soundFilePath+fileList[i]);
-						//load the buffer
-						loadBuffer(fileList[i]);
+						//load the buffer, no, do it later now
+						//loadBuffer(fileList[i]);
 						// put a ref to the buffer in soundFiles to mark it as loaded later
 						soundFiles.put(soundFilePath+fileList[i], -1);	// -1 default unassigned value
 					}
@@ -154,8 +157,8 @@ public class SoundController implements SCSoundControlNotifiable {
 				String[] fileList = globalFileParams.split(",");
 				for(int i=0; i<fileList.length; i++){
 					if(!soundFiles.containsKey(soundFilePath+fileList[i])){ // have to include full path because that is what sc returns for check later
-						//load the buffer
-						loadBuffer(fileList[i]);
+						//load the buffer, no, do it later now
+						//loadBuffer(fileList[i]);
 						// put a ref to the buffer in soundFiles to mark it as loaded later
 						soundFiles.put(soundFilePath+fileList[i], -1);	// -1 default unassigned value
 					}
@@ -163,22 +166,35 @@ public class SoundController implements SCSoundControlNotifiable {
 			}
 		}
 		
-		
-		
-		
-		
+		loadAllBuffers();
 
 		// debug - list the soundFiles
 		if (debug) {
-			logger.info("SoundController: List of ripped soundfiles"); 
+			logger.info("SoundController: List of ripped soundfiles, total=" + soundFiles.size()); 
 			for (String s : soundFiles.keySet()){
 				logger.info("\tkey " + s + " = " + soundFiles.get(s)); 
 			}
 		}
 
 	}
+	
+	
+	public void loadAllBuffers() {
+		for (String s : soundFiles.keySet()){
+			logger.info("SoundController: loadbuffer: " + s);
+			ss.readBuf(s);
+		}
+	}
 
 
+	public void loadBuffer(String soundFile){
+		ss.readBuf(soundFilePath+soundFile);
+	}
+
+
+	
+	
+	
 	/*
 	 * Utils for mapping output to bays and channels
 	 */
@@ -218,12 +234,6 @@ public class SoundController implements SCSoundControlNotifiable {
 
 
 
-
-
-
-	public void loadBuffer(String soundFile){
-		ss.readBuf(soundFilePath+soundFile);
-	}
 
 
 	/** 
@@ -270,7 +280,7 @@ public class SoundController implements SCSoundControlNotifiable {
 		if (!bypass) {
 			//temp
 			playSingleChannel(filename, x, gain);
-			
+
 			//TO DO make this work
 			/*
 			soundID++;
@@ -304,6 +314,7 @@ public class SoundController implements SCSoundControlNotifiable {
 	public void newSoundNode(SoundNode sn){	// no longer in use, but referenced by all animations
 		soundID++;
 		soundNodes.put(soundID, sn);
+		logger.info("SoundController: soundNodes updated, size="+soundNodes.size());
 	}
 
 
@@ -339,8 +350,10 @@ public class SoundController implements SCSoundControlNotifiable {
 	public void receiveNotification_ServerRunning() {
 		serverIsLive = true;
 		logger.info("SoundController: Server is live");
+		
 		//for now disable this for realtime loading
-		parseSoundFiles();
+		parseSoundFiles();  // we don't really need to re-rip props, just need to rebuf
+		//loadAllBuffers();
 	}
 
 	public void receiveNotification_ServerStatus(float averageCPU, float peakCPU, int numSynths) {
