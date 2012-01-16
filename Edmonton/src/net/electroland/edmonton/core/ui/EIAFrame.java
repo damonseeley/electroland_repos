@@ -24,6 +24,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import net.electroland.edmonton.core.SoundController;
+import net.electroland.edmonton.core.sequencing.SimpleSequencer;
 import net.miginfocom.swing.MigLayout;
 
 import org.apache.log4j.Logger;
@@ -40,7 +41,9 @@ public class EIAFrame extends JFrame implements ActionListener {
 
 	private JButton b1,b2,b3,b4,b5,b6,b7,b8,b9,b10;
 	private JButton startShow1,startShow2,stopSeq;
-	private DoubleJSlider js1;
+	private JLabel dScaleLabel, seqDelayLabel;
+	private DoubleJSlider jsScale;
+	private JSlider jsDelay;
 	private ArrayList<JButton> buttons;
 
 	static Logger logger = Logger.getLogger(EIAFrame.class);
@@ -109,37 +112,10 @@ public class EIAFrame extends JFrame implements ActionListener {
 		buttons.add(stopSeq);
 		
 		
-
-
-		// displayScale slider
-
-		JLabel dsLabel = new JLabel("Scale", JLabel.CENTER);
-		dsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-		int scaleFactor = 100;
-		int scaleMax = 10;
-		final DoubleJSlider js1 = new DoubleJSlider(0, scaleMax*scaleFactor, 0, scaleFactor);
-		js1.setValue((int)(ep.getDisplayScale()*scaleFactor));
-		js1.setMinimum(scaleFactor);
-
-		//Create the label table
-		Hashtable<Integer,JLabel> labelTable = new Hashtable<Integer,JLabel>();
-		labelTable.put( new Integer(scaleFactor), new JLabel("1.0") );
-		labelTable.put( new Integer(scaleMax*scaleFactor), new JLabel("10.0") );
-		js1.setLabelTable( labelTable );
-		js1.setPaintLabels(true);
-
-		js1.addChangeListener(new ChangeListener(){
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				logger.info(js1.getScaledValue());
-				// change ep displayScale
-				ep.setDisplayScale(js1.getScaledValue());
-				setSize();
-			}
-		});
-
-
+		
+		/**
+		 * button panel
+		 */
 		JPanel bp = new JPanel();
 		bp.setSize(ep.getWidth(),50);
 		bp.setPreferredSize(new Dimension(ep.getWidth(),50));
@@ -148,14 +124,90 @@ public class EIAFrame extends JFrame implements ActionListener {
 		for (JButton b : buttons) {
 			bp.add(b);
 		}
+		
 
+
+		/**
+		 * slider to affect displayScale
+		 */
+		int scaleFactor = 100;
+		int scaleMax = 10;
+		final DoubleJSlider jsScale = new DoubleJSlider(0, scaleMax*scaleFactor, 0, scaleFactor);
+		jsScale.setValue((int)(ep.getDisplayScale()*scaleFactor));
+		jsScale.setMinimum(scaleFactor);
+
+		//Create the label table
+		Hashtable<Integer,JLabel> labelTable = new Hashtable<Integer,JLabel>();
+		labelTable.put( new Integer(scaleFactor), new JLabel("1.0") );
+		labelTable.put( new Integer(scaleMax*scaleFactor), new JLabel("10.0") );
+		jsScale.setLabelTable( labelTable );
+		jsScale.setPaintLabels(true);
+
+		jsScale.addChangeListener(new ChangeListener(){
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				logger.info(jsScale.getScaledValue());
+				// change ep displayScale
+				ep.setDisplayScale(jsScale.getScaledValue());
+				dScaleLabel.setText("Scale: " + jsScale.getValue()/100.0);
+				setSize();
+			}
+		});
+		
+		dScaleLabel = new JLabel("Scale: " + jsScale.getValue()/100.0, JLabel.CENTER);
+		dScaleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		
+		
+		/**
+		 * slider to affect sequencer delay
+		 */
+		jsDelay = new JSlider(0, -1000, 1000, 0);
+		//jsDelay.setValue(0);
+		//jsDelay.setMinimum(scaleFactor);
+
+		//Create the label table
+		Hashtable<Integer,JLabel> labelTable2 = new Hashtable<Integer,JLabel>();
+		labelTable2.put( -1000, new JLabel("-1000") );
+		labelTable2.put( 1000, new JLabel("1000") );
+		jsDelay.setLabelTable( labelTable2 );
+		jsDelay.setPaintLabels(true);
+
+		jsDelay.addChangeListener(new ChangeListener(){
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				// update and change value in sequencer
+				logger.info("Sequence Delay " + jsDelay.getValue());
+				seqDelayLabel.setText("Sequence delay: " + jsDelay.getValue());
+				setClipDelay(jsDelay.getValue());
+			}
+		});
+		
+		seqDelayLabel = new JLabel("Sequence delay: " + jsDelay.getValue(), JLabel.CENTER);
+		seqDelayLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+
+		
+		
+		
+		/**
+		 * add sliders
+		 */
 		JPanel sp = new JPanel();
 		sp.setSize(ep.getWidth(),50);
 		sp.setPreferredSize(new Dimension(ep.getWidth(),50));
 		sp.setLayout(new MigLayout("insets 16"));
-		sp.add(dsLabel);
-		sp.add(js1);
+		
+		sp.add(jsScale);
+		sp.add(dScaleLabel, "wrap");
+		sp.add(jsDelay);
+		sp.add(seqDelayLabel);
+		
 
+		
+		/**
+		 * put it all together (add it)
+		 */
 		this.setLayout(new MigLayout("insets 0"));
 		this.add(ep, "wrap");
 		this.add(bp, "wrap");
@@ -175,6 +227,13 @@ public class EIAFrame extends JFrame implements ActionListener {
 		this.setVisible(true);
 		//ogger.info("Setting JFrame width to " + ep.calcWidth);
 		setSize();
+	}
+	
+	private void setClipDelay(int delay){
+		SimpleSequencer seq = (SimpleSequencer)context.get("sequencer");
+		logger.info(seq);
+		logger.info(jsDelay.getValue());
+		//seq.setClipDelay(jsDelay.getValue());
 	}
 
 	public void setSize(){
