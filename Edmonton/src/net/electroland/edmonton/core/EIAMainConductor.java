@@ -22,6 +22,7 @@ import net.electroland.edmonton.core.model.LastTrippedModelWatcher;
 import net.electroland.edmonton.core.model.ScreenSaverModelWatcher;
 import net.electroland.edmonton.core.model.TrackerBasicModelWatcher;
 import net.electroland.edmonton.core.sequencing.SimpleSequencer;
+import net.electroland.edmonton.core.ui.EIAFrame;
 import net.electroland.eio.IOManager;
 import net.electroland.eio.IState;
 import net.electroland.eio.model.Model;
@@ -132,8 +133,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		context.put("soundController", soundController);
 
         sequencer = new SimpleSequencer("EIA-seq-LITE.properties", context);
-
-
+        context.put("sequencer", sequencer);
 
 		clipPlayer = new EIAClipPlayer(anim);
 		context.put("clipPlayer", clipPlayer);
@@ -211,8 +211,13 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		if ("exit2".equals(e.getActionCommand())) {
 			exit2Shooter();
 		}
-		if ("startSeq".equals(e.getActionCommand())) {
-		    this.goLive();
+		if ("startShow1".equals(e.getActionCommand())) {
+			sequencer.play("show1");
+		    //this.goLive();
+		}
+		if ("startShow2".equals(e.getActionCommand())) {
+			sequencer.play("show2");
+		    //this.goLive();
 		}
 		if ("stopSeq".equals(e.getActionCommand())) {
 		    this.goQuiet();
@@ -322,9 +327,9 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 	    if (evt.watcherName == "screenSaver"){
 	        if (((ScreenSaverModelWatcher)evt.getSource()).isQuiet())
 	        {
-	            this.goQuiet();
+	            //this.goQuiet();
 	        }else{
-                this.goLive();
+                //this.goLive();
 	        }
 	    }
 
