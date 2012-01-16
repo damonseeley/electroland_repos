@@ -17,5 +17,7 @@ SuperCollider_NumberOfInputChannels=0
 SCSoundControl_MaxPolyphony=64
 SuperCollider_LoadSynthDefs=1
 SuperCollider_UDPportNumber=57110
+SCSoundControl_Timeout=10000
+
 
 #C:\Program Files (x86)\SuperCollider

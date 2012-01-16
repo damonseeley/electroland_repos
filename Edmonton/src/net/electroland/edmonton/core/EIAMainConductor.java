@@ -132,8 +132,10 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		soundController = new SoundController(context);
 		context.put("soundController", soundController);
 
-        sequencer = new SimpleSequencer("EIA-seq-LITE.properties", context);
+		String seqpropsfile = "EIA-seq-LITE.properties";
+        sequencer = new SimpleSequencer(seqpropsfile, context);
         context.put("sequencer", sequencer);
+        context.put("seqpropsfile", seqpropsfile);
 
 		clipPlayer = new EIAClipPlayer(anim);
 		context.put("clipPlayer", clipPlayer);
