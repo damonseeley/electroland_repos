@@ -169,38 +169,19 @@ public class SoundController implements SCSoundControlNotifiable {
 
 		//load sequencer props to get soundfile references
 		ElectrolandProperties ps = new ElectrolandProperties(context.get("seqpropsfile").toString());
-		for (String name : ps.getObjectNames("show1"))
+		for (String showName : ps.getObjectNames("show"))
 		{
-			if (name.startsWith("soundcue.")){
-				ParameterMap params = ps.getParams("show1", name);
-				//String soundCueId = name.substring(9, name.length() - 9);
-				String soundFileName = params.getRequired("soundfilename");
-				logger.info("SoundController: sequence soundfilename ripper found: " + soundFileName);
-			}
-		}
-
-
-		/*
-		Map<String, ParameterMap> showParams = ps.getObjects("show");
-		for (String s : showParams.keySet()){
-			ParameterMap params = showParams.get(s);
-			String soundFileParams = params.getRequired("soundfilename");	
-			logger.info("SoundController: seqpropsfile soundfilename for cue = " + soundFileParams);
-			if (soundFileParams != null){
-				String[] fileList = soundFileParams.split(",");
-				//logger.info("SOUNDMANAGER - clip soundFiles: " + fileList);
-				for(int i=0; i<fileList.length; i++){
-					if(!soundFiles.containsKey(soundFilePath+fileList[i])){ // have to include full path because that is what sc returns for check later
-						//logger.info("SoundFiles did not contain key " + soundFilePath+fileList[i]);
-						//load the buffer, no, do it later now
-						//loadBuffer(fileList[i]);
-						// put a ref to the buffer in soundFiles to mark it as loaded later
-						soundFiles.put(soundFilePath+fileList[i], -1);	// -1 default unassigned value
-					}
+			for (String name : ps.getObjectNames(showName))
+			{
+				if (name.startsWith("soundcue.")){
+					ParameterMap params = ps.getParams(showName, name);
+					//String soundCueId = name.substring(9, name.length() - 9);
+					String soundFileName = params.getRequired("soundfilename");
+					logger.info("SoundController: sequence soundfilename ripper found: " + soundFileName);
+					soundFiles.put(soundFilePath+soundFileName, -1);	// -1 default unassigned value
 				}
 			}
 		}
-		 */
 
 
 
