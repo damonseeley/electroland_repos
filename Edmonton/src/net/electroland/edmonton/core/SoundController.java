@@ -165,7 +165,45 @@ public class SoundController implements SCSoundControlNotifiable {
 				}
 			}
 		}
-		
+
+
+		//load sequencer props to get soundfile references
+		ElectrolandProperties ps = new ElectrolandProperties(context.get("seqpropsfile").toString());
+		for (String name : ps.getObjectNames("show1"))
+		{
+			if (name.startsWith("soundcue.")){
+				ParameterMap params = ps.getParams("show1", name);
+				//String soundCueId = name.substring(9, name.length() - 9);
+				String soundFileName = params.getRequired("soundfilename");
+				logger.info("SoundController: sequence soundfilename ripper found: " + soundFileName);
+			}
+		}
+
+
+		/*
+		Map<String, ParameterMap> showParams = ps.getObjects("show");
+		for (String s : showParams.keySet()){
+			ParameterMap params = showParams.get(s);
+			String soundFileParams = params.getRequired("soundfilename");	
+			logger.info("SoundController: seqpropsfile soundfilename for cue = " + soundFileParams);
+			if (soundFileParams != null){
+				String[] fileList = soundFileParams.split(",");
+				//logger.info("SOUNDMANAGER - clip soundFiles: " + fileList);
+				for(int i=0; i<fileList.length; i++){
+					if(!soundFiles.containsKey(soundFilePath+fileList[i])){ // have to include full path because that is what sc returns for check later
+						//logger.info("SoundFiles did not contain key " + soundFilePath+fileList[i]);
+						//load the buffer, no, do it later now
+						//loadBuffer(fileList[i]);
+						// put a ref to the buffer in soundFiles to mark it as loaded later
+						soundFiles.put(soundFilePath+fileList[i], -1);	// -1 default unassigned value
+					}
+				}
+			}
+		}
+		 */
+
+
+
 		loadAllBuffers();
 
 		// debug - list the soundFiles
@@ -177,8 +215,8 @@ public class SoundController implements SCSoundControlNotifiable {
 		}
 
 	}
-	
-	
+
+
 	public void loadAllBuffers() {
 		for (String s : soundFiles.keySet()){
 			logger.info("SoundController: loadbuffer: " + s);
@@ -192,9 +230,9 @@ public class SoundController implements SCSoundControlNotifiable {
 	}
 
 
-	
-	
-	
+
+
+
 	/*
 	 * Utils for mapping output to bays and channels
 	 */
@@ -350,7 +388,7 @@ public class SoundController implements SCSoundControlNotifiable {
 	public void receiveNotification_ServerRunning() {
 		serverIsLive = true;
 		logger.info("SoundController: Server is live");
-		
+
 		//for now disable this for realtime loading
 		parseSoundFiles();  // we don't really need to re-rip props, just need to rebuf
 		//loadAllBuffers();
