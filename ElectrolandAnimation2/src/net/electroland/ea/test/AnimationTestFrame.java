@@ -49,14 +49,14 @@ public class AnimationTestFrame extends JFrame{
         SolidColorContent c = new SolidColorContent(Color.RED);
         Clip red = anim.addClip(c, 0, 0, w, h, 0);
 
-        Change change0 = new DelayedInstantChange().toAlpha(1.0).toLeft(w);
-        Change change1 = new LinearChange().toAlpha(1.0).toTop(h);
-        Change change2 = new LinearChange().toAlpha(.75).byLeft(-10).byTop(-10);
-        Change change3 = new LinearChange().toAlpha(0.0).scaleHeight(.5).scaleWidth(.5);
+        Change change0 = new DelayedInstantChange().alphaTo(1.0).xTo(w);
+        Change change1 = new LinearChange().alphaTo(1.0).yTo(h);
+        Change change2 = new LinearChange().alphaTo(.75).xBy(-10).yBy(-10);
+        Change change3 = new LinearChange().alphaTo(0.0).scaleHeight(.5).scaleWidth(.5);
         red.queueChange(change0, 2000).queueChange(change1, 1000).delay(500).queueChange(change2, 1000).queueChange(change3, 1000);
-        Change change4 = new LinearChange().toAlpha(0.25).toLeft(0);
-        Change change5 = new LinearChange().toAlpha(1.0).toLeft(w).toTop(0);
-        Change change6 = new LinearChange().toTop(0);
+        Change change4 = new LinearChange().alphaTo(0.25).xTo(0);
+        Change change5 = new LinearChange().alphaTo(1.0).xTo(w).yTo(0);
+        Change change6 = new LinearChange().yTo(0);
         // brokenChange change6 = new LinearChange().scaleHeight(.5);
 
         one.queueChange(change4, 0).delay(500).queueChange(change5, 750);
