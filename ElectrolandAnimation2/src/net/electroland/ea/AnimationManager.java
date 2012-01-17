@@ -76,6 +76,10 @@ public class AnimationManager {
     {
         return stage.addClip(c, x,y,width,height,alpha);
     }
+    public Clip addClipAfter(Content c, int x, int y, int width, int height, double alpha, int delay)
+    {
+        return stage.addClip(c, x,y,width,height,alpha, delay);
+    }
     public Clip addClip(Clip c, int x, int y, int width, int height, double alpha)
     {
         return stage.addClip(c, x,y,width,height,alpha);
