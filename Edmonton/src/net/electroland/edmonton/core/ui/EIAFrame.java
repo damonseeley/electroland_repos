@@ -98,11 +98,11 @@ public class EIAFrame extends JFrame implements ActionListener {
 		b9 = new JButton("Exit2");
 		b9.setActionCommand("exit2");
 		//buttons.add(b9);
-		
+
 		startShow1 = new JButton("Start Show1");
 		startShow1.setActionCommand("startShow1");
 		buttons.add(startShow1);		
-		
+
 		startShow2 = new JButton("Start Show2");
 		startShow2.setActionCommand("startShow2");
 		buttons.add(startShow2);
@@ -110,9 +110,9 @@ public class EIAFrame extends JFrame implements ActionListener {
 		stopSeq = new JButton("Stop Active Sequence");
 		stopSeq.setActionCommand("stopSeq");
 		buttons.add(stopSeq);
-		
-		
-		
+
+
+
 		/**
 		 * button panel
 		 */
@@ -124,7 +124,7 @@ public class EIAFrame extends JFrame implements ActionListener {
 		for (JButton b : buttons) {
 			bp.add(b);
 		}
-		
+
 
 
 		/**
@@ -153,12 +153,12 @@ public class EIAFrame extends JFrame implements ActionListener {
 				setSize();
 			}
 		});
-		
+
 		dScaleLabel = new JLabel("Scale: " + jsScale.getValue()/100.0, JLabel.CENTER);
 		dScaleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		
-		
-		
+
+
+
 		/**
 		 * slider to affect sequencer delay
 		 */
@@ -182,14 +182,14 @@ public class EIAFrame extends JFrame implements ActionListener {
 				setClipDelay(jsDelay.getValue());
 			}
 		});
-		
+
 		seqDelayLabel = new JLabel("Sequence delay: " + jsDelay.getValue(), JLabel.CENTER);
 		seqDelayLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		
 
-		
-		
-		
+
+
+
+
 		/**
 		 * add sliders
 		 */
@@ -197,14 +197,14 @@ public class EIAFrame extends JFrame implements ActionListener {
 		sp.setSize(ep.getWidth(),50);
 		sp.setPreferredSize(new Dimension(ep.getWidth(),50));
 		sp.setLayout(new MigLayout("insets 16"));
-		
+
 		sp.add(jsScale);
 		sp.add(dScaleLabel, "wrap");
 		sp.add(jsDelay);
 		sp.add(seqDelayLabel);
-		
 
-		
+
+
 		/**
 		 * put it all together (add it)
 		 */
@@ -228,7 +228,7 @@ public class EIAFrame extends JFrame implements ActionListener {
 		//ogger.info("Setting JFrame width to " + ep.calcWidth);
 		setSize();
 	}
-	
+
 	private void setClipDelay(int delay){
 		SimpleSequencer seq = (SimpleSequencer)context.get("sequencer");
 		logger.info(seq);
@@ -252,13 +252,13 @@ public class EIAFrame extends JFrame implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-
+		
 		//logger.info(e.getActionCommand());
 
 	}
-
-
+	
 	private void close(){
+		logger.info("Close called on EIAFrame");
 		SoundController sc = (SoundController)context.get("soundController");
 		sc.shutdown();
 		System.exit(0);
