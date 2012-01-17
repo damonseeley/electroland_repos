@@ -1,0 +1,828 @@
+16 Jan 2012 20:31:10,655[Thread-1]:SCSC: launching scsynth with args:
+16 Jan 2012 20:31:10,656[Thread-1]:	[C:\Program Files\SuperCollider\scsynth.exe, -i, 2, -o, 22, -m, 131072, -u, 57110, -D, 1, -H, ASIO : MOTU Audio ASIO, -S, 48000, -a, 88, -n, 1539, -c, 0]
+16 Jan 2012 20:31:11,785[Thread-2]:SCSC: scsynth is booted.
+16 Jan 2012 20:31:11,788[Thread-2]:SCSynth online
+16 Jan 2012 20:31:13,783[Thread-6]:SCSC: Timed out on previous status request.
+16 Jan 2012 20:31:13,783[Thread-6]:SCSynth offline
+16 Jan 2012 20:31:13,801[Thread-2]:SCSC: scsynth is booted.
+16 Jan 2012 20:31:13,803[Thread-2]:SCSynth online
+16 Jan 2012 21:03:57,119[Thread-6]:SCSC: Timed out on previous status request.
+16 Jan 2012 21:03:57,119[Thread-6]:SCSynth offline
+16 Jan 2012 21:03:57,127[Thread-2]:SCSC: scsynth is booted.
+16 Jan 2012 21:03:57,129[Thread-2]:SCSynth online
+16 Jan 2012 21:52:52,676[Thread-6]:SCSC: Timed out on previous status request.
+16 Jan 2012 21:52:52,676[Thread-6]:SCSynth offline
+16 Jan 2012 21:52:52,682[Thread-2]:SCSC: scsynth is booted.
+16 Jan 2012 21:52:52,683[Thread-2]:SCSynth online
+16 Jan 2012 23:27:04,832[Thread-6]:SCSC: Timed out on previous status request.
+16 Jan 2012 23:27:04,832[Thread-6]:SCSynth offline
+16 Jan 2012 23:27:04,939[Thread-2]:SCSC: scsynth is booted.
+16 Jan 2012 23:27:04,963[Thread-2]:SCSynth online
+16 Jan 2012 23:27:06,934[Thread-6]:SCSC: Timed out on previous status request.
+16 Jan 2012 23:27:06,934[Thread-6]:SCSynth offline
+16 Jan 2012 23:27:06,944[Thread-2]:SCSC: scsynth is booted.
+16 Jan 2012 23:27:06,946[Thread-2]:SCSynth online
+16 Jan 2012 23:40:52,998[Thread-6]:SCSC: Timed out on previous status request.
+16 Jan 2012 23:40:52,998[Thread-6]:SCSynth offline
+16 Jan 2012 23:40:53,010[Thread-2]:SCSC: scsynth is booted.
+16 Jan 2012 23:40:53,011[Thread-2]:SCSynth online
+17 Jan 2012 00:30:16,587[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 00:30:16,587[Thread-6]:SCSynth offline
+17 Jan 2012 00:30:16,603[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 00:30:16,695[Thread-2]:SCSynth online
+17 Jan 2012 00:32:19,030[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 00:32:19,031[Thread-6]:SCSynth offline
+17 Jan 2012 00:32:21,133[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 00:32:21,133[Thread-6]:SCSynth offline
+17 Jan 2012 00:32:21,148[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 00:32:21,250[Thread-2]:SCSynth online
+17 Jan 2012 00:51:32,141[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 00:51:32,141[Thread-6]:SCSynth offline
+17 Jan 2012 00:51:32,157[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 00:51:32,158[Thread-2]:SCSynth online
+17 Jan 2012 01:38:55,116[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 01:38:55,116[Thread-6]:SCSynth offline
+17 Jan 2012 01:38:55,128[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 01:38:55,129[Thread-2]:SCSynth online
+17 Jan 2012 02:51:00,836[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 02:51:00,836[Thread-6]:SCSynth offline
+17 Jan 2012 02:51:02,938[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 02:51:02,938[Thread-6]:SCSynth offline
+17 Jan 2012 02:51:02,958[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 02:51:03,067[Thread-2]:SCSynth online
+17 Jan 2012 03:05:50,589[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 03:05:50,589[Thread-6]:SCSynth offline
+17 Jan 2012 03:05:50,662[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 03:05:50,665[Thread-2]:SCSynth online
+17 Jan 2012 03:05:52,893[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 03:05:52,893[Thread-6]:SCSynth offline
+17 Jan 2012 03:05:54,995[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 03:05:54,995[Thread-6]:SCSynth offline
+17 Jan 2012 03:05:55,016[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 03:05:55,147[Thread-2]:SCSynth online
+17 Jan 2012 03:07:25,367[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 03:07:25,367[Thread-6]:SCSynth offline
+17 Jan 2012 03:07:27,470[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 03:07:27,470[Thread-6]:SCSynth offline
+17 Jan 2012 03:07:27,483[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 03:07:27,484[Thread-2]:SCSynth online
+17 Jan 2012 03:10:08,590[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 03:10:08,590[Thread-6]:SCSynth offline
+17 Jan 2012 03:10:08,605[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 03:10:08,606[Thread-2]:SCSynth online
+17 Jan 2012 03:11:34,876[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 03:11:34,876[Thread-6]:SCSynth offline
+17 Jan 2012 03:11:34,902[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 03:11:34,905[Thread-2]:SCSynth online
+17 Jan 2012 03:23:01,052[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 03:23:01,052[Thread-6]:SCSynth offline
+17 Jan 2012 03:23:01,215[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 03:23:01,641[Thread-2]:SCSynth online
+17 Jan 2012 03:23:03,155[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 03:23:03,155[Thread-6]:SCSynth offline
+17 Jan 2012 03:23:03,522[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 03:23:03,524[Thread-2]:SCSynth online
+17 Jan 2012 03:23:05,257[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 03:23:05,257[Thread-6]:SCSynth offline
+17 Jan 2012 03:23:05,269[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 03:23:05,270[Thread-2]:SCSynth online
+17 Jan 2012 03:27:16,511[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 03:27:16,511[Thread-6]:SCSynth offline
+17 Jan 2012 03:27:16,518[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 03:27:16,654[Thread-2]:SCSynth online
+17 Jan 2012 03:36:14,239[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 03:36:14,239[Thread-6]:SCSynth offline
+17 Jan 2012 03:36:14,259[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 03:36:14,261[Thread-2]:SCSynth online
+17 Jan 2012 03:44:07,285[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 03:44:07,285[Thread-6]:SCSynth offline
+17 Jan 2012 03:44:07,295[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 03:44:07,296[Thread-2]:SCSynth online
+17 Jan 2012 03:44:09,704[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 03:44:09,704[Thread-6]:SCSynth offline
+17 Jan 2012 03:44:09,723[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 03:44:09,724[Thread-2]:SCSynth online
+17 Jan 2012 04:02:03,613[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 04:02:03,613[Thread-6]:SCSynth offline
+17 Jan 2012 04:02:03,628[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 04:02:03,629[Thread-2]:SCSynth online
+17 Jan 2012 04:03:41,277[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 04:03:41,280[Thread-6]:SCSynth offline
+17 Jan 2012 04:03:41,298[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 04:03:41,299[Thread-2]:SCSynth online
+17 Jan 2012 04:14:39,753[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 04:14:39,756[Thread-6]:SCSynth offline
+17 Jan 2012 04:14:39,769[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 04:14:39,770[Thread-2]:SCSynth online
+17 Jan 2012 04:38:28,644[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 04:38:28,644[Thread-6]:SCSynth offline
+17 Jan 2012 04:38:28,657[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 04:38:28,658[Thread-2]:SCSynth online
+17 Jan 2012 04:38:31,062[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 04:38:31,062[Thread-6]:SCSynth offline
+17 Jan 2012 04:38:31,174[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 04:38:31,175[Thread-2]:SCSynth online
+17 Jan 2012 04:38:33,171[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 04:38:33,174[Thread-6]:SCSynth offline
+17 Jan 2012 04:38:33,196[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 04:38:33,197[Thread-2]:SCSynth online
+17 Jan 2012 04:50:20,750[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 04:50:20,750[Thread-6]:SCSynth offline
+17 Jan 2012 04:50:20,764[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 04:50:20,765[Thread-2]:SCSynth online
+17 Jan 2012 04:51:32,848[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 04:51:32,850[Thread-6]:SCSynth offline
+17 Jan 2012 04:51:32,864[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 04:51:32,865[Thread-2]:SCSynth online
+17 Jan 2012 04:54:54,587[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 04:54:54,587[Thread-6]:SCSynth offline
+17 Jan 2012 04:54:54,696[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 04:54:54,697[Thread-2]:SCSynth online
+17 Jan 2012 04:54:56,689[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 04:54:56,689[Thread-6]:SCSynth offline
+17 Jan 2012 04:54:56,696[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 04:54:56,846[Thread-2]:SCSynth online
+17 Jan 2012 05:07:01,606[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 05:07:01,606[Thread-6]:SCSynth offline
+17 Jan 2012 05:07:01,615[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 05:07:01,616[Thread-2]:SCSynth online
+17 Jan 2012 05:15:40,207[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 05:15:40,207[Thread-6]:SCSynth offline
+17 Jan 2012 05:15:40,221[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 05:15:40,222[Thread-2]:SCSynth online
+17 Jan 2012 05:23:05,063[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 05:23:05,063[Thread-6]:SCSynth offline
+17 Jan 2012 05:23:05,072[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 05:23:05,074[Thread-2]:SCSynth online
+17 Jan 2012 05:28:59,230[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 05:28:59,230[Thread-6]:SCSynth offline
+17 Jan 2012 05:28:59,244[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 05:28:59,245[Thread-2]:SCSynth online
+17 Jan 2012 05:40:37,122[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 05:40:37,122[Thread-6]:SCSynth offline
+17 Jan 2012 05:40:37,137[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 05:40:37,288[Thread-2]:SCSynth online
+17 Jan 2012 05:44:30,558[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 05:44:30,558[Thread-6]:SCSynth offline
+17 Jan 2012 05:44:32,660[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 05:44:32,660[Thread-6]:SCSynth offline
+17 Jan 2012 05:44:33,071[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 05:44:33,074[Thread-2]:SCSynth online
+17 Jan 2012 05:44:34,762[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 05:44:34,762[Thread-6]:SCSynth offline
+17 Jan 2012 05:44:34,772[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 05:44:34,773[Thread-2]:SCSynth online
+17 Jan 2012 05:46:39,751[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 05:46:39,751[Thread-6]:SCSynth offline
+17 Jan 2012 05:46:39,766[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 05:46:39,767[Thread-2]:SCSynth online
+17 Jan 2012 05:49:53,974[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 05:49:53,974[Thread-6]:SCSynth offline
+17 Jan 2012 05:49:53,988[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 05:49:53,989[Thread-2]:SCSynth online
+17 Jan 2012 05:53:18,864[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 05:53:18,864[Thread-6]:SCSynth offline
+17 Jan 2012 05:53:18,880[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 05:53:19,026[Thread-2]:SCSynth online
+17 Jan 2012 05:57:18,847[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 05:57:18,849[Thread-6]:SCSynth offline
+17 Jan 2012 05:57:18,866[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 05:57:18,867[Thread-2]:SCSynth online
+17 Jan 2012 05:59:44,151[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 05:59:44,151[Thread-6]:SCSynth offline
+17 Jan 2012 05:59:44,259[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 05:59:44,261[Thread-2]:SCSynth online
+17 Jan 2012 05:59:46,253[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 05:59:46,253[Thread-6]:SCSynth offline
+17 Jan 2012 05:59:48,355[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 05:59:48,356[Thread-6]:SCSynth offline
+17 Jan 2012 05:59:48,376[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 05:59:48,525[Thread-2]:SCSynth online
+17 Jan 2012 06:03:13,926[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 06:03:13,926[Thread-6]:SCSynth offline
+17 Jan 2012 06:03:16,028[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 06:03:16,028[Thread-6]:SCSynth offline
+17 Jan 2012 06:03:16,039[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 06:03:16,200[Thread-2]:SCSynth online
+17 Jan 2012 06:10:35,024[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 06:10:35,024[Thread-6]:SCSynth offline
+17 Jan 2012 06:10:35,038[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 06:10:35,039[Thread-2]:SCSynth online
+17 Jan 2012 06:13:10,187[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 06:13:10,187[Thread-6]:SCSynth offline
+17 Jan 2012 06:13:10,201[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 06:13:10,202[Thread-2]:SCSynth online
+17 Jan 2012 06:28:16,110[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 06:28:16,110[Thread-6]:SCSynth offline
+17 Jan 2012 06:28:16,217[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 06:28:16,218[Thread-2]:SCSynth online
+17 Jan 2012 06:28:18,213[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 06:28:18,213[Thread-6]:SCSynth offline
+17 Jan 2012 06:28:18,232[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 06:28:18,387[Thread-2]:SCSynth online
+17 Jan 2012 06:31:35,898[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 06:31:35,898[Thread-6]:SCSynth offline
+17 Jan 2012 06:31:35,912[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 06:31:35,913[Thread-2]:SCSynth online
+17 Jan 2012 06:53:00,032[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 06:53:00,032[Thread-6]:SCSynth offline
+17 Jan 2012 06:53:00,041[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 06:53:00,043[Thread-2]:SCSynth online
+17 Jan 2012 06:54:20,989[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 06:54:20,992[Thread-6]:SCSynth offline
+17 Jan 2012 06:54:21,006[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 06:54:21,007[Thread-2]:SCSynth online
+17 Jan 2012 06:55:39,623[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 06:55:39,623[Thread-6]:SCSynth offline
+17 Jan 2012 06:55:39,640[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 06:55:39,641[Thread-2]:SCSynth online
+17 Jan 2012 07:07:30,393[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 07:07:30,393[Thread-6]:SCSynth offline
+17 Jan 2012 07:07:30,407[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 07:07:30,408[Thread-2]:SCSynth online
+17 Jan 2012 07:30:05,285[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 07:30:05,285[Thread-6]:SCSynth offline
+17 Jan 2012 07:30:05,290[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 07:30:05,454[Thread-2]:SCSynth online
+17 Jan 2012 07:32:51,324[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 07:32:51,324[Thread-6]:SCSynth offline
+17 Jan 2012 07:32:51,339[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 07:32:51,495[Thread-2]:SCSynth online
+17 Jan 2012 07:36:44,822[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 07:36:44,822[Thread-6]:SCSynth offline
+17 Jan 2012 07:36:44,931[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 07:36:45,188[Thread-2]:SCSynth online
+17 Jan 2012 07:36:46,924[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 07:36:46,924[Thread-6]:SCSynth offline
+17 Jan 2012 07:36:47,356[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 07:36:47,361[Thread-2]:SCSynth online
+17 Jan 2012 07:36:49,026[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 07:36:49,026[Thread-6]:SCSynth offline
+17 Jan 2012 07:36:49,477[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 07:36:49,482[Thread-2]:SCSynth online
+17 Jan 2012 07:36:51,128[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 07:36:51,129[Thread-6]:SCSynth offline
+17 Jan 2012 07:36:51,149[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 07:36:51,303[Thread-2]:SCSynth online
+17 Jan 2012 07:40:50,788[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 07:40:50,788[Thread-6]:SCSynth offline
+17 Jan 2012 07:40:51,045[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 07:40:51,048[Thread-2]:SCSynth online
+17 Jan 2012 07:40:52,890[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 07:40:52,890[Thread-6]:SCSynth offline
+17 Jan 2012 07:40:52,902[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 07:40:52,904[Thread-2]:SCSynth online
+17 Jan 2012 07:43:55,858[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 07:43:55,858[Thread-6]:SCSynth offline
+17 Jan 2012 07:43:57,960[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 07:43:57,960[Thread-6]:SCSynth offline
+17 Jan 2012 07:43:57,973[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 07:43:57,975[Thread-2]:SCSynth online
+17 Jan 2012 07:47:16,673[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 07:47:16,673[Thread-6]:SCSynth offline
+17 Jan 2012 07:47:18,775[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 07:47:18,775[Thread-6]:SCSynth offline
+17 Jan 2012 07:47:19,220[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 07:47:19,232[Thread-2]:SCSynth online
+17 Jan 2012 07:47:20,877[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 07:47:20,877[Thread-6]:SCSynth offline
+17 Jan 2012 07:47:20,887[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 07:47:20,888[Thread-2]:SCSynth online
+17 Jan 2012 08:06:41,236[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 08:06:41,236[Thread-6]:SCSynth offline
+17 Jan 2012 08:06:43,339[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 08:06:43,339[Thread-6]:SCSynth offline
+17 Jan 2012 08:06:43,349[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 08:06:43,518[Thread-2]:SCSynth online
+17 Jan 2012 08:22:19,117[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 08:22:19,117[Thread-6]:SCSynth offline
+17 Jan 2012 08:22:19,127[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 08:22:19,128[Thread-2]:SCSynth online
+17 Jan 2012 08:27:05,741[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 08:27:05,741[Thread-6]:SCSynth offline
+17 Jan 2012 08:27:05,750[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 08:27:05,752[Thread-2]:SCSynth online
+17 Jan 2012 08:29:55,837[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 08:29:55,837[Thread-6]:SCSynth offline
+17 Jan 2012 08:29:56,091[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 08:29:56,092[Thread-2]:SCSynth online
+17 Jan 2012 08:29:57,939[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 08:29:57,939[Thread-6]:SCSynth offline
+17 Jan 2012 08:29:58,114[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 08:29:58,386[Thread-2]:SCSynth online
+17 Jan 2012 08:30:00,041[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 08:30:00,041[Thread-6]:SCSynth offline
+17 Jan 2012 08:30:00,053[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 08:30:00,226[Thread-2]:SCSynth online
+17 Jan 2012 08:35:39,327[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 08:35:39,327[Thread-6]:SCSynth offline
+17 Jan 2012 08:35:39,337[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 08:35:39,481[Thread-2]:SCSynth online
+17 Jan 2012 08:35:45,376[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 08:35:45,376[Thread-6]:SCSynth offline
+17 Jan 2012 08:35:45,385[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 08:35:45,387[Thread-2]:SCSynth online
+17 Jan 2012 08:38:16,708[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 08:38:16,708[Thread-6]:SCSynth offline
+17 Jan 2012 08:38:18,810[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 08:38:18,810[Thread-6]:SCSynth offline
+17 Jan 2012 08:38:18,821[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 08:38:18,992[Thread-2]:SCSynth online
+17 Jan 2012 08:41:50,971[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 08:41:50,971[Thread-6]:SCSynth offline
+17 Jan 2012 08:41:53,073[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 08:41:53,073[Thread-6]:SCSynth offline
+17 Jan 2012 08:41:53,520[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 08:41:53,542[Thread-2]:SCSynth online
+17 Jan 2012 08:41:55,175[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 08:41:55,177[Thread-6]:SCSynth offline
+17 Jan 2012 08:41:55,625[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 08:41:55,631[Thread-2]:SCSynth online
+17 Jan 2012 08:41:57,279[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 08:41:57,279[Thread-6]:SCSynth offline
+17 Jan 2012 08:41:57,300[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 08:41:57,736[Thread-2]:SCSynth online
+17 Jan 2012 09:03:24,693[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 09:03:24,693[Thread-6]:SCSynth offline
+17 Jan 2012 09:03:24,706[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 09:03:24,708[Thread-2]:SCSynth online
+17 Jan 2012 09:39:40,102[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 09:39:40,102[Thread-6]:SCSynth offline
+17 Jan 2012 09:39:42,204[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 09:39:42,204[Thread-6]:SCSynth offline
+17 Jan 2012 09:39:42,659[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 09:39:42,669[Thread-2]:SCSynth online
+17 Jan 2012 09:39:44,306[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 09:39:44,306[Thread-6]:SCSynth offline
+17 Jan 2012 09:39:44,317[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 09:39:44,319[Thread-2]:SCSynth online
+17 Jan 2012 09:40:45,740[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 09:40:45,740[Thread-6]:SCSynth offline
+17 Jan 2012 09:40:45,759[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 09:40:45,918[Thread-2]:SCSynth online
+17 Jan 2012 09:40:47,951[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 09:40:47,951[Thread-6]:SCSynth offline
+17 Jan 2012 09:40:50,053[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 09:40:50,053[Thread-6]:SCSynth offline
+17 Jan 2012 09:40:50,064[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 09:40:50,065[Thread-2]:SCSynth online
+17 Jan 2012 09:40:52,528[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 09:40:52,528[Thread-6]:SCSynth offline
+17 Jan 2012 09:40:52,538[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 09:40:52,539[Thread-2]:SCSynth online
+17 Jan 2012 09:52:35,105[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 09:52:35,105[Thread-6]:SCSynth offline
+17 Jan 2012 09:52:35,121[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 09:52:35,284[Thread-2]:SCSynth online
+17 Jan 2012 09:53:18,460[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 09:53:18,461[Thread-6]:SCSynth offline
+17 Jan 2012 09:53:18,478[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 09:53:18,643[Thread-2]:SCSynth online
+17 Jan 2012 10:00:54,192[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 10:00:54,192[Thread-6]:SCSynth offline
+17 Jan 2012 10:00:54,204[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 10:00:54,205[Thread-2]:SCSynth online
+17 Jan 2012 10:02:27,983[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 10:02:27,983[Thread-6]:SCSynth offline
+17 Jan 2012 10:02:27,992[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 10:02:27,993[Thread-2]:SCSynth online
+17 Jan 2012 10:05:57,194[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 10:05:57,194[Thread-6]:SCSynth offline
+17 Jan 2012 10:05:57,612[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 10:05:57,616[Thread-2]:SCSynth online
+17 Jan 2012 10:05:59,296[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 10:05:59,298[Thread-6]:SCSynth offline
+17 Jan 2012 10:05:59,320[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 10:05:59,482[Thread-2]:SCSynth online
+17 Jan 2012 10:07:01,322[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 10:07:01,322[Thread-6]:SCSynth offline
+17 Jan 2012 10:07:03,424[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 10:07:03,424[Thread-6]:SCSynth offline
+17 Jan 2012 10:07:03,444[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 10:07:03,445[Thread-2]:SCSynth online
+17 Jan 2012 10:07:08,779[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 10:07:08,780[Thread-6]:SCSynth offline
+17 Jan 2012 10:07:10,882[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 10:07:10,882[Thread-6]:SCSynth offline
+17 Jan 2012 10:07:10,899[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 10:07:11,064[Thread-2]:SCSynth online
+17 Jan 2012 10:15:06,587[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 10:15:06,590[Thread-6]:SCSynth offline
+17 Jan 2012 10:15:06,611[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 10:15:06,613[Thread-2]:SCSynth online
+17 Jan 2012 10:17:46,350[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 10:17:46,351[Thread-6]:SCSynth offline
+17 Jan 2012 10:17:46,453[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 10:17:46,757[Thread-2]:SCSynth online
+17 Jan 2012 10:17:48,453[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 10:17:48,453[Thread-6]:SCSynth offline
+17 Jan 2012 10:17:48,466[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 10:17:48,467[Thread-2]:SCSynth online
+17 Jan 2012 10:17:54,508[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 10:17:54,509[Thread-6]:SCSynth offline
+17 Jan 2012 10:17:54,521[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 10:17:54,523[Thread-2]:SCSynth online
+17 Jan 2012 10:27:19,256[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 10:27:19,256[Thread-6]:SCSynth offline
+17 Jan 2012 10:27:19,269[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 10:27:19,270[Thread-2]:SCSynth online
+17 Jan 2012 10:37:19,833[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 10:37:19,833[Thread-6]:SCSynth offline
+17 Jan 2012 10:37:19,942[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 10:37:20,016[Thread-2]:SCSynth online
+17 Jan 2012 10:37:21,935[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 10:37:21,935[Thread-6]:SCSynth offline
+17 Jan 2012 10:37:22,409[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 10:37:22,434[Thread-2]:SCSynth online
+17 Jan 2012 10:37:24,037[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 10:37:24,037[Thread-6]:SCSynth offline
+17 Jan 2012 10:37:24,050[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 10:37:24,051[Thread-2]:SCSynth online
+17 Jan 2012 10:43:27,215[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 10:43:27,215[Thread-6]:SCSynth offline
+17 Jan 2012 10:43:27,323[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 10:43:27,324[Thread-2]:SCSynth online
+17 Jan 2012 10:43:29,317[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 10:43:29,317[Thread-6]:SCSynth offline
+17 Jan 2012 10:43:29,785[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 10:43:29,791[Thread-2]:SCSynth online
+17 Jan 2012 10:43:31,419[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 10:43:31,419[Thread-6]:SCSynth offline
+17 Jan 2012 10:43:31,430[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 10:43:31,431[Thread-2]:SCSynth online
+17 Jan 2012 10:49:59,035[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 10:49:59,037[Thread-6]:SCSynth offline
+17 Jan 2012 10:49:59,139[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 10:49:59,211[Thread-2]:SCSynth online
+17 Jan 2012 10:50:01,139[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 10:50:01,139[Thread-6]:SCSynth offline
+17 Jan 2012 10:50:01,152[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 10:50:01,154[Thread-2]:SCSynth online
+17 Jan 2012 10:54:51,999[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 10:54:51,999[Thread-6]:SCSynth offline
+17 Jan 2012 10:54:54,101[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 10:54:54,101[Thread-6]:SCSynth offline
+17 Jan 2012 10:54:54,106[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 10:54:54,290[Thread-2]:SCSynth online
+17 Jan 2012 11:00:46,466[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 11:00:46,466[Thread-6]:SCSynth offline
+17 Jan 2012 11:00:46,486[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 11:00:46,652[Thread-2]:SCSynth online
+17 Jan 2012 11:00:48,977[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 11:00:48,977[Thread-6]:SCSynth offline
+17 Jan 2012 11:00:48,993[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 11:00:48,994[Thread-2]:SCSynth online
+17 Jan 2012 11:04:55,037[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 11:04:55,037[Thread-6]:SCSynth offline
+17 Jan 2012 11:04:55,047[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 11:04:55,048[Thread-2]:SCSynth online
+17 Jan 2012 11:20:53,106[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 11:20:53,106[Thread-6]:SCSynth offline
+17 Jan 2012 11:20:53,117[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 11:20:53,291[Thread-2]:SCSynth online
+17 Jan 2012 11:47:18,081[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 11:47:18,081[Thread-6]:SCSynth offline
+17 Jan 2012 11:47:18,094[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 11:47:18,269[Thread-2]:SCSynth online
+17 Jan 2012 11:48:07,542[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 11:48:07,542[Thread-6]:SCSynth offline
+17 Jan 2012 11:48:07,664[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 11:48:07,675[Thread-2]:SCSynth online
+17 Jan 2012 11:48:09,644[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 11:48:09,646[Thread-6]:SCSynth offline
+17 Jan 2012 11:48:09,666[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 11:48:09,851[Thread-2]:SCSynth online
+17 Jan 2012 11:48:35,333[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 11:48:35,333[Thread-6]:SCSynth offline
+17 Jan 2012 11:48:35,345[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 11:48:35,540[Thread-2]:SCSynth online
+17 Jan 2012 11:48:58,611[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 11:48:58,611[Thread-6]:SCSynth offline
+17 Jan 2012 11:48:58,624[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 11:48:58,626[Thread-2]:SCSynth online
+17 Jan 2012 11:50:34,972[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 11:50:34,972[Thread-6]:SCSynth offline
+17 Jan 2012 11:50:34,982[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 11:50:34,983[Thread-2]:SCSynth online
+17 Jan 2012 11:51:42,698[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 11:51:42,698[Thread-6]:SCSynth offline
+17 Jan 2012 11:51:42,715[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 11:51:42,716[Thread-2]:SCSynth online
+17 Jan 2012 11:56:33,065[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 11:56:33,065[Thread-6]:SCSynth offline
+17 Jan 2012 11:56:35,167[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 11:56:35,167[Thread-6]:SCSynth offline
+17 Jan 2012 11:56:35,186[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 11:56:35,360[Thread-2]:SCSynth online
+17 Jan 2012 11:57:59,116[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 11:57:59,116[Thread-6]:SCSynth offline
+17 Jan 2012 11:57:59,131[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 11:57:59,302[Thread-2]:SCSynth online
+17 Jan 2012 12:04:33,083[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 12:04:33,083[Thread-6]:SCSynth offline
+17 Jan 2012 12:04:33,098[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 12:04:33,099[Thread-2]:SCSynth online
+17 Jan 2012 12:07:59,569[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 12:07:59,569[Thread-6]:SCSynth offline
+17 Jan 2012 12:07:59,587[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 12:07:59,769[Thread-2]:SCSynth online
+17 Jan 2012 12:16:34,701[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 12:16:34,701[Thread-6]:SCSynth offline
+17 Jan 2012 12:16:34,807[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 12:16:34,808[Thread-2]:SCSynth online
+17 Jan 2012 12:16:36,803[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 12:16:36,803[Thread-6]:SCSynth offline
+17 Jan 2012 12:16:36,819[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 12:16:36,820[Thread-2]:SCSynth online
+17 Jan 2012 12:16:39,008[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 12:16:39,008[Thread-6]:SCSynth offline
+17 Jan 2012 12:16:39,022[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 12:16:39,023[Thread-2]:SCSynth online
+17 Jan 2012 12:23:25,376[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 12:23:25,376[Thread-6]:SCSynth offline
+17 Jan 2012 12:23:27,478[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 12:23:27,478[Thread-6]:SCSynth offline
+17 Jan 2012 12:23:27,498[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 12:23:27,674[Thread-2]:SCSynth online
+17 Jan 2012 12:27:13,891[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 12:27:13,891[Thread-6]:SCSynth offline
+17 Jan 2012 12:27:15,993[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 12:27:15,993[Thread-6]:SCSynth offline
+17 Jan 2012 12:27:16,014[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 12:27:16,015[Thread-2]:SCSynth online
+17 Jan 2012 12:33:06,843[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 12:33:06,843[Thread-6]:SCSynth offline
+17 Jan 2012 12:33:06,924[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 12:33:06,931[Thread-2]:SCSynth online
+17 Jan 2012 12:40:10,752[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 12:40:10,752[Thread-6]:SCSynth offline
+17 Jan 2012 12:40:10,761[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 12:40:10,762[Thread-2]:SCSynth online
+17 Jan 2012 12:42:56,687[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 12:42:56,687[Thread-6]:SCSynth offline
+17 Jan 2012 12:42:56,795[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 12:42:56,797[Thread-2]:SCSynth online
+17 Jan 2012 12:42:58,789[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 12:42:58,789[Thread-6]:SCSynth offline
+17 Jan 2012 12:43:00,891[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 12:43:00,891[Thread-6]:SCSynth offline
+17 Jan 2012 12:43:00,902[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 12:43:01,091[Thread-2]:SCSynth online
+17 Jan 2012 12:46:18,742[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 12:46:18,742[Thread-6]:SCSynth offline
+17 Jan 2012 12:46:20,844[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 12:46:20,844[Thread-6]:SCSynth offline
+17 Jan 2012 12:46:20,863[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 12:46:21,042[Thread-2]:SCSynth online
+17 Jan 2012 12:46:44,946[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 12:46:44,946[Thread-6]:SCSynth offline
+17 Jan 2012 12:46:44,954[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 12:46:44,955[Thread-2]:SCSynth online
+17 Jan 2012 12:46:47,250[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 12:46:47,250[Thread-6]:SCSynth offline
+17 Jan 2012 12:46:47,258[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 12:46:47,259[Thread-2]:SCSynth online
+17 Jan 2012 12:46:49,554[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 12:46:49,554[Thread-6]:SCSynth offline
+17 Jan 2012 12:46:51,656[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 12:46:51,656[Thread-6]:SCSynth offline
+17 Jan 2012 12:46:52,150[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 12:46:52,164[Thread-2]:SCSynth online
+17 Jan 2012 12:46:53,758[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 12:46:53,758[Thread-6]:SCSynth offline
+17 Jan 2012 12:46:53,768[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 12:46:53,769[Thread-2]:SCSynth online
+17 Jan 2012 12:52:22,774[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 12:52:22,774[Thread-6]:SCSynth offline
+17 Jan 2012 12:52:22,787[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 12:52:22,789[Thread-2]:SCSynth online
+17 Jan 2012 12:54:50,810[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 12:54:50,810[Thread-6]:SCSynth offline
+17 Jan 2012 12:54:52,912[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 12:54:52,912[Thread-6]:SCSynth offline
+17 Jan 2012 12:54:52,922[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 12:54:53,115[Thread-2]:SCSynth online
+17 Jan 2012 12:55:33,153[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 12:55:33,153[Thread-6]:SCSynth offline
+17 Jan 2012 12:55:33,161[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 12:55:33,162[Thread-2]:SCSynth online
+17 Jan 2012 12:55:35,661[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 12:55:35,661[Thread-6]:SCSynth offline
+17 Jan 2012 12:55:35,671[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 12:55:35,673[Thread-2]:SCSynth online
+17 Jan 2012 13:09:45,214[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 13:09:45,214[Thread-6]:SCSynth offline
+17 Jan 2012 13:09:45,224[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 13:09:45,225[Thread-2]:SCSynth online
+17 Jan 2012 13:13:12,154[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 13:13:12,154[Thread-6]:SCSynth offline
+17 Jan 2012 13:13:12,191[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 13:13:12,353[Thread-2]:SCSynth online
+17 Jan 2012 13:13:14,663[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 13:13:14,663[Thread-6]:SCSynth offline
+17 Jan 2012 13:13:14,683[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 13:13:14,684[Thread-2]:SCSynth online
+17 Jan 2012 13:17:25,283[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 13:17:25,283[Thread-6]:SCSynth offline
+17 Jan 2012 13:17:25,288[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 13:17:25,483[Thread-2]:SCSynth online
+17 Jan 2012 13:29:36,386[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 13:29:36,386[Thread-6]:SCSynth offline
+17 Jan 2012 13:29:36,547[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 13:29:36,561[Thread-2]:SCSynth online
+17 Jan 2012 13:29:38,488[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 13:29:38,488[Thread-6]:SCSynth offline
+17 Jan 2012 13:29:38,493[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 13:29:38,689[Thread-2]:SCSynth online
+17 Jan 2012 13:39:20,345[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 13:39:20,345[Thread-6]:SCSynth offline
+17 Jan 2012 13:39:20,356[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 13:39:20,358[Thread-2]:SCSynth online
+17 Jan 2012 13:41:24,960[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 13:41:24,960[Thread-6]:SCSynth offline
+17 Jan 2012 13:41:27,062[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 13:41:27,062[Thread-6]:SCSynth offline
+17 Jan 2012 13:41:27,065[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 13:41:27,265[Thread-2]:SCSynth online
+17 Jan 2012 13:42:08,650[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 13:42:08,650[Thread-6]:SCSynth offline
+17 Jan 2012 13:42:10,752[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 13:42:10,752[Thread-6]:SCSynth offline
+17 Jan 2012 13:42:11,268[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 13:42:11,294[Thread-2]:SCSynth online
+17 Jan 2012 13:42:12,854[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 13:42:12,854[Thread-6]:SCSynth offline
+17 Jan 2012 13:42:13,375[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 13:42:13,398[Thread-2]:SCSynth online
+17 Jan 2012 13:42:14,956[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 13:42:14,956[Thread-6]:SCSynth offline
+17 Jan 2012 13:42:14,967[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 13:42:14,968[Thread-2]:SCSynth online
+17 Jan 2012 13:43:27,785[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 13:43:27,785[Thread-6]:SCSynth offline
+17 Jan 2012 13:43:27,795[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 13:43:27,797[Thread-2]:SCSynth online
+17 Jan 2012 13:44:14,385[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 13:44:14,385[Thread-6]:SCSynth offline
+17 Jan 2012 13:44:14,397[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 13:44:14,588[Thread-2]:SCSynth online
+17 Jan 2012 13:54:46,209[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 13:54:46,219[Thread-6]:SCSynth offline
+17 Jan 2012 13:54:48,321[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 13:54:48,321[Thread-6]:SCSynth offline
+17 Jan 2012 13:54:48,340[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 13:54:48,533[Thread-2]:SCSynth online
+17 Jan 2012 14:00:14,909[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 14:00:14,909[Thread-6]:SCSynth offline
+17 Jan 2012 14:00:17,011[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 14:00:17,011[Thread-6]:SCSynth offline
+17 Jan 2012 14:00:17,023[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 14:00:17,024[Thread-2]:SCSynth online
+17 Jan 2012 14:06:39,628[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 14:06:39,628[Thread-6]:SCSynth offline
+17 Jan 2012 14:06:39,844[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 14:06:40,046[Thread-2]:SCSynth online
+17 Jan 2012 14:06:41,730[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 14:06:41,730[Thread-6]:SCSynth offline
+17 Jan 2012 14:06:41,747[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 14:06:41,956[Thread-2]:SCSynth online
+17 Jan 2012 14:08:10,375[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 14:08:10,375[Thread-6]:SCSynth offline
+17 Jan 2012 14:08:10,383[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 14:08:10,385[Thread-2]:SCSynth online
+17 Jan 2012 14:08:12,580[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 14:08:12,580[Thread-6]:SCSynth offline
+17 Jan 2012 14:08:14,682[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 14:08:14,682[Thread-6]:SCSynth offline
+17 Jan 2012 14:08:14,693[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 14:08:14,694[Thread-2]:SCSynth online
+17 Jan 2012 14:14:53,462[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 14:14:53,462[Thread-6]:SCSynth offline
+17 Jan 2012 14:14:55,564[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 14:14:55,564[Thread-6]:SCSynth offline
+17 Jan 2012 14:14:55,577[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 14:14:55,578[Thread-2]:SCSynth online
+17 Jan 2012 14:19:07,325[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 14:19:07,327[Thread-6]:SCSynth offline
+17 Jan 2012 14:19:07,363[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 14:19:07,888[Thread-2]:SCSynth online
+17 Jan 2012 14:28:30,455[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 14:28:30,458[Thread-6]:SCSynth offline
+17 Jan 2012 14:28:30,503[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 14:28:30,673[Thread-2]:SCSynth online
+17 Jan 2012 14:29:40,741[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 14:29:40,741[Thread-6]:SCSynth offline
+17 Jan 2012 14:29:40,753[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 14:29:40,754[Thread-2]:SCSynth online
+17 Jan 2012 14:29:44,635[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 14:29:44,635[Thread-6]:SCSynth offline
+17 Jan 2012 14:29:46,737[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 14:29:46,737[Thread-6]:SCSynth offline
+17 Jan 2012 14:29:46,749[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 14:29:46,750[Thread-2]:SCSynth online
+17 Jan 2012 14:29:49,041[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 14:29:49,041[Thread-6]:SCSynth offline
+17 Jan 2012 14:29:49,150[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 14:29:49,151[Thread-2]:SCSynth online
+17 Jan 2012 14:29:51,143[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 14:29:51,143[Thread-6]:SCSynth offline
+17 Jan 2012 14:29:51,251[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 14:29:51,681[Thread-2]:SCSynth online
+17 Jan 2012 14:29:53,245[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 14:29:53,245[Thread-6]:SCSynth offline
+17 Jan 2012 14:29:53,257[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 14:29:53,456[Thread-2]:SCSynth online
+17 Jan 2012 14:31:01,433[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 14:31:01,433[Thread-6]:SCSynth offline
+17 Jan 2012 14:31:01,442[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 14:31:01,443[Thread-2]:SCSynth online
+17 Jan 2012 14:43:45,309[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 14:43:45,309[Thread-6]:SCSynth offline
+17 Jan 2012 14:43:45,320[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 14:43:45,321[Thread-2]:SCSynth online
+17 Jan 2012 14:48:43,739[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 14:48:43,739[Thread-6]:SCSynth offline
+17 Jan 2012 14:48:43,748[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 14:48:43,750[Thread-2]:SCSynth online
+17 Jan 2012 14:52:50,788[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 14:52:50,788[Thread-6]:SCSynth offline
+17 Jan 2012 14:52:50,802[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 14:52:51,002[Thread-2]:SCSynth online
+17 Jan 2012 14:54:05,517[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 14:54:05,517[Thread-6]:SCSynth offline
+17 Jan 2012 14:54:05,528[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 14:54:05,530[Thread-2]:SCSynth online
+17 Jan 2012 14:55:46,026[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 14:55:46,026[Thread-6]:SCSynth offline
+17 Jan 2012 14:55:46,033[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 14:55:46,034[Thread-2]:SCSynth online
+17 Jan 2012 15:07:33,372[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 15:07:33,372[Thread-6]:SCSynth offline
+17 Jan 2012 15:07:33,484[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 15:07:33,694[Thread-2]:SCSynth online
+17 Jan 2012 15:07:35,474[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 15:07:35,474[Thread-6]:SCSynth offline
+17 Jan 2012 15:07:37,576[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 15:07:37,576[Thread-6]:SCSynth offline
+17 Jan 2012 15:07:37,590[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 15:07:37,592[Thread-2]:SCSynth online
+17 Jan 2012 15:07:53,261[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 15:07:53,261[Thread-6]:SCSynth offline
+17 Jan 2012 15:07:53,281[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 15:07:53,482[Thread-2]:SCSynth online
+17 Jan 2012 15:09:37,882[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 15:09:37,882[Thread-6]:SCSynth offline
+17 Jan 2012 15:09:39,984[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 15:09:39,984[Thread-6]:SCSynth offline
+17 Jan 2012 15:09:40,218[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 15:09:40,548[Thread-2]:SCSynth online
+17 Jan 2012 15:09:42,086[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 15:09:42,086[Thread-6]:SCSynth offline
+17 Jan 2012 15:09:42,099[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 15:09:42,101[Thread-2]:SCSynth online
+17 Jan 2012 15:10:49,276[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 15:10:49,276[Thread-6]:SCSynth offline
+17 Jan 2012 15:10:49,288[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 15:10:49,289[Thread-2]:SCSynth online
+17 Jan 2012 15:14:15,733[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 15:14:15,733[Thread-6]:SCSynth offline
+17 Jan 2012 15:14:15,745[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 15:14:15,746[Thread-2]:SCSynth online
+17 Jan 2012 15:17:28,508[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 15:17:28,509[Thread-6]:SCSynth offline
+17 Jan 2012 15:17:30,611[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 15:17:30,611[Thread-6]:SCSynth offline
+17 Jan 2012 15:17:30,628[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 15:17:30,831[Thread-2]:SCSynth online
+17 Jan 2012 15:20:51,412[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 15:20:51,412[Thread-6]:SCSynth offline
+17 Jan 2012 15:20:51,426[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 15:20:51,428[Thread-2]:SCSynth online
+17 Jan 2012 15:21:08,870[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 15:21:08,870[Thread-6]:SCSynth offline
+17 Jan 2012 15:21:08,877[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 15:21:08,879[Thread-2]:SCSynth online
+17 Jan 2012 15:26:19,858[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 15:26:19,858[Thread-6]:SCSynth offline
+17 Jan 2012 15:26:19,868[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 15:26:19,869[Thread-2]:SCSynth online
+17 Jan 2012 15:27:24,067[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 15:27:24,067[Thread-6]:SCSynth offline
+17 Jan 2012 15:27:24,081[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 15:27:24,288[Thread-2]:SCSynth online
+17 Jan 2012 15:27:41,520[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 15:27:41,520[Thread-6]:SCSynth offline
+17 Jan 2012 15:27:41,628[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 15:27:41,629[Thread-2]:SCSynth online
+17 Jan 2012 15:27:43,624[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 15:27:43,626[Thread-6]:SCSynth offline
+17 Jan 2012 15:27:43,640[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 15:27:43,641[Thread-2]:SCSynth online
+17 Jan 2012 15:30:25,919[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 15:30:25,919[Thread-6]:SCSynth offline
+17 Jan 2012 15:30:25,932[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 15:30:25,933[Thread-2]:SCSynth online
+17 Jan 2012 15:30:40,695[Thread-6]:SCSC: Timed out on previous status request.
+17 Jan 2012 15:30:40,695[Thread-6]:SCSynth offline
+17 Jan 2012 15:30:40,706[Thread-2]:SCSC: scsynth is booted.
+17 Jan 2012 15:30:40,707[Thread-2]:SCSynth online
