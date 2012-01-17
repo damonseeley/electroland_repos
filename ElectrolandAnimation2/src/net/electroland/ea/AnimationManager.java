@@ -29,6 +29,10 @@ public class AnimationManager {
     public void setFps(int fps) {
         this.fps = fps;
     }
+    public void setStageColor(Color color)
+    {
+        this.stage.content = new SolidColorContent(color);
+    }
     public Dimension getStageDimensions() {
         return stageDimensions;
     }
@@ -48,7 +52,7 @@ public class AnimationManager {
 
         stageDimensions = new Dimension(p.getRequiredInt("settings", "global", "width"),
                                 p.getRequiredInt("settings", "global", "height"));
-        stage = new Clip(new SolidColorContent(Color.white), 0, 0, stageDimensions.width, stageDimensions.height, 1.0);
+        stage = new Clip(new SolidColorContent(null), 0, 0, stageDimensions.width, stageDimensions.height, 1.0);
         // clip
         protoContent = new Hashtable<String,Content>();
         Map<String, ParameterMap> contentParams = p.getObjects("content");
