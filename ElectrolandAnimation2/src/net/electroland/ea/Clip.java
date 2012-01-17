@@ -72,6 +72,9 @@ public class Clip implements Cloneable{
                 case(QueuedChange.DELETE):
                     this.remove();
                     break;
+                case(QueuedChange.DELETE_CHILDREN):
+                    this.removeChildren();
+                    break;
                 case(QueuedChange.CHANGE):
                     // move it to final state.
                     currentState = currentChange.change.getTargetState(initialState);
@@ -184,10 +187,23 @@ public class Clip implements Cloneable{
             child.remove();
         }
     }
+    private void removeChildren()
+    {
+        for (Clip child : children)
+        {
+            child.remove();
+        }
+    }
     public void delete()
     {
         QueuedChange delete = new QueuedChange();
         delete.type = QueuedChange.DELETE; 
+        changes.add(delete);
+    }
+    public void deleteChildren()
+    {
+        QueuedChange delete = new QueuedChange();
+        delete.type = QueuedChange.DELETE_CHILDREN; 
         changes.add(delete);
     }
     private static BufferedImage createScaledAlpha(Image image, int width, int height, float transperancy) {
