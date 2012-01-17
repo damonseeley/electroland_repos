@@ -348,6 +348,7 @@ public class SoundController implements SCSoundControlNotifiable {
 	public void shutdown(){
 		if (!bypass) {
 			if(ss != null){
+				//logger.info("SoundController: shutting down SCSC: " + ss);
 				ss.shutdown();
 			}
 		}
