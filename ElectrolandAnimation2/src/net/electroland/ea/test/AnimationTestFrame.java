@@ -12,11 +12,8 @@ import net.electroland.ea.Clip;
 import net.electroland.ea.changes.LinearChange;
 import net.electroland.ea.content.SolidColorContent;
 
-import org.apache.log4j.Logger;
-
 public class AnimationTestFrame extends JFrame{
 
-    private static Logger logger = Logger.getLogger(AnimationTestFrame.class);
     private static final long serialVersionUID = 1L;
     AnimationManager anim;
 
