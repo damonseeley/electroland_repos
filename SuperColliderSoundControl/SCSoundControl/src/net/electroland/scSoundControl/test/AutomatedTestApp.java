@@ -19,10 +19,10 @@ public class AutomatedTestApp extends PApplet implements SCSoundControlNotifiabl
 	int maxPolyphony = 128; // how many voices max to play at once
 	
 	// polyphony values for automated switching
-	int polyphonyA = 8;
-	int polyphonyB = 16;
-	int polyphonyC = 32;
-	int polyphonyD = 48;
+	int polyphonyA = 4;
+	int polyphonyB = 8;
+	int polyphonyC = 16;
+	int polyphonyD = 24;
 	int polyphonyMode = 0;
 	long lastPolyphonySwitch;
 	int polyphonyDuration = 10000;

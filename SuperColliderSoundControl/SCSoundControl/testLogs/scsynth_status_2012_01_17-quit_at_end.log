@@ -1,3 +1,5 @@
+test of AutomatedTestApp with poly levels set to: 4,8,16,24
+
 16 Jan 2012 20:31:10,655[Thread-1]:SCSC: launching scsynth with args:
 16 Jan 2012 20:31:10,656[Thread-1]:	[C:\Program Files\SuperCollider\scsynth.exe, -i, 2, -o, 22, -m, 131072, -u, 57110, -D, 1, -H, ASIO : MOTU Audio ASIO, -S, 48000, -a, 88, -n, 1539, -c, 0]
 16 Jan 2012 20:31:11,785[Thread-2]:SCSC: scsynth is booted.
