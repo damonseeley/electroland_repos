@@ -259,8 +259,8 @@ public class EIAFrame extends JFrame implements ActionListener {
 
 
 	private void close(){
-		SoundController sc = (SoundController)context.get("soundcontroller");
-		//sc.shutdown();
+		SoundController sc = (SoundController)context.get("soundController");
+		sc.shutdown();
 		System.exit(0);
 	}
 
