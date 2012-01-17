@@ -177,7 +177,7 @@ public class SoundController implements SCSoundControlNotifiable {
 					ParameterMap params = ps.getParams(showName, name);
 					//String soundCueId = name.substring(9, name.length() - 9);
 					String soundFileName = params.getRequired("soundfilename");
-					logger.info("SoundController: sequence soundfilename ripper found: " + soundFileName);
+					//logger.info("SoundController: sequence soundfilename ripper found: " + soundFileName);
 					soundFiles.put(soundFilePath+soundFileName, -1);	// -1 default unassigned value
 				}
 			}
@@ -200,7 +200,7 @@ public class SoundController implements SCSoundControlNotifiable {
 
 	public void loadAllBuffers() {
 		for (String s : soundFiles.keySet()){
-			logger.info("SoundController: loadbuffer: " + s);
+			//logger.info("SoundController: loadbuffer: " + s);
 			ss.readBuf(s);
 		}
 	}
