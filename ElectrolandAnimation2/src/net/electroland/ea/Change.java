@@ -21,7 +21,6 @@ abstract public class Change {
         double a = (float)target(init.alpha, toAlpha, byAlpha, scaleAlpha);
 
         State next = new State((int)x,(int)y,(int)w,(int)h,a);
-        System.out.println("next state= " + next);
         return next;
     }
 

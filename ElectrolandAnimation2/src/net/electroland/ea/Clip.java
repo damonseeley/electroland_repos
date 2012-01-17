@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
-import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Clip {
@@ -22,7 +21,6 @@ public class Clip {
     private Queue<QueuedChange>changes; // queued changes
     private QueuedChange currentChange;
     private Content content;
-    private List<DeletedClipListener> deletionListeners = new Vector<DeletedClipListener>();
 
     public Clip(Content content, int top, int left, int width, int height, double alpha)
     {
@@ -146,10 +144,6 @@ public class Clip {
         {
             child.remove();
         }
-        for (DeletedClipListener listener : deletionListeners)
-        {
-            listener.deleted(this);
-        }
     }
     public void delete()
     {
@@ -157,10 +151,6 @@ public class Clip {
         QueuedChange delete = new QueuedChange();
         delete.type = QueuedChange.DELETE; 
         changes.add(delete);
-    }
-    public void addListener(DeletedClipListener listener)
-    {
-        deletionListeners.add(listener);
     }
     private static BufferedImage createScaledAlpha(Image image, int width, int height, float transperancy) {
         // buffer for the original (scaled)

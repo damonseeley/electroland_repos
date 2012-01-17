@@ -14,7 +14,7 @@ import net.electroland.utils.ParameterMap;
 
 import org.apache.log4j.Logger;
 
-public class AnimationManager implements DeletedClipListener {
+public class AnimationManager {
 
     private static Logger logger = Logger.getLogger(AnimationManager.class);
     private int fps;
@@ -86,8 +86,5 @@ public class AnimationManager implements DeletedClipListener {
         return stage.getImage(new BufferedImage(stageDimensions.width,
                                                 stageDimensions.height,
                                                 BufferedImage.TYPE_INT_ARGB));
-    }
-    @Override
-    public void deleted(Clip clip) {
     }
 }
