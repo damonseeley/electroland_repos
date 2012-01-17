@@ -45,11 +45,12 @@ public class AnimationTestFrame extends JFrame{
         // second copy  of the nested stuff(woo hoo!)
         Clip cop = (Clip)one.clone();
         anim.addClip(cop, 0, 0, w, h, 1.0);
-        two.deleteChildren();
+        //one.deleteChildren();
 
         // red box clip
         SolidColorContent c = new SolidColorContent(Color.RED);
         Clip red = anim.addClip(c, 0, 0, w, h, 0);
+        red.fadeIn(500).fadeOut(500);
 
         Change change0 = new DelayedInstantChange().alphaTo(1.0).xTo(w);
         Change change1 = new LinearChange().alphaTo(1.0).yTo(h);
@@ -63,6 +64,7 @@ public class AnimationTestFrame extends JFrame{
 
         one.queueChange(change4, 0).delay(500).queueChange(change5, 750);
         one.delay(4000).queueChange(change6, 1000);
+        
 
         while (true){
             f.getGraphics().drawImage(anim.getStage(), 0, 0, f.getWidth(), f.getHeight(), null);
