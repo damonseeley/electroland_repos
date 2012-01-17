@@ -233,7 +233,7 @@ public class EIAFrame extends JFrame implements ActionListener {
 		SimpleSequencer seq = (SimpleSequencer)context.get("sequencer");
 		logger.info(seq);
 		logger.info(jsDelay.getValue());
-		//seq.setClipDelay(jsDelay.getValue());
+		seq.setClipDelay(jsDelay.getValue());
 	}
 
 	public void setSize(){
