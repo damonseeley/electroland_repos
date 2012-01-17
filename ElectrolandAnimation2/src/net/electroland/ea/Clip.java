@@ -15,6 +15,20 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import net.electroland.ea.changes.DelayedInstantChange;
 import net.electroland.ea.changes.LinearChange;
 
+/**
+ * This is where all the real magic happens.  A Clip is like an HTML Div.  It's
+ * a container for Content that is assigned some section of the 2 dimensional
+ * Stage. Like a Div, a Clip can contain both its own content as well as
+ * nested other Clips, each with it's own bounded area.
+ * 
+ * Clips can be manipulated in a manner similar to JQuery, using the Change
+ * interface.  You queue a Change to a clip using queueChange().  
+ * There are some syntactic sugar changes as well, such as fadeIn(delay), 
+ * fadeOut(delay), delay() and delete().
+ * 
+ * @author production
+ *
+ */
 public class Clip implements Cloneable{
 
     private static final Change FADE_IN = new LinearChange().alphaTo(1.0);
@@ -55,15 +69,17 @@ public class Clip implements Cloneable{
     protected void processChanges(){
 
         // process changes in children first.
-        Iterator<Clip> clips = children.iterator();
-        while (clips.hasNext()){
-            Clip child = clips.next();
-            // any deletions?
-            if (child.isRemoved){
-                clips.remove();
-            }
-            else{
-                child.processChanges();
+        synchronized(children){
+            Iterator<Clip> clips = children.iterator();
+            while (clips.hasNext()){
+                Clip child = clips.next();
+                // any deletions?
+                if (child.isRemoved){
+                    clips.remove();
+                }
+                else{
+                    child.processChanges();
+                }
             }
         }
 
@@ -136,10 +152,12 @@ public class Clip implements Cloneable{
         }
         Graphics g = substage.getGraphics();
 
-        for (Clip child : children)
-        {
-            BufferedImage childImage = child.getImage(substage, myWScale, myHScale);
-            g.drawImage(childImage, 0, 0, null);
+        synchronized(children){
+            for (Clip child : children)
+            {
+                BufferedImage childImage = child.getImage(substage, myWScale, myHScale);
+                g.drawImage(childImage, 0, 0, null);
+            }
         }
         g.dispose();
 

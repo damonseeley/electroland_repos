@@ -5,6 +5,12 @@ import java.util.Map;
 
 import net.electroland.utils.ParameterMap;
 
+/**
+ * Content is content that is rendered by a Clip.
+ * 
+ * @author production
+ *
+ */
 abstract public class Content implements Cloneable{
 
     // return the content
