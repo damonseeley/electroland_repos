@@ -137,7 +137,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
         context.put("sequencer", sequencer);
         context.put("seqpropsfile", seqpropsfile);
 
-		clipPlayer = new EIAClipPlayer(anim);
+		clipPlayer = new EIAClipPlayer(anim,elu);
 		context.put("clipPlayer", clipPlayer);
 		
 		
@@ -147,7 +147,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		createModelWatchers();
 
 		startupTestTimer = new Timer();
-		startupTestTimer.schedule(new startupTests(), 4000);
+		startupTestTimer.schedule(new startupTests(), 3000);
 
 		// disabled for now
 		//timedShows = new Timer();
@@ -234,6 +234,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 			//soundController.playTestSound("test_1.wav");
 			//soundController.playSingleChannel("test_1.wav", 600.0, 1.0f); // plays a sound out of the speaker nearest to the x value provide
 			//startupTestTimer.schedule(new startupTests(), 10000);
+			//int faintSparkle = anim.startClip("sparkleClip320", new Rectangle(0,0,635,16), 0.3); // huge sparkly thing over full area
 		}
 	}
 
