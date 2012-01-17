@@ -7,6 +7,6 @@ public class DelayedInstantChange extends Change {
 
     @Override
     public State nextState(State init, double percentComplete) {
-        return ((int)percentComplete==1) ? this.getTargetState(init) : init;
+        return init;
     }
 }
