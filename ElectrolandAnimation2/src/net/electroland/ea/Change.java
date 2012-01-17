@@ -36,45 +36,45 @@ abstract public class Change {
     }
 
     // absolute pixel changes
-    public Change toLeft(double left){
+    public Change xTo(double left){
         toLeft = left;
         return this;
     }
-    public Change toTop(double top){
+    public Change yTo(double top){
         toTop = top;
         return this;
     }
-    public Change toWidth(double width){
+    public Change widthTo(double width){
         toWidth = width;
         return this;
     }
-    public Change toHeight(double height){
+    public Change heightTo(double height){
         toHeight = height;
         return this;
     }
-    public Change toAlpha(double alpha){
+    public Change alphaTo(double alpha){
         toAlpha = alpha;
         return this;
     }
 
     // relative pixel changes
-    public Change byLeft(double dLeft){
+    public Change xBy(double dLeft){
         byLeft = dLeft;
         return this;
     }
-    public Change byTop(double dTop){
+    public Change yBy(double dTop){
         byTop = dTop;
         return this;
     }
-    public Change byWidth(double dWidth){
+    public Change widthBy(double dWidth){
         byWidth = dWidth;
         return this;
     }
-    public Change byHeight(double dHeight){
+    public Change heightBy(double dHeight){
         byHeight = dHeight;
         return this;
     }
-    public Change byAlpha(double dAlpha){
+    public Change alphaBy(double dAlpha){
         byAlpha = dAlpha;
         return this;
     }
