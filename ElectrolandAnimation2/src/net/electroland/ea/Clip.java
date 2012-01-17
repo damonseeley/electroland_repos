@@ -20,7 +20,7 @@ public class Clip implements Cloneable{
     private State currentState; // current state
     private Queue<QueuedChange>changes; // queued changes
     private QueuedChange currentChange;
-    private Content content;
+    protected Content content;
 
     public Clip(Content content, int top, int left, int width, int height, double alpha)
     {
@@ -41,10 +41,12 @@ public class Clip implements Cloneable{
         return clip;
     }
     protected void processChanges(){
-        
+
+        // process changes in children first.
         Iterator<Clip> clips = children.iterator();
         while (clips.hasNext()){
             Clip child = clips.next();
+            // any deletions?
             if (child.isRemoved)
                 clips.remove();
             else
@@ -56,35 +58,38 @@ public class Clip implements Cloneable{
 
             if (currentChange.started && now > currentChange.endTime)
             {
-                System.out.println("passed end");
                 switch(currentChange.type){
                 case(QueuedChange.DELETE):
-                    System.out.println("delete");
                     this.remove();
                     break;
-                case(QueuedChange.DELAY):
-                    break;
                 case(QueuedChange.CHANGE):
-                    currentState = currentChange.change.nextState(initialState, 1.0);
+                    // move it to final state.
+                    currentState = currentChange.change.getTargetState(initialState);
                     break;
                 }
                 currentChange = null;
             }else if (now > currentChange.startTime)
             {
                 currentChange.started = true;
-                switch(currentChange.type){
-                case(QueuedChange.CHANGE):
-                    double percentComplete = (now - currentChange.startTime) / (double)(currentChange.endTime - currentChange.startTime);
-                    if (percentComplete > 1.0){
+                if(currentChange.type == QueuedChange.CHANGE){
+                    double percentComplete = 0.0;
+                    // divide by zero possibility here.
+                    if (currentChange.endTime != currentChange.startTime){
+                        percentComplete = (now - currentChange.startTime) / (double)(currentChange.endTime - currentChange.startTime);
+                        // occurs when "now" overshoots
+                        if (percentComplete > 1.0){
+                                percentComplete = 1.0;
+                        }
+                    }else{
                         percentComplete = 1.0;
                     }
                     currentState = currentChange.change.nextState(initialState, percentComplete);
-                    break;
                 }
             }
         }else{
             if (!changes.isEmpty())
             {
+                // get the next change from the queue
                 initialState = currentState;
                 currentChange = changes.remove();
                 currentChange.startTime = System.currentTimeMillis() + currentChange.delay;
@@ -93,6 +98,8 @@ public class Clip implements Cloneable{
         }
         
     }
+    // generates this Clip: current problem scaling isn't working because
+    // children don't know how to scale x,y.
     protected BufferedImage getImage(BufferedImage stage)
     {
         int width = currentState.geometry.width;
@@ -101,7 +108,10 @@ public class Clip implements Cloneable{
         BufferedImage substage = new BufferedImage(width,
                                                    height,
                                                    BufferedImage.TYPE_INT_ARGB);
-        content.renderContent(substage);
+        if (content != null)
+        {
+            content.renderContent(substage);
+        }
         Graphics g = substage.getGraphics();
 
         for (Clip child : children)
@@ -117,6 +127,13 @@ public class Clip implements Cloneable{
                                           (float)currentState.alpha);
 
         Graphics g2 = stage.getGraphics();
+//        // Bug here: left/top should be scaled?
+//        double scaleX = initialState.geometry.width <= 0 ? 0 : 
+//                            currentState.geometry.width / (double)initialState.geometry.width;
+//        double scaleY = initialState.geometry.height <= 0 ? 0 : 
+//            currentState.geometry.height / (double)initialState.geometry.height;
+//        int left = (int)(currentState.geometry.x * scaleX);
+//        int top = (int)(currentState.geometry.y *scaleY);
         int left = currentState.geometry.x;
         int top = currentState.geometry.y;
         g2.drawImage(complete, left, top, width, height, null);
@@ -125,7 +142,14 @@ public class Clip implements Cloneable{
     }
     public Clip queueChange(Change change, int duration)
     {
-        System.out.println("change queued: " + change);
+        if (duration < 0)
+        {
+            throw new RuntimeException("Change duration must be > 0.");
+        }
+        if (change == null)
+        {
+            throw new RuntimeException("Attempt to queue a null Change.");
+        }
         QueuedChange qc = new QueuedChange();
         qc.type = QueuedChange.CHANGE; 
         qc.change = change;
@@ -135,6 +159,10 @@ public class Clip implements Cloneable{
     }
     public Clip delay(int millis)
     {
+        if (millis < 0)
+        {
+            throw new RuntimeException("Delay duration must be > 0.");
+        }
         System.out.println("delay queued");
         QueuedChange delay = new QueuedChange();
         delay.type = QueuedChange.DELAY; 
@@ -152,7 +180,6 @@ public class Clip implements Cloneable{
     }
     public void delete()
     {
-        System.out.println("delete queued");
         QueuedChange delete = new QueuedChange();
         delete.type = QueuedChange.DELETE; 
         changes.add(delete);
