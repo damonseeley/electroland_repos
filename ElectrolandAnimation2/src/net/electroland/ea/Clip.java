@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import net.electroland.ea.changes.DelayedInstantChange;
+
 public class Clip implements Cloneable{
 
     private boolean isRemoved = false;
@@ -39,6 +41,12 @@ public class Clip implements Cloneable{
         clip.currentState = new State(top, left, width, height, alpha);
         children.add(clip);
         return clip;
+    }
+    public Clip addClip(Content content, int top, int left, int width, int height, double alpha, int delay){
+        Clip newClip = new Clip(content, top, left, width, height, 0);
+        newClip.queueChange(new DelayedInstantChange().alphaTo(alpha), delay);
+        children.add(newClip);
+        return newClip;
     }
     protected void processChanges(){
 
