@@ -1,5 +1,10 @@
 package net.electroland.ea;
 
+/**
+ * represents the state of a queued change.
+ * @author production
+ *
+ */
 public class QueuedChange {
     final public static int DELETE_CHILDREN = -2;
     final public static int DELETE = -1;

@@ -3,7 +3,6 @@ package net.electroland.ea;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
-import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -14,6 +13,22 @@ import net.electroland.utils.ParameterMap;
 
 import org.apache.log4j.Logger;
 
+/**
+ * This controls all animation. It does not run any kind of animation thread,
+ * even though it presents an FPS variable.  FPS is purely for passing on what
+ * the user specified in the configuration file as the desired FPS. As a rule,
+ * users should instatiate this object with the pointer to the property file
+ * that defines Content objects and then:
+ * 
+ * getContet("myContent") to retrieve Content defined in the props file.
+ * addClip(...) to put a new Clip on the stage
+ * getStage() to get the Image that represents the stage at any point in time.
+ * getStage() polls the system for the next state.
+ * toPixels(...) to convert the stage to a pixel grab for use with ELU
+ * 
+ * @author production
+ *
+ */
 public class AnimationManager {
 
     private static Logger logger = Logger.getLogger(AnimationManager.class);
@@ -21,7 +36,6 @@ public class AnimationManager {
     private Clip stage;
     private Dimension stageDimensions;
     private Map<String, Content>protoContent;
-    private Map<String, Collection<Clip>>taggedClips;
 
     public int getFps() {
         return fps;
@@ -76,7 +90,7 @@ public class AnimationManager {
     {
         return stage.addClip(c, x,y,width,height,alpha);
     }
-    public Clip addClipAfter(Content c, int x, int y, int width, int height, double alpha, int delay)
+    public Clip addClip(Content c, int x, int y, int width, int height, double alpha, int delay)
     {
         return stage.addClip(c, x,y,width,height,alpha, delay);
     }
@@ -87,10 +101,6 @@ public class AnimationManager {
     public Content getContent(String contentId)
     {
         return (Content)protoContent.get(contentId).clone();
-    }
-    public Collection<Clip> getClip(String tag)
-    {
-        return taggedClips.get(tag);
     }
     public BufferedImage getStage()
     {

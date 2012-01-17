@@ -1,6 +1,16 @@
 package net.electroland.ea;
 
-
+/**
+ * A change represents a set of changes to be applied to a Clip over time.
+ * Changes can be specified either absolutely (e.g., xTo(10)) or relatively
+ * (e.g., xBy(50)) or scaled (scaleWidth(.5)).  x, y, width, height and
+ * alpha can all be manipulated.
+ * 
+ * Conrete instances of Change define the time-based assignment of changes.
+ * 
+ * @author production
+ *
+ */
 abstract public class Change {
 
     protected Double toLeft, toTop, toWidth, toHeight;
