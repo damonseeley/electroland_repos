@@ -16,6 +16,7 @@ abstract public class Content implements Cloneable{
     // whatever the Conductor decided you needed when you start an instance
     abstract public void init(Map<String, Object> context);
 
+    // children are going to be copied by reference.
     public Object clone() {
         try
         {
