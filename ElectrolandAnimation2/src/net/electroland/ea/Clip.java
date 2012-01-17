@@ -13,8 +13,12 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.electroland.ea.changes.DelayedInstantChange;
+import net.electroland.ea.changes.LinearChange;
 
 public class Clip implements Cloneable{
+
+    private static final Change FADE_IN = new LinearChange().alphaTo(1.0);
+    private static final Change FADE_OUT = new LinearChange().alphaTo(0.0);
 
     private boolean isRemoved = false;
     private List<Clip>children;
@@ -172,11 +176,36 @@ public class Clip implements Cloneable{
         {
             throw new RuntimeException("Delay duration must be > 0.");
         }
-        System.out.println("delay queued");
         QueuedChange delay = new QueuedChange();
         delay.type = QueuedChange.DELAY; 
         delay.delay = millis;
         changes.add(delay);
+        return this;
+    }
+    public Clip fadeIn(int millis)
+    {
+        if (millis < 0)
+        {
+            throw new RuntimeException("Delay duration must be > 0.");
+        }
+        QueuedChange fade = new QueuedChange();
+        fade.change = FADE_IN;
+        fade.type = QueuedChange.CHANGE; 
+        fade.duration = millis;
+        changes.add(fade);
+        return this;
+    }
+    public Clip fadeOut(int millis)
+    {
+        if (millis < 0)
+        {
+            throw new RuntimeException("Delay duration must be > 0.");
+        }
+        QueuedChange fade = new QueuedChange();
+        fade.change = FADE_OUT;
+        fade.type = QueuedChange.CHANGE; 
+        fade.duration = millis;
+        changes.add(fade);
         return this;
     }
     private void remove()
