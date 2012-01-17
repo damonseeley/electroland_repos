@@ -20,9 +20,6 @@ public class SolidColorContent extends Content {
     private Color color;
 
     public SolidColorContent(Color c){
-        if (c==null){
-            System.out.println("NO COLOR!");
-        }
         this.color = c;
     }
     @Override
