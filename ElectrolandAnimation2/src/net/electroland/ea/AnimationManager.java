@@ -99,4 +99,10 @@ public class AnimationManager {
                                                 stageDimensions.height,
                                                 BufferedImage.TYPE_INT_ARGB), 1.0, 1.0);
     }
+    public static int[] toPixels(BufferedImage stage, int width, int height)
+    {
+        int[] pixels = new int[width * height];
+        ((BufferedImage)stage).getRGB(0, 0, width, height, pixels, 0, width);
+        return pixels;
+    }
 }
