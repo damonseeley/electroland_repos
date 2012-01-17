@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class Clip {
+public class Clip implements Cloneable{
 
     private boolean isRemoved = false;
     private List<Clip>children;
@@ -34,6 +34,11 @@ public class Clip {
         Clip newClip = new Clip(content, top, left, width, height, alpha);
         children.add(newClip);
         return newClip;
+    }
+    public Clip addClip(Clip clip, int top, int left, int width, int height, double alpha){
+        clip.currentState = new State(top, left, width, height, alpha);
+        children.add(clip);
+        return clip;
     }
     protected void processChanges(){
         
@@ -172,4 +177,12 @@ public class Clip {
         // Return the image
         return aimg;
     }
+    public Object clone() {
+        try
+        {
+        return super.clone();
+        }
+        catch(Exception e){ return null; }
+     }
+
 }

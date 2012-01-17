@@ -41,6 +41,10 @@ public class AnimationTestFrame extends JFrame{
         Clip two = one.addClip(anim.getContent("fastImage"), 50, 50, 100, 100, .5);
         Clip wow = two.addClip(anim.getContent("fastImage"), 50, 50, 50, 50, .5);
 
+        // second copy of the nested stuff(woo hoo!)
+        Clip cop = (Clip)one.clone();
+        anim.addClip(cop, 0, 0, w, h, 1.0);
+        
         // red box clip
         SolidColorContent c = new SolidColorContent(Color.RED);
         Clip red = anim.addClip(c, 0, 0, w, h, 0);
