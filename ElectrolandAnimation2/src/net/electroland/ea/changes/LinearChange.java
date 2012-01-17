@@ -5,6 +5,10 @@ import net.electroland.ea.State;
 
 public class LinearChange extends Change {
 
+    /** 
+     * extreme inefficiency here: this.getTargetState(init) returns something
+     * that ought to be cacheable
+     */
     @Override
     public State nextState(State init, double percentComplete) {
         
