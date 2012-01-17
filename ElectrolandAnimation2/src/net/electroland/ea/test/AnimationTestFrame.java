@@ -62,7 +62,7 @@ public class AnimationTestFrame extends JFrame{
         // brokenChange change6 = new LinearChange().scaleHeight(.5);
 
         one.queueChange(change4, 0).delay(500).queueChange(change5, 750);
-        one.delay(2000).queueChange(change6, 1000);
+        one.delay(4000).queueChange(change6, 1000);
 
         while (true){
             f.getGraphics().drawImage(anim.getStage(), 0, 0, f.getWidth(), f.getHeight(), null);

@@ -97,6 +97,6 @@ public class AnimationManager {
         stage.processChanges();
         return stage.getImage(new BufferedImage(stageDimensions.width,
                                                 stageDimensions.height,
-                                                BufferedImage.TYPE_INT_ARGB));
+                                                BufferedImage.TYPE_INT_ARGB), 1.0, 1.0);
     }
 }

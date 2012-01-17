@@ -55,10 +55,12 @@ public class Clip implements Cloneable{
         while (clips.hasNext()){
             Clip child = clips.next();
             // any deletions?
-            if (child.isRemoved)
+            if (child.isRemoved){
                 clips.remove();
-            else
+            }
+            else{
                 child.processChanges();
+            }
         }
 
         if (currentChange != null){
@@ -108,10 +110,15 @@ public class Clip implements Cloneable{
     }
     // generates this Clip: current problem scaling isn't working because
     // children don't know how to scale x,y.
-    protected BufferedImage getImage(BufferedImage stage)
+    protected BufferedImage getImage(BufferedImage stage, double wScale, double hScale)
     {
-        int width = currentState.geometry.width;
-        int height = currentState.geometry.height;
+        double myWScale = (this.currentState.geometry.width / (double)this.initialState.geometry.width) * wScale;
+        double myHScale = (this.currentState.geometry.height / (double)this.initialState.geometry.height) * hScale;
+
+        int width = (int)(currentState.geometry.width * wScale);
+        int height = (int)(currentState.geometry.height * hScale);
+        int left = (int)(currentState.geometry.x * wScale);
+        int top = (int)(currentState.geometry.y * hScale);
 
         BufferedImage substage = new BufferedImage(width,
                                                    height,
@@ -124,7 +131,7 @@ public class Clip implements Cloneable{
 
         for (Clip child : children)
         {
-            BufferedImage childImage = child.getImage(substage);
+            BufferedImage childImage = child.getImage(substage, myWScale, myHScale);
             g.drawImage(childImage, 0, 0, null);
         }
         g.dispose();
@@ -135,15 +142,6 @@ public class Clip implements Cloneable{
                                           (float)currentState.alpha);
 
         Graphics g2 = stage.getGraphics();
-//        // Bug here: left/top should be scaled?
-//        double scaleX = initialState.geometry.width <= 0 ? 0 : 
-//                            currentState.geometry.width / (double)initialState.geometry.width;
-//        double scaleY = initialState.geometry.height <= 0 ? 0 : 
-//            currentState.geometry.height / (double)initialState.geometry.height;
-//        int left = (int)(currentState.geometry.x * scaleX);
-//        int top = (int)(currentState.geometry.y *scaleY);
-        int left = currentState.geometry.x;
-        int top = currentState.geometry.y;
         g2.drawImage(complete, left, top, width, height, null);
         g2.dispose();
         return stage;
