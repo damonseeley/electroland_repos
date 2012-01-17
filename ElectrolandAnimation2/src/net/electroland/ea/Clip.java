@@ -7,6 +7,7 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 import java.util.Vector;
@@ -14,6 +15,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Clip {
 
+    private boolean isRemoved = false;
     private List<Clip>children;
     private State initialState; // state when instantiated
     private State currentState; // current state
@@ -37,11 +39,15 @@ public class Clip {
     }
     protected void processChanges(){
         
-        for (Clip clip : children)
-        {
-            clip.processChanges();
+        Iterator<Clip> clips = children.iterator();
+        while (clips.hasNext()){
+            Clip child = clips.next();
+            if (child.isRemoved)
+                clips.remove();
+            else
+                child.processChanges();
         }
-        
+
         if (currentChange != null){
             long now = System.currentTimeMillis();
 
@@ -50,6 +56,7 @@ public class Clip {
                 System.out.println("passed end");
                 switch(currentChange.type){
                 case(QueuedChange.DELETE):
+                    System.out.println("delete");
                     this.remove();
                     break;
                 case(QueuedChange.DELAY):
@@ -68,7 +75,6 @@ public class Clip {
                     if (percentComplete > 1.0){
                         percentComplete = 1.0;
                     }
-                    System.out.println("percentComplete = " + percentComplete);
                     currentState = currentChange.change.nextState(initialState, percentComplete);
                     break;
                 }
@@ -76,12 +82,8 @@ public class Clip {
         }else{
             if (!changes.isEmpty())
             {
-                System.out.println("spinning up current Change");
                 initialState = currentState;
                 currentChange = changes.remove();
-                System.out.println("initialState=" + initialState);
-                System.out.println("currentState=" + currentState);
-                System.out.println("currentChange=" + currentChange.change);
                 currentChange.startTime = System.currentTimeMillis() + currentChange.delay;
                 currentChange.endTime = currentChange.startTime + currentChange.duration;
             }
@@ -139,6 +141,7 @@ public class Clip {
     }
     private void remove()
     {
+        isRemoved = true;
         for (Clip child : children)
         {
             child.remove();
