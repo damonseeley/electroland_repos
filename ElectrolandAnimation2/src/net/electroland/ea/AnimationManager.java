@@ -3,6 +3,7 @@ package net.electroland.ea;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -36,6 +37,7 @@ public class AnimationManager {
     private Clip stage;
     private Dimension stageDimensions;
     private Map<String, Content>protoContent;
+    public ImageObserver observer;
 
     public int getFps() {
         return fps;
@@ -86,17 +88,17 @@ public class AnimationManager {
             protoContent.put(s, content);
         }
     }
+    public Clip addClip(int x, int y, int width, int height, double alpha)
+    {
+        return stage.addClip(x,y,width,height,alpha);
+    }
     public Clip addClip(Content c, int x, int y, int width, int height, double alpha)
     {
-        return stage.addClip(c, x,y,width,height,alpha);
+        return stage.addClip(c,x,y,width,height,alpha);
     }
     public Clip addClip(Content c, int x, int y, int width, int height, double alpha, int delay)
     {
         return stage.addClip(c, x,y,width,height,alpha, delay);
-    }
-    public Clip addClip(Clip c, int x, int y, int width, int height, double alpha)
-    {
-        return stage.addClip(c, x,y,width,height,alpha);
     }
     public Content getContent(String contentId)
     {
@@ -107,13 +109,19 @@ public class AnimationManager {
             return (Content)((Content)proto).clone();
         }
     }
+    int lastCount = 0;
     public BufferedImage getStage()
     {
-        stage.processChanges();
+//        stage.processChanges();
+        int count = stage.countChildren() - 1;
+        if (count != lastCount){
+            logger.debug("total objects animated: " + count);
+        }
+        lastCount = count;
         BufferedImage b = new BufferedImage(stageDimensions.width,
                 stageDimensions.height,
                 BufferedImage.TYPE_INT_ARGB);
-            
+
         return stage.getImage(b, 1.0, 1.0);
     }
     public static int[] toPixels(BufferedImage stage, int width, int height)
