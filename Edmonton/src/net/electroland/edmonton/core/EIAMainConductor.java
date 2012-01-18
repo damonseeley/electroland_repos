@@ -37,7 +37,7 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
 	static Logger logger = Logger.getLogger(EIAMainConductor.class);
 
 	private int fadeDuration = 2000;
-	private int inactivityThreshold = 10;
+	private int inactivityThreshold = 1000 * 10;
 	
 	private ElectrolandProperties props;
 	private ELUManager elu;
@@ -73,7 +73,6 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
 	public static long curTime = System.currentTimeMillis(); //  time of frame start to aviod lots of calls to System.getcurentTime()
 	public static long elapsedTime = -1; //  time between start of cur frame and last frame to avoid re calculating passage of time allover the place
 
-
 	public EIAMainConductor()
 	{
 		context = new Hashtable<String, Object>();
@@ -82,7 +81,7 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
 		logger.info("EIAMain loading " + propsFileName);
 		props = new ElectrolandProperties(propsFileName);
 		context.put("props",props);
-
+		
 		elu = new ELUManager();
 		eio = new IOManager();
 		try {
@@ -136,7 +135,9 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
 		/******** Model, Watchers & Timers ********/
 		model = new Model();
 		model.addModelListener(this);
-		createModelWatchers();
+        model.addModelListener(sequencer);
+
+        createModelWatchers();
 
 		startupTestTimer = new Timer();
 		startupTestTimer.schedule(new startupTests(), 3000);
@@ -147,13 +148,11 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
 
         tripRecord = new LastTrippedModelWatcher();
         model.addModelWatcher(tripRecord, "tripRecord", eio.getIStates());
-        model.addModelListener(sequencer);
 
         // watch for screen saver switches
         screenSaver = new ScreenSaverModelWatcher();
         screenSaver.setTimeOut(this.inactivityThreshold);
         model.addModelWatcher(screenSaver,  "screenSaver", eio.getIStates());
-        model.addModelListener(this);
 		
 		/******** GUI ********/
 		ef = new EIAFrame(Integer.parseInt(props.getRequired("settings", "global", "guiwidth")),Integer.parseInt(props.getRequired("settings", "global", "guiheight")),context);
@@ -176,6 +175,7 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
 		logger.info(e.getActionCommand());
 
 		if ("startShow1".equals(e.getActionCommand())) {
+		    this.goLive();
 			sequencer.play("show1");
 		    //this.goLive();
 		}
@@ -202,17 +202,15 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
 
 	public void goQuiet()
 	{
-        logger.info("STOP SEQUENCE");
 	    sequencer.stop();
-	    sequencer.play("screen_saver");
+	    sequencer.play(sequencer.quietShowId);
 	    clipPlayer.live.fadeOut(500).deleteChildren();
 	    clipPlayer.quiet.fadeIn(500);
 	}
 
 	public void goLive(){
-        logger.info("START SEQUENCE");
         sequencer.stop();
-        sequencer.play("live_show");
+        sequencer.play(sequencer.liveShowId);
         clipPlayer.quiet.fadeOut(500).deleteChildren();
         clipPlayer.live.fadeIn(500);
 	}
@@ -290,11 +288,14 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
 	public void modelChanged(ModelEvent evt) {
 
 	    if (evt.watcherName == "screenSaver"){
+	        logger.info("got screen saver event at " + System.currentTimeMillis());
 	        if (((ScreenSaverModelWatcher)evt.getSource()).isQuiet())
 	        {
-	            //this.goQuiet();
+	            logger.info("go quiet");
+	            this.goQuiet();
 	        }else{
-                //this.goLive();
+	            logger.info("go live");
+                this.goLive();
 	        }
 	    }
 	    
