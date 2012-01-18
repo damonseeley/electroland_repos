@@ -100,14 +100,21 @@ public class AnimationManager {
     }
     public Content getContent(String contentId)
     {
-        return (Content)protoContent.get(contentId).clone();
+        Object proto = protoContent.get(contentId);
+        if (proto == null){
+            throw new RuntimeException("no content named '" +  contentId + "'.");
+        }else{
+            return (Content)((Content)proto).clone();
+        }
     }
     public BufferedImage getStage()
     {
         stage.processChanges();
-        return stage.getImage(new BufferedImage(stageDimensions.width,
-                                                stageDimensions.height,
-                                                BufferedImage.TYPE_INT_ARGB), 1.0, 1.0);
+        BufferedImage b = new BufferedImage(stageDimensions.width,
+                stageDimensions.height,
+                BufferedImage.TYPE_INT_ARGB);
+            
+        return stage.getImage(b, 1.0, 1.0);
     }
     public static int[] toPixels(BufferedImage stage, int width, int height)
     {
