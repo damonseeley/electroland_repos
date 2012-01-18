@@ -25,6 +25,7 @@ import net.electroland.eio.IOManager;
 import net.electroland.eio.IOState;
 import net.electroland.eio.IState;
 import net.electroland.utils.ElectrolandProperties;
+import net.electroland.utils.FrameRateRingBuffer;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.lighting.ELUManager;
 import net.electroland.utils.lighting.Fixture;
@@ -169,7 +170,6 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 
 	public void paint(Graphics g) {
 		if (showGraphics) {
-
 			/*
 			 * While it is painful do ALL displayScale calculations here to 
 			 * avoid confusion over where scaling occurs

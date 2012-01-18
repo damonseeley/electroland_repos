@@ -8,7 +8,7 @@
 	<classpathentry kind="lib" path="libraries/vecmath.jar"/>
 	<classpathentry kind="lib" path="libraries/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="libraries/miglayout-4.0.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ElectrolandAnimation"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/SCSoundControl"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ElectrolandAnimation2"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
