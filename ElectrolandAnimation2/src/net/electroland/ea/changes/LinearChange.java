@@ -18,7 +18,7 @@ public class LinearChange extends Change {
         int y = (int)between(init.geometry.y, this.getTargetState(init).geometry.y, percentComplete);
         int w = (int)between(init.geometry.width, this.getTargetState(init).geometry.width, percentComplete);
         int h = (int)between(init.geometry.height, this.getTargetState(init).geometry.height, percentComplete);
-        double a = (float)between(init.alpha, this.getTargetState(init).alpha, percentComplete);
+        double a = (double)between(init.alpha, this.getTargetState(init).alpha, percentComplete);
         return new State(x,y,w,h,a);
     }
     private static double between(int start, int finish, double percentComplete)
