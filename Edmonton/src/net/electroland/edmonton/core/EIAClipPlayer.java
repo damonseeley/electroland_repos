@@ -60,7 +60,7 @@ public class EIAClipPlayer {
 //        Clip trill4 = parent.addClip(simpleClip2, (int)x + barWidth - of, 0, barWidth,         16, 1.0, 530);
 
         //fade em all out
-        // delete will kill the parent AND the children automatically.
+        // delete will kill the objecthe children automatically.
         parent.delay(3500).fadeOut(1000).delete();
 
     }
