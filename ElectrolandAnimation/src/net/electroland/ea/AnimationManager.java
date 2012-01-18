@@ -47,11 +47,21 @@ public class AnimationManager {
         listeners.add(cl);
     }
 
+    /**
+     * This doesn't actually work.
+     * If a clip has a number of queued changes pending, the fade for that
+     * clip won't be reached until it's turn in the queue.  Proper solution
+     * would be to enable simultaneous alpha fading to the current queue of
+     * changes.  That's best accomplished either by supported nested clips or
+     * by having multiple stages.
+     *
+     * @param fadeDuration
+     */
     public void fadeOutAll(int fadeDuration)
     {
         for (Clip clip : liveClips.values())
         {
-            clip.queueChange(null, null, 0.0, fadeDuration, 0, true);
+            clip.fadeOut(fadeDuration);
         }
     }
 
@@ -76,10 +86,12 @@ public class AnimationManager {
     /************************* Clip management ******************************/
     /**
      * 
-     * @param clipName - clip to play
-     * @param area - (Rectangle) destination rect
-     * @param alpha - (Double) destination alpha value
-     * @return id (int)
+     * @param clipName -
+     * @param t - Transition to use (applied between the new clip and the prior 
+     *        clip).  Can be null for "apply immediately".
+     * @param duration -1 for infinite (or until the clip kills itself)
+     * @param delay milliseconds to wait BEFORE running this animation
+     * @return
      */
     synchronized public int startClip(String clipName, Rectangle area, double alpha)
     {
