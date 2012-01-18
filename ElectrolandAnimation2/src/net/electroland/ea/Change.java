@@ -6,7 +6,7 @@ package net.electroland.ea;
  * (e.g., xBy(50)) or scaled (scaleWidth(.5)).  x, y, width, height and
  * alpha can all be manipulated.
  * 
- * Conrete instances of Change define the time-based assignment of changes.
+ * Concrete instances of Change define the time-based assignment of changes.
  * 
  * @author production
  *

@@ -1,9 +1,7 @@
 package net.electroland.ea;
 
 import java.awt.AlphaComposite;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,7 +27,7 @@ import net.electroland.ea.changes.LinearChange;
  * @author production
  *
  */
-public class Clip implements Cloneable{
+public class Clip {
 
     private static final Change FADE_IN = new LinearChange().alphaTo(1.0);
     private static final Change FADE_OUT = new LinearChange().alphaTo(0.0);
@@ -41,6 +39,7 @@ public class Clip implements Cloneable{
     private Queue<QueuedChange>changes; // queued changes
     private QueuedChange currentChange;
     protected Content content;
+    public int debug = -1;
 
     public Clip(Content content, int top, int left, int width, int height, double alpha)
     {
@@ -50,91 +49,103 @@ public class Clip implements Cloneable{
         children = Collections.synchronizedList(new ArrayList<Clip>());
         changes = new ConcurrentLinkedQueue<QueuedChange>();
     }
+    /**
+     * Add a clip with no content
+     * @param top
+     * @param left
+     * @param width
+     * @param height
+     * @param alpha
+     * @return
+     */
+    public Clip addClip(int top, int left, int width, int height, double alpha){
+        Clip newClip = new Clip(null, top, left, width, height, alpha);
+        children.add(newClip);
+        return newClip;
+    }
+    /**
+     * Add a clip with Content
+     * @param content
+     * @param top
+     * @param left
+     * @param width
+     * @param height
+     * @param alpha
+     * @return
+     */
     public Clip addClip(Content content, int top, int left, int width, int height, double alpha){
         Clip newClip = new Clip(content, top, left, width, height, alpha);
         children.add(newClip);
         return newClip;
     }
-    public Clip addClip(Clip clip, int top, int left, int width, int height, double alpha){
-        clip.currentState = new State(top, left, width, height, alpha);
-        children.add(clip);
-        return clip;
-    }
+    /**
+     * Add a clip with content, but don't show it until a specified delay has occurred
+     * @param content
+     * @param top
+     * @param left
+     * @param width
+     * @param height
+     * @param alpha
+     * @param delay
+     * @return
+     */
     public Clip addClip(Content content, int top, int left, int width, int height, double alpha, int delay){
         Clip newClip = new Clip(content, top, left, width, height, 0);
         newClip.queueChange(new DelayedInstantChange().alphaTo(alpha), delay);
         children.add(newClip);
         return newClip;
     }
-    protected void processChanges(){
 
-        // process changes in children first.
-        synchronized(children){
-            Iterator<Clip> clips = children.iterator();
-            while (clips.hasNext()){
-                Clip child = clips.next();
-                // any deletions?
-                if (child.isRemoved){
-                    clips.remove();
-                }
-                else{
-                    child.processChanges();
-                }
-            }
+    protected BufferedImage getImage(BufferedImage parentStage, double wScale, double hScale)
+    {
+        Iterator<Clip> clips = children.iterator(); // pare deleted clips
+        while (clips.hasNext()){
+            Clip child = clips.next();
+            if (child.isRemoved)
+                clips.remove();
         }
 
         if (currentChange != null){
             long now = System.currentTimeMillis();
+            if (now > currentChange.startTime && 
+                currentChange.type == QueuedChange.CHANGE){ // run changes
 
-            if (currentChange.started && now > currentChange.endTime)
-            {
+                double percentComplete = 0.0;
+                if (currentChange.endTime != currentChange.startTime){ // avoid div / 0
+                    percentComplete = (now - currentChange.startTime) / 
+                            (double)(currentChange.endTime - currentChange.startTime);
+                    // occurs when "now" overshoots
+                    if (percentComplete > 1.0){
+                            percentComplete = 1.0;
+                    }
+                }else{
+                    percentComplete = 1.0;
+                }
+                currentState = currentChange.change.nextState(initialState, percentComplete);
+            }
+            if (now > currentChange.endTime){ // clean up completions
                 switch(currentChange.type){
                 case(QueuedChange.DELETE):
-                    this.remove();
+                    this.kill();
                     break;
                 case(QueuedChange.DELETE_CHILDREN):
-                    this.removeChildren();
-                    break;
-                case(QueuedChange.CHANGE):
-                    // move it to final state.
-                    currentState = currentChange.change.getTargetState(initialState);
+                    this.killChildren();
                     break;
                 }
                 currentChange = null;
-            }else if (now > currentChange.startTime)
-            {
-                currentChange.started = true;
-                if(currentChange.type == QueuedChange.CHANGE){
-                    double percentComplete = 0.0;
-                    // divide by zero possibility here.
-                    if (currentChange.endTime != currentChange.startTime){
-                        percentComplete = (now - currentChange.startTime) / (double)(currentChange.endTime - currentChange.startTime);
-                        // occurs when "now" overshoots
-                        if (percentComplete > 1.0){
-                                percentComplete = 1.0;
-                        }
-                    }else{
-                        percentComplete = 1.0;
-                    }
-                    currentState = currentChange.change.nextState(initialState, percentComplete);
-                }
-            }
-        }else{
-            if (!changes.isEmpty())
-            {
-                // get the next change from the queue
-                initialState = currentState;
-                currentChange = changes.remove();
-                currentChange.startTime = System.currentTimeMillis() + currentChange.delay;
-                currentChange.endTime = currentChange.startTime + currentChange.duration;
             }
         }
-        
-    }
-    // generates this Clip: current problem scaling isn't working because
-    // children don't know how to scale x,y.
-    protected BufferedImage getImage(BufferedImage stage, double wScale, double hScale)
-    {
+        // queue up next change
+        if (currentChange == null && !changes.isEmpty()){
+            // get the next change from the queue
+            initialState = currentState;
+            currentChange = changes.remove();
+            currentChange.startTime = System.currentTimeMillis() + currentChange.delay;
+            currentChange.endTime = currentChange.startTime + currentChange.duration;
+        }
+
+        // ****** render
+        // scale ourselves
         double myWScale = (this.currentState.geometry.width / (double)this.initialState.geometry.width) * wScale;
         double myHScale = (this.currentState.geometry.height / (double)this.initialState.geometry.height) * hScale;
 
@@ -143,34 +154,34 @@ public class Clip implements Cloneable{
         int left = (int)(currentState.geometry.x * wScale);
         int top = (int)(currentState.geometry.y * hScale);
 
+        // subsection of the parent that we occupy
         BufferedImage substage = new BufferedImage(width,
                                                    height,
                                                    BufferedImage.TYPE_INT_ARGB);
-        if (content != null)
-        {
+
+        // our content ALWAYS has a lower z-index than our children
+        if (content != null){
             content.renderContent(substage);
         }
-        Graphics g = substage.getGraphics();
 
-        synchronized(children){
-            for (Clip child : children)
-            {
-                BufferedImage childImage = child.getImage(substage, myWScale, myHScale);
-                g.drawImage(childImage, 0, 0, null);
-            }
+        // draw each of the children on our section of the stage
+        Graphics2D g = substage.createGraphics();
+
+        for (Clip child : children){
+            BufferedImage childImage = child.getImage(substage, myWScale, myHScale);
+            g.drawImage(childImage, 0, 0, null);
         }
         g.dispose();
 
-        BufferedImage complete = Clip.createScaledAlpha(substage, 
-                                          width, 
-                                          height, 
-                                          (float)currentState.alpha);
-
-        Graphics g2 = stage.getGraphics();
-        g2.drawImage(complete, left, top, width, height, null);
+        // composite ourself onto our parent with the proper alpha
+        Graphics2D g2 = parentStage.createGraphics();
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)currentState.alpha));
+        g2.drawImage(substage, left, top, width, height, null);
         g2.dispose();
-        return stage;
+
+        return parentStage;
     }
+
     public Clip queueChange(Change change, int duration)
     {
         if (duration < 0)
@@ -226,19 +237,19 @@ public class Clip implements Cloneable{
         changes.add(fade);
         return this;
     }
-    private void remove()
+    private void kill()
     {
         isRemoved = true;
         for (Clip child : children)
         {
-            child.remove();
+            child.kill();
         }
     }
-    private void removeChildren()
+    private void killChildren()
     {
         for (Clip child : children)
         {
-            child.remove();
+            child.kill();
         }
     }
     public void delete()
@@ -253,32 +264,12 @@ public class Clip implements Cloneable{
         delete.type = QueuedChange.DELETE_CHILDREN; 
         changes.add(delete);
     }
-    private static BufferedImage createScaledAlpha(Image image, int width, int height, float transperancy) {
-        // buffer for the original (scaled)
-        if (width < 1) width = 1;
-        if (height < 1) height = 1;
-
-        BufferedImage img = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);
-        Graphics g = img.getGraphics();
-        g.drawImage(image, 0, 0, width, height, null);
-        g.dispose();
-
-        // for the alpha version
-        BufferedImage aimg = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);
-        Graphics2D g2d = aimg.createGraphics();
-        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transperancy));
-        g2d.drawImage(img, null, 0, 0);
-        g2d.dispose();
-
-        // Return the image
-        return aimg;
-    }
-    public Object clone() {
-        try
+    public int countChildren(){
+        int total = 1;
+        for (Clip child : children)
         {
-        return super.clone();
+            total += child.countChildren();
         }
-        catch(Exception e){ return null; }
-     }
-
+        return total;
+    }
 }
