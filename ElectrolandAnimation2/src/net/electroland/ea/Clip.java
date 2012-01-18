@@ -1,6 +1,7 @@
 package net.electroland.ea;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.electroland.ea.changes.DelayedInstantChange;
 import net.electroland.ea.changes.LinearChange;
+import net.electroland.ea.content.SolidColorContent;
 
 /**
  * This is where all the real magic happens.  A Clip is like an HTML Div.  It's
@@ -96,7 +98,7 @@ public class Clip {
         return newClip;
     }
 
-    protected BufferedImage getImage(BufferedImage parentStage, double wScale, double hScale)
+    protected BufferedImage getImage(BufferedImage parentStage, Clip parent, double wScale, double hScale)
     {
         synchronized (children){
             Iterator<Clip> clips = children.iterator(); // pare deleted clips
@@ -163,7 +165,15 @@ public class Clip {
 
         // our content ALWAYS has a lower z-index than our children
         if (content != null){
+            if (debug != -1){
+                content = new SolidColorContent(new Color(0,0,(int)(255* currentState.alpha)));
+            }
             content.renderContent(substage);
+        }
+        if (content instanceof SolidColorContent && ((SolidColorContent)content).getColor() != null && parent != null)
+        {
+            int a = (int)(255* parent.currentState.alpha);
+            content = new SolidColorContent(new Color(a,a,a,a));
         }
 
         // draw each of the children on our section of the stage
@@ -171,7 +181,7 @@ public class Clip {
 
         synchronized (children){
             for (Clip child : children){
-                BufferedImage childImage = child.getImage(substage, myWScale, myHScale);
+                BufferedImage childImage = child.getImage(substage, this, myWScale, myHScale);
                 g.drawImage(childImage, 0, 0, null);
             }
         }
@@ -179,7 +189,8 @@ public class Clip {
 
         // composite ourself onto our parent with the proper alpha
         Graphics2D g2 = parentStage.createGraphics();
-        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)currentState.alpha));
+        if ((int)currentState.alpha != 1)
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)currentState.alpha));
         g2.drawImage(substage, left, top, width, height, null);
         g2.dispose();
 

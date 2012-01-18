@@ -122,7 +122,7 @@ public class AnimationManager {
                 stageDimensions.height,
                 BufferedImage.TYPE_INT_ARGB);
 
-        return stage.getImage(b, 1.0, 1.0);
+        return stage.getImage(b, null, 1.0, 1.0);
     }
     public static int[] toPixels(BufferedImage stage, int width, int height)
     {
