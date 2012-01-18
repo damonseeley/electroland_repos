@@ -9,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -38,7 +37,6 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
 
 	private int fadeDuration = 2000;
 	private int inactivityThreshold = 1000 * 10;
-	
 	private ElectrolandProperties props;
 	private ELUManager elu;
 	private boolean updateLighting = true;
@@ -206,7 +204,7 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
 	    soundController.fadeAll(500);
 	    sequencer.play(sequencer.quietShowId);
 	    clipPlayer.live.fadeOut(500).deleteChildren();
-	    clipPlayer.quiet.fadeIn(500);
+	    clipPlayer.quiet.fadeIn(0);
 	}
 
 	public void goLive(){
@@ -214,7 +212,7 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
         soundController.fadeAll(500);
         sequencer.play(sequencer.liveShowId);
         clipPlayer.quiet.fadeOut(500).deleteChildren();
-        clipPlayer.live.fadeIn(500);
+        clipPlayer.live.fadeIn(0);
 	}
 
 	/************************* Model Handlers ******************************/
