@@ -23,6 +23,7 @@ public class SimpleSequencer implements Runnable, ModelListener{
     private Thread thread;
     private Show current;
     private int clipDelay = 0;
+    public String liveShowId, quietShowId;
 
     public static void main(String args[])
     {
@@ -36,6 +37,9 @@ public class SimpleSequencer implements Runnable, ModelListener{
         this.context = context;
 
         ElectrolandProperties ep = new ElectrolandProperties(propsName);
+
+        liveShowId = ep.getRequired("global", "settings", "live");
+        quietShowId = ep.getRequired("global", "settings", "quiet");
 
         Integer clipDelay = ep.getOptionalInt("global", "settings", "clip_delay");
         if (clipDelay != null)
