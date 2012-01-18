@@ -10,15 +10,14 @@ import net.electroland.utils.ParameterMap;
 
 public class SolidColorContent extends Content {
 
+    private Color color;
+
     public Color getColor() {
         return color;
     }
     public void setColor(Color color) {
         this.color = color;
     }
-
-    private Color color;
-
     public SolidColorContent(Color c){
         this.color = c;
     }
@@ -31,17 +30,22 @@ public class SolidColorContent extends Content {
             g.dispose();
         }
     }
-
     @Override
     public void config(ParameterMap primaryParams,
             Map<String, ParameterMap> extendedParams) {
-        // not required, but might be cool to parse differen color
-        // specifications like $hex=#ffffff or $red=255, $blue=255, $green=255
-    }
+        if (primaryParams.getOptionalInt("red") != null &&
+            primaryParams.getOptionalInt("green") != null && 
+            primaryParams.getOptionalInt("blue") != null)
+        {
+            int r = primaryParams.getRequiredInt("red");
+            int g = primaryParams.getRequiredInt("green");
+            int b = primaryParams.getRequiredInt("blue");
 
+            color = new Color(r,g,b);
+        }
+    }
     @Override
     public void init(Map<String, Object> context) {
         // not required
     }
-
 }
