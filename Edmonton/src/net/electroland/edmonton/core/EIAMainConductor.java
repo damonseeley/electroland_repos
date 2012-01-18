@@ -203,6 +203,7 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
 	public void goQuiet()
 	{
 	    sequencer.stop();
+	    soundController.fadeAll(500);
 	    sequencer.play(sequencer.quietShowId);
 	    clipPlayer.live.fadeOut(500).deleteChildren();
 	    clipPlayer.quiet.fadeIn(500);
@@ -210,6 +211,7 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
 
 	public void goLive(){
         sequencer.stop();
+        soundController.fadeAll(500);
         sequencer.play(sequencer.liveShowId);
         clipPlayer.quiet.fadeOut(500).deleteChildren();
         clipPlayer.live.fadeIn(500);
