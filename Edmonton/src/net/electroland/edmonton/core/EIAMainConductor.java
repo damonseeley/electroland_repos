@@ -5,7 +5,6 @@ package net.electroland.edmonton.core;
  * @author	Damon Seeley & Bradley Geilfuss
  */
 
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -15,16 +14,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import net.electroland.ea.AnimationManager;
-import net.electroland.ea.ClipEvent;
-import net.electroland.ea.ClipListener;
-import net.electroland.edmonton.clips.StateToBrightnessImageClip;
 import net.electroland.edmonton.core.model.LastTrippedModelWatcher;
 import net.electroland.edmonton.core.model.ScreenSaverModelWatcher;
 import net.electroland.edmonton.core.model.TrackerBasicModelWatcher;
 import net.electroland.edmonton.core.sequencing.SimpleSequencer;
 import net.electroland.edmonton.core.ui.EIAFrame;
 import net.electroland.eio.IOManager;
-import net.electroland.eio.IState;
 import net.electroland.eio.model.Model;
 import net.electroland.eio.model.ModelEvent;
 import net.electroland.eio.model.ModelListener;
@@ -37,7 +32,7 @@ import net.electroland.utils.lighting.canvas.ELUCanvas2D;
 
 import org.apache.log4j.Logger;
 
-public class EIAMainConductor extends Thread implements ClipListener, ActionListener, ModelListener {
+public class EIAMainConductor extends Thread implements ActionListener, ModelListener {
 
 	static Logger logger = Logger.getLogger(EIAMainConductor.class);
 
@@ -121,11 +116,8 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 		context.put("canvas",canvas);
 
 		// create an AnimationManager
-		anim = new AnimationManager();
-		anim.setContext(context);
-		anim.config("EIA-anim.properties");
-		// listen for clip events
-		anim.addClipListener(this);
+		anim = new AnimationManager("EIA-anim.properties");
+
 		context.put("anim",anim);
 		context.put("animpropsfile", "EIA-anim.properties");
 
@@ -183,36 +175,6 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 	public void actionPerformed(ActionEvent e) {
 		logger.info(e.getActionCommand());
 
-		if ("bigfill".equals(e.getActionCommand())) {
-			bigFill();
-		}
-		if ("tracer".equals(e.getActionCommand())) {
-			Tracer(Math.random()*635);
-		}
-		if ("entry1".equals(e.getActionCommand())) {
-			entry1Shooter();
-		}
-		if ("exit1".equals(e.getActionCommand())) {
-			exit1Shooter();
-		}
-		if ("egg1".equals(e.getActionCommand())) {
-			eggExpand(200.0);
-		}
-		if ("egg2".equals(e.getActionCommand())) {
-			eggSparkle(409.04);		
-		}
-		if ("egg3".equals(e.getActionCommand())) {
-			eggWave(100.0);
-		}
-		if ("egg4".equals(e.getActionCommand())) {
-			eggExpand(60.0);
-		}
-		if ("entry2".equals(e.getActionCommand())) {
-			entry2Shooter();
-		}
-		if ("exit2".equals(e.getActionCommand())) {
-			exit2Shooter();
-		}
 		if ("startShow1".equals(e.getActionCommand())) {
 			sequencer.play("show1");
 		    //this.goLive();
@@ -242,17 +204,17 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 	{
         logger.info("STOP SEQUENCE");
 	    sequencer.stop();
-	    anim.fadeOutAll(fadeDuration);
-	    //soundController; fade sound out.
+	    sequencer.play("screen_saver");
+	    clipPlayer.live.fadeOut(500).deleteChildren();
+	    clipPlayer.quiet.fadeIn(500);
 	}
 
 	public void goLive(){
         logger.info("START SEQUENCE");
-        Iterator<String> setList = sequencer.getSetList().iterator();
-        if (setList.hasNext())
-        {
-            sequencer.play(setList.next());
-        }
+        sequencer.stop();
+        sequencer.play("live_show");
+        clipPlayer.quiet.fadeOut(500).deleteChildren();
+        clipPlayer.live.fadeIn(500);
 	}
 
 	/************************* Model Handlers ******************************/
@@ -335,7 +297,16 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
                 //this.goLive();
 	        }
 	    }
+	    
+	    
+	    
+	    
+	    
+	    /*
+	     * Old show event stuff
+	     */
 
+	    /*
 		if (evt.watcherName == "stateToBright"){
 
 			//((StateToBrightnessClip) anim.getClip(stateToBrightnessClip)).setBrightValues(evt.optionalPostiveDetails);
@@ -374,6 +345,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 				eggSparkle(is.getLocation().x);
 			}
 		}
+		*/
 
 
 	}
@@ -385,6 +357,8 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 	/************************* Animations ******************************/
 
 
+	/*
+	 * 
 	class timedShowPlayer extends TimerTask {
 		public void run() {
 			bigFill();
@@ -470,6 +444,7 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 
 	}
 
+	*/
 
 
 
@@ -502,16 +477,6 @@ public class EIAMainConductor extends Thread implements ClipListener, ActionList
 			timer.block();
 		}
 
-	}
-
-	@Override
-	public void clipEnded(ClipEvent e) {
-		//logger.info("clip " + e.clipId + " of type " + (Clip)e.clip + " ended.");
-	}
-
-	@Override
-	public void clipStarted(ClipEvent e) {
-		//logger.info("clip " + e.clipId + " of type " + (Clip)e.clip + " started.");
 	}
 
 	public static void killTheads() {

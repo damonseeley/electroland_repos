@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
-import net.electroland.edmonton.clips.BrightPoint;
 import net.electroland.eio.IState;
 import net.electroland.eio.model.ModelWatcher;
 

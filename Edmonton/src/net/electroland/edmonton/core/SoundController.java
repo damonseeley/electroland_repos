@@ -1,11 +1,9 @@
 package net.electroland.edmonton.core;
 
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Map;
 
 import net.electroland.ea.AnimationManager;
-import net.electroland.eio.IState;
 import net.electroland.scSoundControl.SCSoundControl;
 import net.electroland.scSoundControl.SCSoundControlNotifiable;
 import net.electroland.scSoundControl.SoundNode;
@@ -127,7 +125,7 @@ public class SoundController implements SCSoundControlNotifiable {
 		// load anim props
 		ElectrolandProperties p = new ElectrolandProperties(context.get("animpropsfile").toString());
 		// rip clips for $soundfiles
-		Map<String, ParameterMap> clipParams = p.getObjects("clip");
+		Map<String, ParameterMap> clipParams = p.getObjects("content");
 		for (String s : clipParams.keySet()){
 			ParameterMap params = clipParams.get(s);
 
