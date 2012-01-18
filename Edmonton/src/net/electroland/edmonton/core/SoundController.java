@@ -249,7 +249,10 @@ public class SoundController implements SCSoundControlNotifiable {
 
 
 
-
+	public void fadeAll(int duration)
+	{
+	    
+	}
 
 
 
