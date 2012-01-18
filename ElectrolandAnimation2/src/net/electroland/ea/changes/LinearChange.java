@@ -6,6 +6,8 @@ import net.electroland.ea.State;
 public class LinearChange extends Change {
 
     /** 
+     * Linear interpolated change between two states in 2D.
+     * 
      * extreme inefficiency here: this.getTargetState(init) returns something
      * that ought to be cacheable
      */
