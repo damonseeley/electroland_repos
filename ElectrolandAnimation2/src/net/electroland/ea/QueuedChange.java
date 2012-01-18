@@ -17,4 +17,28 @@ public class QueuedChange {
     protected long startTime;
     protected long endTime;
     protected boolean started = false;
+    
+    public String toString()
+    {
+        StringBuffer sb = new StringBuffer();
+        sb.append("type=");
+        switch (type){
+            case(DELETE_CHILDREN):
+                sb.append("DELETE_CHILDREN, ");
+            break;
+            case(DELETE):
+                sb.append("DELETE, ");
+            break;
+            case(DELAY):
+                sb.append("DELAY, ");
+            break;
+            case(CHANGE):
+                sb.append("CHANGE, ");
+            break;
+        }
+        sb.append("duration=").append(duration);
+        sb.append(", delay=").append(delay);
+        sb.append(", change=").append(change);
+        return sb.toString();
+    }
 }
