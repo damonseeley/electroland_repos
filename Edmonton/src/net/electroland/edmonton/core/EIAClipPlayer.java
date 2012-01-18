@@ -48,22 +48,21 @@ public class EIAClipPlayer {
         //create all bars, with each appearing in delayed intervals
         Content simpleClip2 = new SolidColorContent(Color.WHITE);
         Clip trill1 = live.addClip(simpleClip2, (int)x - barWidth * 2 - of, 0, barWidth,     16, 1.0, 0);
-//        Clip trill2 = live.addClip(simpleClip2, (int)x - barWidth - of, 0, barWidth,         16, 1.0, 170);
-//        Clip trill3 = live.addClip(simpleClip2, (int)x - of, 0, barWidth,                     16, 1.0, 375);
-//        Clip trill4 = live.addClip(simpleClip2, (int)x + barWidth - of, 0, barWidth,         16, 1.0, 530);
+        Clip trill2 = live.addClip(simpleClip2, (int)x - barWidth - of, 0, barWidth,         16, 1.0, 170);
+        Clip trill3 = live.addClip(simpleClip2, (int)x - of, 0, barWidth,                     16, 1.0, 375);
+        Clip trill4 = live.addClip(simpleClip2, (int)x + barWidth - of, 0, barWidth,         16, 1.0, 530);
 
         //fade em all out
         Change fadeOut = new LinearChange().alphaTo(0.01);
         trill1.delay(3500).queueChange(fadeOut, 500).delete();
-//        trill2.delay(3500).queueChange(fadeOut, 500).delete();
-//        trill3.delay(3500).queueChange(fadeOut, 500).delete();
-//        trill4.delay(3500).queueChange(fadeOut, 500).delete();
+        trill2.delay(3500).queueChange(fadeOut, 500).delete();
+        trill3.delay(3500).queueChange(fadeOut, 500).delete();
+        trill4.delay(3500).queueChange(fadeOut, 500).delete();
 
     }
 
 
     public void localStabSmall(double x) {
-        /*
         //logger.info("localStabA@ " + x);
         x = findNearestLight(x,true);
         //8 px wide
@@ -74,11 +73,10 @@ public class EIAClipPlayer {
         Clip stab1 = live.addClip(simpleClip2, (int)x-barWidth/2,0,barWidth,16, 1.0);
 
         //fade out
-        stab1.delay(800).fadeOut(5000).delete();*/
+        stab1.delay(800).fadeOut(5000).delete();
     }
 
     public void localStabBig(double x) {
-        /*
         //logger.info("localStabA@ " + x);
         x = findNearestLight(x,true);
         //8 px wide
@@ -89,7 +87,7 @@ public class EIAClipPlayer {
         Clip stab1 = live.addClip(simpleClip2, (int)x-barWidth/2,0,barWidth,16, 1.0);
 
         //fade out
-        stab1.delay(800).fadeOut(5000).delete();*/
+        stab1.delay(800).fadeOut(5000).delete();
     }
 
     /*
@@ -98,13 +96,13 @@ public class EIAClipPlayer {
 
     public void megaSparkleFaint(double x) {
         logger.info("global sparkle faint@ " + x);
-/*
+
         Content sparkleClip320 = anim.getContent("sparkleClip320");
         Clip faintSparkle = anim.addClip(sparkleClip320, 0,0,635,16, 0.0);
 
         //fadein, wait, fadeout
         Change lightFade = new LinearChange().alphaTo(.2);
-        faintSparkle.delay(500).queueChange(lightFade, 4000).delay(12000).fadeOut(2000).delete();*/
+        faintSparkle.delay(500).queueChange(lightFade, 4000).delay(12000).fadeOut(2000).delete();
     }
     
     
