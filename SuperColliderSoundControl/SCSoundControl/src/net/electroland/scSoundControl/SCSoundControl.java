@@ -89,7 +89,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 	private int _maxPolyphony = 64;
 	
 	// timeout values for when SCSC disconnects from SuperCollider
-	private long SCSoundControl_Timeout = 10000;
+	private long SCSoundControl_Timeout;
 	private long SuperColliderDisconnectTime = System.currentTimeMillis();
 	
 	static Logger logger = Logger.getLogger(SCSoundControl.class);
@@ -122,7 +122,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 		//setup synth launcher so that scsynth properties are handled and defaults are setup as needed.
         _scsynthLauncher = new ScsynthLauncher(this, _props);
 		_maxPolyphony = _scsynthLauncher.getMaxPolyphony();
-		SCSoundControl_Timeout = Long.parseLong(_props.getProperty("SCSoundControl_Timeout"));
+		SCSoundControl_Timeout = Long.parseLong(_props.getProperty("SCSoundControl_Timeout","10000")); //default 10seconds
 		//TODO: use maxPolyphony to check before new soundNode creation...
 
 		// find the minimum id of a private audio bus.
