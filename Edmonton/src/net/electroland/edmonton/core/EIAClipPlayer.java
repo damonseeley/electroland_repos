@@ -47,17 +47,21 @@ public class EIAClipPlayer {
 
         //create all bars, with each appearing in delayed intervals
         Content simpleClip2 = new SolidColorContent(Color.WHITE);
-        Clip trill1 = live.addClip(simpleClip2, (int)x - barWidth * 2 - of, 0, barWidth,     16, 1.0, 0);
-        Clip trill2 = live.addClip(simpleClip2, (int)x - barWidth - of, 0, barWidth,         16, 1.0, 170);
-        Clip trill3 = live.addClip(simpleClip2, (int)x - of, 0, barWidth,                     16, 1.0, 375);
-        Clip trill4 = live.addClip(simpleClip2, (int)x + barWidth - of, 0, barWidth,         16, 1.0, 530);
+        // create a parent with NO color background
+        Clip parent = live.addClip(new SolidColorContent(null), (int)x - barWidth * 2 - of, 0, barWidth * 4, 16, 1.0);
+
+        Clip trill1 = parent.addClip(simpleClip2, -of, 0, barWidth, 16, 1.0);
+        Clip trill2 = parent.addClip(simpleClip2, barWidth - of, 0, barWidth,  16, 1.0, 170);
+        Clip trill3 = parent.addClip(simpleClip2, 2 * barWidth - of, 0, barWidth, 16, 1.0, 375);
+        Clip trill4 = parent.addClip(simpleClip2, 3 * barWidth - of, 0, barWidth, 16, 1.0, 530);
+//        Clip trill1 = parent.addClip(simpleClip2, (int)x - barWidth * 2 - of, 0, barWidth,     16, 1.0);
+//        Clip trill2 = parent.addClip(simpleClip2, (int)x - barWidth - of, 0, barWidth,         16, 1.0, 170);
+//        Clip trill3 = parent.addClip(simpleClip2, (int)x - of, 0, barWidth,                     16, 1.0, 375);
+//        Clip trill4 = parent.addClip(simpleClip2, (int)x + barWidth - of, 0, barWidth,         16, 1.0, 530);
 
         //fade em all out
-        Change fadeOut = new LinearChange().alphaTo(0.01);
-        trill1.delay(3500).queueChange(fadeOut, 500).delete();
-        trill2.delay(3500).queueChange(fadeOut, 500).delete();
-        trill3.delay(3500).queueChange(fadeOut, 500).delete();
-        trill4.delay(3500).queueChange(fadeOut, 500).delete();
+        // delete will kill the parent AND the children automatically.
+        parent.delay(3500).fadeOut(1000).delete();
 
     }
 
