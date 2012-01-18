@@ -163,17 +163,19 @@ public class Clip {
                                                    height,
                                                    BufferedImage.TYPE_INT_ARGB);
 
-        // our content ALWAYS has a lower z-index than our children
+        // render out content. our content ALWAYS has a lower z-index than our children
         if (content != null){
             if (debug != -1){
                 content = new SolidColorContent(new Color(0,0,(int)(255* currentState.alpha)));
             }
             content.renderContent(substage);
         }
+        // hack: ajust alpha for nested solids using the color instead of the overlay.
         if (content instanceof SolidColorContent && ((SolidColorContent)content).getColor() != null && parent != null)
         {
             int a = (int)(255* parent.currentState.alpha);
-            content = new SolidColorContent(new Color(a,a,a,a));
+            Color c = ((SolidColorContent)content).getColor();
+            content = new SolidColorContent(new Color(c.getRed(),c.getGreen(),c.getBlue(),a));
         }
 
         // draw each of the children on our section of the stage
