@@ -36,13 +36,14 @@ public class EIAClipPlayer {
     /*
      * EIA Live Show methods
      */
-
+    int debugId = 0;
     public void localTrill4Up(double x) {
 //        logger.info("localTrill4Up@ " + x);
 
         x = findNearestLight(x,true);
         //8 px wide
         int barWidth = 3;
+        int barHeight = 16;
         int of = 1; //offset to hit lights
 
         //create all bars, with each appearing in delayed intervals
@@ -50,10 +51,10 @@ public class EIAClipPlayer {
         // create a parent with NO color background
         Clip parent = live.addClip(new SolidColorContent(null), (int)x - barWidth * 2 - of, 0, barWidth * 4, 16, 1.0);
 
-        Clip trill1 = parent.addClip(simpleClip2, -of, 0, barWidth, 16, 1.0);
-        Clip trill2 = parent.addClip(simpleClip2, barWidth - of, 0, barWidth,  16, 1.0, 170);
-        Clip trill3 = parent.addClip(simpleClip2, 2 * barWidth - of, 0, barWidth, 16, 1.0, 375);
-        Clip trill4 = parent.addClip(simpleClip2, 3 * barWidth - of, 0, barWidth, 16, 1.0, 530);
+        Clip trill1 = parent.addClip(simpleClip2, -of, 0, barWidth, barHeight, 1.0);
+        Clip trill2 = parent.addClip(simpleClip2, barWidth - of, 0, barWidth,  barHeight, 1.0, 170);
+        Clip trill3 = parent.addClip(simpleClip2, 2 * barWidth - of, 0, barWidth, barHeight, 1.0, 375);
+        Clip trill4 = parent.addClip(simpleClip2, 3 * barWidth - of, 0, barWidth, barHeight, 1.0, 530);
 //        Clip trill1 = parent.addClip(simpleClip2, (int)x - barWidth * 2 - of, 0, barWidth,     16, 1.0);
 //        Clip trill2 = parent.addClip(simpleClip2, (int)x - barWidth - of, 0, barWidth,         16, 1.0, 170);
 //        Clip trill3 = parent.addClip(simpleClip2, (int)x - of, 0, barWidth,                     16, 1.0, 375);
@@ -62,7 +63,7 @@ public class EIAClipPlayer {
         //fade em all out
         // delete will kill the objecthe children automatically.
         parent.delay(3500).fadeOut(1000).delete();
-
+        //parent.debug = debugId++;
     }
 
 
