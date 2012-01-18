@@ -98,11 +98,13 @@ public class Clip {
 
     protected BufferedImage getImage(BufferedImage parentStage, double wScale, double hScale)
     {
-        Iterator<Clip> clips = children.iterator(); // pare deleted clips
-        while (clips.hasNext()){
-            Clip child = clips.next();
-            if (child.isRemoved)
-                clips.remove();
+        synchronized (children){
+            Iterator<Clip> clips = children.iterator(); // pare deleted clips
+            while (clips.hasNext()){
+                Clip child = clips.next();
+                if (child.isRemoved)
+                    clips.remove();
+            }
         }
 
         if (currentChange != null){
@@ -167,9 +169,11 @@ public class Clip {
         // draw each of the children on our section of the stage
         Graphics2D g = substage.createGraphics();
 
-        for (Clip child : children){
-            BufferedImage childImage = child.getImage(substage, myWScale, myHScale);
-            g.drawImage(childImage, 0, 0, null);
+        synchronized (children){
+            for (Clip child : children){
+                BufferedImage childImage = child.getImage(substage, myWScale, myHScale);
+                g.drawImage(childImage, 0, 0, null);
+            }
         }
         g.dispose();
 
