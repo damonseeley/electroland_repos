@@ -3,6 +3,7 @@ package net.electroland.eio.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 
 import net.electroland.eio.IState;
 
@@ -10,7 +11,7 @@ import net.electroland.eio.IState;
 public class Model {
 
     Collection<ModelWatcher> watchers = Collections.synchronizedList(new ArrayList<ModelWatcher>());
-    Collection<ModelListener> listeners = new ArrayList<ModelListener>();
+    Collection<ModelListener> listeners = new HashSet<ModelListener>();
 
     public final void addModelWatcher(ModelWatcher watcher, String name, Collection<IState> states)
     {
