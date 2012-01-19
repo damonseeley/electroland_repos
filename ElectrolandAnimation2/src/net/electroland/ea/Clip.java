@@ -4,11 +4,11 @@ import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.electroland.ea.changes.DelayedInstantChange;
@@ -35,7 +35,7 @@ public class Clip {
     private static final Change FADE_OUT = new LinearChange().alphaTo(0.0);
 
     private boolean isRemoved = false;
-    private List<Clip>children;
+    private Set<Clip> children;
     private State initialState; // state when instantiated
     private State currentState; // current state
     private Queue<QueuedChange>changes; // queued changes
@@ -45,10 +45,10 @@ public class Clip {
 
     public Clip(Content content, int top, int left, int width, int height, double alpha)
     {
+        this.children = Collections.synchronizedSet(new HashSet<Clip>());
         this.content = content;
         this.initialState = new State(top, left, width, height, alpha);
         this.currentState = new State(top, left, width, height, alpha);
-        children = Collections.synchronizedList(new ArrayList<Clip>());
         changes = new ConcurrentLinkedQueue<QueuedChange>();
     }
     /**
@@ -100,7 +100,7 @@ public class Clip {
 
     protected BufferedImage getImage(BufferedImage parentStage, Clip parent, double wScale, double hScale)
     {
-        synchronized (children){
+        synchronized(children){
             Iterator<Clip> clips = children.iterator(); // pare deleted clips
             while (clips.hasNext()){
                 Clip child = clips.next();
@@ -161,7 +161,7 @@ public class Clip {
         // subsection of the parent that we occupy
         BufferedImage substage = new BufferedImage(width,
                                                    height,
-                                                   BufferedImage.TYPE_INT_ARGB);
+                                                   BufferedImage.TRANSLUCENT);
 
         // render out content. our content ALWAYS has a lower z-index than our children
         if (content != null){
@@ -170,7 +170,7 @@ public class Clip {
             }
             content.renderContent(substage);
         }
-        // hack: ajust alpha for nested solids using the color instead of the overlay.
+        // hack: adjust alpha for nested solids using the color instead of the overlay.
         if (content instanceof SolidColorContent && ((SolidColorContent)content).getColor() != null && parent != null)
         {
             int a = (int)(255* parent.currentState.alpha);
@@ -181,7 +181,7 @@ public class Clip {
         // draw each of the children on our section of the stage
         Graphics2D g = substage.createGraphics();
 
-        synchronized (children){
+        synchronized(children){
             for (Clip child : children){
                 BufferedImage childImage = child.getImage(substage, this, myWScale, myHScale);
                 g.drawImage(childImage, 0, 0, null);
@@ -272,13 +272,13 @@ public class Clip {
     public void delete()
     {
         QueuedChange delete = new QueuedChange();
-        delete.type = QueuedChange.DELETE; 
+        delete.type = QueuedChange.DELETE;
         changes.add(delete);
     }
     public void deleteChildren()
     {
         QueuedChange delete = new QueuedChange();
-        delete.type = QueuedChange.DELETE_CHILDREN; 
+        delete.type = QueuedChange.DELETE_CHILDREN;
         changes.add(delete);
     }
     public int countChildren(){
@@ -289,4 +289,7 @@ public class Clip {
         }
         return total;
     }
+//    public ClipSet getChildren(){
+//        return children;
+//    }
 }

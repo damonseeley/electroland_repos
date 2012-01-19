@@ -109,18 +109,11 @@ public class AnimationManager {
             return (Content)((Content)proto).clone();
         }
     }
-    int lastCount = 0;
     public BufferedImage getStage()
     {
-//        stage.processChanges();
-        int count = stage.countChildren() - 1;
-        if (count != lastCount){
-            logger.debug("total objects animated: " + count);
-        }
-        lastCount = count;
         BufferedImage b = new BufferedImage(stageDimensions.width,
-                stageDimensions.height,
-                BufferedImage.TYPE_INT_ARGB);
+                                            stageDimensions.height,
+                                            BufferedImage.TRANSLUCENT);
 
         return stage.getImage(b, null, 1.0, 1.0);
     }
