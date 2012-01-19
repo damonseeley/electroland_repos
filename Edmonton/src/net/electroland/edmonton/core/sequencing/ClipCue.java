@@ -77,9 +77,9 @@ public class ClipCue extends Cue {
                 
                 if (context != null && context.get("tracker") instanceof TrackerBasicModelWatcher)
                 {
-                    synchronized (context){
-                        Collection<Track> c = ((TrackerBasicModelWatcher)
-                                context.get("tracker")).getAllTracks();
+                    Collection<Track> c = ((TrackerBasicModelWatcher)
+                            context.get("tracker")).getAllTracks();
+                    synchronized (c){
                         for (Track track : c)
                         {
                             playClipAt(cp, x + track.x);
