@@ -45,6 +45,7 @@ public class AnimationTestFrame extends JFrame{
         // red box clip
         SolidColorContent c = new SolidColorContent(Color.RED);
         Clip red = anim.addClip(c, 0, 0, w, h, 0);
+        red.zIndex = -100;
         red.fadeIn(500).fadeOut(500);
 
         Change change0 = new DelayedInstantChange().alphaTo(1.0).xTo(w);
