@@ -33,116 +33,125 @@ import org.apache.log4j.Logger;
 
 public class EIAMainConductor extends Thread implements ActionListener, ModelListener {
 
-	static Logger logger = Logger.getLogger(EIAMainConductor.class);
+    static Logger logger = Logger.getLogger(EIAMainConductor.class);
 
-	private int fadeDuration = 2000;
-	private int inactivityThreshold = 1000 * 10;
-	private ElectrolandProperties props;
-	private ELUManager elu;
-	private boolean updateLighting = true;
-	private boolean track;
-	private ELUCanvas2D canvas;
-	private IOManager eio;
+    private int fadeDuration = 2000;
+    private int inactivityThreshold = 1000 * 10;
+    private ElectrolandProperties props;
+    private ELUManager elu;
+    private boolean updateLighting = true;
+    private boolean track;
+    private boolean screensaver = true;
+    private ELUCanvas2D canvas;
+    private IOManager eio;
 
-	private SoundController soundController;
-	private AnimationManager anim;
-	private SimpleSequencer sequencer;
-	private EIAClipPlayer clipPlayer;
+    private SoundController soundController;
+    private AnimationManager anim;
+    private SimpleSequencer sequencer;
+    private EIAClipPlayer clipPlayer;
 
-	public int canvasHeight, canvasWidth;
-	public Hashtable<String, Object> context;
+    public int canvasHeight, canvasWidth;
+    public Hashtable<String, Object> context;
 
-	private Timer startupTestTimer, timedShows;
+    private Timer startupTestTimer, timedShows;
 
-	public EIAFrame ef;
+    public EIAFrame ef;
 
-	private Model model;
-	private ModelWatcher stateToBright,entry1,exit1,entry2,exit2,egg1,egg2,egg3,egg4;
-	private TrackerBasicModelWatcher tracker;
-	private LastTrippedModelWatcher tripRecord;
-	private ScreenSaverModelWatcher screenSaver;
+    private Model model;
+    private ModelWatcher stateToBright,entry1,exit1,entry2,exit2,egg1,egg2,egg3,egg4;
+    private TrackerBasicModelWatcher tracker;
+    private LastTrippedModelWatcher tripRecord;
+    private ScreenSaverModelWatcher screenSaver;
 
-	private int stateToBrightnessClip;
+    private int stateToBrightnessClip;
 
-	//Thread stuff
-	public static boolean isRunning;
-	private static float framerate;
-	private static FrameTimer timer;
-	public static long curTime = System.currentTimeMillis(); //  time of frame start to aviod lots of calls to System.getcurentTime()
-	public static long elapsedTime = -1; //  time between start of cur frame and last frame to avoid re calculating passage of time allover the place
+    //Thread stuff
+    public static boolean isRunning;
+    private static float framerate;
+    private static FrameTimer timer;
+    public static long curTime = System.currentTimeMillis(); //  time of frame start to aviod lots of calls to System.getcurentTime()
+    public static long elapsedTime = -1; //  time between start of cur frame and last frame to avoid re calculating passage of time allover the place
 
-	public EIAMainConductor()
-	{
-		context = new Hashtable<String, Object>();
+    public EIAMainConductor()
+    {
+        context = new Hashtable<String, Object>();
 
-		String propsFileName = "EIA.properties";
-		logger.info("EIAMain loading " + propsFileName);
-		props = new ElectrolandProperties(propsFileName);
-		context.put("props",props);
-		
-		elu = new ELUManager();
-		eio = new IOManager();
-		try {
-			elu.load("EIA-ELU.properties");
-			//eio.load("EIA-EIO.properties");
-			eio.load("EIA-EIO-playback.properties");
-			eio.start();
-		} catch (OptionException e) {
-			e.printStackTrace();
-			System.exit(0);
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(0);
-		}
-		context.put("eio",eio);
-		context.put("elu",elu);
+        String propsFileName = "EIA.properties";
+        logger.info("EIAMain loading " + propsFileName);
+        props = new ElectrolandProperties(propsFileName);
+        context.put("props",props);
 
-		updateLighting = Boolean.parseBoolean(props.getOptional("settings", "global", "updateLighting"));
-		try {
-			track = Boolean.parseBoolean(props.getOptional("settings", "tracking", "track"));
-		} catch (OptionException e) {
-			// TODO Auto-generated catch block
-			track = false;
-			e.printStackTrace();
-		}
+        elu = new ELUManager();
+        eio = new IOManager();
+        try {
+            elu.load("EIA-ELU.properties");
+            //eio.load("EIA-EIO.properties");
+            eio.load("EIA-EIO-playback.properties");
+            eio.start();
+        } catch (OptionException e) {
+            e.printStackTrace();
+            System.exit(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(0);
+        }
+        context.put("eio",eio);
+        context.put("elu",elu);
+
+        updateLighting = Boolean.parseBoolean(props.getOptional("settings", "global", "updateLighting"));
+        try {
+            track = Boolean.parseBoolean(props.getOptional("settings", "tracking", "track"));
+        } catch (OptionException e) {
+            // TODO Auto-generated catch block
+            track = false;
+            e.printStackTrace();
+        }
+        try {
+            screensaver = Boolean.parseBoolean(props.getOptional("settings", "sequencing", "screensaver"));
+        } catch (OptionException e) {
+            // TODO Auto-generated catch block
+            screensaver = true;
+            e.printStackTrace();
+        }
 
 
-		canvas = (ELUCanvas2D)elu.getCanvas("EIAspan");
-		canvasHeight = (int)canvas.getDimensions().getHeight();
-		canvasWidth = (int)canvas.getDimensions().getWidth();
-		context.put("canvas",canvas);
 
-		// create an AnimationManager
-		anim = new AnimationManager("EIA-anim.properties");
+        canvas = (ELUCanvas2D)elu.getCanvas("EIAspan");
+        canvasHeight = (int)canvas.getDimensions().getHeight();
+        canvasWidth = (int)canvas.getDimensions().getWidth();
+        context.put("canvas",canvas);
 
-		context.put("anim",anim);
-		context.put("animpropsfile", "EIA-anim.properties");
+        // create an AnimationManager
+        anim = new AnimationManager("EIA-anim.properties");
 
-		soundController = new SoundController(context);
-		context.put("soundController", soundController);
+        context.put("anim",anim);
+        context.put("animpropsfile", "EIA-anim.properties");
 
-		String seqpropsfile = "EIA-seq-LITE.properties";
+        soundController = new SoundController(context);
+        context.put("soundController", soundController);
+
+        String seqpropsfile = "EIA-seq-LITE.properties";
         sequencer = new SimpleSequencer(seqpropsfile, context);
         context.put("sequencer", sequencer);
         context.put("seqpropsfile", seqpropsfile);
 
-		clipPlayer = new EIAClipPlayer(anim,elu);
-		context.put("clipPlayer", clipPlayer);
-		
-		
-		/******** Model, Watchers & Timers ********/
-		model = new Model();
-		model.addModelListener(this);
+        clipPlayer = new EIAClipPlayer(anim,elu);
+        context.put("clipPlayer", clipPlayer);
+
+
+        /******** Model, Watchers & Timers ********/
+        model = new Model();
+        model.addModelListener(this);
         model.addModelListener(sequencer);
 
         createModelWatchers();
 
-		startupTestTimer = new Timer();
-		startupTestTimer.schedule(new startupTests(), 3000);
+        startupTestTimer = new Timer();
+        startupTestTimer.schedule(new startupTests(), 3000);
 
-		// disabled for now
-		//timedShows = new Timer();
-		//timedShows.schedule(new timedShowPlayer(),60000);
+        // disabled for now
+        //timedShows = new Timer();
+        //timedShows.schedule(new timedShowPlayer(),60000);
 
         tripRecord = new LastTrippedModelWatcher();
         model.addModelWatcher(tripRecord, "tripRecord", eio.getIStates());
@@ -151,89 +160,94 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
         screenSaver = new ScreenSaverModelWatcher();
         screenSaver.setTimeOut(this.inactivityThreshold);
         model.addModelWatcher(screenSaver,  "screenSaver", eio.getIStates());
-		
-		/******** GUI ********/
-		ef = new EIAFrame(Integer.parseInt(props.getRequired("settings", "global", "guiwidth")),Integer.parseInt(props.getRequired("settings", "global", "guiheight")),context);
-		ef.addButtonListener(this);
+
+        /******** GUI ********/
+        ef = new EIAFrame(Integer.parseInt(props.getRequired("settings", "global", "guiwidth")),Integer.parseInt(props.getRequired("settings", "global", "guiheight")),context);
+        ef.addButtonListener(this);
 
 
-		/******** Thread Setup ********/
-		framerate = props.getRequiredInt("settings", "global", "framerate");
-		isRunning = true;
-		timer = new FrameTimer(framerate);
-		start();
-		logger.info("EIA started up at framerate = " + framerate);
-	}
+        /******** Thread Setup ********/
+        framerate = props.getRequiredInt("settings", "global", "framerate");
+        isRunning = true;
+        timer = new FrameTimer(framerate);
+        start();
+        logger.info("EIA started up at framerate = " + framerate);
+    }
 
 
-	/************************* Test Event Handlers ******************************/
-    
-	// handle the actions from test buttons
-	public void actionPerformed(ActionEvent e) {
-		logger.info(e.getActionCommand());
+    /************************* Test Event Handlers ******************************/
 
-		if ("startShow1".equals(e.getActionCommand())) {
-		    this.goLive();
-			sequencer.play("show1");
-		    //this.goLive();
-		}
-		if ("startShow2".equals(e.getActionCommand())) {
-			sequencer.play("show2");
-		    //this.goLive();
-		}
-		if ("stopSeq".equals(e.getActionCommand())) {
-		    this.goQuiet();
-		}
+    // handle the actions from test buttons
+    public void actionPerformed(ActionEvent e) {
+        logger.info(e.getActionCommand());
 
-	}
+        if ("startShow1".equals(e.getActionCommand())) {
+            this.goLive();
+            sequencer.play("show1");
+            //this.goLive();
+        }
+        if ("startShow2".equals(e.getActionCommand())) {
+            sequencer.play("show2");
+            //this.goLive();
+        }
+        if ("stopSeq".equals(e.getActionCommand())) {
+            this.goQuiet();
+        }
 
-	class startupTests extends TimerTask {
-		public void run() {
-			//startupTestTimer
-			// TEST SOUND
-			//soundController.playTestSound("test_1.wav");
-			//soundController.playSingleChannel("test_1.wav", 600.0, 1.0f); // plays a sound out of the speaker nearest to the x value provide
-			//startupTestTimer.schedule(new startupTests(), 10000);
-			//int faintSparkle = anim.startClip("sparkleClip320", new Rectangle(0,0,635,16), 0.3); // huge sparkly thing over full area
-		}
-	}
+    }
 
-	public void goQuiet()
-	{
-	    sequencer.stop();
-	    soundController.fadeAll(500);
-	    sequencer.play(sequencer.quietShowId);
-	    clipPlayer.live.fadeOut(500).deleteChildren();
-	    clipPlayer.quiet.fadeIn(0);
-	}
+    class startupTests extends TimerTask {
+        public void run() {
+            //startupTestTimer
+            // TEST SOUND
+            //soundController.playTestSound("test_1.wav");
+            //soundController.playSingleChannel("test_1.wav", 600.0, 1.0f); // plays a sound out of the speaker nearest to the x value provide
+            //startupTestTimer.schedule(new startupTests(), 10000);
+            //int faintSparkle = anim.startClip("sparkleClip320", new Rectangle(0,0,635,16), 0.3); // huge sparkly thing over full area
+        }
+    }
 
-	public void goLive(){
-        sequencer.stop();
-        soundController.fadeAll(500);
-        sequencer.play(sequencer.liveShowId);
-        clipPlayer.quiet.fadeOut(500).deleteChildren();
-        clipPlayer.live.fadeIn(0);
-	}
+    public void goQuiet()
+    {
+        if (screensaver){
+            sequencer.stop();
+            soundController.fadeAll(500);
+            sequencer.play(sequencer.quietShowId);
+            clipPlayer.live.fadeOut(500).deleteChildren();
+            clipPlayer.quiet.fadeIn(0);
+        }
+    }
 
-	/************************* Model Handlers ******************************/
+    public void goLive(){
+        if (screensaver){
+            sequencer.stop();
+            soundController.fadeAll(500);
+            sequencer.play(sequencer.liveShowId);
+            clipPlayer.quiet.fadeOut(500).deleteChildren();
+            clipPlayer.live.fadeIn(0);
+        }
 
-	private void createModelWatchers(){
+    }
 
-		if (track) {
-			tracker = new TrackerBasicModelWatcher(context); //starting with vals of 64 which is what was used in TestConductor (single value)
-			model.addModelWatcher(tracker, "tracker", eio.getIStates());
-			context.put("tracker", tracker);
-		}
-		
-		
-		
-		
+    /************************* Model Handlers ******************************/
 
-		/**
-		 * disable these events for now to make debugging on future shows easier
-		 */
-				
-		/*
+    private void createModelWatchers(){
+
+        if (track) {
+            tracker = new TrackerBasicModelWatcher(context); //starting with vals of 64 which is what was used in TestConductor (single value)
+            model.addModelWatcher(tracker, "tracker", eio.getIStates());
+            context.put("tracker", tracker);
+        }
+
+
+
+
+
+        /**
+         * disable these events for now to make debugging on future shows easier
+         */
+
+        /*
 		int stateToBrightnessClip = anim.startClip("stateToBrightnessImage", new Rectangle(0,0,canvasWidth,canvasHeight), 1.0);
 		int maxBright = 192; //max brightness for pathtracer
 		stateToBright = new StateToBrightnessModelWatcher(16,2,maxBright); //starting with vals of 64 which is what was used in TestConductor (single value)
@@ -280,34 +294,34 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
 		ArrayList<IState> egg4states = new ArrayList<IState>();
 		egg4states.add(eio.getIStateById("i60"));
 		model.addModelWatcher(egg4, "egg4", egg4states);
-		*/
-	}
+         */
+    }
 
 
-	@Override
-	public void modelChanged(ModelEvent evt) {
+    @Override
+    public void modelChanged(ModelEvent evt) {
 
-	    if (evt.watcherName == "screenSaver"){
-	        logger.info("got screen saver event at " + System.currentTimeMillis());
-	        if (((ScreenSaverModelWatcher)evt.getSource()).isQuiet())
-	        {
-	            logger.info("go quiet");
-	            this.goQuiet();
-	        }else{
-	            logger.info("go live");
+        if (evt.watcherName == "screenSaver"){
+            logger.info("got screen saver event at " + System.currentTimeMillis());
+            if (((ScreenSaverModelWatcher)evt.getSource()).isQuiet())
+            {
+                logger.info("go quiet");
+                this.goQuiet();
+            }else{
+                logger.info("go live");
                 this.goLive();
-	        }
-	    }
-	    
-	    
-	    
-	    
-	    
-	    /*
-	     * Old show event stuff
-	     */
+            }
+        }
 
-	    /*
+
+
+
+
+        /*
+         * Old show event stuff
+         */
+
+        /*
 		if (evt.watcherName == "stateToBright"){
 
 			//((StateToBrightnessClip) anim.getClip(stateToBrightnessClip)).setBrightValues(evt.optionalPostiveDetails);
@@ -346,20 +360,20 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
 				eggSparkle(is.getLocation().x);
 			}
 		}
-		*/
+         */
 
 
-	}
+    }
 
 
 
 
 
-	/************************* Animations ******************************/
+    /************************* Animations ******************************/
 
 
-	/*
-	 * 
+    /*
+     * 
 	class timedShowPlayer extends TimerTask {
 		public void run() {
 			bigFill();
@@ -445,59 +459,59 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
 
 	}
 
-	*/
+     */
 
 
 
 
-	/************************* Main Loop ******************************/
+    /************************* Main Loop ******************************/
 
-	public void run() {
-		timer.start();
-		curTime = System.currentTimeMillis();
+    public void run() {
+        timer.start();
+        curTime = System.currentTimeMillis();
 
-		while (isRunning) {
+        while (isRunning) {
 
-			model.poll();
+            model.poll();
 
-			// ELU
-			if (updateLighting){
-				try {
-					canvas.sync(AnimationManager.toPixels(anim.getStage(), anim.getStageDimensions().width, anim.getStageDimensions().height));
-					elu.syncAllLights();
-				} catch (InvalidPixelGrabException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+            // ELU
+            if (updateLighting){
+                try {
+                    canvas.sync(AnimationManager.toPixels(anim.getStage(), anim.getStageDimensions().width, anim.getStageDimensions().height));
+                    elu.syncAllLights();
+                } catch (InvalidPixelGrabException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
 
-			// Update the GUI Panel
-			ef.update();
+            // Update the GUI Panel
+            ef.update();
 
-			//Thread ops
-			timer.block();
-		}
+            //Thread ops
+            timer.block();
+        }
 
-	}
+    }
 
-	public static void killTheads() {
-		stopRunning();	
-	}
+    public static void killTheads() {
+        stopRunning();	
+    }
 
-	public static void stopRunning() { // it is good to have a way to stop a thread explicitly (besides System.exit(0) ) EGM
-		isRunning = false;
-		timer.stopRunning();
-	}
+    public static void stopRunning() { // it is good to have a way to stop a thread explicitly (besides System.exit(0) ) EGM
+        isRunning = false;
+        timer.stopRunning();
+    }
 
-	public static void restart() {
-		isRunning = true;
-		timer.start();
-	}
+    public static void restart() {
+        isRunning = true;
+        timer.start();
+    }
 
-	public static void main(String args[])
-	{
-		new EIAMainConductor();
-	}
+    public static void main(String args[])
+    {
+        new EIAMainConductor();
+    }
 
 
 
