@@ -12,8 +12,8 @@ public class LinearChange extends Change {
      * that ought to be cacheable
      */
     @Override
-    public State nextState(State init, double percentComplete) {
-        
+    public State nextState(State init, double percentComplete)
+    {
         int x = (int)between(init.geometry.x, this.getTargetState(init).geometry.x, percentComplete);
         int y = (int)between(init.geometry.y, this.getTargetState(init).geometry.y, percentComplete);
         int w = (int)between(init.geometry.width, this.getTargetState(init).geometry.width, percentComplete);

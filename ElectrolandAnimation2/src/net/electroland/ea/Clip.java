@@ -1,7 +1,6 @@
 package net.electroland.ea;
 
 import java.awt.AlphaComposite;
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Collections;
@@ -13,7 +12,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.electroland.ea.changes.DelayedInstantChange;
 import net.electroland.ea.changes.LinearChange;
-import net.electroland.ea.content.SolidColorContent;
 
 /**
  * This is where all the real magic happens.  A Clip is like an HTML Div.  It's
@@ -38,7 +36,6 @@ public class Clip {
     private Queue<QueuedChange>changes; // queued changes
     private QueuedChange currentChange;
     protected Content content;
-    public int debug = -1;
 
     public Clip(Content content, int top, int left, int width, int height, double alpha)
     {
@@ -94,8 +91,7 @@ public class Clip {
         children.add(newClip);
         return newClip;
     }
-
-    protected BufferedImage getImage(BufferedImage parentStage, Clip parent, double wScale, double hScale)
+    protected BufferedImage getImage()
     {
         synchronized(children){
             Iterator<Clip> clips = children.iterator(); // pare deleted clips
@@ -145,62 +141,38 @@ public class Clip {
             currentChange.endTime = currentChange.startTime + currentChange.duration;
         }
 
-        // ****** render
-        // scale ourselves
-        double myWScale = (this.currentState.geometry.width / (double)this.initialState.geometry.width) * wScale;
-        double myHScale = (this.currentState.geometry.height / (double)this.initialState.geometry.height) * hScale;
-
-        int width = (int)(currentState.geometry.width * wScale);
-        int height = (int)(currentState.geometry.height * hScale);
-        int left = (int)(currentState.geometry.x * wScale);
-        int top = (int)(currentState.geometry.y * hScale);
-
         // subsection of the parent that we occupy
-        BufferedImage substage = new BufferedImage(width,
-                                                   height,
-                                                   BufferedImage.TRANSLUCENT);
-
-        // hack for content
-        if (content instanceof SolidColorContent && ((SolidColorContent)content).getColor() != null)
-        {
-            Color current = ((SolidColorContent)content).getColor();
-            int r = current.getRed();
-            int g = current.getGreen();
-            int b = current.getBlue();
-            int a = (int)(255 * currentState.alpha);
-            ((SolidColorContent)content).setColor(new Color(a,a,a));
-        }
+        BufferedImage clipImage = new BufferedImage(currentState.geometry.width,
+                                                    currentState.geometry.height,
+                                                    BufferedImage.TRANSLUCENT);
 
         // render out content. our content ALWAYS has a lower z-index than our children
         if (content != null){
-            if (debug != -1){
-                content = new SolidColorContent(new Color(0,0,(int)(255* currentState.alpha)));
-            }
-            content.renderContent(substage);
+            content.renderContent(clipImage);
         }
 
         // draw each of the children on our section of the stage
-        Graphics2D g = substage.createGraphics();
+        Graphics2D g = clipImage.createGraphics();
 
         synchronized(children){
             for (Clip child : children){
-                // subsection of the parent that we occupy
-                BufferedImage childImage = child.getImage(substage, this, myWScale, myHScale);
-                g.drawImage(childImage, 0, 0, null);
+
+                int childX = child.currentState.geometry.x;
+                int childY = child.currentState.geometry.y;
+                int childW = child.currentState.geometry.width;
+                int childH = child.currentState.geometry.height;
+                double childA = child.currentState.alpha;
+
+                BufferedImage childImage = child.getImage();
+                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)childA));
+
+                g.drawImage(childImage, childX, childY, childW, childH, null);
             }
         }
         g.dispose();
 
-        // composite ourself onto our parent with the proper alpha
-        Graphics2D g2 = parentStage.createGraphics();
-//        if ((int)currentState.alpha != 1)
-//            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)currentState.alpha));
-        g2.drawImage(substage, left, top, width, height, null);
-        g2.dispose();
-
-        return parentStage;
+        return clipImage;
     }
-
     public Clip queueChange(Change change, int duration)
     {
         if (duration < 0)

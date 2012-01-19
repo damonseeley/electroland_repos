@@ -109,13 +109,20 @@ public class AnimationManager {
             return (Content)((Content)proto).clone();
         }
     }
+    int clipCount = 0;
     public BufferedImage getStage()
     {
-        BufferedImage b = new BufferedImage(stageDimensions.width,
-                                            stageDimensions.height,
-                                            BufferedImage.TRANSLUCENT);
-
-        return stage.getImage(b, null, 1.0, 1.0);
+        int newCount = stage.countChildren();
+        if (newCount != clipCount){
+            logger.info("clip count changed to " + newCount);
+            clipCount = newCount;
+        }
+//        BufferedImage b = new BufferedImage(stageDimensions.width,
+//                                            stageDimensions.height,
+//                                            BufferedImage.TRANSLUCENT);
+//
+//        return stage.getImage(b, null, 1.0, 1.0);
+        return stage.getImage();
     }
     public static int[] toPixels(BufferedImage stage, int width, int height)
     {
