@@ -320,8 +320,8 @@ public class SoundController implements SCSoundControlNotifiable {
 			if(!soundFile.equals("none") && serverIsLive){
 				// whoah, hacky.  let's fix this
 				// what we're doing here is hard coding Edmonton channel IDs and gain values to correspond with MOTU hardware
-				int[] channels = new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
-				float[] amplitudes = new float[]{gain,gain,gain,gain,gain,gain,gain,gain,0,0,0,0,0,0,gain,gain,gain};
+				int[] channels = new int[]{2,3,4,5,6,7,8,9,14,15,16};
+				float[] amplitudes = new float[]{gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain};
 				SoundNode sn = ss.createMonoSoundNode(soundFiles.get(soundFilePath+soundFile), false, channels, amplitudes, 1.0f);
 				if (debug) {
 					logger.info("SoundController: Played global sound file "+soundFilePath+soundFile+ " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
