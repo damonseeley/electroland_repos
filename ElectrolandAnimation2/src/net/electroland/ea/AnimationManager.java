@@ -114,14 +114,9 @@ public class AnimationManager {
     {
         int newCount = stage.countChildren();
         if (newCount != clipCount){
-            logger.info("clip count changed to " + newCount);
+            logger.debug("clip count changed to " + newCount);
             clipCount = newCount;
         }
-//        BufferedImage b = new BufferedImage(stageDimensions.width,
-//                                            stageDimensions.height,
-//                                            BufferedImage.TRANSLUCENT);
-//
-//        return stage.getImage(b, null, 1.0, 1.0);
         return stage.getImage();
     }
     public static int[] toPixels(BufferedImage stage, int width, int height)
