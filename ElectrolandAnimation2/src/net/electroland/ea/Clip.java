@@ -170,6 +170,7 @@ public class Clip {
             }
             content.renderContent(substage);
         }
+        /*
         // hack: adjust alpha for nested solids using the color instead of the overlay.
         if (content instanceof SolidColorContent && ((SolidColorContent)content).getColor() != null && parent != null)
         {
@@ -177,7 +178,7 @@ public class Clip {
             Color c = ((SolidColorContent)content).getColor();
             content = new SolidColorContent(new Color(c.getRed(),c.getGreen(),c.getBlue(),a));
         }
-
+*/
         // draw each of the children on our section of the stage
         Graphics2D g = substage.createGraphics();
 
