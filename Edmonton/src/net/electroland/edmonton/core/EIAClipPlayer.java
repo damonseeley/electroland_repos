@@ -18,9 +18,12 @@ public class EIAClipPlayer {
     private AnimationManager anim;
     private ELUManager elu;
     protected Clip quiet, live;
+    
+    int qNote = 168; //ms per qnote
+    int eNote = qNote/2;
 
     static Logger logger = Logger.getLogger(EIAClipPlayer.class);
-    
+
     public EIAClipPlayer(AnimationManager am, ELUManager elu)
     {
         this.anim = am;
@@ -38,7 +41,7 @@ public class EIAClipPlayer {
      */
     int debugId = 0;
     public void localTrill4Up(double x) {
-//        logger.info("localTrill4Up@ " + x);
+        //        logger.info("localTrill4Up@ " + x);
 
         x = findNearestLight(x,true);
         //8 px wide
@@ -56,16 +59,16 @@ public class EIAClipPlayer {
         Clip trill2 = parent.addClip(simpleClip2, barWidth - of, 0, barWidth,  barHeight, 1.0, 166);
         Clip trill3 = parent.addClip(simpleClip2, 2 * barWidth - of, 0, barWidth, barHeight, 1.0, 331);
         Clip trill4 = parent.addClip(simpleClip2, 3 * barWidth - of, 0, barWidth, barHeight, 1.0, 496);
-        
+
         //fade em all out
         // delete will kill the objecthe children automatically.
         parent.delay(1000).fadeOut(2000).delete();
         //parent.delay(3500).fadeOut(1000).delete();
         //parent.debug = debugId++;
     }
-    
+
     public void s1v2TwoNote(double x){
-      //logger.info("localStabA@ " + x);
+        //logger.info("localStabA@ " + x);
         x = findNearestLight(x,true);
         double nextX = findNearestLight(x+3.5,true);
         //8 px wide
@@ -84,31 +87,53 @@ public class EIAClipPlayer {
 
 
     public void localStabSmall(double x) {
-        //logger.info("localStabA@ " + x);
         x = findNearestLight(x,true);
-        //8 px wide
         int barWidth = 3;
-
         //create all bars, but at 0.0 alpha to popin later
         Content simpleClip2 = new SolidColorContent(Color.WHITE);
         Clip stab1 = live.addClip(simpleClip2, (int)x-barWidth/2,0,barWidth,16, 1.0);
-
         //fade out
         stab1.delay(250).fadeOut(4000).delete();
     }
 
     public void localStabBig(double x) {
-        //logger.info("localStabA@ " + x);
         x = findNearestLight(x,true);
-        //8 px wide
         int barWidth = 6;
-
         //create all bars, but at 0.0 alpha to popin later
         Content simpleClip2 = new SolidColorContent(Color.WHITE);
         Clip stab1 = live.addClip(simpleClip2, (int)x-barWidth/2,0,barWidth,16, 1.0);
-
         //fade out
         stab1.delay(800).fadeOut(5000).delete();
+    }
+
+    //could be more generalized
+    public void harpTrillUp(double x) {
+        logger.info("HarpTrill @" + x);
+        int barWidth = 3;
+        int barHeight = 16;
+        int of = 1;
+        x = findNearestLight(x-24,true);
+        //create all bars, with each appearing in delayed intervals
+        Content simpleClip2 = new SolidColorContent(Color.WHITE);
+        int ix = (int)x;
+
+        Clip harp1 = live.addClip(simpleClip2, ix-barWidth*4-barWidth/2-of, 0, barWidth, barHeight, 1.0, 0);
+        Clip harp2 = live.addClip(simpleClip2, ix-barWidth*3-barWidth/2-of, 0, barWidth, barHeight, 0.9, eNote);
+        Clip harp3 = live.addClip(simpleClip2, ix-barWidth*2-barWidth/2-of, 0, barWidth, barHeight, 0.7, eNote*2);
+        Clip harp4 = live.addClip(simpleClip2, ix-barWidth*1-barWidth/2-of, 0, barWidth, barHeight, 1.0, eNote*3);      
+        Clip harp5 = live.addClip(simpleClip2, ix+barWidth*0-barWidth/2-of, 0, barWidth, barHeight, 0.8, eNote*4);
+        Clip harp6 = live.addClip(simpleClip2, ix+barWidth*1-barWidth/2-of, 0, barWidth, barHeight, 0.9, eNote*5);
+        Clip harp7 = live.addClip(simpleClip2, ix+barWidth*2-barWidth/2-of, 0, barWidth, barHeight, 0.9, eNote*6);
+        Clip harp8 = live.addClip(simpleClip2, ix+barWidth*3-barWidth/2-of, 0, barWidth, barHeight, 1.0, eNote*7);
+
+        harp1.delay(500).fadeOut(1000).delete();
+        harp2.delay(500).fadeOut(1000).delete();
+        harp3.delay(500).fadeOut(1000).delete();
+        harp4.delay(500).fadeOut(1000).delete();
+        harp5.delay(500).fadeOut(1000).delete();
+        harp6.delay(500).fadeOut(1000).delete();
+        harp7.delay(500).fadeOut(1000).delete();
+        harp8.delay(500).fadeOut(1000).delete();
     }
 
     /*
@@ -120,13 +145,14 @@ public class EIAClipPlayer {
 
         Content sparkleClip320 = anim.getContent("sparkleClip320");
         Clip faintSparkle = anim.addClip(sparkleClip320, 0,0,635,16, 0.0);
+        faintSparkle.zIndex = -100; // sets to far background
 
         //fadein, wait, fadeout
-        Change lightFade = new LinearChange().alphaTo(.05);
+        Change lightFade = new LinearChange().alphaTo(.25);
         faintSparkle.delay(500).queueChange(lightFade, 4000).delay(12000).fadeOut(2000).delete();
     }
-    
-    
+
+
     /*
      * END EIA Live Show methods
      */
