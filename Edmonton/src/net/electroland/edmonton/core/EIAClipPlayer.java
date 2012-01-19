@@ -62,7 +62,8 @@ public class EIAClipPlayer {
 
         //fade em all out
         // delete will kill the objecthe children automatically.
-        parent.delay(3500).fadeOut(1000).delete();
+        parent.delay(1000).fadeOut(2000).delete();
+        //parent.delay(3500).fadeOut(1000).delete();
         //parent.debug = debugId++;
     }
 
@@ -78,7 +79,7 @@ public class EIAClipPlayer {
         Clip stab1 = live.addClip(simpleClip2, (int)x-barWidth/2,0,barWidth,16, 1.0);
 
         //fade out
-        stab1.delay(800).fadeOut(5000).delete();
+        stab1.delay(250).fadeOut(4000).delete();
     }
 
     public void localStabBig(double x) {
