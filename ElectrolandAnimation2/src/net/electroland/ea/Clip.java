@@ -31,9 +31,6 @@ import net.electroland.ea.content.SolidColorContent;
  */
 public class Clip {
 
-    private static final Change FADE_IN = new LinearChange().alphaTo(1.0);
-    private static final Change FADE_OUT = new LinearChange().alphaTo(0.0);
-
     private boolean isRemoved = false;
     private Set<Clip> children;
     private State initialState; // state when instantiated
@@ -171,7 +168,7 @@ public class Clip {
             int g = current.getGreen();
             int b = current.getBlue();
             int a = (int)(255 * currentState.alpha);
-            ((SolidColorContent)content).setColor(new Color(r,g,b,a));
+            ((SolidColorContent)content).setColor(new Color(a,a,a));
         }
 
         // render out content. our content ALWAYS has a lower z-index than our children
@@ -240,7 +237,7 @@ public class Clip {
             throw new RuntimeException("Delay duration must be > 0.");
         }
         QueuedChange fade = new QueuedChange();
-        fade.change = FADE_IN;
+        fade.change = new LinearChange().alphaTo(1.0);;
         fade.type = QueuedChange.CHANGE; 
         fade.duration = millis;
         changes.add(fade);
@@ -253,7 +250,7 @@ public class Clip {
             throw new RuntimeException("Delay duration must be > 0.");
         }
         QueuedChange fade = new QueuedChange();
-        fade.change = FADE_OUT;
+        fade.change = new LinearChange().alphaTo(0.0);;
         fade.type = QueuedChange.CHANGE; 
         fade.duration = millis;
         changes.add(fade);
