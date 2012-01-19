@@ -3,11 +3,11 @@ package net.electroland.ea;
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Queue;
-import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.electroland.ea.changes.DelayedInstantChange;
@@ -27,19 +27,20 @@ import net.electroland.ea.changes.LinearChange;
  * @author production
  *
  */
-public class Clip {
+public class Clip implements Comparable<Clip>{
 
     private boolean isRemoved = false;
-    private Set<Clip> children;
+    private List<Clip> children;
     private State initialState; // state when instantiated
     private State currentState; // current state
     private Queue<QueuedChange>changes; // queued changes
     private QueuedChange currentChange;
     protected Content content;
+    public int zIndex = 0;
 
     public Clip(Content content, int top, int left, int width, int height, double alpha)
     {
-        this.children = Collections.synchronizedSet(new HashSet<Clip>());
+        this.children = Collections.synchronizedList(new ArrayList<Clip>());
         this.content = content;
         this.initialState = new State(top, left, width, height, alpha);
         this.currentState = new State(top, left, width, height, alpha);
@@ -155,6 +156,8 @@ public class Clip {
         Graphics2D g = clipImage.createGraphics();
 
         synchronized(children){
+
+            java.util.Collections.sort(children);
             for (Clip child : children){
 
                 int childX = child.currentState.geometry.x;
@@ -263,7 +266,8 @@ public class Clip {
         }
         return total;
     }
-//    public ClipSet getChildren(){
-//        return children;
-//    }
+    @Override
+    public int compareTo(Clip clip) {
+        return this.zIndex - clip.zIndex;
+    }
 }
