@@ -163,6 +163,17 @@ public class Clip {
                                                    height,
                                                    BufferedImage.TRANSLUCENT);
 
+        // hack for content
+        if (content instanceof SolidColorContent && ((SolidColorContent)content).getColor() != null)
+        {
+            Color current = ((SolidColorContent)content).getColor();
+            int r = current.getRed();
+            int g = current.getGreen();
+            int b = current.getBlue();
+            int a = (int)(255 * currentState.alpha);
+            ((SolidColorContent)content).setColor(new Color(r,g,b,a));
+        }
+
         // render out content. our content ALWAYS has a lower z-index than our children
         if (content != null){
             if (debug != -1){
@@ -170,20 +181,13 @@ public class Clip {
             }
             content.renderContent(substage);
         }
-        /*
-        // hack: adjust alpha for nested solids using the color instead of the overlay.
-        if (content instanceof SolidColorContent && ((SolidColorContent)content).getColor() != null && parent != null)
-        {
-            int a = (int)(255* parent.currentState.alpha);
-            Color c = ((SolidColorContent)content).getColor();
-            content = new SolidColorContent(new Color(c.getRed(),c.getGreen(),c.getBlue(),a));
-        }
-*/
+
         // draw each of the children on our section of the stage
         Graphics2D g = substage.createGraphics();
 
         synchronized(children){
             for (Clip child : children){
+                // subsection of the parent that we occupy
                 BufferedImage childImage = child.getImage(substage, this, myWScale, myHScale);
                 g.drawImage(childImage, 0, 0, null);
             }
@@ -192,8 +196,8 @@ public class Clip {
 
         // composite ourself onto our parent with the proper alpha
         Graphics2D g2 = parentStage.createGraphics();
-        if ((int)currentState.alpha != 1)
-            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)currentState.alpha));
+//        if ((int)currentState.alpha != 1)
+//            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)currentState.alpha));
         g2.drawImage(substage, left, top, width, height, null);
         g2.dispose();
 
