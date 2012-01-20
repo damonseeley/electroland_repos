@@ -12,15 +12,15 @@ public class GrayScaleDetectionModel implements DetectionModel {
             // separate rgb vals
             int a = (pixels[i] >> 24 ) & 0xFF;
             int r = (pixels[i] >> 16 ) & 0xFF;
-            int g = (pixels[i] >> 8  ) & 0xFF;
+            int g = (pixels[i] >>  8 ) & 0xFF;
             int b = (pixels[i]       ) & 0xFF;
-            
+
             if (a == 0){
                 // add zero. eg., do nothing.
             }else{
-                double da = (255.0 / a);
+                double da = (a / 255.0);
 
-                // http://en.wikipedia.org/wiki/Grayscale
+                // http://en.wikipedia.org/wiki/Grayscaleccc
                 int gy = (int)(((.3 * r) + (.59 * g) + (.11 * b)) * da);
 
                 total += gy;
