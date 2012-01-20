@@ -59,27 +59,51 @@ public class EIAClipPlayer {
         Clip trill2 = parent.addClip(simpleClip2, barWidth - of, 0, barWidth,  barHeight, 1.0, 166);
         Clip trill3 = parent.addClip(simpleClip2, 2 * barWidth - of, 0, barWidth, barHeight, 1.0, 331);
         Clip trill4 = parent.addClip(simpleClip2, 3 * barWidth - of, 0, barWidth, barHeight, 1.0, 496);
-
         //fade em all out
-        // delete will kill the objecthe children automatically.
         parent.delay(1000).fadeOut(2000).delete();
-        //parent.delay(3500).fadeOut(1000).delete();
-        //parent.debug = debugId++;
+
+    }
+    
+    public void localTrill4Down(double x) {
+        logger.info("localTrill4Down@ " + x);
+
+        double x1 = (int)findNearestLight(x,true);
+        int barOff = 4;
+        double x2 = (int)findNearestLight(x1-barOff,true);
+        double x3 = (int)findNearestLight(x2-barOff,true);
+        double x4 = (int)findNearestLight(x3-barOff,true);
+        int barWidth = 3;
+        int barHeight = 16;
+        int of = 1; //offset to hit lights
+
+        //create all bars, with each appearing in delayed intervals
+        Content simpleClip2 = new SolidColorContent(Color.WHITE);
+
+        Clip trill1 = live.addClip(simpleClip2, (int)x1-of, 0, barWidth, barHeight, 1.0);
+        Clip trill2 = live.addClip(simpleClip2, (int)x2-of, 0, barWidth,  barHeight, 1.0, 166);
+        Clip trill3 = live.addClip(simpleClip2, (int)x3-of, 0, barWidth, barHeight, 1.0, 331);
+        Clip trill4 = live.addClip(simpleClip2, (int)x4-of, 0, barWidth, barHeight, 1.0, 496);
+        //fade em all out
+        trill1.delay(1000).fadeOut(2000).delete();
+        trill2.delay(1000).fadeOut(2000).delete();
+        trill3.delay(1000).fadeOut(2000).delete();
+        trill4.delay(1000).fadeOut(2000).delete();
+
+
     }
 
-    public void s1v2TwoNote(double x){
-        //logger.info("localStabA@ " + x);
-        x = findNearestLight(x,true);
-        double nextX = findNearestLight(x+3.5,true);
-        //8 px wide
+    public void twoNoteChord(double x){
+        logger.info("twoNoteChord@ " + x);
+        int barOff = 4;
         int barWidth = 3;
-
-        //create all bars, but at 0.0 alpha to popin later
+        int of = 1; //offset to hit lights
+        int x1 = (int)findNearestLight(x,true);
+        int x2 = (int)findNearestLight(x-barOff,true);
+       
         Content chord1 = new SolidColorContent(Color.WHITE);
         Content chord2 = new SolidColorContent(Color.WHITE);
-        Clip stab1 = live.addClip(chord1, (int)x-barWidth/2,0,barWidth,16, 1.0);
-        Clip stab2 = live.addClip(chord2, (int)nextX-barWidth/2,0,barWidth,16, 1.0,168);
-
+        Clip stab1 = live.addClip(chord1, x1-of,0,barWidth,16, 1.0);
+        Clip stab2 = live.addClip(chord2, x2-of,0,barWidth,16, 1.0,168);
         //fade out
         stab1.delay(250).fadeOut(1500).delete();
         stab2.delay(250).fadeOut(1500).delete();
@@ -87,16 +111,31 @@ public class EIAClipPlayer {
 
 
     public void localStabSmall(double x) {
+        logger.info("localStabSmall@ " + x);
         x = findNearestLight(x,true);
         int barWidth = 3;
-        //create all bars, but at 0.0 alpha to popin later
         Content simpleClip2 = new SolidColorContent(Color.WHITE);
         Clip stab1 = live.addClip(simpleClip2, (int)x-barWidth/2,0,barWidth,16, 1.0);
         //fade out
-        stab1.delay(250).fadeOut(4000).delete();
+        stab1.delay(250).fadeOut(3000).delete();
     }
+    
+    public void localStabSmallLong(double x) {
+        //same but long fadeout
+        logger.info("localStabSmallLong@ " + x);
+        x = findNearestLight(x,true);
+        int barWidth = 3;
+        Content simpleClip2 = new SolidColorContent(Color.WHITE);
+        Clip stab1 = live.addClip(simpleClip2, (int)x-barWidth/2,0,barWidth,16, 1.0);
+        //fade out
+        stab1.delay(250).fadeOut(8000).delete();
+    }
+    
+    
+    
 
     public void localStabBig(double x) {
+        logger.info("localStabBig@ " + x);
         x = findNearestLight(x,true);
         int barWidth = 6;
         //create all bars, but at 0.0 alpha to popin later
@@ -149,7 +188,7 @@ public class EIAClipPlayer {
 
         //fadein, wait, fadeout
         Change lightFade = new LinearChange().alphaTo(.15);
-        faintSparkle.delay(0).queueChange(lightFade, 2000).delay(12000).fadeOut(2000).delete();
+        faintSparkle.delay(0).queueChange(lightFade, 1000).delay(18500).fadeOut(2000).delete();
     }
     
     public void blockWaveAll(double x) {
@@ -157,12 +196,12 @@ public class EIAClipPlayer {
         Content waveBlock = new SolidColorContent(Color.WHITE);
 
         int waveWidth = 32;
-        Clip waveClip = anim.addClip(waveBlock, 235,0,waveWidth,16, 1.0); //add it as 32px wide at the end of the stage
+        Clip waveClip = anim.addClip(waveBlock, 260,0,waveWidth,16, 1.0); //add it as 32px wide at the end of the stage
         waveClip.zIndex = -100; // sets to far background
 
         //fadein, wait, fadeout
         Change waveMove = new LinearChange().xTo(-waveWidth);
-        waveClip.queueChange(waveMove, 20000).delay(500).delete();
+        waveClip.queueChange(waveMove, 5000).delay(500).delete();
         //one.delay(4000).queueChange(change6, 1000);
         //faintSparkle.delay(500).queueChange(lightFade, 4000).delay(12000).fadeOut(2000).delete();
     }
