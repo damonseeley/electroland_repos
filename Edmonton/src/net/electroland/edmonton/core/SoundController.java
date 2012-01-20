@@ -295,6 +295,31 @@ public class SoundController implements SCSoundControlNotifiable {
     public void playSingleChannel(String filename, double x, float gain){
         if (!bypass) {
             if(!filename.equals("none") && serverIsLive){
+                
+                int channel = getClosestBayChannel(x);
+                
+                if (stereoOnly){
+                    int[] channels = new int[]{0,1};
+                    float[] amplitudes = new float[]{gain,gain};
+                    SoundNode sn = ss.createMonoSoundNode(soundFiles.get(soundFilePath+filename), false, channels, amplitudes, 1.0f);
+                    if (debug) {
+                        logger.info("SoundController: Played global sound file "+soundFilePath+filename+ " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
+                    }
+                    newSoundNode(sn);
+                } else {
+                    // whoah, hacky.  let's fix this
+                    // what we're doing here is hard coding Edmonton channel IDs and gain values to correspond with MOTU hardware
+                    int[] channels = new int[]{channel};
+                    float[] amplitudes = new float[]{gain};
+                    SoundNode sn = ss.createMonoSoundNode(soundFiles.get(soundFilePath+filename), false, channels, amplitudes, 1.0f);
+                    if (debug) {
+                        logger.info("SoundController: Played global sound file "+soundFilePath+filename+ " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
+                    }
+                    newSoundNode(sn);
+                }
+                
+                
+                /*
                 int channel = getClosestBayChannel(x);
                 if (debug) {
                     logger.info("SoundController: Attempting to play sound file: " + soundFiles.get(soundFilePath+filename));
@@ -304,6 +329,7 @@ public class SoundController implements SCSoundControlNotifiable {
                     logger.info("SoundController: Played Single Bay "+soundFilePath+filename+ " on channel: " + channel + " with gain: "+ gain);
                 }
                 newSoundNode(sn);
+                */
             }
         }
     }
@@ -354,9 +380,13 @@ public class SoundController implements SCSoundControlNotifiable {
     }
 
     public void newSoundNode(SoundNode sn){	// no longer in use, but referenced by all animations
-        soundID++;
-        soundNodes.put(soundID, sn);
-        logger.info("SoundController: soundNodes updated, size="+soundNodes.size());
+
+        if (sn != null){
+            soundID++;
+            soundNodes.put(soundID, sn);
+            logger.info("SoundController: soundNodes updated, size="+soundNodes.size());
+        }
+
     }
 
 

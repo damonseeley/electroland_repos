@@ -5,20 +5,27 @@ package net.electroland.edmonton.core;
  * @author	Damon Seeley & Bradley Geilfuss
  */
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import net.electroland.ea.AnimationManager;
+import net.electroland.ea.Clip;
+import net.electroland.ea.Content;
+import net.electroland.ea.content.SolidColorContent;
 import net.electroland.edmonton.core.model.LastTrippedModelWatcher;
+import net.electroland.edmonton.core.model.OneEventPerPeriodModelWatcher;
 import net.electroland.edmonton.core.model.ScreenSaverModelWatcher;
 import net.electroland.edmonton.core.model.TrackerBasicModelWatcher;
 import net.electroland.edmonton.core.sequencing.SimpleSequencer;
 import net.electroland.edmonton.core.ui.EIAFrame;
 import net.electroland.eio.IOManager;
+import net.electroland.eio.IState;
 import net.electroland.eio.model.Model;
 import net.electroland.eio.model.ModelEvent;
 import net.electroland.eio.model.ModelListener;
@@ -26,6 +33,7 @@ import net.electroland.eio.model.ModelWatcher;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.lighting.ELUManager;
+import net.electroland.utils.lighting.Fixture;
 import net.electroland.utils.lighting.InvalidPixelGrabException;
 import net.electroland.utils.lighting.canvas.ELUCanvas2D;
 
@@ -58,12 +66,14 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
     public EIAFrame ef;
 
     private Model model;
-    private ModelWatcher stateToBright,entry1,exit1,entry2,exit2,egg1,egg2,egg3,egg4;
+    //private ModelWatcher stateToBright,entry1,exit1,entry2,exit2,egg1,egg2,egg3,egg4;
     private TrackerBasicModelWatcher tracker;
     private LastTrippedModelWatcher tripRecord;
     private ScreenSaverModelWatcher screenSaver;
 
     private int stateToBrightnessClip;
+
+    private EIAGenSoundPlayer gsp;
 
     //Thread stuff
     public static boolean isRunning;
@@ -73,7 +83,7 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
     public static long elapsedTime = -1; //  time between start of cur frame and last frame to avoid re calculating passage of time allover the place
 
     private boolean isLive = false;
-    
+
     public EIAMainConductor()
     {
         context = new Hashtable<String, Object>();
@@ -129,8 +139,6 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
             e.printStackTrace();
         }
 
-
-
         canvas = (ELUCanvas2D)elu.getCanvas("EIAspan");
         canvasHeight = (int)canvas.getDimensions().getHeight();
         canvasWidth = (int)canvas.getDimensions().getWidth();
@@ -141,17 +149,21 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
 
         context.put("anim",anim);
         context.put("animpropsfile", "EIA-anim.properties");
-        
+
         String seqpropsfile = "EIA-seq-LITE.properties";
         sequencer = new SimpleSequencer(seqpropsfile, context);
         context.put("sequencer", sequencer);
         context.put("seqpropsfile", seqpropsfile);
-        
+
         soundController = new SoundController(context);
         context.put("soundController", soundController);
+        // for generative show test
+        gsp = new EIAGenSoundPlayer(soundController);
+
 
         clipPlayer = new EIAClipPlayer(anim,elu);
         context.put("clipPlayer", clipPlayer);
+
 
 
         /******** Model, Watchers & Timers ********/
@@ -180,7 +192,7 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
         ef = new EIAFrame(Integer.parseInt(props.getRequired("settings", "global", "guiwidth")),Integer.parseInt(props.getRequired("settings", "global", "guiheight")),context);
         ef.addButtonListener(this);
 
-        
+
         //start it all
         //goQuiet();
 
@@ -280,60 +292,24 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
 
 
 
+        for (int s=40; s<=71; s++){
+            ModelWatcher mw = new OneEventPerPeriodModelWatcher(1200);
+            ArrayList<IState> oneState = new ArrayList<IState>();
+            oneState.add(eio.getIStateById("i"+s));
+            model.addModelWatcher(mw, "i"+s, oneState);
+        }
 
-        /**
-         * disable these events for now to make debugging on future shows easier
-         */
 
         /*
 		int stateToBrightnessClip = anim.startClip("stateToBrightnessImage", new Rectangle(0,0,canvasWidth,canvasHeight), 1.0);
 		int maxBright = 192; //max brightness for pathtracer
 		stateToBright = new StateToBrightnessModelWatcher(16,2,maxBright); //starting with vals of 64 which is what was used in TestConductor (single value)
 		model.addModelWatcher(stateToBright, "stateToBright", eio.getIStates());
-
-
-		entry1 = new OneEventPerPeriodModelWatcher(500);
-		ArrayList<IState> entry1states = new ArrayList<IState>();
-		entry1states.add(eio.getIStateById("i1"));
-		model.addModelWatcher(entry1, "entry1", entry1states);
-
-		exit1 = new OneEventPerPeriodModelWatcher(500);
-		ArrayList<IState> exit1states = new ArrayList<IState>();
-		exit1states.add(eio.getIStateById("i39"));
-		model.addModelWatcher(exit1, "exit1", exit1states);
-
-		entry2 = new OneEventPerPeriodModelWatcher(500);
-		ArrayList<IState> entry2states = new ArrayList<IState>();
-		entry2states.add(eio.getIStateById("i40"));
-		model.addModelWatcher(entry2, "entry2", entry2states);
-
-		exit2 = new OneEventPerPeriodModelWatcher(500);
-		ArrayList<IState> exit2states = new ArrayList<IState>();
-		exit2states.add(eio.getIStateById("i71"));
-		model.addModelWatcher(exit2, "exit2", exit2states);
-
-		egg1 = new OneEventPerPeriodModelWatcher(500);
-		ArrayList<IState> egg1states = new ArrayList<IState>();
-		egg1states.add(eio.getIStateById("i13"));
-		//egg1states.add(eio.getIStateById("i4"));
-		model.addModelWatcher(egg1, "egg1", egg1states);
-
-		egg2 = new OneEventPerPeriodModelWatcher(500);
-		ArrayList<IState> egg2states = new ArrayList<IState>();
-		egg2states.add(eio.getIStateById("i26"));
-		model.addModelWatcher(egg2, "egg2", egg2states);
-
-		egg3 = new OneEventPerPeriodModelWatcher(500);
-		ArrayList<IState> egg3states = new ArrayList<IState>();
-		egg3states.add(eio.getIStateById("i50"));
-		model.addModelWatcher(egg3, "egg3", egg3states);
-
-		egg4 = new OneEventPerPeriodModelWatcher(500);
-		ArrayList<IState> egg4states = new ArrayList<IState>();
-		egg4states.add(eio.getIStateById("i60"));
-		model.addModelWatcher(egg4, "egg4", egg4states);
          */
+
     }
+
+
 
 
     @Override
@@ -352,63 +328,49 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
             }
         }
 
-
-
-
-
         /*
-         * Old show event stuff
+         * GENERATIVE SHOW EVENTS
          */
 
-        /*
-		if (evt.watcherName == "stateToBright"){
-
-			//((StateToBrightnessClip) anim.getClip(stateToBrightnessClip)).setBrightValues(evt.optionalPostiveDetails);
-			((StateToBrightnessImageClip) anim.getClip(stateToBrightnessClip)).setBrightValues(evt.optionalPostiveDetails);
-
-		} else if (evt.watcherName == "entry1"){
-			entry1Shooter();
-		} else if (evt.watcherName == "exit1"){
-			exit1Shooter();
-		} else if (evt.watcherName == "entry2"){
-			entry2Shooter();
-		} else if (evt.watcherName == "exit2"){
-			exit2Shooter();
-		} else if (evt.watcherName == "egg1"){
-			ModelWatcher mw = (ModelWatcher)evt.getSource();
-			for (Iterator<IState> it = mw.getStates().iterator (); it.hasNext (); ) {
-				IState is = (IState)it.next();
-				eggSparkle(is.getLocation().x);
-			}
-		} else if (evt.watcherName == "egg2"){
-			ModelWatcher mw = (ModelWatcher)evt.getSource();
-			for (Iterator<IState> it = mw.getStates().iterator (); it.hasNext (); ) {
-				IState is = (IState)it.next();
-				eggExpand(is.getLocation().x);
-			}
-		} else if (evt.watcherName == "egg3"){
-			ModelWatcher mw = (ModelWatcher)evt.getSource();
-			for (Iterator<IState> it = mw.getStates().iterator (); it.hasNext (); ) {
-				IState is = (IState)it.next();
-				eggWave(is.getLocation().x);
-			}
-		} else if (evt.watcherName == "egg4"){
-			ModelWatcher mw = (ModelWatcher)evt.getSource();
-			for (Iterator<IState> it = mw.getStates().iterator (); it.hasNext (); ) {
-				IState is = (IState)it.next();
-				eggSparkle(is.getLocation().x);
-			}
-		}
-         */
+        // BIG hack here to tell when a watcher name is fomatted as "i50" etc.  Brittle
+        if (evt.watcherName.length()==3){
+            genSensor(evt.watcherName);
+        }
 
 
+    } 
+
+
+
+
+
+
+    /************************* Local Animations ******************************/
+
+
+    private void genSensor(String sName) {
+        double x = eio.getIStateById(sName).getLocation().x;
+        gsp.playNextGen(x);
+        x = findNearestLight(x,true);
+        int barWidth = 3;
+        Content simpleClip2 = new SolidColorContent(Color.WHITE);
+        Clip stab1 = anim.addClip(simpleClip2, (int)(x-barWidth/2),0,barWidth,16, 1.0);
+        //fade out
+        stab1.delay(250).fadeOut(3000).delete();
+    }
+
+    private double findNearestLight(double x, boolean forward) {
+        double closestX = -20;
+        for (Fixture f: elu.getFixtures()) {
+            if (Math.abs(x-f.getLocation().x) < Math.abs(x-closestX)) {
+                closestX = f.getLocation().x;
+            }
+        }
+        //logger.info("ClipPlayer: Track x= " + x + " & closest fixture x= " + closestX);
+        return closestX;
     }
 
 
-
-
-
-    /************************* Animations ******************************/
 
 
     /*
@@ -425,7 +387,6 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
 	}
 
 
-	int shootEndWidth = 36;
 	private void entry1Shooter() {
 		int clip = anim.startClip("simpleClip16", new Rectangle(canvasWidth-2,0,16,16), 1.0);
 		//anim.queueClipChange(clip, new Rectangle(280,0,shootEndWidth,16), null, 0.0, 1400, 0, true);
