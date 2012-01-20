@@ -331,7 +331,7 @@ public class SoundController implements SCSoundControlNotifiable {
         if (!bypass) {
             if(!soundFile.equals("none") && serverIsLive){
                 if (stereoOnly){
-                    int[] channels = new int[]{1,2};
+                    int[] channels = new int[]{0,1};
                     float[] amplitudes = new float[]{gain,gain};
                     SoundNode sn = ss.createMonoSoundNode(soundFiles.get(soundFilePath+soundFile), false, channels, amplitudes, 1.0f);
                     if (debug) {
