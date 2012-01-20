@@ -218,8 +218,8 @@ public class EIAClipPlayer {
     public void introSparkle(double x) {
         logger.info("introSparkle@ " + x);
 
-        Content sparkleClip320 = anim.getContent("sparkleClip320");
-        Clip faintSparkle = live.addClip(sparkleClip320, 0,0,cWidth,16, 0.0);
+        Content sparkleClipFast = anim.getContent("sparkleClipFast");
+        Clip faintSparkle = live.addClip(sparkleClipFast, 0,0,cWidth,16, 0.0);
         faintSparkle.zIndex = -100; // sets to far background
 
         //fadein, wait, fadeout
@@ -230,14 +230,32 @@ public class EIAClipPlayer {
     public void s1v1sparkle(double x) {
         logger.info("s1v1sparkle@ " + x);
 
-        Content sparkleClip320 = anim.getContent("sparkleClip320");
-        Clip faintSparkle = live.addClip(sparkleClip320, 0,0,cWidth,16, 0.0);
+        Content sparkleClipFast = anim.getContent("sparkleClipFast");
+        Clip faintSparkle = live.addClip(sparkleClipFast, 0,0,cWidth,16, 0.0);
         faintSparkle.zIndex = -100; // sets to far background
 
         //fadein, wait, fadeout
         Change lightFade = new LinearChange().alphaTo(.15);
         faintSparkle.delay(0).queueChange(lightFade, 800).delay(19000).fadeOut(2000).delete();
     }
+    
+    public void screenSaverSparkle(double x) {
+        logger.info("screenSaverSparkle@ " + x);
+        // use x as total time here
+        int tFadeIn = 2000;
+        int tFadeOut = 2000;
+        int remain = (int) (x - tFadeOut - tFadeIn);
+
+        Content sparkleClipFast = anim.getContent("sparkleClipSaver");
+        Clip faintSparkle = quiet.addClip(sparkleClipFast, 0,0,cWidth,16, 0.0);
+        faintSparkle.zIndex = -100; // sets to far background
+
+        //fadein, wait, fadeout
+        Change lightFade = new LinearChange().alphaTo(.15);
+        faintSparkle.queueChange(lightFade, tFadeIn).delay(remain).fadeOut(tFadeOut).delete();
+    }
+    
+    
     
     
 
@@ -315,25 +333,6 @@ public class EIAClipPlayer {
      */
 
 
-
-    /**
-     * Test stuff
-     */
-
-    public void testClip(double x)
-    {
-        System.out.println("PLAY AT " + x);
-    }
-
-    public void sparkleClip32(double x){/*
-        logger.debug("sparkleClip32 started at x=" + x);
-
-        Content sparkleClip320 = anim.getContent("sparkleClip320");
-        Clip clip = anim.addClip(sparkleClip320, (int)x-16, 0, 32, 16, 0.0);
-
-        //fadein, wait, fadeout
-        clip.fadeIn(500).delay(500).fadeOut(500).delete();*/
-    }
 
 
     /**
