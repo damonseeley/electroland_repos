@@ -10,10 +10,10 @@ public class GrayScaleDetectionModel implements DetectionModel {
         for (int i = 0; i < pixels.length; i++){
 
             // separate rgb vals
-            int r = (pixels[i] >> 16) & 0xFF;
+            int a = (pixels[i] >> 24 & 0xFF);
+            int r = (pixels[i] >> 16 & 0xFF);
             int g = (pixels[i] >> 8 & 0xFF);
             int b = (pixels[i] & 0xFF);
-            int a = (pixels[i] >> 24);
             
             if (a == 0){
                 // add zero. eg., do nothing.
