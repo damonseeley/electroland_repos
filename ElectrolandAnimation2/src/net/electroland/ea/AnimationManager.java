@@ -109,14 +109,14 @@ public class AnimationManager {
             return (Content)((Content)proto).clone();
         }
     }
-    int clipCount = 0;
+//    int clipCount = 0;
     public BufferedImage getStage()
     {
-        int newCount = stage.countChildren();
-        if (newCount != clipCount){
-            logger.info("clip count changed to " + newCount);
-            clipCount = newCount;
-        }
+//        int newCount = stage.countChildren();
+//        if (newCount != clipCount){
+//            logger.info("clip count changed to " + newCount);
+//            clipCount = newCount;
+//        }
         return stage.getImage();
     }
     public static int[] toPixels(BufferedImage stage, int width, int height)
