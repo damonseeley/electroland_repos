@@ -289,17 +289,21 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
             context.put("tracker", tracker);
         }
 
-
-
-
+        
+        /**
+         * UNCOMMMENT TO START GENERATIVE SHOW ON PEOPLEMOVER 2
+         */
+        /*
         for (int s=40; s<=71; s++){
             ModelWatcher mw = new OneEventPerPeriodModelWatcher(1200);
             ArrayList<IState> oneState = new ArrayList<IState>();
             oneState.add(eio.getIStateById("i"+s));
             model.addModelWatcher(mw, "i"+s, oneState);
         }
-
-
+         */
+        
+        
+        /* OLD */
         /*
 		int stateToBrightnessClip = anim.startClip("stateToBrightnessImage", new Rectangle(0,0,canvasWidth,canvasHeight), 1.0);
 		int maxBright = 192; //max brightness for pathtracer
