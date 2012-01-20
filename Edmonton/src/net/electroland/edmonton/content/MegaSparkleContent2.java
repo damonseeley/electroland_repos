@@ -19,6 +19,7 @@ public class MegaSparkleContent2 extends Content {
     double lastChange;
     int colorArraySize;
     Vector<Integer> colors;
+    Vector<Integer> colorsPrev;
     double sparkleRate;
     int sparkles;
     private Dimension baseDimensions;
@@ -38,14 +39,14 @@ public class MegaSparkleContent2 extends Content {
        // BufferedImage bi = new BufferedImage(baseDimensions.width, image.getHeight(null), BufferedImage.TYPE_INT_RGB);
         Graphics g2 = bi.getGraphics();
 
-        for (int i=1; i < sparkles; i++){
+        for (int i=0; i < sparkles; i++){
             int newx = i*sparkleWidth;
             int clr = 0;
             
-            if (colors.get(i) > colors.get(i-1)) {
-                clr = colors.get(i-1) + (int)((Math.abs(colors.get(i) - colors.get(i-1)))*pctChanged);
+            if (colors.get(i) > colorsPrev.get(i)) {
+                clr = colorsPrev.get(i) + (int)((Math.abs(colors.get(i) - colorsPrev.get(i)))*pctChanged);
             } else {
-                clr = colors.get(i-1) - (int)((Math.abs(colors.get(i) - colors.get(i-1)))*pctChanged);
+                clr = colorsPrev.get(i) - (int)((Math.abs(colors.get(i) - colorsPrev.get(i)))*pctChanged);
             }
             
             //clr = colors.get(i);
@@ -72,6 +73,7 @@ public class MegaSparkleContent2 extends Content {
         //fill colors
         colorArraySize = sparkles*2; //just to be safe
         colors = new Vector<Integer>(colorArraySize);
+        colorsPrev = new Vector<Integer>(colorArraySize);
         makeSparkles();
         incrementSparkles();
     }
@@ -85,19 +87,15 @@ public class MegaSparkleContent2 extends Content {
     private void makeSparkles() {
         colors = new Vector<Integer>(colorArraySize);
         for (int i=0; i<colorArraySize; i++){
-            int newClr = (int)(Math.random()*192) +64;
+            int newClr = (int)(Math.random()*240) +15;
             colors.add(newClr);
         }
     }
 
     private void incrementSparkles() {
         // clone the array and move everything forward
-
-        Vector<Integer> newColors = new Vector<Integer>(colorArraySize);
-        for (int i=1; i<colors.size(); i++){
-            newColors.add(colors.get(i));
-        }
-        newColors.add((int)(Math.random()*128) + 128);
-        colors = newColors;
+        // move curren to Prev
+        colorsPrev = (Vector<Integer>) colors.clone();
+        makeSparkles();
     }
 }

@@ -112,7 +112,7 @@ public class EIAClipPlayer {
         //fade out
         stab1.delay(250).fadeOut(8000).delete();
     }
-    
+
     public void localStabExpand(double x) {
         logger.info("localStabBig@ " + x);
         x = findNearestLight(x,true);
@@ -138,7 +138,7 @@ public class EIAClipPlayer {
         //fade out
         stab1.delay(800).fadeOut(5000).delete();
     }
-   
+
 
     //could be more generalized
     public void harpTrillUp(double x) {
@@ -226,7 +226,7 @@ public class EIAClipPlayer {
         Change lightFade = new LinearChange().alphaTo(.15);
         faintSparkle.delay(0).queueChange(lightFade, 1000).delay(18500).fadeOut(2000).delete();
     }
-    
+
     public void s1v1sparkle(double x) {
         logger.info("s1v1sparkle@ " + x);
 
@@ -238,7 +238,7 @@ public class EIAClipPlayer {
         Change lightFade = new LinearChange().alphaTo(.15);
         faintSparkle.delay(0).queueChange(lightFade, 800).delay(19000).fadeOut(2000).delete();
     }
-    
+
     public void screenSaverSparkle(double x) {
         logger.info("screenSaverSparkle@ " + x);
         // use x as total time here
@@ -254,10 +254,26 @@ public class EIAClipPlayer {
         Change lightFade = new LinearChange().alphaTo(.15);
         faintSparkle.queueChange(lightFade, tFadeIn).delay(remain).fadeOut(tFadeOut).delete();
     }
-    
-    
-    
-    
+
+    public void screenSaverSparkle2(double x) {
+        logger.info("screenSaverSparkle2@ " + x);
+        // use x as total time here as a hack
+        int tFadeIn = 2000;
+        int tFadeOut = 2000;
+        int remain = (int) (x - tFadeOut - tFadeIn);
+
+        Content sparkleClipFast = anim.getContent("sparkleClipSaver2");
+        Clip faintSparkle = quiet.addClip(sparkleClipFast, 0,0,cWidth,16, 0.0);
+        faintSparkle.zIndex = -100; // sets to far background
+
+        //fadein, wait, fadeout
+        Change lightFade = new LinearChange().alphaTo(0.35);
+        faintSparkle.queueChange(lightFade, tFadeIn).delay(remain).fadeOut(tFadeOut).delete();
+    }
+
+
+
+
 
     public void blockWaveAll(double x) {
         logger.info("blockWaveAll@ " + x);
@@ -288,7 +304,7 @@ public class EIAClipPlayer {
         //one.delay(4000).queueChange(change6, 1000);
         //faintSparkle.delay(500).queueChange(lightFade, 4000).delay(12000).fadeOut(2000).delete();
     }
-    
+
     public void megaWaveDouble(double x) {
         logger.info("megaWaveDouble@ " + x);
         Content waveImage = anim.getContent("megaWave");
