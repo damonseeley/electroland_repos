@@ -199,12 +199,9 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
 
         if ("startShow1".equals(e.getActionCommand())) {
             this.goLive();
-            sequencer.play("show1");
-            //this.goLive();
         }
         if ("startShow2".equals(e.getActionCommand())) {
-            sequencer.play("show2");
-            //this.goLive();
+            this.goQuiet();
         }
         if ("testShow".equals(e.getActionCommand())) {
             sequencer.play("testShow");
@@ -212,6 +209,8 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
         }
         if ("stopSeq".equals(e.getActionCommand())) {
             sequencer.stop();
+            clipPlayer.live.deleteChildren();
+            clipPlayer.quiet.deleteChildren();
             soundController.fadeAll(500);
         }
 
@@ -230,24 +229,19 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
 
     public void goQuiet()
     {
-        if (screensaver){
-            sequencer.stop();
-            soundController.fadeAll(500);
-            sequencer.play(sequencer.quietShowId);
-            clipPlayer.live.fadeOut(500).deleteChildren();
-            clipPlayer.quiet.fadeIn(0);
-        }
+        sequencer.stop();
+        soundController.fadeAll(500);
+        sequencer.play(sequencer.quietShowId);
+        clipPlayer.live.fadeOut(500).deleteChildren();
+        clipPlayer.quiet.fadeIn(0);
     }
 
     public void goLive(){
-        if (screensaver){
-            sequencer.stop();
-            soundController.fadeAll(500);
-            sequencer.play(sequencer.liveShowId);
-            clipPlayer.quiet.fadeOut(500).deleteChildren();
-            clipPlayer.live.fadeIn(0);
-        }
-
+        sequencer.stop();
+        soundController.fadeAll(500);
+        sequencer.play(sequencer.liveShowId);
+        clipPlayer.quiet.fadeOut(500).deleteChildren();
+        clipPlayer.live.fadeIn(0);
     }
 
     /************************* Model Handlers ******************************/
@@ -323,14 +317,17 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
     public void modelChanged(ModelEvent evt) {
 
         if (evt.watcherName == "screenSaver"){
-            logger.info("got screen saver event at " + System.currentTimeMillis());
-            if (((ScreenSaverModelWatcher)evt.getSource()).isQuiet())
+            if (screensaver)
             {
-                logger.info("go quiet");
-                this.goQuiet();
-            }else{
-                logger.info("go live");
-                this.goLive();
+                logger.info("got screen saver event at " + System.currentTimeMillis());
+                if (((ScreenSaverModelWatcher)evt.getSource()).isQuiet())
+                {
+                    logger.info("go quiet");
+                    this.goQuiet();
+                }else{
+                    logger.info("go live");
+                    this.goLive();
+                }
             }
         }
 
