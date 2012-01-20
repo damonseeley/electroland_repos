@@ -72,6 +72,8 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
     public static long curTime = System.currentTimeMillis(); //  time of frame start to aviod lots of calls to System.getcurentTime()
     public static long elapsedTime = -1; //  time between start of cur frame and last frame to avoid re calculating passage of time allover the place
 
+    private boolean isLive = false;
+    
     public EIAMainConductor()
     {
         context = new Hashtable<String, Object>();
@@ -198,11 +200,11 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
         logger.info(e.getActionCommand());
 
         if ("startShow1".equals(e.getActionCommand())) {
-//            sequencer.play(sequencer.liveShowId);
+            // to change this behavior, change goLive().
             this.goLive();
         }
         if ("startShow2".equals(e.getActionCommand())) {
-//            sequencer.play(sequencer.quietShowId);
+            // to change this behavior, change goQuiet().
             this.goQuiet();
         }
         if ("testShow".equals(e.getActionCommand())) {
@@ -231,19 +233,37 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
 
     public void goQuiet()
     {
-        sequencer.stop();
-        soundController.fadeAll(500);
-        sequencer.play(sequencer.quietShowId);
-        clipPlayer.live.fadeOut(500).deleteChildren();
-        clipPlayer.quiet.fadeIn(0);
+        // TECHNICALLY: THIS IS ALL YOU NEED.
+        //sequencer.play(sequencer.quietShowId);
+        // then comment block below out.
+        if (isLive){
+            logger.info("go Screensaver");
+            isLive = false;
+            sequencer.stop();
+            soundController.fadeAll(500);
+            clipPlayer.live.fadeOut(500).deleteChildren();
+            clipPlayer.quiet.fadeIn(0);
+            sequencer.play(sequencer.quietShowId);
+        }else{
+            logger.warn("attempt to start screensaver while already screensaving (declined).");
+        }
     }
 
     public void goLive(){
-        sequencer.stop();
-        soundController.fadeAll(500);
-        sequencer.play(sequencer.liveShowId);
-        clipPlayer.quiet.fadeOut(500).deleteChildren();
-        clipPlayer.live.fadeIn(0);
+        if (!isLive){
+            // TECHNICALLY: THIS IS ALL YOU NEED.
+            //sequencer.play(sequencer.liveShowId);
+            // then comment block below out.
+            logger.info("go Live");
+            isLive = true;
+            sequencer.stop();
+            soundController.fadeAll(500);
+            clipPlayer.quiet.fadeOut(500).deleteChildren();
+            clipPlayer.live.fadeIn(0);
+            sequencer.play(sequencer.liveShowId);
+        }else{
+            logger.warn("attempt to go live while already live (declined).");
+        }
     }
 
     /************************* Model Handlers ******************************/
@@ -324,10 +344,8 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
                 logger.info("got screen saver event at " + System.currentTimeMillis());
                 if (((ScreenSaverModelWatcher)evt.getSource()).isQuiet())
                 {
-                    logger.info("go quiet");
                     this.goQuiet();
                 }else{
-                    logger.info("go live");
                     this.goLive();
                 }
             }
