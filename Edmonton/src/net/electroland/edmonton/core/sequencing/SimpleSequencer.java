@@ -158,7 +158,7 @@ public class SimpleSequencer implements Runnable, ModelListener{
                 }
                 if (!cue.played && passed >= time)
                 {
-                    logger.debug("playing " + cue.id + " at " + passed);
+                    logger.info("playing " + cue.id + " at " + passed);
                     cue.play(context);
                     cue.played = true;
                 }
