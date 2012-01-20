@@ -85,7 +85,7 @@ public class MegaSparkleContent extends Content {
     private void makeSparkles() {
         colors = new Vector<Integer>(colorArraySize);
         for (int i=0; i<colorArraySize; i++){
-            int newClr = (int)(Math.random()*128) + 128;
+            int newClr = (int)(Math.random()*192) +64;
             colors.add(newClr);
         }
     }

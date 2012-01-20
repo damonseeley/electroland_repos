@@ -148,8 +148,8 @@ public class EIAClipPlayer {
         faintSparkle.zIndex = -100; // sets to far background
 
         //fadein, wait, fadeout
-        Change lightFade = new LinearChange().alphaTo(.25);
-        faintSparkle.delay(500).queueChange(lightFade, 4000).delay(12000).fadeOut(2000).delete();
+        Change lightFade = new LinearChange().alphaTo(.15);
+        faintSparkle.delay(0).queueChange(lightFade, 2000).delay(12000).fadeOut(2000).delete();
     }
     
     public void blockWaveAll(double x) {
