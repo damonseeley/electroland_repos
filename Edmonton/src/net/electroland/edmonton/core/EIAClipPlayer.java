@@ -157,12 +157,27 @@ public class EIAClipPlayer {
         Content waveBlock = new SolidColorContent(Color.WHITE);
 
         int waveWidth = 32;
-        Clip waveClip = anim.addClip(waveBlock, 635,0,32,16, 1.0); //add it as 32px wide at the end of the stage
+        Clip waveClip = anim.addClip(waveBlock, 235,0,waveWidth,16, 1.0); //add it as 32px wide at the end of the stage
         waveClip.zIndex = -100; // sets to far background
 
         //fadein, wait, fadeout
         Change waveMove = new LinearChange().xTo(-waveWidth);
         waveClip.queueChange(waveMove, 20000).delay(500).delete();
+        //one.delay(4000).queueChange(change6, 1000);
+        //faintSparkle.delay(500).queueChange(lightFade, 4000).delay(12000).fadeOut(2000).delete();
+    }
+    
+    public void bigWaveAll(double x) {
+        logger.info("bigWaveAll@ " + x);
+        Content waveImage = anim.getContent("waveImage");
+
+        int waveWidth = 32;
+        Clip waveImageClip = anim.addClip(waveImage, 235,0,waveWidth,16, 1.0); //add it as 32px wide at the end of the stage
+        waveImageClip.zIndex = -100; // sets to far background
+
+        //fadein, wait, fadeout
+        Change waveMove = new LinearChange().xTo(-waveWidth);
+        waveImageClip.queueChange(waveMove, 10000).delay(500).delete();
         //one.delay(4000).queueChange(change6, 1000);
         //faintSparkle.delay(500).queueChange(lightFade, 4000).delay(12000).fadeOut(2000).delete();
     }
