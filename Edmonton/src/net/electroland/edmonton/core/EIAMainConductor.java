@@ -178,6 +178,9 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
         ef = new EIAFrame(Integer.parseInt(props.getRequired("settings", "global", "guiwidth")),Integer.parseInt(props.getRequired("settings", "global", "guiheight")),context);
         ef.addButtonListener(this);
 
+        
+        //start it all
+        //goQuiet();
 
         /******** Thread Setup ********/
         framerate = props.getRequiredInt("settings", "global", "framerate");
