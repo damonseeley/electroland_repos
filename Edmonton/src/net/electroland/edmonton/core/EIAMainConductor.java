@@ -9,7 +9,6 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -19,17 +18,14 @@ import net.electroland.ea.Clip;
 import net.electroland.ea.Content;
 import net.electroland.ea.content.SolidColorContent;
 import net.electroland.edmonton.core.model.LastTrippedModelWatcher;
-import net.electroland.edmonton.core.model.OneEventPerPeriodModelWatcher;
 import net.electroland.edmonton.core.model.ScreenSaverModelWatcher;
 import net.electroland.edmonton.core.model.TrackerBasicModelWatcher;
 import net.electroland.edmonton.core.sequencing.SimpleSequencer;
 import net.electroland.edmonton.core.ui.EIAFrame;
 import net.electroland.eio.IOManager;
-import net.electroland.eio.IState;
 import net.electroland.eio.model.Model;
 import net.electroland.eio.model.ModelEvent;
 import net.electroland.eio.model.ModelListener;
-import net.electroland.eio.model.ModelWatcher;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.lighting.ELUManager;
@@ -252,7 +248,6 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
         if (isLive){
             logger.info("go Screensaver");
             isLive = false;
-            sequencer.stop();
             soundController.fadeAll(500);
             clipPlayer.live.fadeOut(500).deleteChildren();
             clipPlayer.quiet.fadeIn(0);
@@ -269,7 +264,6 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
         if (!isLive){
             logger.info("go Live");
             isLive = true;
-            sequencer.stop();
             soundController.fadeAll(500);
             clipPlayer.quiet.fadeOut(500).deleteChildren();
             clipPlayer.live.fadeIn(0);

@@ -24,4 +24,8 @@ abstract public class Cue {
     }
 
     abstract public void play(Map<String, Object> context);
+    
+    public String toString(){
+        return "clipCue." + id + "[time=" + this.getTime() + ",parent=" + (parent != null ? parent.id:null) + ",type=" + this.getClass() + "]";
+    }
 }
