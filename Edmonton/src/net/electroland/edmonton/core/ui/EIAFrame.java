@@ -40,7 +40,7 @@ public class EIAFrame extends JFrame implements ActionListener {
 	private int panelWidth,panelHeight;
 
 	private JButton b1,b2,b3,b4,b5,b6,b7,b8,b9,b10;
-	private JButton startShow1,startShow2,stopSeq;
+	private JButton startShow1,startShow2,testShow,stopSeq;
 	private JLabel dScaleLabel, seqDelayLabel;
 	private DoubleJSlider jsScale;
 	private JSlider jsDelay;
@@ -103,9 +103,13 @@ public class EIAFrame extends JFrame implements ActionListener {
 		startShow1.setActionCommand("startShow1");
 		buttons.add(startShow1);		
 
-		startShow2 = new JButton("Start Show2");
-		startShow2.setActionCommand("startShow2");
-		buttons.add(startShow2);
+        startShow2 = new JButton("Start Show2");
+        startShow2.setActionCommand("startShow2");
+        buttons.add(startShow2);
+        
+        testShow = new JButton("Test Show");
+        testShow.setActionCommand("testShow");
+        buttons.add(testShow);
 
 		stopSeq = new JButton("Stop Active Sequence");
 		stopSeq.setActionCommand("stopSeq");
