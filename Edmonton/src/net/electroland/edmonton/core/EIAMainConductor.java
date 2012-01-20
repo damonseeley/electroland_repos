@@ -83,10 +83,23 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
 
         elu = new ELUManager();
         eio = new IOManager();
+
+        boolean eioplayback = false;
+        try {
+            eioplayback = Boolean.parseBoolean(props.getOptional("settings", "eiomode", "playback"));
+        } catch (OptionException e) {
+            // TODO Auto-generated catch block
+            eioplayback = false;
+            e.printStackTrace();
+        }
+
         try {
             elu.load("EIA-ELU.properties");
-            //eio.load("EIA-EIO.properties");
-            eio.load("EIA-EIO-playback.properties");
+            if (eioplayback){
+                eio.load("EIA-EIO-playback.properties");
+            } else {
+                eio.load("EIA-EIO.properties");
+            }
             eio.start();
         } catch (OptionException e) {
             e.printStackTrace();
