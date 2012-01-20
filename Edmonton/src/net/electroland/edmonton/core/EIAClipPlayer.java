@@ -21,6 +21,7 @@ public class EIAClipPlayer {
 
     int cWidth = 635;
     int cHeight = 16;
+    int pmvr2Start = 240;
 
     int wNote = 659; //ms
     int hNote = wNote/2;
@@ -107,11 +108,23 @@ public class EIAClipPlayer {
         x = findNearestLight(x,true);
         int barWidth = 3;
         Content simpleClip2 = new SolidColorContent(Color.WHITE);
-        Clip stab1 = live.addClip(simpleClip2, (int)x-barWidth/2,0,barWidth,16, 1.0);
+        Clip stab1 = live.addClip(simpleClip2, (int)x-barWidth/2,0,barWidth,cHeight, 1.0);
         //fade out
         stab1.delay(250).fadeOut(8000).delete();
     }
-
+    
+    public void localStabExpand(double x) {
+        logger.info("localStabBig@ " + x);
+        x = findNearestLight(x,true);
+        int barWidth = 8;
+        int of = 1;
+        //create all bars, but at 0.0 alpha to popin later
+        Content blurSquare = anim.getContent("blurSquare64grad");
+        Clip stab1 = live.addClip(blurSquare, (int)x-barWidth/2-of,0,barWidth,cHeight, 1.0);
+        double newScale = 12.0;
+        Change scale = new LinearChange().scaleWidth(newScale).xTo(x-barWidth/2*newScale-of).alphaTo(0.0);
+        stab1.queueChange(scale, 800);
+    }
 
 
 
@@ -125,6 +138,7 @@ public class EIAClipPlayer {
         //fade out
         stab1.delay(800).fadeOut(5000).delete();
     }
+   
 
     //could be more generalized
     public void harpTrillUp(double x) {
@@ -201,8 +215,8 @@ public class EIAClipPlayer {
         }
     }
 
-    public void megaSparkleFaint(double x) {
-        logger.info("global sparkle faint@ " + x);
+    public void introSparkle(double x) {
+        logger.info("introSparkle@ " + x);
 
         Content sparkleClip320 = anim.getContent("sparkleClip320");
         Clip faintSparkle = live.addClip(sparkleClip320, 0,0,cWidth,16, 0.0);
@@ -212,6 +226,20 @@ public class EIAClipPlayer {
         Change lightFade = new LinearChange().alphaTo(.15);
         faintSparkle.delay(0).queueChange(lightFade, 1000).delay(18500).fadeOut(2000).delete();
     }
+    
+    public void s1v1sparkle(double x) {
+        logger.info("s1v1sparkle@ " + x);
+
+        Content sparkleClip320 = anim.getContent("sparkleClip320");
+        Clip faintSparkle = live.addClip(sparkleClip320, 0,0,cWidth,16, 0.0);
+        faintSparkle.zIndex = -100; // sets to far background
+
+        //fadein, wait, fadeout
+        Change lightFade = new LinearChange().alphaTo(.15);
+        faintSparkle.delay(0).queueChange(lightFade, 800).delay(19000).fadeOut(2000).delete();
+    }
+    
+    
 
     public void blockWaveAll(double x) {
         logger.info("blockWaveAll@ " + x);
@@ -241,6 +269,26 @@ public class EIAClipPlayer {
         waveImageClip.queueChange(waveMove, 10000).delay(500).delete();
         //one.delay(4000).queueChange(change6, 1000);
         //faintSparkle.delay(500).queueChange(lightFade, 4000).delay(12000).fadeOut(2000).delete();
+    }
+    
+    public void megaWaveDouble(double x) {
+        logger.info("megaWaveDouble@ " + x);
+        Content waveImage = anim.getContent("megaWave");
+
+        int waveWidth = 256;
+        int wave1End = 340;
+        //pmvr2Start
+        Clip wave1 = live.addClip(waveImage, cWidth-15,0,waveWidth/2,cHeight, 1.0); //add it as 32px wide at the end of the stage
+        Clip wave2 = live.addClip(waveImage, pmvr2Start-8,0,waveWidth/3,cHeight, 1.0); //add it as 32px wide at the end of the stage
+        wave1.zIndex = -100; // sets to far background
+        wave2.zIndex = -100; // sets to far background
+
+        //fadein, wait, fadeout
+        Change waveMove1 = new LinearChange().xTo(wave1End-waveWidth).scaleWidth(3.0).alphaTo(0.0);
+        Change waveMove2 = new LinearChange().xTo(0-waveWidth).scaleWidth(3.0).alphaTo(0.0);
+
+        wave1.queueChange(waveMove1, 3500).delete();
+        wave2.queueChange(waveMove2, 3500).delete();
     }
 
 
