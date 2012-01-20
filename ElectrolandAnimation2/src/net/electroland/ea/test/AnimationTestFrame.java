@@ -38,7 +38,7 @@ public class AnimationTestFrame extends JFrame{
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // one animation clip with another nested.
-        Clip one = anim.addClip(anim.getContent("slowImage"), w, h, w, h, 1.0);
+        Clip one = anim.addClip(anim.getContent("stillImage"), w, h, w, h, 1.0);
         Clip two = one.addClip(anim.getContent("fastImage"), 50, 50, 100, 100, .5,1000);
         two.addClip(anim.getContent("fastImage"), 50, 50, 50, 50, .5);
 
