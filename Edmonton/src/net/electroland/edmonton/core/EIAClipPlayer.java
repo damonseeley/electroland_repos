@@ -151,6 +151,21 @@ public class EIAClipPlayer {
         Change lightFade = new LinearChange().alphaTo(.25);
         faintSparkle.delay(500).queueChange(lightFade, 4000).delay(12000).fadeOut(2000).delete();
     }
+    
+    public void blockWaveAll(double x) {
+        logger.info("blockWaveAll@ " + x);
+        Content waveBlock = new SolidColorContent(Color.WHITE);
+
+        int waveWidth = 32;
+        Clip waveClip = anim.addClip(waveBlock, 635,0,32,16, 1.0); //add it as 32px wide at the end of the stage
+        waveClip.zIndex = -100; // sets to far background
+
+        //fadein, wait, fadeout
+        Change waveMove = new LinearChange().xTo(-waveWidth);
+        waveClip.queueChange(waveMove, 20000).delay(500).delete();
+        //one.delay(4000).queueChange(change6, 1000);
+        //faintSparkle.delay(500).queueChange(lightFade, 4000).delay(12000).fadeOut(2000).delete();
+    }
 
 
     /*
