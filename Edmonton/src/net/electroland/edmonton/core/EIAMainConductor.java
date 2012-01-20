@@ -213,6 +213,7 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
         }
         if ("stopSeq".equals(e.getActionCommand())) {
             sequencer.stop();
+            isLive = false;
             clipPlayer.live.deleteChildren();
             clipPlayer.quiet.deleteChildren();
             soundController.fadeAll(500);
