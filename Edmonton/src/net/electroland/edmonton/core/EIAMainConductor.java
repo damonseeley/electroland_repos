@@ -250,10 +250,10 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
     }
 
     public void goLive(){
+        // TECHNICALLY: THIS IS ALL YOU NEED.
+        //sequencer.play(sequencer.liveShowId);
+        // then comment block below out.
         if (!isLive){
-            // TECHNICALLY: THIS IS ALL YOU NEED.
-            //sequencer.play(sequencer.liveShowId);
-            // then comment block below out.
             logger.info("go Live");
             isLive = true;
             sequencer.stop();
