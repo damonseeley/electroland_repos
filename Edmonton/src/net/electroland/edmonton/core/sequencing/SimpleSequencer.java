@@ -22,8 +22,10 @@ public class SimpleSequencer implements Runnable, ModelListener{
     private Map <String, Object> context;
     private Thread thread;
     private Show current;
+    public Show nextShow;
     private int clipDelay = 0;
     public String liveShowId, quietShowId;
+    private boolean newShow = true;
 
     public static void main(String args[])
     {
@@ -104,18 +106,19 @@ public class SimpleSequencer implements Runnable, ModelListener{
         }
     }
 
+    
     public void play(String showName)
     {
-        current = shows.get(showName);
-        if (current != null)
+        
+        nextShow = shows.get(showName);
+        if (nextShow != null)
         {
-            current.reset();
+            newShow = true;
             if (thread == null)
             {
                 thread = new Thread(this);
                 thread.start();
             }
-            
         }else{
             logger.warn("No show '" + showName + "' has been definied.");
         }
@@ -142,11 +145,16 @@ public class SimpleSequencer implements Runnable, ModelListener{
     @Override
     public void run() {
         logger.info("sequencer started.");
-
         long start = System.currentTimeMillis();
-
         while(thread != null)
         {
+            if (newShow){
+                System.out.println("Playing next show.");
+                newShow = false;
+                start = System.currentTimeMillis();
+                nextShow.reset();
+                current = nextShow;
+            }
             long passed = System.currentTimeMillis() - start;
 
             for (Cue cue : current.cues)
@@ -158,7 +166,7 @@ public class SimpleSequencer implements Runnable, ModelListener{
                 }
                 if (!cue.played && passed >= time)
                 {
-                    logger.info("playing " + cue.id + " at " + passed);
+                    logger.info("playing " + cue + " at " + passed);
                     cue.play(context);
                     cue.played = true;
                 }
