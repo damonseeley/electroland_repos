@@ -114,7 +114,7 @@ public class AnimationManager {
     {
         int newCount = stage.countChildren();
         if (newCount != clipCount){
-            logger.debug("clip count changed to " + newCount);
+            logger.info("clip count changed to " + newCount);
             clipCount = newCount;
         }
         return stage.getImage();
