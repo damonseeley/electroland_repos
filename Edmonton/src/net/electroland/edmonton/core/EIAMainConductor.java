@@ -203,8 +203,13 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
             sequencer.play("show2");
             //this.goLive();
         }
+        if ("testShow".equals(e.getActionCommand())) {
+            sequencer.play("testShow");
+            //this.goLive();
+        }
         if ("stopSeq".equals(e.getActionCommand())) {
-            this.goQuiet();
+            sequencer.stop();
+            soundController.fadeAll(500);
         }
 
     }
