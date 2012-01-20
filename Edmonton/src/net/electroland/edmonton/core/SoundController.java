@@ -1,5 +1,6 @@
 package net.electroland.edmonton.core;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -251,7 +252,18 @@ public class SoundController implements SCSoundControlNotifiable {
 
     public void fadeAll(int duration)
     {
-
+        //first simply try killing all
+        ArrayList<Integer> snToKill = new ArrayList<Integer>();
+        for (int snID : soundNodes.keySet()){
+            SoundNode sn = soundNodes.get(snID);
+            sn.die();
+            sn.cleanup();
+            snToKill.add(snID);
+            logger.info("SoundController: Killed SoundNode " + snID);
+        }
+        for (int i : snToKill){
+            soundNodes.remove(i);
+        }
     }
 
 
