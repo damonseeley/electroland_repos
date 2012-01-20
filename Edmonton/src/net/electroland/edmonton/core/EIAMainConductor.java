@@ -141,14 +141,14 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
 
         context.put("anim",anim);
         context.put("animpropsfile", "EIA-anim.properties");
-
-        soundController = new SoundController(context);
-        context.put("soundController", soundController);
-
+        
         String seqpropsfile = "EIA-seq-LITE.properties";
         sequencer = new SimpleSequencer(seqpropsfile, context);
         context.put("sequencer", sequencer);
         context.put("seqpropsfile", seqpropsfile);
+        
+        soundController = new SoundController(context);
+        context.put("soundController", soundController);
 
         clipPlayer = new EIAClipPlayer(anim,elu);
         context.put("clipPlayer", clipPlayer);
