@@ -99,7 +99,7 @@ public class SoundController implements SCSoundControlNotifiable {
         }
 
 
-        boolean testme = false;
+        boolean testme = true;
         if (testme) {
             logger.info("GetClosestBay for 610.0 (bay 1): " + getClosestBay(610.0));
             logger.info("GetClosestBay for 560.0 (bay 2): " + getClosestBay(560.0));
@@ -252,7 +252,7 @@ public class SoundController implements SCSoundControlNotifiable {
     }
 
 
-    
+
     public void fadeAll(int duration)
     {
         logger.info("fading audio out");
@@ -303,9 +303,11 @@ public class SoundController implements SCSoundControlNotifiable {
     public void playSingleChannel(String filename, double x, float gain){
         if (!bypass) {
             if(!filename.equals("none") && serverIsLive){
-                
+
                 int channel = getClosestBayChannel(x);
-                
+                logger.info("SoundController: will play on channel: " + channel);
+
+
                 if (stereoOnly){
                     int[] channels = stereochannels;
                     float[] amplitudes = new float[]{gain,gain};
@@ -325,8 +327,8 @@ public class SoundController implements SCSoundControlNotifiable {
                     }
                     newSoundNode(sn);
                 }
-                
-                
+
+
                 /*
                 int channel = getClosestBayChannel(x);
                 if (debug) {
@@ -337,7 +339,7 @@ public class SoundController implements SCSoundControlNotifiable {
                     logger.info("SoundController: Played Single Bay "+soundFilePath+filename+ " on channel: " + channel + " with gain: "+ gain);
                 }
                 newSoundNode(sn);
-                */
+                 */
             }
         }
     }
