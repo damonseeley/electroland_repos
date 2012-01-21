@@ -148,19 +148,18 @@ public class EIAClipPlayer {
         int barWidth = 3;
 
         int of = 1;
-        x = findNearestLight(x-24,true);
-        //create all bars, with each appearing in delayed intervals
         Content simpleClip2 = new SolidColorContent(Color.WHITE);
 
         int ix = (int)x;
         int xLow = 0;
         int xHigh = cWidth;
         int plucks = 8;
-        int pluckDensity = 18;
-        int pDelay = qNote/4;
+        //use x here for number of plucks
+        int numPlucks = (int)x;
+        int pDelay = qNote;
 
         for (int p=0; p<plucks; p++){
-            for (int d=0; d<pluckDensity; d++){
+            for (int d=0; d<numPlucks; d++){
                 int newx = (int)(Math.random()*(xHigh-xLow));
                 live.addClip(simpleClip2, newx-of, 0, barWidth, cHeight, 1.0, p*pDelay).delay(400+(int)(Math.random()*400)).fadeOut(800).delete();
             }
@@ -309,6 +308,30 @@ public class EIAClipPlayer {
             int newx = (int)(Math.random()*(xHigh-xLow));
             Change moveIt = new LinearChange().xBy(-16).alphaTo(0.0);
             live.addClip(waveImage, newx, 0, waveWidth, cHeight, 1.0, p*pDelay).queueChange(moveIt, 1500);
+        }
+    }
+    
+    public void structuredWaves(double x) {
+        logger.info("structuredWaves @" + x);
+       
+        //here we are using the x value as the number of waves to make
+        int waves = (int)x; //?
+        int wave1End = 340;
+        int xLow = 0;
+        int xHigh = cWidth;
+        int waveWidth = 32;
+        int waveOffset = waveWidth/3;
+        int waveSpacing = waveWidth + waveOffset;
+        waves = (cWidth-wave1End)/waveSpacing;
+        
+        int pDelay = eNote;
+        Content waveImage = anim.getContent("waveImage");
+        for (int p=0; p<waves; p++){
+            int newx1 = wave1End + p*waveSpacing; //ppm 1
+            int newx2 = 0 + p*waveSpacing; //ppm 2
+            Change moveIt = new LinearChange().xBy(-1*waveWidth/2).alphaTo(0.0);
+            live.addClip(waveImage, newx1, 0, waveWidth, cHeight, 1.0, p*pDelay).queueChange(moveIt, 1500);
+            live.addClip(waveImage, newx2, 0, waveWidth, cHeight, 1.0, p*pDelay).queueChange(moveIt, 1500);
         }
     }
     
