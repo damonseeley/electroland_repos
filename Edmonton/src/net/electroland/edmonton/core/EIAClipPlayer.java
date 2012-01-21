@@ -139,37 +139,6 @@ public class EIAClipPlayer {
         stab1.delay(800).fadeOut(5000).delete();
     }
 
-
-    //could be more generalized
-    public void harpTrillUp(double x) {
-        logger.info("HarpTrill @" + x);
-        int barWidth = 3;
-
-        int of = 1;
-        x = findNearestLight(x-24,true);
-        //create all bars, with each appearing in delayed intervals
-        Content simpleClip2 = new SolidColorContent(Color.WHITE);
-        int ix = (int)x;
-
-        Clip harp1 = live.addClip(simpleClip2, ix-barWidth*4-barWidth/2-of, 0, barWidth, cHeight, 1.0, 0);
-        Clip harp2 = live.addClip(simpleClip2, ix-barWidth*3-barWidth/2-of, 0, barWidth, cHeight, 0.9, eNote);
-        Clip harp3 = live.addClip(simpleClip2, ix-barWidth*2-barWidth/2-of, 0, barWidth, cHeight, 0.7, eNote*2);
-        Clip harp4 = live.addClip(simpleClip2, ix-barWidth*1-barWidth/2-of, 0, barWidth, cHeight, 1.0, eNote*3);      
-        Clip harp5 = live.addClip(simpleClip2, ix+barWidth*0-barWidth/2-of, 0, barWidth, cHeight, 0.8, eNote*4);
-        Clip harp6 = live.addClip(simpleClip2, ix+barWidth*1-barWidth/2-of, 0, barWidth, cHeight, 0.9, eNote*5);
-        Clip harp7 = live.addClip(simpleClip2, ix+barWidth*2-barWidth/2-of, 0, barWidth, cHeight, 0.9, eNote*6);
-        Clip harp8 = live.addClip(simpleClip2, ix+barWidth*3-barWidth/2-of, 0, barWidth, cHeight, 1.0, eNote*7);
-
-        harp1.delay(500).fadeOut(1000).delete();
-        harp2.delay(500).fadeOut(1000).delete();
-        harp3.delay(500).fadeOut(1000).delete();
-        harp4.delay(500).fadeOut(1000).delete();
-        harp5.delay(500).fadeOut(1000).delete();
-        harp6.delay(500).fadeOut(1000).delete();
-        harp7.delay(500).fadeOut(1000).delete();
-        harp8.delay(500).fadeOut(1000).delete();
-    }
-
     /*
      * Globals
      */
@@ -187,8 +156,8 @@ public class EIAClipPlayer {
         int xLow = 0;
         int xHigh = cWidth;
         int plucks = 8;
-        int pluckDensity = 12;
-        int pDelay = qNote;
+        int pluckDensity = 18;
+        int pDelay = qNote/4;
 
         for (int p=0; p<plucks; p++){
             for (int d=0; d<pluckDensity; d++){
@@ -342,6 +311,24 @@ public class EIAClipPlayer {
             live.addClip(waveImage, newx, 0, waveWidth, cHeight, 1.0, p*pDelay).queueChange(moveIt, 1500);
         }
     }
+    
+    public void randomWaves2(double x) {
+        logger.info("randomWaves2 @" + x);
+        int xLow = 0;
+        int xHigh = cWidth;
+        int waveWidth = 40;
+
+        //here we are using the x value as the number of waves to make
+        int waves = (int)x;
+        int pDelay = eNote/3;
+        Content waveImage = anim.getContent("waveImage");
+        for (int p=0; p<waves; p++){
+            int newx = (int)(Math.random()*(xHigh-xLow));
+            Change moveIt = new LinearChange().xBy(-16).alphaTo(0.0);
+            live.addClip(waveImage, newx, 0, waveWidth, cHeight, 1.0, p*pDelay).queueChange(moveIt, 1500);
+        }
+    }
+
 
 
     /*
