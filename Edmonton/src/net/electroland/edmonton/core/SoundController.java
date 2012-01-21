@@ -16,6 +16,9 @@ import org.apache.log4j.Logger;
 
 public class SoundController implements SCSoundControlNotifiable {
 
+    final static int[] multichannels = {2,3,4,5,6,7,8,9,14,15,16};
+    final static int[] stereochannels = {0,1};
+
     private Hashtable<String,Object> context;
     private ElectrolandProperties props;
     private AnimationManager anim;
@@ -249,24 +252,29 @@ public class SoundController implements SCSoundControlNotifiable {
     }
 
 
-
+    
     public void fadeAll(int duration)
     {
-        //first simply try killing all
-        ArrayList<Integer> snToKill = new ArrayList<Integer>();
-        for (int snID : soundNodes.keySet()){
-            SoundNode sn = soundNodes.get(snID);
-            sn.die();
-            sn.cleanup();
-            snToKill.add(snID);
-            logger.info("SoundController: Killed SoundNode " + snID);
-        }
-        for (int i : snToKill){
-            soundNodes.remove(i);
+        logger.info("fading audio out");
+        // copy all live sounds and empty out the sound state
+        synchronized (soundNodes){
+            ArrayList<SoundNode> fadeNodes = new ArrayList<SoundNode>();
+            fadeNodes.addAll(soundNodes.values());
+            soundNodes.clear();
+            if (stereoOnly){
+                new AudioFadeThread(fadeNodes, stereochannels, this, 500).start();
+            }else{
+                new AudioFadeThread(fadeNodes, multichannels, this, 500).start();
+            }
         }
     }
 
-
+    public void kill(SoundNode n)
+    {
+        n.die();
+        n.cleanup();
+        soundNodes.remove(n);
+    }
 
     /** 
      * play a test sound at 1.0f gain out of the first channel
@@ -299,7 +307,7 @@ public class SoundController implements SCSoundControlNotifiable {
                 int channel = getClosestBayChannel(x);
                 
                 if (stereoOnly){
-                    int[] channels = new int[]{0,1};
+                    int[] channels = stereochannels;
                     float[] amplitudes = new float[]{gain,gain};
                     SoundNode sn = ss.createMonoSoundNode(soundFiles.get(soundFilePath+filename), false, channels, amplitudes, 1.0f);
                     if (debug) {
@@ -367,7 +375,7 @@ public class SoundController implements SCSoundControlNotifiable {
                 } else {
                     // whoah, hacky.  let's fix this
                     // what we're doing here is hard coding Edmonton channel IDs and gain values to correspond with MOTU hardware
-                    int[] channels = new int[]{2,3,4,5,6,7,8,9,14,15,16};
+                    int[] channels = multichannels;
                     float[] amplitudes = new float[]{gain,gain,gain,gain,gain,gain,gain,gain,gain,gain,gain};
                     SoundNode sn = ss.createMonoSoundNode(soundFiles.get(soundFilePath+soundFile), false, channels, amplitudes, 1.0f);
                     if (debug) {
