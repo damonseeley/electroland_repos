@@ -47,7 +47,7 @@ public class EIAClipPlayer {
     int debugId = 0;
 
     public void localTrill4Down(double x) {
-        logger.info("localTrill4Down@ " + x);
+        //logger.info("localTrill4Down@ " + x);
 
         double x1 = (int)findNearestLight(x,true);
         int barOff = 4;
@@ -75,7 +75,7 @@ public class EIAClipPlayer {
     }
 
     public void twoNoteChord(double x){
-        logger.info("twoNoteChord@ " + x);
+        //logger.info("twoNoteChord@ " + x);
         int barOff = 4;
         int barWidth = 3;
         int of = 1; //offset to hit lights
@@ -93,7 +93,7 @@ public class EIAClipPlayer {
 
 
     public void localStabSmall(double x) {
-        logger.info("localStabSmall@ " + x);
+        //logger.info("localStabSmall@ " + x);
         x = findNearestLight(x,true);
         int barWidth = 3;
         Content simpleClip2 = new SolidColorContent(Color.WHITE);
@@ -104,7 +104,7 @@ public class EIAClipPlayer {
 
     public void localStabSmallLong(double x) {
         //same but long fadeout
-        logger.info("localStabSmallLong@ " + x);
+        //logger.info("localStabSmallLong@ " + x);
         x = findNearestLight(x,true);
         int barWidth = 3;
         Content simpleClip2 = new SolidColorContent(Color.WHITE);
@@ -114,7 +114,7 @@ public class EIAClipPlayer {
     }
 
     public void localStabExpand(double x) {
-        logger.info("localStabBig@ " + x);
+        //logger.info("localStabBig@ " + x);
         x = findNearestLight(x,true);
         int barWidth = 8;
         int of = 1;
@@ -129,7 +129,7 @@ public class EIAClipPlayer {
 
 
     public void localStabBig(double x) {
-        logger.info("localStabBig@ " + x);
+        //logger.info("localStabBig@ " + x);
         x = findNearestLight(x,true);
         int barWidth = 6;
         //create all bars, but at 0.0 alpha to popin later
@@ -144,7 +144,7 @@ public class EIAClipPlayer {
      */
 
     public void harpFill(double x) {
-        logger.info("HarpTrill @" + x);
+        //logger.info("HarpTrill @" + x);
         int barWidth = 3;
 
         int of = 1;
@@ -167,7 +167,7 @@ public class EIAClipPlayer {
     }
 
     public void wholeNoteBeatRest(double x) {
-        logger.info("HarpTrill @" + x);
+        //logger.info("HarpTrill @" + x);
         int barWidth = 3;
 
         int of = 1;
@@ -184,7 +184,7 @@ public class EIAClipPlayer {
     }
 
     public void introSparkle(double x) {
-        logger.info("introSparkle@ " + x);
+        //logger.info("introSparkle@ " + x);
 
         Content sparkleClipFast = anim.getContent("sparkleClipFast");
         Clip faintSparkle = live.addClip(sparkleClipFast, 0,0,cWidth,16, 0.0);
@@ -196,7 +196,7 @@ public class EIAClipPlayer {
     }
 
     public void s1v1sparkle(double x) {
-        logger.info("s1v1sparkle@ " + x);
+        //logger.info("s1v1sparkle@ " + x);
 
         Content sparkleClipFast = anim.getContent("sparkleClipFast");
         Clip faintSparkle = live.addClip(sparkleClipFast, 0,0,cWidth,16, 0.0);
@@ -208,7 +208,7 @@ public class EIAClipPlayer {
     }
 
     public void screenSaverSparkle(double x) {
-        logger.info("screenSaverSparkle@ " + x);
+        //logger.info("screenSaverSparkle@ " + x);
         // use x as total time here
         int tFadeIn = 2000;
         int tFadeOut = 2000;
@@ -224,7 +224,7 @@ public class EIAClipPlayer {
     }
 
     public void screenSaverSparkle2(double x) {
-        logger.info("screenSaverSparkle2@ " + x);
+        //logger.info("screenSaverSparkle2@ " + x);
         // use x as total time here as a hack
         int tFadeIn = 2000;
         int tFadeOut = 2000;
@@ -244,7 +244,7 @@ public class EIAClipPlayer {
 
 
     public void blockWaveAll(double x) {
-        logger.info("blockWaveAll@ " + x);
+        //logger.info("blockWaveAll@ " + x);
         Content waveBlock = new SolidColorContent(Color.WHITE);
 
         int waveWidth = 32;
@@ -259,7 +259,7 @@ public class EIAClipPlayer {
     }
 
     public void bigWaveAll(double x) {
-        logger.info("bigWaveAll@ " + x);
+        //logger.info("bigWaveAll@ " + x);
         Content waveImage = anim.getContent("waveImage");
 
         int waveWidth = 32;
@@ -274,7 +274,7 @@ public class EIAClipPlayer {
     }
 
     public void megaWaveDouble(double x) {
-        logger.info("megaWaveDouble@ " + x);
+        //logger.info("megaWaveDouble@ " + x);
         Content waveImage = anim.getContent("megaWave");
 
         int waveWidth = 256;
@@ -295,7 +295,7 @@ public class EIAClipPlayer {
 
 
     public void randomWaves(double x) {
-        logger.info("randomWaves @" + x);
+        //logger.info("randomWaves @" + x);
         int xLow = 0;
         int xHigh = cWidth;
         int waveWidth = 32;
@@ -313,7 +313,7 @@ public class EIAClipPlayer {
     
     
     public void randomWaves2(double x) {
-        logger.info("randomWaves2 @" + x);
+        //logger.info("randomWaves2 @" + x);
         int xLow = 0;
         int xHigh = cWidth;
         int waveWidth = 40;
@@ -330,7 +330,7 @@ public class EIAClipPlayer {
     }
     
     public void structuredWaves(double x) {
-        logger.info("structuredWaves @" + x);
+        //logger.info("structuredWaves @" + x);
        
         //here we are using the x value as the number of waves to make
         int waves = (int)x; //?
@@ -355,7 +355,7 @@ public class EIAClipPlayer {
     
     
     public void megaThrob(double x) {
-        logger.info("megaThrob @" + x);
+        //logger.info("megaThrob @" + x);
 
         int wave1End = 340;
         int xLow = 0;
@@ -391,7 +391,7 @@ public class EIAClipPlayer {
                 closestX = f.getLocation().x;
             }
         }
-        //logger.info("ClipPlayer: Track x= " + x + " & closest fixture x= " + closestX);
+        ////logger.info("ClipPlayer: Track x= " + x + " & closest fixture x= " + closestX);
         return closestX;
     }
 
