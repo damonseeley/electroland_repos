@@ -23,9 +23,10 @@ public class AudioFadeThread extends Thread {
         boolean alive = true;
         while (alive)
         {
-            float percentComplete = (start - System.currentTimeMillis()) / (float)duration;
-            float level = 1.0f * percentComplete;
+            float percentComplete = (System.currentTimeMillis() - start) / (float)duration;
+            float level = 1.0f - 1.0f * percentComplete;
             if (percentComplete < 1.0){
+                System.out.println(percentComplete);
                 for (SoundNode node : nodes){
                     for (int i= 0; i < channels.length; i++)
                         node.setAmplitude(channels[i], level);
@@ -35,6 +36,12 @@ public class AudioFadeThread extends Thread {
                     sc.kill(node);
                 }
                 alive = false;
+            }
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         }
     }
