@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
+import net.electroland.edmonton.core.SoundController;
 import net.electroland.edmonton.core.model.LastTrippedModelWatcher;
 import net.electroland.eio.model.ModelEvent;
 import net.electroland.eio.model.ModelListener;
@@ -175,6 +176,12 @@ public class SimpleSequencer implements Runnable, ModelListener{
             if (passed >= current.duration)
             {
                 logger.info("show over at " + passed);
+// this section is fading out the last show before looping.
+                if ((context.get("soundController")) instanceof SoundController)
+                {
+                    ((SoundController)context.get("soundController")).fadeAll(500);
+                }
+// until here.
                 if (current.followWith != null)
                 {
                     current.reset();
