@@ -291,13 +291,14 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
         /**
          * UNCOMMMENT TO START GENERATIVE SHOW ON PEOPLEMOVER 2
          */
-        
+        /*
         for (int s=40; s<=71; s++){
             ModelWatcher mw = new OneEventPerPeriodModelWatcher(1200);
             ArrayList<IState> oneState = new ArrayList<IState>();
             oneState.add(eio.getIStateById("i"+s));
             model.addModelWatcher(mw, "i"+s, oneState);
         }
+        */
          
         
         

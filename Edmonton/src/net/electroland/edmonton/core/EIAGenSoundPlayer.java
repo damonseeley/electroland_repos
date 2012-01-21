@@ -81,7 +81,8 @@ public class EIAGenSoundPlayer {
         String soundtoplay = (String) soundList.get((int) (Math.random()*soundList.size()));
         //logger.info("GENSOUND: playing " + soundtoplay );
         if (sc != null) {
-            sc.playSingleChannel(soundtoplay, x, 1.0f);
+            //sc.playSingleChannel(soundtoplay, x, 1.0f);
+            sc.playGlobal(soundtoplay, false, 1.0f);
         }
         
         
