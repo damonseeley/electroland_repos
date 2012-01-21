@@ -311,6 +311,24 @@ public class EIAClipPlayer {
         }
     }
     
+    
+    public void randomWaves2(double x) {
+        logger.info("randomWaves2 @" + x);
+        int xLow = 0;
+        int xHigh = cWidth;
+        int waveWidth = 40;
+
+        //here we are using the x value as the number of waves to make
+        int waves = (int)x;
+        int pDelay = eNote/3;
+        Content waveImage = anim.getContent("waveImage");
+        for (int p=0; p<waves; p++){
+            int newx = (int)(Math.random()*(xHigh-xLow));
+            Change moveIt = new LinearChange().xBy(-16).alphaTo(0.0);
+            live.addClip(waveImage, newx, 0, waveWidth, cHeight, 1.0, p*pDelay).queueChange(moveIt, 1500);
+        }
+    }
+    
     public void structuredWaves(double x) {
         logger.info("structuredWaves @" + x);
        
@@ -335,22 +353,22 @@ public class EIAClipPlayer {
         }
     }
     
-    public void randomWaves2(double x) {
-        logger.info("randomWaves2 @" + x);
+    
+    public void megaThrob(double x) {
+        logger.info("megaThrob @" + x);
+
+        int wave1End = 340;
         int xLow = 0;
         int xHigh = cWidth;
-        int waveWidth = 40;
-
-        //here we are using the x value as the number of waves to make
-        int waves = (int)x;
-        int pDelay = eNote/3;
-        Content waveImage = anim.getContent("waveImage");
-        for (int p=0; p<waves; p++){
-            int newx = (int)(Math.random()*(xHigh-xLow));
-            Change moveIt = new LinearChange().xBy(-16).alphaTo(0.0);
-            live.addClip(waveImage, newx, 0, waveWidth, cHeight, 1.0, p*pDelay).queueChange(moveIt, 1500);
-        }
+        //use x here as a timing value for throb in/out
+        int throbTime = (int)x;
+        int throbOutTime = (int) (throbTime * 1.0);
+        Content throbImage = anim.getContent("megaWave");
+        live.addClip(throbImage, 0, 0, wave1End-100, cHeight, 0.0).fadeIn(throbTime).delay(throbTime/4).fadeOut(throbOutTime).delete();
+        live.addClip(throbImage, wave1End, 0, cWidth-wave1End, cHeight, 0.0).fadeIn(throbTime).fadeOut(throbOutTime).delete();
+        
     }
+
 
 
 
