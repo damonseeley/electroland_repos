@@ -289,8 +289,8 @@ public class EIAClipPlayer {
         Change waveMove1 = new LinearChange().xTo(wave1End-waveWidth).scaleWidth(3.0).alphaTo(0.0);
         Change waveMove2 = new LinearChange().xTo(0-waveWidth).scaleWidth(3.0).alphaTo(0.0);
 
-        wave1.queueChange(waveMove1, 3500).delete();
-        wave2.queueChange(waveMove2, 3500).delete();
+        wave1.queueChange(waveMove1, 3000).delete();
+        wave2.queueChange(waveMove2, 3000).delete();
     }
 
 
