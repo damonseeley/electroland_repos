@@ -30,7 +30,7 @@ public class ScreenSaverModelWatcher extends ModelWatcher {
 
     private boolean isQuiet = true;
     private long lastActivity = 0;
-    private long timeOut = 1000 * 5;
+    private long timeOut = 1000 * 60;
 
     public boolean isQuiet() {
         return isQuiet;

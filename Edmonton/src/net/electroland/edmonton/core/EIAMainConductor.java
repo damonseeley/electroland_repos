@@ -40,7 +40,7 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
     static Logger logger = Logger.getLogger(EIAMainConductor.class);
 
     private int fadeDuration = 2000;
-    private int inactivityThreshold = 1000 * 10;
+    private int inactivityThreshold = 1000 * 60;
     private ElectrolandProperties props;
     private ELUManager elu;
     private boolean updateLighting = true;
