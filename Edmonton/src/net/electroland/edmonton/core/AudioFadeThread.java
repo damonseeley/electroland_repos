@@ -26,7 +26,6 @@ public class AudioFadeThread extends Thread {
             float percentComplete = (System.currentTimeMillis() - start) / (float)duration;
             float level = 1.0f - 1.0f * percentComplete;
             if (percentComplete < 1.0){
-                System.out.println(percentComplete);
                 for (SoundNode node : nodes){
                     for (int i= 0; i < channels.length; i++)
                         node.setAmplitude(channels[i], level);
