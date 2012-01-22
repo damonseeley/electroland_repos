@@ -271,8 +271,8 @@ public class SoundController implements SCSoundControlNotifiable {
 
     public void kill(SoundNode n)
     {
-        n.die();
-        n.cleanup();
+        //n.die();
+        //n.cleanup();
         soundNodes.remove(n);
     }
 
