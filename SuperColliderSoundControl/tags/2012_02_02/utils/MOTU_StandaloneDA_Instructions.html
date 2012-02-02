@@ -1,0 +1,2050 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en">
+
+  <head>
+    <meta http-equiv="Content-Type"
+          content="text/html;charset=utf-8" />
+
+    <link rel="alternate" type="application/rss+xml"
+          title="MOTU.com News"
+          href="http://www.motu.com/newsitems/RSS2" />
+
+    <title>MOTU.com - Using a MOTU Audio Interface as a Standalone A/D or D/A Converter</title>
+
+    
+      
+        <base href="http://www.motu.com/techsupport/technotes/using-a-motu-audio-interface-as-a-standalone-a-d-or-d-a-converter" />
+      
+    
+
+    <meta name="generator" content="Plone - http://plone.org" />
+
+    <meta content="If your MOTU audio interface has a standalone operation mode and digital audio I/O, you can configure it as a standalone analog-to-digital (A/D) or digital-to-analog (D/A) converter."
+          name="description" />
+
+    <!-- Column style sheet. -->
+    <style type="text/css" media="all">@import url(http://www.motu.com/columns.css);</style>
+
+    <!-- Main style sheets for CSS2 capable browsers -->
+    <style type="text/css" media="screen"> @import url(http://www.motu.com/base.css);</style>
+    
+    
+
+    
+
+    <!-- Custom style sheet if available -->
+    <style type="text/css" media="all">@import url(http://www.motu.com/ploneCustom.css);</style>
+
+    <style type="text/css" media="all">@import url(http://www.motu.com/product_display.css);</style>
+
+
+
+    <style type="text/css" media="all">@import url(http://www.motu.com/jwbox/jwbox.css);</style>
+
+
+    <!-- Mobile handheld stylesheet -->
+    <link rel="stylesheet" href="motuMobile.css" type="text/css" media="handheld" />
+
+    <!-- Style sheet used for printing -->
+    <link rel="stylesheet" type="text/css" media="print"
+          href="http://www.motu.com/print.css" />
+
+    <!-- Style sheet used for presentations (Opera is the only browser supporting this at the moment) -->
+    <link rel="stylesheet" type="text/css"
+          media="projection"
+          href="http://www.motu.com/presentation.css" />
+
+    <!--[if lte IE 7]>
+    <link rel="stylesheet" type="text/css" media="screen" href="/IEFixes.css" />
+    <![endif]-->
+
+    <!--[if lte IE 6]>
+    <link rel="stylesheet" type="text/css" media="screen" href="/IE6Fixes.css" />
+    <![endif]-->
+
+    <!--[if IE 7]>
+    <link rel="stylesheet" type="text/css" media="screen" href="/IE7Fixes.css" />
+    <![endif]-->
+
+
+
+    
+
+    <link rel="home" href="http://www.motu.com/"
+          title="Home" />
+      <link rel="contents"
+            href="http://www.motu.com/sitemap.html"
+            title="Site Map" />
+    <link rel="search"
+          href="http://www.motu.com/search_form"
+          title="Search this site" />
+
+    
+
+    <link rel="up"
+          href="http://www.motu.com/techsupport/technotes"
+          title="Up one level" />
+
+    
+
+    
+
+    <!-- Disable IE6 image toolbar -->
+    <meta http-equiv="imagetoolbar" content="no" />
+
+    
+      
+      
+    
+
+    
+
+      
+    
+    
+
+
+      
+      
+    
+
+    
+
+      
+      
+    
+
+    <!-- Common Plone ECMAScripts -->
+
+    <!-- Pull-down ECMAScript menu, only active if logged in -->
+    
+
+    <!-- Define dynamic server-side variables for javascripts in this one  -->
+    <script type="text/javascript"
+            src="http://www.motu.com/plone_javascript_variables.js">
+    </script>
+
+    <script type="text/javascript"
+            src="http://www.motu.com/plone_javascripts.js">
+    </script>
+    
+    <!-- Custom js -->
+
+    <script type="text/javascript" src="http://cdn-data.motu.com/site/js/jquery-1.2.2.pack.js">
+    </script>
+
+    <script type="text/javascript"
+            src="http://www.motu.com/jquery-1.4.2.min.js">
+    </script>
+
+    <script type="text/javascript" src="http://cdn-data.motu.com/site/js/animatedcollapse.js">
+    /
+    * © Dynamic Drive DHTML code library (www.dynamicdrive.com)
+    * Visit Dynamic Drive at http://www.dynamicdrive.com/ for full source code
+    /
+    </script>
+
+    <script type="text/javascript" src="http://cdn-data.motu.com/site/js/tabcontent.js">
+    </script>
+
+    <script type="text/javascript" src="http://cdn-data.motu.com/site/js/ddtabmenu.js">
+    </script>
+
+    <script type="text/javascript" src="http://cdn-data.motu.com/site/js/contentslider.js">
+    </script>
+
+    <script type="text/javascript" src="http://cdn-data.motu.com/site/js/shadowbox2.js">
+    </script>
+
+    <script type="text/javascript" src="http://cdn-data.motu.com/site/js/jcarousel.js">
+    </script>
+
+    <script type="text/javascript"
+            src="http://www.motu.com/jwplayer/jwplayer.js">
+    </script>
+
+    <script type="text/javascript"
+            src="http://www.motu.com/jwbox/jquery.jwbox.js">
+    </script>
+
+    <script type="text/javascript"
+            src="http://www.motu.com/merged.js">
+    </script>
+
+    
+
+      
+
+    
+
+
+<script type="text/javascript">
+
+ var _gaq = _gaq || [];
+ _gaq.push(['_setAccount', 'UA-22409597-1']);
+ _gaq.push(['_setDomainName', '.motu.com']);
+ _gaq.push(['_trackPageview']);
+
+ (function() {
+   var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+   ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+ })();
+
+</script>
+
+
+  </head>
+
+  <body class="section-techsupport" dir="ltr">
+    <div id="visual-portal-wrapper">
+
+      <div id="portal-top">
+
+        <div>
+      <span id="redirector"></span>
+    </div>
+
+        <div id="portal-header">
+          <a id="skiptocontent" class="hiddenStructure"
+             accesskey="2"
+             href="http://www.motu.com/techsupport/technotes/using-a-motu-audio-interface-as-a-standalone-a-d-or-d-a-converter#documentContent">Skip to content</a>
+
+          <a id="skiptonav" class="hiddenStructure"
+             accesskey="6"
+             href="http://www.motu.com/techsupport/technotes/using-a-motu-audio-interface-as-a-standalone-a-d-or-d-a-converter#portlet-navigation-tree">Skip to navigation</a>
+           
+          <div id="header_top_c">
+             <ul id="portal-siteactions">
+
+    <li id="siteaction-sitemap"><a
+    href="http://www.motu.com/sitemap.html" accesskey="3"
+    title="Site Map">Site Map</a></li>
+    <li id="siteaction-accessibility"><a
+    href=" http://www.motu.com/accessibility-info"
+    accesskey="0" title="Accessibility">Accessibility</a></li>
+    <li id="siteaction-contact"><a
+    href=" http://www.motu.com/contact-info" accesskey="9"
+    title="Contact">Contact</a></li>
+
+</ul>
+
+             
+
+<div id="portal-personaltools">
+<ul>       
+    <li><a href="http://www.motu.com/audio">Audio home</a></li>
+    <li class="nav-separator">|</li>       
+    <li><a href="http://www.motu.com/video">Video home</a></li>
+    
+        <li class="nav-separator">|</li>
+        <li>
+            <a href="http://www.motu.com/login_form"
+               accesskey="accesskeys-personalbar">
+               Log in
+            </a>
+             
+        </li>
+    
+    
+        <li class="nav-separator">|</li>
+        <li>
+            <a href="http://www.motu.com/join_form"
+               accesskey="accesskeys-personalbar">
+               Join
+            </a>
+             
+        </li>
+    
+    
+        <li class="nav-separator">|</li>
+        <li>
+            <a href="http://www.motu.com/registration/"
+               accesskey="accesskeys-personalbar">
+               Register a product
+            </a>
+             
+        </li>
+    
+</ul>
+
+</div>
+
+             
+          </div>
+
+          
+
+          <div id="nav_bar_c" class="nice">
+
+             
+
+
+
+<div id="logo-bar">
+
+<div id="logo-tab-nav">
+  <h1 id="portal-logo"><a href="http://www.motu.com"
+                          rel="home-links">MOTU.com</a><img src="/blank.gif" alt="MOTU" /></h1>
+</div>
+
+<div id="home-links">
+  <div id="audio-home-btn">
+    <a href="http://www.motu.com/audio"
+       title="Professional Audio"><img src="blank.gif" alt="Audio Home" /><span>Video Home</span></a>
+  </div>
+  <div id="video-home-btn">
+    <a href="http://www.motu.com/video"
+       title="Broadcast Video"><img src="blank.gif" alt="Video Home" /><span>Video Home</span></a>
+  </div>
+</div>
+
+</div>
+
+
+             
+    <h5 class="hiddenStructure">Sections</h5>
+    <ul id="portal-globalnav">
+
+      <li id="portaltab-products"><a
+    href="http://www.motu.com/products" title="Products"><span>Products</span><img src="blank.gif" alt="Products" /></a></li>
+
+      
+      <li id="portaltab-support"><a
+    href="http://www.motu.com/techsupport" title="Support"><span>Support</span><img src="blank.gif" alt="Tech Support" /></a></li>
+
+      <li id="portaltab-store"><a
+    href="http://www.motu.com/store" title="Store"><span>Store</span><img src="blank.gif" alt="Store" /></a></li>
+
+      <li id="portaltab-downloads"><a
+    href="http://www.motu.com/download" title="Downloads"><span>Downloads</span><img src="blank.gif" alt="Downloads" /></a></li>
+
+      <li id="portaltab-company"><a
+    href="http://www.motu.com/other" title="Company"><span>Company</span><img src="blank.gif" alt="Company" /></a></li>
+    </ul>
+
+
+          
+             <div id="portal-searchbox">
+    <form name="searchform"
+          action="http://www.motu.com/search"
+          style="white-space:nowrap"
+          onsubmit="return liveSearchSubmit()">
+
+        <label for="searchGadget" class="hiddenStructure">Search Site</label>
+
+        <div class="LSBox">
+        <input id="searchGadget" tabindex="30001"
+               name="SearchableText" type="text" size="15"
+               title="Search Site" accesskey="4"
+               class="visibility:visible" />
+
+        <input class="searchButton" type="submit"
+               tabindex="30002" value="Search" />
+
+        <div class="LSResult" id="LSResult" style=""><div class="LSShadow" id="LSShadow"></div></div>
+        </div>
+    </form>
+
+    <div id="portal-advanced-search" class="hiddenStructure">
+        <a href="http://www.motu.com/search_form"
+           accesskey="5">
+            Advanced Search&hellip;
+        </a>
+    </div>
+
+</div>
+           </div>
+                    
+
+
+        </div>                         
+
+      </div>
+     
+    
+           
+      
+
+      <div id="portal-columns">
+      
+        <div id="portal-row">
+
+            
+            <div id="portal-column-one">
+              <div class="visualPadding">
+                                           
+              
+                  
+
+    
+        
+
+        
+            
+
+<dl class="portlet portlet-support" id="portlet-localnav-tree">
+<dt class="portletHeader">Download Navigation</dt>
+
+
+
+<dd class="portletContent">
+ 
+
+    <div>
+    <h5><a href="http://www.motu.com/techsupport/"
+           class="selected localnavRootItem visualIconPadding contenttype-folder">Tech Support</a>
+    </h5>
+    </div>
+
+    <div>
+      <a href="http://www.motu.com/techsupport/"
+         class="plain">Home</a>      
+      
+    </div>
+
+    <div>
+      <a href="http://www.motu.com/techsupport/technotes.html"
+         class="plain">Tech Notes</a>      
+      
+    </div>
+  
+  
+    <div>
+
+      <a href="http://www.motu.com/techsupport/tracker"
+         class="plain">MOTU TechLinks</a>
+                  
+    </div>
+  
+  
+    <div>
+
+      <a href="http://www.motu.com/techsupport/techlink_intro.html"
+         class="plain">MOTU TechLink Introduction</a>
+                  
+    </div>
+  
+  
+    <div>
+
+      <a href="http://www.motu.com/techsupport/manuals"
+         class="plain">Product manuals</a>
+                  
+    </div>
+  
+  
+    <div>
+
+      <a href="http://www.motu.com/other/rss-feeds"
+         class="plain">RSS Feeds</a>
+                  
+    </div>
+
+</dd>
+</dl>
+
+
+
+
+        
+
+        
+
+        
+    
+
+                
+
+<div id="portal-column-leftin">
+    
+                  
+
+      
+          
+              
+
+<div class="portlet_nomarg">
+
+  <div id="random_img">
+
+<script type="text/javascript">
+var fadeimages=new Array()
+//SET IMAGE PATHS. Extend or contract array as needed
+fadeimages[0]=["/images/featured/feat_btn_audio-express.jpg", "/products/motuaudio/audio-express", ""] 
+fadeimages[1]=["/images/featured/feat_btn_microbook.jpg", "/products/motuaudio/microbook", ""] 
+fadeimages[2]=["/images/featured/feat_btn4.jpg", "/products/motuaudio/8pre", ""] 
+fadeimages[3]=["/images/featured/feat_btn-ul-hybrid.jpg", "/products/motuaudio/ultralite-mk3", ""]
+fadeimages[4]=["/images/featured/feat_btn7.jpg", "/video-products/v4hd", ""]
+fadeimages[5]=["/images/featured/feat_btn_828-hybrid.jpg", "/products/motuaudio/828mk3", ""]
+fadeimages[6]=["/images/featured/feat_btn-trav.jpg", "/products/motuaudio/traveler", ""]
+fadeimages[7]=["/images/featured/feat_btn-bpm.jpg", "/products/software/bpm", ""]
+fadeimages[8]=["/images/featured/feat_btn-volta.jpg", "/products/software/volta/", ""]
+fadeimages[9]=["/images/featured/feat_btn-hdx-sdi.jpg", "/video-products/hdx-sdi", ""]
+fadeimages[10]=["/images/featured/feat_btn_zbox.jpg", "/products/guitar/zbox", ""]
+fadeimages[11]=["/images/featured/feat_btn-hd-express-hdmi.jpg", "/video-products/hd-express-hdmi", ""]
+ 
+var fadebgcolor="transparent"
+
+//new fadeshow(IMAGES_ARRAY_NAME, slideshow_width, slideshow_height, borderwidth, delay, pause (0=no, 1=yes), optionalRandomOrder)
+new fadeshow(fadeimages, 145, 120, 0, 5500, 1, "R")
+ 
+</script>
+
+  </div>
+
+</div>
+
+
+
+          
+
+          
+      
+      
+          
+              
+
+<div>
+
+  
+
+
+<script type="text/javascript">
+
+animatedcollapse.addDiv('software', 'fade=0,speed=425,group=dropNav,hide=1')
+animatedcollapse.addDiv('audio', 'fade=0,speed=330,group=dropNav,hide=1')
+animatedcollapse.addDiv('midi', 'fade=0,speed=330,group=dropNav,hide=1')
+animatedcollapse.addDiv('pci', 'fade=0,speed=275,group=dropNav,hide=1')
+animatedcollapse.addDiv('guitar', 'fade=0,speed=180,group=dropNav,hide=1')
+animatedcollapse.addDiv('video', 'fade=0,speed=275,group=dropNav,hide=1')
+
+animatedcollapse.init()
+</script>
+
+</div>
+
+<div class="portlet_nomarg">
+<br />
+<script type="text/javascript">
+
+/*
+Random Content Script- By JavaScript Kit(http://www.javascriptkit.com)
+Over 200+ free JavaScripts here!
+*/
+<!--
+function random_contentA(){
+var mycontentA=new Array()
+//specify random content below.
+mycontentA[1]="<a href='/store_products/accessories/macaudiolab-dvd'><img src='/images/featured/macaudiolab-feat2.jpg' alt='Over 15 hours of DP6 video training' \/><\/a>"
+mycontentA[2]="<a href='http://www.berkleemusic.com/school/course?course_item_id=1151250&program=music_production&pid=2219' target='_blank'>" + "<img src='/images/featured/berklee_btn.jpg' alt='Learn Digital Performer with BerkleeMusic.com' />" + "<\/a>"
+mycontentA[3]="<a href='/other/rss-feeds'><img src='/images/motu_rss.gif' alt='MOTU RSS' \/><\/a><div class='left_col_info center'><a href='/other/rss-feeds'>Get the latest from MOTU.com, subscribe to an RSS feed.<\/a><\/div>"
+mycontentA[4]="<a href='/store_products/accessories/macaudiolab-dvd'><img src='/images/featured/macaudiolab-feat2.jpg' alt='Over 15 hours of DP6 video training' \/><\/a>"
+mycontentA[5]="<a href='http://www.berkleemusic.com/school/course?course_item_id=1151250&program=music_production&pid=2219' target='_blank'>" + "<img src='/images/featured/berklee_btn.jpg' alt='Learn Digital Performer with BerkleeMusic.com' />" + "<\/a>"
+
+var ry=Math.floor(Math.random()*mycontentA.length)
+if (ry==0)
+ry=1
+document.write(mycontentA[ry])
+}
+random_contentA()
+//
+-->
+</script>
+
+</div>
+
+          
+
+          
+      
+
+                
+</div>
+                
+                &nbsp;
+              </div>
+            </div>
+            
+
+            
+            <div id="portal-column-content">
+
+                <div id="portal-breadcrumbs">
+
+    <a href="http://www.motu.com">Home</a>
+    <span class="breadcrumbSeparator">
+        | 
+         
+    </span>
+    <span dir="ltr">
+        
+            <a href="/techsupport">Support</a>
+            <span class="breadcrumbSeparator"> 
+                | 
+                 
+            </span>
+            
+         
+    </span>
+    <span dir="ltr">
+        
+            <a href="/techsupport/technotes">Tech Notes</a>
+            <span class="breadcrumbSeparator"> 
+                | 
+                 
+            </span>
+            
+         
+    </span>
+    <span dir="ltr">
+        
+            
+            
+            <span class="pathbar_selected">Using a MOTU Audio Interface as a Standalone A/D or D/A Converter</span>
+         
+    </span>
+
+</div>
+
+              
+                <div id="content" class="">
+
+                  
+
+                  <div class="documentContent" id="region-content">
+
+                    <a name="documentContent"></a>
+
+                    
+                  
+                    
+                  
+
+                    
+    
+
+        <div class="documentActions">
+    
+
+    <h5 class="hiddenStructure">Document Actions</h5>
+
+    <ul>
+    
+        <li>
+            <a href="http://www.motu.com/techsupport/technotes/using-a-motu-audio-interface-as-a-standalone-a-d-or-d-a-converter/sendto_form">
+
+                <img src="http://www.motu.com/mail_icon.gif"
+                     alt="Send this page to somebody"
+                     title="Send this page to somebody" />
+            </a>
+        </li>
+    
+    
+        <li>
+            <a href="javascript:this.print();">
+
+                <img src="http://www.motu.com/print_icon.gif"
+                     alt="Print this page"
+                     title="Print this page" />
+            </a>
+        </li>
+    
+
+    </ul>
+    
+
+    
+      
+
+    
+
+
+    
+
+</div>
+
+        <h1 class="documentFirstHeading">Using a MOTU Audio Interface as a Standalone A/D or D/A Converter</h1>
+
+        <p class="documentDescription">If your MOTU audio interface has a standalone operation mode and digital audio I/O, you can configure it as a standalone analog-to-digital (A/D) or digital-to-analog (D/A) converter.</p>
+    
+        
+    
+        <div class="plain">
+            <p>In this example, an 828mk3 will be configured as a standalone A/D converter using its ADAT optical output by patching its analog inputs to its ADAT outputs:</p>
+
+<ol>
+  <li>Connect the 828mk3 to the computer by FireWire, and turn on the interface. 
+  </li>
+  <li>Open CueMix FX. Choose the Inputs tab, and then enable the Stereo button on the channel strips for analog inputs 1, 3, 5, and 7. (They will now appear as Analog 1-2, Analog 3-4, Analog 5-6, and Analog 7-8.)
+  </li>
+  <li>Choose the Mixes tab, and select Bus 1 in the mix bus menu. 
+  </li>
+  <li>Set the mix bus output to ADAT A 1-2 by selecting the output pair in the bus output menu above the mix bus master fader.  Set the master fader level to 0 dB.
+  </li>
+  <li>Mute all input channels except Analog 1-2. Set the Analog 1-2 fader to 0 dB. Set the balance control to 0.
+  </li>
+  <li>Select Bus 2 in the mix bus menu. 
+  </li>
+  <li>Repeat the process with Bus 2 to route analog inputs 3-4 to ADAT A outputs 3-4.  Then continue with Bus 3 (Analog 5-6 to ADAT A 5-6) and Bus 4 (Analog 7-8 to ADAT A 7-8).
+  </li>
+  <li>Open MOTU Audio Setup. Set the 828mk3's sample rate and clock source appropriately.
+  <br>
+  <br>
+  <i>The 828mk3's sample rate should match the sample rate of any connected digital audio devices.  Generally, the 828mk3's clock source should be set to Internal when it is being used as an A/D converter.  However, these settings may be changed under some circumstances.</i>
+  </li>
+  <li>Wait about one minute for the new settings to be saved to the 828mk3's internal memory, and then disconnect the FireWire cable from the back panel of the interface. 
+  </li>
+  <li>Connect the 828mk3's ADAT A output to the ADAT optical input of another device. If the 828mk3 is the master clock device, then set the second device's clock source to its ADAT optical input, and set its sample rate to match the 828mk3's sample rate.
+  </li>
+</ol>
+
+<p>This configuration will be similar for all MOTU audio interfaces with features similar to the 828mk3 (such as the 896mk3, UltraLite mk3, and Traveler mk3). If you would like to configure your MOTU interface as a digital-to-analog converter (instead of an A/D converter), follow the steps above but choose digital inputs and analog outputs rather than analog inputs and digital outputs.  It is important that the clock source and sample rate are set properly for both transmitting and receiving devices.</p>
+
+<p>The MOTU 2408mk3 audio interface automatically switches into a standalone converter mode when it is disconnected from the PCI-424 card or when the computer is turned off.  (This also applies to the earlier models, the original 2408 and the 2408mkII.)</p>
+
+<p>In this example, a 2408mk3 will be configured as a standalone D/A converter using one of its ADAT optical inputs:</p>
+
+<ol>
+  <li>Disconnect the AudioWire cable from the back panel of the 2408mk3, or turn off the computer.  The interface will switch to the standalone converter mode.
+  </li>
+  <li>Use the Select and Set buttons on the front panel of the interface to choose these settings: 
+  <ul>
+    <li>Source:  ADAT Bank A
+    </li>
+    <li>Bounce:  1-2 (Swap L&R disabled)
+    </li>
+    <li>Clock:  44 Dig (sample rate is 44.1 kHz, clock source is digital input)
+    <br>
+    <br>
+    <i>The 2408mk3's sample rate should match the sample rate of any connected digital audio devices.  Generally, the 2408mk3's clock source should be set to Dig ("digital audio input") when it is being used as a D/A converter.  However, these settings may be changed under some circumstances.  In this example, the 2408mk3 is set to receive digital audio at 44.1 kHz, and the transmitting device is the master clock source.</i>
+    </li>
+  </ul>
+  </li>
+  <li>Connect the ADAT optical output of another device to the 2408mk3's Bank A optical input.
+  </li>
+</ol>
+        </div>
+
+        <div id="relatedItems">
+    
+        
+            
+        
+    
+</div>
+    
+    
+
+
+                    
+                      <div class="discussion">
+    
+        
+            
+            
+
+        
+    
+</div>
+                    
+
+                  </div>
+
+                </div>
+
+              
+            </div>
+            
+
+            
+            <div id="portal-column-two">
+              <div class="visualPadding">
+                
+                  
+
+    
+        
+
+        
+            <div>
+
+
+    <div class="portlet" id="portlet-login">
+
+      <h5>My Account</h5>
+      
+ 
+        <div class="portletBody">
+
+            <div class="portletContent odd">
+                <form action="http://www.motu.com/logged_in"
+                      name="loginform" method="post">
+
+                    <input type="hidden" name="came_from"
+                           value="http://www.motu.com/techsupport/technotes/using-a-motu-audio-interface-as-a-standalone-a-d-or-d-a-converter/document_view"
+                           tabindex="20001" />
+
+                    <div class="field">
+                        <label for="__ac_name">Username</label>
+                        <br />
+                        <input type="text" size="10"
+    alt="Username" accesskey="accesskeys-login"
+    tabindex="20002" name="__ac_name" value=""
+    id="__ac_name" />
+                    </div>
+                    
+                    <div class="field">
+                        <label for="__ac_password">Password</label>
+                        <br />
+                        <input type="password" size="10"
+    alt="Password" accesskey="accesskeys-login"
+    tabindex="20003" name="__ac_password" id="__ac_password" />
+                    </div>
+                    
+                    <div class="formControls">
+                    
+                        <input id="login_btn"
+    class="context" type="image"
+    src="http://d367viram2snxx.cloudfront.net/site/images/login.png"
+    name="submit" value="Log in" alt="Log in"
+    accesskey="accesskeys-login" tabindex="20004" />
+                    </div>
+                </form>
+            </div>
+
+            <div class="portletContent even">
+                <a href="http://www.motu.com/mail_password_form"
+                   accesskey="accesskeys-login">
+                   Forgot your password?
+                </a>
+            </div>
+
+            <div class="portletContent odd">
+
+                <a href="http://www.motu.com/join_form"
+                   accesskey="accesskeys-login">
+                    New user?
+                </a>
+
+            </div>
+
+        </div>
+
+        
+
+    </div>
+
+</div>
+        
+
+        
+
+        
+    
+    
+        
+
+        
+            <div>
+
+    
+
+
+    
+</div>
+        
+
+        
+
+        
+    
+    
+        
+
+        
+            
+        
+
+        
+
+        
+    
+    
+        
+
+        
+            
+
+<div>
+
+  
+
+
+<script type="text/javascript">
+
+animatedcollapse.addDiv('software', 'fade=0,speed=425,group=dropNav,hide=1')
+animatedcollapse.addDiv('audio', 'fade=0,speed=330,group=dropNav,hide=1')
+animatedcollapse.addDiv('midi', 'fade=0,speed=330,group=dropNav,hide=1')
+animatedcollapse.addDiv('pci', 'fade=0,speed=275,group=dropNav,hide=1')
+animatedcollapse.addDiv('guitar', 'fade=0,speed=180,group=dropNav,hide=1')
+animatedcollapse.addDiv('video', 'fade=0,speed=275,group=dropNav,hide=1')
+
+animatedcollapse.init()
+</script>
+
+</div>
+<!-- id="portlet-localnav-tree" -->
+<dl class="portlet portlet-productnav" id="portlet-global-nav">
+<dd class="portletContent">
+  <div class="portlet-nav-header">
+    <h5><a href="http://www.motu.com/products/"
+           class="selected localnavRootItem visualIconPadding contenttype-folder">Products</a></h5>
+
+</div>
+
+   <div id="product-nav-item-wrapper">
+
+  
+    <div class="product-nav-item">
+      <a href="javascript:animatedcollapse.toggle('global_software')" class="localnavItem visualIconPadding contenttype-folder">
+Audio software
+</a>
+
+      <div id="global_software" class="nav_drop_items">
+        <ul>
+     
+         
+             
+                <li class="bold"><a
+    href="http://www.motu.com/products/software/">All...</a></li>
+            	<li class="plain"><a
+    href="http://www.motu.com/products/software/dp">Digital Performer</a></li>
+                <li class="plain"><a
+    href="http://www.motu.com/products/software/machfive">MachFive</a></li>
+                <li class="plain"><a
+    href="http://www.motu.com/products/software/mwc">MasterWorks Collection</a></li>
+                <li class="plain"><a
+    href="http://www.motu.com/products/software/BPM">BPM</a></li>
+                <li class="plain"><a
+    href="http://www.motu.com/products/software/ethno">Ethno Instrument</a></li>
+                <li class="plain"><a
+    href="http://www.motu.com/products/software/volta">Volta</a></li>
+                <li class="plain"><a
+    href="http://www.motu.com/products/software/electrickeys">Electric Keys</a></li>
+                <li class="plain"><a
+    href="http://www.motu.com/products/software/msi">Symphonic Instrument</a></li>
+                <li class="plain"><a
+    href="http://www.motu.com/products/software/mx4">MX4</a></li>
+                <li class="plain"><a
+    href="http://www.motu.com/products/software/unisyn">Unisyn</a></li>
+                <li class="plain"><a
+    href="http://www.motu.com/products/software/audiodesk">AudioDesk</a></li>
+                <li class="plain"><a
+    href="http://www.motu.com/store_products/accessories/macaudiolab-dvd">Ultimate DP Training Series DVD</a></li>
+                <li class="plain"><a
+    href="http://www.motu.com/products/software/dpbook">Producing Music with Digital Performer</a></li>
+             
+         
+</ul>
+      </div>
+      
+    </div>
+  
+  
+    <div class="product-nav-item">
+      <a href="javascript:animatedcollapse.toggle('global_audio')" class="localnavItem visualIconPadding contenttype-folder">
+FireWire/USB audio I/O
+</a>
+         <div id="global_audio" class="nav_drop_items">
+            <ul>
+  
+             
+                <li class="bold"><a
+    href="http://www.motu.com/products/motuaudio/">All...</a></li>
+                <li class="plain"><a
+    href="http://www.motu.com/products/motuaudio/4pre">4pre</a></li>
+                <li class="plain"><a
+    href="http://www.motu.com/products/motuaudio/896mk3">896mk3 Hybrid</a></li>
+                <li class="plain"><a
+    href="http://www.motu.com/products/motuaudio/audio-express">Audio Express</a></li>
+                <li class="plain"><a
+    href="http://www.motu.com/products/motuaudio/828mk3">828mk3 Hybrid</a></li>
+            	<li class="plain"><a
+    href="http://www.motu.com/products/motuaudio/microbook">MicroBook</a></li>
+            	<li class="plain"><a
+    href="http://www.motu.com/products/motuaudio/ultralite-mk3">UltraLite-mk3 Hybrid</a></li>
+                <li class="plain"><a
+    href="http://www.motu.com/products/motuaudio/traveler-mk3">Traveler-mk3</a></li>
+                <li class="plain"><a
+    href="http://www.motu.com/products/motuaudio/8pre">8pre</a></li>
+             
+</ul>
+         </div>         
+    </div>
+  
+  
+    <div class="product-nav-item">
+      <a href="javascript:animatedcollapse.toggle('global_pci')" class="localnavItem visualIconPadding contenttype-folder">
+PCI audio I/O
+</a>
+		<div id="global_pci" class="nav_drop_items">
+         	<ul>
+  
+             
+                <li class="bold"><a
+    href="http://www.motu.com/products/pciaudio/">All...</a></li>
+            	<li class="plain"><a
+    href="http://www.motu.com/products/pciaudio/2408">2408mk3</a></li>
+                <li class="plain"><a
+    href="http://www.motu.com/products/pciaudio/24IO">24I/O</a></li>
+                <li class="plain"><a
+    href="http://www.motu.com/products/pciaudio/HD192">HD192</a></li>
+             
+</ul>
+         </div>
+    </div>
+  
+  
+    <div class="product-nav-item">
+      <a href="javascript:animatedcollapse.toggle('global_midi')" class="localnavItem visualIconPadding contenttype-folder">
+MIDI interfaces
+</a>
+         <div id="global_midi" class="nav_drop_items">
+         	<ul>
+  
+             
+                <li class="bold"><a
+    href="http://www.motu.com/products/midi/">All...</a></li>
+            	<li class="plain"><a
+    href="http://www.motu.com/products/midi/mtpav_usb">MIDI Timepiece AV</a></li>
+                <li class="plain"><a
+    href="http://www.motu.com/products/midi/xpressxt_usb">MIDI Express XT</a></li>
+                <li class="plain"><a
+    href="http://www.motu.com/products/midi/micro_usb">micro express</a></li>
+                <li class="plain"><a
+    href="http://www.motu.com/products/midi/128">MIDI Express 128</a></li>
+                <li class="plain"><a
+    href="http://www.motu.com/products/midi/lite">micro lite</a></li>
+                <li class="plain"><a
+    href="http://www.motu.com/products/midi/fastlane_usb">FastLane</a></li>
+             
+</ul>
+         </div>
+    </div>
+  
+  
+    <div class="product-nav-item">
+      <a href="javascript:animatedcollapse.toggle('global_guitar')" class="localnavItem visualIconPadding contenttype-folder">
+Guitar
+</a>
+         <div id="global_guitar" class="nav_drop_items">
+         	<ul>
+  
+             
+                
+            	<li class="plain"><a
+    href="http://www.motu.com/products/guitar/zbox">ZBox</a></li>
+             
+</ul>
+         </div>
+    </div>
+
+    <div class="product-nav-item">
+      <a href="javascript:animatedcollapse.toggle('global_video')" class="localnavItem visualIconPadding contenttype-folder">
+Video I/O
+</a>
+		<div id="global_video" class="nav_drop_items">
+         	<ul>
+  
+             
+                <li class="bold"><a
+    href="http://www.motu.com/video-products/">All...</a></li>
+            	<li class="plain"><a
+    href="http://www.motu.com/video-products/v4hd">V4HD</a></li>
+                <li class="plain"><a
+    href="http://www.motu.com/video-products/hdx-sdi">HDX-SDI</a></li>
+                <li class="plain"><a
+    href="http://www.motu.com/video-products/hd-express-hdmi">HD Express</a></li>
+            
+</ul>
+         </div>
+    </div>
+
+  </div>
+  
+</dd>
+</dl>
+
+
+<script type="text/javascript">
+
+animatedcollapse.addDiv('global_software', 'fade=0,speed=425,group=dropNav,hide=1')
+animatedcollapse.addDiv('global_audio', 'fade=0,speed=330,group=dropNav,hide=1')
+animatedcollapse.addDiv('global_midi', 'fade=0,speed=330,group=dropNav,hide=1')
+animatedcollapse.addDiv('global_pci', 'fade=0,speed=275,group=dropNav,hide=1')
+animatedcollapse.addDiv('global_guitar', 'fade=0,speed=180,group=dropNav,hide=1')
+animatedcollapse.addDiv('global_video', 'fade=0,speed=275,group=dropNav,hide=1')
+
+animatedcollapse.init()
+</script>
+
+
+
+        
+
+        
+
+        
+    
+
+                
+                &nbsp;
+              </div>
+            </div>
+            
+        </div>
+      </div>
+      
+
+      <div class="visualClear"><!-- --></div>
+
+     
+
+      
+        <div>
+
+  <div id="footer-wrapper">
+
+    <div>
+
+        <div>
+
+
+<div id="footer-news-wrapper">
+
+
+
+  <div id="footer-news-more-links">
+
+    <h5><a href="http://www.motu.com/news">News</a></h5>
+
+    <div class="clear"></div>
+
+    <p><a href="http://www.motu.com/news">Read all &raquo;</a></p>
+
+    <div class="social-media-icons">
+      <a class="global-hover"
+         href="http://www.motu.com/newsitems/RSS2"><img src="http://cdn-data.motu.com/site/images/social-rss.png" alt="RSS" /></a>
+      
+      <a class="global-hover" href="http://www.twitter.com/motutech" target="_blank"><img src="http://cdn-data.motu.com/site/images/social-twit.png" alt="Twitter" /></a>
+      
+    </div>
+
+  </div>
+
+<script type="text/javascript">
+
+jQuery(document).ready(function() {
+    jQuery('#news-carousel').jcarousel();
+});
+
+</script>
+
+  <form name="searchresults" action="" method="post">
+
+   <ul id="news-carousel" class="jcarousel-skin-tango">
+		
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/back-by-popular-demand-express-xt">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/back-by-popular-demand-express-xt/image" />
+      </a>
+						
+      <p class="footer-news-date">09.26.2011</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/back-by-popular-demand-express-xt">
+           Back by popular demand: MIDI Express XT
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/software-updates-add-value-to-your-motu-hardware">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/software-updates-add-value-to-your-motu-hardware/image" />
+      </a>
+						
+      <p class="footer-news-date">08.10.2011</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/software-updates-add-value-to-your-motu-hardware">
+           Software updates add value to your MOTU hardware
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/motu-products-and-mac-os-x-10-7-lion">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/motu-products-and-mac-os-x-10-7-lion/image" />
+      </a>
+						
+      <p class="footer-news-date">07.20.2011</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/motu-products-and-mac-os-x-10-7-lion">
+           MOTU products and Mac OS X 10.7 (Lion)
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/audio-express-scores-musictech-choice-award">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/audio-express-scores-musictech-choice-award/image" />
+      </a>
+						
+      <p class="footer-news-date">07.01.2011</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/audio-express-scores-musictech-choice-award">
+           Audio Express scores MusicTech Choice Award
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/motu-teddy-riley-interview">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/motu-teddy-riley-interview/image" />
+      </a>
+						
+      <p class="footer-news-date">06.10.2011</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/motu-teddy-riley-interview">
+           Multi-platinum Producer Teddy Riley Talks MOTU
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/dp-7-2-wins-best-audio-workstation-award-for-2011">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/dp-7-2-wins-best-audio-workstation-award-for-2011/image" />
+      </a>
+						
+      <p class="footer-news-date">12.20.2010</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/dp-7-2-wins-best-audio-workstation-award-for-2011">
+           DP 7.2 wins Best DAW award for 2011
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/828-makes-recording-technology-history">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/828-makes-recording-technology-history/image" />
+      </a>
+						
+      <p class="footer-news-date">12.15.2010</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/828-makes-recording-technology-history">
+           The 828 makes recording technology history
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/ethno-2-should-be-at-the-top-of-your-list">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/ethno-2-should-be-at-the-top-of-your-list/image" />
+      </a>
+						
+      <p class="footer-news-date">11.30.2010</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/ethno-2-should-be-at-the-top-of-your-list">
+           Keyboard says "Ethno 2 should be at the top of your list"
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/motu-audio-interfaces-are-compatible-with-pro-tools-9">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/motu-audio-interfaces-are-compatible-with-pro-tools-9/image" />
+      </a>
+						
+      <p class="footer-news-date">11.18.2010</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/motu-audio-interfaces-are-compatible-with-pro-tools-9">
+           MOTU audio interfaces are compatible with Pro Tools 9
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/download-your-free-tuner-now">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/download-your-free-tuner-now/image" />
+      </a>
+						
+      <p class="footer-news-date">10.14.2010</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/download-your-free-tuner-now">
+           Download your free tuner now
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/new-iphone-app-for-digital-performer">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/new-iphone-app-for-digital-performer/image" />
+      </a>
+						
+      <p class="footer-news-date">07.26.2010</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/new-iphone-app-for-digital-performer">
+           New iPhone app for Digital Performer
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/dp7-2-now-shipping">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/dp7-2-now-shipping/image" />
+      </a>
+						
+      <p class="footer-news-date">07.16.2010</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/dp7-2-now-shipping">
+           Looking for some excitement in your life? Try DP 7.2…
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/ethno-2-0-1-and-electric-keys-1-0-3-now-shipping">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/ethno-2-0-1-and-electric-keys-1-0-3-now-shipping/image" />
+      </a>
+						
+      <p class="footer-news-date">05.12.2010</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/ethno-2-0-1-and-electric-keys-1-0-3-now-shipping">
+           Ethno 2.0.1 and Electric Keys 1.0.3 updates now shipping
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/dp7.12-now-shipping">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/dp7.12-now-shipping/image" />
+      </a>
+						
+      <p class="footer-news-date">04.12.2010</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/dp7.12-now-shipping">
+           Digital Performer 7.12 is now shipping
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/and-the-oscar-goes-to-michael-giacchino">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/and-the-oscar-goes-to-michael-giacchino/image" />
+      </a>
+						
+      <p class="footer-news-date">03.09.2010</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/and-the-oscar-goes-to-michael-giacchino">
+           And the Oscar goes to...Michael Giacchino
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/ethno-2-is-now-shipping">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/ethno-2-is-now-shipping/image" />
+      </a>
+						
+      <p class="footer-news-date">02.22.2010</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/ethno-2-is-now-shipping">
+           Jordan Rudess rocks Ethno 2
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/bpm-1-0-5-and-electric-keys-1-0-2-updates-now-shipping">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/bpm-1-0-5-and-electric-keys-1-0-2-updates-now-shipping/image" />
+      </a>
+						
+      <p class="footer-news-date">02.02.2010</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/bpm-1-0-5-and-electric-keys-1-0-2-updates-now-shipping">
+           BPM 1.0.5 and Electric Keys 1.0.2 updates now shipping
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/dp7.1-now-shipping">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/dp7.1-now-shipping/image" />
+      </a>
+						
+      <p class="footer-news-date">01.19.2010</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/dp7.1-now-shipping">
+           Digital Performer 7.1 is now shipping
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/traveler-mk3-wins-editors-choice-award-2010">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/traveler-mk3-wins-editors-choice-award-2010/image" />
+      </a>
+						
+      <p class="footer-news-date">01.04.2010</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/traveler-mk3-wins-editors-choice-award-2010">
+           Traveler-mk3 wins Editors Choice Award
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/custom59-update">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/custom59-update/image" />
+      </a>
+						
+      <p class="footer-news-date">12.16.2009</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/custom59-update">
+           Custom '59 update delivers new power amp models
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/digitial-performer-7.02-now-shipping">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/digitial-performer-7.02-now-shipping/image" />
+      </a>
+						
+      <p class="footer-news-date">11.23.2009</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/digitial-performer-7.02-now-shipping">
+           Digital Performer 7.02 is now shipping
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/beyonce-is-on-fire">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/beyonce-is-on-fire/image" />
+      </a>
+						
+      <p class="footer-news-date">10.26.2009</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/beyonce-is-on-fire">
+           Beyoncé: at the top of her game
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/compatibility-with-windows-7">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/compatibility-with-windows-7/image" />
+      </a>
+						
+      <p class="footer-news-date">10.21.2009</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/compatibility-with-windows-7">
+           MOTU compatibility with Windows 7
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/dp7-tutorial-depot-tutorials.html">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/dp7-tutorial-depot-tutorials.html/image" />
+      </a>
+						
+      <p class="footer-news-date">10.02.2009</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/dp7-tutorial-depot-tutorials.html">
+           New DP7 Training Series from TutorialDEPOT
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/more-sounds-for-bpm">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/more-sounds-for-bpm/image" />
+      </a>
+						
+      <p class="footer-news-date">09.24.2009</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/more-sounds-for-bpm">
+           More new sounds for BPM: Hip Hop Planet
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/new-guitar-tones-for-dp7">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/new-guitar-tones-for-dp7/image" />
+      </a>
+						
+      <p class="footer-news-date">09.15.2009</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/new-guitar-tones-for-dp7">
+           New guitar tones for Digital Performer 7
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/are-you-ready-to-tame-snow-leopard">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/are-you-ready-to-tame-snow-leopard/image" />
+      </a>
+						
+      <p class="footer-news-date">08.27.2009</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/are-you-ready-to-tame-snow-leopard">
+           Are you ready to tame Snow Leopard?
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+   
+
+   <li> 
+          	
+    <div class="footer-news-block-item">
+      						
+      <a class="footer-news-thumb global-hover"
+         href="http://www.motu.com/newsitems/volta-wins-key-buy-award">
+        <img class="newsImage" width="185px" alt=""
+             src="http://www.motu.com/newsitems/volta-wins-key-buy-award/image" />
+      </a>
+						
+      <p class="footer-news-date">08.14.2009</p>
+      
+      <p class="footer-news-headline">
+        <a href="http://www.motu.com/newsitems/volta-wins-key-buy-award">
+           Volta wins Keyboard Magazine Key Buy award
+        </a>
+      </p>
+                
+												
+
+		
+    </div>
+
+   </li>
+
+   
+
+   </ul>
+
+  </form>
+		
+  
+
+      </div>
+		
+    </div>
+	
+  </div> 
+
+    <div id="portal-footer">
+
+        <div id="footer-list">
+	    <ul>
+            	<li class="list-header"><a
+    href="http://www.motu.com/products">Products</a></li>
+            	<li><a href="http://www.motu.com/products/software">Software</a></li>
+            	<li><a href="http://www.motu.com/products/motuaudio">FireWire/USB Audio</a></li>
+            	<li><a href="http://www.motu.com/products/pciaudio">PCI Audio</a></li>
+            	<li><a href="http://www.motu.com/products/midi">MIDI</a></li>
+            	<li><a href="http://www.motu.com/products/guitar">Guitar</a></li>
+            	<li><a href="http://www.motu.com/video-products">Video</a></li>
+            </ul>
+            
+	    <ul>
+            	<li class="list-header"><a
+    href="http://www.motu.com/techsupport">Support</a></li>
+            	<li><a href="http://www.motu.com/techsupport/technotes.html">Tech Notes</a></li>
+            	<li><a href="http://www.motu.com/techsupport/tracker">MOTU TechLinks</a></li>
+            	<li><a href="http://www.motu.com/techsupport/techlink_intro.html">MOTU TechLink Introduction</a></li>
+            	<li><a href="http://www.motu.com/techsupport/manuals">Product Manuals</a></li>
+            </ul>
+            
+	    <ul>
+            	<li class="list-header"><a
+    href="http://www.motu.com/store">Store</a></li>
+            	<li><a href="http://www.motu.com/store/upgrades/">Upgrades</a></li>
+            	<li><a href="http://www.motu.com/store/accessories/">Accessories</a></li>
+            	<li><a href="http://www.motu.com/store/manuals/">Hardware Manuals</a></li>
+            	<li><a href="http://www.motu.com/store/hardware_rom_updates/">ROM Chip Updates</a></li>
+            	<li><a href="http://www.motu.com/store/cart_view">View Cart</a></li>
+            </ul>
+            
+	    <ul>
+            	<li class="list-header"><a
+    href="http://www.motu.com/download">Downloads</a></li>
+            	<li><a href="http://www.motu.com/download/mac-downloads.html">Mac</a></li>
+            	<li><a href="http://www.motu.com/download/windows-downloads.html">Windows</a></li>
+            </ul>
+            
+	    <ul>
+            	<li class="list-header"><a
+    href="http://www.motu.com/other">Company</a></li>
+            	<li><a href="http://www.motu.com/other">About MOTU</a></li>
+            	<li><a href="http://www.motu.com/other/press">Press Releases</a></li>
+            	<li><a href="http://www.motu.com/other/career">Job Opportunities</a></li>
+            	<li><a href="http://www.motu.com/other/feedback">Contact MOTU</a></li>
+            	<li><a href="http://www.motu.com/other/distributors.html">Distributers</a></li>
+            	<li><a href="http://www.motu.com/other/rss-feeds">RSS Feeds</a></li>
+            	<li><a href="http://www.motu.com/marketing">Marketing</a></li>
+            </ul>
+	  </div> 
+
+        <div class="clear"></div>
+
+      
+
+<div id="footer-copyright" class="center">
+  
+    Copyright &copy; 2008-<span>2011</span>
+    MOTU, Inc.  All rights reserved.
+    <br />
+    <span><a href="http://www.motu.com/privacy.html">Privacy Policies and Terms of Use</a></span>
+</div>
+
+ 
+
+    </div>
+
+  </div>
+
+</div>
+       
+      
+
+    <div class="container_shadow" id="shadow_left">
+      </div>
+      <div class="container_shadow" id="shadow_right">
+      </div>
+      <div class="container_shadow" id="shadow_left_corner">
+      </div>
+      <div class="container_shadow" id="shadow_right_corner">
+      </div>
+      <div class="container_shadow" id="shadow_bottom">
+      </div>
+
+</div> 
+   
+</body>
+</html>
+
+
