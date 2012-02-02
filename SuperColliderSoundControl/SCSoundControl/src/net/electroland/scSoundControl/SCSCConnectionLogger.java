@@ -1,11 +1,6 @@
 package net.electroland.scSoundControl;
 
-import java.util.Vector;
-
 import org.apache.log4j.Logger;
-
-import processing.core.PApplet;
-import processing.core.PFont;
 
 
 public class SCSCConnectionLogger implements SCSoundControlNotifiable {
