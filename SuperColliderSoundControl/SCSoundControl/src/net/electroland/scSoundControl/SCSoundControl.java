@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Properties;
@@ -52,8 +51,8 @@ public class SCSoundControl implements OSCListener, Runnable {
 	private Thread _serverPingThread;
 	// FIXME increasing _serverResponseTimeout causes less disconnections caused by (I think) a high number of synths.
 	private int _serverResponseTimeout = 2000; //200; //the max allowable time for server to respond to /status queries.
-	private int _scsynthPingInterval = 100; //in milliseconds
-	private Date _prevPingResponseTime, _prevPingRequestTime;
+	private int _scsynthPingInterval = 1000; //in milliseconds
+	private long _prevPingResponseTime, _prevPingRequestTime;
 
 	//the state of the scsynth server.
 	private boolean _serverLive;
@@ -155,7 +154,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 		} catch (Exception e1) { e1.printStackTrace(); }
 
 		//state variables
-		_prevPingResponseTime =  _prevPingRequestTime = new Date();
+		_prevPingResponseTime =  _prevPingRequestTime = System.currentTimeMillis();
 		_notifyListener = listener;
 		_serverLive = false;
 		_serverBooted = false;
@@ -820,7 +819,8 @@ public class SCSoundControl implements OSCListener, Runnable {
 	}
 	
 	protected void handleServerStatusUpdate(int numUgens, int numSynths, int numGroups, int numSynthdefs, float avgCPU, float peakCPU) {
-		_prevPingResponseTime = new Date();
+		_prevPingResponseTime = System.currentTimeMillis();
+		responseReceived = true;
 		
 		//if (!_serverLive || !_serverBooted) {
 		if (!_serverLive) {
@@ -839,8 +839,93 @@ public class SCSoundControl implements OSCListener, Runnable {
 		
 		//debugPrintln("status latency: " + (_prevPingResponseTime.getTime() - _prevPingRequestTime.getTime()));
 	}
-	
-	
+    public boolean responseReceived = false;
+
+    public void run() {
+
+        long nextPing = -1;
+        boolean waitingOnResponse = false;
+
+        while (true){
+            if (!_serverLive){ // if the server is dead, start it
+                logger.info("starting server");
+                startServer();
+            }else if (!_serverBooted){ // if it's live, but not booted, boot it
+                logger.info("booting server");
+                bootServer();
+                waitingOnResponse = false; // reset the response handler
+                responseReceived = false; 
+                nextPing = System.currentTimeMillis(); // and schedule a ping
+            }else{
+                if (waitingOnResponse){ // are we waiting on a ping response?
+                    if (responseReceived){
+                        logger.debug("response received.");
+                        // we got a response!
+                        waitingOnResponse = false;
+                        // schedule a new ping:
+                        nextPing = _prevPingRequestTime + _scsynthPingInterval;
+                        logger.debug("next ping at " + nextPing);
+                    }else if (System.currentTimeMillis() - _prevPingRequestTime > _serverResponseTimeout){
+                        // we timed out :( 
+                        logger.error("Scsynth timed out.");
+                        timeOut();
+                        System.exit(-1);
+                    }
+                }else if (System.currentTimeMillis() > nextPing){
+                    // is it time for another ping?
+                    logger.debug("ping.");
+                    responseReceived = false;
+                    waitingOnResponse = true; // and start waiting.
+                    sendMessage("/status"); // then ping,
+                    _prevPingRequestTime = System.currentTimeMillis();  // note the time,
+                }
+            }
+            // sleep just enough not to consume all resources
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void startServer()
+    {
+        System.out.println("SCSC: Disconnect timeout achieved. Rebooting SC.");
+        logger.info("SCSC: Disconnect timeout achieved. Rebooting SC.");
+        try {
+           cleanup();
+           //_scsynthLauncher.killScsynth();
+           bootScsynth();
+           Thread.sleep(5000);
+           _serverLive = true;
+           this.init();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void bootServer()
+    {
+        sendMessage("/notify", new Object[] { 1 });
+        sendMessage("/n_query", new Object[]{_motherGroupID});
+    }	
+
+    private void timeOut()
+    {
+        if (_notifyListener != null) {
+            SuperColliderDisconnectTime = System.currentTimeMillis();
+             _notifyListener.receiveNotification_ServerStopped();
+         }
+         if (_controlPanel != null && _controlPanel._statsDisplay != null) {
+             _controlPanel._statsDisplay.receiveNotification_ServerStopped();
+             _scsclogger.receiveNotification_ServerStopped();
+         }
+        _serverLive = false;
+        _serverBooted = false;
+    }
+    
+    /**	
 	//SCSoundControl starts up a thread to make sure the server is running.
 	public void run() {
 		Date curTime;
@@ -922,7 +1007,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 			
 		}
 	}
-
+**/
 	
 	//*********************************	
 	//modify server ping settings: 
