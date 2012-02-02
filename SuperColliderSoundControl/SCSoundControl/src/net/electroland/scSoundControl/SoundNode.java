@@ -4,6 +4,8 @@ public class SoundNode {
 
 	//always need a reference to the mother ship:
 	SCSoundControl _sc;
+	SCSoundControlOscP5 _scp5;
+	boolean isP5 = false;
 
 	//keep track of various super collider IDs:
 	protected int _bus;
@@ -89,6 +91,64 @@ public class SoundNode {
 		
 	}
 
+    /**
+     * 
+     * @param sc: reference to master SCSoundControl Object
+     * @param bufferNumber: ID of buffer to playback
+     * @param numBufferChannels: how many channels does the playback buffer have? (max 2)
+     * @param doLoop: boolean. True = loop, False = play then stop and die.
+     * @param outputChannels: 2D array of output channel indeces. For mono playback buffers, only use outputChannels[0].
+     * @param amplitude: 2D array of playback amplitudes. amplitude[i].length should equal outputChannels[i].length
+     * @param playbackRate: scale playback speed.
+     */
+    public SoundNode(SCSoundControlOscP5 sc, int bufferNumber, int numBufferChannels, boolean doLoop, int[][] outputChannels, float[][] amplitude, float playbackRate) {
+        _scp5 = sc;
+        _alive = true;
+        _looping = doLoop;
+        _numBufferChannels = numBufferChannels;
+        _rate = playbackRate;
+        _buffer = bufferNumber;
+
+        //make a copy of the outputchannels and amplitude arrays
+        //also initialize array for envelope soundNode IDs
+        _outputChannels = new int[outputChannels.length][];
+        _amplitude = new float[amplitude.length][];
+        _envelopeNodeIDs = new int[outputChannels.length][];
+        for (int i = 0; i < outputChannels.length; i ++ ) {
+            _outputChannels[i] = new int[outputChannels[i].length];
+            System.arraycopy(outputChannels[i], 0, _outputChannels[i], 0, outputChannels[i].length);
+
+            _amplitude[i] = new float[amplitude[i].length];
+            System.arraycopy(amplitude[i], 0, _amplitude[i], 0, amplitude[i].length);
+
+            _envelopeNodeIDs[i] = new int[outputChannels[i].length];
+        }
+        
+        _group = _scp5.createGroup();
+        _bus = _scp5.allocateConsecutiveBusses(_numBufferChannels);
+
+        //create a playbuffer
+        _playbufID = _scp5.getNewNodeID();
+        if (_numBufferChannels == 1) {
+            _scp5.createPlayBuf(_playbufID, _group, _buffer, _bus, 1f, _rate, _looping);
+        }
+        else if (_numBufferChannels == 2) {
+            _scp5.createStereoPlayBuf(_playbufID, _group, _buffer, _bus, 1f, _rate, _looping);
+        }
+        else {
+            _scp5.debugPrintln("SoundNode: buffers over 2 channels (stereo sound files) are not supported");
+        }
+
+
+        //create an env for each specified output channel
+        for (int i = 0; i < _outputChannels.length; i ++ ) {
+            for (int j = 0; j < _outputChannels[i].length; j++) {
+                _envelopeNodeIDs[i][j] = _scp5.getNewNodeID();
+                _scp5.createEnvelope(_envelopeNodeIDs[i][j], _group, _bus + i, _outputChannels[i][j], _amplitude[i][j]);
+            }           
+        }
+        
+    }	
 	
 	private int getNodeIdIndex(int bufferChannel, int outputChannel) {
 		for (int i = 0; i < _outputChannels[bufferChannel].length; i++) {
@@ -107,7 +167,11 @@ public class SoundNode {
 		}
 
 		_amplitude[bufferChannel][idIndex] = level;
-		_sc.setProperty(_envelopeNodeIDs[bufferChannel][idIndex], "ampScale", level);
+		if (isP5){
+	        _scp5.setProperty(_envelopeNodeIDs[bufferChannel][idIndex], "ampScale", level);
+		}else{
+		    _sc.setProperty(_envelopeNodeIDs[bufferChannel][idIndex], "ampScale", level);
+		}
 	}
 	
 	//mono version
@@ -129,15 +193,31 @@ public class SoundNode {
 	
 	public void setPlaybackRate(float playbackRate) {
 		_rate = playbackRate;
-		_sc.setProperty(_playbufID, "playbackRate", playbackRate);		
+		if (isP5){
+		    _scp5.setProperty(_playbufID, "playbackRate", playbackRate);  
+		}else{
+	        _sc.setProperty(_playbufID, "playbackRate", playbackRate);      
+		}
 	}
 	
 	public void die() {
-		_sc.freeNode(_group);
+	    if (isP5){
+	        _scp5.freeNode(_group);
+	    }else{
+	        _sc.freeNode(_group);
+	    }
 	}
 	
 	public void cleanup() {
-		for (int i = 0; i < _numBufferChannels; i++) _sc.freeBus(_bus + i);		
+	    if (isP5){
+	        for (int i = 0; i < _numBufferChannels; i++){
+                _scp5.freeBus(_bus + i);      
+	        }
+	    }else{
+	        for (int i = 0; i < _numBufferChannels; i++){
+	            _sc.freeBus(_bus + i);      
+	        }
+	    }
 	}
 
 	//accessor and mutator methods:
