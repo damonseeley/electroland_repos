@@ -840,7 +840,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 		//debugPrintln("status latency: " + (_prevPingResponseTime.getTime() - _prevPingRequestTime.getTime()));
 	}
     public boolean responseReceived = false;
-
+    public boolean isBooting = false;
     public void run() {
 
         long nextPing = -1;
@@ -850,12 +850,21 @@ public class SCSoundControl implements OSCListener, Runnable {
             if (!_serverLive){ // if the server is dead, start it
                 logger.info("starting server");
                 startServer();
+                isBooting = false;
             }else if (!_serverBooted){ // if it's live, but not booted, boot it
-                logger.info("booting server");
-                bootServer();
-                waitingOnResponse = false; // reset the response handler
-                responseReceived = false; 
-                nextPing = System.currentTimeMillis(); // and schedule a ping
+                if (!isBooting){
+                    logger.info("booting server");
+                    bootServer();
+                    waitingOnResponse = false; // reset the response handler
+                    responseReceived = false; 
+                    isBooting = true;
+                }else{
+                    /**
+                     * TODO: should check to see if our boot request is taking 
+                     *       too long and resend.
+                     */
+                }
+                nextPing = System.currentTimeMillis() + 2000; // and schedule a ping
             }else{
                 if (waitingOnResponse){ // are we waiting on a ping response?
                     if (responseReceived){
