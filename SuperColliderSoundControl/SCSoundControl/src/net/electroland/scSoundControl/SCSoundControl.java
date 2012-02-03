@@ -850,6 +850,7 @@ public class SCSoundControl implements OSCListener, Runnable {
             if (!_serverLive){ // if the server is dead, start it
                 logger.info("starting server");
                 startServer();
+                logger.info("server is started...");
                 isBooting = false;
             }else if (!_serverBooted){ // if it's live, but not booted, boot it
                 if (!isBooting){
@@ -878,7 +879,6 @@ public class SCSoundControl implements OSCListener, Runnable {
                         // we timed out :( 
                         logger.error("Scsynth timed out.");
                         timeOut();
-                        System.exit(-1);
                     }
                 }else if (System.currentTimeMillis() > nextPing){
                     // is it time for another ping?
@@ -898,13 +898,15 @@ public class SCSoundControl implements OSCListener, Runnable {
         }
     }
 
+//    boolean firstLaunch = true;
     private void startServer()
     {
-        System.out.println("SCSC: Disconnect timeout achieved. Rebooting SC.");
-        logger.info("SCSC: Disconnect timeout achieved. Rebooting SC.");
         try {
-           cleanup();
-           //_scsynthLauncher.killScsynth();
+//           if (!firstLaunch){
+                cleanup();
+                _scsynthLauncher.killScsynth();
+//                firstLaunch = false;
+//            }
            bootScsynth();
            Thread.sleep(5000);
            _serverLive = true;
@@ -933,90 +935,7 @@ public class SCSoundControl implements OSCListener, Runnable {
         _serverLive = false;
         _serverBooted = false;
     }
-    
-    /**	
-	//SCSoundControl starts up a thread to make sure the server is running.
-	public void run() {
-		Date curTime;
-		while(true) {
-			curTime = new Date();
-			
-			//System.out.println("currentTime: "+ curTime.getTime() +" prevTime: "+ _prevPingRequestTime.getTime() +" diff: " + (curTime.getTime() - _prevPingRequestTime.getTime()) +" interval: "+ _scsynthPingInterval);
 
-			//if the previous status request is still pending...
-			if (_serverLive && (_prevPingRequestTime.getTime() > _prevPingResponseTime.getTime())) {
-				//We've not yet heard back from the previous status request.
-				//Have we timed out?
-				if (curTime.getTime() - _prevPingRequestTime.getTime() > _serverResponseTimeout) {
-					//We've timed out on the previous status request.
-					logger.info("SCSC: Timed out on previous status request.");
-
-					if (_notifyListener != null) {
-					   SuperColliderDisconnectTime = System.currentTimeMillis();
-						_notifyListener.receiveNotification_ServerStopped();
-					}
-					if (_controlPanel != null && _controlPanel._statsDisplay != null) {
-						_controlPanel._statsDisplay.receiveNotification_ServerStopped();
-						_scsclogger.receiveNotification_ServerStopped();
-					}
-
-					_serverLive = false;
-					_serverBooted = false;
-				}
-				//else we just keep waiting for a response or a timeout
-			}
-			//the previous status request is NOT still pending. Is it time to send another?
-			else if (curTime.getTime() - _prevPingRequestTime.getTime() > _scsynthPingInterval) {
-				//It's time to send another status request.
-				
-				//generally, ping with a /status message.
-				//but, if we're live but not booted, query node 1 (the sign that init completed)
-				if (_serverLive && !_serverBooted) { 
-					sendMessage("/notify", new Object[] { 1 });
-					sendMessage("/n_query", new Object[]{_motherGroupID});
-					//System.out.println("Querying SCSC mother node");
-					//debugPrintln("Querying SCSC mother node");
-				} else {
-					//if the server's booted, request a status update.
-					sendMessage("/status");
-				}
-				
-				_prevPingRequestTime = new Date();
-			}
-			//it's not time to send, and we're not watching 
-			//for a reply, so go to sleep until it's time to ping again
-			else {
-			   if(!_serverLive && !_serverBooted){
-			      // catch the disconnect timeout and force SCSynthLauncher to cleanup and restart.
-               if(System.currentTimeMillis() - SuperColliderDisconnectTime > SCSoundControl_Timeout){
-                  System.out.println("SCSC: Disconnect timeout achieved. Rebooting SC.");
-                  logger.info("SCSC: Disconnect timeout achieved. Rebooting SC.");
-                  try {
-                     cleanup();
-                     //_scsynthLauncher.killScsynth();
-                     bootScsynth();
-                     Thread.sleep(5000);
-                     _serverLive = true;
-                     this.init();
-                  } catch (Throwable e) {
-                     e.printStackTrace();
-                  }
-               }
-			   }
-				long sleeptime = Math.max(_scsynthPingInterval - (curTime.getTime() - _prevPingRequestTime.getTime()), 0);
-				//System.out.println("sleep " + sleeptime);
-				try {
-					Thread.sleep(sleeptime);
-				} catch (InterruptedException e) {
-					//NOTE this thread shouldn't get interrupted.
-					e.printStackTrace();
-				}			
-			}
-			
-			
-		}
-	}
-**/
 	
 	//*********************************	
 	//modify server ping settings: 

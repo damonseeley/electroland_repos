@@ -6,7 +6,9 @@ import java.io.InputStream;
 
 public class StreamedTextArea extends TextArea implements Runnable {
 
-	BufferedInputStream _stream;
+    final static int MAX_LENGTH = 5000;
+    final static int CUT_LENGTH = 3000;
+    BufferedInputStream _stream;
 	byte[] _streamData;
 	Thread _t;
 	
@@ -31,6 +33,11 @@ public class StreamedTextArea extends TextArea implements Runnable {
 			while (_stream != null && _stream.available() > 0) {
 				_stream.read(_streamData);
 				this.append(new String(_streamData));
+				String text = this.getText();
+				if (text.length() > MAX_LENGTH)
+				{
+				    this.setText(text.substring(CUT_LENGTH, MAX_LENGTH));
+				}
 			}
 		} catch (Exception e) {}
 		
