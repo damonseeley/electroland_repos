@@ -9,7 +9,6 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -19,17 +18,14 @@ import net.electroland.ea.Clip;
 import net.electroland.ea.Content;
 import net.electroland.ea.content.SolidColorContent;
 import net.electroland.edmonton.core.model.LastTrippedModelWatcher;
-import net.electroland.edmonton.core.model.OneEventPerPeriodModelWatcher;
 import net.electroland.edmonton.core.model.ScreenSaverModelWatcher;
 import net.electroland.edmonton.core.model.TrackerBasicModelWatcher;
 import net.electroland.edmonton.core.sequencing.SimpleSequencer;
 import net.electroland.edmonton.core.ui.EIAFrame;
 import net.electroland.eio.IOManager;
-import net.electroland.eio.IState;
 import net.electroland.eio.model.Model;
 import net.electroland.eio.model.ModelEvent;
 import net.electroland.eio.model.ModelListener;
-import net.electroland.eio.model.ModelWatcher;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.lighting.ELUManager;
@@ -50,6 +46,8 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
     private boolean updateLighting = true;
     private boolean track;
     private boolean screensaver = true;
+    private boolean kickstart = false;
+    private int kickdelay = 10000;
     private ELUCanvas2D canvas;
     private IOManager eio;
 
@@ -139,6 +137,16 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
             e.printStackTrace();
         }
 
+        try {
+            kickstart = Boolean.parseBoolean(props.getOptional("settings", "sequencing", "kickstart"));
+            kickdelay = props.getOptionalInt("settings", "sequencing", "kickdelay");
+            isLive = true;
+        } catch (OptionException e) {
+            // TODO Auto-generated catch block
+            kickstart = false;
+            e.printStackTrace();
+        }
+        
         canvas = (ELUCanvas2D)elu.getCanvas("EIAspan");
         canvasHeight = (int)canvas.getDimensions().getHeight();
         canvasWidth = (int)canvas.getDimensions().getWidth();
@@ -473,6 +481,22 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
         timer.start();
         curTime = System.currentTimeMillis();
 
+        if (screensaver && kickstart)
+        {
+            try {
+                // wait until we're sure everything has started so the audio
+                // can start cleanly
+                Thread.sleep(kickdelay);
+                // start screensaver
+                logger.info("kickstarting screensaver.");
+                this.goQuiet();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }else{
+            logger.info("no kickstart.");
+        }
+        
         while (isRunning) {
 
             model.poll();
