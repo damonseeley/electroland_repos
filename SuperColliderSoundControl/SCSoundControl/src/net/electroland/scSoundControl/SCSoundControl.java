@@ -535,6 +535,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 	// helper function, we use this all over the place.
 	protected void sendMessage(String addr, Object[] args) {
 		try {
+		    logger.debug(addr);
 			_sender.send(args == null ? new OSCMessage(addr) : new OSCMessage(
 					addr, args));
 		} catch (IOException e) {
@@ -849,7 +850,7 @@ public class SCSoundControl implements OSCListener, Runnable {
         while (true){
             if (!_serverLive){ // if the server is dead, start it
                 logger.info("starting server");
-                startServer();
+                startServer(); // this method pauses the thread for 5000 ms.
                 logger.info("server is started...");
                 isBooting = false;
             }else if (!_serverBooted){ // if it's live, but not booted, boot it
