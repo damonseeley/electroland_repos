@@ -37,6 +37,7 @@ public class Clip implements Comparable<Clip>{
     private QueuedChange currentChange;
     protected Content content;
     public int zIndex = 0;
+    public long createTime;
 
     public Clip(Content content, int top, int left, int width, int height, double alpha)
     {
@@ -45,6 +46,7 @@ public class Clip implements Comparable<Clip>{
         this.initialState = new State(top, left, width, height, alpha);
         this.currentState = new State(top, left, width, height, alpha);
         changes = new ConcurrentLinkedQueue<QueuedChange>();
+        createTime = System.currentTimeMillis();
     }
     /**
      * Add a clip with no content
