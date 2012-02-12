@@ -46,20 +46,22 @@ public class TrackerBasicModelWatcher extends ModelWatcher {
     public boolean poll() {
 
         //  iterate through tracks
-        if (tracks.size() > 0){
-            Iterator<Track> itr = tracks.iterator();
-            while (itr.hasNext()){
-                Track tr = itr.next();
-                // update tracks if they were not updated by the previous loop
-                tr.update();
-                if (tr.x < -10){
-                    // remove track if x is below some threshold
-                    if (localDebug) logger.debug("track " + tr.id + " left the scene and will be removed");
-                    itr.remove();
-                }else if (tr.isExpired()){
-                    //remove them if their searchtime has been exceeded
-                    if (localDebug) logger.debug("track " + tr.id + " expired unmatched and will be removed");
-                    itr.remove();
+        synchronized(tracks){
+            if (tracks.size() > 0){
+                Iterator<Track> itr = tracks.iterator();
+                while (itr.hasNext()){
+                    Track tr = itr.next();
+                    // update tracks if they were not updated by the previous loop
+                    tr.update();
+                    if (tr.x < -10){
+                        // remove track if x is below some threshold
+                        if (localDebug) logger.debug("track " + tr.id + " left the scene and will be removed");
+                        itr.remove();
+                    }else if (tr.isExpired()){
+                        //remove them if their searchtime has been exceeded
+                        if (localDebug) logger.debug("track " + tr.id + " expired unmatched and will be removed");
+                        itr.remove();
+                    }
                 }
             }
         }
