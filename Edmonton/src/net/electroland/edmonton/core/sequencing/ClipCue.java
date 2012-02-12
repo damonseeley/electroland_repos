@@ -3,6 +3,7 @@ package net.electroland.edmonton.core.sequencing;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.Map;
 
 import net.electroland.edmonton.core.EIAClipPlayer;
@@ -80,9 +81,13 @@ public class ClipCue extends Cue {
                     Collection<Track> c = ((TrackerBasicModelWatcher)
                             context.get("tracker")).getAllTracks();
                     synchronized (c){
-                        for (Track track : c)
-                        {
-                            playClipAt(cp, x + track.x);
+                        try{
+                            for (Track track : c)
+                            {
+                                playClipAt(cp, x + track.x);
+                            }
+                        }catch(ConcurrentModificationException e){
+                            logger.error(e);
                         }
                     }
                 }else{
