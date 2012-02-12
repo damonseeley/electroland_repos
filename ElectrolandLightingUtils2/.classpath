@@ -6,6 +6,6 @@
 	<classpathentry kind="lib" path="libraries/j3dcore.jar"/>
 	<classpathentry kind="lib" path="libraries/j3dutils.jar"/>
 	<classpathentry kind="lib" path="libraries/vecmath.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ElectrolandConfig"/>
+	<classpathentry kind="lib" path="libraries/EL-Config.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
