@@ -13,12 +13,23 @@ public class ParameterMap implements Map<String, String>{
 
     public String getOptional(String name) throws OptionException
     {
-        return params.get(name);
+        Object o = params.get(name);
+        if (o == null)
+            return null;
+        else{
+            if (((String)o).length() >= 2){
+                if (((String)o).startsWith("\"") && ((String)o).endsWith("\""))
+                {
+                    return ((String)o).substring(1,((String)o).length()-1);
+                }
+            }
+            return (String)o;
+        }
     }
 
     public String getRequired(String name)
     {
-        Object o = params.get(name);
+        Object o = getOptional(name);
         if (o == null)
             throw new OptionException("Required parameter '" + name + "' is missing.");
         else
@@ -46,6 +57,25 @@ public class ParameterMap implements Map<String, String>{
             throw new OptionException("Required parameter '" + name + "' is missing.");
         else
             return (Integer)o;
+    }
+
+    public Boolean getOptionalBoolean(String name){
+        Object o = params.get(name);
+        if (o == null)
+            return null;
+        else{
+            return "true".equalsIgnoreCase((String)o) ||
+                    "t".equalsIgnoreCase((String)o) ||
+                    "0".equalsIgnoreCase((String)o);
+        }
+    }
+
+    public Boolean getRequiredBoolean(String name){
+        Object o = getOptionalBoolean(name);
+        if (o == null)
+            throw new OptionException("Required parameter '" + name + "' is missing.");
+        else
+            return (Boolean)o;
     }
 
     public Double getOptionalDouble(String name)

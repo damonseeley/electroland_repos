@@ -26,6 +26,8 @@ public class ElectrolandProperties {
         p.put("dog.betty", "$type   yorkie  $attitude  0 $class net.electroland.utils.Dog $tags short,frantic");
         p.put("dog.sophie","$type mutt  $attitude  10 $class net.electroland.utils.Dog $tags tall,friendly,bites,men");
         p.put("cat.clay","$type tabby $class net.electroland.utils.Cat");
+        p.put("cat.cool","$is t $was 0 $can false $ooh true");
+        p.put("cat.blue","$multi \"\"");
 
         ElectrolandProperties op = new ElectrolandProperties(p);
 
@@ -36,6 +38,14 @@ public class ElectrolandProperties {
             System.out.println(">" + name + "<");
         }
 
+        System.out.println(op.getOptional("cat","blue","multi"));
+        System.out.println(op.getRequiredBoolean("cat","cool","is"));
+        System.out.println(op.getRequiredBoolean("cat","cool","was"));
+        System.out.println(op.getRequiredBoolean("cat","cool","can"));
+        System.out.println(op.getRequiredBoolean("cat","cool","ooh"));
+        System.out.println(op.getOptionalBoolean("cat","cool","ah"));
+        System.out.println(op.getOptionalBoolean("cat","cool","ooh"));
+        
         // get all dogs (this is useful if you want to pass this subset
         // of the properties to a class that needs to access properties
         // for just dogs)
@@ -195,6 +205,16 @@ public class ElectrolandProperties {
     public String getRequired(String objectType, String objectName, String paramName)
     {
         return getParams(objectType, objectName).getRequired(paramName);
+    }
+
+    public Boolean getOptionalBoolean(String objectType, String objectName, String paramName)
+    {
+        return getParams(objectType, objectName).getOptionalBoolean(paramName);
+    }
+
+    public Boolean getRequiredBoolean(String objectType, String objectName, String paramName)
+    {
+        return getParams(objectType, objectName).getRequiredBoolean(paramName);
     }
 
     public Double getOptionalDouble(String objectType, String objectName, String paramName)
