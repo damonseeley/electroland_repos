@@ -11,6 +11,11 @@ public class ParameterMap implements Map<String, String>{
 
     private Map <String, String> params = new HashMap<String, String>();
 
+    public String getDefault(String name, String defaultValue)
+    {
+        String s = getOptional(name);
+        return s == null ? defaultValue : s;
+    }
     public String getOptional(String name) throws OptionException
     {
         Object o = params.get(name);
@@ -36,6 +41,12 @@ public class ParameterMap implements Map<String, String>{
             return o.toString();
     }
 
+    public int getDefaultInt(String name, int defaultValue)
+    {
+        Integer i = getOptionalInt(name);
+        return i == null ? defaultValue : i;
+    }
+
     public Integer getOptionalInt(String name)
     {
         Object o = params.get(name);
@@ -59,6 +70,12 @@ public class ParameterMap implements Map<String, String>{
             return (Integer)o;
     }
 
+    public boolean getDefaultBoolean(String name, boolean defaultValue)
+    {
+        Boolean b = getOptionalBoolean(name);
+        return b == null ? defaultValue : b;
+    }
+
     public Boolean getOptionalBoolean(String name){
         Object o = params.get(name);
         if (o == null)
@@ -76,6 +93,12 @@ public class ParameterMap implements Map<String, String>{
             throw new OptionException("Required parameter '" + name + "' is missing.");
         else
             return (Boolean)o;
+    }
+
+    public double getDefaultDouble(String name, double defaultValue)
+    {
+        Double d = getOptionalDouble(name);
+        return d == null ? defaultValue : d;
     }
 
     public Double getOptionalDouble(String name)
@@ -135,6 +158,12 @@ public class ParameterMap implements Map<String, String>{
             throw new OptionException("Required parameter '" + name + "' is missing.");
         else
             return l;
+    }
+
+    public Object getDefaultClass(String name, Object defaultValue)
+    {
+        Object o = getOptionalClass(name);
+        return o == null ? defaultValue : o;
     }
 
     public Object getOptionalClass(String name)
