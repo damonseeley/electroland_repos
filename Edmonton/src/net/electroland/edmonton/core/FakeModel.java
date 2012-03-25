@@ -49,7 +49,7 @@ public class FakeModel {
 			}
 
 			if (whatToDo != "") {
-				IState is = new IState(whatToDo, 0, 0, 0, null);
+				IState is = new IState(whatToDo, 0, 0, 0, null, -1);
 				is.setState(true);
 				ModelEvent evt = new ModelEvent(is);
 				evt.watcherName = "testModelEvent";
