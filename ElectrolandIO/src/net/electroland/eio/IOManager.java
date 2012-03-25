@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -151,6 +150,12 @@ public class IOManager {
         logger.info("\tgetting settings.global.pollrate");
         pollrate = op.getRequiredInt("settings", "global", "pollrate");
 
+        Integer susp = op.getOptionalInt("settings", "global", "suspect");
+        int suspectThreshold = -1;
+        if (susp != null){
+            suspectThreshold = susp;
+        }
+
         // ******* IODevices *******
         Hashtable<String,IODeviceFactory> factories = new Hashtable<String,IODeviceFactory>();
         // for each type
@@ -196,7 +201,7 @@ public class IOManager {
             String units = op.getRequired("istate", name, "units");
             List<String> sTags = op.getOptionalList("istate", name, "tags");
 
-            IState state = new IState(id, x, y, z, units);
+            IState state = new IState(id, x, y, z, units, suspectThreshold);
 
             List<String> filterNames = op.getOptionalList("istate", name, "filters");
             if (filterNames != null){
