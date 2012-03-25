@@ -31,6 +31,8 @@ public class ElectrolandProperties {
 
         ElectrolandProperties op = new ElectrolandProperties(p);
 
+        System.out.println(op.getDefault("cat","cool","isnt", "neat"));
+        
         // get dog names
         Set<String> dogNames = op.getObjectNames("dog");
         for (String name : dogNames)
@@ -197,51 +199,66 @@ public class ElectrolandProperties {
 
     // TODO: all of the methods below should add some debugging info to tell you which objectType and objectName
     // threw the OptionException
+    public String getDefault(String objectType, String objectName, String paramName, String defaultVal)
+    {
+        return getParams(objectType, objectName).getDefault(paramName, defaultVal);
+    }
     public String getOptional(String objectType, String objectName, String paramName)
     {
         return getParams(objectType, objectName).getOptional(paramName);
     }
-
     public String getRequired(String objectType, String objectName, String paramName)
     {
         return getParams(objectType, objectName).getRequired(paramName);
     }
 
+    public Boolean getDefaultBoolean(String objectType, String objectName, String paramName, boolean defaultVal)
+    {
+        return getParams(objectType, objectName).getDefaultBoolean(paramName, defaultVal);
+    }
     public Boolean getOptionalBoolean(String objectType, String objectName, String paramName)
     {
         return getParams(objectType, objectName).getOptionalBoolean(paramName);
     }
-
     public Boolean getRequiredBoolean(String objectType, String objectName, String paramName)
     {
         return getParams(objectType, objectName).getRequiredBoolean(paramName);
     }
 
+    public Double getDefaultDouble(String objectType, String objectName, String paramName, double defaultValue)
+    {
+        return getParams(objectType, objectName).getDefaultDouble(paramName, defaultValue);
+    }
     public Double getOptionalDouble(String objectType, String objectName, String paramName)
     {
         return getParams(objectType, objectName).getOptionalDouble(paramName);
     }
-
     public Double getRequiredDouble(String objectType, String objectName, String paramName)
     {
         return getParams(objectType, objectName).getRequiredDouble(paramName);
     }
-    
+
+    public Integer getDefaultInt(String objectType, String objectName, String paramName, int defaultVal)
+    {        
+        return getParams(objectType, objectName).getDefaultInt(paramName, defaultVal);
+    }
     public Integer getOptionalInt(String objectType, String objectName, String paramName)
     {        
         return getParams(objectType, objectName).getOptionalInt(paramName);
     }
-
     public Integer getRequiredInt(String objectType, String objectName, String paramName)
     {
         return getParams(objectType, objectName).getRequiredInt(paramName);
     }
 
+    public Object getOptionalClass(String objectType, String objectName, String paramName, Object defaultVal)
+    {
+        return getParams(objectType, objectName).getDefaultClass(paramName, defaultVal);
+    }
     public Object getOptionalClass(String objectType, String objectName, String paramName)
     {
         return getParams(objectType, objectName).getOptionalClass(paramName);
     }
-
     public Object getRequiredClass(String objectType, String objectName, String paramName)
     {
         return getParams(objectType, objectName).getRequiredClass(paramName);
