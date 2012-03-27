@@ -43,7 +43,7 @@ public class IState extends IOState{
      */
     public boolean getState()
     {
-        return !isSuspect && state;
+        return state;
     }
     /**
      * returns true if this iState has been on longer than the allowable

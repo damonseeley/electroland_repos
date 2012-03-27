@@ -71,7 +71,7 @@ public class IStatePanel extends JComponent implements MouseListener {
         for (IOState state : iom.getStates())
         {
             Point3d l = state.getLocation();
-            if (((IState)state).getState()){
+            if (!((IState)state).isSuspect() && ((IState)state).getState()){
                 g.setColor(Color.WHITE);
                 //g.setColor(Color.RED);
                 g.fillRect((int)(l.x * scale), (int)(l.y * scale),
