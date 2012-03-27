@@ -257,7 +257,7 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 
                 int brite = 0;
                 IState is = (IState)state;
-                if (is.getState()) {
+                if (!is.isSuspect() && is.getState()) {
                     brite = 255;
                 }
 

@@ -25,7 +25,6 @@ import net.electroland.eio.IOManager;
 import net.electroland.eio.IOState;
 import net.electroland.eio.IState;
 import net.electroland.utils.ElectrolandProperties;
-import net.electroland.utils.FrameRateRingBuffer;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.lighting.ELUManager;
 import net.electroland.utils.lighting.Fixture;
@@ -233,7 +232,7 @@ public class EIAPanel extends JPanel implements MouseMotionListener { // change 
 
 				int brite = 0;
 				IState is = (IState)state;
-				if (is.getState()) {
+				if (!is.isSuspect() && is.getState()) {
 					brite = 255;
 				}
 

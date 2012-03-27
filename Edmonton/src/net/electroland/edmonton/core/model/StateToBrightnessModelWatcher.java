@@ -81,7 +81,7 @@ class BrightState
     }
     public void update()
     {
-        if (state.getState()){
+        if (!state.isSuspect() && state.getState()){
             // fade on
             brightness += StateToBrightnessModelWatcher.dbrightness;
             if (brightness > maxBright){
