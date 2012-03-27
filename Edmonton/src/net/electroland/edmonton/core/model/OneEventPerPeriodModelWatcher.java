@@ -34,7 +34,7 @@ public class OneEventPerPeriodModelWatcher extends ModelWatcher {
         for (IState state : this.getStates())
         {
             // yes?
-            if (state.getState())
+            if (!state.isSuspect() && state.getState())
             {
                 // check to see if we fired an event too recently
                 if (System.currentTimeMillis() - timeSinceFired > periodMillis)

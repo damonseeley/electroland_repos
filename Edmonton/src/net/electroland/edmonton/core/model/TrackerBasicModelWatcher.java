@@ -69,7 +69,7 @@ public class TrackerBasicModelWatcher extends ModelWatcher {
         // iterate through states and try to match to tracks
         for (IState s : this.getStates())
         {
-            if (s.getState()){
+            if (!s.isSuspect() && s.getState()){
                 // logger.debug("state " + state.getID() + " is on");
                 // if a state is on do a search for nearby tracks, if tracks is not empty
                 // search for nearby existing track

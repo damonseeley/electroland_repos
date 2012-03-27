@@ -31,7 +31,7 @@ public class LastTrippedModelWatcher extends ModelWatcher {
 
         for (IState state : this.getStates())
         {
-            if (state.getState())
+            if (!state.isSuspect() && state.getState())
             {
                 records.put(state, System.currentTimeMillis());
             }
