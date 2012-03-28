@@ -29,6 +29,7 @@ public class IState extends IOState{
         if (state != lastState){
             lastState = state;
             lastStateChange = System.currentTimeMillis();
+            duration = 0;
             logger.info("IOState." + id + " switched to: " + state + " after " + duration + " millis.");
         }
                                                   // This iState is suspect:
