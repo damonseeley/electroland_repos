@@ -255,14 +255,18 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
                 l.scale(displayScale);
                 // render sprite
 
-                int brite = 0;
+                Color sColor = new Color(0, 0, 0);
                 IState is = (IState)state;
                 if (!is.isSuspect() && is.getState()) {
-                    brite = 255;
+                	//sensor is on and functioning correctly
+                	sColor = new Color(255, 255, 255);
+                } else if (is.isSuspect()) {
+                	sColor = new Color(255, 0, 0);
                 }
+                
 
                 //draw the sensor state
-                g2.setColor(new Color(brite, brite, brite));
+                g2.setColor(sColor);
                 g2.fillRect((int)(l.x)-(stateSize/2)+intMargin, (int)(l.y)-(stateSize/2)+intMargin,stateSize, stateSize);
                 //draw an outline
                 g2.setColor(new Color(64, 64, 64));
