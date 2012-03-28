@@ -1,0 +1,12 @@
+#SCSoundControl Properties File
+#Thu Jan 19 17:15:43 PST 2012
+SuperCollider_AudioHardwareDeviceName=ASIO \: MOTU Audio ASIO
+SuperCollider_SampleRate=44100
+SuperCollider_RealTimeRamAllocation=131072
+SuperCollider_Path=C\:\\Program Files\\SuperCollider\\scsynth.exe
+SuperCollider_NumberOfOutputChannels=17
+SuperCollider_NumberOfInputChannels=0
+SCSoundControl_MaxPolyphony=16
+SuperCollider_LoadSynthDefs=1
+SCSoundControl_Timeout=10000
+SuperCollider_UDPportNumber=57110
