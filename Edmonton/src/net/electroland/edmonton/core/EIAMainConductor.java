@@ -17,6 +17,7 @@ import net.electroland.ea.AnimationManager;
 import net.electroland.ea.Clip;
 import net.electroland.ea.Content;
 import net.electroland.ea.content.SolidColorContent;
+import net.electroland.edmonton.core.model.LightBlip;
 import net.electroland.edmonton.core.model.LastTrippedModelWatcher;
 import net.electroland.edmonton.core.model.LightBlipModelWatcher;
 import net.electroland.edmonton.core.model.ScreenSaverModelWatcher;
@@ -160,7 +161,7 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
         context.put("anim",anim);
         context.put("animpropsfile", "EIA-anim.properties");
 
-        String seqpropsfile = "EIA-seq-LITE.properties";
+        String seqpropsfile = "EIA-sequencer.properties";
         sequencer = new SimpleSequencer(seqpropsfile, context);
         context.put("sequencer", sequencer);
         context.put("seqpropsfile", seqpropsfile);
@@ -171,7 +172,7 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
         gsp = new EIAGenSoundPlayer(soundController);
 
 
-        clipPlayer = new EIAClipPlayer(anim,elu);
+        clipPlayer = new EIAClipPlayer(anim,elu,soundController);
         context.put("clipPlayer", clipPlayer);
 
 
@@ -181,7 +182,11 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
         model.addModelListener(this);
         model.addModelListener(sequencer);
 
-        createModelWatchers();
+        if (track) {
+            tracker = new TrackerBasicModelWatcher(context); //starting with vals of 64 which is what was used in TestConductor (single value)
+            model.addModelWatcher(tracker, "tracker", eio.getIStates());
+            context.put("tracker", tracker);
+        }
 
         startupTestTimer = new Timer();
         startupTestTimer.schedule(new startupTests(), 3000);
@@ -193,14 +198,9 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
         tripRecord = new LastTrippedModelWatcher();
         model.addModelWatcher(tripRecord, "tripRecord", eio.getIStates());
 
-        // blipper
-        // settings.lightBlip = $up 750 $hold 500 $down 500 $wait 1250 $maxbright 255
-        int blipUp = props.getRequiredInt("settings", "lightBlip", "up");
-        int blipHold = props.getRequiredInt("settings", "lightBlip", "hold");
-        int blipDown = props.getRequiredInt("settings", "lightBlip", "down");
+        // blipper plays when any sensor is tripped- unless the sensor was tripped to recently
         int blipWait = props.getRequiredInt("settings", "lightBlip", "wait");
-        int blipMax = props.getRequiredInt("settings", "lightBlip", "maxbright");
-        blipper = new LightBlipModelWatcher(blipUp, blipDown, blipHold, blipMax, blipWait);
+        blipper = new LightBlipModelWatcher(blipWait);
         model.addModelWatcher(blipper, "blipper", eio.getIStates());
 
         // watch for screen saver switches
@@ -299,42 +299,6 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
 
     /************************* Model Handlers ******************************/
 
-    private void createModelWatchers(){
-
-        if (track) {
-            tracker = new TrackerBasicModelWatcher(context); //starting with vals of 64 which is what was used in TestConductor (single value)
-            model.addModelWatcher(tracker, "tracker", eio.getIStates());
-            context.put("tracker", tracker);
-        }
-
-        
-        /**
-         * UNCOMMMENT TO START GENERATIVE SHOW ON PEOPLEMOVER 2
-         */
-        /*
-        for (int s=40; s<=71; s++){
-            ModelWatcher mw = new OneEventPerPeriodModelWatcher(1200);
-            ArrayList<IState> oneState = new ArrayList<IState>();
-            oneState.add(eio.getIStateById("i"+s));
-            model.addModelWatcher(mw, "i"+s, oneState);
-        }
-        */
-         
-        
-        
-        /* OLD */
-        /*
-		int stateToBrightnessClip = anim.startClip("stateToBrightnessImage", new Rectangle(0,0,canvasWidth,canvasHeight), 1.0);
-		int maxBright = 192; //max brightness for pathtracer
-		stateToBright = new StateToBrightnessModelWatcher(16,2,maxBright); //starting with vals of 64 which is what was used in TestConductor (single value)
-		model.addModelWatcher(stateToBright, "stateToBright", eio.getIStates());
-         */
-
-    }
-
-
-
-
     @Override
     public void modelChanged(ModelEvent evt) {
 
@@ -349,7 +313,11 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
         }
 
         if (evt.getSource() instanceof LightBlipModelWatcher){
-            // render blips and play sound
+        	for (Object bp : evt.optionalPostiveDetails.values()){
+        		if (((LightBlip)bp).doBlip){
+        			clipPlayer.lightBlip(((LightBlip)bp).x);
+        		}
+        	}
         }
 
         /*

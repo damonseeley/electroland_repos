@@ -30,7 +30,7 @@ public class SimpleSequencer implements Runnable, ModelListener{
 
     public static void main(String args[])
     {
-        SimpleSequencer s = new SimpleSequencer("EIA-seq-LITE.properties", null);
+        SimpleSequencer s = new SimpleSequencer("EIA-sequencer.properties", null);
         s.play("show1");
     }
     
