@@ -47,7 +47,7 @@ public class ScreenSaverModelWatcher extends ModelWatcher {
 
         for (IState state : this.getStates())
         {
-            anyAction = !state.isSuspect() && (anyAction || state.getState());
+            anyAction = anyAction || (!state.isSuspect() && state.getState());
         }
 
         if (anyAction){
