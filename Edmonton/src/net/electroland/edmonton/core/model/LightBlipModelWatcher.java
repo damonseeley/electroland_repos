@@ -32,6 +32,7 @@ public class LightBlipModelWatcher extends ModelWatcher {
         {
             blip.update();
             BrightPoint bp = new BrightPoint(blip.state.getLocation().x, blip.brightness);
+            bp.playSound = blip.playSound;
             bmap.put(blip.state.getID(), bp);
         }
         return bmap;
@@ -62,6 +63,7 @@ class BlipState
 
     protected IState state;
     protected int brightness;
+    protected boolean playSound = false;
 
     public BlipState(IState state){
         this.state = state;
@@ -73,9 +75,11 @@ class BlipState
             case(OFF):  // we can only be flipped on if we are already off.
                 if (!state.isSuspect() && state.getState())
                     renderState = GLOW;
+                    playSound = true;
                 break;
             case(GLOW): // ramp up a glow
                 brightness += LightBlipModelWatcher.dbrightness;
+                playSound = false;
                 // when we get to the top, move to the hold state.
                 if (brightness > LightBlipModelWatcher.maxBright){
                     brightness = LightBlipModelWatcher.maxBright;

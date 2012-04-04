@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 public class OneEventPerPeriodModelWatcher extends ModelWatcher {
 
 	static Logger logger = Logger.getLogger(OneEventPerPeriodModelWatcher.class);
-	
+
     private long periodMillis, timeSinceFired = 0;
 
     /**
