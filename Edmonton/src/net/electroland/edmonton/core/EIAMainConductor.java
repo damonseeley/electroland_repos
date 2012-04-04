@@ -18,6 +18,7 @@ import net.electroland.ea.Clip;
 import net.electroland.ea.Content;
 import net.electroland.ea.content.SolidColorContent;
 import net.electroland.edmonton.core.model.LastTrippedModelWatcher;
+import net.electroland.edmonton.core.model.LightBlipModelWatcher;
 import net.electroland.edmonton.core.model.ScreenSaverModelWatcher;
 import net.electroland.edmonton.core.model.TrackerBasicModelWatcher;
 import net.electroland.edmonton.core.sequencing.SimpleSequencer;
@@ -68,6 +69,7 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
     private TrackerBasicModelWatcher tracker;
     private LastTrippedModelWatcher tripRecord;
     private ScreenSaverModelWatcher screenSaver;
+    private LightBlipModelWatcher blipper;
 
     private int stateToBrightnessClip;
 
@@ -136,7 +138,7 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
             screensaver = true;
             e.printStackTrace();
         }
-
+        
         try {
             kickstart = Boolean.parseBoolean(props.getOptional("settings", "sequencing", "kickstart"));
             kickdelay = props.getOptionalInt("settings", "sequencing", "kickdelay");
@@ -190,6 +192,16 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
 
         tripRecord = new LastTrippedModelWatcher();
         model.addModelWatcher(tripRecord, "tripRecord", eio.getIStates());
+
+        // blipper
+        // settings.lightBlip = $up 750 $hold 500 $down 500 $wait 1250 $maxbright 255
+        int blipUp = props.getRequiredInt("settings", "lightBlip", "up");
+        int blipHold = props.getRequiredInt("settings", "lightBlip", "hold");
+        int blipDown = props.getRequiredInt("settings", "lightBlip", "down");
+        int blipWait = props.getRequiredInt("settings", "lightBlip", "wait");
+        int blipMax = props.getRequiredInt("settings", "lightBlip", "maxbright");
+        blipper = new LightBlipModelWatcher(blipUp, blipDown, blipHold, blipMax, blipWait);
+        model.addModelWatcher(blipper, "blipper", eio.getIStates());
 
         // watch for screen saver switches
         screenSaver = new ScreenSaverModelWatcher();
@@ -326,17 +338,18 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
     @Override
     public void modelChanged(ModelEvent evt) {
 
-        if (evt.watcherName == "screenSaver"){
-            if (screensaver)
+        if (screensaver && evt.getSource() instanceof ScreenSaverModelWatcher){
+            logger.info("got screen saver event at " + System.currentTimeMillis());
+            if (((ScreenSaverModelWatcher)evt.getSource()).isQuiet())
             {
-                logger.info("got screen saver event at " + System.currentTimeMillis());
-                if (((ScreenSaverModelWatcher)evt.getSource()).isQuiet())
-                {
-                    this.goQuiet();
-                }else{
-                    this.goLive();
-                }
+                this.goQuiet();
+            }else{
+                this.goLive();
             }
+        }
+
+        if (evt.getSource() instanceof LightBlipModelWatcher){
+            // render blips and play sound
         }
 
         /*
