@@ -17,6 +17,7 @@ public class EIAClipPlayer {
 
     private AnimationManager anim;
     private ELUManager elu;
+    private SoundController sc;
     protected Clip quiet, live;
 
     int cWidth = 635;
@@ -30,10 +31,11 @@ public class EIAClipPlayer {
 
     static Logger logger = Logger.getLogger(EIAClipPlayer.class);
 
-    public EIAClipPlayer(AnimationManager am, ELUManager elu)
+    public EIAClipPlayer(AnimationManager am, ELUManager elu, SoundController sc)
     {
         this.anim = am;
         this.elu = elu;
+        this.sc = sc;
         // quiet = screen saver
         quiet = anim.addClip(new SolidColorContent(null), 0, 0, am.getStageDimensions().width, am.getStageDimensions().height, 0.0);
         // live = tracking users
@@ -41,6 +43,20 @@ public class EIAClipPlayer {
     }
 
 
+    public void lightBlip(double x) {
+    	//logger.info("localStabSmall@ " + x);
+        x = findNearestLight(x,true);
+        int barWidth = 3;
+        Content simpleClip2 = new SolidColorContent(Color.WHITE);
+        Clip blip1 = live.addClip(simpleClip2, (int)x-barWidth/2,0,barWidth,16, 0.5); //set the alpha to 0.5 to get 50% brightness on creation
+        //fade out
+        blip1.delay(250).fadeOut(1000).delete();
+        
+        //now play a sound!
+        sc.playLocal("blip_test_01.wav", x, 1.0f);
+        
+    }
+    
     /*
      * EIA Live Show methods
      */
