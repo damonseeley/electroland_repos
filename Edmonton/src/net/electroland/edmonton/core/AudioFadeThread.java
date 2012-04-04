@@ -34,8 +34,8 @@ public class AudioFadeThread extends Thread {
                 for (SoundNode node : nodes){
                     for (int i= 0; i < channels.length; i++){
                         node.setAmplitude(channels[i], 0f);
-                        sc.kill(node);
                     }
+                    sc.kill(node);
                 }
                 alive = false;
             }
