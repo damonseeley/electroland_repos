@@ -30,7 +30,6 @@ public class IState extends IOState{
             lastState = state;
             lastStateChange = System.currentTimeMillis();
             duration = 0;
-            logger.info("IOState." + id + " switched to: " + state + " after " + duration + " millis.");
         }
                                                   // This iState is suspect:
         isSuspect =  suspectThreshold > 0 &&      // if a suspect threshold is specified,
