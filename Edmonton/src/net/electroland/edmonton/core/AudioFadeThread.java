@@ -32,14 +32,16 @@ public class AudioFadeThread extends Thread {
                 }
             }else{
                 for (SoundNode node : nodes){
-                    sc.kill(node);
+                    for (int i= 0; i < channels.length; i++){
+                        node.setAmplitude(channels[i], 0f);
+                        sc.kill(node);
+                    }
                 }
                 alive = false;
             }
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
