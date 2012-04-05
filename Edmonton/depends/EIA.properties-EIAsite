@@ -5,7 +5,10 @@ settings.displaymetrics = $displayScale 3.86 $IStateSize 6 $lightHeight 8 $light
 settings.tracking = $track true
 settings.sequencing = $screensaver true $kickstart true $kickdelay 10000
 settings.eiomode = $playback false
+
+# new April 2012
 settings.lightBlip = $wait 1250
+settings.screensaver = $timeout 60000
 
 #settings.sound = $filePath /Users/damon/Documents/Workspace/Edmonton/depends/soundfiles/ $channels 17 $debug false $soundBypass false $stereoOnly true
 #stereoOnly will force stereo device playback only for testing
