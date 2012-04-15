@@ -1,7 +1,7 @@
 #global settings
 settings.global = $framerate 30  $updateLighting true $guiwidth 1280 $guiheight 600
 settings.display = $showGraphics true $showAnimation true
-settings.displaymetrics = $displayScale 3.86 $IStateSize 6 $lightHeight 8 $lightWidth 1 $margin 32
+settings.displaymetrics = $displayScale 3.1 $IStateSize 6 $lightHeight 8 $lightWidth 1 $margin 32
 settings.tracking = $track true
 settings.sequencing = $screensaver true $kickstart true $kickdelay 10000
 settings.eiomode = $playback false
