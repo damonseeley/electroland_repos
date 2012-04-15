@@ -307,7 +307,7 @@ public class SoundController implements SCSoundControlNotifiable {
                 int channel = getClosestBayChannel(x);
                 
                 if (debug) {
-                	logger.info("SoundController: will play on channel: " + channel);
+                	//logger.info("SoundController: will play on channel: " + channel);
                 }
 
 
@@ -316,17 +316,15 @@ public class SoundController implements SCSoundControlNotifiable {
                     float[] amplitudes = new float[]{gain,gain};
                     SoundNode sn = ss.createMonoSoundNode(soundFiles.get(soundFilePath+filename), false, channels, amplitudes, 1.0f);
                     if (debug) {
-                        logger.info("SoundController: Played mono sound file "+soundFilePath+filename+ " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
+                        logger.info("SoundController: STEREO MODE: Played mono sound file "+soundFilePath+filename+ " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
                     }
                     newSoundNode(sn);
                 } else {
-                    // whoah, hacky.  let's fix this
-                    // what we're doing here is hard coding Edmonton channel IDs and gain values to correspond with MOTU hardware
                     int[] channels = new int[]{channel};
                     float[] amplitudes = new float[]{gain};
                     SoundNode sn = ss.createMonoSoundNode(soundFiles.get(soundFilePath+filename), false, channels, amplitudes, 1.0f);
                     if (debug) {
-                        logger.info("SoundController: Played mono sound file "+soundFilePath+filename+ " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
+                        logger.info("SoundController: Played mono sound file "+soundFilePath+filename+ " on ch " + channel + " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
                     }
                     newSoundNode(sn);
                 }
@@ -356,7 +354,7 @@ public class SoundController implements SCSoundControlNotifiable {
                 int channel = getClosestBayChannel(x);
                 
                 if (debug) {
-                	logger.info("SoundController: will play on channel: " + channel + " and NOT create a local soundNode");
+                	//logger.info("SoundController: will play on channel: " + channel + " and NOT create a local soundNode");
                 }
 
                 if (stereoOnly){
@@ -364,17 +362,15 @@ public class SoundController implements SCSoundControlNotifiable {
                     float[] amplitudes = new float[]{gain,gain};
                     SoundNode sn = ss.createMonoSoundNode(soundFiles.get(soundFilePath+filename), false, channels, amplitudes, 1.0f);
                     if (debug) {
-                        logger.info("SoundController: Played mono sound file "+soundFilePath+filename+ " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
+                        logger.info("SoundController:  STEREO MODE: Played mono sound file "+soundFilePath+filename+ " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
                     }
                     //newSoundNode(sn);
                 } else {
-                    // whoah, hacky.  let's fix this
-                    // what we're doing here is hard coding Edmonton channel IDs and gain values to correspond with MOTU hardware
                     int[] channels = new int[]{channel};
                     float[] amplitudes = new float[]{gain};
                     SoundNode sn = ss.createMonoSoundNode(soundFiles.get(soundFilePath+filename), false, channels, amplitudes, 1.0f);
                     if (debug) {
-                        logger.info("SoundController: Played mono sound file "+soundFilePath+filename+ " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
+                        logger.info("SoundController: Played mono sound file "+soundFilePath+filename+ " on ch " + channel + " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
                     }
                     //newSoundNode(sn);
                 }
