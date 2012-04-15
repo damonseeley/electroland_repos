@@ -17,195 +17,198 @@ import org.apache.log4j.Logger;
 
 public class SimpleSequencer implements Runnable, ModelListener{
 
-    static Logger logger = Logger.getLogger(SimpleSequencer.class);
+	static Logger logger = Logger.getLogger(SimpleSequencer.class);
 
-    private Map <String, Show> shows = new Hashtable<String, Show>();
-    private Map <String, Object> context;
-    private Thread thread;
-    private Show current;
-    public Show nextShow;
-    private int clipDelay = 0;
-    public String liveShowId, quietShowId;
-    private boolean newShow = true;
+	private Map <String, Show> shows = new Hashtable<String, Show>();
+	private Map <String, Object> context;
+	private Thread thread;
+	private Show current;
+	public Show nextShow;
+	private int clipDelay = 0;
+	public String liveShowId, quietShowId;
+	private boolean newShow = true;
 
-    public static void main(String args[])
-    {
-        SimpleSequencer s = new SimpleSequencer("EIA-sequencer.properties", null);
-        s.play("show1");
-    }
-    
-    public SimpleSequencer(String propsName, Map<String,Object> context)
-    {
-        // requires sound manager, animation manager, model, and ELU
-        this.context = context;
+	public static void main(String args[])
+	{
+		SimpleSequencer s = new SimpleSequencer("EIA-sequencer.properties", null);
+		s.play("show1");
+	}
 
-        ElectrolandProperties ep = new ElectrolandProperties(propsName);
+	public SimpleSequencer(String propsName, Map<String,Object> context)
+	{
+		// requires sound manager, animation manager, model, and ELU
+		this.context = context;
 
-        liveShowId = ep.getRequired("global", "settings", "live");
-        quietShowId = ep.getRequired("global", "settings", "quiet");
+		ElectrolandProperties ep = new ElectrolandProperties(propsName);
 
-        Integer clipDelay = ep.getOptionalInt("global", "settings", "clip_delay");
-        if (clipDelay != null)
-        {
-            this.clipDelay = clipDelay;
-        }
+		liveShowId = ep.getRequired("global", "settings", "live");
+		quietShowId = ep.getRequired("global", "settings", "quiet");
 
-        for (String name : ep.getObjectNames("show"))
-        {
-            logger.info("configuring show '" + name + "'...");
-            // parse cues
-            HashMap <String, Cue> showCues = new HashMap<String, Cue>();
-            Map<String, ParameterMap> cues = ep.getObjects(name);
-            for (String cueName : cues.keySet())
-            {
-                int dot = cueName.indexOf('.');
-                String type = cueName.substring(0,dot);
-                String id = cueName.substring(dot + 1, cueName.length());
+		Integer clipDelay = ep.getOptionalInt("global", "settings", "clip_delay");
+		if (clipDelay != null)
+		{
+			this.clipDelay = clipDelay;
+		}
 
-                logger.info("cue '" + id + "' of type '" + type + "'");
+		for (String name : ep.getObjectNames("show"))
+		{
+			logger.info("configuring show '" + name + "'...");
+			// parse cues
+			HashMap <String, Cue> showCues = new HashMap<String, Cue>();
+			Map<String, ParameterMap> cues = ep.getObjects(name);
+			for (String cueName : cues.keySet())
+			{
+				int dot = cueName.indexOf('.');
+				String type = cueName.substring(0,dot);
+				String id = cueName.substring(dot + 1, cueName.length());
 
-                Cue nCue = null;
-                if (type.equals("cue"))
-                {
-                    nCue = new TimingCue(cues.get(cueName));
-                }else if (type.equals("soundcue"))
-                {
-                    nCue = new SoundCue(cues.get(cueName));
-                }else if (type.equals("clipcue"))
-                {
-                    nCue = new ClipCue(cues.get(cueName));
-                }else{
-                    throw new OptionException("Unknown cue type '" + type + "'");
-                }
+				logger.info("cue '" + id + "' of type '" + type + "'");
 
-                if (nCue != null)
-                {
-                    nCue.id = id;
-                    showCues.put(id, nCue);
-                }
-            }
-            // connect cues
-            for (Cue cue : showCues.values())
-            {
-                if (cue.parentName != null){
-                    Cue parent = showCues.get(cue.parentName);
-                    if (parent != null){
-                        cue.parent = parent;
-                    }else{
-                        throw new OptionException("Can't find Cue '" + cue.parentName + "' in show '" + name + "'");
-                    }
-                }
-            }
-            // parse show
-            Show show = new Show(ep.getParams("show", name));
-            // add cues to show
-            show.cues = showCues.values();
-            // reset all cues
-            show.reset();
-            // store
-            shows.put(name, show);
-        }
-    }
+				Cue nCue = null;
+				if (type.equals("cue"))
+				{
+					nCue = new TimingCue(cues.get(cueName));
+				}else if (type.equals("soundcue"))
+				{
+					nCue = new SoundCue(cues.get(cueName));
+				}else if (type.equals("clipcue"))
+				{
+					nCue = new ClipCue(cues.get(cueName));
+				}else{
+					throw new OptionException("Unknown cue type '" + type + "'");
+				}
 
-    
-    public void play(String showName)
-    {
-        
-        nextShow = shows.get(showName);
-        if (nextShow != null)
-        {
-            newShow = true;
-            if (thread == null)
-            {
-                thread = new Thread(this);
-                thread.start();
-            }
-        }else{
-            logger.warn("No show '" + showName + "' has been definied.");
-        }
-    }
+				if (nCue != null)
+				{
+					nCue.id = id;
+					showCues.put(id, nCue);
+				}
+			}
+			// connect cues
+			for (Cue cue : showCues.values())
+			{
+				if (cue.parentName != null){
+					Cue parent = showCues.get(cue.parentName);
+					if (parent != null){
+						cue.parent = parent;
+					}else{
+						throw new OptionException("Can't find Cue '" + cue.parentName + "' in show '" + name + "'");
+					}
+				}
+			}
+			// parse show
+			Show show = new Show(ep.getParams("show", name));
+			// add cues to show
+			show.cues = showCues.values();
+			// reset all cues
+			show.reset();
+			// store
+			shows.put(name, show);
+		}
+	}
 
-    public Collection<String> getSetList()
-    {
-    	return shows.keySet();
-    }
-    
-    public void stop()
-    {
-        thread = null;
-    }
 
-    public int getClipDelay() {
-        return clipDelay;
-    }
+	public void play(String showName)
+	{
+		// Disable this code to temporarily test with sequencing disabled   
 
-    public void setClipDelay(int clipDelay) {
-        this.clipDelay = clipDelay;
-    }
+		nextShow = shows.get(showName);
+		if (nextShow != null)
+		{
+			newShow = true;
+			if (thread == null)
+			{
+				thread = new Thread(this);
+				thread.start();
+			}
+		}else{
+			logger.warn("No show '" + showName + "' has been definied.");
+		}
 
-    @Override
-    public void run() {
-        logger.info("sequencer started.");
-        long start = System.currentTimeMillis();
-        while(thread != null)
-        {
-            if (newShow){
-                System.out.println("Playing next show.");
-                newShow = false;
-                start = System.currentTimeMillis();
-                nextShow.reset();
-                current = nextShow;
-            }
-            long passed = System.currentTimeMillis() - start;
+		// End disable block
+	}
 
-            for (Cue cue : current.cues)
-            {
-                int time = cue.getTime();
-                if (cue instanceof ClipCue)
-                {
-                    time += clipDelay;
-                }
-                if (!cue.played && passed >= time)
-                {
-                    //logger.info("playing " + cue + " at " + passed);
-                    cue.play(context);
-                    cue.played = true;
-                }
-            }
+	public Collection<String> getSetList()
+	{
+		return shows.keySet();
+	}
 
-            if (passed >= current.duration)
-            {
-                logger.info("show over at " + passed);
-// this section is fading out the last show before looping.
-                if ((context.get("soundController")) instanceof SoundController)
-                {
-                    ((SoundController)context.get("soundController")).fadeAll(500);
-                }
-// until here.
-                if (current.followWith != null)
-                {
-                    current.reset();
-                    logger.info("Starting show '" + current.followWith + "'");
-                    current = shows.get(current.followWith);
-                    start = System.currentTimeMillis();
-                }else{
-                    stop();
-                }
-            }
+	public void stop()
+	{
+		thread = null;
+	}
 
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        logger.info("sequencer stopped.");
-    }
+	public int getClipDelay() {
+		return clipDelay;
+	}
 
-    @Override
-    public void modelChanged(ModelEvent evt) {
-        if (evt.getSource() instanceof LastTrippedModelWatcher){
-            context.put("tripRecords",evt.optionalPostiveDetails.get(LastTrippedModelWatcher.TRIP_TIMES));
-        }
-    }
+	public void setClipDelay(int clipDelay) {
+		this.clipDelay = clipDelay;
+	}
+
+	@Override
+	public void run() {
+		logger.info("sequencer started.");
+		long start = System.currentTimeMillis();
+		while(thread != null)
+		{
+			if (newShow){
+				System.out.println("Playing next show.");
+				newShow = false;
+				start = System.currentTimeMillis();
+				nextShow.reset();
+				current = nextShow;
+			}
+			long passed = System.currentTimeMillis() - start;
+
+			for (Cue cue : current.cues)
+			{
+				int time = cue.getTime();
+				if (cue instanceof ClipCue)
+				{
+					time += clipDelay;
+				}
+				if (!cue.played && passed >= time)
+				{
+					//logger.info("playing " + cue + " at " + passed);
+					cue.play(context);
+					cue.played = true;
+				}
+			}
+
+			if (passed >= current.duration)
+			{
+				logger.info("show over at " + passed);
+				// this section is fading out the last show before looping.
+				if ((context.get("soundController")) instanceof SoundController)
+				{
+					((SoundController)context.get("soundController")).fadeAll(500);
+				}
+				// until here.
+				if (current.followWith != null)
+				{
+					current.reset();
+					logger.info("Starting show '" + current.followWith + "'");
+					current = shows.get(current.followWith);
+					start = System.currentTimeMillis();
+				}else{
+					stop();
+				}
+			}
+
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		logger.info("sequencer stopped.");
+	}
+
+	@Override
+	public void modelChanged(ModelEvent evt) {
+		if (evt.getSource() instanceof LastTrippedModelWatcher){
+			context.put("tripRecords",evt.optionalPostiveDetails.get(LastTrippedModelWatcher.TRIP_TIMES));
+		}
+	}
 }
