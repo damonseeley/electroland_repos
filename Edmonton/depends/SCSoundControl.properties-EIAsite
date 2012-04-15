@@ -1,5 +1,5 @@
 #SCSoundControl Properties File
-#Thu Jan 19 17:15:43 PST 2012
+#Sat Apr 14 21:24:56 PDT 2012
 SuperCollider_AudioHardwareDeviceName=ASIO \: MOTU Audio ASIO
 SuperCollider_SampleRate=44100
 SuperCollider_RealTimeRamAllocation=131072
