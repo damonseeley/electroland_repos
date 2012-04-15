@@ -61,6 +61,7 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
     private int stateSize;
     private int lightHeight, lightWidth;
     private double p1x,p1y,p1width,p1height,p2x,p2y,p2width,p2height;
+    private double s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11;
 
     static Logger logger = Logger.getLogger(EIAFrame.class);
 
@@ -147,6 +148,21 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
             p2y = props.getOptionalDouble("peoplemover", "p2", "y");
             p2width = props.getOptionalDouble("peoplemover", "p2", "width");
             p2height = props.getOptionalDouble("peoplemover", "p2", "height");
+            
+            s1 = props.getOptionalDouble("speaker", "s1", "x");
+            s2 = props.getOptionalDouble("speaker", "s2", "x");
+            s3 = props.getOptionalDouble("speaker", "s3", "x");
+            s4 = props.getOptionalDouble("speaker", "s4", "x");
+            s5 = props.getOptionalDouble("speaker", "s5", "x");
+            s6 = props.getOptionalDouble("speaker", "s6", "x");
+            s7 = props.getOptionalDouble("speaker", "s7", "x");
+            s8 = props.getOptionalDouble("speaker", "s8", "x");
+            s9 = props.getOptionalDouble("speaker", "s9", "x");
+            s10 = props.getOptionalDouble("speaker", "s10", "x");
+            s11 = props.getOptionalDouble("speaker", "s11", "x");
+
+            
+            
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -158,6 +174,19 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
             p2y = 0;
             p2width = 0;
             p2height = 0;
+            
+            s1 = 0;
+            s2 = 0;
+            s3 = 0;
+            s4 = 0;
+            s5 = 0;
+            s6 = 0;
+            s7 = 0;
+            s8 = 0;
+            s9 = 0;
+            s10 = 0;
+            s11 = 0;
+            
         }
 
         setDisplayScale(displayScale);
@@ -243,7 +272,22 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
             g2.setColor(new Color(32, 64, 32));
             g2.drawRect((int)(p1x*displayScale)+intMargin, (int)(p1y*displayScale)+intMargin,(int)(p1width*displayScale),(int)(p1height*displayScale));
             g2.drawRect((int)(p2x*displayScale)+intMargin, (int)(p2y*displayScale)+intMargin,(int)(p2width*displayScale),(int)(p2height*displayScale));
-
+            // speakers
+            g2.setColor(new Color(32, 196, 32));
+            double sWidth = 0.5;
+            double sY = 1.0;
+            g2.drawRect((int)(s1*displayScale)+intMargin, (int)(sY*displayScale)+intMargin,(int)(sWidth*displayScale),(int)(sWidth*displayScale));
+            g2.drawRect((int)(s2*displayScale)+intMargin, (int)(sY*displayScale)+intMargin,(int)(sWidth*displayScale),(int)(sWidth*displayScale));
+            g2.drawRect((int)(s3*displayScale)+intMargin, (int)(sY*displayScale)+intMargin,(int)(sWidth*displayScale),(int)(sWidth*displayScale));
+            g2.drawRect((int)(s4*displayScale)+intMargin, (int)(sY*displayScale)+intMargin,(int)(sWidth*displayScale),(int)(sWidth*displayScale));
+            g2.drawRect((int)(s5*displayScale)+intMargin, (int)(sY*displayScale)+intMargin,(int)(sWidth*displayScale),(int)(sWidth*displayScale));
+            g2.drawRect((int)(s6*displayScale)+intMargin, (int)(sY*displayScale)+intMargin,(int)(sWidth*displayScale),(int)(sWidth*displayScale));
+            g2.drawRect((int)(s7*displayScale)+intMargin, (int)(sY*displayScale)+intMargin,(int)(sWidth*displayScale),(int)(sWidth*displayScale));
+            g2.drawRect((int)(s8*displayScale)+intMargin, (int)(sY*displayScale)+intMargin,(int)(sWidth*displayScale),(int)(sWidth*displayScale));
+            g2.drawRect((int)(s9*displayScale)+intMargin, (int)(sY*displayScale)+intMargin,(int)(sWidth*displayScale),(int)(sWidth*displayScale));
+            g2.drawRect((int)(s10*displayScale)+intMargin, (int)(sY*displayScale)+intMargin,(int)(sWidth*displayScale),(int)(sWidth*displayScale));
+            g2.drawRect((int)(s11*displayScale)+intMargin, (int)(sY*displayScale)+intMargin,(int)(sWidth*displayScale),(int)(sWidth*displayScale));
+            
 
             /*
              * Draw Sensors
