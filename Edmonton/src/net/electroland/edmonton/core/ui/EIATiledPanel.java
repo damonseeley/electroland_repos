@@ -7,6 +7,7 @@ package net.electroland.edmonton.core.ui;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -274,19 +275,33 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
             g2.drawRect((int)(p2x*displayScale)+intMargin, (int)(p2y*displayScale)+intMargin,(int)(p2width*displayScale),(int)(p2height*displayScale));
             // speakers
             g2.setColor(new Color(32, 196, 32));
-            double sWidth = 0.5;
+            double sWidth = 1.0;
             double sY = 1.0;
+            double sOffset = 1.3;
+            Font font = new Font("Arial", Font.PLAIN, 10);
+    	    g2.setFont(font);
             g2.drawRect((int)(s1*displayScale)+intMargin, (int)(sY*displayScale)+intMargin,(int)(sWidth*displayScale),(int)(sWidth*displayScale));
+    		g2.drawString("1",(int)((s1+sOffset)*displayScale+intMargin), (int)((sY+sOffset)*displayScale+intMargin));
             g2.drawRect((int)(s2*displayScale)+intMargin, (int)(sY*displayScale)+intMargin,(int)(sWidth*displayScale),(int)(sWidth*displayScale));
+    		g2.drawString("2",(int)((s2+sOffset)*displayScale+intMargin), (int)((sY+sOffset)*displayScale+intMargin));
             g2.drawRect((int)(s3*displayScale)+intMargin, (int)(sY*displayScale)+intMargin,(int)(sWidth*displayScale),(int)(sWidth*displayScale));
+    		g2.drawString("3",(int)((s3+sOffset)*displayScale+intMargin), (int)((sY+sOffset)*displayScale+intMargin));
             g2.drawRect((int)(s4*displayScale)+intMargin, (int)(sY*displayScale)+intMargin,(int)(sWidth*displayScale),(int)(sWidth*displayScale));
+    		g2.drawString("4",(int)((s4+sOffset)*displayScale+intMargin), (int)((sY+sOffset)*displayScale+intMargin));
             g2.drawRect((int)(s5*displayScale)+intMargin, (int)(sY*displayScale)+intMargin,(int)(sWidth*displayScale),(int)(sWidth*displayScale));
+    		g2.drawString("5",(int)((s5+sOffset)*displayScale+intMargin), (int)((sY+sOffset)*displayScale+intMargin));
             g2.drawRect((int)(s6*displayScale)+intMargin, (int)(sY*displayScale)+intMargin,(int)(sWidth*displayScale),(int)(sWidth*displayScale));
+    		g2.drawString("6",(int)((s6+sOffset)*displayScale+intMargin), (int)((sY+sOffset)*displayScale+intMargin));
             g2.drawRect((int)(s7*displayScale)+intMargin, (int)(sY*displayScale)+intMargin,(int)(sWidth*displayScale),(int)(sWidth*displayScale));
+    		g2.drawString("7",(int)((s7+sOffset)*displayScale+intMargin), (int)((sY+sOffset)*displayScale+intMargin));
             g2.drawRect((int)(s8*displayScale)+intMargin, (int)(sY*displayScale)+intMargin,(int)(sWidth*displayScale),(int)(sWidth*displayScale));
+    		g2.drawString("8",(int)((s8+sOffset)*displayScale+intMargin), (int)((sY+sOffset)*displayScale+intMargin));
             g2.drawRect((int)(s9*displayScale)+intMargin, (int)(sY*displayScale)+intMargin,(int)(sWidth*displayScale),(int)(sWidth*displayScale));
+    		g2.drawString("9",(int)((s9+sOffset)*displayScale+intMargin), (int)((sY+sOffset)*displayScale+intMargin));
             g2.drawRect((int)(s10*displayScale)+intMargin, (int)(sY*displayScale)+intMargin,(int)(sWidth*displayScale),(int)(sWidth*displayScale));
+    		g2.drawString("10",(int)((s10+sOffset)*displayScale+intMargin), (int)((sY+sOffset)*displayScale+intMargin));
             g2.drawRect((int)(s11*displayScale)+intMargin, (int)(sY*displayScale)+intMargin,(int)(sWidth*displayScale),(int)(sWidth*displayScale));
+    		g2.drawString("11",(int)((s11+sOffset)*displayScale+intMargin), (int)((sY+sOffset)*displayScale+intMargin));
             
 
             /*
