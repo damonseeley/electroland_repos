@@ -50,7 +50,8 @@ public class EIAClipPlayer {
 	 */
 	private double barOff = -3.69;
 	private double lookAhead = -5.1;
-	private double blipLookAhead = -4.2;
+	//private double blipLookAhead = -4.2;
+	private double blipLookAhead = -6.2;
 
 
 	public void lightBlip(double x) {
@@ -61,18 +62,29 @@ public class EIAClipPlayer {
 		if (doBlip){
 			//logger.info("localStabSmall@ " + x);
 			x = findNearestLight(x+blipLookAhead,true);
-			int barWidth = 3;
+			//int barWidth = 16; // wide tested with Marcus
+			//orig int barWidth = 3;
+			// this value is extreme and lights up 12 lights.  leave for now
+			int barWidth = 40;
 			Content simpleClip2 = new SolidColorContent(Color.WHITE);
-			Clip blip1 = live.addClip(simpleClip2, (int)x-barWidth/2,0,barWidth,16, 0.5); //set the alpha to 0.5 to get 50% brightness on creation
+			//Clip blip1 = live.addClip(simpleClip2, (int)x-barWidth/2,0,barWidth,16, 0.5); //set the alpha to 0.5 to get 50% brightness on creation
+			Clip blip1 = live.addClip(simpleClip2, (int)x-barWidth/2,0,barWidth,16, 0.7); //set the alpha to 0.5 to get 50% brightness on creation
 			//fade out
-			blip1.delay(250).fadeOut(1000).delete();
+			// orig blip1.delay(250).fadeOut(1000).delete();
+			blip1.delay(150).fadeOut(400).delete();
 
 			//now play a sound!
 			if (doBlipSound) {
-				//sc.playSingleChannelBlind("blip_test_01.wav", x, 0.5f); // the firs test, kind of "crunch" sound
-				//sc.playSingleChannelBlind("blip_subtle-tech_interface_13.wav", x, 0.25f); // not so good, kind of bleepy
-				//sc.playSingleChannelBlind("blip_smooth_button_click23.wav", x, 0.4f); //sort of a whip/click sound
-				sc.playSingleChannelBlind("blip_smooth_button_click09.wav", x, 0.2f); // a metallic click-swipe type sound. DS favorite for now
+				//good sc.playSingleChannelBlind("marimba_mid_01.wav", x, 0.5f); // the firs test, kind of "crunch" sound
+				
+				// lumen deemed best by marcus and liz for this
+				//sc.playSingleChannelBlind("lumen_3.wav", x, 0.4f); // the firs test, kind of "crunch" sound
+				//sc.playSingleChannelBlind("kotu_04.wav", x, 0.4f); // the firs test, kind of "crunch" sound
+				
+				//sc.playSingleChannelBlind("blip_subtle-tech_interface_13.wav", x, 1.0f); // not so good, kind of bleepy
+				//sc.playSingleChannelBlind("blip_smooth_button_click23.wav", x, 0.6f); //sort of a whip/click sound
+				
+				//sc.playSingleChannelBlind("blip_smooth_button_click09.wav", x, 0.6f); // a metallic click-swipe type sound. DS favorite for now
 				
 			}
 		}
