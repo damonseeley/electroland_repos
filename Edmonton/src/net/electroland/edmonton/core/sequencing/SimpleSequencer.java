@@ -110,7 +110,9 @@ public class SimpleSequencer implements Runnable, ModelListener{
 
 	public void play(String showName)
 	{
-		// Disable this code to temporarily test with sequencing disabled   
+		/*
+		 * DISABLE THIS CODE TO TEMPORARILY DISABLE SEQUENCING  
+		 */
 
 		nextShow = shows.get(showName);
 		if (nextShow != null)
@@ -125,7 +127,9 @@ public class SimpleSequencer implements Runnable, ModelListener{
 			logger.warn("No show '" + showName + "' has been definied.");
 		}
 
-		// End disable block
+		/*
+		 * END DISABLE
+		 */
 	}
 
 	public Collection<String> getSetList()

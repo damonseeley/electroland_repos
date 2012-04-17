@@ -69,7 +69,11 @@ public class EIAClipPlayer {
 
 			//now play a sound!
 			if (doBlipSound) {
-				sc.playSingleChannelBlind("blip_test_01.wav", x, 1.0f);
+				//sc.playSingleChannelBlind("blip_test_01.wav", x, 0.5f); // the firs test, kind of "crunch" sound
+				//sc.playSingleChannelBlind("blip_subtle-tech_interface_13.wav", x, 0.25f); // not so good, kind of bleepy
+				//sc.playSingleChannelBlind("blip_smooth_button_click23.wav", x, 0.4f); //sort of a whip/click sound
+				sc.playSingleChannelBlind("blip_smooth_button_click09.wav", x, 0.2f); // a metallic click-swipe type sound. DS favorite for now
+				
 			}
 		}
 
