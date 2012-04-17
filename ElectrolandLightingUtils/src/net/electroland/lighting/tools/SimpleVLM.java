@@ -79,7 +79,6 @@ public class SimpleVLM extends JFrame implements ActionListener, ItemListener, C
         run = new JButton("Start");		run.addActionListener(this);
         reload = new JButton("Reload");		reload.addActionListener(this);
         reload.setEnabled(false);
-        this.syncRunButton();
 
         
         ButtonGroup models = new ButtonGroup();
@@ -154,6 +153,17 @@ public class SimpleVLM extends JFrame implements ActionListener, ItemListener, C
 		}
 		
 		this.setVisible(true);
+		
+		//** this code block taken from the start button logic
+		// start up by default
+		c.startSystem();					
+		am.goLive();
+		// set the latest recipient.
+		ds.setIsRunning(true);
+		ds.setRecipient(dm.getRecipient(chosenRecip));
+		//**
+        this.syncRunButton();
+		
 	}
 
 	public void populateRecipientList()
