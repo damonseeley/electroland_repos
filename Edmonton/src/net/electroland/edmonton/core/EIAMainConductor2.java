@@ -5,33 +5,27 @@ package net.electroland.edmonton.core;
  * @author	Damon Seeley & Bradley Geilfuss
  */
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Hashtable;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import net.electroland.ea.AnimationManager;
-import net.electroland.ea.Clip;
-import net.electroland.ea.Content;
-import net.electroland.ea.content.SolidColorContent;
-import net.electroland.edmonton.core.model.LightBlip;
-import net.electroland.edmonton.core.model.LastTrippedModelWatcher;
-import net.electroland.edmonton.core.model.LightBlipModelWatcher;
+import net.electroland.edmonton.core.model.OneEventPerPeriodModelWatcher;
 import net.electroland.edmonton.core.model.ScreenSaverModelWatcher;
-import net.electroland.edmonton.core.model.TrackerBasicModelWatcher;
 import net.electroland.edmonton.core.sequencing.SimpleSequencer;
 import net.electroland.edmonton.core.ui.EIAFrame;
 import net.electroland.eio.IOManager;
+import net.electroland.eio.IState;
 import net.electroland.eio.model.Model;
 import net.electroland.eio.model.ModelEvent;
 import net.electroland.eio.model.ModelListener;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.lighting.ELUManager;
-import net.electroland.utils.lighting.Fixture;
 import net.electroland.utils.lighting.InvalidPixelGrabException;
 import net.electroland.utils.lighting.canvas.ELUCanvas2D;
 
@@ -41,12 +35,10 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
 
     static Logger logger = Logger.getLogger(EIAMainConductor2.class);
 
-    private int fadeDuration = 2000;
     private int inactivityThreshold = 1000 * 60;
     private ElectrolandProperties props;
     private ELUManager elu;
     private boolean updateLighting = true;
-    private boolean track;
     private boolean screensaver = true;
     private boolean kickstart = false;
     private int kickdelay = 10000;
@@ -56,25 +48,16 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
     private SoundController soundController;
     private AnimationManager anim;
     private SimpleSequencer sequencer;
-    private EIAClipPlayer clipPlayer;
+    private EIAClipPlayer clipPlayer, clipPlayer2;
 
     public int canvasHeight, canvasWidth;
     public Hashtable<String, Object> context;
-
-    private Timer startupTestTimer, timedShows;
 
     public EIAFrame ef;
 
     private Model model;
     //private ModelWatcher stateToBright,entry1,exit1,entry2,exit2,egg1,egg2,egg3,egg4;
-    private TrackerBasicModelWatcher tracker;
-    private LastTrippedModelWatcher tripRecord;
     private ScreenSaverModelWatcher screenSaver;
-    private LightBlipModelWatcher blipper;
-
-    private int stateToBrightnessClip;
-
-    private EIAGenSoundPlayer gsp;
 
     //Thread stuff
     public static boolean isRunning;
@@ -126,13 +109,6 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
 
         updateLighting = Boolean.parseBoolean(props.getOptional("settings", "global", "updateLighting"));
         try {
-            track = Boolean.parseBoolean(props.getOptional("settings", "tracking", "track"));
-        } catch (OptionException e) {
-            // TODO Auto-generated catch block
-            track = false;
-            e.printStackTrace();
-        }
-        try {
             screensaver = Boolean.parseBoolean(props.getOptional("settings", "sequencing", "screensaver"));
         } catch (OptionException e) {
             // TODO Auto-generated catch block
@@ -168,13 +144,12 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
 
         soundController = new SoundController(context);
         context.put("soundController", soundController);
-        // for generative show test
-        gsp = new EIAGenSoundPlayer(soundController);
 
 
         clipPlayer = new EIAClipPlayer(anim,elu,soundController);
         context.put("clipPlayer", clipPlayer);
 
+        clipPlayer2 = new EIAClipPlayer2(anim,elu,soundController);
 
 
         /******** Model, Watchers & Timers ********/
@@ -182,18 +157,18 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
         model.addModelListener(this);
         model.addModelListener(sequencer);
 
-        if (track) {
-            tracker = new TrackerBasicModelWatcher(context); //starting with vals of 64 which is what was used in TestConductor (single value)
-            model.addModelWatcher(tracker, "tracker", eio.getIStates());
-            context.put("tracker", tracker);
-        }
-
         // watch for screen saver switches
         screenSaver = new ScreenSaverModelWatcher();
         screenSaver.setTimeOut(this.inactivityThreshold);
         model.addModelWatcher(screenSaver,  "screenSaver", eio.getIStates());
 
-        
+        // watchers per istate
+        ElectrolandProperties clipNames = new ElectrolandProperties("EIA-clipNames.properties");
+        for (IState state : eio.getIStates())
+        {
+        	String clip = clipNames.getRequired("sensor", state.getID(), "clipName");
+        	model.addModelWatcher(new OneEventPerPeriodModelWatcher(clip, 1000), "showwatcher" + state.getID(), state);
+        }
         
         /******** GUI ********/
         ef = new EIAFrame(Integer.parseInt(props.getRequired("settings", "global", "guiwidth")),Integer.parseInt(props.getRequired("settings", "global", "guiheight")),context);
@@ -228,11 +203,29 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
             }
         }
         
-        
-        
-        
+        if (evt.getSource() instanceof OneEventPerPeriodModelWatcher){
+        	
+        	OneEventPerPeriodModelWatcher src = (OneEventPerPeriodModelWatcher)evt.getSource();
 
+            logger.info("got clip event at " + System.currentTimeMillis());
 
+            // play clip
+            Method[] allMethods = clipPlayer2.getClass().getDeclaredMethods();
+            for (Method m : allMethods) {
+                if (m.getName().equals(src.getClipName()))
+                {
+                    try {
+                        m.invoke(clipPlayer2, src.getStates().iterator().next().getLocation().x);
+                    } catch (IllegalArgumentException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     } 
 
 
@@ -295,7 +288,7 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
             soundController.fadeAll(500);
             clipPlayer.quiet.fadeOut(500).deleteChildren();
             clipPlayer.live.fadeIn(0);
-            sequencer.play(sequencer.liveShowId);
+//            sequencer.play(sequencer.liveShowId);
         }else{
             logger.warn("attempt to go live while already live (declined).");
         }
