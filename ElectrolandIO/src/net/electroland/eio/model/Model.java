@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Vector;
 
 import net.electroland.eio.IState;
 
@@ -17,6 +18,14 @@ public class Model {
     {
         watcher.setName(name);
         watcher.setStates(states);
+        watchers.add(watcher);
+    }
+    public final void addModelWatcher(ModelWatcher watcher, String name, IState state)
+    {
+        watcher.setName(name);
+        Vector<IState> a =  new Vector<IState>();
+        a.add(state);
+        watcher.setStates(a);
         watchers.add(watcher);
     }
     public final void addModelListener(ModelListener listener)
