@@ -90,7 +90,8 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
         }
 
         try {
-            elu.load("EIA-ELU.properties");
+            elu.load("EIA-ELU-3ch.properties");
+            
             if (eioplayback){
                 eio.load("EIA-EIO-playback.properties");
             } else {
