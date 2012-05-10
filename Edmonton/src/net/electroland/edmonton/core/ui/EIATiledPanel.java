@@ -351,7 +351,7 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
             for (Fixture fix : elu.getFixtures())
             {
                 Point3d l = (Point3d)fix.getLocation().clone();
-                //logger.info("orig " + (int)l.x + " " + (int)l.y);
+                //logger.info("fixture " + fix.getName());
                 l.scale(displayScale);
                 g2.setColor(new Color(0, 0, 196));
                 g2.drawRect((int)(l.x)-lightWidth/2+intMargin, (int)(l.y)-lightHeight/2+intMargin, lightWidth, lightHeight);
