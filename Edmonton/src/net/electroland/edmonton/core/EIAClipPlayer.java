@@ -431,7 +431,7 @@ public class EIAClipPlayer {
 	 * Local Util Methods
 	 */
 
-	private double findNearestLight(double x, boolean forward) {
+	public double findNearestLight(double x, boolean forward) {
 
 		double closestX = -20;
 

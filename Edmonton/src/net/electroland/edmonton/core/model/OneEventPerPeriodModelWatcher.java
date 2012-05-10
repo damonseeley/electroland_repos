@@ -12,6 +12,7 @@ public class OneEventPerPeriodModelWatcher extends ModelWatcher {
 	static Logger logger = Logger.getLogger(OneEventPerPeriodModelWatcher.class);
 
     private long periodMillis, timeSinceFired = 0;
+    private String clipName;
 
     /**
      * This watcher will watch one or a set of IStates to see if anything turns
@@ -27,7 +28,22 @@ public class OneEventPerPeriodModelWatcher extends ModelWatcher {
         this.periodMillis = periodMillis;
     }
 
-    @Override
+    public OneEventPerPeriodModelWatcher(String clipName, long periodMillis)
+    {
+    	this.clipName 		= clipName;
+        this.periodMillis 	= periodMillis;
+    }
+
+
+    public String getClipName() {
+		return clipName;
+	}
+
+	public void setClipName(String clipName) {
+		this.clipName = clipName;
+	}
+
+	@Override
     public boolean poll() {
 
         // see if ANY state I'm assigned to returns as being ON
