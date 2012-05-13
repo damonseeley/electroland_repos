@@ -17,7 +17,7 @@ public class EIAClipPlayer {
 
 	private AnimationManager anim;
 	private ELUManager elu;
-	private SoundController sc;
+	protected SoundController sc;
 	protected Clip quiet, live;
 
 	int cWidth = 635;
