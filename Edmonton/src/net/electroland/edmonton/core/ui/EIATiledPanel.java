@@ -247,7 +247,7 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
             // Create BI on which to draw everything double-buffered, add the int margin to total width and height
             int biHeight = (int)((canvas.getDimensions().height*displayScale)+(intMargin*2));
             //make it exactly three times the panel width for ease later
-            BufferedImage bi = new BufferedImage(panelTileWidth*vTiles+(intMargin*2), biHeight, BufferedImage.TYPE_INT_RGB);    // maybe dont need to account for intMargin in width here???    
+            BufferedImage bi = new BufferedImage(panelTileWidth*vTiles+(intMargin*2), biHeight, BufferedImage.TYPE_INT_RGB);    // maybe don't need to account for intMargin in width here???    
 
             Graphics2D g2 = (Graphics2D)bi.getGraphics();
             //set styles
@@ -415,6 +415,11 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
             g.setColor(Color.BLACK);
             g.fillRect(0,0,g.getClipBounds().width,g.getClipBounds().height);
             g.drawImage(bi2, margin, margin, null);
+        } else {
+        	//clear image from last time
+            clear(g);
+            //g.setColor(Color.BLACK);
+            //g.fillRect(0,0,g.getClipBounds().width,g.getClipBounds().height);
         }
     }
 
@@ -444,5 +449,15 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
     public void mouseMoved(MouseEvent e) {
         // do nothing            
     }
+
+	public boolean showHideGfx() {
+		// TODO Auto-generated method stub
+		if (showGraphics){
+			showGraphics = false;
+		} else {
+			showGraphics = true;
+		}
+		return showGraphics;
+	}
 
 }
