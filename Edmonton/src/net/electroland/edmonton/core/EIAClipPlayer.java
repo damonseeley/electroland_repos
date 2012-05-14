@@ -15,8 +15,8 @@ import org.apache.log4j.Logger;
 
 public class EIAClipPlayer {
 
-	private AnimationManager anim;
-	private ELUManager elu;
+	protected AnimationManager anim;
+	protected ELUManager elu;
 	protected SoundController sc;
 	protected Clip quiet, live;
 

@@ -259,7 +259,10 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
             clipPlayer.quiet.deleteChildren();
             soundController.fadeAll(500);
         }
-
+        if ("showHideGfx".equals(e.getActionCommand())) {
+        	ef.showHideGfx();
+        }
+        
     }
 
     public void goQuiet()
