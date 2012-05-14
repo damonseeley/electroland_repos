@@ -1,0 +1,6 @@
+#global settings
+settings.displaymetrics = $displayScale 3.86 $IStateSize 6 $lightHeight 4 $lightWidth 2 $margin 32
+
+# new April 2012
+settings.lightBlip = $wait 1250
+settings.screensaver = $timeout 60000
