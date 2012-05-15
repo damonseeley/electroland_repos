@@ -152,9 +152,50 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
             }
         }
         
-        //vert_connect_med_whoosh16.wav
         sc.playSingleChannelBlind("vert_connect_med_whoosh16_long.wav", x, 1.0f);
     }
+    
+
+
+
+
+    public void smVertDoublet(double x) {
+
+        //logger.info("localStabSmall@ " + x);
+        x = findNearestLight(x+lookAhead,true);
+        int barWidth = 9;
+        Content simpleClip2 = new SolidColorContent(Color.WHITE);
+
+        Clip topBlip = live.addClip(simpleClip2, (int)x-barWidth/2,topBar,barWidth,barHeight, 1.0); 
+        Clip bottomBlip = live.addClip(simpleClip2, (int)x-barWidth/2,bottomBar,barWidth,barHeight, 1.0, 250); 
+
+        topBlip.delay(500).fadeOut(500).delete();
+        bottomBlip.delay(500).fadeOut(500).delete();
+
+        //now play a sound!
+        sc.playSingleChannelBlind("lumen_entrance7.wav", x, 1.0f);
+
+    }
+
+    public void bigVertDoublet(double x) {
+
+        //logger.info("localStabSmall@ " + x);
+        x = findNearestLight(x+lookAhead,true);
+        int barWidth = 32;
+        Content simpleClip2 = new SolidColorContent(Color.WHITE);
+
+        Clip topBlip = live.addClip(simpleClip2, (int)x-barWidth+2,topBar,barWidth,barHeight, 1.0); 
+        Clip bottomBlip = live.addClip(simpleClip2, (int)x-barWidth+2,bottomBar,barWidth,barHeight, 1.0, 1000); 
+
+        topBlip.delay(600).fadeOut(600).delete();
+        bottomBlip.delay(800).fadeOut(600).delete();
+
+        //now play a sound!
+        // something bigger here
+        sc.playSingleChannelBlind("piano_doublet01.wav", x, 1.0f);
+
+    }
+    
     
     public void randomBarsMore(double x){
         int maxLoop = 16;
@@ -176,7 +217,6 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
         sc.playSingleChannelBlind("vert_connect_med_whoosh16_long.wav", x, 1.0f);
     }
     
-
     private int randBarSpeed = 1500;
 
     public void topRandomBar(double x, int delay, int maxBarLength, int barDest){
@@ -207,45 +247,6 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
 
         Change barMove = new LinearChange().xTo(x+barDest);
         bar.queueChange(barMove, randBarSpeed).fadeOut(250).delete();
-    }
-
-
-
-    public void blipVertDoublet(double x) {
-
-        //logger.info("localStabSmall@ " + x);
-        x = findNearestLight(x+lookAhead,true);
-        int barWidth = 9;
-        Content simpleClip2 = new SolidColorContent(Color.WHITE);
-
-        Clip topBlip = live.addClip(simpleClip2, (int)x-barWidth/2,topBar,barWidth,barHeight, 1.0); 
-        Clip bottomBlip = live.addClip(simpleClip2, (int)x-barWidth/2,bottomBar,barWidth,barHeight, 1.0, 250); 
-
-        topBlip.delay(500).fadeOut(500).delete();
-        bottomBlip.delay(500).fadeOut(500).delete();
-
-        //now play a sound!
-        sc.playSingleChannelBlind("lumen_entrance7.wav", x, 1.0f);
-
-    }
-
-    public void blipBigVertDoublet(double x) {
-
-        //logger.info("localStabSmall@ " + x);
-        x = findNearestLight(x+lookAhead,true);
-        int barWidth = 22;
-        Content simpleClip2 = new SolidColorContent(Color.WHITE);
-
-        Clip topBlip = live.addClip(simpleClip2, (int)x-barWidth+2,topBar,barWidth,barHeight, 1.0); 
-        Clip bottomBlip = live.addClip(simpleClip2, (int)x-barWidth+2,bottomBar,barWidth,barHeight, 1.0, 300); 
-
-        topBlip.delay(500).fadeOut(100).delete();
-        bottomBlip.delay(500).fadeOut(100).delete();
-
-        //now play a sound!
-        // something bigger here
-        sc.playSingleChannelBlind("lumen_entrance7.wav", x, 1.0f);
-
     }
 
     public void blip2(double x) {
