@@ -208,7 +208,7 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
         	
         	OneEventPerPeriodModelWatcher src = (OneEventPerPeriodModelWatcher)evt.getSource();
 
-            logger.info("got clip event at " + System.currentTimeMillis());
+            //logger.info("got clip event at " + System.currentTimeMillis());
 
             // play clip
             Method[] allMethods = clipPlayer2.getClass().getDeclaredMethods();

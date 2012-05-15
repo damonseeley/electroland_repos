@@ -168,7 +168,10 @@ public class SoundController implements SCSoundControlNotifiable {
             }
         }
 
-
+        
+        /**
+         * MAY 2012 - FOR NOW DISABLE THIS FOR MEMORY SAVINGS
+         * 
         //load sequencer props to get soundfile references
         ElectrolandProperties ps = new ElectrolandProperties(context.get("seqpropsfile").toString());
         for (String showName : ps.getObjectNames("show"))
@@ -184,6 +187,7 @@ public class SoundController implements SCSoundControlNotifiable {
                 }
             }
         }
+        **/
 
 
 
