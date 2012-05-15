@@ -31,6 +31,25 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
 
     
     
+    public void bigHitPM1(double x){
+        logger.info("bigHit");
+
+        int barWidth = 3;
+
+        x = findNearestLight(x+lookAhead,true);
+        Content simpleClip2 = new SolidColorContent(Color.WHITE);
+
+        Clip bigHit = live.addClip(simpleClip2,(int)x-barWidth/2,topBar,barWidth,barHeight*3, 0.1);
+
+        Change out = new LinearChange().xTo(340).widthTo(300).alphaTo(0.4); // tuned to PM1
+        Change hit = new LinearChange().alphaTo(1.0);
+
+        bigHit.queueChange(out,820).queueChange(hit,10).fadeOut(1000).delete();
+        
+        sc.playSingleChannelBlind("66_Reverse_Orchestra_Hit.wav", x, 1.0f);
+    }
+
+    
     public void vertSixFill(double x) {
 
         //logger.info("localStabSmall@ " + x);
