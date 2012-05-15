@@ -29,8 +29,6 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
     private int bottomBar = 8;
     private int barHeight = 2;
 
-
-
     /*
      * BIG Animations
      */
@@ -147,7 +145,8 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
         Clip boomerang = live.addClip(simpleClip2, (int)x-barWidth,topBar,barWidth,barHeight*3, 1.0);
 
         Change out = new LinearChange().xTo(x-dist).scaleWidth(1.5);
-        Change back = new LinearChange().xTo(x+lookAhead*2).scaleWidth(0.66).alphaTo(0.1);
+        //Change back = new LinearChange().xTo(x+lookAhead*2).scaleWidth(0.66).alphaTo(0.1);
+        Change back = new LinearChange().xTo(x+lookAhead*2).scaleWidth(0.66);
 
         boomerang.queueChange(out, 500).queueChange(back,500).fadeOut(100).delete();
 
@@ -250,12 +249,13 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
 
     public void smAccent(double x) {
         int rand = (int)(Math.random() * 100);
-        if (rand < 33){
+        //logger.info(rand);
+        if (rand < 50){
             smVertDoublet(x);
-        } else if (rand < 66) {
+        } else if (rand < 100) {
             vertSixFill(x);
         } else {
-            blip2(x); // default
+            blip2(x); // default, not used
         }
 
     }

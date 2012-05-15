@@ -308,6 +308,9 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
              * Draw Sensors
              */
             int stateY = 0;
+            Font font2 = new Font("Arial", Font.PLAIN, 10);
+            g2.setFont(font2);
+            double isOffset = 14.0;
             for (IOState state : eio.getStates())
             {
                 Point3d l = (Point3d) state.getLocation().clone();
@@ -339,6 +342,11 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
                 //draw an outline
                 g2.setColor(new Color(64, 64, 64));
                 g2.drawRect((int)(l.x)-(stateSize/2)+intMargin, (int)(l.y)-(stateSize/2)+intMargin,stateSize, stateSize);
+                
+                //draw a label
+                g2.setColor(new Color(96, 96, 96));
+                g2.drawString(state.getID().toString(),(int)((l.x-6.0)+intMargin), (int)((l.y+isOffset)+intMargin));
+
                 
                 //get a generic stateX for later use on tracks
                 stateY = (int)l.y-(stateSize/2);
