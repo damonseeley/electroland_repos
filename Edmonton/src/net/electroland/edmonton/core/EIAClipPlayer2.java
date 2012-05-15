@@ -28,10 +28,21 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
     private int topBar = 5;
     private int bottomBar = 8;
     private int barHeight = 2;
+    
+	public void thunderSparkle(double x) {
+		logger.info("thunderSparkle");
 
-    
-    
-    public void bigHitPM1(double x){
+		Content sparkleClipFast = anim.getContent("sparkleThunder");
+		Clip faintSparkle = live.addClip(sparkleClipFast, 0,0,cWidth,16, 1.0, 10);
+		faintSparkle.zIndex = -100; // sets to far background
+
+		//fadein, wait, fadeout
+		faintSparkle.delay(800).fadeOut(5000).delete();
+	
+		sc.playGlobal("thunder_15_short.wav", false, 1.0f);
+	}
+	
+	public void bigHitPM1(double x){
         logger.info("bigHit");
 
         int barWidth = 3;
