@@ -164,7 +164,7 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
         model.addModelWatcher(screenSaver,  "screenSaver", eio.getIStates());
 
         // watchers per istate
-        ElectrolandProperties clipNames = new ElectrolandProperties("EIA-clipNames.properties");
+        ElectrolandProperties clipNames = new ElectrolandProperties("EIA-clipSchedule.properties");
         for (IState state : eio.getIStates())
         {
         	String clip = clipNames.getRequired("sensor", state.getID(), "clipName");
