@@ -108,11 +108,10 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
 
         //fadein, wait, fadeout
         Change waveMove = new LinearChange().xTo(320);
-        waveImageClip.queueChange(waveMove, 3000).delete();
+        waveImageClip.queueChange(waveMove, 1500).delete();
 
 
         sc.playSingleChannelBlind("kotu_04.wav", x, 1.0f);
-
     }
 
     public void entryWavePM2(double x) {
@@ -127,10 +126,9 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
 
         //fadein, wait, fadeout
         Change waveMove = new LinearChange().xTo(-waveWidth);
-        waveImageClip.queueChange(waveMove, 3000).delete();
+        waveImageClip.queueChange(waveMove, 1500).delete();
 
         sc.playSingleChannelBlind("kotu_04.wav", x, 1.0f);
-
     }
 
     public void boomerang(double x){
@@ -250,7 +248,7 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
     public void smAccent(double x) {
         int rand = (int)(Math.random() * 100);
         //logger.info(rand);
-        if (rand < 50){
+        if (rand < 40){
             smVertDoublet(x);
         } else if (rand < 100) {
             vertSixFill(x);
