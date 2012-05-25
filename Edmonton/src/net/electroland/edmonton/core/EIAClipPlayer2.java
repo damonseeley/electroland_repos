@@ -40,9 +40,9 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
         Clip faintSparkle = live.addClip(sparkleThunderClip, 320,0,cWidth,16, 1.0, 10);
         faintSparkle.zIndex = -100; // sets to far background
 
-        faintSparkle.delay(800).fadeOut(5000).delete();
+        faintSparkle.delay(800).fadeOut(4500).delete();
 
-        sc.playGlobal("thunder_15_short.wav", false, 1.0f);
+        sc.playGlobal("EIA_organ_v01.wav", false, 1.0f);
         // or chime01_med.wav
     }
     
@@ -53,9 +53,9 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
         Clip faintSparkle = live.addClip(sparkleThunderClip, 0,0,320,16, 1.0, 10);
         faintSparkle.zIndex = -100; // sets to far background
 
-        faintSparkle.delay(800).fadeOut(5000).delete();
+        faintSparkle.delay(800).fadeOut(4500).delete();
 
-        sc.playGlobal("thunder_15_short.wav", false, 1.0f);
+        sc.playGlobal("EIA_organ_v01.wav", false, 1.0f);
         // or chime01_med.wav
     }
 
@@ -120,7 +120,7 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
 
         Content waveImage = anim.getContent("waveImage");
 
-        int waveWidth = 24;
+        int waveWidth = 48;
         Clip waveImageClip = live.addClip(waveImage, (int)x,0,waveWidth,16, 1.0); //add it as 32px wide at the end of the stage
         waveImageClip.zIndex = -100; // sets to far background
 
