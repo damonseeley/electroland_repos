@@ -34,7 +34,7 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
      */
     
     public void thunderSparklePM1(double x) {
-        logger.info("thunderSparkle");
+        logger.debug("thunderSparkle");
 
         Content sparkleThunderClip = anim.getContent("sparkleThunder");
         Clip faintSparkle = live.addClip(sparkleThunderClip, 320,0,cWidth,16, 1.0, 10);
@@ -42,12 +42,12 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
 
         faintSparkle.delay(800).fadeOut(4500).delete();
 
-        sc.playGlobal("EIA_organ_v01.wav", false, 1.0f);
+        sc.playGlobal("EIA_organ_v01short.wav", false, 1.0f);
         // or chime01_med.wav
     }
     
     public void thunderSparklePM2(double x) {
-        logger.info("thunderSparkle");
+        logger.debug("thunderSparkle");
 
         Content sparkleThunderClip = anim.getContent("sparkleThunder");
         Clip faintSparkle = live.addClip(sparkleThunderClip, 0,0,320,16, 1.0, 10);
@@ -55,12 +55,25 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
 
         faintSparkle.delay(800).fadeOut(4500).delete();
 
-        sc.playGlobal("EIA_organ_v01.wav", false, 1.0f);
+        sc.playGlobal("EIA_organ_v01short.wav", false, 1.0f);
         // or chime01_med.wav
+    }
+    
+    public void thunderSparklePM2sm(double x) {
+        logger.debug("thunderSparkle");
+
+        Content sparkleThunderClip = anim.getContent("sparkleThunder");
+        Clip faintSparkle = live.addClip(sparkleThunderClip, 0,0,320,16, 1.0, 10);
+        faintSparkle.zIndex = -100; // sets to far background
+
+        faintSparkle.delay(800).fadeOut(3000).delete();
+
+        //sc.playGlobal("EIA_organ_v01short.wav", false, 1.0f);
+        sc.playSingleChannelBlind("EIA_organ_v01short.wav", x, 1.0f);
     }
 
     public void bigHitPM1(double x){
-        logger.info("bigHit");
+        logger.debug("bigHit");
 
         int barWidth = 3;
 
@@ -78,7 +91,7 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
     }
 
     public void grow(double x){
-        logger.info("grow");
+        logger.debug("grow");
 
         int barWidth = 3;
         int dist = 65;
@@ -97,7 +110,7 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
 
 
     public void entryWavePM1(double x) {
-        logger.info("entryWavePM1");
+        logger.debug("entryWavePM1");
         x = findNearestLight(x+lookAhead,true);
 
         Content waveImage = anim.getContent("waveImage");
@@ -115,7 +128,7 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
     }
 
     public void entryWavePM2(double x) {
-        logger.info("entryWavePM2");
+        logger.debug("entryWavePM2");
         x = findNearestLight(x+lookAhead,true);
 
         Content waveImage = anim.getContent("waveImage");
@@ -132,7 +145,7 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
     }
 
     public void boomerang(double x){
-        logger.info("boomerang");
+        logger.debug("boomerang");
 
         int barWidth = 18;
         int dist = 65;
@@ -152,7 +165,7 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
     }
 
     public void bigVertDoublet(double x) {
-        logger.info("bigVertDoublet");
+        logger.debug("bigVertDoublet");
         x = findNearestLight(x+lookAhead,true);
         int barWidth = 32;
         Content simpleClip2 = new SolidColorContent(Color.WHITE);
@@ -169,7 +182,7 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
     }
     
     public void randomBars(double x){
-        logger.info("randomBars");
+        logger.debug("randomBars");
         int maxLoop = 14;
         int minLoop = 7;
         int loop = (int)(maxLoop*Math.random());
@@ -189,7 +202,7 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
     }
 
     public void randomBarsMore(double x){
-        logger.info("randomBarsMore");
+        logger.debug("randomBarsMore");
         int maxLoop = 16;
         int minLoop = 8;
         int loop = (int)(maxLoop*Math.random());
@@ -212,7 +225,7 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
     private int randBarSpeed = 1500;
 
     public void topRandomBar(double x, int delay, int maxBarLength, int barDest){
-        //logger.info("topRandomBar");
+        //logger.debug("topRandomBar");
 
         int barWidth = (int)(maxBarLength*Math.random())+1;
 
@@ -226,7 +239,7 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
     }
 
     public void bottomRandomBar(double x, int delay, int maxBarLength, int barDest){
-        //logger.info("bottomRandomBar");
+        //logger.debug("bottomRandomBar");
 
         int barWidth = (int)(maxBarLength*Math.random())+1;
 
@@ -247,7 +260,7 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
 
     public void smAccent(double x) {
         int rand = (int)(Math.random() * 100);
-        //logger.info(rand);
+        //logger.debug(rand);
         if (rand < 40){
             smVertDoublet(x);
         } else if (rand < 100) {
@@ -259,7 +272,7 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
     }
 
     public void blip2(double x) {
-        logger.info("blip2");
+        logger.debug("blip2");
         x = findNearestLight(x+lookAhead,true);
         //orig int barWidth = 3;
         int barWidth = 3;
@@ -276,7 +289,7 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
     }
 
     public void vertSixFill(double x) {
-        logger.info("vertSixFill");
+        logger.debug("vertSixFill");
         x = findNearestLight(x+lookAhead,true);
         int barWidth = 3;
         Content simpleClip2 = new SolidColorContent(Color.WHITE);
@@ -303,7 +316,7 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
 
 
     public void smVertDoublet(double x) {
-        logger.info("smVertDoublet");
+        logger.debug("smVertDoublet");
         x = findNearestLight(x+lookAhead,true);
         int barWidth = 9;
         Content simpleClip2 = new SolidColorContent(Color.WHITE);

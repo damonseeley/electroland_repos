@@ -35,7 +35,8 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
 
     static Logger logger = Logger.getLogger(EIAMainConductor2.class);
 
-    private int inactivityThreshold = 1000 * 60;
+    //private int inactivityThreshold = 1000 * 60;
+    private int inactivityThreshold = 1000 * 15;
     private ElectrolandProperties props;
     private ELUManager elu;
     private boolean updateLighting = true;
@@ -163,13 +164,18 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
         screenSaver.setTimeOut(this.inactivityThreshold);
         model.addModelWatcher(screenSaver,  "screenSaver", eio.getIStates());
 
+        
+        
         // watchers per istate
         ElectrolandProperties clipNames = new ElectrolandProperties("EIA-clipSchedule.properties");
         for (IState state : eio.getIStates())
         {
         	String clip = clipNames.getRequired("sensor", state.getID(), "clipName");
-        	model.addModelWatcher(new OneEventPerPeriodModelWatcher(clip, 1000), "showwatcher" + state.getID(), state);
+        	int clipTiming = clipNames.getRequiredInt("sensor", state.getID(), "clipTiming");
+        	model.addModelWatcher(new OneEventPerPeriodModelWatcher(clip, clipTiming), "showwatcher" + state.getID(), state);
         }
+        
+        
         
         /******** GUI ********/
         ef = new EIAFrame(Integer.parseInt(props.getRequired("settings", "global", "guiwidth")),Integer.parseInt(props.getRequired("settings", "global", "guiheight")),context);
