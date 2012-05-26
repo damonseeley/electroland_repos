@@ -1,0 +1,23 @@
+#SCSoundControl Properties File
+#Mon Dec 05 22:42:32 PST 2011
+#MAC
+#SuperCollider_AudioHardwareDeviceName=1
+#WIN
+#SuperCollider_AudioHardwareDeviceName=ASIO \: ASIO4ALL v2
+SuperCollider_SampleRate=48000
+SuperCollider_RealTimeRamAllocation=131072
+#WIN
+SuperCollider_Path=C:\\Program Files (x86)\\SuperCollider\\scsynth.exe
+#MAC
+SuperCollider_Path=/Applications/SuperCollider/scsynth
+
+#MOTU
+SuperCollider_NumberOfOutputChannels=22
+SuperCollider_NumberOfInputChannels=0
+SCSoundControl_MaxPolyphony=64
+SuperCollider_LoadSynthDefs=1
+SuperCollider_UDPportNumber=57110
+SCSoundControl_Timeout=10000
+
+
+#C:\Program Files (x86)\SuperCollider
