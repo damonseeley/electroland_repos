@@ -31,7 +31,7 @@ public class ImageContent extends Content {
     public void config(ParameterMap primaryParams,
             Map<String, ParameterMap> extendedParams) {
         String filename = primaryParams.getRequired("file");
-        System.out.println("loading image " + filename);
+        //System.out.println("loading image " + filename);
         try {
             image = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(filename));
         } catch (IOException e) {
