@@ -35,8 +35,7 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
 
     static Logger logger = Logger.getLogger(EIAMainConductor2.class);
 
-    //private int inactivityThreshold = 1000 * 60;
-    private int inactivityThreshold = 1000 * 15;
+    private int inactivityThreshold;
     private ElectrolandProperties props;
     private ELUManager elu;
     private boolean updateLighting = true;
@@ -125,6 +124,16 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
         } catch (OptionException e) {
             // TODO Auto-generated catch block
             kickstart = false;
+            e.printStackTrace();
+        }
+        
+        try {
+            inactivityThreshold = props.getRequiredInt("settings", "screensaver", "timeout");
+            logger.info("Inactivity timeout set to: " + inactivityThreshold);
+        } catch (OptionException e) {
+            // TODO Auto-generated catch block
+            // default should be 60 seconds
+            inactivityThreshold = 5 * 1000;
             e.printStackTrace();
         }
         
