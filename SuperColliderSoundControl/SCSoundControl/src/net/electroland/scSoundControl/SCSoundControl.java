@@ -849,18 +849,19 @@ public class SCSoundControl implements OSCListener, Runnable {
 
         while (true){
             if (!_serverLive){ // if the server is dead, start it
-                logger.info("starting server");
+                logger.info("SCSC: starting server");
                 startServer(); // this method pauses the thread for 5000 ms.
                 logger.info("server is started...");
                 isBooting = false;
             }else if (!_serverBooted){ // if it's live, but not booted, boot it
                 if (!isBooting){
-                    logger.info("booting server");
+                    logger.info("SCSC: booting server");
                     bootServer();
                     waitingOnResponse = false; // reset the response handler
                     responseReceived = false; 
                     isBooting = true;
                 }else{
+                	System.out.println("SCSC: We're waiting on the boot...");
                     /**
                      * TODO: should check to see if our boot request is taking 
                      *       too long and resend.
@@ -870,15 +871,15 @@ public class SCSoundControl implements OSCListener, Runnable {
             }else{
                 if (waitingOnResponse){ // are we waiting on a ping response?
                     if (responseReceived){
-                        logger.debug("response received.");
+                        logger.debug("SCSC: response received.");
                         // we got a response!
                         waitingOnResponse = false;
                         // schedule a new ping:
                         nextPing = _prevPingRequestTime + _scsynthPingInterval;
-                        logger.debug("next ping at " + nextPing);
+                        logger.debug("SCSC: next ping at " + nextPing);
                     }else if (System.currentTimeMillis() - _prevPingRequestTime > _serverResponseTimeout){
                         // we timed out :( 
-                        logger.error("Scsynth timed out.");
+                        logger.error("SCSC: Scsynth timed out.");
                         timeOut();
                     }
                 }else if (System.currentTimeMillis() > nextPing){
@@ -899,22 +900,18 @@ public class SCSoundControl implements OSCListener, Runnable {
         }
     }
 
-//    boolean firstLaunch = true;
     private void startServer()
     {
-        try {
-//           if (!firstLaunch){
-                cleanup();
-                _scsynthLauncher.killScsynth();
-//                firstLaunch = false;
-//            }
-           bootScsynth();
-           Thread.sleep(5000);
-           _serverLive = true;
-           this.init();
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
+    	try {
+    		cleanup();
+    		_scsynthLauncher.killScsynth();
+    		bootScsynth();
+    		Thread.sleep(2000);
+    		_serverLive = true;
+    		this.init();
+    	} catch (Throwable e) {
+    		e.printStackTrace();
+    	}
     }
 
     private void bootServer()
@@ -954,7 +951,4 @@ public class SCSoundControl implements OSCListener, Runnable {
 	public void set_scsynthPingInterval(int pingInterval) {
 		_scsynthPingInterval = pingInterval;
 	}
-	
-
 }
-
