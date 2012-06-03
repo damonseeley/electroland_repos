@@ -199,7 +199,6 @@ public class EIAClipPlayer {
 		int of = 1;
 		Content simpleClip2 = new SolidColorContent(Color.WHITE);
 
-		int ix = (int)x;
 		int xLow = 0;
 		int xHigh = cWidth;
 		int plucks = 8;
@@ -217,8 +216,6 @@ public class EIAClipPlayer {
 
 	public void wholeNoteBeatRest(double x) {
 		//logger.info("HarpTrill @" + x);
-		int barWidth = 3;
-		int of = 1;
 		x = findNearestLight(x-24,true);
 		//create all bars, with each appearing in delayed intervals
 		Content simpleClip2 = new SolidColorContent(Color.WHITE);
@@ -383,8 +380,6 @@ public class EIAClipPlayer {
 		//here we are using the x value as the number of waves to make
 		int waves = (int)x; //?
 		int wave1End = 340;
-		int xLow = 0;
-		int xHigh = cWidth;
 		int waveWidth = 32;
 		int waveOffset = waveWidth/3;
 		int waveSpacing = waveWidth + waveOffset;
@@ -406,8 +401,6 @@ public class EIAClipPlayer {
 		//logger.info("megaThrob @" + x);
 
 		int wave1End = 340;
-		int xLow = 0;
-		int xHigh = cWidth;
 		//use x here as a timing value for throb in/out
 		int throbTime = (int)x;
 		int throbOutTime = (int) (throbTime * 1.0);
