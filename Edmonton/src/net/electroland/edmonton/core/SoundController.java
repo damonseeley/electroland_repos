@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
 
-import net.electroland.ea.AnimationManager;
 import net.electroland.scSoundControl.SCSoundControl;
 import net.electroland.scSoundControl.SCSoundControlNotifiable;
 import net.electroland.scSoundControl.SoundNode;
@@ -20,8 +19,7 @@ public class SoundController implements SCSoundControlNotifiable {
     final static int[] stereochannels = {0,1};
 
     private Hashtable<String,Object> context;
-    private ElectrolandProperties props;
-    private AnimationManager anim;
+    private ElectrolandProperties props, propsStatic;
     private String soundFilePath;
     private boolean bypass;
 
@@ -42,11 +40,10 @@ public class SoundController implements SCSoundControlNotifiable {
     public SoundController(Hashtable<String,Object> context){
 
         this.context = context;
-        props = (ElectrolandProperties) context.get("props");
-        //anim = (AnimationManager) context.get("anim");
-
-        soundID = 0;
-        soundNodes = new Hashtable<Integer,SoundNode>();
+        props 		 = (ElectrolandProperties) context.get("props");
+        propsStatic  = (ElectrolandProperties) context.get("propsStatic");
+        soundID      = 0;
+        soundNodes   = new Hashtable<Integer,SoundNode>();
 
         try {
             this.soundFilePath = props.getOptional("settings", "sound", "filePath");
@@ -54,7 +51,6 @@ public class SoundController implements SCSoundControlNotifiable {
             this.debug = Boolean.parseBoolean(props.getOptional("settings", "sound", "debug"));
             this.stereoOnly = Boolean.parseBoolean(props.getOptional("settings", "sound", "stereoOnly"));
         } catch (OptionException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             soundFilePath = "/depends/";
             bypass = false;
@@ -65,7 +61,7 @@ public class SoundController implements SCSoundControlNotifiable {
 
         // rip the speaker ID and locations
         speakers = new Hashtable<Integer, Speaker>(); //fill this with soundfilenames and mark them as loaded or not
-        Map<String, ParameterMap> speakerParams = props.getObjects("speaker");
+        Map<String, ParameterMap> speakerParams = propsStatic.getObjects("speaker");
         for (String s : speakerParams.keySet()){
             ParameterMap sParams = speakerParams.get(s);
 

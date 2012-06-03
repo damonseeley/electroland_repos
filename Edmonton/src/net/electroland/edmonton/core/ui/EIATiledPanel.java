@@ -14,14 +14,12 @@ import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.Map;
 
 import javax.swing.JPanel;
 import javax.vecmath.Point3d;
 
 import net.electroland.ea.AnimationManager;
-import net.electroland.edmonton.core.model.Track;
 import net.electroland.eio.IOManager;
 import net.electroland.eio.IOState;
 import net.electroland.eio.IState;
@@ -37,22 +35,17 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 
     //some static stuff here for drawing
     private static final long serialVersionUID = 1L;
-    //private static BasicStroke stroke = new BasicStroke(2.0f); Never used EGM
     final static float dash1[] = {10.0f};
     final static BasicStroke dashed = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
 
-    public Hashtable<String, Object> context;
     private ELUCanvas2D canvas;
     private ELUManager elu;
     private IOManager eio;
-    private ElectrolandProperties props;
+    private ElectrolandProperties props, propsStatic;
     private double displayScale;
     private boolean showGraphics;
     private AnimationManager anim;
-    private boolean track; // is tracking enabled?
-    private List<Track> tracks;
     private boolean showAnimation;
-
 
     //panel dims and margin info
     public int panelTileWidth;
@@ -67,9 +60,7 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
     static Logger logger = Logger.getLogger(EIAFrame.class);
 
     //constructor
-    public EIATiledPanel (Hashtable<String,Object> context) {
-
-        this.context = context;
+    public EIATiledPanel (Map<String,Object> context) {
 
         addMouseMotionListener(this);
 
@@ -78,19 +69,8 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
         this.eio = (IOManager)context.get("eio");
         this.canvas = (ELUCanvas2D)context.get("canvas");
         this.props = (ElectrolandProperties)context.get("props");
+        this.propsStatic = (ElectrolandProperties)context.get("propsStatic");
 
-        try {
-            track = Boolean.parseBoolean(props.getOptional("settings", "tracking", "track"));
-            logger.info("Tracking is set to " + track);
-            if (track){
-                this.tracks = (List<Track>)context.get("tracks");
-            }
-
-        } catch (OptionException e) {
-            // TODO Auto-generated catch block
-            track = false;
-            e.printStackTrace();
-        }
 
         try {
             showGraphics = Boolean.parseBoolean(props.getOptional("settings", "display", "showGraphics"));
@@ -141,26 +121,26 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
             lightWidth = 2;
         }
         try {
-            p1x = props.getOptionalDouble("peoplemover", "p1", "x");
-            p1y = props.getOptionalDouble("peoplemover", "p1", "y");
-            p1width = props.getOptionalDouble("peoplemover", "p1", "width");
-            p1height = props.getOptionalDouble("peoplemover", "p1", "height");
-            p2x = props.getOptionalDouble("peoplemover", "p2", "x");
-            p2y = props.getOptionalDouble("peoplemover", "p2", "y");
-            p2width = props.getOptionalDouble("peoplemover", "p2", "width");
-            p2height = props.getOptionalDouble("peoplemover", "p2", "height");
+            p1x      = propsStatic.getOptionalDouble("peoplemover", "p1", "x");
+            p1y      = propsStatic.getOptionalDouble("peoplemover", "p1", "y");
+            p1width  = propsStatic.getOptionalDouble("peoplemover", "p1", "width");
+            p1height = propsStatic.getOptionalDouble("peoplemover", "p1", "height");
+            p2x      = propsStatic.getOptionalDouble("peoplemover", "p2", "x");
+            p2y      = propsStatic.getOptionalDouble("peoplemover", "p2", "y");
+            p2width  = propsStatic.getOptionalDouble("peoplemover", "p2", "width");
+            p2height = propsStatic.getOptionalDouble("peoplemover", "p2", "height");
             
-            s1 = props.getOptionalDouble("speaker", "s1", "x");
-            s2 = props.getOptionalDouble("speaker", "s2", "x");
-            s3 = props.getOptionalDouble("speaker", "s3", "x");
-            s4 = props.getOptionalDouble("speaker", "s4", "x");
-            s5 = props.getOptionalDouble("speaker", "s5", "x");
-            s6 = props.getOptionalDouble("speaker", "s6", "x");
-            s7 = props.getOptionalDouble("speaker", "s7", "x");
-            s8 = props.getOptionalDouble("speaker", "s8", "x");
-            s9 = props.getOptionalDouble("speaker", "s9", "x");
-            s10 = props.getOptionalDouble("speaker", "s10", "x");
-            s11 = props.getOptionalDouble("speaker", "s11", "x");
+            s1  = propsStatic.getOptionalDouble("speaker", "s1", "x");
+            s2  = propsStatic.getOptionalDouble("speaker", "s2", "x");
+            s3  = propsStatic.getOptionalDouble("speaker", "s3", "x");
+            s4  = propsStatic.getOptionalDouble("speaker", "s4", "x");
+            s5  = propsStatic.getOptionalDouble("speaker", "s5", "x");
+            s6  = propsStatic.getOptionalDouble("speaker", "s6", "x");
+            s7  = propsStatic.getOptionalDouble("speaker", "s7", "x");
+            s8  = propsStatic.getOptionalDouble("speaker", "s8", "x");
+            s9  = propsStatic.getOptionalDouble("speaker", "s9", "x");
+            s10 = propsStatic.getOptionalDouble("speaker", "s10", "x");
+            s11 = propsStatic.getOptionalDouble("speaker", "s11", "x");
 
             
             
@@ -307,7 +287,6 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
             /*
              * Draw Sensors
              */
-            int stateY = 0;
             Font font2 = new Font("Arial", Font.PLAIN, 10);
             g2.setFont(font2);
             double isOffset = 14.0;
@@ -345,11 +324,7 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
                 
                 //draw a label
                 g2.setColor(new Color(96, 96, 96));
-                g2.drawString(state.getID().toString(),(int)((l.x-6.0)+intMargin), (int)((l.y+isOffset)+intMargin));
-
-                
-                //get a generic stateX for later use on tracks
-                stateY = (int)l.y-(stateSize/2);
+                g2.drawString(state.getID().toString(),(int)((l.x-6.0)+intMargin), (int)((l.y+isOffset)+intMargin));                
             }
 
             /*
@@ -365,40 +340,6 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
                 g2.drawRect((int)(l.x)-lightWidth/2+intMargin, (int)(l.y)-lightHeight/2+intMargin, lightWidth, lightHeight);
             }
 
-            /*
-             * Draw tracks
-             */
-
-            if (track){
-                //double trackYLoc = 16.0;
-                synchronized(tracks){
-                    for (Track tr : tracks)
-                    {
-                        Point3d tl = new Point3d(tr.x,stateY,0);
-                        //logger.info("orig " + (int)l.x + " " + (int)l.y);
-                        tl.scale(displayScale);
-                        tl.y = stateY + 9 +intMargin; // draw the tracks in y stacked order based on sensor location
-                        int fwd = (int)(tr.revSearchDist*displayScale);
-                        int rev = (int)(tr.fwdSearchDist*displayScale);
-
-                        int colorStaleness = (int)(255 * tr.staleness);
-                        int colorFloor = 64; // set a floor for color in the above calc;
-
-                        // draw track point
-                        g2.setColor(new Color(0, Math.min(colorStaleness + colorFloor, 255), 0));
-                        g2.fillRect((int)(tl.x)-1+intMargin, (int)(tl.y)-1, 3, 3);
-
-                        // draw search domains
-                        g2.setColor(new Color(Math.min(colorStaleness + colorFloor, 255), 0, Math.min(colorStaleness + colorFloor, 255)));
-                        g2.drawLine((int)(tl.x-fwd)+intMargin, (int)(tl.y), (int)(tl.x-rev)+intMargin, (int)(tl.y));
-
-                        g2.drawLine((int)(tl.x-fwd)+intMargin, (int)(tl.y-1), (int)(tl.x-fwd)+intMargin, (int)(tl.y+1));
-                        g2.drawLine((int)(tl.x-rev)+intMargin, (int)(tl.y-1), (int)(tl.x-rev)+intMargin, (int)(tl.y+1));
-
-                        stateY += 2;
-                    }
-                }
-            }
 
             /*
              * Finally, draw it all on the Panel

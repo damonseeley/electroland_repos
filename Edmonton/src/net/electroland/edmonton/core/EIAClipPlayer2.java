@@ -1,6 +1,7 @@
 package net.electroland.edmonton.core;
 
 import java.awt.Color;
+import java.util.Map;
 
 import net.electroland.ea.AnimationManager;
 import net.electroland.ea.Change;
@@ -9,18 +10,35 @@ import net.electroland.ea.Content;
 import net.electroland.ea.changes.LinearChange;
 import net.electroland.ea.content.SolidColorContent;
 import net.electroland.utils.lighting.ELUManager;
+import net.electroland.utils.lighting.Fixture;
+import net.electroland.utils.lighting.canvas.ELUCanvas2D;
 
 import org.apache.log4j.Logger;
 
-public class EIAClipPlayer2 extends EIAClipPlayer {
-
-    //private SoundController sc;
+public class EIAClipPlayer2 {
 
     static Logger logger = Logger.getLogger(EIAClipPlayer2.class);
+	protected AnimationManager anim;
+	protected ELUManager elu;
+	protected ELUCanvas2D canvas;
+	protected SoundController sc;
+	protected Clip quiet, live;
 
-    public EIAClipPlayer2(AnimationManager am, ELUManager elu, SoundController sc)
+    public EIAClipPlayer2(Map<String, Object> context)
     {
-        super(am, elu, sc);
+    	try{
+    		this.anim   = (AnimationManager)context.get("anim");
+    		this.elu    = (ELUManager)context.get("elu");
+    		this.sc     = (SoundController)context.get("soundController");
+    		this.canvas = (ELUCanvas2D)context.get("canvas");    		
+    	}catch(NullPointerException e){    		
+    		logger.error(e);
+    		System.exit(-1);
+    	}catch(ClassCastException e){
+    		logger.error(e);
+    		System.exit(-1);
+    	}
+		live = anim.addClip(new SolidColorContent(null), 0, 0, anim.getStageDimensions().width, anim.getStageDimensions().height, 1.0);
     }
 
     private double barOff = -3.69;
@@ -37,7 +55,7 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
         logger.debug("thunderSparkle");
 
         Content sparkleThunderClip = anim.getContent("sparkleThunder");
-        Clip faintSparkle = live.addClip(sparkleThunderClip, 320,0,cWidth,16, 1.0, 10);
+        Clip faintSparkle = live.addClip(sparkleThunderClip, 320,0,canvas.getDimensions().width,16, 1.0, 10);
         faintSparkle.zIndex = -100; // sets to far background
 
         faintSparkle.delay(800).fadeOut(4500).delete();
@@ -295,7 +313,6 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
         Content simpleClip2 = new SolidColorContent(Color.WHITE);
 
         int dOff = 150; //delay offset
-        int startX = (int)(x-barWidth/2);
 
         Clip top1 = live.addClip(simpleClip2, (int)(x-barWidth/2+barOff*0),topBar,barWidth,barHeight, 1.0); 
         Clip bottom1 = live.addClip(simpleClip2, (int)(x-barWidth/2+barOff*0),bottomBar,barWidth,barHeight, 1.0, dOff*1);
@@ -332,11 +349,20 @@ public class EIAClipPlayer2 extends EIAClipPlayer {
 
 
 
+	/**
+	 * Local Util Methods
+	 */
 
+	public double findNearestLight(double x, boolean forward) {
 
+		double closestX = -20;
 
-
-
-
-
+		for (Fixture f: elu.getFixtures()) {
+			if (Math.abs(x-f.getLocation().x) < Math.abs(x-closestX)) {
+				closestX = f.getLocation().x;
+			}
+		}
+		////logger.info("ClipPlayer: Track x= " + x + " & closest fixture x= " + closestX);
+		return closestX;
+	}
 }

@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -24,7 +25,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import net.electroland.edmonton.core.SoundController;
-import net.electroland.edmonton.core.sequencing.SimpleSequencer;
 import net.miginfocom.swing.MigLayout;
 
 import org.apache.log4j.Logger;
@@ -34,27 +34,23 @@ public class EIAFrame extends JFrame implements ActionListener {
 
 	EIATiledPanel ep;
 
-	private int windowWidth,windowHeight;
-	public Hashtable<String, Object> context;
+	private int windowHeight;
+	public Map<String, Object> context;
 
-	private int panelWidth,panelHeight;
-
-	private JButton startShow1,startShow2,testShow,stopSeq,showHideGfx;
-	private JLabel dScaleLabel, seqDelayLabel;
+	private JButton testShow,showHideGfx;
+	private JLabel dScaleLabel;
 	private JPanel bp;
-	private DoubleJSlider jsScale;
-	private JSlider jsDelay;
+	//private DoubleJSlider jsScale;
 	private ArrayList<JButton> buttons;
 
 	static Logger logger = Logger.getLogger(EIAFrame.class);
 
-	public EIAFrame(int width, int height, Hashtable context) {
+	public EIAFrame(int width, int height, Map<String,Object> context) {
 
 		super("Electroland @ EIA");
 
 		this.context = context;
 
-		windowWidth = width;
 		windowHeight = height;
 
 		ep = new EIATiledPanel(context);
@@ -66,25 +62,10 @@ public class EIAFrame extends JFrame implements ActionListener {
 		showHideGfx = new JButton("Hide Graphics");
 		showHideGfx.setActionCommand("showHideGfx");
 		buttons.add(showHideGfx);
-		
-		startShow1 = new JButton("Start Show1");
-		startShow1.setActionCommand("startShow1");
-		buttons.add(startShow1);		
-
-        startShow2 = new JButton("Start Show2");
-        startShow2.setActionCommand("startShow2");
-        buttons.add(startShow2);
-        
+		        
         testShow = new JButton("Test Show");
         testShow.setActionCommand("testShow");
         buttons.add(testShow);
-
-		stopSeq = new JButton("Stop Active Sequence");
-		stopSeq.setActionCommand("stopSeq");
-		buttons.add(stopSeq);
-		
-
-
 
 
 		/**
@@ -136,33 +117,11 @@ public class EIAFrame extends JFrame implements ActionListener {
 		/**
 		 * slider to affect sequencer delay
 		 */
-		jsDelay = new JSlider(0, -1000, 1000, 0);
-		//jsDelay.setValue(0);
-		//jsDelay.setMinimum(scaleFactor);
 
 		//Create the label table
 		Hashtable<Integer,JLabel> labelTable2 = new Hashtable<Integer,JLabel>();
 		labelTable2.put( -1000, new JLabel("-1000") );
 		labelTable2.put( 1000, new JLabel("1000") );
-		jsDelay.setLabelTable( labelTable2 );
-		jsDelay.setPaintLabels(true);
-
-		jsDelay.addChangeListener(new ChangeListener(){
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				// update and change value in sequencer
-				logger.info("Sequence Delay " + jsDelay.getValue());
-				seqDelayLabel.setText("Sequence delay: " + jsDelay.getValue());
-				setClipDelay(jsDelay.getValue());
-			}
-		});
-
-		seqDelayLabel = new JLabel("Sequence delay: " + jsDelay.getValue(), JLabel.CENTER);
-		seqDelayLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-
-
-
 
 		/**
 		 * add sliders
@@ -174,10 +133,6 @@ public class EIAFrame extends JFrame implements ActionListener {
 
 		sp.add(jsScale);
 		sp.add(dScaleLabel, "wrap");
-		sp.add(jsDelay);
-		sp.add(seqDelayLabel);
-
-
 
 		/**
 		 * put it all together (add it)
@@ -201,13 +156,6 @@ public class EIAFrame extends JFrame implements ActionListener {
 		this.setVisible(true);
 		//ogger.info("Setting JFrame width to " + ep.calcWidth);
 		setSize();
-	}
-
-	private void setClipDelay(int delay){
-		SimpleSequencer seq = (SimpleSequencer)context.get("sequencer");
-		logger.info(seq);
-		logger.info(jsDelay.getValue());
-		seq.setClipDelay(jsDelay.getValue());
 	}
 
 	public void setSize(){
@@ -239,7 +187,6 @@ public class EIAFrame extends JFrame implements ActionListener {
 	}
 
 	public void showHideGfx() {
-		// TODO Auto-generated method stub
 		boolean state = ep.showHideGfx();
 		if (state){
 			logger.info("graphics turned on");
@@ -254,6 +201,7 @@ public class EIAFrame extends JFrame implements ActionListener {
 
 }
 
+@SuppressWarnings("serial")
 class DoubleJSlider extends JSlider {
 
 	final int scale;
@@ -267,5 +215,3 @@ class DoubleJSlider extends JSlider {
 		return ((double)super.getValue()) / this.scale;
 	}
 }
-
-
