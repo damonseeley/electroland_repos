@@ -849,23 +849,25 @@ public class SCSoundControl implements OSCListener, Runnable {
 
         while (true){
             if (!_serverLive){ // if the server is dead, start it
-                logger.info("SCSC: starting server");
                 startServer(); // this method pauses the thread for 5000 ms.
                 logger.info("server is started...");
                 isBooting = false;
             }else if (!_serverBooted){ // if it's live, but not booted, boot it
                 if (!isBooting){
-                    logger.info("SCSC: booting server");
                     bootServer();
                     waitingOnResponse = false; // reset the response handler
                     responseReceived = false; 
                     isBooting = true;
                 }else{
                 	System.out.println("SCSC: We're waiting on the boot...");
-                    /**
-                     * TODO: should check to see if our boot request is taking 
-                     *       too long and resend.
-                     */
+                	try {
+						Thread.sleep(5000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+                	System.out.println("SCSC: ...and we gave up.");
+                	isBooting = false;
+                	startServer();
                 }
                 nextPing = System.currentTimeMillis() + 2000; // and schedule a ping
             }else{
@@ -902,6 +904,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 
     private void startServer()
     {
+    	logger.info("starting SCSynth");
     	try {
     		cleanup();
     		_scsynthLauncher.killScsynth();
@@ -916,6 +919,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 
     private void bootServer()
     {
+    	logger.info("booting SCSynth");
         sendMessage("/notify", new Object[] { 1 });
         sendMessage("/n_query", new Object[]{_motherGroupID});
     }	
