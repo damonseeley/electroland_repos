@@ -164,29 +164,6 @@ public class SoundController implements SCSoundControlNotifiable {
             }
         }
 
-        
-        /**
-         * MAY 2012 - FOR NOW DISABLE THIS FOR MEMORY SAVINGS
-         * 
-        //load sequencer props to get soundfile references
-        ElectrolandProperties ps = new ElectrolandProperties(context.get("seqpropsfile").toString());
-        for (String showName : ps.getObjectNames("show"))
-        {
-            for (String name : ps.getObjectNames(showName))
-            {
-                if (name.startsWith("soundcue.")){
-                    ParameterMap params = ps.getParams(showName, name);
-                    //String soundCueId = name.substring(9, name.length() - 9);
-                    String soundFileName = params.getRequired("soundfilename");
-                    //logger.info("SoundController: sequence soundfilename ripper found: " + soundFileName);
-                    soundFiles.put(soundFilePath+soundFileName, -1);	// -1 default unassigned value
-                }
-            }
-        }
-        **/
-
-
-
         loadAllBuffers();
 
         // debug - list the soundFiles
