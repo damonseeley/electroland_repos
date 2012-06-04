@@ -6,7 +6,6 @@
 	<classpathentry kind="lib" path="libraries/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="libraries/miglayout-4.0.jar"/>
 	<classpathentry kind="lib" path="libraries/EL-Config.jar"/>
-	<classpathentry kind="lib" path="libraries/SCSoundControl.jar"/>
 	<classpathentry kind="lib" path="libraries/EIO.jar"/>
 	<classpathentry kind="lib" path="libraries/EA2.jar"/>
 	<classpathentry kind="lib" path="libraries/ELU2.jar"/>
@@ -16,5 +15,6 @@
 	<classpathentry kind="lib" path="libraries/core.jar"/>
 	<classpathentry kind="lib" path="libraries/EIU.jar"/>
 	<classpathentry kind="lib" path="libraries/javaosc_ELmod.jar"/>
+	<classpathentry kind="lib" path="libraries/SCSoundControl.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
