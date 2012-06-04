@@ -175,7 +175,7 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
         if ("showHideGfx".equals(e.getActionCommand())) {
         	ef.showHideGfx();
         } else if ("testShow".equals(e.getActionCommand())){
-        	clipPlayer2.vertSixFill(500.0);
+        	clipPlayer2.vertSixFill(Math.random()*625.0);
         }
         
         
