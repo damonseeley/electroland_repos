@@ -92,6 +92,12 @@ public class SCSoundControl implements OSCListener, Runnable {
 	private long SuperColliderDisconnectTime = System.currentTimeMillis();
 	
 	static Logger logger = Logger.getLogger(SCSoundControl.class);
+		
+	public static int OFF          = -1;
+	public static int EXE_LAUNCHED  = 0;
+	public static int BOOT_CMD_SENT = 1;
+	public static int LIVE			= 2;
+	int currentState = OFF;
 	
 	
 	/**
@@ -176,7 +182,7 @@ public class SCSoundControl implements OSCListener, Runnable {
         _scsclogger = new SCSCConnectionLogger();
         
 		//start the server.
-		bootScsynth();
+		//bootScsynth();
         
 		//start the thread that will ping scsynth
 		_serverPingThread = new Thread(this);
@@ -287,6 +293,8 @@ public class SCSoundControl implements OSCListener, Runnable {
 	 *  cleanup all SCSoundControl nodes in SuperCollider
 	 */
 	public synchronized void cleanup() {
+
+		logger.info("SCSC: cleanup");
 		// by freeing the mother group we clean up all the nodes we've created
 		// on the SC server
 		sendMessage("/g_freeAll", new Object[] { _motherGroupID });
@@ -308,7 +316,9 @@ public class SCSoundControl implements OSCListener, Runnable {
 	
 	private void bootScsynth() {
 		
+		logger.info("SCSynth: start EXE");
 		_scsynthLauncher.launch();
+		logger.info("SCSynth: launching control panel");
 		_controlPanel.connectScsynthOutput(_scsynthLauncher.getScsynthOutput());
 
 	}
@@ -581,14 +591,12 @@ public class SCSoundControl implements OSCListener, Runnable {
 	
 	// handle incoming messages
 	public void acceptMessage(java.util.Date time, OSCMessage message) {
-		// FOR DEBUGGING: to print the full message:
-		if (debugging) {
-			logger.debug(message.getAddress());
-			for(int i = 0; i < message.getArguments().length; i++) {
-				logger.debug(", " + message.getArguments()[i].toString());
-			}
-			logger.debug("");
+
+		logger.debug(message.getAddress());
+		for(int i = 0; i < message.getArguments().length; i++) {
+			logger.debug(", " + message.getArguments()[i].toString());
 		}
+		logger.debug("");
 		
 		if (message.getAddress().matches("/done")) {
 			if (message.getArguments()[0].toString().matches("/b_allocRead")) {
@@ -809,8 +817,7 @@ public class SCSoundControl implements OSCListener, Runnable {
 	
 	protected void handleServerBooted() {
 		logger.info("SCSC: scsynth is booted.");
-		//reinit data.
-		//this.init();
+		isBooting = false;
 		//notify client.
 		if (_notifyListener != null) { _notifyListener.receiveNotification_ServerRunning(); }
 		if (_controlPanel != null && _controlPanel._statsDisplay != null) {
@@ -840,6 +847,50 @@ public class SCSoundControl implements OSCListener, Runnable {
 		
 		//debugPrintln("status latency: " + (_prevPingResponseTime.getTime() - _prevPingRequestTime.getTime()));
 	}
+	
+/**	
+	public void newrun()
+	{
+		if (everythingIsLive)
+		{
+			while (true){
+				sendPing();
+				sleep(2000);
+				// check to see if we got a response
+			}			
+		}else
+		{
+			// if there is an existing exe, kill it
+			killExe();			
+			Thread.sleep(2000);
+			
+			// Rest ourselves to a native state
+			cleanUp();
+
+			// star the new exe and wait (cross fingers)
+			startExe();
+			Thread.sleep(2000);
+
+			int tries = 5;
+			boolean booted = false;
+			while (tries-- > 0 && !booted){
+				// send boot command to server
+				sendBootCommand();
+				Thread.sleep(2000);
+			}			
+		}
+	}
+**/	
+	
+
+	/** SCSoundController has the following lifecyle:
+	 * 	1.) (nothing going on)
+	 *  2.) (if restart) kill any existing SCSynth .exe and reset the SCSoundControl to it's native state
+	 *  3.) start the SCSynth .exe
+	 *  4.) try sending it an /n_query command to see if it is live and get the current node list
+	 *  5.) assuming you got the nodelist, you are now live. ping (/status) for health checks. go back to 2 if you fail.
+	 */
+	
     public boolean responseReceived = false;
     public boolean isBooting = false;
     public void run() {
@@ -849,27 +900,29 @@ public class SCSoundControl implements OSCListener, Runnable {
 
         while (true){
             if (!_serverLive){ // if the server is dead, start it
-                startServer(); // this method pauses the thread for 5000 ms.
-                logger.info("server is started...");
-                isBooting = false;
+                startServer();
+                isBooting = true;
             }else if (!_serverBooted){ // if it's live, but not booted, boot it
-                if (!isBooting){
-                    bootServer();
-                    waitingOnResponse = false; // reset the response handler
-                    responseReceived = false; 
-                    isBooting = true;
-                }else{
-                	System.out.println("SCSC: We're waiting on the boot...");
+            	int retries = 5;
+            	while (isBooting && retries-- > 0){
+            		// keep sending /n_query calls to scsynth until we hear back (requires an "I surrender: start over" case still)
+                	sendNQuery();
                 	try {
-						Thread.sleep(5000);
+						Thread.sleep(2000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-                	System.out.println("SCSC: ...and we gave up.");
-                	isBooting = false;
-                	startServer();
-                }
-                nextPing = System.currentTimeMillis() + 2000; // and schedule a ping
+            	}
+            	if (!isBooting){
+                	logger.info("SCSC: We're live: start pinging!");
+                	// we're good.  schedule a ping.
+                    waitingOnResponse = false;
+                    responseReceived = false; 
+                    nextPing = System.currentTimeMillis() + 2000;            		
+            	}else{
+            		// crap instance.  restart it.
+            		_serverLive = false;
+            	}
             }else{
                 if (waitingOnResponse){ // are we waiting on a ping response?
                     if (responseReceived){
@@ -895,21 +948,23 @@ public class SCSoundControl implements OSCListener, Runnable {
             }
             // sleep just enough not to consume all resources
             try {
-                Thread.sleep(10);
+                Thread.sleep(50);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
 
+        
     private void startServer()
     {
-    	logger.info("starting SCSynth");
+		isBooting = false;
+		_serverLive = false;
     	try {
-    		cleanup();
     		_scsynthLauncher.killScsynth();
+    		Thread.sleep(1000); // "safe" timeout when restarting  			
     		bootScsynth();
-    		Thread.sleep(2000);
+    		Thread.sleep(1000); // force wait for boot.    			
     		_serverLive = true;
     		this.init();
     	} catch (Throwable e) {
@@ -917,11 +972,12 @@ public class SCSoundControl implements OSCListener, Runnable {
     	}
     }
 
-    private void bootServer()
+    private void sendNQuery()
     {
-    	logger.info("booting SCSynth");
+    	logger.info("SCSynth: sending /n_query command");
         sendMessage("/notify", new Object[] { 1 });
         sendMessage("/n_query", new Object[]{_motherGroupID});
+        isBooting = true;
     }	
 
     private void timeOut()
