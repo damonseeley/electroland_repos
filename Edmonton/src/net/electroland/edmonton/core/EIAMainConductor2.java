@@ -170,12 +170,12 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
 
     /************************* Test Event Handlers ******************************/
     public void actionPerformed(ActionEvent e) {
-        logger.info(e.getActionCommand());
-
+       
         if ("showHideGfx".equals(e.getActionCommand())) {
         	ef.showHideGfx();
+        	logger.info(e.getActionCommand());
         } else if ("testShow".equals(e.getActionCommand())){
-        	clipPlayer2.vertSixFill(Math.random()*625.0);
+        	clipPlayer2.testClip(Math.random()*625.0);
         }
         
         

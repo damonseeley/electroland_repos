@@ -346,6 +346,35 @@ public class EIAClipPlayer2 {
 
         sc.playSingleChannelBlind("lumen_entrance7.wav", x, 0.5f);
     }
+    
+    
+    
+    public void testClip(double x) {
+        logger.info("ClipPlayer - testClip starting");
+        x = findNearestLight(x+lookAhead,true);
+        int barWidth = 3;
+        Content simpleClip2 = new SolidColorContent(Color.WHITE);
+
+        int dOff = 150; //delay offset
+
+        Clip top1 = live.addClip(simpleClip2, (int)(x-barWidth/2+barOff*0),topBar,barWidth,barHeight, 1.0); 
+        Clip bottom1 = live.addClip(simpleClip2, (int)(x-barWidth/2+barOff*0),bottomBar,barWidth,barHeight, 1.0, dOff*1);
+        Clip top2 = live.addClip(simpleClip2, (int)(x-barWidth/2+barOff*1),topBar,barWidth,barHeight, 1.0, dOff*2); 
+        Clip bottom2 = live.addClip(simpleClip2, (int)(x-barWidth/2+barOff*1),bottomBar,barWidth,barHeight, 1.0, dOff*3); 
+        Clip top3 = live.addClip(simpleClip2, (int)(x-barWidth/2+barOff*2),topBar,barWidth,barHeight, 1.0, dOff*4); 
+        Clip bottom3 = live.addClip(simpleClip2, (int)(x-barWidth/2+barOff*2),bottomBar,barWidth,barHeight, 1.0, dOff*5); 
+
+        top1.delay(350).fadeOut(350).delete();
+        bottom1.delay(350).fadeOut(350).delete();
+        top2.delay(350).fadeOut(350).delete();
+        bottom2.delay(350).fadeOut(350).delete();
+        top3.delay(350).fadeOut(350).delete();
+        bottom3.delay(350).fadeOut(350).delete();
+        logger.info("ClipPlayer - testClip animation done, playing sound");
+
+        sc.playSingleChannelBlind("entrance6.wav", x, 0.5f);
+        logger.info("ClipPlayer - testClip sound call made");
+    }
 
 
 
