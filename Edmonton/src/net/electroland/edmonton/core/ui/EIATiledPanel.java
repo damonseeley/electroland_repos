@@ -231,7 +231,7 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
 
             Graphics2D g2 = (Graphics2D)bi.getGraphics();
             //set styles
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
             /*
              * Draw Anim/Canvas
@@ -364,6 +364,7 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
             g.setColor(Color.BLACK);
             g.fillRect(0,0,g.getClipBounds().width,g.getClipBounds().height);
             g.drawImage(bi2, margin, margin, null);
+            //g2.dispose();
         } else {
         	//clear image from last time
             clear(g);
