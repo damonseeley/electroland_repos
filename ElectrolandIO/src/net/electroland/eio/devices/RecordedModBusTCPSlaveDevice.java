@@ -41,26 +41,31 @@ public class RecordedModBusTCPSlaveDevice extends IODevice {
             // 622 192.168.247.29:00000000 00000000 
             String[] data;
             try {
-                String line = reader.readLine();
-                data = line.split(":");
-
-                data[1] = data[1].replace(" ", "");
-                if (data[0].endsWith(address)){
-                    //System.out.println(data[0] + " : " + data[1]);
-                    boolean[] bits = toBits(data[1]);
-                    for (int i=0; i < bits.length; i++)
-                    {
-                        IState state =  (IState)(registerBitToState.get(i + r.startRef));
-                        if (state != null)
+                if (reader.ready()){
+                        
+                    String line = reader.readLine();
+                    data = line.split(":");
+    
+                    data[1] = data[1].replace(" ", "");
+                    if (data[0].endsWith(address)){
+                        //System.out.println(data[0] + " : " + data[1]);
+                        boolean[] bits = toBits(data[1]);
+                        for (int i=0; i < bits.length; i++)
                         {
-                            state.setState(bits[i]);
+                            IState state =  (IState)(registerBitToState.get(i + r.startRef));
+                            if (state != null)
+                            {
+                                state.setState(bits[i]);
+                            }
                         }
                     }
-
+                }else{
+                    reader.close();
+                    connect();
                 }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
