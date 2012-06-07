@@ -10,7 +10,9 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import net.electroland.ea.AnimationManager;
 import net.electroland.edmonton.core.model.OneEventPerPeriodModelWatcher;
@@ -41,6 +43,7 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
     private AnimationManager anim;
     private EIAFrame ef;
     private Model model;
+    private TrafficFlowAnalyzer tfa;
 
     private boolean updateLighting = true;
     public int canvasHeight, canvasWidth;
@@ -127,7 +130,10 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
         	int clipTiming = clipNames.getRequiredInt("sensor", state.getID(), "clipTiming");
         	model.addModelWatcher(new OneEventPerPeriodModelWatcher(clip, clipTiming), "showwatcher" + state.getID(), state);
         }
-
+        
+       
+        tfa = new TrafficFlowAnalyzer();
+        
         /******** GUI ********/
         ef = new EIAFrame(Integer.parseInt(props.getRequired("settings", "global", "guiwidth")),Integer.parseInt(props.getRequired("settings", "global", "guiheight")),context);
         ef.addButtonListener(this);
@@ -148,6 +154,9 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
         if (evt.getSource() instanceof OneEventPerPeriodModelWatcher){
 
         	OneEventPerPeriodModelWatcher src = (OneEventPerPeriodModelWatcher)evt.getSource();
+        	
+        	//update Traffic Flow Analyer
+        	tfa.trip(src.getStates());
 
             // play clip
             Method[] allMethods = clipPlayer2.getClass().getDeclaredMethods();
@@ -166,6 +175,7 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
                 }
             }
         }
+
     } 
 
     /************************* Test Event Handlers ******************************/
@@ -176,6 +186,8 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
         	logger.info(e.getActionCommand());
         } else if ("testShow".equals(e.getActionCommand())){
         	clipPlayer2.testClip(Math.random()*625.0);
+        } else if ("pm1avg".equals(e.getActionCommand())){
+            logger.info("People Mover 1 total trips for 10s = " +tfa.getPPM1Flow(10000));
         }
         
         
