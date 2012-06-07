@@ -155,7 +155,7 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
 
         	OneEventPerPeriodModelWatcher src = (OneEventPerPeriodModelWatcher)evt.getSource();
         	
-        	//update Traffic Flow Analyer
+        	// update Traffic Flow Analyer
         	tfa.trip(src.getStates());
 
             // play clip
@@ -187,7 +187,9 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
         } else if ("testShow".equals(e.getActionCommand())){
         	clipPlayer2.testClip(Math.random()*625.0);
         } else if ("pm1avg".equals(e.getActionCommand())){
-            logger.info("People Mover 1 total trips for 10s = " +tfa.getPPM1Flow(10000));
+            logger.info("People Mover 1 total trips for 30s = " +tfa.getPPM1Flow(30000));
+        } else if ("pm2avg".equals(e.getActionCommand())){
+            logger.info("People Mover 2 total trips for 30s = " +tfa.getPPM2Flow(30000));
         }
         
         

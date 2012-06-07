@@ -37,7 +37,7 @@ public class EIAFrame extends JFrame implements ActionListener {
 	private int windowHeight;
 	public Map<String, Object> context;
 
-	private JButton testShow,showHideGfx,pm1avg;
+	private JButton testShow,showHideGfx,pm1avg,pm2avg;
 	private JLabel dScaleLabel;
 	private JPanel bp;
 	//private DoubleJSlider jsScale;
@@ -71,6 +71,10 @@ public class EIAFrame extends JFrame implements ActionListener {
         pm1avg.setActionCommand("pm1avg");
         buttons.add(pm1avg);
 
+        pm2avg = new JButton("Log PM2 Average");
+        pm2avg.setActionCommand("pm2avg");
+        buttons.add(pm2avg);
+        
 
 		/**
 		 * button panel
