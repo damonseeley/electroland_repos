@@ -38,7 +38,7 @@ public class EIAFrame extends JFrame implements ActionListener {
 	public Map<String, Object> context;
 
 	private JButton testShow,showHideGfx,pm1avg,pm2avg;
-	private JLabel dScaleLabel;
+	private JLabel dScaleLabel,pm1avgLabel,pm2avgLabel;
 	private JPanel bp;
 	//private DoubleJSlider jsScale;
 	private ArrayList<JButton> buttons;
@@ -75,6 +75,8 @@ public class EIAFrame extends JFrame implements ActionListener {
         pm2avg.setActionCommand("pm2avg");
         buttons.add(pm2avg);
         
+        
+       
 
 		/**
 		 * button panel
@@ -87,7 +89,23 @@ public class EIAFrame extends JFrame implements ActionListener {
 		for (JButton b : buttons) {
 			bp.add(b);
 		}
-
+		
+		
+		/**
+		 * averages JLabels
+		 */
+		pm1avgLabel = new JLabel("---");
+		JLabel spacer = new JLabel("   ");
+		pm2avgLabel = new JLabel("---");
+		
+		JPanel avgp = new JPanel();
+		avgp.setLayout(new MigLayout("insets 8"));
+		avgp.add(pm1avgLabel);
+		avgp.add(spacer);
+		avgp.add(pm2avgLabel);
+		
+		updateFlowLables(0,0);
+		
 
 
 		/**
@@ -148,6 +166,7 @@ public class EIAFrame extends JFrame implements ActionListener {
 		this.setLayout(new MigLayout("insets 0"));
 		this.add(ep, "wrap");
 		this.add(bp, "wrap");
+		this.add(avgp, "wrap");
 		this.add(sp);
 
 
@@ -192,6 +211,12 @@ public class EIAFrame extends JFrame implements ActionListener {
 		SoundController sc = (SoundController)context.get("soundController");
 		sc.shutdown();
 		System.exit(0);
+	}
+	
+	public void updateFlowLables(int pm1, int pm2){
+	    pm1avgLabel.setText("PM1 30s flow = " + pm1);
+	    pm2avgLabel.setText("PM2 30s flow = " + pm2);
+
 	}
 
 	public void showHideGfx() {
