@@ -131,8 +131,8 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
         	model.addModelWatcher(new OneEventPerPeriodModelWatcher(clip, clipTiming), "showwatcher" + state.getID(), state);
         }
         
-       
         tfa = new TrafficFlowAnalyzer();
+        context.put("tfa", tfa);
         
         /******** GUI ********/
         ef = new EIAFrame(Integer.parseInt(props.getRequired("settings", "global", "guiwidth")),Integer.parseInt(props.getRequired("settings", "global", "guiheight")),context);
@@ -175,6 +175,8 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
                 }
             }
         }
+        
+        ef.updateFlowLables(tfa.getPPM1Flow(30000), tfa.getPPM2Flow(30000));
 
     } 
 
