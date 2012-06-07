@@ -50,5 +50,17 @@ public class TrafficFlowAnalyzer {
         }
         return tripHistory;
 	}
+    
+    public int getPPM2Flow(int timeDomain) {
+        // get flow in timedomain for PPLMVR #1
+        int tripHistory = 0;
+        for (long triptime : pm2trips)
+        {
+            if (triptime > System.currentTimeMillis() - timeDomain) {
+                tripHistory++;
+            }
+        }
+        return tripHistory;
+    }
 
 }
