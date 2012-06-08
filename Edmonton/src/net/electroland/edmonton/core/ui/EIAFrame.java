@@ -20,6 +20,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -95,22 +96,24 @@ public class EIAFrame extends JFrame implements ActionListener {
 		 * averages JLabels
 		 */
 		pm1RecentLabel = new JLabel("---");
-		JLabel spacer = new JLabel("   ");
 		pm2RecentLabel = new JLabel("---");
 		pm1AvgLabel = new JLabel("---");
 		pm2AvgLabel = new JLabel("---");
 		
 		JPanel avgp = new JPanel();
-		avgp.setLayout(new MigLayout("insets 8"));
+		MigLayout layout = new MigLayout(
+		        "insets 8",           // Layout Constraints
+		        "[]16[]16[]",   // Column constraints
+		        "[]8[]");    // Row constraints
+		avgp.setLayout(layout );
 		avgp.add(pm1RecentLabel);
-		avgp.add(spacer);
+		avgp.add(pm1AvgLabel,"wrap");
+		avgp.add(new JSeparator(), "span 3, wrap");
 		avgp.add(pm2RecentLabel);
-		avgp.add(spacer);
-		avgp.add(pm1AvgLabel);
-		avgp.add(spacer);
-        avgp.add(pm2AvgLabel);
+		avgp.add(pm2AvgLabel);
         
-		updateFlowLables(0,0,0,0);
+        
+		updateFlowLabels(0,0,0,0);
 		
 
 
@@ -219,7 +222,7 @@ public class EIAFrame extends JFrame implements ActionListener {
 		System.exit(0);
 	}
 	
-	public void updateFlowLables(int pm1, int pm2, int pma1, int pma2){
+	public void updateFlowLabels(int pm1, int pm2, long pma1, long pma2){
 	    pm1RecentLabel.setText("PM1 30s flow = " + pm1);
 	    pm2RecentLabel.setText("PM2 30s flow = " + pm2);
 	    pm1AvgLabel.setText("PM1 avg flow = " + pma1);
