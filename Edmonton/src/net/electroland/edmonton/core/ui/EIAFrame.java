@@ -38,7 +38,7 @@ public class EIAFrame extends JFrame implements ActionListener {
 	public Map<String, Object> context;
 
 	private JButton testShow,showHideGfx,pm1avg,pm2avg;
-	private JLabel dScaleLabel,pm1avgLabel,pm2avgLabel;
+	private JLabel dScaleLabel,pm1RecentLabel,pm2RecentLabel,pm1AvgLabel,pm2AvgLabel;
 	private JPanel bp;
 	//private DoubleJSlider jsScale;
 	private ArrayList<JButton> buttons;
@@ -94,17 +94,23 @@ public class EIAFrame extends JFrame implements ActionListener {
 		/**
 		 * averages JLabels
 		 */
-		pm1avgLabel = new JLabel("---");
+		pm1RecentLabel = new JLabel("---");
 		JLabel spacer = new JLabel("   ");
-		pm2avgLabel = new JLabel("---");
+		pm2RecentLabel = new JLabel("---");
+		pm1AvgLabel = new JLabel("---");
+		pm2AvgLabel = new JLabel("---");
 		
 		JPanel avgp = new JPanel();
 		avgp.setLayout(new MigLayout("insets 8"));
-		avgp.add(pm1avgLabel);
+		avgp.add(pm1RecentLabel);
 		avgp.add(spacer);
-		avgp.add(pm2avgLabel);
-		
-		updateFlowLables(0,0);
+		avgp.add(pm2RecentLabel);
+		avgp.add(spacer);
+		avgp.add(pm1AvgLabel);
+		avgp.add(spacer);
+        avgp.add(pm2AvgLabel);
+        
+		updateFlowLables(0,0,0,0);
 		
 
 
@@ -213,9 +219,11 @@ public class EIAFrame extends JFrame implements ActionListener {
 		System.exit(0);
 	}
 	
-	public void updateFlowLables(int pm1, int pm2){
-	    pm1avgLabel.setText("PM1 30s flow = " + pm1);
-	    pm2avgLabel.setText("PM2 30s flow = " + pm2);
+	public void updateFlowLables(int pm1, int pm2, int pma1, int pma2){
+	    pm1RecentLabel.setText("PM1 30s flow = " + pm1);
+	    pm2RecentLabel.setText("PM2 30s flow = " + pm2);
+	    pm1AvgLabel.setText("PM1 avg flow = " + pma1);
+	    pm2AvgLabel.setText("PM2 avg flow = " + pma2);
 
 	}
 
