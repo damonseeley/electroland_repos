@@ -176,7 +176,7 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
             }
         }
         
-        ef.updateFlowLables(tfa.getPM1Flow(30000), tfa.getPM2Flow(30000), tfa.getPM1Avg(), tfa.getPM2Avg());
+        ef.updateFlowLabels(tfa.getPM1Flow(30000), tfa.getPM2Flow(30000), tfa.getPM1Avg(), tfa.getPM2Avg());
 
     } 
 

@@ -15,14 +15,9 @@ public class TrafficFlowAnalyzer extends Thread {
 
     static Logger logger = Logger.getLogger(TrafficFlowAnalyzer.class);
 
-    //Thread stuff
-    public static boolean isRunning;	
-    private static float framerate;
-    private static FrameTimer timer;
-
     private ArrayList<Long> pm1trips,pm2trips;
     private ArrayList<Integer> pm1AvgTrips,pm2AvgTrips;
-    private int pm1Avg,pm2Avg;
+    private long pm1Avg,pm2Avg;
 
     /**
      * This objects adds an event and time for every trip in the set of 
@@ -38,13 +33,8 @@ public class TrafficFlowAnalyzer extends Thread {
         pm1Avg = 0;
         pm2Avg = 0;
         logger.info("TrafficFlowModelWatcher created");
-
-        /******** Thread Setup ********/
-        framerate = 1; //update averages once per second
-        isRunning = true;
-        timer = new FrameTimer(framerate);
+        
         start();
-        logger.info("TFA started up at framerate = " + framerate);
     }
 
     public void trip(Collection<IState> states) {
@@ -82,11 +72,11 @@ public class TrafficFlowAnalyzer extends Thread {
         return tripHistory;
     }
 
-    public int getPM1Avg(){
+    public long getPM1Avg(){
         return pm1Avg;
     }
     
-    public int getPM2Avg(){
+    public long getPM2Avg(){
         return pm2Avg;
     }
 
@@ -96,9 +86,7 @@ public class TrafficFlowAnalyzer extends Thread {
      */
     public void run() {
 
-        timer.start();
-
-        while (isRunning) {
+        while (true) {
 
             // calc avg trips for PM1
             int trips = 0;
@@ -108,7 +96,7 @@ public class TrafficFlowAnalyzer extends Thread {
                     trips++;
                 }
             }
-            logger.info("TRIPS = " + trips);
+            //logger.info("PM1 TRIPS = " + trips);
             
             pm1AvgTrips.add(trips);
             int tripsToAvg = 0;
@@ -119,12 +107,42 @@ public class TrafficFlowAnalyzer extends Thread {
                 tripCount++;
             }
             pm1Avg = tripsToAvg/tripCount;
-           
-
-            //TO-DO reset pm1AvgTrips after it grows to a certain size
+            //logger.info("PM1 TRIP AVG = " + pm1Avg);
             
-            //Thread ops
-            timer.block();
+            
+            
+            
+            // calc avg trips for PM2
+            int trips2 = 0;
+            for (long triptime : pm2trips)
+            {
+                if (triptime > System.currentTimeMillis() - 30000) { // not sure this math is right
+                    trips2++;
+                }
+            }
+            //logger.info("PM1 TRIPS = " + trips);
+            
+            pm2AvgTrips.add(trips2);
+            int tripsToAvg2 = 0;
+            int tripCount2 = 0;
+            for (int tripAvg : pm2AvgTrips)
+            {
+                tripsToAvg2 += tripAvg;
+                tripCount2++;
+            }
+            pm2Avg = tripsToAvg2/tripCount2;
+            //logger.info("PM1 TRIP AVG = " + pm1Avg);
+
+            
+            
+            
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                logger.debug(e);
+                e.printStackTrace();
+            }
         }
     }
 
