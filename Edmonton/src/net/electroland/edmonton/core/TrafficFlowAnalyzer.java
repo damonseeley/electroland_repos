@@ -18,6 +18,7 @@ public class TrafficFlowAnalyzer extends Thread {
     private ArrayList<Long> pm1trips,pm2trips;
     private ArrayList<Integer> pm1AvgTrips,pm2AvgTrips;
     private long pm1Avg,pm2Avg;
+    private int avgListLength,tripLength;
 
     /**
      * This objects adds an event and time for every trip in the set of 
@@ -26,10 +27,12 @@ public class TrafficFlowAnalyzer extends Thread {
      */
     public TrafficFlowAnalyzer()
     {
-        pm1trips = new ArrayList<Long>();
-        pm2trips = new ArrayList<Long>();
-        pm1AvgTrips = new ArrayList<Integer>();
-        pm2AvgTrips = new ArrayList<Integer>();
+        avgListLength = 200;
+        tripLength = avgListLength;
+        pm1trips = new ArrayList<Long>(tripLength);
+        pm2trips = new ArrayList<Long>(tripLength);
+        pm1AvgTrips = new ArrayList<Integer>(avgListLength);
+        pm2AvgTrips = new ArrayList<Integer>(avgListLength);
         pm1Avg = 0;
         pm2Avg = 0;
         logger.info("TrafficFlowModelWatcher created");
@@ -90,14 +93,18 @@ public class TrafficFlowAnalyzer extends Thread {
 
             // calc avg trips for PM1
             int trips = 0;
-            for (long triptime : pm1trips)
-            {
-                if (triptime > System.currentTimeMillis() - 30000) { // not sure this math is right
-                    trips++;
+            try {
+                for (long triptime : pm1trips)
+                {
+                    if (triptime > System.currentTimeMillis() - 30000) { // not sure this math is right
+                        trips++;
+                    }
                 }
-            }
-            //logger.info("PM1 TRIPS = " + trips);
-            
+            } catch (Exception e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }       
+            // should really clone subset of fixed size here for accuracy
             pm1AvgTrips.add(trips);
             int tripsToAvg = 0;
             int tripCount = 0;
@@ -107,21 +114,22 @@ public class TrafficFlowAnalyzer extends Thread {
                 tripCount++;
             }
             pm1Avg = tripsToAvg/tripCount;
-            //logger.info("PM1 TRIP AVG = " + pm1Avg);
             
             
-            
-            
+
             // calc avg trips for PM2
             int trips2 = 0;
-            for (long triptime : pm2trips)
-            {
-                if (triptime > System.currentTimeMillis() - 30000) { // not sure this math is right
-                    trips2++;
+            try {
+                for (long triptime : pm2trips)
+                {
+                    if (triptime > System.currentTimeMillis() - 30000) { // not sure this math is right
+                        trips2++;
+                    }
                 }
+            } catch (Exception e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
             }
-            //logger.info("PM1 TRIPS = " + trips);
-            
             pm2AvgTrips.add(trips2);
             int tripsToAvg2 = 0;
             int tripCount2 = 0;
@@ -131,8 +139,29 @@ public class TrafficFlowAnalyzer extends Thread {
                 tripCount2++;
             }
             pm2Avg = tripsToAvg2/tripCount2;
-            //logger.info("PM1 TRIP AVG = " + pm1Avg);
 
+           
+            
+            // TRIMMING
+            // trim the lists if longer than they should be.
+            
+            if (pm1trips.size() > avgListLength) {
+                //logger.info("TFA: pm1trips List trimmed");
+                pm1trips.trimToSize();
+            }
+            if (pm2trips.size() > avgListLength) {
+                //logger.info("TFA: pm2trips List trimmed");
+                pm2trips.trimToSize();
+            }
+            
+            if (pm1AvgTrips.size() > avgListLength) {
+                //logger.info("TFA: pm1Avg List trimmed");
+                pm1AvgTrips.trimToSize();
+            }
+            if (pm2AvgTrips.size() > avgListLength) {
+                //logger.info("TFA: pm2Avg List trimmed");
+                pm2AvgTrips.trimToSize();
+            }
             
             
             
