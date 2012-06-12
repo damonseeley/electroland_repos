@@ -54,11 +54,16 @@ public class TrafficFlowAnalyzer extends Thread {
     public int getPM1Flow(int timeDomain) {
         // get flow in timedomain for PPLMVR #1
         int tripHistory = 0;
-        for (long triptime : pm1trips)
-        {
-            if (triptime > System.currentTimeMillis() - timeDomain) {
-                tripHistory++;
+        try {
+            for (long triptime : pm1trips)
+            {
+                if (triptime > System.currentTimeMillis() - timeDomain) {
+                    tripHistory++;
+                }
             }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
         return tripHistory;
     }
@@ -66,11 +71,16 @@ public class TrafficFlowAnalyzer extends Thread {
     public int getPM2Flow(int timeDomain) {
         // get flow in timedomain for PPLMVR #1
         int tripHistory = 0;
-        for (long triptime : pm2trips)
-        {
-            if (triptime > System.currentTimeMillis() - timeDomain) {
-                tripHistory++;
+        try {
+            for (long triptime : pm2trips)
+            {
+                if (triptime > System.currentTimeMillis() - timeDomain) {
+                    tripHistory++;
+                }
             }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
         return tripHistory;
     }
