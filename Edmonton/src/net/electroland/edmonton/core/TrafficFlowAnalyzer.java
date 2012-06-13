@@ -19,13 +19,15 @@ public class TrafficFlowAnalyzer extends Thread {
     private ArrayList<Integer> pm1AvgTrips,pm2AvgTrips;
     private long pm1Avg,pm2Avg;
     private int avgListLength,tripLength;
+    private int pm1CurTrips,pm2CurTrips;
+    private long timeDomain,framerate;
 
     /**
      * This objects adds an event and time for every trip in the set of 
      * istates.  One can call getFlowData(millis) to get the int number
      * of trips in the millis domain provided
      */
-    public TrafficFlowAnalyzer()
+    public TrafficFlowAnalyzer(long fr)
     {
         avgListLength = 200;
         tripLength = avgListLength;
@@ -36,6 +38,10 @@ public class TrafficFlowAnalyzer extends Thread {
         pm1Avg = 0;
         pm2Avg = 0;
         logger.info("TrafficFlowModelWatcher created");
+        
+        //default 30s
+        timeDomain = 30000;
+        framerate = fr;
         
         start();
     }
@@ -51,38 +57,15 @@ public class TrafficFlowAnalyzer extends Thread {
         }
     }
 
-    public int getPM1Flow(int timeDomain) {
-        // get flow in timedomain for PPLMVR #1
-        int tripHistory = 0;
-        try {
-            for (long triptime : pm1trips)
-            {
-                if (triptime > System.currentTimeMillis() - timeDomain) {
-                    tripHistory++;
-                }
-            }
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return tripHistory;
+    public int getPM1Flow(int td) {
+        timeDomain = td;
+        return pm1CurTrips;
     }
 
-    public int getPM2Flow(int timeDomain) {
+    public int getPM2Flow(int td) {
         // get flow in timedomain for PPLMVR #1
-        int tripHistory = 0;
-        try {
-            for (long triptime : pm2trips)
-            {
-                if (triptime > System.currentTimeMillis() - timeDomain) {
-                    tripHistory++;
-                }
-            }
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return tripHistory;
+        timeDomain = td;
+        return pm2CurTrips;
     }
 
     public long getPM1Avg(){
@@ -100,6 +83,39 @@ public class TrafficFlowAnalyzer extends Thread {
     public void run() {
 
         while (true) {
+                        
+            // get flow in timedomain for PPLMVR #1
+            pm1CurTrips = 0;
+            try {
+                for (long triptime : pm1trips)
+                {
+                    if (triptime > System.currentTimeMillis() - timeDomain) {
+                        pm1CurTrips++;
+                    }
+                }
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            
+            
+         // get flow in timedomain for PPLMVR #1
+            pm2CurTrips = 0;
+            try {
+                for (long triptime : pm2trips)
+                {
+                    if (triptime > System.currentTimeMillis() - timeDomain) {
+                        pm2CurTrips++;
+                    }
+                }
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+            
+            
+            
 
             // calc avg trips for PM1
             int trips = 0;
@@ -176,7 +192,7 @@ public class TrafficFlowAnalyzer extends Thread {
             
             
             try {
-                Thread.sleep(1000);
+                Thread.sleep(1000/framerate);
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 logger.debug(e);
