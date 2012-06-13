@@ -48,6 +48,9 @@ public class MegaSparkleContent extends Content {
                 clr = colors.get(i-1) - (int)((Math.abs(colors.get(i) - colors.get(i-1)))*pctChanged);
             }
             
+            if (clr < 0) clr = 0;
+            if (clr > 255) clr = 255;
+            
             //clr = colors.get(i);
             g2.setColor(new Color(clr,clr,clr));
             g2.fillRect(newx, 0, sparkleWidth, 16);
