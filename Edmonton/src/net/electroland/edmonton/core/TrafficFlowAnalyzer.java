@@ -29,7 +29,7 @@ public class TrafficFlowAnalyzer extends Thread {
      */
     public TrafficFlowAnalyzer(long fr)
     {
-        avgListLength = 200;
+        avgListLength = 50;
         tripLength = avgListLength;
         pm1trips = new ArrayList<Long>(tripLength);
         pm2trips = new ArrayList<Long>(tripLength);
