@@ -38,11 +38,11 @@ public class TrafficFlowAnalyzer extends Thread {
         pm1Avg = 0;
         pm2Avg = 0;
         logger.info("TrafficFlowModelWatcher created");
-        
+
         //default 30s
         timeDomain = 30000;
         framerate = fr;
-        
+
         start();
     }
 
@@ -54,6 +54,16 @@ public class TrafficFlowAnalyzer extends Thread {
             } else if (state.getLocation().x < 245.0){   
                 pm2trips.add(System.currentTimeMillis());
             }
+        }
+    }
+
+    //cleaner
+    public void trip(double xloc) {
+        if (xloc > 340.0) {
+            //trip was on PM1
+            pm1trips.add(System.currentTimeMillis());
+        } else if (xloc < 245.0){   
+            pm2trips.add(System.currentTimeMillis());
         }
     }
 
@@ -71,7 +81,7 @@ public class TrafficFlowAnalyzer extends Thread {
     public long getPM1Avg(){
         return pm1Avg;
     }
-    
+
     public long getPM2Avg(){
         return pm2Avg;
     }
@@ -83,7 +93,7 @@ public class TrafficFlowAnalyzer extends Thread {
     public void run() {
 
         while (true) {
-                        
+
             // get flow in timedomain for PPLMVR #1
             pm1CurTrips = 0;
             try {
@@ -97,9 +107,9 @@ public class TrafficFlowAnalyzer extends Thread {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            
-            
-         // get flow in timedomain for PPLMVR #1
+
+
+            // get flow in timedomain for PPLMVR #1
             pm2CurTrips = 0;
             try {
                 for (long triptime : pm2trips)
@@ -113,9 +123,9 @@ public class TrafficFlowAnalyzer extends Thread {
                 e.printStackTrace();
             }
 
-            
-            
-            
+
+
+
 
             // calc avg trips for PM1
             int trips = 0;
@@ -140,8 +150,8 @@ public class TrafficFlowAnalyzer extends Thread {
                 tripCount++;
             }
             pm1Avg = tripsToAvg/tripCount;
-            
-            
+
+
 
             // calc avg trips for PM2
             int trips2 = 0;
@@ -166,11 +176,11 @@ public class TrafficFlowAnalyzer extends Thread {
             }
             pm2Avg = tripsToAvg2/tripCount2;
 
-           
-            
+
+
             // TRIMMING
             // trim the lists if longer than they should be.
-            
+
             if (pm1trips.size() > avgListLength) {
                 //logger.info("TFA: pm1trips List trimmed");
                 pm1trips.trimToSize();
@@ -179,7 +189,7 @@ public class TrafficFlowAnalyzer extends Thread {
                 //logger.info("TFA: pm2trips List trimmed");
                 pm2trips.trimToSize();
             }
-            
+
             if (pm1AvgTrips.size() > avgListLength) {
                 //logger.info("TFA: pm1Avg List trimmed");
                 pm1AvgTrips.trimToSize();
@@ -188,9 +198,9 @@ public class TrafficFlowAnalyzer extends Thread {
                 //logger.info("TFA: pm2Avg List trimmed");
                 pm2AvgTrips.trimToSize();
             }
-            
-            
-            
+
+
+
             try {
                 Thread.sleep(1000/framerate);
             } catch (InterruptedException e) {
