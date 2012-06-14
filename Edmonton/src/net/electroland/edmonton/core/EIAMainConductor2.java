@@ -156,15 +156,18 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
         	OneEventPerPeriodModelWatcher src = (OneEventPerPeriodModelWatcher)evt.getSource();
         	
         	// update Traffic Flow Analyer
-        	tfa.trip(src.getStates());
+        	// moved below
+        	//tfa.trip(src.getStates());
 
             // play clip
             Method[] allMethods = clipPlayer2.getClass().getDeclaredMethods();
             for (Method m : allMethods) {
                 if (m.getName().equals(src.getClipName()))
                 {
+                    double xloc = src.getStates().iterator().next().getLocation().x;
                     try {
-                        m.invoke(clipPlayer2, src.getStates().iterator().next().getLocation().x);
+                        m.invoke(clipPlayer2, xloc);
+                        tfa.trip(xloc);
                     } catch (IllegalArgumentException e) {
                         e.printStackTrace();
                     } catch (IllegalAccessException e) {
