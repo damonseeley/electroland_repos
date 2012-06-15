@@ -4,7 +4,7 @@
 	<ProjectInfo>
 		<Path>C:\Users\electroland\Documents\workspace\Memphis\TwinCAT\MemphisArm-2012update_v01\MemphisArm30fps.pro</Path>
 		<IsLibrary>false</IsLibrary>
-		<ChangeDate>2012-05-11T14:27:40</ChangeDate>
+		<ChangeDate>2012-05-21T16:40:23</ChangeDate>
 		<Library>
 			<Name>TcBase.lib</Name>
 			<Path>C:\TWINCAT\PLC\LIB\TcBase.lib</Path>
@@ -13,10 +13,12 @@
 		<Library>
 			<Name>TcSystem.lib</Name>
 			<Path>C:\TWINCAT\PLC\LIB\TcSystem.lib</Path>
+			<ChangeDate>2011-07-01T08:22:02</ChangeDate>
 		</Library>
 		<Library>
 			<Name>TcpIp.lib</Name>
 			<Path>C:\TWINCAT\PLC\LIB\TcpIp.lib</Path>
+			<ChangeDate>2012-04-17T16:18:05</ChangeDate>
 		</Library>
 		<Library>
 			<Name>STANDARD.LIB</Name>
@@ -5093,7 +5095,7 @@
 			</FunInfo>
 		</Function>
 		<Function>
-			<Name Decoration="100B93AA" IsDefinedInLibrary="1" Library="C:\TWINCAT\PLC\LIB\TcSystem.lib">F_SplitPathName</Name>
+			<Name Decoration="100B85B5" IsDefinedInLibrary="1" Library="C:\TWINCAT\PLC\LIB\TcSystem.lib">F_SplitPathName</Name>
 			<FunInfo>
 				<CodeIndex>112</CodeIndex>
 				<ReturnValue>
@@ -5591,7 +5593,7 @@
 	</Functions>
 	<Programs>
 		<Program>
-			<Name Decoration="102515EC" Crc32="1468710687" LastChange="2012-05-11T14:27:40">MAIN</Name>
+			<Name Decoration="102515EC" Crc32="1468710687" LastChange="2012-05-21T16:40:23">MAIN</Name>
 			<PrgInfo>
 				<CodeIndex>250</CodeIndex>
 				<Symbol>
