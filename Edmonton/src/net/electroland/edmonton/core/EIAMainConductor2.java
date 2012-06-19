@@ -131,7 +131,7 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
         	model.addModelWatcher(new OneEventPerPeriodModelWatcher(clip, clipTiming), "showwatcher" + state.getID(), state);
         }
         
-        tfa = new TrafficFlowAnalyzer(2);
+        tfa = new TrafficFlowAnalyzer(2,30000,300000);
         context.put("tfa", tfa);
         
         /******** GUI ********/
