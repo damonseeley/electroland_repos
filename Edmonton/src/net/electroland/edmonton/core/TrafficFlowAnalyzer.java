@@ -23,6 +23,7 @@ public class TrafficFlowAnalyzer extends Thread {
 	private int avgListLength,tripLength;
 	private int pm1LocalTrips,pm2LocalTrips;
 	private long curAvgTime,framerate;
+	private long starttime,reporttime;
 
 	/**
 	 * This objects adds an event and time for every trip in the set of 
@@ -46,6 +47,8 @@ public class TrafficFlowAnalyzer extends Thread {
 		pm2MovingAvgTrips = Collections.synchronizedList(new ArrayList<Integer>(avgListLength));
 		pm1Avg = 0;
 		pm2Avg = 0;
+		starttime = System.currentTimeMillis();
+		reporttime = starttime;
 		logger.info("TrafficFlowModelWatcher created, avgListLength:" + avgListLength + " curAvgTime:" + curAvgTime);
 		framerate = fr;
 		start();
@@ -163,9 +166,14 @@ public class TrafficFlowAnalyzer extends Thread {
 				}
 			}
 			
-			logger.info("TFA stats: pm1trips:" + pm1trips.size() + " pm1AvgTrips:" + pm1MovingAvgTrips.size() + " pm2trips:" + pm2trips.size() + " pm2AvgTrips:" + pm2MovingAvgTrips.size());
 
 
+			if ((System.currentTimeMillis() - reporttime) > 5000) {
+			    long timeElapsed = (System.currentTimeMillis() - starttime)/1000;
+			    logger.info("TFA LIST STATS: pm1trips:" + pm1trips.size() + " pm1AvgTrips:" + pm1MovingAvgTrips.size() + " pm2trips:" + pm2trips.size() + " pm2AvgTrips:" + pm2MovingAvgTrips.size());
+			    logger.info("TIME SINCE APP START = " + timeElapsed/60 + "m " + timeElapsed%60 + "s");
+			    reporttime = System.currentTimeMillis();
+			}
 
 			try {
 				Thread.sleep(1000/framerate);
