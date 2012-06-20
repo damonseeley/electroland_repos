@@ -168,9 +168,10 @@ public class TrafficFlowAnalyzer extends Thread {
 			
 
 
-			if ((System.currentTimeMillis() - reporttime) > 5000) {
+			if ((System.currentTimeMillis() - reporttime) > 10000) {
 			    long timeElapsed = (System.currentTimeMillis() - starttime)/1000;
 			    logger.info("TFA LIST STATS: pm1trips:" + pm1trips.size() + " pm1AvgTrips:" + pm1MovingAvgTrips.size() + " pm2trips:" + pm2trips.size() + " pm2AvgTrips:" + pm2MovingAvgTrips.size());
+			    logger.info("TFA STATS: pm1SMA: " + pm1Avg + " pm2SMA: " + pm2Avg);
 			    logger.info("TIME SINCE APP START = " + timeElapsed/60 + "m " + timeElapsed%60 + "s");
 			    reporttime = System.currentTimeMillis();
 			}
