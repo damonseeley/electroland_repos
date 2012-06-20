@@ -191,8 +191,9 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
         	logger.info(e.getActionCommand());
         } else if ("testShow".equals(e.getActionCommand())){
         	clipPlayer2.testClip(Math.random()*625.0);
-        } else if ("pm1avg".equals(e.getActionCommand())){
-            logger.info("People Mover 1 total trips for 30s = " +tfa.getPM1Flow());
+        } else if ("pm1".equals(e.getActionCommand())){
+            //logger.info("People Mover 1 total trips for 30s = " +tfa.getPM1Flow());
+            tfa.logpm1();
         } else if ("pm2avg".equals(e.getActionCommand())){
             logger.info("People Mover 2 total trips for 30s = " +tfa.getPM2Flow());
         }
