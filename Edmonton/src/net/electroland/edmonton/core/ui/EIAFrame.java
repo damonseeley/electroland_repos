@@ -225,8 +225,8 @@ public class EIAFrame extends JFrame implements ActionListener {
 	public void updateFlowLabels(int pm1, int pm2, long pma1, long pma2){
 	    pm1RecentLabel.setText("PM1 30s flow = " + pm1);
 	    pm2RecentLabel.setText("PM2 30s flow = " + pm2);
-	    pm1AvgLabel.setText("PM1 avg flow = " + pma1);
-	    pm2AvgLabel.setText("PM2 avg flow = " + pma2);
+	    pm1AvgLabel.setText("PM1 5m SMA = " + pma1);
+	    pm2AvgLabel.setText("PM2 5m SMA = " + pma2);
 	}
 
 	public void showHideGfx() {

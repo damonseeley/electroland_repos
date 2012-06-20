@@ -18,15 +18,18 @@ public class TrafficFlowAnalyzer extends Thread {
 	static Logger logger = Logger.getLogger(TrafficFlowAnalyzer.class);
 
 	private List<Long> pm1trips,pm2trips;
-	private List<Integer> pm1AvgTrips,pm2AvgTrips;
+	private List<Integer> pm1MovingAvgTrips,pm2MovingAvgTrips;
 	private long pm1Avg,pm2Avg;
 	private int avgListLength,tripLength;
-	private int pm1CurTrips,pm2CurTrips;
+	private int pm1LocalTrips,pm2LocalTrips;
 	private long curAvgTime,framerate;
 
 	/**
 	 * This objects adds an event and time for every trip in the set of 
 	 * istates.
+	 * @fr = frame rate
+	 * @curAvg = the local average domain in ms
+	 * @runAvg = the time domain for a moving average in ms
 	 */
 	public TrafficFlowAnalyzer(long fr, int curAvg, int runAvg)
 	{
@@ -39,8 +42,8 @@ public class TrafficFlowAnalyzer extends Thread {
 		
 		pm1trips = Collections.synchronizedList(new ArrayList<Long>(tripLength));
 		pm2trips = Collections.synchronizedList(new ArrayList<Long>(tripLength));
-		pm1AvgTrips = Collections.synchronizedList(new ArrayList<Integer>(avgListLength));
-		pm2AvgTrips = Collections.synchronizedList(new ArrayList<Integer>(avgListLength));
+		pm1MovingAvgTrips = Collections.synchronizedList(new ArrayList<Integer>(avgListLength));
+		pm2MovingAvgTrips = Collections.synchronizedList(new ArrayList<Integer>(avgListLength));
 		pm1Avg = 0;
 		pm2Avg = 0;
 		logger.info("TrafficFlowModelWatcher created, avgListLength:" + avgListLength + " curAvgTime:" + curAvgTime);
@@ -58,15 +61,12 @@ public class TrafficFlowAnalyzer extends Thread {
 		}
 	}
 
-	public int getPM1Flow(int td) {
-		curAvgTime = td;
-		return pm1CurTrips;
+	public int getPM1Flow() {
+		return pm1LocalTrips;
 	}
 
-	public int getPM2Flow(int td) {
-		// get flow in timedomain for PPLMVR #1
-		curAvgTime = td;
-		return pm2CurTrips;
+	public int getPM2Flow() {
+		return pm2LocalTrips;
 	}
 
 	public long getPM1Avg(){
@@ -86,47 +86,45 @@ public class TrafficFlowAnalyzer extends Thread {
 		while (true) {
 
 			// get flow in timedomain for PPLMVR #1
-			pm1CurTrips = 0;
+			pm1LocalTrips = 0;
 			for (long triptime : pm1trips)
 			{
 				if (triptime > System.currentTimeMillis() - curAvgTime) {
-					pm1CurTrips++;
+					pm1LocalTrips++;
 				}
 			}
 
 			// get flow in timedomain for PPLMVR #2
-			pm2CurTrips = 0;
+			pm2LocalTrips = 0;
 			for (long triptime : pm2trips)
 			{
 				if (triptime > System.currentTimeMillis() - curAvgTime) {
-					pm2CurTrips++;
+					pm2LocalTrips++;
 				}
 			}
 			
 			
-			// calc avg trips for PM1
-			pm1AvgTrips.add(pm1CurTrips);
+			// add the current trips/local timedomain to the moving avg list
+			pm1MovingAvgTrips.add(pm1LocalTrips);
+			// calc moving avg for PM1 by adding all local averages together and dividing
 			int tripsToAvg = 0;
-			int tripCount = 0;
-			for (int tripAvg : pm1AvgTrips)
+			for (int tripAvg : pm1MovingAvgTrips)
 			{
 				tripsToAvg += tripAvg;
-				tripCount++;
 			}
-			pm1Avg = tripsToAvg/tripCount;
+			pm1Avg = tripsToAvg/pm1MovingAvgTrips.size();
 
 
 
-			// calc avg trips for PM2
-			pm2AvgTrips.add(pm2CurTrips);
+			// add the current trips/local timedomain to the moving avg list
+			pm2MovingAvgTrips.add(pm2LocalTrips);
+			// calc moving avg for PM2 by adding all local averages together and dividing
 			int tripsToAvg2 = 0;
-			int tripCount2 = 0;
-			for (int tripAvg : pm2AvgTrips)
+			for (int tripAvg : pm2MovingAvgTrips)
 			{
 				tripsToAvg2 += tripAvg;
-				tripCount2++;
 			}
-			pm2Avg = tripsToAvg2/tripCount2;
+			pm2Avg = tripsToAvg2/pm2MovingAvgTrips.size();
 
 
 
@@ -150,22 +148,22 @@ public class TrafficFlowAnalyzer extends Thread {
 
 			}
 
-			if (pm1AvgTrips.size() > avgListLength) {
+			if (pm1MovingAvgTrips.size() > avgListLength) {
 				//logger.info("TFA: pm1AvgTrips List size = " + pm1AvgTrips.size());
-				int count = pm1AvgTrips.size() - avgListLength;
+				int count = pm1MovingAvgTrips.size() - avgListLength;
 				for (int i=0; i<count; i++){
-					pm1AvgTrips.remove(pm1AvgTrips.size()-1);
+					pm1MovingAvgTrips.remove(pm1MovingAvgTrips.size()-1);
 				}
 			}
-			if (pm2AvgTrips.size() > avgListLength) {
+			if (pm2MovingAvgTrips.size() > avgListLength) {
 				//logger.info("TFA: pm2AvgTrips List size = " + pm2AvgTrips.size());
-				int count = pm2AvgTrips.size() - avgListLength;
+				int count = pm2MovingAvgTrips.size() - avgListLength;
 				for (int i=0; i<count; i++){
-					pm2AvgTrips.remove(pm2AvgTrips.size()-1);
+					pm2MovingAvgTrips.remove(pm2MovingAvgTrips.size()-1);
 				}
 			}
 			
-			logger.info("TFA stats: pm1trips:" + pm1trips.size() + " pm1AvgTrips:" + pm1AvgTrips.size() + " pm2trips:" + pm2trips.size() + " pm2AvgTrips:" + pm2AvgTrips.size());
+			logger.info("TFA stats: pm1trips:" + pm1trips.size() + " pm1AvgTrips:" + pm1MovingAvgTrips.size() + " pm2trips:" + pm2trips.size() + " pm2AvgTrips:" + pm2MovingAvgTrips.size());
 
 
 
