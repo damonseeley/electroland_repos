@@ -68,12 +68,12 @@ public class EIAFrame extends JFrame implements ActionListener {
         testShow.setActionCommand("testShow");
         buttons.add(testShow);
         
-        pm1avg = new JButton("Log PM1 Average");
-        pm1avg.setActionCommand("pm1avg");
+        pm1avg = new JButton("Log PM1 Trips");
+        pm1avg.setActionCommand("pm1");
         buttons.add(pm1avg);
 
-        pm2avg = new JButton("Log PM2 Average");
-        pm2avg.setActionCommand("pm2avg");
+        pm2avg = new JButton("Log PM2 Trips");
+        pm2avg.setActionCommand("pm2");
         buttons.add(pm2avg);
         
         
