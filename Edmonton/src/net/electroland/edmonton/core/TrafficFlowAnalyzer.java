@@ -169,19 +169,20 @@ public class TrafficFlowAnalyzer extends Thread {
 
             // TRIMMING
             // trim the lists if longer than they should be.
+            // note trimming should be from the FRONT of the list
 
             try {
                 if (pm1trips.size() > avgListLength) {
                     int count = pm1trips.size() - avgListLength;
                     for (int i=0; i<count; i++){
-                        pm1trips.remove(pm1trips.size()-1);
+                        pm1trips.remove(i);
                     }
                 }
                 if (pm2trips.size() > avgListLength) {
                     //logger.info("TFA: pm2trips List trimmed");
                     int count = pm2trips.size() - avgListLength;
                     for (int i=0; i<count; i++){
-                        pm2trips.remove(pm2trips.size()-1);
+                        pm2trips.remove(i);
                     }
                 }
 
@@ -189,14 +190,14 @@ public class TrafficFlowAnalyzer extends Thread {
                     //logger.info("TFA: pm1AvgTrips List size = " + pm1AvgTrips.size());
                     int count = pm1MovingAvgTrips.size() - avgListLength;
                     for (int i=0; i<count; i++){
-                        pm1MovingAvgTrips.remove(pm1MovingAvgTrips.size()-1);
+                        pm1MovingAvgTrips.remove(i);
                     }
                 }
                 if (pm2MovingAvgTrips.size() > avgListLength) {
                     //logger.info("TFA: pm2AvgTrips List size = " + pm2AvgTrips.size());
                     int count = pm2MovingAvgTrips.size() - avgListLength;
                     for (int i=0; i<count; i++){
-                        pm2MovingAvgTrips.remove(pm2MovingAvgTrips.size()-1);
+                        pm2MovingAvgTrips.remove(i);
                     }
                 }
             } catch (Exception e1) {
