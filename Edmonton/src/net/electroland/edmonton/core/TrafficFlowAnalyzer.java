@@ -22,7 +22,7 @@ public class TrafficFlowAnalyzer extends Thread {
     private long pm1Avg,pm2Avg;
     private int avgListLength,tripLength;
     private int pm1LocalTrips,pm2LocalTrips;
-    private long curAvgTime,framerate;
+    private long curAvgTime,runAvgTime,framerate;
     private long starttime,reporttime;
 
     /**
@@ -39,6 +39,7 @@ public class TrafficFlowAnalyzer extends Thread {
         // eg framerate = 10 and runAvg = 300000 or 5 minutes = 300*10 = 3000
         avgListLength = (int)(runAvg/1000 * fr);
         curAvgTime = curAvg;
+        runAvgTime = runAvg;
         tripLength = avgListLength; // just make this super long, does not matter since we calc based on time
 
         pm1trips = Collections.synchronizedList(new ArrayList<Long>(tripLength));
@@ -62,6 +63,14 @@ public class TrafficFlowAnalyzer extends Thread {
         } else if (xloc < 245.0){   
             pm2trips.add(System.currentTimeMillis());
         }
+    }
+    
+    public long getCurAvgTime() {
+        return curAvgTime;
+    }
+    
+    public long getRunAvgTime() {
+        return runAvgTime;
     }
 
     public int getPM1Flow() {
@@ -207,10 +216,12 @@ public class TrafficFlowAnalyzer extends Thread {
 
 
 
-            if ((System.currentTimeMillis() - reporttime) > 10000) {
+            if ((System.currentTimeMillis() - reporttime) > 5000) {
                 long timeElapsed = (System.currentTimeMillis() - starttime)/1000;
+                int curAvgS = (int)(curAvgTime/1000);
+                int runAvgS = (int)(runAvgTime/1000);
                 //logger.info("TFA LIST STATS: pm1trips:" + pm1trips.size() + " pm1AvgTrips:" + pm1MovingAvgTrips.size() + " pm2trips:" + pm2trips.size() + " pm2AvgTrips:" + pm2MovingAvgTrips.size());
-                logger.info("TFA STATS: pm130s: " + pm1LocalTrips + " pm1SMA: " + pm1Avg + " pm230s: " + pm2LocalTrips + " pm2SMA: " + pm2Avg);
+                logger.info("TFA STATS: pm1\t" + curAvgS + "s:\t" + pm1LocalTrips + "\tpm1 " + runAvgS + "s SMA:\t" + pm1Avg + "\tpm2 " + curAvgS + "s:\t" + pm2LocalTrips + "\tpm2 " + runAvgS + "s SMA:\t" + pm2Avg);
                 //logger.info("TIME SINCE APP START = " + timeElapsed/60 + "m " + timeElapsed%60 + "s");
                 reporttime = System.currentTimeMillis();
             }

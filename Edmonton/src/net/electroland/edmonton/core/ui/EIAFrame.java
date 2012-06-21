@@ -113,7 +113,7 @@ public class EIAFrame extends JFrame implements ActionListener {
 		avgp.add(pm2AvgLabel);
         
         
-		updateFlowLabels(0,0,0,0);
+		updateFlowLabels(0,0,0,0,0,0);
 		
 
 
@@ -222,11 +222,13 @@ public class EIAFrame extends JFrame implements ActionListener {
 		System.exit(0);
 	}
 	
-	public void updateFlowLabels(int pm1, int pm2, long pma1, long pma2){
-	    pm1RecentLabel.setText("PM1 30s flow = " + pm1);
-	    pm2RecentLabel.setText("PM2 30s flow = " + pm2);
-	    pm1AvgLabel.setText("PM1 5m SMA = " + pma1);
-	    pm2AvgLabel.setText("PM2 5m SMA = " + pma2);
+	public void updateFlowLabels(long curAvgTime, long runAvgTime, int pm1, int pm2, long pma1, long pma2){
+	    int curAvgS = (int)(curAvgTime/1000);
+	    int runAvgS = (int)(runAvgTime/1000);
+	    pm1RecentLabel.setText("PM1 " + curAvgS + "s flow = " + pm1);
+	    pm2RecentLabel.setText("PM2 " + curAvgS + "s flow = " + pm2);
+	    pm1AvgLabel.setText("PM1 " + runAvgS + "s SMA = " + pma1);
+	    pm2AvgLabel.setText("PM2 " + runAvgS + "s SMA = " + pma2);
 	}
 
 	public void showHideGfx() {
