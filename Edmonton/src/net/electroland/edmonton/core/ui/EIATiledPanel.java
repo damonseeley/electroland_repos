@@ -41,7 +41,7 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
     private ELUCanvas2D canvas;
     private ELUManager elu;
     private IOManager eio;
-    private ElectrolandProperties props, propsStatic;
+    private ElectrolandProperties props, propsGlobal;
     private double displayScale;
     private boolean showGraphics;
     private AnimationManager anim;
@@ -69,7 +69,7 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
         this.eio = (IOManager)context.get("eio");
         this.canvas = (ELUCanvas2D)context.get("canvas");
         this.props = (ElectrolandProperties)context.get("props");
-        this.propsStatic = (ElectrolandProperties)context.get("propsStatic");
+        this.propsGlobal = (ElectrolandProperties)context.get("propsGlobal");
 
 
         try {
@@ -121,26 +121,26 @@ public class EIATiledPanel extends JPanel implements MouseMotionListener { // ch
             lightWidth = 2;
         }
         try {
-            p1x      = propsStatic.getOptionalDouble("peoplemover", "p1", "x");
-            p1y      = propsStatic.getOptionalDouble("peoplemover", "p1", "y");
-            p1width  = propsStatic.getOptionalDouble("peoplemover", "p1", "width");
-            p1height = propsStatic.getOptionalDouble("peoplemover", "p1", "height");
-            p2x      = propsStatic.getOptionalDouble("peoplemover", "p2", "x");
-            p2y      = propsStatic.getOptionalDouble("peoplemover", "p2", "y");
-            p2width  = propsStatic.getOptionalDouble("peoplemover", "p2", "width");
-            p2height = propsStatic.getOptionalDouble("peoplemover", "p2", "height");
+            p1x      = propsGlobal.getOptionalDouble("peoplemover", "p1", "x");
+            p1y      = propsGlobal.getOptionalDouble("peoplemover", "p1", "y");
+            p1width  = propsGlobal.getOptionalDouble("peoplemover", "p1", "width");
+            p1height = propsGlobal.getOptionalDouble("peoplemover", "p1", "height");
+            p2x      = propsGlobal.getOptionalDouble("peoplemover", "p2", "x");
+            p2y      = propsGlobal.getOptionalDouble("peoplemover", "p2", "y");
+            p2width  = propsGlobal.getOptionalDouble("peoplemover", "p2", "width");
+            p2height = propsGlobal.getOptionalDouble("peoplemover", "p2", "height");
             
-            s1  = propsStatic.getOptionalDouble("speaker", "s1", "x");
-            s2  = propsStatic.getOptionalDouble("speaker", "s2", "x");
-            s3  = propsStatic.getOptionalDouble("speaker", "s3", "x");
-            s4  = propsStatic.getOptionalDouble("speaker", "s4", "x");
-            s5  = propsStatic.getOptionalDouble("speaker", "s5", "x");
-            s6  = propsStatic.getOptionalDouble("speaker", "s6", "x");
-            s7  = propsStatic.getOptionalDouble("speaker", "s7", "x");
-            s8  = propsStatic.getOptionalDouble("speaker", "s8", "x");
-            s9  = propsStatic.getOptionalDouble("speaker", "s9", "x");
-            s10 = propsStatic.getOptionalDouble("speaker", "s10", "x");
-            s11 = propsStatic.getOptionalDouble("speaker", "s11", "x");
+            s1  = propsGlobal.getOptionalDouble("speaker", "s1", "x");
+            s2  = propsGlobal.getOptionalDouble("speaker", "s2", "x");
+            s3  = propsGlobal.getOptionalDouble("speaker", "s3", "x");
+            s4  = propsGlobal.getOptionalDouble("speaker", "s4", "x");
+            s5  = propsGlobal.getOptionalDouble("speaker", "s5", "x");
+            s6  = propsGlobal.getOptionalDouble("speaker", "s6", "x");
+            s7  = propsGlobal.getOptionalDouble("speaker", "s7", "x");
+            s8  = propsGlobal.getOptionalDouble("speaker", "s8", "x");
+            s9  = propsGlobal.getOptionalDouble("speaker", "s9", "x");
+            s10 = propsGlobal.getOptionalDouble("speaker", "s10", "x");
+            s11 = propsGlobal.getOptionalDouble("speaker", "s11", "x");
 
             
             
