@@ -141,17 +141,20 @@ public class TrafficFlowAnalyzer extends Thread {
             // calc moving avg for PM1 by adding all local averages together and dividing
             int tripsToAvg;
             tripsToAvg = 0;
-            try {
-                pm1MovingAvgTrips.add(pm1LocalTrips);
-                for (int tripAvg : pm1MovingAvgTrips)
-                {
-                    tripsToAvg += tripAvg;
+            synchronized(pm1MovingAvgTrips)
+            {
+                try {
+                    pm1MovingAvgTrips.add(pm1LocalTrips);
+                    for (int tripAvg : pm1MovingAvgTrips)
+                    {
+                        tripsToAvg += tripAvg;
+                    }
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
                 }
-            } catch (Exception e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
+                pm1Avg = tripsToAvg/pm1MovingAvgTrips.size();
             }
-            pm1Avg = tripsToAvg/pm1MovingAvgTrips.size();
 
 
 
@@ -159,18 +162,20 @@ public class TrafficFlowAnalyzer extends Thread {
             // calc moving avg for PM2 by adding all local averages together and dividing
             int tripsToAvg2;
             tripsToAvg2 = 0;
-            try {
-                pm2MovingAvgTrips.add(pm2LocalTrips);
-                for (int tripAvg : pm2MovingAvgTrips)
-                {
-                    tripsToAvg2 += tripAvg;
+            synchronized(pm2MovingAvgTrips)
+            {
+                try {
+                    pm2MovingAvgTrips.add(pm2LocalTrips);
+                    for (int tripAvg : pm2MovingAvgTrips)
+                    {
+                        tripsToAvg2 += tripAvg;
+                    }
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
                 }
-            } catch (Exception e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
+                pm2Avg = tripsToAvg2/pm2MovingAvgTrips.size();
             }
-            pm2Avg = tripsToAvg2/pm2MovingAvgTrips.size();
-
 
 
 
