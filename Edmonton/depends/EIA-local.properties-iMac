@@ -1,0 +1,6 @@
+#global settings
+settings.global = $framerate 30 $updateLighting true $guiwidth 1280 $guiheight 600
+settings.display = $showGraphics true $showAnimation true
+settings.displaymetrics = $displayScale 3.86 $IStateSize 6 $lightHeight 4 $lightWidth 2 $margin 32
+settings.eiomode = $playback true
+settings.sound = $filePath /Users/damon/Documents/Workspace/Edmonton/depends/soundfiles/ $channels 17 $debug false $soundBypass false $stereoOnly false
