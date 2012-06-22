@@ -1,15 +1,7 @@
 package net.electroland.edmonton.core;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import net.electroland.ea.AnimationManager;
-import net.electroland.eio.IState;
-import net.electroland.eio.model.ModelWatcher;
-import net.electroland.utils.lighting.InvalidPixelGrabException;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.log4j.Logger;
 
@@ -17,8 +9,8 @@ public class TrafficFlowAnalyzer extends Thread {
 
     static Logger logger = Logger.getLogger(TrafficFlowAnalyzer.class);
 
-    private List<Long> pm1trips,pm2trips;
-    private List<Integer> pm1MovingAvgTrips,pm2MovingAvgTrips;
+    private Queue<Long> pm1trips,pm2trips;
+    private Queue<Integer> pm1MovingAvgTrips,pm2MovingAvgTrips;
     private long pm1Avg,pm2Avg;
     private int avgListLength,tripLength;
     private int pm1LocalTrips,pm2LocalTrips;
@@ -42,10 +34,17 @@ public class TrafficFlowAnalyzer extends Thread {
         runAvgTime = runAvg;
         tripLength = avgListLength; // just make this super long, does not matter since we calc based on time
 
-        pm1trips = Collections.synchronizedList(new ArrayList<Long>(tripLength));
-        pm2trips = Collections.synchronizedList(new ArrayList<Long>(tripLength));
-        pm1MovingAvgTrips = Collections.synchronizedList(new ArrayList<Integer>(avgListLength));
-        pm2MovingAvgTrips = Collections.synchronizedList(new ArrayList<Integer>(avgListLength));
+//        pm1trips = Collections.synchronizedList(new ArrayList<Long>(tripLength));
+//        pm2trips = Collections.synchronizedList(new ArrayList<Long>(tripLength));
+//        pm1MovingAvgTrips = Collections.synchronizedList(new ArrayList<Integer>(avgListLength));
+//        pm2MovingAvgTrips = Collections.synchronizedList(new ArrayList<Integer>(avgListLength));
+
+        pm1trips          = new ConcurrentLinkedQueue<Long>();
+        pm2trips          = new ConcurrentLinkedQueue<Long>();
+        pm1MovingAvgTrips = new ConcurrentLinkedQueue<Integer>();
+        pm2MovingAvgTrips = new ConcurrentLinkedQueue<Integer>();
+
+
         pm1Avg = 0;
         pm2Avg = 0;
         starttime = System.currentTimeMillis();
@@ -181,17 +180,18 @@ public class TrafficFlowAnalyzer extends Thread {
             // note trimming should be from the FRONT of the list
 
             try {
+                
                 if (pm1trips.size() > avgListLength) {
                     int count = pm1trips.size() - avgListLength;
                     for (int i=0; i<count; i++){
-                        pm1trips.remove(i);
+                        pm1trips.remove();
                     }
                 }
                 if (pm2trips.size() > avgListLength) {
                     //logger.info("TFA: pm2trips List trimmed");
                     int count = pm2trips.size() - avgListLength;
                     for (int i=0; i<count; i++){
-                        pm2trips.remove(i);
+                        pm2trips.remove();
                     }
                 }
 
@@ -199,14 +199,14 @@ public class TrafficFlowAnalyzer extends Thread {
                     //logger.info("TFA: pm1AvgTrips List size = " + pm1AvgTrips.size());
                     int count = pm1MovingAvgTrips.size() - avgListLength;
                     for (int i=0; i<count; i++){
-                        pm1MovingAvgTrips.remove(i);
+                        pm1MovingAvgTrips.remove();
                     }
                 }
                 if (pm2MovingAvgTrips.size() > avgListLength) {
                     //logger.info("TFA: pm2AvgTrips List size = " + pm2AvgTrips.size());
                     int count = pm2MovingAvgTrips.size() - avgListLength;
                     for (int i=0; i<count; i++){
-                        pm2MovingAvgTrips.remove(i);
+                        pm2MovingAvgTrips.remove();
                     }
                 }
             } catch (Exception e1) {
