@@ -19,7 +19,7 @@ public class SoundController implements SCSoundControlNotifiable {
     final static int[] stereochannels = {0,1};
 
     private Hashtable<String,Object> context;
-    private ElectrolandProperties props, propsStatic;
+    private ElectrolandProperties props, propsGlobal;
     private String soundFilePath;
     private boolean bypass;
 
@@ -41,7 +41,7 @@ public class SoundController implements SCSoundControlNotifiable {
 
         this.context = context;
         props 		 = (ElectrolandProperties) context.get("props");
-        propsStatic  = (ElectrolandProperties) context.get("propsStatic");
+        propsGlobal  = (ElectrolandProperties) context.get("propsGlobal");
         soundID      = 0;
         soundNodes   = new Hashtable<Integer,SoundNode>();
 
@@ -61,7 +61,7 @@ public class SoundController implements SCSoundControlNotifiable {
 
         // rip the speaker ID and locations
         speakers = new Hashtable<Integer, Speaker>(); //fill this with soundfilenames and mark them as loaded or not
-        Map<String, ParameterMap> speakerParams = propsStatic.getObjects("speaker");
+        Map<String, ParameterMap> speakerParams = propsGlobal.getObjects("speaker");
         for (String s : speakerParams.keySet()){
             ParameterMap sParams = speakerParams.get(s);
 

@@ -34,7 +34,7 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
 
     static Logger logger = Logger.getLogger(EIAMainConductor2.class);
 
-    private ElectrolandProperties props, propsStatic;
+    private ElectrolandProperties props, propsGlobal;
     private ELUManager elu;
     private ELUCanvas2D canvas;
     private EIAClipPlayer2 clipPlayer2;
@@ -58,15 +58,15 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
     {
         context = new Hashtable<String, Object>();
 
-        String propsFileName = "EIA.properties";
+        String propsFileName = "EIA-local.properties";
         logger.info("EIAMain loading " + propsFileName);
         props = new ElectrolandProperties(propsFileName);
         context.put("props",props);
 
-        String propsStaticFileName = "EIA-static-elements.properties";
-        logger.info("EIAMain loading " + propsStaticFileName);
-        propsStatic = new ElectrolandProperties(propsStaticFileName);
-        context.put("propsStatic",propsStatic);
+        String propsGlobalFileName = "EIA-global.properties";
+        logger.info("EIAMain loading " + propsGlobalFileName);
+        propsGlobal = new ElectrolandProperties(propsGlobalFileName);
+        context.put("propsGlobal",propsGlobal);
 
         elu = new ELUManager();
         eio = new IOManager();
@@ -131,7 +131,7 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
         	model.addModelWatcher(new OneEventPerPeriodModelWatcher(clip, clipTiming), "showwatcher" + state.getID(), state);
         }
         
-        tfa = new TrafficFlowAnalyzer(2,1000,120000);
+        tfa = new TrafficFlowAnalyzer(2,10000,120000);
         context.put("tfa", tfa);
         
         /******** GUI ********/
