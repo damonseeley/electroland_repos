@@ -181,8 +181,10 @@ public class EIAClipPlayer2 {
         Change waveMove = new LinearChange().xTo(320);
         waveImageClip.queueChange(waveMove, 1500).delete();
 
-
-        sc.playSingleChannelBlind("kotu_04.wav", x, 1.0f);
+        int kotuNum = (int)(Math.random()*5+1);
+        String kotuFile = "kotu_0"+kotuNum+".wav";
+        //logger.info("EIAClipPlayer - play kotuFile: " + kotuFile);
+        sc.playSingleChannelBlind(kotuFile, x, 1.0f);
     }
 
     public void entryWavePM2(double x) {
@@ -346,6 +348,7 @@ public class EIAClipPlayer2 {
         } 
     }
 
+    // maybe do a faster version?
     public void vertSixFill(double x) {
         logger.debug("vertSixFill");
         x = findNearestLight(x+lookAhead,true);
