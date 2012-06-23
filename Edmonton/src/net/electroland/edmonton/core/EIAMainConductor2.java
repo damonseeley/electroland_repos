@@ -131,7 +131,7 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
         	model.addModelWatcher(new OneEventPerPeriodModelWatcher(clip, clipTiming), "showwatcher" + state.getID(), state);
         }
         
-        tfa = new TrafficFlowAnalyzer(2,10000,120000);
+        tfa = new TrafficFlowAnalyzer(5,10000,120000);
         context.put("tfa", tfa);
         
         /******** GUI ********/
@@ -178,8 +178,6 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
                 }
             }
         }
-        
-        ef.updateFlowLabels(tfa.getCurAvgTime(), tfa.getRunAvgTime(), tfa.getPM1Flow(), tfa.getPM2Flow(), tfa.getPM1Avg(), tfa.getPM2Avg());
 
     } 
 
@@ -222,6 +220,7 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
             }
 
             // Update the GUI Panel
+            ef.updateFlowLabels(tfa.getCurAvgTime(), tfa.getRunAvgTime(), tfa.getPM1Flow(), tfa.getPM2Flow(), tfa.getPM1Avg(), tfa.getPM2Avg());
             ef.update();
 
             //Thread ops
