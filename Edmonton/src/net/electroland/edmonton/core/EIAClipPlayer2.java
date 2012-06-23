@@ -24,32 +24,33 @@ import org.apache.log4j.Logger;
 public class EIAClipPlayer2 {
 
     static Logger logger = Logger.getLogger(EIAClipPlayer2.class);
-	protected AnimationManager anim;
-	protected ELUManager elu;
-	protected ELUCanvas2D canvas;
-	protected SoundController sc;
-	protected Clip quiet, live;
-	protected TrafficFlowAnalyzer tfa;
-	protected ElectrolandProperties propsGlobal;
+    protected AnimationManager anim;
+    protected ELUManager elu;
+    protected ELUCanvas2D canvas;
+    protected SoundController sc;
+    protected Clip quiet, live;
+    protected TrafficFlowAnalyzer tfa;
+    protected ElectrolandProperties propsGlobal;
 
-	public EIAClipPlayer2(Map<String, Object> context)
+    public EIAClipPlayer2(Map<String, Object> context)
     {
-    	try{
-    		this.anim   = (AnimationManager)context.get("anim");
-    		this.elu    = (ELUManager)context.get("elu");
-    		this.sc     = (SoundController)context.get("soundController");
-    		this.canvas = (ELUCanvas2D)context.get("canvas");  
-    		this.tfa	= (TrafficFlowAnalyzer)context.get("tfa");
-    		this.propsGlobal = (ElectrolandProperties)context.get("propsGlobal");
-    	}catch(NullPointerException e){    		
-    		logger.error(e);
-    		System.exit(-1);
-    	}catch(ClassCastException e){
-    		logger.error(e);
-    		System.exit(-1);
-    	}
-		live = anim.addClip(new SolidColorContent(null), 0, 0, anim.getStageDimensions().width, anim.getStageDimensions().height, 1.0);
+        try{
+            this.anim   = (AnimationManager)context.get("anim");
+            this.elu    = (ELUManager)context.get("elu");
+            this.sc     = (SoundController)context.get("soundController");
+            this.canvas = (ELUCanvas2D)context.get("canvas");  
+            this.tfa    = (TrafficFlowAnalyzer)context.get("tfa");
+            this.propsGlobal = (ElectrolandProperties)context.get("propsGlobal");
+        }catch(NullPointerException e){            
+            logger.error(e);
+            System.exit(-1);
+        }catch(ClassCastException e){
+            logger.error(e);
+            System.exit(-1);
+        }
+        live = anim.addClip(new SolidColorContent(null), 0, 0, anim.getStageDimensions().width, anim.getStageDimensions().height, 1.0);
     }
+
 
     public void playClip(String name, double loc){
 
@@ -59,18 +60,19 @@ public class EIAClipPlayer2 {
             Method m = this.getClass().getMethod(name, double.class);
             m.invoke(this, loc);
 
-        } catch (SecurityException e1) {
-            e1.printStackTrace();
-        } catch (NoSuchMethodException e1) {
-            e1.printStackTrace();
-        } catch (IllegalArgumentException e1) {
-            e1.printStackTrace();
-        } catch (IllegalAccessException e1) {
-            e1.printStackTrace();
-        } catch (InvocationTargetException e1) {
-            e1.getTargetException().printStackTrace();
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.getTargetException().printStackTrace();
         }
-    }	
+    }
+
 
     public Collection<String> getMethodNames()
     {
@@ -79,8 +81,6 @@ public class EIAClipPlayer2 {
         for (int i = 0; i < methods.length; i++){
             String name = methods[i].getName();
 
-            // would be nice to check to see if the parameter type is a single
-            // double
             if (Modifier.isPublic(methods[i].getModifiers()) && 
                 methods[i].getParameterTypes().length == 1 && 
                 methods[i].getParameterTypes()[0] == double.class){
@@ -90,32 +90,34 @@ public class EIAClipPlayer2 {
         return names;
     }
 
+
     private int pm1Traffic(){
-    	if (tfa.getPM1Flow() < propsGlobal.getRequiredInt("traffic", "pm1", "low")) {
-    		return 0; //almost empty
-    	} else if (tfa.getPM1Flow() < propsGlobal.getRequiredInt("traffic", "pm1", "med")) {
-    		return 1; //low
-    	} else if (tfa.getPM1Flow() < propsGlobal.getRequiredInt("traffic", "pm1", "high")) {
-    		return 2; //med
-    	} else if (tfa.getPM1Flow() > propsGlobal.getRequiredInt("traffic", "pm1", "high")) {
-    		return 3; //high
-    	} else {
-    		return -1;
-    	}
+        if (tfa.getPM1Flow() < propsGlobal.getRequiredInt("traffic", "pm1", "low")) {
+            return 0; //almost empty
+        } else if (tfa.getPM1Flow() < propsGlobal.getRequiredInt("traffic", "pm1", "med")) {
+            return 1; //low
+        } else if (tfa.getPM1Flow() < propsGlobal.getRequiredInt("traffic", "pm1", "high")) {
+            return 2; //med
+        } else if (tfa.getPM1Flow() > propsGlobal.getRequiredInt("traffic", "pm1", "high")) {
+            return 3; //high
+        } else {
+            return -1;
+        }
     }
-    
+
+
     private int pm2Traffic(){
-    	if (tfa.getPM2Flow() < propsGlobal.getRequiredInt("traffic", "pm2", "low")) {
-    		return 0; //almost empty
-    	} else if (tfa.getPM1Flow() < propsGlobal.getRequiredInt("traffic", "pm2", "med")) {
-    		return 1; //low
-    	} else if (tfa.getPM1Flow() < propsGlobal.getRequiredInt("traffic", "pm2", "high")) {
-    		return 2; //med
-    	} else if (tfa.getPM1Flow() > propsGlobal.getRequiredInt("traffic", "pm2", "high")) {
-    		return 3; //high
-    	} else {
-    		return -1;
-    	}
+        if (tfa.getPM2Flow() < propsGlobal.getRequiredInt("traffic", "pm2", "low")) {
+            return 0; //almost empty
+        } else if (tfa.getPM1Flow() < propsGlobal.getRequiredInt("traffic", "pm2", "med")) {
+            return 1; //low
+        } else if (tfa.getPM1Flow() < propsGlobal.getRequiredInt("traffic", "pm2", "high")) {
+            return 2; //med
+        } else if (tfa.getPM1Flow() > propsGlobal.getRequiredInt("traffic", "pm2", "high")) {
+            return 3; //high
+        } else {
+            return -1;
+        }
     }
 
     private double barOff = -3.69;
@@ -142,15 +144,17 @@ public class EIAClipPlayer2 {
 
         sc.playGlobal("EIA_organ_v01short.wav", false, 1.0f);
     }
-    
+
+
     public void thunderSparklePM2(double x) {
-    	if (pm2Traffic() < 1){
-    		thunderSparklePM2big(x);
-    	} else {
-    		thunderSparklePM2sm(x);
-    	}
+        if (pm2Traffic() < 1){
+            thunderSparklePM2big(x);
+        } else {
+            thunderSparklePM2sm(x);
+        }
     }
-    
+
+
     public void thunderSparklePM2big(double x) {
         logger.debug("thunderSparkle");
 
@@ -163,7 +167,8 @@ public class EIAClipPlayer2 {
         sc.playGlobal("EIA_organ_v01.wav", false, 1.0f);
         // or chime01_med.wav
     }
-    
+
+
     public void thunderSparklePM2sm(double x) {
         logger.debug("thunderSparkle");
 
@@ -176,6 +181,7 @@ public class EIAClipPlayer2 {
         //sc.playGlobal("EIA_organ_v01short.wav", false, 1.0f);
         sc.playSingleChannelBlind("EIA_organ_v01short.wav", x, 1.0f);
     }
+
 
     public void bigHitPM1(double x){
         logger.debug("bigHit");
@@ -194,6 +200,7 @@ public class EIAClipPlayer2 {
 
         sc.playSingleChannelBlind("66_Reverse_Orchestra_Hit.wav", x, 1.0f);
     }
+
 
     public void grow(double x){
         logger.debug("grow");
@@ -287,7 +294,7 @@ public class EIAClipPlayer2 {
         sc.playSingleChannelBlind("piano_doublet01.wav", x, 1.0f);
 
     }
-    
+
     public void randomBars(double x){
         logger.debug("randomBars");
         int maxLoop = 14;
@@ -378,6 +385,7 @@ public class EIAClipPlayer2 {
 
     }
 
+
     public void blip2(double x) {
         logger.debug("blip2");
         x = findNearestLight(x+lookAhead,true);
@@ -394,6 +402,7 @@ public class EIAClipPlayer2 {
             sc.playSingleChannelBlind("marimba_mid_01b.wav", x, 0.5f); 
         } 
     }
+
 
     // maybe do a faster version?
     public void vertSixFill(double x) {
@@ -436,9 +445,8 @@ public class EIAClipPlayer2 {
 
         sc.playSingleChannelBlind("lumen_entrance7.wav", x, 0.5f);
     }
-    
-    
-    
+
+
     public void testClip(double x) {
         logger.info("ClipPlayer - testClip starting");
         x = findNearestLight(x+lookAhead,true);
@@ -467,21 +475,19 @@ public class EIAClipPlayer2 {
     }
 
 
+    /**
+     * Local Util Methods
+     */
+    public double findNearestLight(double x, boolean forward) {
 
-	/**
-	 * Local Util Methods
-	 */
+        double closestX = -20;
 
-	public double findNearestLight(double x, boolean forward) {
-
-		double closestX = -20;
-
-		for (Fixture f: elu.getFixtures()) {
-			if (Math.abs(x-f.getLocation().x) < Math.abs(x-closestX)) {
-				closestX = f.getLocation().x;
-			}
-		}
-		////logger.info("ClipPlayer: Track x= " + x + " & closest fixture x= " + closestX);
-		return closestX;
-	}
+        for (Fixture f: elu.getFixtures()) {
+            if (Math.abs(x-f.getLocation().x) < Math.abs(x-closestX)) {
+                closestX = f.getLocation().x;
+            }
+        }
+        ////logger.info("ClipPlayer: Track x= " + x + " & closest fixture x= " + closestX);
+        return closestX;
+    }
 }
