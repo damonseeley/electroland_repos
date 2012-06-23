@@ -1,6 +1,10 @@
 package net.electroland.edmonton.core;
 
 import java.awt.Color;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 
 import net.electroland.ea.AnimationManager;
@@ -27,7 +31,11 @@ public class EIAClipPlayer2 {
 	protected TrafficFlowAnalyzer tfa;
 	protected ElectrolandProperties propsGlobal;
 
-    public EIAClipPlayer2(Map<String, Object> context)
+    public EIAClipPlayer2(){
+        
+    }
+
+	public EIAClipPlayer2(Map<String, Object> context)
     {
     	try{
     		this.anim   = (AnimationManager)context.get("anim");
@@ -45,8 +53,34 @@ public class EIAClipPlayer2 {
     	}
 		live = anim.addClip(new SolidColorContent(null), 0, 0, anim.getStageDimensions().width, anim.getStageDimensions().height, 1.0);
     }
-    
-    private int pm1Traffic(){    	
+
+    public static void main(String args[]){
+        // test getMethodNames()
+        EIAClipPlayer2 cp = new EIAClipPlayer2();
+        for (String name : cp.getMethodNames()){
+            System.out.println(name);
+        }
+    }
+
+    public Collection<String> getMethodNames()
+    {
+        Method[] methods = this.getClass().getDeclaredMethods();
+        ArrayList<String> names = new ArrayList<String>();
+        for (int i = 0; i < methods.length; i++){
+            String name = methods[i].getName();
+
+            // would be nice to check to see if the parameter type is a single
+            // double
+            if (Modifier.isPublic(methods[i].getModifiers()) && 
+                methods[i].getParameterTypes().length == 1 && 
+                methods[i].getParameterTypes()[0] == double.class){
+                names.add(name);
+            }
+        }
+        return names;
+    }
+
+    private int pm1Traffic(){
     	if (tfa.getPM1Flow() < propsGlobal.getRequiredInt("traffic", "pm1", "low")) {
     		return 0; //almost empty
     	} else if (tfa.getPM1Flow() < propsGlobal.getRequiredInt("traffic", "pm1", "med")) {

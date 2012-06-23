@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import net.electroland.edmonton.core.model.OneEventPerPeriodModelWatcher;
 import net.electroland.eio.IState;
 import net.electroland.eio.model.ModelEvent;
 import net.electroland.eio.model.ModelListener;
@@ -27,14 +26,6 @@ public class FakeModel {
 
 	public final void poll()
 	{
-
-		ModelWatcher test = new OneEventPerPeriodModelWatcher(500);
-		Collection someStates = new ArrayList<IState>();
-		//IOState i30 = eio.getStateById("i30");
-		//logger.info(i30);
-		//logger.info("Got IOState " + i30.getID() + " location " + i30.getLocation());
-		///this.addModelWatcher(test, "testWatcher", eio.getIStates());
-
 		for (ModelListener listener : listeners)
 		{
 			int rndScale = 80;
