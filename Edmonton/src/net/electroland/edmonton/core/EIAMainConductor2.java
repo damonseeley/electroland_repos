@@ -200,7 +200,7 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
         } catch (IllegalAccessException e1) {
             e1.printStackTrace();
         } catch (InvocationTargetException e1) {
-            e1.printStackTrace();
+            e1.getTargetException().printStackTrace();
         }
     }
 
