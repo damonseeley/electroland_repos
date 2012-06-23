@@ -154,6 +154,7 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
         	OneEventPerPeriodModelWatcher src = (OneEventPerPeriodModelWatcher)evt.getSource();
 
             double xloc = src.getStates().iterator().next().getLocation().x;
+
             playClip(src.getClipName(), xloc);
         }
 
@@ -186,7 +187,7 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
 
         try {
 
-            logger.info("Running clipPlayer2." + name + '(' + loc + ')');
+            logger.debug("Running clipPlayer2." + name + '(' + loc + ')');
             Method m = clipPlayer2.getClass().getMethod(name, double.class);
             m.invoke(clipPlayer2, loc);
 
