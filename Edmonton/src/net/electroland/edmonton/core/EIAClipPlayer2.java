@@ -9,6 +9,7 @@ import net.electroland.ea.Clip;
 import net.electroland.ea.Content;
 import net.electroland.ea.changes.LinearChange;
 import net.electroland.ea.content.SolidColorContent;
+import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.lighting.ELUManager;
 import net.electroland.utils.lighting.Fixture;
 import net.electroland.utils.lighting.canvas.ELUCanvas2D;
@@ -23,6 +24,8 @@ public class EIAClipPlayer2 {
 	protected ELUCanvas2D canvas;
 	protected SoundController sc;
 	protected Clip quiet, live;
+	protected TrafficFlowAnalyzer tfa;
+	protected ElectrolandProperties propsGlobal;
 
     public EIAClipPlayer2(Map<String, Object> context)
     {
@@ -30,7 +33,9 @@ public class EIAClipPlayer2 {
     		this.anim   = (AnimationManager)context.get("anim");
     		this.elu    = (ELUManager)context.get("elu");
     		this.sc     = (SoundController)context.get("soundController");
-    		this.canvas = (ELUCanvas2D)context.get("canvas");    		
+    		this.canvas = (ELUCanvas2D)context.get("canvas");  
+    		this.tfa	= (TrafficFlowAnalyzer)context.get("tfa");
+    		this.propsGlobal = (ElectrolandProperties)context.get("propsGlobal");
     	}catch(NullPointerException e){    		
     		logger.error(e);
     		System.exit(-1);
@@ -39,6 +44,34 @@ public class EIAClipPlayer2 {
     		System.exit(-1);
     	}
 		live = anim.addClip(new SolidColorContent(null), 0, 0, anim.getStageDimensions().width, anim.getStageDimensions().height, 1.0);
+    }
+    
+    private int pm1Traffic(){    	
+    	if (tfa.getPM1Flow() < propsGlobal.getRequiredInt("traffic", "pm1", "low")) {
+    		return 0; //almost empty
+    	} else if (tfa.getPM1Flow() < propsGlobal.getRequiredInt("traffic", "pm1", "med")) {
+    		return 1; //low
+    	} else if (tfa.getPM1Flow() < propsGlobal.getRequiredInt("traffic", "pm1", "high")) {
+    		return 2; //med
+    	} else if (tfa.getPM1Flow() > propsGlobal.getRequiredInt("traffic", "pm1", "high")) {
+    		return 3; //high
+    	} else {
+    		return -1;
+    	}
+    }
+    
+    private int pm2Traffic(){
+    	if (tfa.getPM2Flow() < propsGlobal.getRequiredInt("traffic", "pm2", "low")) {
+    		return 0; //almost empty
+    	} else if (tfa.getPM1Flow() < propsGlobal.getRequiredInt("traffic", "pm2", "med")) {
+    		return 1; //low
+    	} else if (tfa.getPM1Flow() < propsGlobal.getRequiredInt("traffic", "pm2", "high")) {
+    		return 2; //med
+    	} else if (tfa.getPM1Flow() > propsGlobal.getRequiredInt("traffic", "pm2", "high")) {
+    		return 3; //high
+    	} else {
+    		return -1;
+    	}
     }
 
     private double barOff = -3.69;
@@ -61,19 +94,26 @@ public class EIAClipPlayer2 {
         faintSparkle.delay(800).fadeOut(4500).delete();
 
         sc.playGlobal("EIA_organ_v01short.wav", false, 1.0f);
-        // or chime01_med.wav
     }
     
     public void thunderSparklePM2(double x) {
+    	if (pm2Traffic() < 1){
+    		thunderSparklePM2big(x);
+    	} else {
+    		thunderSparklePM2sm(x);
+    	}
+    }
+    
+    public void thunderSparklePM2big(double x) {
         logger.debug("thunderSparkle");
 
         Content sparkleThunderClip = anim.getContent("sparkleThunder");
         Clip faintSparkle = live.addClip(sparkleThunderClip, 0,0,320,16, 1.0, 10);
         faintSparkle.zIndex = -100; // sets to far background
 
-        faintSparkle.delay(800).fadeOut(4500).delete();
+        faintSparkle.delay(800).fadeOut(5000).delete();
 
-        sc.playGlobal("EIA_organ_v01short.wav", false, 1.0f);
+        sc.playGlobal("EIA_organ_v01.wav", false, 1.0f);
         // or chime01_med.wav
     }
     
@@ -84,7 +124,7 @@ public class EIAClipPlayer2 {
         Clip faintSparkle = live.addClip(sparkleThunderClip, 0,0,320,16, 1.0, 10);
         faintSparkle.zIndex = -100; // sets to far background
 
-        faintSparkle.delay(800).fadeOut(3000).delete();
+        faintSparkle.delay(500).fadeOut(2500).delete();
 
         //sc.playGlobal("EIA_organ_v01short.wav", false, 1.0f);
         sc.playSingleChannelBlind("EIA_organ_v01short.wav", x, 1.0f);
