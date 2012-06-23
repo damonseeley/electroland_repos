@@ -114,6 +114,9 @@ public class EIAClipPlayer2 {
     private int bottomBar = 8;
     private int barHeight = 2;
 
+    public void none(double x){
+        // do nothing.
+    }
     /*
      * BIG Animations
      */
