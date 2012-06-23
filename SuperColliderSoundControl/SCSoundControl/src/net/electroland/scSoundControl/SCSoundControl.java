@@ -974,7 +974,6 @@ public class SCSoundControl implements OSCListener, Runnable {
 
     private void sendNQuery()
     {
-    	logger.info("SCSynth: sending /n_query command");
         sendMessage("/notify", new Object[] { 1 });
         sendMessage("/n_query", new Object[]{_motherGroupID});
         isBooting = true;
