@@ -156,6 +156,7 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
             double xloc = src.getStates().iterator().next().getLocation().x;
 
             clipPlayer2.playClip(src.getClipName(), xloc);
+            tfa.trip(xloc);
         }
 
     } 
