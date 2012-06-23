@@ -155,7 +155,7 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
 
             double xloc = src.getStates().iterator().next().getLocation().x;
 
-            playClip(src.getClipName(), xloc);
+            clipPlayer2.playClip(src.getClipName(), xloc);
         }
 
     } 
@@ -179,28 +179,7 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
             double range  = top - bottom;
             double random = Math.random() * range + bottom;
 
-            playClip(ef.getSelectedClip(), random);
-        }
-    }
-
-    public void playClip(String name, double loc){
-
-        try {
-
-            logger.debug("Running clipPlayer2." + name + '(' + loc + ')');
-            Method m = clipPlayer2.getClass().getMethod(name, double.class);
-            m.invoke(clipPlayer2, loc);
-
-        } catch (SecurityException e1) {
-            e1.printStackTrace();
-        } catch (NoSuchMethodException e1) {
-            e1.printStackTrace();
-        } catch (IllegalArgumentException e1) {
-            e1.printStackTrace();
-        } catch (IllegalAccessException e1) {
-            e1.printStackTrace();
-        } catch (InvocationTargetException e1) {
-            e1.getTargetException().printStackTrace();
+            clipPlayer2.playClip(ef.getSelectedClip(), random);
         }
     }
 

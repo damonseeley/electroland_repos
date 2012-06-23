@@ -1,6 +1,7 @@
 package net.electroland.edmonton.core;
 
 import java.awt.Color;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -31,10 +32,6 @@ public class EIAClipPlayer2 {
 	protected TrafficFlowAnalyzer tfa;
 	protected ElectrolandProperties propsGlobal;
 
-    public EIAClipPlayer2(){
-        
-    }
-
 	public EIAClipPlayer2(Map<String, Object> context)
     {
     	try{
@@ -54,13 +51,26 @@ public class EIAClipPlayer2 {
 		live = anim.addClip(new SolidColorContent(null), 0, 0, anim.getStageDimensions().width, anim.getStageDimensions().height, 1.0);
     }
 
-    public static void main(String args[]){
-        // test getMethodNames()
-        EIAClipPlayer2 cp = new EIAClipPlayer2();
-        for (String name : cp.getMethodNames()){
-            System.out.println(name);
+    public void playClip(String name, double loc){
+
+        try {
+
+            logger.debug("Running clipPlayer2." + name + '(' + loc + ')');
+            Method m = this.getClass().getMethod(name, double.class);
+            m.invoke(this, loc);
+
+        } catch (SecurityException e1) {
+            e1.printStackTrace();
+        } catch (NoSuchMethodException e1) {
+            e1.printStackTrace();
+        } catch (IllegalArgumentException e1) {
+            e1.printStackTrace();
+        } catch (IllegalAccessException e1) {
+            e1.printStackTrace();
+        } catch (InvocationTargetException e1) {
+            e1.getTargetException().printStackTrace();
         }
-    }
+    }	
 
     public Collection<String> getMethodNames()
     {
