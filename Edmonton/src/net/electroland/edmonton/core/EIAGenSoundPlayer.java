@@ -1,24 +1,13 @@
 package net.electroland.edmonton.core;
 
-import java.awt.Color;
 import java.util.ArrayList;
-
-import net.electroland.ea.AnimationManager;
-import net.electroland.ea.Change;
-import net.electroland.ea.Clip;
-import net.electroland.ea.Content;
-import net.electroland.ea.changes.LinearChange;
-import net.electroland.ea.content.SolidColorContent;
-import net.electroland.utils.lighting.ELUManager;
-import net.electroland.utils.lighting.Fixture;
 
 import org.apache.log4j.Logger;
 
 public class EIAGenSoundPlayer {
 
     private SoundController sc;
-    private double x;
-    
+
     private ArrayList<String> bondi = new ArrayList<String>();
     private ArrayList<String> elevation = new ArrayList<String>();
     private ArrayList<String> kotu = new ArrayList<String>();
@@ -54,9 +43,7 @@ public class EIAGenSoundPlayer {
 
 
     public void playNextGen(double x) {
-        
-        this.x = x;
-        
+
         double chance = Math.random()*100;
         
         if (chance < 30){

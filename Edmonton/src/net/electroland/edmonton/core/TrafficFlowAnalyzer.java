@@ -12,7 +12,7 @@ public class TrafficFlowAnalyzer extends Thread {
     private Queue<Long> pm1trips,pm2trips;
     private Queue<Integer> pm1MovingAvgTrips,pm2MovingAvgTrips;
     private long pm1Avg,pm2Avg;
-    private int avgListLength,tripLength;
+    private int avgListLength;
     private int pm1LocalTrips,pm2LocalTrips;
     private long curAvgTime,runAvgTime,framerate;
     private long starttime,reporttime;
@@ -32,12 +32,6 @@ public class TrafficFlowAnalyzer extends Thread {
         avgListLength = (int)(runAvg/1000 * fr);
         curAvgTime = curAvg;
         runAvgTime = runAvg;
-        tripLength = avgListLength; // just make this super long, does not matter since we calc based on time
-
-//        pm1trips = Collections.synchronizedList(new ArrayList<Long>(tripLength));
-//        pm2trips = Collections.synchronizedList(new ArrayList<Long>(tripLength));
-//        pm1MovingAvgTrips = Collections.synchronizedList(new ArrayList<Integer>(avgListLength));
-//        pm2MovingAvgTrips = Collections.synchronizedList(new ArrayList<Integer>(avgListLength));
 
         pm1trips          = new ConcurrentLinkedQueue<Long>();
         pm2trips          = new ConcurrentLinkedQueue<Long>();
@@ -222,7 +216,6 @@ public class TrafficFlowAnalyzer extends Thread {
 
 
             if ((System.currentTimeMillis() - reporttime) > 5000) {
-                long timeElapsed = (System.currentTimeMillis() - starttime)/1000;
                 int curAvgS = (int)(curAvgTime/1000);
                 int runAvgS = (int)(runAvgTime/1000);
                 //logger.info("TFA LIST STATS: pm1trips:" + pm1trips.size() + " pm1AvgTrips:" + pm1MovingAvgTrips.size() + " pm2trips:" + pm2trips.size() + " pm2AvgTrips:" + pm2MovingAvgTrips.size());

@@ -10,9 +10,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 
 import net.electroland.ea.AnimationManager;
 import net.electroland.edmonton.core.model.OneEventPerPeriodModelWatcher;
@@ -154,29 +152,9 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
         if (evt.getSource() instanceof OneEventPerPeriodModelWatcher){
 
         	OneEventPerPeriodModelWatcher src = (OneEventPerPeriodModelWatcher)evt.getSource();
-        	
-        	// update Traffic Flow Analyer
-        	// moved below
-        	//tfa.trip(src.getStates());
 
-            // play clip
-            Method[] allMethods = clipPlayer2.getClass().getDeclaredMethods();
-            for (Method m : allMethods) {
-                if (m.getName().equals(src.getClipName()))
-                {
-                    double xloc = src.getStates().iterator().next().getLocation().x;
-                    try {
-                        m.invoke(clipPlayer2, xloc);
-                        tfa.trip(xloc);
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    } catch (InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+            double xloc = src.getStates().iterator().next().getLocation().x;
+            playClip(src.getClipName(), xloc);
         }
 
     } 
@@ -194,9 +172,35 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
             tfa.logpm1();
         } else if ("pm2avg".equals(e.getActionCommand())){
             logger.info("People Mover 2 total trips for 30s = " +tfa.getPM2Flow());
+        } else if ("random".equals(e.getActionCommand())){
+            double bottom = props.getRequiredDouble("settings", "random", "bottom");
+            double top    = props.getRequiredDouble("settings", "random", "top");
+            double range  = top - bottom;
+            double random = Math.random() * range + bottom;
+
+            playClip(ef.getSelectedClip(), random);
         }
-        
-        
+    }
+
+    public void playClip(String name, double loc){
+
+        try {
+
+            logger.info("Running clipPlayer2." + name + '(' + loc + ')');
+            Method m = clipPlayer2.getClass().getMethod(name, double.class);
+            m.invoke(clipPlayer2, loc);
+
+        } catch (SecurityException e1) {
+            e1.printStackTrace();
+        } catch (NoSuchMethodException e1) {
+            e1.printStackTrace();
+        } catch (IllegalArgumentException e1) {
+            e1.printStackTrace();
+        } catch (IllegalAccessException e1) {
+            e1.printStackTrace();
+        } catch (InvocationTargetException e1) {
+            e1.printStackTrace();
+        }
     }
 
     /************************* Main Loop ******************************/

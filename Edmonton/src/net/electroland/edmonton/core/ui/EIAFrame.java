@@ -17,6 +17,8 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -25,6 +27,7 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import net.electroland.edmonton.core.EIAClipPlayer2;
 import net.electroland.edmonton.core.SoundController;
 import net.miginfocom.swing.MigLayout;
 
@@ -38,11 +41,12 @@ public class EIAFrame extends JFrame implements ActionListener {
 	private int windowHeight;
 	public Map<String, Object> context;
 
-	private JButton testShow,showHideGfx,pm1avg,pm2avg;
+	private JButton testShow,showHideGfx,pm1avg,pm2avg,random;
+	private JComboBox clipMethods;
 	private JLabel dScaleLabel,pm1RecentLabel,pm2RecentLabel,pm1AvgLabel,pm2AvgLabel;
 	private JPanel bp;
 	//private DoubleJSlider jsScale;
-	private ArrayList<JButton> buttons;
+	private ArrayList<JComponent> buttons;
 
 	static Logger logger = Logger.getLogger(EIAFrame.class);
 
@@ -58,7 +62,7 @@ public class EIAFrame extends JFrame implements ActionListener {
 
 		//Font newButtonFont = new Font("Default",Font.PLAIN,13);  
 
-		buttons = new ArrayList<JButton>();
+		buttons = new ArrayList<JComponent>();
 
 		showHideGfx = new JButton("Hide Graphics");
 		showHideGfx.setActionCommand("showHideGfx");
@@ -76,8 +80,13 @@ public class EIAFrame extends JFrame implements ActionListener {
         pm2avg.setActionCommand("pm2");
         buttons.add(pm2avg);
         
-        
-       
+        EIAClipPlayer2 tmpPlayer = new EIAClipPlayer2(context);
+        clipMethods = new JComboBox(tmpPlayer.getMethodNames().toArray());
+        buttons.add(clipMethods);
+
+        random = new JButton("Play Clip");
+        random.setActionCommand("random");
+        buttons.add(random);
 
 		/**
 		 * button panel
@@ -87,10 +96,10 @@ public class EIAFrame extends JFrame implements ActionListener {
 		bp.setPreferredSize(new Dimension(ep.getWidth(),50));
 		bp.setLayout(new MigLayout("insets 8"));
 
-		for (JButton b : buttons) {
+		for (JComponent b : buttons) {
 			bp.add(b);
 		}
-		
+
 		
 		/**
 		 * averages JLabels
@@ -194,14 +203,21 @@ public class EIAFrame extends JFrame implements ActionListener {
 		setSize();
 	}
 
+    public String getSelectedClip()
+    {
+        return clipMethods.getSelectedItem().toString();
+    }
+
 	public void setSize(){
 		this.setSize(ep.getPanelWidth(), windowHeight);
 		this.setPreferredSize(new Dimension(ep.getPanelWidth(),windowHeight));
 	}
 
 	public void addButtonListener(ActionListener al){
-		for (JButton b : buttons) {
-			b.addActionListener(al);
+		for (JComponent b : buttons) {
+		    if (b instanceof JButton){
+	            ((JButton)b).addActionListener(al);
+		    }
 		}
 	}
 
