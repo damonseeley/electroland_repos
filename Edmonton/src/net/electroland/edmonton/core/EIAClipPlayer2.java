@@ -39,6 +39,13 @@ public class EIAClipPlayer2 {
 
 	protected Timer phantomTimer;
 
+	//spatial vars, specific to this exact canvas size and arrangement
+	private double barOff = -3.69;
+	private double lookAhead = -3.2;
+	private int topBar = 5;
+	private int bottomBar = 8;
+	private int barHeight = 2;
+
 
 	public EIAClipPlayer2(Map<String, Object> context)
 	{
@@ -56,23 +63,30 @@ public class EIAClipPlayer2 {
 			logger.error(e);
 			System.exit(-1);
 		}
-		
+
 		phantomTimer = new Timer();
-		phantomTimer.schedule(new phantomTimerTask(), 1000, 1000);
+		phantomTimer.schedule(new phantomTimerTask(), 1000);
 		live = anim.addClip(new SolidColorContent(null), 0, 0, anim.getStageDimensions().width, anim.getStageDimensions().height, 1.0);
 		//logger.info("ClipPlayer2 created: " + this);
 	}
-	
+
 	private class phantomTimerTask extends TimerTask {
 		public void run() {
+			// put some conditional in here to look at TFA populations
 			// fire phantom
-			smVertDoublet(Math.random() * 620);			
-			logger.info(this + " fired a phantom clip");
+
+			int newTime = (int)(Math.random()*1500)+400;
+			phantomTimer.schedule(new phantomTimerTask(), newTime);
+
+			//perhaps randomize number of firings
+			strobeRand(Math.random() * 620);
+
+			logger.info(this + " fired a phantom clip and newTime= " + newTime);
 		}
 	}
 
 	public void playClip(String name, double loc){
-		
+
 		try {
 
 			logger.debug("Running clipPlayer2." + name + '(' + loc + ')');
@@ -139,12 +153,6 @@ public class EIAClipPlayer2 {
 			return -1;
 		}
 	}
-
-	private double barOff = -3.69;
-	private double lookAhead = -3.2;
-	private int topBar = 5;
-	private int bottomBar = 8;
-	private int barHeight = 2;
 
 	public void none(double x){
 		// do nothing.
@@ -421,6 +429,47 @@ public class EIAClipPlayer2 {
 		} else {
 			sc.playSingleChannelBlind("marimba_mid_01b.wav", x, 0.5f); 
 		} 
+	}
+
+
+	public void strobeRand(double x) {
+		logger.debug("strober");
+		x = findNearestLight(x+lookAhead,true);
+		int barWidth = 3;
+		Content simpleClip2 = new SolidColorContent(Color.WHITE);
+
+		int dOff = 150; //delay offset
+
+		int barHLoc = 0;
+		if (Math.random() > 0.5) {
+			barHLoc = topBar;
+		} else {
+			barHLoc = bottomBar;
+		}
+
+
+		Clip top1 = live.addClip(simpleClip2, (int)(x-barWidth/2+barOff*0),barHLoc,barWidth,barHeight, 1.0); 
+		Clip top2 = live.addClip(simpleClip2, (int)(x-barWidth/2+barOff*1),barHLoc,barWidth,barHeight, 1.0, dOff*1); 
+		Clip top3 = live.addClip(simpleClip2, (int)(x-barWidth/2+barOff*2),barHLoc,barWidth,barHeight, 1.0, dOff*2);
+		Clip top4 = live.addClip(simpleClip2, (int)(x-barWidth/2+barOff*3),barHLoc,barWidth,barHeight, 1.0, dOff*3); 
+		Clip top5 = live.addClip(simpleClip2, (int)(x-barWidth/2+barOff*4),barHLoc,barWidth,barHeight, 1.0, dOff*4); 
+		Clip top6 = live.addClip(simpleClip2, (int)(x-barWidth/2+barOff*5),barHLoc,barWidth,barHeight, 1.0, dOff*5); 
+		Clip top7 = live.addClip(simpleClip2, (int)(x-barWidth/2+barOff*6),barHLoc,barWidth,barHeight, 1.0, dOff*6); 
+		Clip top8 = live.addClip(simpleClip2, (int)(x-barWidth/2+barOff*7),barHLoc,barWidth,barHeight, 1.0, dOff*7); 
+
+		int delay = 350;
+		int fadetime = 350;
+		top1.delay(delay).fadeOut(fadetime).delete();
+		top2.delay(delay).fadeOut(fadetime).delete();
+		top3.delay(delay).fadeOut(fadetime).delete();
+		top4.delay(delay).fadeOut(fadetime).delete();
+		top5.delay(delay).fadeOut(fadetime).delete();
+		top6.delay(delay).fadeOut(fadetime).delete();
+		top7.delay(delay).fadeOut(fadetime).delete();
+		top8.delay(delay).fadeOut(fadetime).delete();
+
+
+		//sc.playSingleChannelBlind("entrance6.wav", x, 0.5f);
 	}
 
 
