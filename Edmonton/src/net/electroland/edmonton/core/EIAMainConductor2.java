@@ -117,6 +117,7 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
         context.put("tfa", tfa);
         
         clipPlayer2 = new EIAClipPlayer2(context);
+        context.put("clipPlayer2", clipPlayer2);
 
 
         /******** Model, Watchers & Timers ********/
@@ -133,7 +134,7 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
         }
         
         /******** GUI ********/
-        ef = new EIAFrame(Integer.parseInt(props.getRequired("settings", "global", "guiwidth")),Integer.parseInt(props.getRequired("settings", "global", "guiheight")),context);
+        ef = new EIAFrame(context);
         ef.addButtonListener(this);
 
         /******** Thread Setup ********/

@@ -29,6 +29,7 @@ import javax.swing.event.ChangeListener;
 
 import net.electroland.edmonton.core.EIAClipPlayer2;
 import net.electroland.edmonton.core.SoundController;
+import net.electroland.utils.ElectrolandProperties;
 import net.miginfocom.swing.MigLayout;
 
 import org.apache.log4j.Logger;
@@ -50,13 +51,17 @@ public class EIAFrame extends JFrame implements ActionListener {
 
 	static Logger logger = Logger.getLogger(EIAFrame.class);
 
-	public EIAFrame(int width, int height, Map<String,Object> context) {
-
+	public EIAFrame(Map<String,Object> context) {
+		
 		super("Electroland @ EIA");
 
 		this.context = context;
+		
+		ElectrolandProperties props = (ElectrolandProperties)context.get("props");
+		
+		//int width = Integer.parseInt(props.getRequired("settings", "global", "guiwidth"));
 
-		windowHeight = height;
+		windowHeight = Integer.parseInt(props.getRequired("settings", "global", "guiheight"));
 
 		ep = new EIATiledPanel(context);
 
@@ -80,7 +85,7 @@ public class EIAFrame extends JFrame implements ActionListener {
         pm2avg.setActionCommand("pm2");
         buttons.add(pm2avg);
         
-        EIAClipPlayer2 tmpPlayer = new EIAClipPlayer2(context);
+        EIAClipPlayer2 tmpPlayer = (EIAClipPlayer2)context.get("clipPlayer2");
         clipMethods = new JComboBox(tmpPlayer.getMethodNames().toArray());
         buttons.add(clipMethods);
 
