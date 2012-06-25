@@ -38,7 +38,8 @@ public class TrafficFlowAnalyzer extends Thread {
         pm1MovingAvgTrips = new ConcurrentLinkedQueue<Integer>();
         pm2MovingAvgTrips = new ConcurrentLinkedQueue<Integer>();
 
-
+        pm1LocalTrips = 0;
+        pm2LocalTrips = 0;
         pm1Avg = 0;
         pm2Avg = 0;
         starttime = System.currentTimeMillis();

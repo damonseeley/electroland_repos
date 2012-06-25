@@ -113,6 +113,9 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
         soundController = new SoundController(context);
         context.put("soundController", soundController);
 
+        tfa = new TrafficFlowAnalyzer(5,10000,120000);
+        context.put("tfa", tfa);
+        
         clipPlayer2 = new EIAClipPlayer2(context);
 
 
@@ -128,9 +131,6 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
         	int clipTiming = clipNames.getRequiredInt("sensor", state.getID(), "clipTiming");
         	model.addModelWatcher(new OneEventPerPeriodModelWatcher(clip, clipTiming), "showwatcher" + state.getID(), state);
         }
-        
-        tfa = new TrafficFlowAnalyzer(5,10000,120000);
-        context.put("tfa", tfa);
         
         /******** GUI ********/
         ef = new EIAFrame(Integer.parseInt(props.getRequired("settings", "global", "guiwidth")),Integer.parseInt(props.getRequired("settings", "global", "guiheight")),context);
