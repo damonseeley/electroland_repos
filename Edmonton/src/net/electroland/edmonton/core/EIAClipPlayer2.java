@@ -58,7 +58,7 @@ public class EIAClipPlayer2 {
 		}
 		
 		phantomTimer = new Timer();
-		//phantomTimer.schedule(new phantomTimerTask(), 1000, 1000);
+		phantomTimer.schedule(new phantomTimerTask(), 1000, 1000);
 		live = anim.addClip(new SolidColorContent(null), 0, 0, anim.getStageDimensions().width, anim.getStageDimensions().height, 1.0);
 		logger.info("ClipPlayer2 created: " + this);
 	}
