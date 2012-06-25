@@ -209,7 +209,8 @@ public class EIAMainConductor extends Thread implements ActionListener, ModelLis
         model.addModelWatcher(screenSaver,  "screenSaver", eio.getIStates());
 
         /******** GUI ********/
-        ef = new EIAFrame(Integer.parseInt(props.getRequired("settings", "global", "guiwidth")),Integer.parseInt(props.getRequired("settings", "global", "guiheight")),context);
+        //ef = new EIAFrame(Integer.parseInt(props.getRequired("settings", "global", "guiwidth")),Integer.parseInt(props.getRequired("settings", "global", "guiheight")),context);
+        ef = new EIAFrame(context);
         ef.addButtonListener(this);
 
 

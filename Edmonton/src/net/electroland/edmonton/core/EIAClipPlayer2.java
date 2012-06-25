@@ -60,7 +60,7 @@ public class EIAClipPlayer2 {
 		phantomTimer = new Timer();
 		phantomTimer.schedule(new phantomTimerTask(), 1000, 1000);
 		live = anim.addClip(new SolidColorContent(null), 0, 0, anim.getStageDimensions().width, anim.getStageDimensions().height, 1.0);
-		logger.info("ClipPlayer2 created: " + this);
+		//logger.info("ClipPlayer2 created: " + this);
 	}
 	
 	private class phantomTimerTask extends TimerTask {
@@ -73,8 +73,6 @@ public class EIAClipPlayer2 {
 
 	public void playClip(String name, double loc){
 		
-		logger.info("I AM ClipPlayer2: " + this);
-
 		try {
 
 			logger.debug("Running clipPlayer2." + name + '(' + loc + ')');
