@@ -72,16 +72,15 @@ public class EIAClipPlayer2 {
 
 	private class phantomTimerTask extends TimerTask {
 		public void run() {
-			// put some conditional in here to look at TFA populations
 			// fire phantom
-
 			int newTime = (int)(Math.random()*1500)+400;
 			phantomTimer.schedule(new phantomTimerTask(), newTime);
-
-			//perhaps randomize number of firings
-			strobeRand(Math.random() * 620);
-
-			logger.info(this + " fired a phantom clip and newTime= " + newTime);
+			
+			if (tfa.getPM1Flow() == 0 && tfa.getPM2Flow() == 0) {
+				//perhaps randomize number of firings
+				strobeRand(Math.random() * 620);
+				logger.info(this + " fired a phantom clip and newTime= " + newTime);
+			}
 		}
 	}
 
