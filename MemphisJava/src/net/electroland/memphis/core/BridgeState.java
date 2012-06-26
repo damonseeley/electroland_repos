@@ -86,12 +86,12 @@ public class BridgeState extends Behavior {
     }
     
     // 2012
-	public long getLastUpdateTime() {
+	public String getLastUpdateTime() {
 		// TODO Auto-generated method stub
 		if (hasBeenUpdated){
-		return System.currentTimeMillis() - lastUpdate;
+			return (System.currentTimeMillis() - lastUpdate)/1000 + "s";
 		} else {
-			return -1;
+			return "Never";
 		}
 	}
 
