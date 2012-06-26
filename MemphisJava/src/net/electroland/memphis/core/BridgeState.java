@@ -23,6 +23,8 @@ class inputTimeoutTask extends TimerTask {
   }
 
 public class BridgeState extends Behavior {
+	
+	private static Logger logger = Logger.getLogger(BridgeState.class);
 
     private Bay[] bays;
     private int priority;
@@ -76,6 +78,9 @@ public class BridgeState extends Behavior {
             }
             
             //2012
+            //logger.info("Inside HaleUDPInputDeviceEvent loop");
+            inputTimeoutTimer.cancel();
+            inputTimeoutTimer = new Timer();
             inputTimeoutTimer.schedule(new inputTimeoutTask(), inputTimeoutDelay);
             
         }
