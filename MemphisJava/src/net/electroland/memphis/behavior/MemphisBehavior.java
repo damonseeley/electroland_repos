@@ -1,5 +1,7 @@
 package net.electroland.memphis.behavior;
 
+import org.apache.log4j.Logger;
+
 import net.electroland.input.InputDeviceEvent;
 import net.electroland.input.devices.memphis.HaleUDPInputDeviceEvent;
 import net.electroland.input.devices.weather.WeatherChangedEvent;
@@ -9,10 +11,13 @@ import net.electroland.lighting.detector.animation.Animation;
 import net.electroland.lighting.detector.animation.AnimationManager;
 import net.electroland.memphis.animation.MemphisAnimation;
 import net.electroland.memphis.core.BridgeState;
+import net.electroland.memphis.core.MemphisCore;
 import net.electroland.memphis.core.StartupInputDeviceEvent;
 import processing.core.PApplet;
 
 public class MemphisBehavior extends MemphisProcessingBehavior {
+	
+	private static Logger logger = Logger.getLogger(MemphisBehavior.class);
 
 	private Recipient bridge;
 	private AnimationManager am;
@@ -38,6 +43,9 @@ public class MemphisBehavior extends MemphisProcessingBehavior {
 		}else if (e instanceof WeatherChangedEvent)
 		{
 			// process weather events here.
+			// 2012 
+			//logger.info(((WeatherChangedEvent) e).getWeatherRecord().getSunset());
+			
 		}else if (e instanceof StartupInputDeviceEvent)
 		{
 			if (bridge == null){
