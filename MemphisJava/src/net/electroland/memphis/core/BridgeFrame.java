@@ -12,6 +12,7 @@ public class BridgeFrame extends JFrame implements Runnable{
 	private JLabel[] tripped;
 	private JLabel[] processed;
 	private JLabel[] occupied;
+	private JLabel lastUpdate;
 
 	public BridgeFrame(BridgeState bs, long delay){
 
@@ -23,6 +24,7 @@ public class BridgeFrame extends JFrame implements Runnable{
 		tripped = new JLabel[bays];
 		processed = new JLabel[bays];
 		occupied = new JLabel[bays];
+		lastUpdate = new JLabel("000");
 
 		this.setLayout(new MigLayout());
 
@@ -40,6 +42,9 @@ public class BridgeFrame extends JFrame implements Runnable{
 			occupied[i] = new JLabel("NA");
 			this.add(occupied[i],"wrap");
 		}
+		
+		this.add(new JLabel("Time since last HaleUDP: "),"span 2");
+		this.add(lastUpdate,"wrap");
 
 		this.setVisible(true);
 		new Thread(this).start();
@@ -56,6 +61,8 @@ public class BridgeFrame extends JFrame implements Runnable{
 					processed[i].setText("" + bs.getTimeSinceProcessed(i)/1000.0 + "s");
 					occupied[i].setText("" + bs.isStanding(i));
 				}
+				long update = bs.getLastUpdateTime();
+				lastUpdate.setText("" + update);
 			}
 			
 			try {
