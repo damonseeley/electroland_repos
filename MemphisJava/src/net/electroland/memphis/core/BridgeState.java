@@ -5,6 +5,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.swing.JLabel;
+
 import net.electroland.input.InputDeviceEvent;
 import net.electroland.input.devices.memphis.HaleUDPInputDeviceEvent;
 import net.electroland.lighting.conductor.Behavior;
@@ -32,8 +34,8 @@ public class BridgeState extends Behavior {
     private double standingThreshold;
 
     //2012
-    private Timer inputTimeoutTimer;
-    private int inputTimeoutDelay = 10000; //timeout in MS
+    private long lastUpdate;
+    private boolean hasBeenUpdated = false;
 
     public BridgeState(long tripThreshold, long samplePeriod, double standingThreshold, int totalBays, int priority){
         this.tripThreshold = tripThreshold;
@@ -46,8 +48,7 @@ public class BridgeState extends Behavior {
         this.priority = priority;
 
         //2012
-        inputTimeoutTimer = new Timer();
-        inputTimeoutTimer.schedule(new inputTimeoutTask(), inputTimeoutDelay);        
+        lastUpdate = 0;
     }
 
     public BridgeState(int length)
@@ -78,13 +79,21 @@ public class BridgeState extends Behavior {
             }
             
             //2012
-            //logger.info("Inside HaleUDPInputDeviceEvent loop");
-            inputTimeoutTimer.cancel();
-            inputTimeoutTimer = new Timer();
-            inputTimeoutTimer.schedule(new inputTimeoutTask(), inputTimeoutDelay);
+            lastUpdate = System.currentTimeMillis();
+            hasBeenUpdated = true;
             
         }
     }
+    
+    // 2012
+	public long getLastUpdateTime() {
+		// TODO Auto-generated method stub
+		if (hasBeenUpdated){
+		return System.currentTimeMillis() - lastUpdate;
+		} else {
+			return -1;
+		}
+	}
 
     public long getTimeSinceTripped(int bay){
         return bays[bay].lastOn == -1 ? -1 : System.currentTimeMillis() - bays[bay].lastOn;
@@ -278,4 +287,6 @@ public class BridgeState extends Behavior {
 
     public void completed(Animation a) {}
     public int getPriority() {return priority;}
+
+
 }
