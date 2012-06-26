@@ -52,8 +52,8 @@ public class BridgeFrame extends JFrame implements Runnable{
 				int bays = bs.getSize();
 				for (int i = 0; i < bays; i++)
 				{
-					tripped[i].setText("" + bs.getTimeSinceTripped(i));
-					processed[i].setText("" + bs.getTimeSinceProcessed(i));
+					tripped[i].setText("" + bs.getTimeSinceTripped(i)/1000.0 + "s");
+					processed[i].setText("" + bs.getTimeSinceProcessed(i)/1000.0 + "s");
 					occupied[i].setText("" + bs.isStanding(i));
 				}
 			}
