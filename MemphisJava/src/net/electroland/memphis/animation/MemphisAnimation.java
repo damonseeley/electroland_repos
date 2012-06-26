@@ -223,7 +223,7 @@ public class MemphisAnimation implements Animation, SpriteListener {
 					wave.addListener(this);
 					sprites.put(spriteIndex, wave);
 					spriteIndex++;
-				} else if(i == 14){
+				} else if(i == 13){ // changed to 13 in 2012 to accurately reflect center of bridge
 					/*
 					// TODO: uncomment this to have shooters emit from a person when they continually trigger a sensor.
 					// start a new sprite for shooters at position i
@@ -236,7 +236,12 @@ public class MemphisAnimation implements Animation, SpriteListener {
 					doublewave.addListener(this);
 					sprites.put(spriteIndex, doublewave);
 					spriteIndex++;
-				}
+				} else if(i == 7 || i == 19){ // new in 2012 create extra red waves
+					DoubleWave doublewave = new DoubleWave(spriteIndex, raster, xpos, 0, waveImage, waveImage2, waveWidth, height, waveDuration, 6000);
+					doublewave.addListener(this);
+					sprites.put(spriteIndex, doublewave);
+					spriteIndex++;
+				} 
 				
 				state.spriteStarted(i); // let the bridge state know you started some action for that sensor.
 			}
