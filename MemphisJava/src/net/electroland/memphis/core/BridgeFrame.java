@@ -61,8 +61,7 @@ public class BridgeFrame extends JFrame implements Runnable{
 					processed[i].setText("" + bs.getTimeSinceProcessed(i)/1000.0 + "s");
 					occupied[i].setText("" + bs.isStanding(i));
 				}
-				long update = bs.getLastUpdateTime();
-				lastUpdate.setText("" + update);
+				lastUpdate.setText(bs.getLastUpdateTime());
 			}
 			
 			try {
