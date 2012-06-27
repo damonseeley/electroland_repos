@@ -67,8 +67,11 @@ public class EIAClipPlayer2 {
 			System.exit(-1);
 		}
 
+		//propsGlobal.getRequiredBoolean("traffic", "phantoms", "low")
 		phantomTimer = new Timer();
-		phantomTimer.schedule(new phantomTimerTask(), 1000);
+		if (Boolean.parseBoolean(propsGlobal.getRequired("traffic", "phantoms", "enabled"))){
+			phantomTimer.schedule(new phantomTimerTask(), 1000);
+		}
 		live = anim.addClip(new SolidColorContent(null), 0, 0, anim.getStageDimensions().width, anim.getStageDimensions().height, 1.0);
 		//logger.info("ClipPlayer2 created: " + this);
 	}
@@ -386,7 +389,7 @@ public class EIAClipPlayer2 {
 			}
 		}
 
-		sc.playSingleChannelBlind("vert_connect_med_whoosh16_long.wav", x, 1.0f);
+		sc.playSingleChannelBlind("vert_connect_med_whoosh16.wav", x, 1.0f);
 	}
 
 	public void randomBarsMore(double x){
@@ -409,6 +412,8 @@ public class EIAClipPlayer2 {
 		//vert_connect_med_whoosh16.wav
 		sc.playSingleChannelBlind("vert_connect_med_whoosh16_long.wav", x, 1.0f);
 	}
+
+
 
 	private int randBarSpeed = 1500;
 
@@ -448,35 +453,57 @@ public class EIAClipPlayer2 {
 
 	public void accentSm(double x) {
 		int rand = (int)(Math.random() * 100);
-		//logger.debug(rand);
-		if (rand < 40){
-			accentSmVertDoublet(x);
+		if (rand < 45){
+			if (getPMTraffic(x) < 1) {
+				accentVertDoubletFour(x);
+			} else if (getPMTraffic(x) < 2) {
+				accentVertDoubletThree(x);
+			} else {
+				accentVertDoubletTwo(x);
+			}
 		} else if (rand < 100) {
-			accentVertSixFill(x);
+			if (getPMTraffic(x) < 2) {
+				accentVertSixFill(x);
+			} else {
+				accentVertFourFill(x);
+			}
 		} else {
 			accentBlipMarimba(x); // default, not used
 		}
 
 	}
 
-	public void accentMarimbaStorm(double x){
+	public void accentBlipStorm(double x){
 		int count = 0;
-		if (getPMTraffic(x) > 1) {
-			count = 10;
-		} else {
-			count = 20;
-		}
-		
-		for (int i=0; i< count; i++){
-			Timer marimbaTimer = new Timer();
-			MarimbaTask mt = new MarimbaTask();
-			double offset = Math.random() * 60;
-			mt.setX(x + offset);
-			marimbaTimer.schedule(mt, 125*i);
+		if (getPMTraffic(x) >= 2) { //play upright bass
+			count = 5;
+			for (int i=0; i< count; i++){
+				Timer blipTimer = new Timer();
+				double offset = Math.random() * 30;
+				UprightBassStormTask mt = new UprightBassStormTask();
+				mt.setX(x + offset);
+				blipTimer.schedule(mt, 220*i);
+			}
+		} else if (getPMTraffic(x) < 2) {
+			count = 19;
+			double rand = Math.random()*100;
+			for (int i=0; i< count; i++){
+				Timer blipTimer = new Timer();
+				double offset = Math.random() * 60;
+				if (rand < 50) {
+					MarimbaStormTask mt = new MarimbaStormTask();
+					mt.setX(x + offset);
+					blipTimer.schedule(mt, 125*i);
+				} else if (rand > 50){
+					VibraphoneStormTask mt = new VibraphoneStormTask();
+					mt.setX(x + offset);
+					blipTimer.schedule(mt, 125*i);
+				}
+			}
 		}
 	}
-	
-	private class MarimbaTask extends TimerTask {
+
+	private class MarimbaStormTask extends TimerTask {
 		double x;
 		public void setX(double x){
 			this.x = x;
@@ -486,10 +513,30 @@ public class EIAClipPlayer2 {
 		}
 	}
 
+	private class VibraphoneStormTask extends TimerTask {
+		double x;
+		public void setX(double x){
+			this.x = x;
+		}
+		public void run() {
+			accentBlipVibraphone(x);
+		}
+	}
+
+	private class UprightBassStormTask extends TimerTask {
+		double x;
+		public void setX(double x){
+			this.x = x;
+		}
+		public void run() {
+			accentBlipUprightBass(x);
+		}
+	}
+
 
 
 	public void accentBlipMarimba(double x) {
-		logger.debug("blip2");
+		logger.debug("marimba blip");
 		x = findNearestLight(x+lookAhead,true);
 		//orig int barWidth = 3;
 		int barWidth = 3;
@@ -510,6 +557,66 @@ public class EIAClipPlayer2 {
 		set.add("marimba_mid_05b.wav");
 		set.add("marimba_mid_06a.wav");
 		set.add("marimba_mid_06b.wav");
+		int size = set.size();
+		int item = new Random().nextInt(size);
+		int i = 0;
+		for(Object file : set)
+		{
+			if (i == item){
+				sc.playSingleChannelBlind((String)file, x, 1.0f);
+			}
+			i++;
+		}   
+	}
+
+	public void accentBlipUprightBass(double x) {
+		logger.debug("bass blip");
+		x = findNearestLight(x+lookAhead,true);
+		//orig int barWidth = 3;
+		int barWidth = 3;
+		Content simpleClip2 = new SolidColorContent(Color.WHITE);
+		Clip blip1 = live.addClip(simpleClip2, (int)x-barWidth/2,0,barWidth,16, 1.0); //set the alpha to 0.5 to get 50% brightness on creation
+		blip1.delay(100).fadeOut(500).delete();
+
+		Set<String> set = new LinkedHashSet<String>(3);
+		set.add("UprightJazzBassBlues_a.wav");
+		set.add("UprightJazzBassBlues_b.wav");
+		set.add("UprightJazzBassBlues_c.wav");
+		set.add("UprightJazzBassBlues_d.wav");
+		set.add("UprightJazzBassBlues_e.wav");
+		set.add("UprightJazzBassBlues_f.wav");
+		set.add("UprightJazzBassBlues_g.wav");
+
+		int size = set.size();
+		int item = new Random().nextInt(size);
+		int i = 0;
+		for(Object file : set)
+		{
+			if (i == item){
+				sc.playSingleChannelBlind((String)file, x, 1.0f);
+			}
+			i++;
+		}   
+	}
+
+	public void accentBlipVibraphone(double x) {
+		logger.debug("bass blip");
+		x = findNearestLight(x+lookAhead,true);
+		//orig int barWidth = 3;
+		int barWidth = 3;
+		Content simpleClip2 = new SolidColorContent(Color.WHITE);
+		Clip blip1 = live.addClip(simpleClip2, (int)x-barWidth/2,0,barWidth,16, 1.0); //set the alpha to 0.5 to get 50% brightness on creation
+		blip1.delay(100).fadeOut(500).delete();
+
+		Set<String> set = new LinkedHashSet<String>(3);
+		set.add("CarribeanVibraphoneBlues_a.wav");
+		set.add("CarribeanVibraphoneBlues_b.wav");
+		set.add("CarribeanVibraphoneBlues_c.wav");
+		set.add("CarribeanVibraphoneBlues_d.wav");
+		set.add("CarribeanVibraphoneBlues_e.wav");
+		set.add("CarribeanVibraphoneBlues_f.wav");
+		set.add("CarribeanVibraphoneBlues_g.wav");
+
 		int size = set.size();
 		int item = new Random().nextInt(size);
 		int i = 0;
@@ -564,7 +671,6 @@ public class EIAClipPlayer2 {
 	}
 
 
-	// maybe do a faster version?
 	public void accentVertSixFill(double x) {
 		logger.debug("vertSixFill");
 		x = findNearestLight(x+lookAhead,true);
@@ -590,8 +696,44 @@ public class EIAClipPlayer2 {
 		sc.playSingleChannelBlind("entrance6.wav", x, 0.5f);
 	}
 
+	public void accentVertFourFill(double x) {
+		logger.debug("vertSixFill");
+		x = findNearestLight(x+lookAhead,true);
+		int barWidth = 3;
+		Content simpleClip2 = new SolidColorContent(Color.WHITE);
 
-	public void accentSmVertDoublet(double x) {
+		int dOff = 150; //delay offset
+
+		Clip top1 = live.addClip(simpleClip2, (int)(x-barWidth/2+barOff*0),topBar,barWidth,barHeight, 1.0); 
+		Clip bottom1 = live.addClip(simpleClip2, (int)(x-barWidth/2+barOff*0),bottomBar,barWidth,barHeight, 1.0, dOff*1);
+		Clip top2 = live.addClip(simpleClip2, (int)(x-barWidth/2+barOff*1),topBar,barWidth,barHeight, 1.0, dOff*2); 
+		Clip bottom2 = live.addClip(simpleClip2, (int)(x-barWidth/2+barOff*1),bottomBar,barWidth,barHeight, 1.0, dOff*3); 
+
+		top1.delay(350).fadeOut(350).delete();
+		bottom1.delay(350).fadeOut(350).delete();
+		top2.delay(350).fadeOut(350).delete();
+		bottom2.delay(350).fadeOut(350).delete();
+
+		sc.playSingleChannelBlind("entrance6_short.wav", x, 0.5f);
+	}
+
+
+	public void accentVertDoubletFour(double x) {
+		logger.debug("smVertDoublet");
+		x = findNearestLight(x+lookAhead,true);
+		int barWidth = 13;
+		Content simpleClip2 = new SolidColorContent(Color.WHITE);
+
+		Clip topBlip = live.addClip(simpleClip2, (int)x-barWidth/2-2,topBar,barWidth,barHeight, 1.0); 
+		Clip bottomBlip = live.addClip(simpleClip2, (int)x-barWidth/2-2,bottomBar,barWidth,barHeight, 1.0, 250); 
+
+		topBlip.delay(500).fadeOut(500).delete();
+		bottomBlip.delay(500).fadeOut(500).delete();
+
+		sc.playSingleChannelBlind("lumen_entrance7.wav", x, 0.5f);
+	}
+
+	public void accentVertDoubletThree(double x) {
 		logger.debug("smVertDoublet");
 		x = findNearestLight(x+lookAhead,true);
 		int barWidth = 9;
@@ -599,6 +741,21 @@ public class EIAClipPlayer2 {
 
 		Clip topBlip = live.addClip(simpleClip2, (int)x-barWidth/2,topBar,barWidth,barHeight, 1.0); 
 		Clip bottomBlip = live.addClip(simpleClip2, (int)x-barWidth/2,bottomBar,barWidth,barHeight, 1.0, 250); 
+
+		topBlip.delay(500).fadeOut(500).delete();
+		bottomBlip.delay(500).fadeOut(500).delete();
+
+		sc.playSingleChannelBlind("lumen_entrance7.wav", x, 0.5f);
+	}
+
+	public void accentVertDoubletTwo(double x) {
+		logger.debug("smVertDoublet");
+		x = findNearestLight(x+lookAhead,true);
+		int barWidth = 6;
+		Content simpleClip2 = new SolidColorContent(Color.WHITE);
+
+		Clip topBlip = live.addClip(simpleClip2, (int)x-barWidth/2-1,topBar,barWidth,barHeight, 1.0); 
+		Clip bottomBlip = live.addClip(simpleClip2, (int)x-barWidth/2-1,bottomBar,barWidth,barHeight, 1.0, 250); 
 
 		topBlip.delay(500).fadeOut(500).delete();
 		bottomBlip.delay(500).fadeOut(500).delete();
