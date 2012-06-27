@@ -87,6 +87,7 @@ public class EIAFrame extends JFrame implements ActionListener {
         
         EIAClipPlayer2 tmpPlayer = (EIAClipPlayer2)context.get("clipPlayer2");
         clipMethods = new JComboBox(tmpPlayer.getMethodNames().toArray());
+        clipMethods.setMaximumRowCount(20);
         buttons.add(clipMethods);
 
         random = new JButton("Play Clip");
