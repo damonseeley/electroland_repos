@@ -128,6 +128,10 @@ public class EIAClipPlayer2 {
 		Collections.sort(names);
 		return names;
 	}
+	
+	/*
+	 * TRAFFIC METRICS
+	 */
 
 
 	private int getPMTraffic(double x){
@@ -167,6 +171,11 @@ public class EIAClipPlayer2 {
 			return -1;
 		}
 	}
+	
+	
+	/*
+	 * LARGE EVENTS
+	 */
 
 	public void none(double x){
 		// do nothing.
@@ -332,18 +341,50 @@ public class EIAClipPlayer2 {
 		sc.playSingleChannelBlind("piano_doublet01.wav", x, 1.0f);
 
 	}
+	
+	public void bigVertDoubletSparkle(double x) {
+		logger.debug("bigVertDoublet");
+		x = findNearestLight(x+lookAhead,true);
+		int barWidth = 32;
+		
+		Content doubletSparkle = anim.getContent("sparkleDoublet");
+		Content doubletSparkle2 = anim.getContent("sparkleDoublet");
+		//Clip faintSparkle = live.addClip(sparkleThunderClip, 320,0,canvas.getDimensions().width,16, 1.0, 10);
+		
+		Content simpleClip2 = new SolidColorContent(Color.WHITE);
+
+		Clip topBlip = live.addClip(doubletSparkle, (int)x-barWidth+2,topBar,barWidth,barHeight, 1.0); 
+		Clip bottomBlip = live.addClip(doubletSparkle2, (int)x-barWidth+2,bottomBar,barWidth,barHeight, 1.0, 1000);
+		Clip topBlipBg = live.addClip(simpleClip2, (int)x-barWidth+2,topBar,barWidth,barHeight, 0.3); 
+		Clip bottomBlipBg = live.addClip(simpleClip2, (int)x-barWidth+2,bottomBar,barWidth,barHeight, 0.3, 1000); 
+
+		topBlip.delay(600).fadeOut(600).delete();
+		bottomBlip.delay(800).fadeOut(600).delete();
+		topBlipBg.delay(600).fadeOut(600).delete();
+		bottomBlipBg.delay(800).fadeOut(600).delete();
+
+		// something bigger here
+		sc.playSingleChannelBlind("piano_doublet01.wav", x, 1.0f);
+
+	}
 
 	public void bigVertDoubletRandom(double x) {
 		logger.debug("bigVertDoublet2");
 		x = findNearestLight(x+lookAhead,true);
 		int barWidth = 32;
 		Content simpleClip2 = new SolidColorContent(Color.WHITE);
+		Content doubletSparkle = anim.getContent("sparkleDoublet");
+		Content doubletSparkle2 = anim.getContent("sparkleDoublet");
 
-		Clip topBlip = live.addClip(simpleClip2, (int)x-barWidth+2,topBar,barWidth,barHeight, 1.0); 
-		Clip bottomBlip = live.addClip(simpleClip2, (int)x-barWidth+2,bottomBar,barWidth,barHeight, 1.0, 1000); 
+		Clip topBlip = live.addClip(doubletSparkle, (int)x-barWidth+2,topBar,barWidth,barHeight, 1.0); 
+		Clip bottomBlip = live.addClip(doubletSparkle2, (int)x-barWidth+2,bottomBar,barWidth,barHeight, 1.0, 1000);
+		Clip topBlipBg = live.addClip(simpleClip2, (int)x-barWidth+2,topBar,barWidth,barHeight, 0.4); 
+		Clip bottomBlipBg = live.addClip(simpleClip2, (int)x-barWidth+2,bottomBar,barWidth,barHeight, 0.4, 1000); 
 
 		topBlip.delay(600).fadeOut(600).delete();
 		bottomBlip.delay(800).fadeOut(600).delete();
+		topBlipBg.delay(600).fadeOut(600).delete();
+		bottomBlipBg.delay(800).fadeOut(600).delete();
 
 		// something bigger here
 		Set<String> set = new LinkedHashSet<String>(3);
@@ -453,10 +494,11 @@ public class EIAClipPlayer2 {
 
 	public void accentSm(double x) {
 		int rand = (int)(Math.random() * 100);
+		
 		if (rand < 45){
-			if (getPMTraffic(x) < 1) {
+			if (getPMTraffic(x) == 0) {
 				accentVertDoubletFour(x);
-			} else if (getPMTraffic(x) < 2) {
+			} else if (getPMTraffic(x) < 1) {
 				accentVertDoubletThree(x);
 			} else {
 				accentVertDoubletTwo(x);
@@ -479,17 +521,17 @@ public class EIAClipPlayer2 {
 			count = 5;
 			for (int i=0; i< count; i++){
 				Timer blipTimer = new Timer();
-				double offset = Math.random() * 30;
+				double offset = Math.random() * 30 - 15;
 				UprightBassStormTask mt = new UprightBassStormTask();
 				mt.setX(x + offset);
 				blipTimer.schedule(mt, 220*i);
 			}
 		} else if (getPMTraffic(x) < 2) {
-			count = 19;
+			count = 15;
 			double rand = Math.random()*100;
 			for (int i=0; i< count; i++){
 				Timer blipTimer = new Timer();
-				double offset = Math.random() * 60;
+				double offset = Math.random() * 60 - 30;
 				if (rand < 50) {
 					MarimbaStormTask mt = new MarimbaStormTask();
 					mt.setX(x + offset);
@@ -765,30 +807,8 @@ public class EIAClipPlayer2 {
 
 
 	public void testClip(double x) {
-		logger.info("ClipPlayer - testClip starting");
-		x = findNearestLight(x+lookAhead,true);
-		int barWidth = 3;
-		Content simpleClip2 = new SolidColorContent(Color.WHITE);
-
-		int dOff = 150; //delay offset
-
-		Clip top1 = live.addClip(simpleClip2, (int)(x-barWidth/2+barOff*0),topBar,barWidth,barHeight, 1.0); 
-		Clip bottom1 = live.addClip(simpleClip2, (int)(x-barWidth/2+barOff*0),bottomBar,barWidth,barHeight, 1.0, dOff*1);
-		Clip top2 = live.addClip(simpleClip2, (int)(x-barWidth/2+barOff*1),topBar,barWidth,barHeight, 1.0, dOff*2); 
-		Clip bottom2 = live.addClip(simpleClip2, (int)(x-barWidth/2+barOff*1),bottomBar,barWidth,barHeight, 1.0, dOff*3); 
-		Clip top3 = live.addClip(simpleClip2, (int)(x-barWidth/2+barOff*2),topBar,barWidth,barHeight, 1.0, dOff*4); 
-		Clip bottom3 = live.addClip(simpleClip2, (int)(x-barWidth/2+barOff*2),bottomBar,barWidth,barHeight, 1.0, dOff*5); 
-
-		top1.delay(350).fadeOut(350).delete();
-		bottom1.delay(350).fadeOut(350).delete();
-		top2.delay(350).fadeOut(350).delete();
-		bottom2.delay(350).fadeOut(350).delete();
-		top3.delay(350).fadeOut(350).delete();
-		bottom3.delay(350).fadeOut(350).delete();
-		logger.info("ClipPlayer - testClip animation done, playing sound");
-
-		sc.playSingleChannelBlind("entrance6.wav", x, 0.5f);
-		logger.info("ClipPlayer - testClip sound call made");
+		logger.info("ClipPlayer - testClip starting, playing accentVertDoubletTwo()");
+		accentVertDoubletTwo(x);
 	}
 
 
