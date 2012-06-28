@@ -30,7 +30,7 @@ public class DoubleWave extends Sprite{
 			//System.out.println("double wave alpha: "+ alpha);
 			if(alpha <= 0){
 				die();
-				System.out.println("double wave DEAD");
+				//System.out.println("double wave DEAD");
 			}
 			
 			// left wave
