@@ -49,6 +49,16 @@ public class EIAClipPlayer2 {
 	private int bottomBar = 8;
 	private int barHeight = 2;
 
+	//from ClipPlayer1, to make waves work
+	int cWidth = 635;
+	int cHeight = 16;
+	int pmvr2Start = 240;
+
+	int wNote = 659; //ms
+	int hNote = wNote/2;
+	int qNote = wNote/4; //ms per qnote
+	int eNote = wNote/8;
+
 
 	public EIAClipPlayer2(Map<String, Object> context)
 	{
@@ -128,7 +138,7 @@ public class EIAClipPlayer2 {
 		Collections.sort(names);
 		return names;
 	}
-	
+
 	/*
 	 * TRAFFIC METRICS
 	 */
@@ -171,8 +181,8 @@ public class EIAClipPlayer2 {
 			return -1;
 		}
 	}
-	
-	
+
+
 	/*
 	 * LARGE EVENTS
 	 */
@@ -180,9 +190,6 @@ public class EIAClipPlayer2 {
 	public void none(double x){
 		// do nothing.
 	}
-	/*
-	 * BIG Animations
-	 */
 
 	public void thunderSparklePM1(double x) {
 		logger.debug("thunderSparkle");
@@ -341,16 +348,16 @@ public class EIAClipPlayer2 {
 		sc.playSingleChannelBlind("piano_doublet01.wav", x, 1.0f);
 
 	}
-	
+
 	public void bigVertDoubletSparkle(double x) {
 		logger.debug("bigVertDoublet");
 		x = findNearestLight(x+lookAhead,true);
 		int barWidth = 32;
-		
+
 		Content doubletSparkle = anim.getContent("sparkleDoublet");
 		Content doubletSparkle2 = anim.getContent("sparkleDoublet");
 		//Clip faintSparkle = live.addClip(sparkleThunderClip, 320,0,canvas.getDimensions().width,16, 1.0, 10);
-		
+
 		Content simpleClip2 = new SolidColorContent(Color.WHITE);
 
 		Clip topBlip = live.addClip(doubletSparkle, (int)x-barWidth+2,topBar,barWidth,barHeight, 1.0); 
@@ -386,7 +393,6 @@ public class EIAClipPlayer2 {
 		topBlipBg.delay(600).fadeOut(600).delete();
 		bottomBlipBg.delay(800).fadeOut(600).delete();
 
-		// something bigger here
 		Set<String> set = new LinkedHashSet<String>(3);
 		set.add("EchoPiano1.wav");
 		set.add("EchoPiano2.wav");
@@ -404,6 +410,9 @@ public class EIAClipPlayer2 {
 		}   
 
 	}
+
+
+
 
 	public void randomBars(double x){
 		if (getPMTraffic(x) > 1){
@@ -454,8 +463,6 @@ public class EIAClipPlayer2 {
 		sc.playSingleChannelBlind("vert_connect_med_whoosh16_long.wav", x, 1.0f);
 	}
 
-
-
 	private int randBarSpeed = 1500;
 
 	public void topRandomBar(double x, int delay, int maxBarLength, int barDest){
@@ -488,13 +495,182 @@ public class EIAClipPlayer2 {
 
 
 
+
+
 	/*
-	 * SMALL Animations
+	 * V1 Wave Animations
+	 * 
+
+	 */
+
+	public void waveBlockAll(double x) {
+		//logger.info("blockWaveAll@ " + x);
+		Content waveBlock = new SolidColorContent(Color.WHITE);
+
+		int waveWidth = 32;
+		Clip waveClip = live.addClip(waveBlock, 260,0,waveWidth,16, 1.0); //add it as 32px wide at the end of the stage
+		waveClip.zIndex = -100; // sets to far background
+
+		//fadein, wait, fadeout
+		Change waveMove = new LinearChange().xTo(-waveWidth);
+		waveClip.queueChange(waveMove, 5000).delay(500).delete();
+		//one.delay(4000).queueChange(change6, 1000);
+		//faintSparkle.delay(500).queueChange(lightFade, 4000).delay(12000).fadeOut(2000).delete();
+	}
+
+	public void waveBigAll(double x) {
+		//logger.info("bigWaveAll@ " + x);
+		Content waveImage = anim.getContent("waveImage");
+
+		int waveWidth = 32;
+		Clip waveImageClip = live.addClip(waveImage, 235,0,waveWidth,16, 1.0); //add it as 32px wide at the end of the stage
+		waveImageClip.zIndex = -100; // sets to far background
+
+		//fadein, wait, fadeout
+		Change waveMove = new LinearChange().xTo(-waveWidth);
+		waveImageClip.queueChange(waveMove, 10000).delay(500).delete();
+		//one.delay(4000).queueChange(change6, 1000);
+		//faintSparkle.delay(500).queueChange(lightFade, 4000).delay(12000).fadeOut(2000).delete();
+	}
+
+	public void waveMegaDouble(double x) {
+		//logger.info("megaWaveDouble@ " + x);
+		Content waveImage = anim.getContent("megaWave");
+
+		int waveWidth = 256;
+		int wave1End = 340;
+		//pmvr2Start
+		Clip wave1 = live.addClip(waveImage, cWidth-15,0,waveWidth/2,cHeight, 1.0); //add it as 32px wide at the end of the stage
+		Clip wave2 = live.addClip(waveImage, pmvr2Start-8,0,waveWidth/3,cHeight, 1.0); //add it as 32px wide at the end of the stage
+		wave1.zIndex = -100; // sets to far background
+		wave2.zIndex = -100; // sets to far background
+
+		//fadein, wait, fadeout
+		Change waveMove1 = new LinearChange().xTo(wave1End-waveWidth).scaleWidth(3.0).alphaTo(0.0);
+		Change waveMove2 = new LinearChange().xTo(0-waveWidth).scaleWidth(3.0).alphaTo(0.0);
+
+		wave1.queueChange(waveMove1, 3000).delete();
+		wave2.queueChange(waveMove2, 3000).delete();
+
+		Set<String> set = new LinkedHashSet<String>(3);
+		set.add("BondiSwell_a.wav");
+		set.add("BondiSwell_b.wav");
+		set.add("BondiSwell_c.wav");
+		int size = set.size();
+		int item = new Random().nextInt(size);
+		int i = 0;
+		for(Object file : set)
+		{
+			if (i == item){
+				//logger.info("Random String = " + file);
+				sc.playSingleChannelBlind((String)file, x, 1.0f);
+			}
+			i++;
+		}   
+	}
+
+	public void waveMega(double x) {
+		//logger.info("megaWaveDouble@ " + x);
+		Content waveImage = anim.getContent("megaWave");
+
+		int waveWidth = 16;
+		Clip wave1 = live.addClip(waveImage, (int)(x-waveWidth/2),0,waveWidth,cHeight, 1.0); 
+		wave1.zIndex = -100; // sets to far background
+
+		//Change waveMove1 = new LinearChange().xTo(wave1End-waveWidth).scaleWidth(3.0).alphaTo(0.0);
+		double newScale = 10.0;
+		Change waveMove1 = new LinearChange().xTo(x-waveWidth/2*newScale).scaleWidth(newScale).alphaTo(0.0);
+
+		wave1.queueChange(waveMove1, 2200).delete();
+
+		Set<String> set = new LinkedHashSet<String>(3);
+		set.add("BondiSwell_a.wav");
+		set.add("BondiSwell_b.wav");
+		set.add("BondiSwell_c.wav");
+		int size = set.size();
+		int item = new Random().nextInt(size);
+		int i = 0;
+		for(Object file : set)
+		{
+			if (i == item){
+				//logger.info("Random String = " + file);
+				sc.playSingleChannelBlind((String)file, x, 1.0f);
+			}
+			i++;
+		}  
+	}
+
+
+	public void wavesRandom(double x) {
+		//logger.info("randomWaves @" + x);
+		int xLow = 0;
+		int xHigh = cWidth;
+		int waveWidth = 32;
+
+		int waves = 10;
+		int pDelay = eNote;
+		Content waveImage = anim.getContent("waveImage");
+		for (int p=0; p<waves; p++){
+			int newx = (int)(Math.random()*(xHigh-xLow));
+			Change moveIt = new LinearChange().xBy(-16).alphaTo(0.0);
+			live.addClip(waveImage, newx, 0, waveWidth, cHeight, 1.0, p*pDelay).queueChange(moveIt, 1500);
+		}
+
+		sc.playSingleChannelBlind("BondiSwell_b.wav", x, 1.0f);
+	}
+
+
+	public void wavesRandom2(double x) {
+		//logger.info("randomWaves2 @" + x);
+		int xLow = 0;
+		int xHigh = cWidth;
+		int waveWidth = 40;
+
+		int waves = 10;
+		int pDelay = eNote/3;
+		Content waveImage = anim.getContent("waveImage");
+		for (int p=0; p<waves; p++){
+			int newx = (int)(Math.random()*(xHigh-xLow));
+			Change moveIt = new LinearChange().xBy(-16).alphaTo(0.0);
+			live.addClip(waveImage, newx, 0, waveWidth, cHeight, 1.0, p*pDelay).queueChange(moveIt, 1500);
+		}
+
+		sc.playSingleChannelBlind("AnalogSwell_a.wav", x, 1.0f);
+	}
+
+	public void wavesStructured(double x) {
+		//logger.info("structuredWaves @" + x);
+		int waves = 10; //?
+		int wave1End = 340;
+		int waveWidth = 32;
+		int waveOffset = waveWidth/3;
+		int waveSpacing = waveWidth + waveOffset;
+		waves = (cWidth-wave1End)/waveSpacing;
+
+		int pDelay = eNote;
+		Content waveImage = anim.getContent("waveImage");
+		for (int p=0; p<waves; p++){
+			int newx1 = wave1End + p*waveSpacing; //ppm 1
+			int newx2 = 0 + p*waveSpacing; //ppm 2
+			Change moveIt = new LinearChange().xBy(-1*waveWidth/2).alphaTo(0.0);
+			live.addClip(waveImage, newx1, 0, waveWidth, cHeight, 1.0, p*pDelay).queueChange(moveIt, 1500);
+			live.addClip(waveImage, newx2, 0, waveWidth, cHeight, 1.0, p*pDelay).queueChange(moveIt, 1500);
+		}
+
+		sc.playSingleChannelBlind("AnalogSwell_b.wav", x, 1.0f);
+	}
+
+
+
+	/*
+	 * ACCENTS
+	 * 
+	 * 
 	 */
 
 	public void accentSm(double x) {
 		int rand = (int)(Math.random() * 100);
-		
+
 		if (rand < 45){
 			if (getPMTraffic(x) == 0) {
 				accentVertDoubletFour(x);
@@ -605,7 +781,7 @@ public class EIAClipPlayer2 {
 		for(Object file : set)
 		{
 			if (i == item){
-				sc.playSingleChannelBlind((String)file, x, 1.0f);
+				sc.playSingleChannelBlind((String)file, x, 0.7f);
 			}
 			i++;
 		}   
@@ -635,7 +811,7 @@ public class EIAClipPlayer2 {
 		for(Object file : set)
 		{
 			if (i == item){
-				sc.playSingleChannelBlind((String)file, x, 1.0f);
+				sc.playSingleChannelBlind((String)file, x, 0.9f);
 			}
 			i++;
 		}   
@@ -665,7 +841,7 @@ public class EIAClipPlayer2 {
 		for(Object file : set)
 		{
 			if (i == item){
-				sc.playSingleChannelBlind((String)file, x, 1.0f);
+				sc.playSingleChannelBlind((String)file, x, 0.7f);
 			}
 			i++;
 		}   
