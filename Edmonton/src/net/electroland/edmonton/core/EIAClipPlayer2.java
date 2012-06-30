@@ -266,7 +266,53 @@ public class EIAClipPlayer2 {
         Change back = new LinearChange().xTo(x+lookAhead*1).widthTo(barWidth);
 
         grow.queueChange(out,600).queueChange(back,600).fadeOut(100).delete();
-        sc.playSingleChannelBlind("highlight_22.wav", x, 1.0f);
+        
+        Set<String> set = new LinkedHashSet<String>(3);
+        set.add("highlight_22.wav");
+        set.add("highlight_14.wav");
+        int size = set.size();
+        int item = new Random().nextInt(size);
+        int i = 0;
+        for(Object file : set)
+        {
+            if (i == item){
+                sc.playSingleChannelBlind((String)file, x, 1.0f);
+            }
+            i++;
+        }  
+    }
+    
+    public void boomerang(double x){
+        logger.debug("boomerang");
+
+        int barWidth = 18;
+        int dist = 65;
+
+        x = findNearestLight(x+lookAhead/2,true);
+        Content simpleClip2 = new SolidColorContent(Color.WHITE);
+
+        Clip boomerang = live.addClip(simpleClip2, (int)x-barWidth,topBar,barWidth,barHeight*3, 1.0);
+
+        Change out = new LinearChange().xTo(x-dist).scaleWidth(1.5);
+        //Change back = new LinearChange().xTo(x+lookAhead*2).scaleWidth(0.66).alphaTo(0.1);
+        Change back = new LinearChange().xTo(x+lookAhead*2).scaleWidth(0.66);
+
+        boomerang.queueChange(out, 500).queueChange(back,500).fadeOut(100).delete();
+
+        Set<String> set = new LinkedHashSet<String>(3);
+        set.add("highlight_13.wav");
+        set.add("highlight_06.wav");
+        int size = set.size();
+        int item = new Random().nextInt(size);
+        int i = 0;
+        for(Object file : set)
+        {
+            if (i == item){
+                sc.playSingleChannelBlind((String)file, x, 1.0f);
+            }
+            i++;
+        } 
+
     }
 
 
@@ -308,28 +354,6 @@ public class EIAClipPlayer2 {
         String kotuFile = "kotu_0"+kotuNum+".wav";
         //logger.info("EIAClipPlayer - play kotuFile: " + kotuFile);
         sc.playSingleChannelBlind(kotuFile, x, 1.0f);
-    }
-
-    public void boomerang(double x){
-        logger.debug("boomerang");
-
-        int barWidth = 18;
-        int dist = 65;
-
-        x = findNearestLight(x+lookAhead/2,true);
-        Content simpleClip2 = new SolidColorContent(Color.WHITE);
-
-        Clip boomerang = live.addClip(simpleClip2, (int)x-barWidth,topBar,barWidth,barHeight*3, 1.0);
-
-        Change out = new LinearChange().xTo(x-dist).scaleWidth(1.5);
-        //Change back = new LinearChange().xTo(x+lookAhead*2).scaleWidth(0.66).alphaTo(0.1);
-        Change back = new LinearChange().xTo(x+lookAhead*2).scaleWidth(0.66);
-
-        boomerang.queueChange(out, 500).queueChange(back,500).fadeOut(100).delete();
-
-        //sc.playSingleChannelBlind("vert_disconnect_long_whoosh03.wav", x, 1.0f);
-        sc.playSingleChannelBlind("highlight_13.wav", x, 1.0f);
-
     }
 
     public void bigVertDoublet(double x) {
