@@ -5,3 +5,4 @@ settings.displaymetrics = $displayScale 3.86 $IStateSize 6 $lightHeight 4 $light
 settings.eiomode = $playback true
 settings.sound = $filePath /Users/damon/Documents/Workspace/Edmonton/depends/soundfiles/ $channels 17 $debug false $soundBypass false $stereoOnly true
 settings.random = $bottom 13 $top 624
+settings.sensortest = $testing false
