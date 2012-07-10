@@ -124,8 +124,14 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
         model = new Model();
         model.addModelListener(this);
         
+        ElectrolandProperties clipNames;
         // watchers per istate
-        ElectrolandProperties clipNames = new ElectrolandProperties("EIA-clipSchedule.properties");
+        if (Boolean.parseBoolean(props.getOptional("settings", "sensortest", "testing"))) {
+            clipNames = new ElectrolandProperties("EIA-clipSchedule-test.properties");
+        } else {
+            clipNames = new ElectrolandProperties("EIA-clipSchedule.properties");
+        }
+        
         for (IState state : eio.getIStates())
         {
         	String clip = clipNames.getRequired("sensor", state.getID(), "clipName");
