@@ -1088,6 +1088,15 @@ public class EIAClipPlayer2 {
         logger.info("ClipPlayer - testClip starting, playing accentVertDoubletTwo()");
         accentVertDoubletTwo(x);
     }
+    
+    public void testSensor(double x) {
+        logger.debug("sensor test blip");
+        x = findNearestLight(x,true);
+        int barWidth = 3;
+        Content simpleClip2 = new SolidColorContent(Color.WHITE);
+        Clip blip1 = live.addClip(simpleClip2, (int)x-barWidth/2,0,barWidth,16, 0.5); //set the alpha to 0.5 to get 50% brightness on creation
+        blip1.delay(1000).fadeOut(500).delete();
+    }
 
 
     /**
