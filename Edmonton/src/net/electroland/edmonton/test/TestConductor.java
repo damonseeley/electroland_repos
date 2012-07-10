@@ -30,7 +30,7 @@ public class TestConductor extends JComponent implements MouseMotionListener{
     // width to render sensors & lights
     final static int side = 3;
     final static int lightside = side * 4;
-    final static int dbrightness = 64;
+    final static int dbrightness = 256;
     final static long delay = 33;
 
     public TestConductor()
@@ -38,7 +38,7 @@ public class TestConductor extends JComponent implements MouseMotionListener{
         elu = new ELUManager();
         eio = new IOManager();
         try {
-            elu.load("EIA-ELU.properties");
+            elu.load("EIA-ELU-3ch.properties");
             eio.load("EIA-EIO-playback.properties");
             eio.start();
             model = new TestModel(eio.getStates(), dbrightness);
@@ -57,7 +57,7 @@ public class TestConductor extends JComponent implements MouseMotionListener{
         TestConductor display = new TestConductor();
         frame.getContentPane().add(display);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(700,50);
+        frame.setSize(1024,100);
         frame.setVisible(true);
         display.addMouseMotionListener(display);
 
