@@ -598,7 +598,7 @@ public class EIAClipPlayer2 {
         Content waveImage = anim.getContent("megaWaveFull");
 
         //int waveWidth = 16;
-        int waveWidth = 32;
+        int waveWidth = 16;
         Clip wave1 = live.addClip(waveImage, (int)(x-waveWidth/2),0,waveWidth,cHeight, 1.0); 
         //wave1.zIndex = -100; // sets to far background
 
