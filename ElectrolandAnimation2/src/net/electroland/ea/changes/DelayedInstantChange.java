@@ -6,7 +6,7 @@ import net.electroland.ea.State;
 /**
  * Pause, then jump to a new state.
  * @author production
- *
+ * @deprecated replaced by new Change(new DelayedJumpEasingFunction());
  */
 public class DelayedInstantChange extends Change {
 

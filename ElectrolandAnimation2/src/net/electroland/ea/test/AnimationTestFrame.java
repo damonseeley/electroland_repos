@@ -29,8 +29,6 @@ public class AnimationTestFrame extends JFrame{
         // create an AnimationManager
         AnimationManager anim = new AnimationManager("animation.properties");
         anim.setStageColor(Color.WHITE);
-        int w = anim.getStageDimensions().width / 2;
-        int h = anim.getStageDimensions().height / 2;
 
         AnimationTestFrame f = new AnimationTestFrame();
         f.setSize(anim.getStageDimensions());
@@ -42,9 +40,9 @@ public class AnimationTestFrame extends JFrame{
         Clip two = anim.addClip(anim.getContent("stillImage"),  150, 50, 100, 100, 1.0);
         Clip thr = anim.addClip(anim.getContent("stillImage"),  250, 50, 100, 100, 1.0);
 
-        one.queueChange(new Change(new CubicInEasingFunction()).yBy(100).alphaTo(0.0), 2000);
-        two.queueChange(new Change(new CubicOutEasingFunction()).yBy(100).alphaTo(0.0), 2000);
-        thr.queueChange(new Change(new LinearEasingFunction()).yBy(100).alphaTo(0.0), 2000);
+        one.queueChange(new Change().yBy(100).scaleWidth(1.5, new CubicInEasingFunction()), 2000);
+        two.queueChange(new Change(new LinearEasingFunction()).yBy(100).scaleWidth(1.5, new LinearEasingFunction()), 2000);
+        thr.queueChange(new Change(new LinearEasingFunction()).yBy(100).scaleWidth(1.5, new CubicOutEasingFunction()), 2000);
 
         while (true){
             f.getGraphics().drawImage(anim.getStage(), 0, 0, f.getWidth(), f.getHeight(), null);

@@ -3,6 +3,11 @@ package net.electroland.ea.changes;
 import net.electroland.ea.Change;
 import net.electroland.ea.State;
 
+/**
+ * 
+ * @author bradley
+ * @deprecated replaced by new Change(new LinearEasingFunction());
+ */
 public class LinearChange extends Change {
 
     /** 
