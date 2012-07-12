@@ -477,13 +477,13 @@ public class EIAClipPlayer2 {
     public void randomBarsGradLess(double x){
         logger.debug("randomBarsGradLess");
         int maxLoop = 12;
-        int minLoop = 6;
+        int minLoop = 7;
         int loop = (int)(maxLoop*Math.random());
-        int delay = 160;
+        int delay = 150;
         boolean top = true;
         for (int l=0; l<Math.max(loop,minLoop); l++){
             int maxBarLength = 32;
-            int minBarLength = 10;
+            int minBarLength = 12;
             int barWidth = Math.max((int)(maxBarLength*Math.random()),minBarLength);
             int barDest = -80;
             barDest += (int)(Math.random()*barDest/8);
@@ -511,9 +511,9 @@ public class EIAClipPlayer2 {
 
     public void RandomBarGrad(double x, int delay, int barWidth, int barY, int barDest, int barSpeed){
         x = findNearestLight(x+lookAhead,true);
-        //Content simpleClip2 = new SolidColorContent(Color.WHITE);
-        Content randomBarImage = anim.getContent("randomBarImage");
-        Clip bar = live.addClip(randomBarImage, (int)x-barWidth,barY,barWidth,barHeight, 1.0, delay);
+        //Content randomBarGrad = anim.getContent("randomBarGrad");
+        Content randomBarGrad = anim.getContent("randomBarHead");
+        Clip bar = live.addClip(randomBarGrad, (int)x-barWidth,barY,barWidth,barHeight, 1.0, delay);
 
         Change barMove = new LinearChange().xTo(x+barDest);
         bar.queueChange(barMove, barSpeed).fadeOut(250).delete();
