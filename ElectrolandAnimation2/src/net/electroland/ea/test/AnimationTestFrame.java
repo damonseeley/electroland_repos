@@ -9,9 +9,9 @@ import javax.swing.JFrame;
 import net.electroland.ea.AnimationManager;
 import net.electroland.ea.Change;
 import net.electroland.ea.Clip;
-import net.electroland.ea.changes.DelayedInstantChange;
-import net.electroland.ea.changes.LinearChange;
-import net.electroland.ea.content.SolidColorContent;
+import net.electroland.ea.easing.CubicInEasingFunction;
+import net.electroland.ea.easing.CubicOutEasingFunction;
+import net.electroland.ea.easing.LinearEasingFunction;
 
 public class AnimationTestFrame extends JFrame{
 
@@ -38,29 +38,13 @@ public class AnimationTestFrame extends JFrame{
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // one animation clip with another nested.
-        Clip one = anim.addClip(anim.getContent("stillImage"), w, h, w, h, 1.0);
-        Clip two = one.addClip(anim.getContent("fastImage"), 50, 50, 100, 100, .5,1000);
-        two.addClip(anim.getContent("fastImage"), 50, 50, 50, 50, .5);
+        Clip one = anim.addClip(anim.getContent("stillImage"),  50, 50, 100, 100, 1.0);
+        Clip two = anim.addClip(anim.getContent("stillImage"),  150, 50, 100, 100, 1.0);
+        Clip thr = anim.addClip(anim.getContent("stillImage"),  250, 50, 100, 100, 1.0);
 
-        // red box clip
-        SolidColorContent c = new SolidColorContent(Color.RED);
-        Clip red = anim.addClip(c, 0, 0, w, h, 0);
-        red.zIndex = -100;
-        red.fadeIn(500).fadeOut(500);
-
-        Change change0 = new DelayedInstantChange().alphaTo(1.0).xTo(w);
-        Change change1 = new LinearChange().alphaTo(1.0).yTo(h);
-        Change change2 = new LinearChange().alphaTo(.75).xBy(-10).yBy(-10);
-        Change change3 = new LinearChange().alphaTo(0.0).scaleHeight(.5).scaleWidth(.5);
-        red.queueChange(change0, 0).queueChange(change1, 1000).delay(500).queueChange(change2, 1000).queueChange(change3, 1000);
-        Change change4 = new LinearChange().alphaTo(0.25).xTo(0);
-        Change change5 = new LinearChange().alphaTo(1.0).xTo(w).yTo(0);
-        Change change6 = new LinearChange().scaleHeight(1.25);
-        // brokenChange change6 = new LinearChange().scaleHeight(.5);
-
-        one.queueChange(change4, 0).delay(500).queueChange(change5, 750);
-        one.delay(4000).queueChange(change6, 1000);
-        
+        one.queueChange(new Change(new CubicInEasingFunction()).yBy(100).alphaTo(0.0), 2000);
+        two.queueChange(new Change(new CubicOutEasingFunction()).yBy(100).alphaTo(0.0), 2000);
+        thr.queueChange(new Change(new LinearEasingFunction()).yBy(100).alphaTo(0.0), 2000);
 
         while (true){
             f.getGraphics().drawImage(anim.getStage(), 0, 0, f.getWidth(), f.getHeight(), null);
