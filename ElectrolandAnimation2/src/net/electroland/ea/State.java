@@ -3,8 +3,8 @@ package net.electroland.ea;
 import java.awt.Rectangle;
 
 /**
- * The state (not necessarily actual) of a Clip.  The state is definied as
- * the Clips geometry (x,y,width,height) as well as it's alpha.
+ * A state of a Clip.  The state is defined as
+ * the Clip's geometry (x,y,width,height) as well as it's alpha.
  * @author production
  *
  */

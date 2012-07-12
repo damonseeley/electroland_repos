@@ -1,8 +1,10 @@
 package net.electroland.ea.easing;
 
-public class LinearEasingFunction extends EasingFunction {
+public class DelayedJump extends EasingFunction {
+
     @Override
     public double valueAt(double percentComplete, double start, double finish) {
-        return (percentComplete * (finish - start)) + start;
-   }
+        return (int)percentComplete == 1 ? finish : start;
+    }
+
 }

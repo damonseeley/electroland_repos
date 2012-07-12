@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import net.electroland.ea.changes.DelayedInstantChange;
-import net.electroland.ea.changes.LinearChange;
+import net.electroland.ea.easing.DelayedJump;
+import net.electroland.ea.easing.Linear;
 
 /**
  * This is where all the real magic happens.  A Clip is like an HTML Div.  It's
@@ -90,7 +90,7 @@ public class Clip implements Comparable<Clip>{
      */
     public Clip addClip(Content content, int top, int left, int width, int height, double alpha, int delay){
         Clip newClip = new Clip(content, top, left, width, height, 0);
-        newClip.queueChange(new DelayedInstantChange().alphaTo(alpha), delay);
+        newClip.queueChange(new Change(new DelayedJump()).alphaTo(alpha), delay);
         children.add(newClip);
         return newClip;
     }
@@ -214,7 +214,7 @@ public class Clip implements Comparable<Clip>{
             throw new RuntimeException("Delay duration must be > 0.");
         }
         QueuedChange fade = new QueuedChange();
-        fade.change = new LinearChange().alphaTo(1.0);;
+        fade.change = new Change(new Linear()).alphaTo(1.0);;
         fade.type = QueuedChange.CHANGE; 
         fade.duration = millis;
         changes.add(fade);
@@ -227,7 +227,7 @@ public class Clip implements Comparable<Clip>{
             throw new RuntimeException("Delay duration must be > 0.");
         }
         QueuedChange fade = new QueuedChange();
-        fade.change = new LinearChange().alphaTo(0.0);;
+        fade.change = new Change(new Linear()).alphaTo(0.0);;
         fade.type = QueuedChange.CHANGE; 
         fade.duration = millis;
         changes.add(fade);

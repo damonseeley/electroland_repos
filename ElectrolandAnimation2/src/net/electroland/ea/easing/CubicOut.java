@@ -1,6 +1,6 @@
 package net.electroland.ea.easing;
 
-public class CubicOutEasingFunction extends EasingFunction {
+public class CubicOut extends EasingFunction {
     @Override
     public double valueAt(double percentComplete, double start, double finish) {
         percentComplete--;
