@@ -414,7 +414,7 @@ public class EIAClipPlayer2 {
 
 
 
-
+    /*
     public void randomBars(double x){
         if (getPMTraffic(x) > 1){
             randomBarsLess(x);
@@ -422,7 +422,17 @@ public class EIAClipPlayer2 {
             randomBarsMore(x);
         }
     }
+    */
+    
+    public void randomBarsGrad(double x){
+        if (getPMTraffic(x) > 1){
+            randomBarsGradLess(x);
+        } else {
+            randomBarsGradMore(x);
+        }
+    }
 
+    /*
     public void randomBarsLess(double x){
         logger.debug("randomBars");
         int maxLoop = 14;
@@ -442,7 +452,7 @@ public class EIAClipPlayer2 {
 
         sc.playSingleChannelBlind("vert_connect_med_whoosh16.wav", x, 1.0f);
     }
-
+    
     public void randomBarsMore(double x){
         logger.debug("randomBarsMore");
         int maxLoop = 24;
@@ -459,13 +469,59 @@ public class EIAClipPlayer2 {
                 top = true;
             }
         }
-
         //vert_connect_med_whoosh16.wav
         sc.playSingleChannelBlind("vert_connect_med_whoosh16_long.wav", x, 1.0f);
     }
+    */
+    
+    public void randomBarsGradLess(double x){
+        logger.debug("randomBarsGradLess");
+        int maxLoop = 12;
+        int minLoop = 6;
+        int loop = (int)(maxLoop*Math.random());
+        int delay = 160;
+        boolean top = true;
+        for (int l=0; l<Math.max(loop,minLoop); l++){
+            int maxBarLength = 32;
+            int minBarLength = 10;
+            int barWidth = Math.max((int)(maxBarLength*Math.random()),minBarLength);
+            int barDest = -80;
+            barDest += (int)(Math.random()*barDest/8);
+            logger.info(barDest);
+            
+            int randBarSpeed = 1700;
+            
+            if (top){
+                RandomBarGrad(x,delay*l,barWidth,topBar,barDest,randBarSpeed);
+                top = false;
+            } else {
+                RandomBarGrad(x,delay*l,barWidth,bottomBar,barDest,randBarSpeed);
+                top = true;
+            }
+        }
 
-    private int randBarSpeed = 1500;
+        sc.playSingleChannelBlind("vert_connect_med_whoosh16.wav", x, 1.0f);
+    }
+    
+    public void randomBarsGradMore(double x){
+        //MAKE THIS!!!!
+        randomBarsGradLess(x);
+    }
 
+
+    public void RandomBarGrad(double x, int delay, int barWidth, int barY, int barDest, int barSpeed){
+        x = findNearestLight(x+lookAhead,true);
+        //Content simpleClip2 = new SolidColorContent(Color.WHITE);
+        Content randomBarImage = anim.getContent("randomBarImage");
+        Clip bar = live.addClip(randomBarImage, (int)x-barWidth,barY,barWidth,barHeight, 1.0, delay);
+
+        Change barMove = new LinearChange().xTo(x+barDest);
+        bar.queueChange(barMove, barSpeed).fadeOut(250).delete();
+    }
+  
+    
+    
+    /*
     public void topRandomBar(double x, int delay, int maxBarLength, int barDest){
         //logger.debug("topRandomBar");
 
@@ -479,7 +535,7 @@ public class EIAClipPlayer2 {
         Change barMove = new LinearChange().xTo(x+barDest);
         bar.queueChange(barMove, randBarSpeed).fadeOut(250).delete();
     }
-
+    
     public void bottomRandomBar(double x, int delay, int maxBarLength, int barDest){
         //logger.debug("bottomRandomBar");
 
@@ -493,6 +549,7 @@ public class EIAClipPlayer2 {
         Change barMove = new LinearChange().xTo(x+barDest);
         bar.queueChange(barMove, randBarSpeed).fadeOut(250).delete();
     }
+    */
 
 
 
