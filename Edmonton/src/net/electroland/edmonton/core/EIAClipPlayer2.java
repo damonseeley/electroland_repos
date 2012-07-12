@@ -374,32 +374,7 @@ public class EIAClipPlayer2 {
         sc.playSingleChannelBlind("piano_doublet01.wav", x, 1.0f);
 
     }
-
-    public void bigVertDoubletSparkle(double x) {
-        logger.debug("bigVertDoublet");
-        x = findNearestLight(x+lookAhead,true);
-        int barWidth = 32;
-
-        Content doubletSparkle = anim.getContent("sparkleDoublet");
-        Content doubletSparkle2 = anim.getContent("sparkleDoublet");
-        //Clip faintSparkle = live.addClip(sparkleThunderClip, 320,0,canvas.getDimensions().width,16, 1.0, 10);
-
-        Content simpleClip2 = new SolidColorContent(Color.WHITE);
-
-        Clip topBlip = live.addClip(doubletSparkle, (int)x-barWidth+2,topBar,barWidth,barHeight, 1.0); 
-        Clip bottomBlip = live.addClip(doubletSparkle2, (int)x-barWidth+2,bottomBar,barWidth,barHeight, 1.0, 1000);
-        Clip topBlipBg = live.addClip(simpleClip2, (int)x-barWidth+2,topBar,barWidth,barHeight, 0.3); 
-        Clip bottomBlipBg = live.addClip(simpleClip2, (int)x-barWidth+2,bottomBar,barWidth,barHeight, 0.3, 1000); 
-
-        topBlip.delay(600).fadeOut(600).delete();
-        bottomBlip.delay(800).fadeOut(600).delete();
-        topBlipBg.delay(600).fadeOut(600).delete();
-        bottomBlipBg.delay(800).fadeOut(600).delete();
-
-        // something bigger here
-        sc.playSingleChannelBlind("piano_doublet01.wav", x, 1.0f);
-
-    }
+    
 
     public void bigVertDoubletRandom(double x) {
         logger.debug("bigVertDoublet2");
@@ -414,10 +389,10 @@ public class EIAClipPlayer2 {
         Clip topBlipBg = live.addClip(simpleClip2, (int)x-barWidth+2,topBar,barWidth,barHeight, 0.4); 
         Clip bottomBlipBg = live.addClip(simpleClip2, (int)x-barWidth+2,bottomBar,barWidth,barHeight, 0.4, 1000); 
 
-        topBlip.delay(600).fadeOut(600).delete();
-        bottomBlip.delay(800).fadeOut(600).delete();
-        topBlipBg.delay(600).fadeOut(600).delete();
-        bottomBlipBg.delay(800).fadeOut(600).delete();
+        topBlip.delay(600).fadeOut(1300).delete();
+        bottomBlip.delay(900).fadeOut(1200).delete();
+        topBlipBg.delay(600).fadeOut(1300).delete();
+        bottomBlipBg.delay(900).fadeOut(1200).delete();
 
         Set<String> set = new LinkedHashSet<String>(3);
         set.add("EchoPiano1.wav");
@@ -778,7 +753,7 @@ public class EIAClipPlayer2 {
         if (rand < 45){
             if (getPMTraffic(x) == 0) {
                 accentVertDoubletFour(x);
-            } else if (getPMTraffic(x) < 1) {
+            } else if (getPMTraffic(x) == 1) {
                 accentVertDoubletThree(x);
             } else {
                 accentVertDoubletTwo(x);
@@ -800,7 +775,7 @@ public class EIAClipPlayer2 {
         if (x > 340){
             if (getPMTraffic(x) == 0) {
                 accentVertDoubletFour(x);
-            } else if (getPMTraffic(x) < 1) {
+            } else if (getPMTraffic(x) == 1) {
                 accentVertDoubletThree(x);
             } else {
                 accentVertDoubletTwo(x);
@@ -1142,7 +1117,7 @@ public class EIAClipPlayer2 {
 
     public void accentVertDoubletFour(double x) {
         logger.debug("smVertDoublet");
-        x = findNearestLight(x+lookAhead,true);
+        x = findNearestLight(x+lookAhead*2,true);
         int barWidth = 13;
         Content simpleClip2 = new SolidColorContent(Color.WHITE);
 
@@ -1158,7 +1133,7 @@ public class EIAClipPlayer2 {
 
     public void accentVertDoubletThree(double x) {
         logger.debug("smVertDoublet");
-        x = findNearestLight(x+lookAhead,true);
+        x = findNearestLight(x+lookAhead*2,true);
         int barWidth = 9;
         Content simpleClip2 = new SolidColorContent(Color.WHITE);
 
