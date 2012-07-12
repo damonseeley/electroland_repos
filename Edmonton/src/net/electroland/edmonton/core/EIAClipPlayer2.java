@@ -1145,7 +1145,7 @@ public class EIAClipPlayer2 {
         bottom3.delay(350).fadeOut(350).delete();
 
         //sc.playSingleChannelBlind("entrance6.wav", x, 0.5f);
-        sc.playSingleChannelBlind("entrance6.wav", x, 1.0f);
+        sc.playSingleChannelBlind("entrance6.wav", x, 0.81f);
     }
 
     public void accentVertFourFill(double x) {
@@ -1167,7 +1167,7 @@ public class EIAClipPlayer2 {
         bottom2.delay(350).fadeOut(350).delete();
 
         //sc.playSingleChannelBlind("entrance6_short.wav", x, 0.5f);
-        sc.playSingleChannelBlind("entrance6_short.wav", x, 1.0f);
+        sc.playSingleChannelBlind("entrance6_short.wav", x, 0.81f);
     }
 
 
@@ -1184,7 +1184,7 @@ public class EIAClipPlayer2 {
         bottomBlip.delay(500).fadeOut(500).delete();
 
         //sc.playSingleChannelBlind("lumen_entrance7.wav", x, 0.5f);
-        sc.playSingleChannelBlind("lumen_entrance7.wav", x, 1.0f);
+        sc.playSingleChannelBlind("lumen_entrance7.wav", x, 0.81f);
     }
 
     public void accentVertDoubletThree(double x) {
@@ -1200,7 +1200,7 @@ public class EIAClipPlayer2 {
         bottomBlip.delay(500).fadeOut(500).delete();
 
         //sc.playSingleChannelBlind("lumen_entrance7.wav", x, 0.5f);
-        sc.playSingleChannelBlind("lumen_entrance7.wav", x, 1.0f);
+        sc.playSingleChannelBlind("lumen_entrance7.wav", x, 0.81f);
     }
 
     public void accentVertDoubletTwo(double x) {
@@ -1216,7 +1216,7 @@ public class EIAClipPlayer2 {
         bottomBlip.delay(500).fadeOut(500).delete();
 
         //sc.playSingleChannelBlind("lumen_entrance7.wav", x, 0.5f);
-        sc.playSingleChannelBlind("lumen_entrance7.wav", x, 1.0f);
+        sc.playSingleChannelBlind("lumen_entrance7.wav", x, 0.81f);
     }
 
 
