@@ -720,6 +720,26 @@ public class EIAClipPlayer2 {
         }
 
     }
+    
+    public void accentSmSplit(double x) {
+
+        if (x > 340){
+            if (getPMTraffic(x) == 0) {
+                accentVertDoubletFour(x);
+            } else if (getPMTraffic(x) < 1) {
+                accentVertDoubletThree(x);
+            } else {
+                accentVertDoubletTwo(x);
+            }
+        } else {
+            if (getPMTraffic(x) < 2) {
+                accentVertSixFill(x);
+            } else {
+                accentVertFourFill(x);
+            }
+        }
+
+    }
 
     public void accentBlipStorm(double x){
         int count = 0;
