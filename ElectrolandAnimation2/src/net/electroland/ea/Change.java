@@ -22,24 +22,33 @@ public class Change {
     protected Double byAlpha;
     protected Double scaleWidth, scaleHeight;
     protected Double scaleAlpha;
-    protected EasingFunction easingFunction;
+    protected EasingFunction easingFofX, easingFofY, easingFofW, easingFofH, easingFofA;
 
     public Change()
     {
-        this.easingFunction = new LinearEasingFunction();
+        EasingFunction defaultEase = new LinearEasingFunction();
+        this.easingFofX = defaultEase;
+        this.easingFofY = defaultEase;
+        this.easingFofW = defaultEase;
+        this.easingFofH = defaultEase;
+        this.easingFofA = defaultEase;
     }
 
     public Change(EasingFunction easingFunction)
     {
-        this.easingFunction = easingFunction;
+        this.easingFofX = easingFunction;
+        this.easingFofY = easingFunction;
+        this.easingFofW = easingFunction;
+        this.easingFofH = easingFunction;
+        this.easingFofA = easingFunction;
     }
 
     public State nextState(State init, double percentComplete){
-        int x = (int)easingFunction.valueAt(percentComplete, init.geometry.x, this.getTargetState(init).geometry.x);
-        int y = (int)easingFunction.valueAt(percentComplete, init.geometry.y, this.getTargetState(init).geometry.y);
-        int w = (int)easingFunction.valueAt(percentComplete, init.geometry.width, this.getTargetState(init).geometry.width);
-        int h = (int)easingFunction.valueAt(percentComplete, init.geometry.height, this.getTargetState(init).geometry.height);
-        double a = (double)easingFunction.valueAt(percentComplete, init.alpha, this.getTargetState(init).alpha);
+        int x = (int)easingFofX.valueAt(percentComplete, init.geometry.x, this.getTargetState(init).geometry.x);
+        int y = (int)easingFofY.valueAt(percentComplete, init.geometry.y, this.getTargetState(init).geometry.y);
+        int w = (int)easingFofW.valueAt(percentComplete, init.geometry.width, this.getTargetState(init).geometry.width);
+        int h = (int)easingFofH.valueAt(percentComplete, init.geometry.height, this.getTargetState(init).geometry.height);
+        double a = (double)easingFofA.valueAt(percentComplete, init.alpha, this.getTargetState(init).alpha);
         return new State(x,y,w,h,a);
     }
 
@@ -71,20 +80,45 @@ public class Change {
         toLeft = left;
         return this;
     }
+    public Change xTo(double left, EasingFunction ef){
+        toLeft = left;
+        easingFofX = ef;
+        return this;
+    }
     public Change yTo(double top){
         toTop = top;
+        return this;
+    }
+    public Change yTo(double top, EasingFunction ef){
+        toTop = top;
+        easingFofY = ef;
         return this;
     }
     public Change widthTo(double width){
         toWidth = width;
         return this;
     }
+    public Change widthTo(double width, EasingFunction ef){
+        toWidth = width;
+        easingFofW = ef;
+        return this;
+    }
     public Change heightTo(double height){
         toHeight = height;
         return this;
     }
+    public Change heightTo(double height, EasingFunction ef){
+        toHeight = height;
+        easingFofH = ef;
+        return this;
+    }
     public Change alphaTo(double alpha){
         toAlpha = alpha;
+        return this;
+    }
+    public Change alphaTo(double alpha, EasingFunction ef){
+        toAlpha = alpha;
+        easingFofA = ef;
         return this;
     }
 
@@ -93,20 +127,45 @@ public class Change {
         byLeft = dLeft;
         return this;
     }
+    public Change xBy(double dLeft, EasingFunction ef){
+        byLeft = dLeft;
+        easingFofX = ef;
+        return this;
+    }
     public Change yBy(double dTop){
         byTop = dTop;
         return this;
     }
+    public Change yBy(double dTop, EasingFunction ef){
+        byTop = dTop;
+        easingFofY = ef;
+        return this;
+    }
     public Change widthBy(double dWidth){
-        byWidth = dWidth; // erm.  this seems more intuitive as byWidth *= dWidth;
+        byWidth = dWidth;
+        return this;
+    }
+    public Change widthBy(double dWidth, EasingFunction ef){
+        byWidth = dWidth;
+        easingFofW = ef;
         return this;
     }
     public Change heightBy(double dHeight){
-        byHeight = dHeight; // erm.  this seems more intuitive as byHeight *= dHeight;
+        byHeight = dHeight;
+        return this;
+    }
+    public Change heightBy(double dHeight, EasingFunction ef){
+        byHeight = dHeight;
+        easingFofH = ef;
         return this;
     }
     public Change alphaBy(double dAlpha){
         byAlpha = dAlpha;
+        return this;
+    }
+    public Change alphaBy(double dAlpha, EasingFunction ef){
+        byAlpha = dAlpha;
+        easingFofA = ef;
         return this;
     }
 
@@ -116,14 +175,29 @@ public class Change {
         scaleWidth = percent;
         return this;
     }
+    public Change scaleWidth(double percent, EasingFunction ef){
+        scaleWidth = percent;
+        easingFofW = ef;
+        return this;
+    }
     public Change scaleHeight(double percent)
     {
         scaleHeight = percent;
         return this;
     }
+    public Change scaleHeight(double percent, EasingFunction ef){
+        scaleHeight = percent;
+        easingFofH  = ef;
+        return this;
+    }
     public Change scaleAlpha(double percent)
     {
         scaleAlpha = percent;
+        return this;
+    }
+    public Change scaleAlpha(double percent, EasingFunction ef){
+        scaleAlpha = percent;
+        easingFofA = ef;
         return this;
     }
     public String toString()
