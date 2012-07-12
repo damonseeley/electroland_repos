@@ -322,13 +322,14 @@ public class EIAClipPlayer2 {
 
         Content waveImage = anim.getContent("waveImage");
 
-        int waveWidth = 48;
-        Clip waveImageClip = live.addClip(waveImage, (int)x,0,waveWidth,16, 1.0); //add it as 32px wide at the end of the stage
+        int waveWidth = 64;
+        Clip waveImageClip = live.addClip(waveImage, (int)x,0,waveWidth,cHeight, 1.0); //add it as 32px wide at the end of the stage
         waveImageClip.zIndex = -100; // sets to far background
 
         //fadein, wait, fadeout
         Change waveMove = new LinearChange().xTo(320);
-        waveImageClip.queueChange(waveMove, 1500).delete();
+        //waveImageClip.queueChange(waveMove, 1500).delete();
+        waveImageClip.queueChange(waveMove, 2300).delete(); //longer due to diff length ppm
 
         int kotuNum = (int)(Math.random()*5+1);
         String kotuFile = "kotu_0"+kotuNum+".wav";
@@ -342,13 +343,14 @@ public class EIAClipPlayer2 {
 
         Content waveImage = anim.getContent("waveImage");
 
-        int waveWidth = 48;
-        Clip waveImageClip = live.addClip(waveImage, (int)x,0,waveWidth,16, 1.0); //add it as 32px wide at the end of the stage
+        int waveWidth = 64;
+        Clip waveImageClip = live.addClip(waveImage, (int)x,0,waveWidth,cHeight, 1.0); //add it as 32px wide at the end of the stage
         waveImageClip.zIndex = -100; // sets to far background
 
         //fadein, wait, fadeout
         Change waveMove = new LinearChange().xTo(-waveWidth);
-        waveImageClip.queueChange(waveMove, 1500).delete();
+        //waveImageClip.queueChange(waveMove, 1500).delete();
+        waveImageClip.queueChange(waveMove, 2100).delete();
 
         int kotuNum = (int)(Math.random()*5+1);
         String kotuFile = "kotu_0"+kotuNum+".wav";
