@@ -1,5 +1,8 @@
 package net.electroland.ea;
 
+import net.electroland.ea.easing.EasingFunction;
+import net.electroland.ea.easing.LinearEasingFunction;
+
 /**
  * A change represents a set of changes to be applied to a Clip over time.
  * Changes can be specified either absolutely (e.g., xTo(10)) or relatively
@@ -11,7 +14,7 @@ package net.electroland.ea;
  * @author production
  *
  */
-abstract public class Change {
+public class Change {
 
     protected Double toLeft, toTop, toWidth, toHeight;
     protected Double toAlpha;
@@ -19,8 +22,26 @@ abstract public class Change {
     protected Double byAlpha;
     protected Double scaleWidth, scaleHeight;
     protected Double scaleAlpha;
+    protected EasingFunction easingFunction;
 
-    abstract public State nextState(State init, double percentComplete);
+    public Change()
+    {
+        this.easingFunction = new LinearEasingFunction();
+    }
+
+    public Change(EasingFunction easingFunction)
+    {
+        this.easingFunction = easingFunction;
+    }
+
+    public State nextState(State init, double percentComplete){
+        int x = (int)easingFunction.valueAt(percentComplete, init.geometry.x, this.getTargetState(init).geometry.x);
+        int y = (int)easingFunction.valueAt(percentComplete, init.geometry.y, this.getTargetState(init).geometry.y);
+        int w = (int)easingFunction.valueAt(percentComplete, init.geometry.width, this.getTargetState(init).geometry.width);
+        int h = (int)easingFunction.valueAt(percentComplete, init.geometry.height, this.getTargetState(init).geometry.height);
+        double a = (double)easingFunction.valueAt(percentComplete, init.alpha, this.getTargetState(init).alpha);
+        return new State(x,y,w,h,a);
+    }
 
     public State getTargetState(State init)
     {
@@ -77,11 +98,11 @@ abstract public class Change {
         return this;
     }
     public Change widthBy(double dWidth){
-        byWidth = dWidth;
+        byWidth = dWidth; // erm.  this seems more intuitive as byWidth *= dWidth;
         return this;
     }
     public Change heightBy(double dHeight){
-        byHeight = dHeight;
+        byHeight = dHeight; // erm.  this seems more intuitive as byHeight *= dHeight;
         return this;
     }
     public Change alphaBy(double dAlpha){
