@@ -176,6 +176,7 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
         	logger.info(e.getActionCommand());
         } else if ("testShow".equals(e.getActionCommand())){
         	clipPlayer2.testClip(Math.random()*625.0);
+
         } else if ("pm1".equals(e.getActionCommand())){
             //logger.info("People Mover 1 total trips for 30s = " +tfa.getPM1Flow());
             tfa.logpm1();
@@ -186,8 +187,10 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
             double top    = props.getRequiredDouble("settings", "random", "top");
             double range  = top - bottom;
             double random = Math.random() * range + bottom;
-
-            clipPlayer2.playClip(ef.getSelectedClip(), random);
+        	
+            //clipPlayer2.playClip(ef.getSelectedClip(), random);
+            //testing in EIA only
+            clipPlayer2.playClip(ef.getSelectedClip(),((Math.random()*20.0) - 10.0 + 220.0)); //testing only
         }
     }
 
