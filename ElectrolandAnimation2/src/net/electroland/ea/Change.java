@@ -1,7 +1,7 @@
 package net.electroland.ea;
 
 import net.electroland.ea.easing.EasingFunction;
-import net.electroland.ea.easing.LinearEasingFunction;
+import net.electroland.ea.easing.Linear;
 
 /**
  * A change represents a set of changes to be applied to a Clip over time.
@@ -26,7 +26,7 @@ public class Change {
 
     public Change()
     {
-        EasingFunction defaultEase = new LinearEasingFunction();
+        EasingFunction defaultEase = new Linear();
         this.easingFofX = defaultEase;
         this.easingFofY = defaultEase;
         this.easingFofW = defaultEase;
