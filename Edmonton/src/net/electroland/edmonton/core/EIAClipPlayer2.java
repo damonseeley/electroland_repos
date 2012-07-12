@@ -577,9 +577,45 @@ public class EIAClipPlayer2 {
         wave2.queueChange(waveMove2, 3000).delete();
 
         Set<String> set = new LinkedHashSet<String>(3);
-        set.add("BondiSwell_a.wav");
-        set.add("BondiSwell_b.wav");
-        set.add("BondiSwell_c.wav");
+        set.add("BondiSwell_aFull.wav");
+        set.add("BondiSwell_bFull.wav");
+        set.add("BondiSwell_cFull.wav");
+        int size = set.size();
+        int item = new Random().nextInt(size);
+        int i = 0;
+        for(Object file : set)
+        {
+            if (i == item){
+                //logger.info("Random String = " + file);
+                sc.playSingleChannelBlind((String)file, x, 1.0f);
+            }
+            i++;
+        }   
+    }
+    
+    public void waveMegaDoubleAnalog(double x) {
+        //logger.info("megaWaveDouble@ " + x);
+        Content waveImage = anim.getContent("megaWave");
+
+        int waveWidth = 256;
+        int wave1End = 340;
+        //pmvr2Start
+        Clip wave1 = live.addClip(waveImage, cWidth-15,0,waveWidth/2,cHeight, 1.0); //add it as 32px wide at the end of the stage
+        Clip wave2 = live.addClip(waveImage, pmvr2Start-8,0,waveWidth/3,cHeight, 1.0); //add it as 32px wide at the end of the stage
+        wave1.zIndex = -100; // sets to far background
+        wave2.zIndex = -100; // sets to far background
+
+        //fadein, wait, fadeout
+        Change waveMove1 = new LinearChange().xTo(wave1End-waveWidth).scaleWidth(3.0).alphaTo(0.0);
+        Change waveMove2 = new LinearChange().xTo(0-waveWidth).scaleWidth(3.0).alphaTo(0.0);
+
+        wave1.queueChange(waveMove1, 3000).delete();
+        wave2.queueChange(waveMove2, 3000).delete();
+
+        Set<String> set = new LinkedHashSet<String>(3);
+        set.add("AnalogSwell_a.wav");
+        set.add("AnalogSwell_b.wav");
+        set.add("AnalogSwell_c.wav");
         int size = set.size();
         int item = new Random().nextInt(size);
         int i = 0;
@@ -593,7 +629,7 @@ public class EIAClipPlayer2 {
         }   
     }
 
-    public void megaWave(double x) {
+    public void waveMega(double x) {
         //logger.info("megaWaveDouble@ " + x);
         Content waveImage = anim.getContent("megaWaveFull");
 
@@ -614,9 +650,46 @@ public class EIAClipPlayer2 {
         //wave1.queueChange(waveScale2Fade, 1200).delete();
 
         Set<String> set = new LinkedHashSet<String>(3);
-        set.add("BondiSwell_a.wav");
-        set.add("BondiSwell_b.wav");
-        set.add("BondiSwell_c.wav");
+        set.add("BondiSwell_aFull.wav");
+        set.add("BondiSwell_bFull.wav");
+        set.add("BondiSwell_cFull.wav");
+        int size = set.size();
+        int item = new Random().nextInt(size);
+        int i = 0;
+        for(Object file : set)
+        {
+            if (i == item){
+                //logger.info("Random String = " + file);
+                sc.playSingleChannelBlind((String)file, x, 1.0f);
+            }
+            i++;
+        }  
+    }
+    
+    public void waveMegaAnalog(double x) {
+        //logger.info("megaWaveDouble@ " + x);
+        Content waveImage = anim.getContent("megaWaveFull");
+
+        //int waveWidth = 16;
+        int waveWidth = 16;
+        Clip wave1 = live.addClip(waveImage, (int)(x-waveWidth/2),0,waveWidth,cHeight, 1.0); 
+        //wave1.zIndex = -100; // sets to far background
+
+        //Change waveMove1 = new LinearChange().xTo(wave1End-waveWidth).scaleWidth(3.0).alphaTo(0.0);
+        //double newScale = 12.0;
+        double newScale = 20.0;
+        // first start a scale operation
+        Change waveScale1 = new LinearChange().xTo(x-waveWidth/2*newScale/2).scaleWidth(newScale/2);
+        Change waveScale2Fade = new LinearChange().xTo(x-waveWidth/2*newScale).scaleWidth(newScale/2).alphaTo(0.0);
+
+        //wave1.queueChange(waveMove1, 2200).delete();
+        wave1.queueChange(waveScale1, 1200).queueChange(waveScale2Fade, 1200).delete();
+        //wave1.queueChange(waveScale2Fade, 1200).delete();
+
+        Set<String> set = new LinkedHashSet<String>(3);
+        set.add("AnalogSwell_a.wav");
+        set.add("AnalogSwell_b.wav");
+        set.add("AnalogSwell_c.wav");
         int size = set.size();
         int item = new Random().nextInt(size);
         int i = 0;
