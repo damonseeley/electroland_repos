@@ -662,21 +662,23 @@ public class EIAClipPlayer2 {
         //logger.info("megaWaveDouble@ " + x);
         Content waveImage = anim.getContent("megaWaveFull");
 
-        //int waveWidth = 16;
-        int waveWidth = 16;
-        Clip wave1 = live.addClip(waveImage, (int)(x-waveWidth/2),0,waveWidth,cHeight, 1.0); 
-        //wave1.zIndex = -100; // sets to far background
+        double width      = 16;
+        double finalScale = 20; // final width will be width * finalScale
+        int    initX      = (int)(x - (width / 2));
 
-        //Change waveMove1 = new LinearChange().xTo(wave1End-waveWidth).scaleWidth(3.0).alphaTo(0.0);
-        //double newScale = 12.0;
-        double newScale = 20.0;
-        // first start a scale operation
-        Change waveScale1 = new LinearChange().xTo(x-waveWidth/2*newScale/2).scaleWidth(newScale/2);
-        Change waveScale2Fade = new LinearChange().xTo(x-waveWidth/2*newScale).scaleWidth(newScale/2).alphaTo(0.0);
+        Clip   wave1      = live.addClip(waveImage, initX, 0, (int)width, cHeight, 1.0);
 
-        //wave1.queueChange(waveMove1, 2200).delete();
-        wave1.queueChange(waveScale1, 1200).queueChange(waveScale2Fade, 1200).delete();
-        //wave1.queueChange(waveScale2Fade, 1200).delete();
+        Change grow       = new LinearChange();
+               width      = width * (finalScale / 2);
+               grow.widthTo(width).xTo((x - (width / 2)));
+
+        Change growFade   = new LinearChange();
+               width      = width * 2;
+               growFade.widthTo(width).xTo((x - (width / 2))).alphaTo(0.0);
+
+        wave1.queueChange(grow,     1200);
+        wave1.queueChange(growFade, 1200);
+        wave1.delete();
 
         Set<String> set = new LinkedHashSet<String>(3);
         set.add("BondiSwell_a.wav");
