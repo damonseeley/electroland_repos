@@ -577,9 +577,9 @@ public class EIAClipPlayer2 {
         wave2.queueChange(waveMove2, 3000).delete();
 
         Set<String> set = new LinkedHashSet<String>(3);
-        set.add("BondiSwell_aFull.wav");
-        set.add("BondiSwell_bFull.wav");
-        set.add("BondiSwell_cFull.wav");
+        set.add("BondiSwell_a.wav");
+        set.add("BondiSwell_b.wav");
+        set.add("BondiSwell_c.wav");
         int size = set.size();
         int item = new Random().nextInt(size);
         int i = 0;
@@ -650,9 +650,9 @@ public class EIAClipPlayer2 {
         //wave1.queueChange(waveScale2Fade, 1200).delete();
 
         Set<String> set = new LinkedHashSet<String>(3);
-        set.add("BondiSwell_aFull.wav");
-        set.add("BondiSwell_bFull.wav");
-        set.add("BondiSwell_cFull.wav");
+        set.add("BondiSwell_a.wav");
+        set.add("BondiSwell_b.wav");
+        set.add("BondiSwell_c.wav");
         int size = set.size();
         int item = new Random().nextInt(size);
         int i = 0;
@@ -667,7 +667,6 @@ public class EIAClipPlayer2 {
     }
     
     public void waveMegaAnalog(double x) {
-        //logger.info("megaWaveDouble@ " + x);
         Content waveImage = anim.getContent("megaWaveFull");
 
         //int waveWidth = 16;
