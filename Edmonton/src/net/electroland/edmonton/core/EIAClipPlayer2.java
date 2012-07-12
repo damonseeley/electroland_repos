@@ -426,9 +426,9 @@ public class EIAClipPlayer2 {
     
     public void randomBarsGrad(double x){
         if (getPMTraffic(x) > 1){
-            randomBarsGradLess(x);
+            randomBarsGrad(x,10,6);
         } else {
-            randomBarsGradMore(x);
+        	randomBarsGrad(x,14,7);
         }
     }
 
@@ -474,22 +474,22 @@ public class EIAClipPlayer2 {
     }
     */
     
-    public void randomBarsGradLess(double x){
+    public void randomBarsGrad(double x, int maxLoop, int minLoop){
         logger.debug("randomBarsGradLess");
-        int maxLoop = 12;
-        int minLoop = 7;
+        //int maxLoop = 10;
+        //int minLoop = 6;
         int loop = (int)(maxLoop*Math.random());
         int delay = 150;
         boolean top = true;
         for (int l=0; l<Math.max(loop,minLoop); l++){
-            int maxBarLength = 32;
-            int minBarLength = 12;
+            int maxBarLength = 24;
+            int minBarLength = 8;
             int barWidth = Math.max((int)(maxBarLength*Math.random()),minBarLength);
-            int barDest = -80;
-            barDest += (int)(Math.random()*barDest/8);
-            logger.info(barDest);
+            int barDest = -50;
+            barDest += (int)(Math.random()*barDest/3);
+            //logger.info(barDest);
             
-            int randBarSpeed = 1700;
+            int randBarSpeed = 1600;
             
             if (top){
                 RandomBarGrad(x,delay*l,barWidth,topBar,barDest,randBarSpeed);
@@ -503,17 +503,12 @@ public class EIAClipPlayer2 {
         sc.playSingleChannelBlind("vert_connect_med_whoosh16.wav", x, 1.0f);
     }
     
-    public void randomBarsGradMore(double x){
-        //MAKE THIS!!!!
-        randomBarsGradLess(x);
-    }
-
 
     public void RandomBarGrad(double x, int delay, int barWidth, int barY, int barDest, int barSpeed){
         x = findNearestLight(x+lookAhead,true);
-        //Content randomBarGrad = anim.getContent("randomBarGrad");
-        Content randomBarGrad = anim.getContent("randomBarHead");
-        Clip bar = live.addClip(randomBarGrad, (int)x-barWidth,barY,barWidth,barHeight, 1.0, delay);
+        Content randomBarGrad = anim.getContent("randomBarGrad");
+        //Content randomBarGrad = anim.getContent("randomBarHead");
+        Clip bar = live.addClip(randomBarGrad, (int)x,barY,barWidth,barHeight, 1.0, delay);
 
         Change barMove = new LinearChange().xTo(x+barDest);
         bar.queueChange(barMove, barSpeed).fadeOut(250).delete();
