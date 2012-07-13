@@ -385,7 +385,21 @@ public class SoundController implements SCSoundControlNotifiable {
                     amps = new float[2];
                     amps[0] = gain * gaussCoeff;
                     amps[1] = gain;
-                } else {
+                } else if (mainChannel == 7) { //deal with the cases between people movers
+                    channels = new int[2];
+                    channels[0] = 6;
+                    channels[1] = 7;
+                    amps = new float[2];
+                    amps[0] = gain * gaussCoeff;
+                    amps[1] = gain;
+                } else if (mainChannel == 8) { //deal with the cases between people movers
+                    channels = new int[2];
+                    channels[0] = 8;
+                    channels[1] = 9;
+                    amps = new float[2];
+                    amps[0] = gain;
+                    amps[1] = gain * gaussCoeff;
+                } else { //all midspan cases
                     channels = new int[3];
                     channels[0] = mainChannel - 1;
                     channels[1] = mainChannel;
