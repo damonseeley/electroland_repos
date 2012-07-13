@@ -405,7 +405,7 @@ public class EIAClipPlayer2 {
         {
             if (i == item){
                 //logger.info("Random String = " + file);
-                sc.playGaussChannelBlind((String)file, x, 1.0f);
+                sc.playSingleChannelBlind((String)file, x, 1.0f);
             }
             i++;
         }   
@@ -1145,7 +1145,7 @@ public class EIAClipPlayer2 {
         bottom3.delay(350).fadeOut(350).delete();
 
         //sc.playGaussChannelBlind("entrance6.wav", x, 0.5f);
-        sc.playGaussChannelBlind("entrance6.wav", x, 0.65f);
+        sc.playSingleChannelBlind("entrance6.wav", x, 0.65f);
     }
 
     public void accentVertFourFill(double x) {
@@ -1167,7 +1167,7 @@ public class EIAClipPlayer2 {
         bottom2.delay(350).fadeOut(350).delete();
 
         //sc.playGaussChannelBlind("entrance6_short.wav", x, 0.5f);
-        sc.playGaussChannelBlind("entrance6_short.wav", x, 0.65f);
+        sc.playSingleChannelBlind("entrance6_short.wav", x, 0.65f);
     }
 
     
@@ -1187,7 +1187,7 @@ public class EIAClipPlayer2 {
         bottomBlip.delay(500).fadeOut(500).delete();
 
         //sc.playGaussChannelBlind("lumen_entrance7.wav", x, 0.5f);
-        sc.playGaussChannelBlind("lumen_entrance7.wav", x, doubletVol);
+        sc.playSingleChannelBlind("lumen_entrance7.wav", x, doubletVol);
     }
 
     public void accentVertDoubletThree(double x) {
@@ -1203,7 +1203,7 @@ public class EIAClipPlayer2 {
         bottomBlip.delay(500).fadeOut(500).delete();
 
         //sc.playGaussChannelBlind("lumen_entrance7.wav", x, 0.5f);
-        sc.playGaussChannelBlind("lumen_entrance7.wav", x, doubletVol);
+        sc.playSingleChannelBlind("lumen_entrance7.wav", x, doubletVol);
     }
     
     public void accentVertDoubletTwo(double x) {
@@ -1219,7 +1219,7 @@ public class EIAClipPlayer2 {
         bottomBlip.delay(500).fadeOut(500).delete();
 
         //sc.playGaussChannelBlind("lumen_entrance7.wav", x, 0.5f);
-        sc.playGaussChannelBlind("lumen_entrance7.wav", x, doubletVol);
+        sc.playSingleChannelBlind("lumen_entrance7.wav", x, doubletVol);
     }
 
 

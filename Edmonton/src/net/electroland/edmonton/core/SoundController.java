@@ -306,18 +306,6 @@ public class SoundController implements SCSoundControlNotifiable {
                     newSoundNode(sn);
                 }
 
-
-                /*
-                int channel = getClosestBayChannel(x);
-                if (debug) {
-                    logger.info("SoundController: Attempting to play sound file: " + soundFiles.get(soundFilePath+filename));
-                }
-                SoundNode sn = ss.createSoundNodeOnSingleChannel(soundFiles.get(soundFilePath+filename), false, channel, gain, 1.0f);
-                if (debug) {
-                    logger.info("SoundController: Played Single Bay "+soundFilePath+filename+ " on channel: " + channel + " with gain: "+ gain);
-                }
-                newSoundNode(sn);
-                 */
             }
         }
     }
@@ -412,9 +400,11 @@ public class SoundController implements SCSoundControlNotifiable {
 
                 //TEMP OUTPUT
                 if (!stereoOnly){
+                	/*
                     for (int i=0;i<channels.length;i++){
                         logger.info("SC playing " + filename + " on channel: " + channels[i] + " with gain " + amps[i]);
                     }
+                    */
                 }
 
                 if (debug) {
