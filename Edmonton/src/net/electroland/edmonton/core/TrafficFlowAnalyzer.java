@@ -216,7 +216,7 @@ public class TrafficFlowAnalyzer extends Thread {
 
 
 
-            if ((System.currentTimeMillis() - reporttime) > 5000) {
+            if ((System.currentTimeMillis() - reporttime) > 60000) {
                 int curAvgS = (int)(curAvgTime/1000);
                 int runAvgS = (int)(runAvgTime/1000);
                 //logger.info("TFA LIST STATS: pm1trips:" + pm1trips.size() + " pm1AvgTrips:" + pm1MovingAvgTrips.size() + " pm2trips:" + pm2trips.size() + " pm2AvgTrips:" + pm2MovingAvgTrips.size());
