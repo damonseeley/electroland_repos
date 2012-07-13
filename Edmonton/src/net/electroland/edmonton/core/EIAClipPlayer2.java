@@ -1145,7 +1145,7 @@ public class EIAClipPlayer2 {
         bottom3.delay(350).fadeOut(350).delete();
 
         //sc.playSingleChannelBlind("entrance6.wav", x, 0.5f);
-        sc.playSingleChannelBlind("entrance6.wav", x, 0.81f);
+        sc.playSingleChannelBlind("entrance6.wav", x, 0.65f);
     }
 
     public void accentVertFourFill(double x) {
@@ -1167,9 +1167,12 @@ public class EIAClipPlayer2 {
         bottom2.delay(350).fadeOut(350).delete();
 
         //sc.playSingleChannelBlind("entrance6_short.wav", x, 0.5f);
-        sc.playSingleChannelBlind("entrance6_short.wav", x, 0.81f);
+        sc.playSingleChannelBlind("entrance6_short.wav", x, 0.65f);
     }
 
+    
+    
+    float doubletVol = 0.05f; // this is very low because compression is being used
 
     public void accentVertDoubletFour(double x) {
         logger.debug("smVertDoublet");
@@ -1184,7 +1187,7 @@ public class EIAClipPlayer2 {
         bottomBlip.delay(500).fadeOut(500).delete();
 
         //sc.playSingleChannelBlind("lumen_entrance7.wav", x, 0.5f);
-        sc.playSingleChannelBlind("lumen_entrance7.wav", x, 0.81f);
+        sc.playSingleChannelBlind("lumen_entrance7.wav", x, doubletVol);
     }
 
     public void accentVertDoubletThree(double x) {
@@ -1200,9 +1203,9 @@ public class EIAClipPlayer2 {
         bottomBlip.delay(500).fadeOut(500).delete();
 
         //sc.playSingleChannelBlind("lumen_entrance7.wav", x, 0.5f);
-        sc.playSingleChannelBlind("lumen_entrance7.wav", x, 0.81f);
+        sc.playSingleChannelBlind("lumen_entrance7.wav", x, doubletVol);
     }
-
+    
     public void accentVertDoubletTwo(double x) {
         logger.debug("smVertDoublet");
         x = findNearestLight(x+lookAhead,true);
@@ -1216,7 +1219,7 @@ public class EIAClipPlayer2 {
         bottomBlip.delay(500).fadeOut(500).delete();
 
         //sc.playSingleChannelBlind("lumen_entrance7.wav", x, 0.5f);
-        sc.playSingleChannelBlind("lumen_entrance7.wav", x, 0.81f);
+        sc.playSingleChannelBlind("lumen_entrance7.wav", x, doubletVol);
     }
 
 
