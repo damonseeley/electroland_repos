@@ -97,17 +97,17 @@ public class SoundController implements SCSoundControlNotifiable {
 
         boolean testme = true;
         if (testme) {
-            logger.info("GetClosestBay for 610.0 (bay 1): " + getClosestBay(610.0));
-            logger.info("GetClosestBay for 560.0 (bay 2): " + getClosestBay(560.0));
-            logger.info("GetClosestBay for 501.0 (bay 3): " + getClosestBay(501.0));
-            logger.info("GetClosestBay for 453.0 (bay 4): " + getClosestBay(453.0));
-            logger.info("GetClosestBay for 405.0 (bay 5): " + getClosestBay(405.0));
-            logger.info("GetClosestBay for 361.0 (bay 6): " + getClosestBay(361.0));
-            logger.info("GetClosestBay for 216.0 (bay 7): " + getClosestBay(216.0));
-            logger.info("GetClosestBay for 168.0 (bay 8): " + getClosestBay(168.0));
-            logger.info("GetClosestBay for 128.0 (bay 9): " + getClosestBay(102.0));
-            logger.info("GetClosestBay for 80.0 (bay 10): " + getClosestBay(98.0));
-            logger.info("GetClosestBay for 39.0 (bay 11): " + getClosestBay(50.0));
+            logger.info("getClosestBayChannel for 610.0 (bay 1): " + getClosestBayChannel(610.0));
+            logger.info("getClosestBayChannel for 560.0 (bay 2): " + getClosestBayChannel(560.0));
+            logger.info("getClosestBayChannel for 501.0 (bay 3): " + getClosestBayChannel(501.0));
+            logger.info("getClosestBayChannel for 453.0 (bay 4): " + getClosestBayChannel(453.0));
+            logger.info("getClosestBayChannel for 405.0 (bay 5): " + getClosestBayChannel(405.0));
+            logger.info("getClosestBayChannel for 361.0 (bay 6): " + getClosestBayChannel(361.0));
+            logger.info("getClosestBayChannel for 216.0 (bay 7): " + getClosestBayChannel(216.0));
+            logger.info("getClosestBayChannel for 168.0 (bay 8): " + getClosestBayChannel(168.0));
+            logger.info("getClosestBayChannel for 128.0 (bay 9): " + getClosestBayChannel(102.0));
+            logger.info("getClosestBayChannel for 80.0 (bay 10): " + getClosestBayChannel(98.0));
+            logger.info("getClosestBayChannel for 39.0 (bay 11): " + getClosestBayChannel(50.0));
         }
 
         if (debug) {
@@ -282,9 +282,9 @@ public class SoundController implements SCSoundControlNotifiable {
             if(!filename.equals("none") && serverIsLive){
 
                 int channel = getClosestBayChannel(x);
-                
+
                 if (debug) {
-                	//logger.info("SoundController: will play on channel: " + channel);
+                    //logger.info("SoundController: will play on channel: " + channel);
                 }
 
 
@@ -321,17 +321,17 @@ public class SoundController implements SCSoundControlNotifiable {
             }
         }
     }
-    
+
     public void playSingleChannelBlind(String filename, double x, float gain){
-    	// this method plays a single channel sound but does not create a local soundNode entry.
-    	// this method MIGHT be dangerous for that reason.
+        // this method plays a single channel sound but does not create a local soundNode entry.
+        // this method MIGHT be dangerous for that reason.
         if (!bypass) {
             if(!filename.equals("none") && serverIsLive){
 
                 int channel = getClosestBayChannel(x);
-                
+
                 if (debug) {
-                	//logger.info("SoundController: will play on channel: " + channel + " and NOT create a local soundNode");
+                    //logger.info("SoundController: will play on channel: " + channel + " and NOT create a local soundNode");
                 }
 
                 if (stereoOnly){
@@ -354,6 +354,80 @@ public class SoundController implements SCSoundControlNotifiable {
             }
         }
     }
+
+    public void playGaussChannelBlind(String filename, double x, float gain){
+        // this method plays a single channel sound but does not create a local soundNode entry.
+        // this method MIGHT be dangerous for that reason.
+
+        if (!bypass) {
+
+            if(!filename.equals("none") && serverIsLive) {
+
+                int mainChannel = getClosestBayChannel(x);
+                //set defaults
+                int[] channels = new int[mainChannel];
+                float[] amps = new float[1];
+                amps[0] = gain;
+                float gaussCoeff = 0.5f;
+
+                //logger.info("SC mainChannel: " + mainChannel);
+                if (mainChannel == 2){ // handle low and high edge cases
+                    channels = new int[2];
+                    channels[0] = 2;
+                    channels[1] = 3;
+                    amps = new float[2];
+                    amps[0] = gain;
+                    amps[1] = gain * gaussCoeff;
+                } else if (mainChannel == 16) { // handle low and high edge cases
+                    channels = new int[2];
+                    channels[0] = 15;
+                    channels[1] = 16;
+                    amps = new float[2];
+                    amps[0] = gain * gaussCoeff;
+                    amps[1] = gain;
+                } else {
+                    channels = new int[3];
+                    channels[0] = mainChannel - 1;
+                    channels[1] = mainChannel;
+                    channels[2] = mainChannel + 1;
+                    amps = new float[3];
+                    amps[0] = gain * gaussCoeff;
+                    amps[1] = gain;
+                    amps[2] = gain * gaussCoeff;
+                }
+
+                //TEMP OUTPUT
+                if (!stereoOnly){
+                    for (int i=0;i<channels.length;i++){
+                        logger.info("SC playing " + filename + " on channel: " + channels[i] + " with gain " + amps[i]);
+                    }
+                }
+
+                if (debug) {
+                    //logger.info("SoundController: will play on channel: " + channel + " and NOT create a local soundNode");
+                }
+
+                if (stereoOnly){
+                    int[] stereoChannels = stereochannels;
+                    float[] stereoAmps = new float[]{gain,gain};
+                    SoundNode sn = ss.createMonoSoundNode(soundFiles.get(soundFilePath+filename), false, stereoChannels, stereoAmps, 1.0f);
+                    if (debug) {
+                        logger.info("SoundController:  STEREO MODE: Played mono sound file "+soundFilePath+filename+ " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
+                    }
+                } else {
+                    //int[] channels = new int[]{channel};
+                    //float[] amplitudes = new float[]{gain};
+                    // now use channels and amps from above
+                    SoundNode sn = ss.createMonoSoundNode(soundFiles.get(soundFilePath+filename), false, channels, amps, 1.0f);
+                    if (debug) {
+                        logger.info("SoundController: Played mono sound file "+soundFilePath+filename+ " on ch " + channels + " and got back node with bus " + sn.get_busID()+ " and group " + sn.getGroup());
+                    }
+
+                }
+            }
+        }
+    }
+
 
     public void playLocal(String filename, double x, float gain){
         if (!bypass) {
@@ -406,7 +480,7 @@ public class SoundController implements SCSoundControlNotifiable {
             soundID++;
             soundNodes.put(soundID, sn);
             if (debug) {
-            	logger.info("SoundController: soundNodes size="+soundNodes.size());
+                logger.info("SoundController: soundNodes size="+soundNodes.size());
             }
         }
 

@@ -188,9 +188,9 @@ public class EIAMainConductor2 extends Thread implements ActionListener, ModelLi
             double range  = top - bottom;
             double random = Math.random() * range + bottom;
         	
-            //clipPlayer2.playClip(ef.getSelectedClip(), random);
+            clipPlayer2.playClip(ef.getSelectedClip(), random);
             //testing in EIA only
-            clipPlayer2.playClip(ef.getSelectedClip(),((Math.random()*20.0) - 10.0 + 220.0)); //testing only
+            //clipPlayer2.playClip(ef.getSelectedClip(),((Math.random()*20.0) - 10.0 + 220.0)); //testing only
         }
     }
 

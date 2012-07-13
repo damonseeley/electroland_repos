@@ -228,7 +228,7 @@ public class EIAClipPlayer2 {
         faintSparkle.delay(500).fadeOut(2500).delete();
 
         //sc.playGlobal("EIA_organ_v01short.wav", false, 1.0f);
-        sc.playSingleChannelBlind("EIA_organ_v01short.wav", x, 1.0f);
+        sc.playGaussChannelBlind("EIA_organ_v01short.wav", x, 1.0f);
     }
 
 
@@ -247,7 +247,7 @@ public class EIAClipPlayer2 {
 
         bigHit.queueChange(out,820).queueChange(hit,10).fadeOut(1000).delete();
 
-        sc.playSingleChannelBlind("66_Reverse_Orchestra_Hit.wav", x, 1.0f);
+        sc.playGaussChannelBlind("66_Reverse_Orchestra_Hit.wav", x, 1.0f);
     }
 
 
@@ -276,7 +276,7 @@ public class EIAClipPlayer2 {
         for(Object file : set)
         {
             if (i == item){
-                sc.playSingleChannelBlind((String)file, x, 1.0f);
+                sc.playGaussChannelBlind((String)file, x, 1.0f);
             }
             i++;
         }  
@@ -308,7 +308,7 @@ public class EIAClipPlayer2 {
         for(Object file : set)
         {
             if (i == item){
-                sc.playSingleChannelBlind((String)file, x, 1.0f);
+                sc.playGaussChannelBlind((String)file, x, 1.0f);
             }
             i++;
         } 
@@ -334,7 +334,7 @@ public class EIAClipPlayer2 {
         int kotuNum = (int)(Math.random()*5+1);
         String kotuFile = "kotu_0"+kotuNum+".wav";
         //logger.info("EIAClipPlayer - play kotuFile: " + kotuFile);
-        sc.playSingleChannelBlind(kotuFile, x, 1.0f);
+        sc.playGaussChannelBlind(kotuFile, x, 1.0f);
     }
 
     public void entryWavePM2(double x) {
@@ -355,7 +355,7 @@ public class EIAClipPlayer2 {
         int kotuNum = (int)(Math.random()*5+1);
         String kotuFile = "kotu_0"+kotuNum+".wav";
         //logger.info("EIAClipPlayer - play kotuFile: " + kotuFile);
-        sc.playSingleChannelBlind(kotuFile, x, 1.0f);
+        sc.playGaussChannelBlind(kotuFile, x, 1.0f);
     }
 
     public void bigVertDoublet(double x) {
@@ -371,7 +371,7 @@ public class EIAClipPlayer2 {
         bottomBlip.delay(800).fadeOut(600).delete();
 
         // something bigger here
-        sc.playSingleChannelBlind("piano_doublet01.wav", x, 1.0f);
+        sc.playGaussChannelBlind("piano_doublet01.wav", x, 1.0f);
 
     }
     
@@ -405,7 +405,7 @@ public class EIAClipPlayer2 {
         {
             if (i == item){
                 //logger.info("Random String = " + file);
-                sc.playSingleChannelBlind((String)file, x, 1.0f);
+                sc.playGaussChannelBlind((String)file, x, 1.0f);
             }
             i++;
         }   
@@ -450,7 +450,7 @@ public class EIAClipPlayer2 {
             }
         }
 
-        sc.playSingleChannelBlind("vert_connect_med_whoosh16.wav", x, 1.0f);
+        sc.playGaussChannelBlind("vert_connect_med_whoosh16.wav", x, 1.0f);
     }
     
     public void randomBarsMore(double x){
@@ -470,7 +470,7 @@ public class EIAClipPlayer2 {
             }
         }
         //vert_connect_med_whoosh16.wav
-        sc.playSingleChannelBlind("vert_connect_med_whoosh16_long.wav", x, 1.0f);
+        sc.playGaussChannelBlind("vert_connect_med_whoosh16_long.wav", x, 1.0f);
     }
     */
     
@@ -500,7 +500,7 @@ public class EIAClipPlayer2 {
             }
         }
 
-        sc.playSingleChannelBlind("vert_connect_med_whoosh16.wav", x, 1.0f);
+        sc.playGaussChannelBlind("vert_connect_med_whoosh16.wav", x, 1.0f);
     }
     
 
@@ -616,7 +616,7 @@ public class EIAClipPlayer2 {
         {
             if (i == item){
                 //logger.info("Random String = " + file);
-                sc.playSingleChannelBlind((String)file, x, 1.0f);
+                sc.playGaussChannelBlind((String)file, x, 1.0f);
             }
             i++;
         }   
@@ -652,7 +652,7 @@ public class EIAClipPlayer2 {
         {
             if (i == item){
                 //logger.info("Random String = " + file);
-                sc.playSingleChannelBlind((String)file, x, 1.0f);
+                sc.playGaussChannelBlind((String)file, x, 1.0f);
             }
             i++;
         }   
@@ -691,7 +691,7 @@ public class EIAClipPlayer2 {
         {
             if (i == item){
                 //logger.info("Random String = " + file);
-                sc.playSingleChannelBlind((String)file, x, 1.0f);
+                sc.playGaussChannelBlind((String)file, x, 1.0f);
             }
             i++;
         }  
@@ -730,7 +730,7 @@ public class EIAClipPlayer2 {
         {
             if (i == item){
                 //logger.info("Random String = " + file);
-                sc.playSingleChannelBlind((String)file, x, 1.0f);
+                sc.playGaussChannelBlind((String)file, x, 1.0f);
             }
             i++;
         }  
@@ -751,7 +751,7 @@ public class EIAClipPlayer2 {
             live.addClip(waveImage, newx, 0, waveWidth, cHeight, 1.0, p*pDelay).queueChange(moveIt, 1500);
         }
 
-        sc.playSingleChannelBlind("BondiSwell_b.wav", x, 1.0f);
+        sc.playGaussChannelBlind("BondiSwell_b.wav", x, 1.0f);
     }
 
 
@@ -770,7 +770,7 @@ public class EIAClipPlayer2 {
             live.addClip(waveImage, newx, 0, waveWidth, cHeight, 1.0, p*pDelay).queueChange(moveIt, 1500);
         }
 
-        sc.playSingleChannelBlind("AnalogSwell_a.wav", x, 1.0f);
+        sc.playGaussChannelBlind("AnalogSwell_a.wav", x, 1.0f);
     }
 
     public void wavesStructured(double x) {
@@ -792,7 +792,7 @@ public class EIAClipPlayer2 {
             live.addClip(waveImage, newx2, 0, waveWidth, cHeight, 1.0, p*pDelay).queueChange(moveIt, 1500);
         }
 
-        sc.playSingleChannelBlind("AnalogSwell_b.wav", x, 1.0f);
+        sc.playGaussChannelBlind("AnalogSwell_b.wav", x, 1.0f);
     }
 
 
@@ -1010,7 +1010,7 @@ public class EIAClipPlayer2 {
         for(Object file : set)
         {
             if (i == item){
-                sc.playSingleChannelBlind((String)file, x, 1.0f);
+                sc.playGaussChannelBlind((String)file, x, 1.0f);
             }
             i++;
         }   
@@ -1044,7 +1044,7 @@ public class EIAClipPlayer2 {
         for(Object file : set)
         {
             if (i == item){
-                sc.playSingleChannelBlind((String)file, x, 1.0f);
+                sc.playGaussChannelBlind((String)file, x, 1.0f);
             }
             i++;
         }   
@@ -1074,7 +1074,7 @@ public class EIAClipPlayer2 {
         for(Object file : set)
         {
             if (i == item){
-                sc.playSingleChannelBlind((String)file, x, 1.0f);
+                sc.playGaussChannelBlind((String)file, x, 1.0f);
             }
             i++;
         }   
@@ -1118,7 +1118,7 @@ public class EIAClipPlayer2 {
         top8.delay(delay).fadeOut(fadetime).delete();
 
 
-        //sc.playSingleChannelBlind("entrance6.wav", x, 0.5f);
+        //sc.playGaussChannelBlind("entrance6.wav", x, 0.5f);
     }
 
 
@@ -1144,8 +1144,8 @@ public class EIAClipPlayer2 {
         top3.delay(350).fadeOut(350).delete();
         bottom3.delay(350).fadeOut(350).delete();
 
-        //sc.playSingleChannelBlind("entrance6.wav", x, 0.5f);
-        sc.playSingleChannelBlind("entrance6.wav", x, 0.65f);
+        //sc.playGaussChannelBlind("entrance6.wav", x, 0.5f);
+        sc.playGaussChannelBlind("entrance6.wav", x, 0.65f);
     }
 
     public void accentVertFourFill(double x) {
@@ -1166,8 +1166,8 @@ public class EIAClipPlayer2 {
         top2.delay(350).fadeOut(350).delete();
         bottom2.delay(350).fadeOut(350).delete();
 
-        //sc.playSingleChannelBlind("entrance6_short.wav", x, 0.5f);
-        sc.playSingleChannelBlind("entrance6_short.wav", x, 0.65f);
+        //sc.playGaussChannelBlind("entrance6_short.wav", x, 0.5f);
+        sc.playGaussChannelBlind("entrance6_short.wav", x, 0.65f);
     }
 
     
@@ -1186,8 +1186,8 @@ public class EIAClipPlayer2 {
         topBlip.delay(500).fadeOut(500).delete();
         bottomBlip.delay(500).fadeOut(500).delete();
 
-        //sc.playSingleChannelBlind("lumen_entrance7.wav", x, 0.5f);
-        sc.playSingleChannelBlind("lumen_entrance7.wav", x, doubletVol);
+        //sc.playGaussChannelBlind("lumen_entrance7.wav", x, 0.5f);
+        sc.playGaussChannelBlind("lumen_entrance7.wav", x, doubletVol);
     }
 
     public void accentVertDoubletThree(double x) {
@@ -1202,8 +1202,8 @@ public class EIAClipPlayer2 {
         topBlip.delay(500).fadeOut(500).delete();
         bottomBlip.delay(500).fadeOut(500).delete();
 
-        //sc.playSingleChannelBlind("lumen_entrance7.wav", x, 0.5f);
-        sc.playSingleChannelBlind("lumen_entrance7.wav", x, doubletVol);
+        //sc.playGaussChannelBlind("lumen_entrance7.wav", x, 0.5f);
+        sc.playGaussChannelBlind("lumen_entrance7.wav", x, doubletVol);
     }
     
     public void accentVertDoubletTwo(double x) {
@@ -1218,8 +1218,8 @@ public class EIAClipPlayer2 {
         topBlip.delay(500).fadeOut(500).delete();
         bottomBlip.delay(500).fadeOut(500).delete();
 
-        //sc.playSingleChannelBlind("lumen_entrance7.wav", x, 0.5f);
-        sc.playSingleChannelBlind("lumen_entrance7.wav", x, doubletVol);
+        //sc.playGaussChannelBlind("lumen_entrance7.wav", x, 0.5f);
+        sc.playGaussChannelBlind("lumen_entrance7.wav", x, doubletVol);
     }
 
 
