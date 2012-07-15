@@ -2,12 +2,11 @@ package net.electroland.ea.easing;
 
 import net.electroland.ea.EasingFunction;
 
-public class QuinticOut extends EasingFunction {
+public class CircularOut extends EasingFunction {
 
     @Override
     public float valueAt(float percentComplete, float start, float finish) {
         percentComplete--;
-        return (finish - start) * (percentComplete * percentComplete
-                * percentComplete * percentComplete * percentComplete + 1) + start;
+        return (finish - start) * (float)Math.sqrt(1 - percentComplete * percentComplete) + start;
     }
 }
