@@ -17,7 +17,7 @@ public class ClipSet implements Set<Clip>{
     public ClipSet delete()
     {
         for (Clip clip : group){
-            clip.delete();
+            clip.deleteWhenDone();
         }
         return this;
     }
@@ -35,17 +35,17 @@ public class ClipSet implements Set<Clip>{
         }
         return this;
     }
-    public ClipSet queueChange(Change change, int duration)
+    public ClipSet queueChange(Tween change, int duration)
     {
         for (Clip clip : group){
-            clip.queueChange(change, duration);
+            clip.queue(change, duration);
         }
         return this;
     }
     public ClipSet delay(int duration)
     {
         for (Clip clip : group){
-            clip.delay(duration);
+            clip.pause(duration);
         }
         return this;
     }
