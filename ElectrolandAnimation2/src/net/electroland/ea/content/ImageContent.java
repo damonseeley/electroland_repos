@@ -15,6 +15,15 @@ public class ImageContent extends Content {
 
     private Image image;
 
+    /**
+     * a constructor for creating an ImageContent object from an
+     * Image object rather than loading the image from animation.properties.
+     * @param image
+     */
+    public void fromImage(Image image) {
+        this.image = image;
+    }
+
     @Override
     public void renderContent(BufferedImage canvas) {
         Graphics g = canvas.getGraphics();
@@ -31,7 +40,6 @@ public class ImageContent extends Content {
     public void config(ParameterMap primaryParams,
             Map<String, ParameterMap> extendedParams) {
         String filename = primaryParams.getRequired("file");
-        //System.out.println("loading image " + filename);
         try {
             image = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(filename));
         } catch (IOException e) {
@@ -43,5 +51,4 @@ public class ImageContent extends Content {
     public void init(Map<String, Object> context) {
         // do nothing
     }
-
 }

@@ -12,6 +12,7 @@ import java.util.Vector;
 import javax.imageio.ImageIO;
 
 import net.electroland.ea.Content;
+import net.electroland.ea.util.AlphanumComparator;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.ParameterMap;
 
