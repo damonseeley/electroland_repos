@@ -1,9 +1,11 @@
 package net.electroland.ea.easing;
 
+import net.electroland.ea.EasingFunction;
+
 public class QuinticInOut extends EasingFunction {
 
     @Override
-    public double valueAt(double percentComplete, double start, double finish) {
+    public float valueAt(float percentComplete, float start, float finish) {
         percentComplete *=2;
         if (percentComplete < 1){
             return ((finish - start)/2) * percentComplete * percentComplete * 

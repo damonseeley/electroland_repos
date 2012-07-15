@@ -1,9 +1,11 @@
 package net.electroland.ea.easing;
 
+import net.electroland.ea.EasingFunction;
+
 public class ExponentialIn extends EasingFunction {
 
     @Override
-    public double valueAt(double percentComplete, double start, double finish) {
-        return (finish - start) * Math.pow(2, 10 * (percentComplete - 1)) + start;
+    public float valueAt(float percentComplete, float start, float finish) {
+        return (finish - start) * (float)Math.pow(2, 10 * (percentComplete - 1)) + start;
     }
 }
