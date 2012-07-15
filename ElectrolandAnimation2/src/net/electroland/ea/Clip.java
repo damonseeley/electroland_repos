@@ -83,13 +83,18 @@ public class Clip implements Comparable<Clip>{
         return newClip;
     }
 
+    public Clip queue(Sequence sequence){
+        for (Tween tween : sequence.sequence){
+            queue(tween, tween.durationMillis);
+        }
+        return this;
+    }
+    
     /**
      * Request that a tweening directive be queued up.  The Tween will take
      * place over the specified duration.
      * 
-     * @param change
-     * @param millis
-     * @return
+     * @deprecated - use queue(Sequence sequence)
      */
     public Clip queue(Tween change, int millis)
     {
@@ -104,7 +109,7 @@ public class Clip implements Comparable<Clip>{
         QueuedActionState qc = new QueuedActionState();
         qc.type = QueuedActionState.CHANGE; 
         qc.change = change;
-        qc.duration = millis;
+        qc.duration = qc.change.durationMillis;
         queuedTweens.add(qc);
         return this;
     }

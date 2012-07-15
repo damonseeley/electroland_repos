@@ -6,7 +6,7 @@ public class Tween {
 
     protected Change reqXchange, reqYchange, reqWchange, reqHchange, reqAchange;
     protected EasingFunction FofX, FofY, FofW, FofH, FofA;
-//    protected ClipState finalState;
+    protected int durationMillis;
 
     /**
      * By default, create a linear tweening Change
