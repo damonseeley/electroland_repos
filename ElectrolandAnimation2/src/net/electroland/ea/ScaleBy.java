@@ -2,8 +2,8 @@ package net.electroland.ea;
 
 public class ScaleBy extends Change {
 
-    public ScaleBy(float changeValue){
-        super(changeValue);
+    public ScaleBy(float factor){
+        super(factor);// sets changeValue to factor
     }
 
     @Override
