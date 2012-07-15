@@ -2,8 +2,8 @@ package net.electroland.ea;
 
 public class ChangeBy extends Change {
 
-    public ChangeBy(float difference){
-        super(difference);
+    public ChangeBy(float offset){
+        super(offset);// sets changeValue to offset
     }
 
     @Override
