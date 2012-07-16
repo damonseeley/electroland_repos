@@ -9,12 +9,13 @@ public class Sequence {
 
     public Sequence(){
         sequence = new Vector<Tween>();
+        newState();
     }
 
     // add a new target state to Tween to
-    public Sequence newState(int millis){
+    public Sequence newState(){
         current = new Tween();
-        current.durationMillis = millis;
+        current.durationMillis = 0;
         sequence.add(current);
         return this;
     }
@@ -36,6 +37,10 @@ public class Sequence {
         Tween t = new Tween();
         t.durationMillis = millis;
         sequence.add(t);
+        return this;
+    }
+    public Sequence duration(int millis){
+        current.durationMillis = millis;
         return this;
     }
 
