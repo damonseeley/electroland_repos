@@ -1,10 +1,9 @@
 package net.electroland.installutils.weather2;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
+import java.util.Vector;
 
 import net.electroland.utils.ElectrolandProperties;
 import uk.me.jstott.coordconv.LatitudeLongitude;
@@ -13,7 +12,7 @@ import uk.me.jstott.sun.Time;
 
 public class WeatherChecker implements Runnable {
 
-    
+    private Vector<WeatherListener> listeners;
     private LatitudeLongitude   geo;
     private TimeZone            timeZone;
     private GregorianCalendar   gc          = new GregorianCalendar();
@@ -29,21 +28,28 @@ public class WeatherChecker implements Runnable {
 
         timeZone =  TimeZone.getTimeZone(weatherConfigProps.getRequired("settings", "weather", "timezone"));
 
+        // TODO: getDefault borked when assigned to "settings", "optional" and there was no such line.
         sunrisePaddingMinutes = weatherConfigProps.getDefaultInt("settings", "weather", "sunrisePadding", 0);
-        sunsetPaddingMinutes = weatherConfigProps.getDefaultInt("settings", "weather", "sunsetPadding", 0);
+        sunsetPaddingMinutes  = weatherConfigProps.getDefaultInt("settings", "weather", "sunsetPadding", 0);
     }
 
     public static void main(String args[]){
-        System.out.println(new WeatherChecker(new ElectrolandProperties("weather.properties")).isDaylight());
+        System.out.println(new WeatherChecker(
+                new ElectrolandProperties("weather.properties")).isDuringDaylightHours());
     }
 
     public void addWeatherListener(WeatherListener listener)
     {
-        // TODO
+        if (listeners == null){
+            listeners = new Vector<WeatherListener>();
+        }
+        listeners.add(listener);
     }
     public void removeWeatherListener(WeatherListener listener)
     {
-        // TODO
+        if (listeners == null){
+            listeners.remove(listener);
+        }
     }
 
     @Override
@@ -51,7 +57,7 @@ public class WeatherChecker implements Runnable {
         // TODO
     }
 
-    public boolean isDaylight()
+    public boolean isDuringDaylightHours()
     {
         double day = gc.get(GregorianCalendar.DAY_OF_YEAR);
 
