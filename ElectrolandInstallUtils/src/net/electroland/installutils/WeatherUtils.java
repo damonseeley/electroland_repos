@@ -9,7 +9,7 @@ import uk.me.jstott.sun.Sun;
 import uk.me.jstott.sun.Time;
 import uk.me.jstott.util.JulianDateConverter;
 
-import com.sun.syndication.feed.module.yahooweather.*;
+import com.sun.syndication.feed.module.yahooweather.YWeatherFeedModule;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.SyndFeedInput;
