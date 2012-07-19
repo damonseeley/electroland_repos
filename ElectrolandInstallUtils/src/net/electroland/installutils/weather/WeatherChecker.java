@@ -1,10 +1,9 @@
 package net.electroland.installutils.weather;
 
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
-import java.util.Date;
-import java.text.DateFormat;
 
 public class WeatherChecker  {
 	protected static final Timer TIMER = new Timer();
