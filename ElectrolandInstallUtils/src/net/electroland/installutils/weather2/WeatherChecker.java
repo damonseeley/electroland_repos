@@ -1,32 +1,28 @@
 package net.electroland.installutils.weather2;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 import java.util.Vector;
 
 import net.electroland.utils.ElectrolandProperties;
-import uk.me.jstott.coordconv.LatitudeLongitude;
-import uk.me.jstott.sun.Sun;
-import uk.me.jstott.sun.Time;
+
+import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
+import com.luckycatlabs.sunrisesunset.dto.Location;
 
 public class WeatherChecker implements Runnable {
 
     private Vector<WeatherListener> listeners;
-    private LatitudeLongitude   geo;
-    private TimeZone            timeZone;
-    private GregorianCalendar   gc          = new GregorianCalendar();
-    private boolean             dst         = true;
+    private Location            location;
+    private String              timeZoneName;
     private int                 sunrisePaddingMinutes;
     private int                 sunsetPaddingMinutes;
 
     public WeatherChecker(ElectrolandProperties weatherConfigProps)
     {
-        geo = new LatitudeLongitude(
-            weatherConfigProps.getRequiredDouble("settings", "weather", "latitude"),
-            weatherConfigProps.getRequiredDouble("settings", "weather", "longitude"));
-
-        timeZone =  TimeZone.getTimeZone(weatherConfigProps.getRequired("settings", "weather", "timezone"));
+        location     = new Location(34.0522,-118.2428);
+        timeZoneName =  weatherConfigProps.getRequired("settings", "weather", "timezone");
 
         // TODO: getDefault borked when assigned to "settings", "optional" and there was no such line.
         sunrisePaddingMinutes = weatherConfigProps.getDefaultInt("settings", "weather", "sunrisePadding", 0);
@@ -59,37 +55,23 @@ public class WeatherChecker implements Runnable {
 
     public boolean isDuringDaylightHours()
     {
-        double day = gc.get(GregorianCalendar.DAY_OF_YEAR);
+        Calendar gc  = GregorianCalendar.getInstance(TimeZone.getTimeZone(timeZoneName));
+        SunriseSunsetCalculator calculator = new SunriseSunsetCalculator(location, timeZoneName);
 
-        Calendar now        = Calendar.getInstance();
-        now.setTimeZone(timeZone);
+        Date now     = new Date();
+        Calendar sunrise = calculator.getOfficialSunriseCalendarForDate(gc);
+        Calendar sunset  = calculator.getOfficialSunsetCalendarForDate(gc);
 
-        Calendar sunrise    = convert(Sun.sunriseTime(day, geo, timeZone, dst));
-        Calendar sunset     = convert(Sun.sunsetTime( day, geo, timeZone, dst));
+        System.out.println("now:        " + now);
+        System.out.println("sunrise:    " + sunrise.getTime());
+        System.out.println("sunset:     " + sunset.getTime());
 
-        sunrise.setTimeInMillis(sunrise.getTimeInMillis() + 1000 * 60 * sunrisePaddingMinutes);
-        sunset.setTimeInMillis(sunset.getTimeInMillis() + 1000 * 60 * sunsetPaddingMinutes);
+        sunrise.add(Calendar.MINUTE, sunrisePaddingMinutes);
+        sunset.add(Calendar.MINUTE, sunsetPaddingMinutes);
 
-//        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-//        System.out.println(dateFormat.format(sunrise.getTime()));
-//        System.out.println(dateFormat.format(now.getTime()));
-//        System.out.println(dateFormat.format(sunset.getTime()));
+        System.out.println("adj sunrise:" + sunrise.getTime());
+        System.out.println("adj sunset: " + sunset.getTime());
 
-        return now.after(sunrise) && now.before(sunset);
-    }
-
-    private Calendar convert(Time time){
-        Calendar cal = Calendar.getInstance();
-
-        cal.setTimeZone(timeZone);
-
-        cal.set(cal.get(Calendar.YEAR), 
-                cal.get(Calendar.MONTH), 
-                cal.get(Calendar.DATE), 
-                time.getHours(), 
-                time.getMinutes(), 
-                (int)time.getSeconds());
-
-        return cal;
+        return now.after(sunrise.getTime()) && now.before(sunset.getTime());
     }
 }
