@@ -1,10 +1,12 @@
 #
-#Thu Sep 06 11:31:04 PDT 2007
+#Wed Aug 01 16:23:35 PDT 2012
 screenWidth=800
+mediaTriggerPeriod=300000
 touchTimeOut=500
 flexPort=1024
 maxSwimDepth=1.5
 waveDelay=300000
+bigFishLookBack=3
 edgeWeight=1.0
 JellyFish1MaxSpeed=25
 pondFrameRate=50
@@ -28,6 +30,7 @@ flashDepthLimit=50
 pondGeneratorClass=MainTable
 screenHeight=600
 cams=0,0,65,45,1492
+dartSafteyBuffer=100
 TinyFish1MaxSpeed=100
 pondGridHeight=45
 SmallFish11MaxSpeed=100

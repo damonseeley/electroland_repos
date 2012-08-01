@@ -4,7 +4,7 @@ import net.electroland.fish.ui.MainFrame;
 import net.electroland.fish.util.Bounds;
 import net.electroland.fish.util.FishProps;
 
-public class Main {
+public class FishServerMain {
 
 	/**
 	 * props file name
