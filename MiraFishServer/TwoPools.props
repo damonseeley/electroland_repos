@@ -1,0 +1,23 @@
+#
+#Sun Sep 02 13:49:50 PDT 2007
+pondGridHeight=45
+screenWidth=800
+videoDepth=1.75
+screenHeight=600
+useTimer=true
+touchTimeOut=500
+pondFrameRate=50
+cams=0,0,60,45,1493,60,0,60,45,1494
+pondBounds=0.0,0.0,768.0,2048.0,2.0,0.0
+pondGeneratorClass=TwoPools
+pondGridWidth=120
+videoEdgeBuffer=25.0
+showGraphics=true
+fishList=MiraFish1,50,200
+flexPort=1025
+rotateMap=rotate_pools.bmp
+noEntryMap=noEntry_pools.bmp
+edgeMap=edges_pools.bmp
+rotateWeight=0.5
+edgeWeight=1.5
+MiraFish1MaxSpeed=500

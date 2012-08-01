@@ -1,0 +1,15 @@
+ID,name,width,height,duration
+1,video/INT_Stairs_512.mp4,512,384,23
+2,video/INT_MainHall_512.mp4,512,384,30
+3,video/INT_PlaneMove_512.mp4,512,384,24
+4,video/EXT_Entrance_512.mp4,512,384,23
+5,video/EXT_Night_512.mp4,512,384,29
+6,video/EXT_Flyby_512.mp4,512,384,41
+7,video/MIRA_sonny_01_512.mp4,512,288,37
+8,video/MIRA_sonny_02_512.mp4,512,288,46
+9,video/MIRA_sonny_03_512.mp4,512,288,41
+10,slideshows/entranceFunnelSlideshow.swf,512,384,13
+11,slideshows/images_ext_slideshow.swf,512,384,16
+12,slideshows/images_int_slideshow.swf,512,384,19
+13,slideshows/images_3_slideshow.swf,512,384,13
+14,slideshows/images_4_slideshow.swf,512,384,13

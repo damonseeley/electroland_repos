@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ElVis"/>
+	<classpathentry kind="lib" path="depends/miglayout15-swing.jar"/>
+	<classpathentry kind="lib" path="depends/JMyron.jar"/>
+	<classpathentry kind="lib" path="depends/vecmath.jar"/>
+	<classpathentry kind="lib" path="depends/gluegen-rt.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="MiraFishServer/depends"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="depends/jogl.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="MiraFishServer/depends"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/FlexBroadcaster"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ElVisPresenceGrid"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/MiraFSM"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

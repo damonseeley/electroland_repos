@@ -1,0 +1,56 @@
+#
+#Sun Sep 02 13:49:50 PDT 2007
+pondGridHeight=45
+pondGridWidth=90
+screenWidth=800
+videoDepth=1.75
+screenHeight=600
+useTimer=true
+# touchTimeOut=50
+touchTimeOut=25
+# pondFrameRate=50
+pondFrameRate=40
+cams=0,0,90,45,1492
+pondBounds=0.0,0.0,1536.0,3072.0,2.0,0.0
+pondGeneratorClass=MainTable
+videoEdgeBuffer=25.0
+showGraphics=true
+# format is fishclass,flocksize,# of fish
+# if the flocksize is bigger than the number of fish then they can all swim together
+# fishList=BigFish1,1,6,MicroFish1,10,18,TinyFish1,7,18,SmallFish1,15,65,MediumFish1,4,8,MediumFish2,2,10,MediumFish3,5,10,JellyFish1,1,4
+fishList=BigFish1,1,6,MicroFish1,10,10,TinyFish1,7,14,SmallFish1,15,50,MediumFish1,4,8,MediumFish2,2,8,MediumFish3,5,10,JellyFish1,1,5
+#
+#
+flexPort=1024
+rotateMap=rotate.bmp
+noEntryMap=noEntry.bmp
+edgeMap=edges.bmp
+rotateWeight=0.5
+# rotateWeight=0.9
+edgeWeight=1.5
+# edgeWeight=20
+BigFish1MaxSpeed=60
+SmallFish11MaxSpeed=500
+# def 90 for these guys
+MediumFish1MaxSpeed=300
+MediumFish2MaxSpeed=200
+MediumFish3MaxSpeed=200
+TinyFish1MaxSpeed=500
+MicroFish1MaxSpeed=500
+JellyFish1MaxSpeed=40
+VideoFishMaxSpeed=0
+BigFish1EdgeBufferStrength=0.7
+BigFish1EdgeBuffer=140
+BigFishDiveSpeed=0.03
+zScaleCompression=0.25
+minSwimDepth=0.45
+maxSwimDepth=1.5
+# flashDepthLimit = 40
+flashDepthLimit = 30
+waveDelay=240000
+waveDuration=18000
+dartSafteyBuffer=70
+# 5 mins
+mediaTriggerPeriod=120000
+# SINCE UPDATE
+pondPopulationDelay=300
