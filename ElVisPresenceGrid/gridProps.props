@@ -1,0 +1,20 @@
+#
+#Fri Jul 20 13:08:39 PDT 2012
+threshold=5000
+displayHeight=360
+axisIP=10.22.33.102
+displayWidth=480
+adaptation=0.0010
+port=1492
+gridHeight=240
+axisPassword=m
+srcImageHeight=240
+transformDims=3,2
+axisUsername=m
+clientIp=localhost
+showGraphics=true
+smoothDetection=false
+camera=axis
+gridWidth=320
+srcImageWidth=320
+windowName=EL Vision

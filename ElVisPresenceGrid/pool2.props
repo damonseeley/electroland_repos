@@ -1,0 +1,21 @@
+#default values
+#Sun Sep 02 15:37:12 PDT 2007
+#
+#Sun Sep 02 15:36:02 PDT 2007
+windowName=POOL 2 CAM
+axisIP=192.168.2.72
+gridHeight=45
+port=1494
+displayHeight=240
+transformMapping=0.0,0.0,0.0,90.0,0.0,180.0,80.0,0.0,80.0,90.0,80.0,180.0,160.0,0.0,160.0,90.0,160.0,180.0,240.0,0.0,240.0,90.0,240.0,180.0
+srcImageWidth=240
+threshold=5000
+transformDims=3,2
+clientIp=localhost
+axisUsername=m
+camera=axis
+gridWidth=60
+adaptation=0.0010
+srcImageHeight=180
+displayWidth=320
+axisPassword=m
