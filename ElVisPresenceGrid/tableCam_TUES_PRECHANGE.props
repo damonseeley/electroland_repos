@@ -1,0 +1,21 @@
+#
+#Sat Sep 08 19:57:21 PDT 2007
+threshold=4700.0
+displayHeight=240
+axisIP=192.168.2.70
+displayWidth=480
+adaptation=0.0010
+port=1492
+gridHeight=45
+axisPassword=m
+srcImageHeight=240
+transformDims=3,2
+axisUsername=m
+clientIp=localhost
+showGraphics=true
+camera=axis
+smoothDetection=false
+gridWidth=90
+srcImageWidth=320
+transformMapping=28.0,65.0,25.0,128.0,30.0,190.0,104.0,52.0,101.0,127.0,104.0,203.0,215.0,49.0,217.0,128.0,214.0,203.0,296.0,59.0,300.0,130.0,294.0,195.0
+windowName=TABLE CAM
