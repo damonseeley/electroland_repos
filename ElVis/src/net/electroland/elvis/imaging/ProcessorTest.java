@@ -46,7 +46,7 @@ public class ProcessorTest  extends JFrame implements KeyListener, ActionListene
 	
 	public void paint(Graphics g) { //used to set the image on the panel
 		Graphics2D g2d =(Graphics2D)g;
- 		g2d.drawRenderedImage(processor.getImage(), scaler);
+ 		g2d.drawRenderedImage(processor.getBufferedImage(), scaler);
  		if(recalcExtreema) {
  			System.out.println("piel (min,max) = " + processor.getMin() + ", " + processor.getMax());
  			recalcExtreema = false;

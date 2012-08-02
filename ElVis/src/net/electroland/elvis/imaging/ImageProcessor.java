@@ -1,18 +1,19 @@
 package net.electroland.elvis.imaging;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.util.Vector;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
 import net.electroland.elvis.imaging.acquisition.ImageReceiver;
 
+import com.googlecode.javacv.cpp.opencv_core.IplImage;
+
 public abstract class ImageProcessor extends Thread implements ImageReceiver {
 	protected boolean isRunning = true;
 
-	LinkedBlockingQueue<BufferedImage> queue = new LinkedBlockingQueue<BufferedImage>();
-	Vector<BufferedImage> toProcess = new Vector<BufferedImage>();
+	LinkedBlockingQueue<IplImage> queue = new LinkedBlockingQueue<IplImage>();
+	Vector<IplImage> toProcess = new Vector<IplImage>();
 
 	int frameCnt = 0;
 
@@ -23,7 +24,7 @@ public abstract class ImageProcessor extends Thread implements ImageReceiver {
 	public int w;
 	public int h;
 
-	AtomicReference<BufferedImage> curImage = new AtomicReference<BufferedImage>();
+	AtomicReference<IplImage> curImage = new AtomicReference<IplImage>();
 
 	public ImageProcessor(int w, int h) {
 		this.w = w;
@@ -32,9 +33,14 @@ public abstract class ImageProcessor extends Thread implements ImageReceiver {
 
 	
 	public void addImage(BufferedImage i) {
+		queue.add(IplImage.createFrom(i));
+	}
+	public void addImage(IplImage i) {
 		queue.add(i);
 	}
-
+	
+	
+	
 
 	public void resetFPSCalc() {
 		frameCnt = 0;
@@ -44,7 +50,7 @@ public abstract class ImageProcessor extends Thread implements ImageReceiver {
 	public void start() {
 		isRunning = true;
 		queue.drainTo(toProcess);
-		toProcess.clear();
+		toProcess.clear();		
 		super.start();
 	}
 	
@@ -56,11 +62,11 @@ public abstract class ImageProcessor extends Thread implements ImageReceiver {
 	public void run() {
 		startTime = System.currentTimeMillis();
 
-		BufferedImage result = null;
+		IplImage result = null;
 		while(isRunning) {
 			
 			try {
-				BufferedImage img = queue.take();
+				IplImage img = queue.take();
 				if(! queue.isEmpty()) { // if behind catch up
 					queue.drainTo(toProcess);
 					if(toProcess.size() > warningFrameSize) {
@@ -91,14 +97,21 @@ public abstract class ImageProcessor extends Thread implements ImageReceiver {
 		}
 	}
 
-	public RenderedImage getImage() {
+	public IplImage getImageIplImage() {
 		return curImage.get();
 	}
 
+	public BufferedImage getBufferedImage() {
+		return curImage.get().getBufferedImage();
+	}
 	
 	public float getFPS() {
 		return (1000.0f * frameCnt) / ((float) (System.currentTimeMillis() - startTime));
 	}
 
-	public abstract BufferedImage process(BufferedImage img);
+	public void receiveErrorMsg(Exception cameraException) {
+		System.out.println(cameraException);
+	}
+	
+	public abstract IplImage process(IplImage img);
 }

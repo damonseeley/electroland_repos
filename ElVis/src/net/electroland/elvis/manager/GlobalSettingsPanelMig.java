@@ -67,6 +67,7 @@ public class GlobalSettingsPanelMig implements Colorable {
 		urlBox.addItem(ImagePanel.FLOWER_SRC);
 		urlBox.addItem(ImagePanel.LOCALAXIS_SRC);
 		urlBox.addItem(ImagePanel.JMYRON_SRC);
+		urlBox.addItem(ImagePanel.FLY_SRC);
 		urlBox.setSelectedItem("None");
 		urlBox.setMaximumRowCount(40);
 		urlBox.addItemListener(new ItemListener() {

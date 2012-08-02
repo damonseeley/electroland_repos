@@ -3,10 +3,10 @@ package net.electroland.elvis.imaging.acquisition.axisCamera;
 import net.electroland.elvis.imaging.acquisition.ImageReceiver;
 
 public class LocalCam extends AxisCamera {
-	public static String url ="http://10.0.1.90/";
+	public static String url ="http://10.22.33.102/";
 	
 	public static String username = "root";
-	public static String password = "n0h0";
+	public static String password = "root";
 	
 	public LocalCam(int w, int h, ImageReceiver imageReceiver) {
 		this(w,h,imageReceiver, false);
