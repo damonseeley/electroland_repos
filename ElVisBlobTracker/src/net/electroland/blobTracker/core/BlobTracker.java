@@ -1,5 +1,7 @@
 package net.electroland.blobTracker.core;
 
+import static com.googlecode.javacv.cpp.opencv_core.IPL_DEPTH_8U;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +11,6 @@ import javax.imageio.ImageIO;
 
 import net.electroland.blobDetection.Blob;
 import net.electroland.blobDetection.Blobs;
-import net.electroland.blobDetection.Region;
 import net.electroland.blobDetection.match.Tracker;
 import net.electroland.blobTracker.util.ElProps;
 import net.electroland.blobTracker.util.RegionMap;
@@ -21,6 +22,8 @@ import net.electroland.elvis.imaging.ThreshClamp;
 import net.electroland.elvis.imaging.acquisition.ImageAcquirer;
 import net.electroland.elvis.imaging.acquisition.axisCamera.AxisCamera;
 import net.electroland.elvis.imaging.acquisition.jmyron.WebCam;
+
+import com.googlecode.javacv.cpp.opencv_core.IplImage;
 
 public class BlobTracker extends ImageProcessor {
 	public Tracker[] tracker;
@@ -34,7 +37,7 @@ public class BlobTracker extends ImageProcessor {
 
 
 	ImageConversion imageConversion = new ImageConversion();
-	BufferedImage grayImage;
+	IplImage grayImage;
 
 
 
@@ -44,9 +47,9 @@ public class BlobTracker extends ImageProcessor {
 
 
 	BackgroundImage background;
-	BufferedImage diffImage;
-	BufferedImage threshImage;
-	BufferedImage threshImage2;
+	IplImage diffImage;
+	IplImage threshImage;
+	IplImage threshImage2;
 
 	ThreshClamp thresh = new ThreshClamp(2000);
 	ThreshClamp thresh2 = new ThreshClamp(2000);
@@ -65,16 +68,17 @@ public class BlobTracker extends ImageProcessor {
 		String mapFileName = ElProps.THE_PROPS.getProperty("regionMap","regionMap.png");
 			regionMap = new RegionMap(mapFileName);
 
-			grayImage = new BufferedImage(w,h,BufferedImage.TYPE_USHORT_GRAY);
+//			grayImage = new BufferedImage(w,h,BufferedImage.TYPE_USHORT_GRAY);
+			grayImage =IplImage.create(w, h, IPL_DEPTH_8U , 1);
 //		scaledImage = new BufferedImage(w,h,BufferedImage.TYPE_USHORT_GRAY);
 
 
 
 
 
-		diffImage = new BufferedImage(w,h,BufferedImage.TYPE_USHORT_GRAY);
-		threshImage = new BufferedImage(w,h,BufferedImage.TYPE_USHORT_GRAY);
-		threshImage2 = new BufferedImage(w,h,BufferedImage.TYPE_USHORT_GRAY);
+		diffImage = IplImage.create(w, h, IPL_DEPTH_8U , 1);
+		threshImage = IplImage.create(w, h, IPL_DEPTH_8U , 1);
+		threshImage2 = IplImage.create(w, h, IPL_DEPTH_8U , 1);
 
 
 		background = new BackgroundImage(.001, 15);
@@ -189,17 +193,17 @@ public class BlobTracker extends ImageProcessor {
 	}
 
 	@Override
-	public BufferedImage process(BufferedImage img) {
+	public IplImage process(IplImage img) {
 
-
+/*
 		if(convertFromColor) {
 			imageConversion.convertFromRGB(img, grayImage);			
 		} else {
 			imageConversion.convertFromGray(img, grayImage);
 		}
+*/
 
-
-		BufferedImage bkImage = background.update(grayImage);
+		IplImage bkImage = background.update(grayImage);
 		if(bkImage == null) return null;
 
 
