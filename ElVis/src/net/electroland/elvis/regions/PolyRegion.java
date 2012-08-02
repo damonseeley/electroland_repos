@@ -5,13 +5,14 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Stroke;
-import java.awt.image.RenderedImage;
 import java.io.Serializable;
 import java.util.Vector;
 
 import net.electroland.elvis.imaging.PresenceDetector;
 import net.electroland.elvis.imaging.RoiAve;
 import net.electroland.elvis.manager.ImagePanel;
+
+import com.googlecode.javacv.cpp.opencv_core.IplImage;
 
 public class PolyRegion implements Serializable {
 
@@ -49,7 +50,7 @@ public class PolyRegion implements Serializable {
 
 	public boolean isTriggered = false;
 
-	public boolean isTriggered(RenderedImage ri) {
+	public boolean isTriggered(IplImage ri) {
 		double mean = roiAve.getAverage(ri);
 		isTriggered = ((mean * CLAMP_SCALE_VALUE) >= percentage);
 		if(isTriggered) {
@@ -339,7 +340,10 @@ public class PolyRegion implements Serializable {
 		for(int i = 0; i < poly.npoints; i++) {
 			scaledPoly.addPoint((int) (getX(i)* ImagePanel.INV_SCALER), (int)(getY(i)* ImagePanel.INV_SCALER));			
 		}
-		roiAve = new RoiAve(scaledPoly);
+		if(roiAve == null) {
+			roiAve = new RoiAve();
+		} 
+		roiAve.setRoi(scaledPoly);
 	}
 	
 	public void addTriggerListener(TriggerListener tl) {

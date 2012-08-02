@@ -3,32 +3,33 @@ package net.electroland.elvis.imaging;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.ParameterBlock;
 
-import javax.media.jai.JAI;
-import javax.media.jai.ROI;
-import javax.media.jai.RenderedOp;
+import com.googlecode.javacv.cpp.opencv_core.CvArr;
+import com.googlecode.javacv.cpp.opencv_core.CvPoint;
+import static com.googlecode.javacv.cpp.opencv_core.cvMinMaxLoc;
+
 
 public class CalcExtreema {
-	ParameterBlock pb = new ParameterBlock();
 	
 	public int sampleSize = 2;
-	double min = -1;
-	double max = -1;
+	double[] minAr = new double[1];
+	double[] maxAr = new double[1];
+	CvPoint minLoc = new CvPoint();
+	CvPoint maxLoc = new CvPoint();
+
+	double maxVal = -1;
+	double minVal = -1;
 
 	public CalcExtreema() {
-		pb.add(null);
-		pb.add(sampleSize);
-		pb.add(sampleSize);
 	}
 	
-	public void calc(RenderedImage img, ROI roi) {
-		 pb.setSource(img,0);  
-		 pb.set(roi, 0); // roi is null check whole image
-	     RenderedOp op = JAI.create("extrema", pb);
-	     double[][] extrema = (double[][]) op.getProperty("extrema");
-	     min = extrema[0][0];
-	     max = extrema[1][0];
+	public void calc(CvArr img, CvArr roi) {
+		cvMinMaxLoc(img, minAr, maxAr, minLoc, maxLoc, roi);
+		minVal = minAr[0];
+		maxVal = maxAr[0];
 	}
 	
-	public double getMin() { return min; }
-	public double getMax() { return max; }
+	public double getMin() { return minVal; }
+	public double getMax() { return maxVal; }
+	public CvPoint getMinLoc() { return minLoc; }
+	public CvPoint getMaxLoc() { return maxLoc; }
 }

@@ -1,12 +1,14 @@
 package net.electroland.elvis.imaging;
 
-import java.awt.image.BufferedImage;
+import static com.googlecode.javacv.cpp.opencv_core.IPL_DEPTH_8U;
+
 import java.io.File;
 import java.util.Vector;
 
 import net.electroland.elvis.regions.GlobalRegionSnapshot;
 import net.electroland.elvis.regions.PolyRegion;
 
+import com.googlecode.javacv.cpp.opencv_core.IplImage;
 public class PresenceDetector extends ImageProcessor {
 
 	public static final int CLAMP_VALUE = 65535;
@@ -16,10 +18,10 @@ public class PresenceDetector extends ImageProcessor {
 	ImgReturnType imgReturnType = ImgReturnType.RAW;
 
 	int[][] threshMask = null;
-	BufferedImage grayImage;
-	BufferedImage diffImage;
-	BufferedImage threshImage;
-	BufferedImage threshImage2;
+	IplImage grayImage;
+	IplImage diffImage;
+	IplImage threshImage;
+	IplImage threshImage2;
 	BackgroundImage background;
 	
 	ThreshClamp thresh = new ThreshClamp(2000);
@@ -39,10 +41,10 @@ public class PresenceDetector extends ImageProcessor {
 		super(w, h);
 		extreema = new CalcExtreema();
 		background = new BackgroundImage(.001, 60);
-		grayImage = new BufferedImage(w,h,BufferedImage.TYPE_USHORT_GRAY);
-		diffImage = new BufferedImage(w,h,BufferedImage.TYPE_USHORT_GRAY);
-		threshImage = new BufferedImage(w,h,BufferedImage.TYPE_USHORT_GRAY);
-		threshImage2 = new BufferedImage(w,h,BufferedImage.TYPE_USHORT_GRAY);
+		grayImage = IplImage.create(w, h, IPL_DEPTH_8U , 1);
+		diffImage = IplImage.create(w, h, IPL_DEPTH_8U , 1);
+		threshImage = IplImage.create(w, h, IPL_DEPTH_8U , 1);
+		threshImage2 = IplImage.create(w, h, IPL_DEPTH_8U , 1);
 	}
 
 	public static PresenceDetector createFromFile(File f) {
@@ -110,14 +112,17 @@ public class PresenceDetector extends ImageProcessor {
 		imgReturnType = ret;
 	}
 
-	public BufferedImage process(BufferedImage img) {
+	public IplImage process(IplImage img) {
 
+		grayImage = img;
+		/*  TODO: handel color correction 
 		if(convertFromColor) {
 			imageConversion.convertFromRGB(img, grayImage);			
 		} else {
 			imageConversion.convertFromGray(img, grayImage);
 		}
-		BufferedImage bkImage = background.update(grayImage);
+		*/
+		IplImage bkImage = background.update(grayImage);
 		if(bkImage == null) return null;
 
 		ImageDifference.apply(bkImage, grayImage, diffImage);
@@ -141,7 +146,7 @@ public class PresenceDetector extends ImageProcessor {
 		
 		
 		
-		BufferedImage returnImage = null;
+		IplImage returnImage = null;
 		
 		switch(imgReturnType) {
 		case RAW:
@@ -165,9 +170,7 @@ public class PresenceDetector extends ImageProcessor {
 		return returnImage;
 	}
 
-	public void receiveErrorMsg(Exception cameraException) {
-		// TODO Auto-generated method stub
-		
-	}
+
+	
 
 }

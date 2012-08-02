@@ -25,8 +25,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import com.googlecode.javacv.FrameGrabber.Exception;
+
 import net.electroland.elvis.imaging.PresenceDetector;
 import net.electroland.elvis.imaging.acquisition.ImageAcquirer;
+import net.electroland.elvis.imaging.acquisition.FlyCapture.FlyCamera;
 import net.electroland.elvis.imaging.acquisition.axisCamera.FlowerCam;
 import net.electroland.elvis.imaging.acquisition.axisCamera.LocalCam;
 import net.electroland.elvis.imaging.acquisition.axisCamera.NavyCam;
@@ -45,6 +48,7 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 	public static final String NOHONORTH_SRC = "NoHo North";
 	public static final String JMYRON_SRC = "jMyronCam";
 	public static final String LOCALAXIS_SRC ="Local Axis";
+	public static final String FLY_SRC = "Fly Cam";
 
 	public static final String RAW_IMG = "Raw";
 	public static final String GRAYSCALE_IMG = "Grayscale";
@@ -182,7 +186,7 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 
 		RenderedImage ri=null;
 		if(srcStream != null) {
-			ri = presenceDetector.getImage();
+			ri = presenceDetector.getBufferedImage();
 		} else if (srcImage != null) {
 			ri = srcImage;
 		}
@@ -267,7 +271,15 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 		} else if(s.equals(LOCALAXIS_SRC)) {
 			System.out.println("creating local " + w +"x" +h);
 			srcStream = new LocalCam(w,h,presenceDetector, aquireInColor);
-		} else {
+		} else if(s.equals(FLY_SRC)) {
+			System.out.println("creating fly camera " + w +"x" +h);
+			try {
+				srcStream = new FlyCamera(presenceDetector, 0 , w, h);
+			} catch (Exception e) {
+				srcStream = null;
+				e.printStackTrace();
+			}
+		}else {
 			srcStream = null;
 			throw new IOException("Unknown source");
 		}

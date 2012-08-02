@@ -1,31 +1,62 @@
 package net.electroland.elvis.imaging;
 
-import java.awt.Shape;
-import java.awt.image.RenderedImage;
-import java.awt.image.renderable.ParameterBlock;
+import static com.googlecode.javacv.cpp.opencv_core.cvAvg;
+import static com.googlecode.javacv.cpp.opencv_core.cvReleaseImage;
 
-import javax.media.jai.JAI;
-import javax.media.jai.ROI;
-import javax.media.jai.ROIShape;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.image.BufferedImage;
+
+import com.googlecode.javacv.cpp.opencv_core.CvArr;
+import com.googlecode.javacv.cpp.opencv_core.CvScalar;
+import com.googlecode.javacv.cpp.opencv_core.IplImage;
 
 public class RoiAve {
-	ROI roi;
-	 ParameterBlock pb = new ParameterBlock();
-	 
-	 public RoiAve(Shape shape) {
-		 this(new ROIShape(shape));
-	 }
+	Shape roiShape;
+	IplImage roi = null;	
 
-	 public RoiAve(ROI roi) {
-	     pb.add(roi);       // null ROI means whole image
-	     pb.add(1);          // check every pixel horizontally
-	     pb.add(1);          // check every pixel vertically
+	/*
+	 * not sure if this is used
+	 public RoiAve(Shape shape) {
+		 roiShape;
+	 }s
+	 */
+
+
+	public RoiAve() {
+	}
+	public void setRoi(Shape shape) {
+		this.roiShape = shape;
 	}
 	
-	public double getAverage(RenderedImage im) {
-	     pb.setSource(im, 0);
-	     RenderedImage meanImage = JAI.create("mean", pb, null);
-	     double[] mean = (double[])meanImage.getProperty("mean");
-	     return mean[0];
+	public void setRoi(IplImage roi) {
+		if(roi != null) {
+			cvReleaseImage(roi);
+		}
+		roiShape = null;
+		this.roi = roi;
+	}
+	
+	public CvScalar getAverage(IplImage im, IplImage roi) {
+		if(roiShape != null) {
+			//TODO: this should be moved out of get average, also need to confirm mask colors are ok
+			BufferedImage bi = new BufferedImage(im.width(), im.height(), BufferedImage.TYPE_USHORT_GRAY);
+			Graphics2D g = ((Graphics2D)bi.getGraphics());
+			g.setColor(Color.BLACK);
+			g.fillRect(0, 0, bi.getWidth(), bi.getHeight());
+			g.setColor(Color.WHITE);
+			g.fill(roiShape);
+			roiShape = null;
+			roi = IplImage.createFrom(bi);
+		}
+		return cvAvg(im, roi);
+
+	}
+
+
+	public double getAverage(CvArr im) {
+		return cvAvg(im, roi).getVal(0);
+
 	}
 }

@@ -1,36 +1,34 @@
 package net.electroland.elvis.imaging;
 
-import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-import java.awt.image.renderable.ParameterBlock;
-
-import javax.media.jai.JAI;
-import javax.media.jai.RenderedOp;
-
+import com.googlecode.javacv.cpp.opencv_core.IplImage;
+import static com.googlecode.javacv.cpp.opencv_imgproc.cvThreshold;
+import static com.googlecode.javacv.cpp.opencv_imgproc.CV_THRESH_TRUNC;
 public class ThreshClamp {
-	public static final double WHITE = 65535;
-	ParameterBlock pb = new ParameterBlock();
+	
+	public static IplImage workingCopy =  null;
 
-	double [] low = {2000};
-	double [] high = {WHITE};
-	double [] map = {WHITE};
+	
+	public static final double WHITE = 65535;
+
+	double  low = 2000;
+	double  high = WHITE;
+	double  map = WHITE;
 	
 	public ThreshClamp(double thresh) {
-		low[0] = thresh;
-		pb.add(low);
-		pb.add(high);
-		pb.add(map);
+		setThreshold(thresh);
 	}
 
 	public void setHigh(double v) {
-		high[0] = v;
+		high = v;
 	}
+	
+	//TODO: not sure what the "map" is.  Must checks
 	public void setVal(double v) {
-		map[0] = v;
+		map = v;
 	}
 
 	public void setLow(double v) {
-		low[0] = v;
+		low = v;
 	}
 	
 	public void setThreshold(double v) {
@@ -38,14 +36,13 @@ public class ThreshClamp {
 	}
 
 	public double getLow() {
-		return low[0];
+		return low;
 	}
-	public RenderedOp apply(RenderedImage src) {
-		pb.setSource(src, 0);
-		return JAI.create("threshold", pb);
-	}
-	public void apply(RenderedImage src, BufferedImage dst) {
 	
-		dst.setData(apply(src).getData());
+	public void apply(IplImage src, IplImage dst) {
+		if(workingCopy == null) workingCopy = dst.clone();
+		cvThreshold(src, dst, low, high, CV_THRESH_TRUNC);	
 	}
+	
+	
 }
