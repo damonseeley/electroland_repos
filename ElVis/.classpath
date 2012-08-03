@@ -5,7 +5,7 @@
 	<classpathentry kind="lib" path="libraries/JMyron.jar"/>
 	<classpathentry kind="lib" path="libraries/miglayout15-swing.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Electroland/javacv/javacv-bin/javacpp.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Electroland/javacv/javacv-bin/javacv.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Electroland/javacv/javacv-bin/javacv.jar" sourcepath="C:/Users/Electroland/javacv/src/main/java"/>
 	<classpathentry kind="lib" path="C:/Users/Electroland/javacv/javacv-bin/javacv-android-arm.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Electroland/javacv/javacv-bin/javacv-linux-arm.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Electroland/javacv/javacv-bin/javacv-linux-x86.jar"/>

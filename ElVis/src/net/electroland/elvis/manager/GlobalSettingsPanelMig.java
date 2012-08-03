@@ -114,8 +114,10 @@ public class GlobalSettingsPanelMig implements Colorable {
 		imageView.addItem(ImagePanel.RAW_IMG);
 		imageView.addItem(ImagePanel.GRAYSCALE_IMG);
 		imageView.addItem(ImagePanel.BACKGROUND_IMG);
+		imageView.addItem(ImagePanel.BLUR_IMG);
 		imageView.addItem(ImagePanel.BACKDIFF_IMG);
 		imageView.addItem(ImagePanel.THRESHOLD_IMG);
+		imageView.addItem(ImagePanel.CONTOUR_IMG);
 		imageView.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				String newSelect = (String)imageView.getSelectedItem();
@@ -139,19 +141,22 @@ public class GlobalSettingsPanelMig implements Colorable {
 		java.text.NumberFormat numberFormat =
 			java.text.NumberFormat.getIntegerInstance();
 		NumberFormatter formatter = new NumberFormatter(numberFormat);
-		formatter.setMinimum(new Integer(0));
-		formatter.setMaximum(new Integer(65535));
+		int minVal = 0;
+		int maxVal = 255;
+		int defVal = 20;
+		formatter.setMinimum(new Integer(minVal));
+		formatter.setMaximum(new Integer(maxVal));
 		triggerTreshField = new JFormattedTextField(formatter);
-		triggerTreshField.setText("30000");
+		triggerTreshField.setText(Integer.toString(defVal));
 		triggerTreshField.setColumns(10); //get some space
 
 		p.add(triggerTreshField, "gaptop 25, align left, wrap");
 
-		triggerThreshSlider = new JSlider(0,65535,30000);
+		triggerThreshSlider = new JSlider(minVal, maxVal, defVal);
 
 		Hashtable<Integer, JLabel> h = new Hashtable<Integer, JLabel>();
-		h.put(new Integer(0),new JLabel("0"));
-		h.put(new Integer(65535),new JLabel("65535"));
+		h.put(new Integer(0),new JLabel(Integer.toString(minVal)));
+		h.put(new Integer(255), new JLabel(Integer.toString(maxVal)));
 
 
 

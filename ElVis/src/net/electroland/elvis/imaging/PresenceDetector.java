@@ -11,9 +11,9 @@ import net.electroland.elvis.regions.PolyRegion;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 public class PresenceDetector extends ImageProcessor {
 
-	public static final int CLAMP_VALUE = 65535;
+	public static final int CLAMP_VALUE = 20;
 	
-	public static enum ImgReturnType { RAW, GRAY, BGRND, DIFF, THRESH};
+	public static enum ImgReturnType { RAW, GRAY, BGRND, DIFF, THRESH, CONTOUR, BLUR};
 
 	ImgReturnType imgReturnType = ImgReturnType.RAW;
 
@@ -21,11 +21,16 @@ public class PresenceDetector extends ImageProcessor {
 	IplImage grayImage;
 	IplImage diffImage;
 	IplImage threshImage;
-	IplImage threshImage2;
+	IplImage contourImage; 
+	IplImage blurImage; 
+	
 	BackgroundImage background;
 	
-	ThreshClamp thresh = new ThreshClamp(2000);
-	ThreshClamp thresh2 = new ThreshClamp(2000);
+	DetectContours detectControus;
+	
+	ThreshClamp thresh = new ThreshClamp(20);
+	
+	Blur blur;
 	
 	
 	ImageConversion imageConversion = new ImageConversion();
@@ -40,11 +45,14 @@ public class PresenceDetector extends ImageProcessor {
 	public PresenceDetector(int w, int h) {
 		super(w, h);
 		extreema = new CalcExtreema();
+		blur = new Blur();
 		background = new BackgroundImage(.001, 60);
+		detectControus = new DetectContours();
 		grayImage = IplImage.create(w, h, IPL_DEPTH_8U , 1);
+		blurImage = IplImage.create(w, h, IPL_DEPTH_8U , 1);
 		diffImage = IplImage.create(w, h, IPL_DEPTH_8U , 1);
 		threshImage = IplImage.create(w, h, IPL_DEPTH_8U , 1);
-		threshImage2 = IplImage.create(w, h, IPL_DEPTH_8U , 1);
+		contourImage = IplImage.create(w, h, IPL_DEPTH_8U, 1);
 	}
 
 	public static PresenceDetector createFromFile(File f) {
@@ -64,16 +72,12 @@ public class PresenceDetector extends ImageProcessor {
 		return background.getAdaptation();
 	}
 	public void setThresh(double d) {
-		thresh.setLow(d);
-		thresh.setHigh(65535);
-		thresh.setVal(65535);
-		thresh2.setLow(0);
-		thresh2.setHigh(d);
-		thresh2.setVal(0);
+		thresh.setThreshold(d);
+		thresh.setClampValue(255);
 	}
 	
 	public double getThresh() {
-		return thresh.getLow();
+		return thresh.getThreshold();
 	}
 	
 	public void setRegions(	Vector<PolyRegion> r) {
@@ -122,10 +126,11 @@ public class PresenceDetector extends ImageProcessor {
 			imageConversion.convertFromGray(img, grayImage);
 		}
 		*/
-		IplImage bkImage = background.update(grayImage);
+		blur.apply(grayImage, blurImage);
+		IplImage bkImage = background.update(blurImage);
 		if(bkImage == null) return null;
 
-		ImageDifference.apply(bkImage, grayImage, diffImage);
+		ImageDifference.apply(bkImage, blurImage, diffImage);
 
 
 
@@ -135,11 +140,11 @@ public class PresenceDetector extends ImageProcessor {
 		}
 
 		thresh.apply(diffImage, threshImage);
-		thresh2.apply(threshImage, threshImage2);
+//		thresh2.apply(threshImage, threshImage2);
 
 		if(regions != null) {
 			for(PolyRegion r : regions){
-				if(r.isTriggered(threshImage2)) {
+				if(r.isTriggered(threshImage)) {
 				}
 			}
 		}
@@ -155,6 +160,9 @@ public class PresenceDetector extends ImageProcessor {
 		case GRAY: 
 			returnImage = grayImage;
 			break;
+		case BLUR:
+			returnImage = blurImage;
+			break;
 		case BGRND: 
 			returnImage = bkImage;
 			break;
@@ -162,8 +170,11 @@ public class PresenceDetector extends ImageProcessor {
 			returnImage = diffImage;
 			break; 
 		case THRESH: 
-			returnImage = threshImage2;
+			returnImage = threshImage;
 			break;
+		case CONTOUR:
+			detectControus.drawContours(threshImage, contourImage);
+			returnImage = threshImage;
 		}
 
 

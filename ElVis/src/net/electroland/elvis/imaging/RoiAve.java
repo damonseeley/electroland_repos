@@ -8,13 +8,16 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.image.BufferedImage;
 
+import com.googlecode.javacv.CanvasFrame;
 import com.googlecode.javacv.cpp.opencv_core.CvArr;
 import com.googlecode.javacv.cpp.opencv_core.CvScalar;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 
 public class RoiAve {
+	
+	//TODO: can be spead up with roi for ave
 	Shape roiShape;
-	IplImage roi = null;	
+	IplImage mask = null;	
 
 	/*
 	 * not sure if this is used
@@ -28,18 +31,22 @@ public class RoiAve {
 	}
 	public void setRoi(Shape shape) {
 		this.roiShape = shape;
+		if(mask != null) {
+			cvReleaseImage(mask);
+			mask = null;
+		}
 	}
 	
 	public void setRoi(IplImage roi) {
-		if(roi != null) {
-			cvReleaseImage(roi);
+		if(mask != null) {
+			cvReleaseImage(mask);
 		}
 		roiShape = null;
-		this.roi = roi;
+		this.mask = roi;
 	}
 	
-	public CvScalar getAverage(IplImage im, IplImage roi) {
-		if(roiShape != null) {
+	public double getAverage(IplImage im, IplImage curMask) {
+		if((curMask == null) && (roiShape != null)) {
 			//TODO: this should be moved out of get average, also need to confirm mask colors are ok
 			BufferedImage bi = new BufferedImage(im.width(), im.height(), BufferedImage.TYPE_USHORT_GRAY);
 			Graphics2D g = ((Graphics2D)bi.getGraphics());
@@ -48,15 +55,20 @@ public class RoiAve {
 			g.setColor(Color.WHITE);
 			g.fill(roiShape);
 			roiShape = null;
-			roi = IplImage.createFrom(bi);
+			if(mask != null) {
+				cvReleaseImage(mask);
+			}
+			mask = IplImage.createFrom(bi);
+			mask.depth(8);
+			CanvasFrame cf = new CanvasFrame("roi");
+			cf.showImage(mask)	;
+			curMask = mask;
 		}
-		return cvAvg(im, roi);
-
+		return cvAvg(im, curMask).getVal(0);
 	}
+		
 
-
-	public double getAverage(CvArr im) {
-		return cvAvg(im, roi).getVal(0);
-
+	public double getAverage(IplImage im) {
+		return getAverage(im, mask);
 	}
 }

@@ -13,19 +13,16 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-
-import com.googlecode.javacv.FrameGrabber.Exception;
 
 import net.electroland.elvis.imaging.PresenceDetector;
 import net.electroland.elvis.imaging.acquisition.ImageAcquirer;
@@ -38,9 +35,13 @@ import net.electroland.elvis.imaging.acquisition.axisCamera.NoHoSouthCam;
 import net.electroland.elvis.imaging.acquisition.jmyron.WebCam;
 import net.electroland.elvis.regions.PolyRegion;
 
+import com.googlecode.javacv.CanvasFrame;
+import com.googlecode.javacv.FrameGrabber.Exception;
+import com.googlecode.javacv.cpp.opencv_core.IplImage;
 public class ImagePanel extends JPanel implements MouseListener, MouseMotionListener, KeyListener, Colorable, ActionListener {
 
-	
+	public static ImagePanel THE_IMAGEPANEL;
+//	CanvasFrame canvasFrame;
 	boolean aquireInColor = false;
 	public static final String NAVY_SRC = "Navy St.";
 	public static final String FLOWER_SRC = "Flower St.";
@@ -52,12 +53,14 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 
 	public static final String RAW_IMG = "Raw";
 	public static final String GRAYSCALE_IMG = "Grayscale";
+	public static final String BLUR_IMG = "Blur";
 	public static final String BACKGROUND_IMG = "Background";
 	public static final String BACKDIFF_IMG = "Difference";
 	public static final String THRESHOLD_IMG = "Threshold";
+	public static final String CONTOUR_IMG = "Contour";
 
 
-	public static ImagePanel THE_IMAGEPANEL = null;
+//	public static ImagePanel THE_IMAGEPANEL = null;
 	PolyRegion selectedRegion = null;
 
 	boolean shiftDown = false;
@@ -80,12 +83,12 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 	boolean mouseInFrame;
 
 	ImageAcquirer srcStream;
-	BufferedImage srcImage;
+	IplImage srcImage;
 
 	int w ;
 	int h ;
 	
-	public static int SCALE = 2;
+	public static int SCALE = 1;
 	public static AffineTransform SCALER ;	
 	public static double INV_SCALER = 1.0 / (double) SCALE	;
 
@@ -112,8 +115,9 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 		this.w = w;
 		this.h = h;
 		// adjust scale?
-		
-		THE_IMAGEPANEL = this;
+		ImagePanel.THE_IMAGEPANEL = this;
+//		canvasFrame = new CanvasFrame("Elvis");
+//		THE_IMAGEPANEL = this;
 		presenceDetector = new PresenceDetector(w,h);
 		presenceDetector.start();
 		presenceDetector.setRegions(null);
@@ -136,6 +140,7 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 		editToggleButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
+				//TODO:
 				ImagePanel.THE_IMAGEPANEL.toggleEditMode();
 			}
 		});
@@ -184,14 +189,15 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D)g;
 
-		RenderedImage ri=null;
+		IplImage ri=null;
 		if(srcStream != null) {
-			ri = presenceDetector.getBufferedImage();
+			ri = presenceDetector.getImageIplImage();
 		} else if (srcImage != null) {
 			ri = srcImage;
 		}
 		if (ri != null) {
-			g2d.drawRenderedImage(ri, SCALER);
+			g2d.drawRenderedImage(ri.getBufferedImage(), SCALER);
+//			canvasFrame.showImage(ri);
 		}
 
 		renderDrawing(g2d);
@@ -291,7 +297,9 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 			srcStream.stopRunning();
 			srcStream = null;
 		}
-		srcImage = ImageIO.read(f);
+		//TOOD: shoudl lod this with cvLoadImage (which I can't find at the moment
+
+		srcImage = 	IplImage.createFrom(ImageIO.read(f));
 	}
 
 	public void renderDrawing(Graphics2D g2d) {
@@ -473,6 +481,10 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 			presenceDetector.setImageReturn(PresenceDetector.ImgReturnType.DIFF);			
 		} else if(s.equals(THRESHOLD_IMG)) {
 			presenceDetector.setImageReturn(PresenceDetector.ImgReturnType.THRESH);			
+		} else if (s.equals(CONTOUR_IMG)) {
+			presenceDetector.setImageReturn(PresenceDetector.ImgReturnType.CONTOUR);
+		} else if (s.equals(BLUR_IMG)) {
+			presenceDetector.setImageReturn(PresenceDetector.ImgReturnType.BLUR);			
 		}
 
 	}
