@@ -15,6 +15,7 @@ import net.electroland.blobDetection.match.Tracker;
 import net.electroland.blobTracker.util.ElProps;
 import net.electroland.blobTracker.util.RegionMap;
 import net.electroland.elvis.imaging.BackgroundImage;
+import net.electroland.elvis.imaging.Blur;
 import net.electroland.elvis.imaging.ImageConversion;
 import net.electroland.elvis.imaging.ImageDifference;
 import net.electroland.elvis.imaging.ImageProcessor;
@@ -38,7 +39,9 @@ public class BlobTracker extends ImageProcessor {
 
 	ImageConversion imageConversion = new ImageConversion();
 	IplImage grayImage;
+	IplImage blurImage;
 
+	Blur blur;
 
 
 	public static enum MODE { raw, background, diff, thresh, running };
@@ -49,10 +52,8 @@ public class BlobTracker extends ImageProcessor {
 	BackgroundImage background;
 	IplImage diffImage;
 	IplImage threshImage;
-	IplImage threshImage2;
 
-	ThreshClamp thresh = new ThreshClamp(2000);
-	ThreshClamp thresh2 = new ThreshClamp(2000);
+	ThreshClamp thresh = new ThreshClamp(20);
 
 	ImageAcquirer srcStream;
 	BufferedImage srcImage;
@@ -64,6 +65,7 @@ public class BlobTracker extends ImageProcessor {
 	public BlobTracker(int srcWidth, int srcHeight) {
 		super(srcWidth, srcHeight);
 
+		blur = new Blur();
 		
 		String mapFileName = ElProps.THE_PROPS.getProperty("regionMap","regionMap.png");
 			regionMap = new RegionMap(mapFileName);
@@ -76,9 +78,9 @@ public class BlobTracker extends ImageProcessor {
 
 
 
-		diffImage = IplImage.create(w, h, IPL_DEPTH_8U , 1);
+			diffImage = IplImage.create(w, h, IPL_DEPTH_8U , 1);
+			blurImage = IplImage.create(w, h, IPL_DEPTH_8U , 1);
 		threshImage = IplImage.create(w, h, IPL_DEPTH_8U , 1);
-		threshImage2 = IplImage.create(w, h, IPL_DEPTH_8U , 1);
 
 
 		background = new BackgroundImage(.001, 15);
@@ -142,18 +144,11 @@ public class BlobTracker extends ImageProcessor {
 	public MODE getMode() { return mode; }
 
 	public void setThresh(double d) {
-		if(d <= 0) return;
-		if(d >= 65535) return;
-		thresh.setLow(d);
-		thresh.setHigh(65535);
-		thresh.setVal(65535);
-		thresh2.setLow(0);
-		thresh2.setHigh(d);
-		thresh2.setVal(0);
+		thresh.setThreshold(d);
 	}
 
 	public double getThresh() {
-		return thresh.getLow();
+		return thresh.getThreshold();
 	}
 
 
@@ -203,14 +198,14 @@ public class BlobTracker extends ImageProcessor {
 		}
 */
 
-		IplImage bkImage = background.update(grayImage);
+		blur.apply(grayImage, blurImage);
+		IplImage bkImage = background.update(blurImage);
 		if(bkImage == null) return null;
 
 
-		ImageDifference.apply(bkImage, grayImage, diffImage);
+		ImageDifference.apply(bkImage, blurImage, diffImage);
 
 		thresh.apply(diffImage, threshImage);
-		thresh2.apply(threshImage, threshImage2);
 		
 		
 		synchronized(blobs) { 
