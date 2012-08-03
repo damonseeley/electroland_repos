@@ -102,7 +102,9 @@ public abstract class ImageProcessor extends Thread implements ImageReceiver {
 	}
 
 	public BufferedImage getBufferedImage() {
-		return curImage.get().getBufferedImage();
+		IplImage img = curImage.get();
+		if(img != null) return img.getBufferedImage();
+		return null;
 	}
 	
 	public float getFPS() {

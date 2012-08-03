@@ -72,7 +72,7 @@ public class MainFrame extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		new MainFrame(240,180);
+		new MainFrame(640,480);
 	}
 
 }
