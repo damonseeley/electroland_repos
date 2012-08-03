@@ -6,9 +6,15 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import net.electroland.blobTracker.util.RegionMap;
+import net.electroland.elvis.imaging.DetectContours;
 import net.electroland.elvis.imaging.ThreshClamp;
 
+import com.googlecode.javacv.cpp.opencv_core.CvSeq;
+import com.googlecode.javacv.cpp.opencv_core.IplImage;
+
 public class Blobs {
+	DetectContours detectContours;
+	
 	RegionMap regionMap;
 
 	Blob curBlob = null;
@@ -26,6 +32,9 @@ public class Blobs {
 	}
 
 	public Blobs(int srcWidth, int srcHeight, RegionMap regionMap) {
+		detectContours = new DetectContours();
+		
+		
 		blobPixels = new int[srcHeight][srcWidth];
 		this.regionMap = regionMap;
 		detectedBlobs = new Vector[regionMap.size()];
@@ -57,6 +66,12 @@ public class Blobs {
 
 
 
+	public void detectBlobs(IplImage img) {
+		CvSeq contours = detectContours.detectContours(img);
+			
+		
+	}
+	
 	public  void detectBlobs(Raster data) {
 		blobHash.clear();
 		curBlob = null;
