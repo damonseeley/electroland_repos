@@ -11,7 +11,7 @@ public class DMXMediaMapV3Handler extends DefaultHandler {
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         super.startElement(uri, localName, qName, attributes);
-        if ("Entry".equals(qName)){
+        if ("Entry".equalsIgnoreCase(qName)){
             String idx     = attributes.getValue("idx");
             String mediaID = attributes.getValue("mediaID");
             String guid    = mediaID.substring(0, mediaID.indexOf(':'));
