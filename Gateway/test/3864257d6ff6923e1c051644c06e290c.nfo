@@ -1,0 +1,13 @@
+<MediaFileInfo version="103">
+<Info md5="3864257d6ff6923e1c051644c06e290c" md5Partial="acf7ae10ce0c8e5b376a2f83e8e49115" type="mpeg2" format="m2v"/>
+<SourceInfo md5="3864257d6ff6923e1c051644c06e290c" md5Partial="acf7ae10ce0c8e5b376a2f83e8e49115" sizeSource="807351" typeSource="mpeg2">
+<Encoding mediaAudioOption="PreserveAudio"/>
+</SourceInfo>
+<MediaInfo width="432" fps="29.970030" fsize="807351" height="432" aspect="1.000000" alpha="False" expdate="" delete="True" duration="7040" ionly="False"/>
+<DefaultVirtualMedia guid="{3079DEA8-2EAC-4099-AC06-DDB2E8585015}"/>
+<UserInfo>
+<Info name="name" value="GCC test 2\Portraits_108x4-3"/>
+<Info name="expDate" value=""/>
+<Info name="expDateSig" value="73398aea01d55039fa6eae7d0e7a9087"/>
+</UserInfo>
+</MediaFileInfo>

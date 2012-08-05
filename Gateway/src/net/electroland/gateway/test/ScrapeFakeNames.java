@@ -1,4 +1,4 @@
-package net.electroland.test;
+package net.electroland.gateway.test;
 
 import java.io.BufferedReader;
 import java.io.File;
