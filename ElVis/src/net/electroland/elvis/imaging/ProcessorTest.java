@@ -30,7 +30,7 @@ public class ProcessorTest  extends JFrame implements KeyListener, ActionListene
 
 	public ProcessorTest() {
 		super();
-		processor = new PresenceDetector(w,h);
+		processor = new PresenceDetector(w,h, false);
 		processor.start();
 		new WebCam(w,h,6.0f,processor, false).start();
 //		new NavyCam(processor, true).start();

@@ -118,7 +118,7 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 		ImagePanel.THE_IMAGEPANEL = this;
 //		canvasFrame = new CanvasFrame("Elvis");
 //		THE_IMAGEPANEL = this;
-		presenceDetector = new PresenceDetector(w,h);
+		presenceDetector = new PresenceDetector(w,h, false);
 		presenceDetector.start();
 		presenceDetector.setRegions(null);
 		setSize(w*SCALE,h*SCALE);

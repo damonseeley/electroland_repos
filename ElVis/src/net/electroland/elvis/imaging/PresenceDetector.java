@@ -5,8 +5,11 @@ import static com.googlecode.javacv.cpp.opencv_core.IPL_DEPTH_8U;
 import java.io.File;
 import java.util.Vector;
 
+import net.electroland.elvis.blobtracking.Blob;
+import net.electroland.elvis.blobtracking.Tracker;
 import net.electroland.elvis.regions.GlobalRegionSnapshot;
 import net.electroland.elvis.regions.PolyRegion;
+import net.electroland.elvis.util.ElProps;
 
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 public class PresenceDetector extends ImageProcessor {
@@ -40,9 +43,13 @@ public class PresenceDetector extends ImageProcessor {
 
 	boolean calcExtreema = false;
 	public boolean convertFromColor = false;
+	
+	public Tracker tracker = null;
+	
+	
 
 	
-	public PresenceDetector(int w, int h) {
+	public PresenceDetector(int w, int h, boolean withTracker) {
 		super(w, h);
 		extreema = new CalcExtreema();
 		blur = new Blur();
@@ -53,16 +60,40 @@ public class PresenceDetector extends ImageProcessor {
 		diffImage = IplImage.create(w, h, IPL_DEPTH_8U , 1);
 		threshImage = IplImage.create(w, h, IPL_DEPTH_8U , 1);
 		contourImage = IplImage.create(w, h, IPL_DEPTH_8U, 1);
+		
+		if(withTracker) {
+			tracker = new Tracker(ElProps.THE_PROPS);
+			tracker.start();
+		}
 	}
 
 	public static PresenceDetector createFromFile(File f) {
 		GlobalRegionSnapshot grs = GlobalRegionSnapshot.load(f);
-		PresenceDetector pd = new PresenceDetector(grs.w, grs.h);
+		PresenceDetector pd = new PresenceDetector(grs.w, grs.h, false);
 		pd.setAdaptation(grs.backgroundAdaptation);
 		pd.setThresh(grs.backgroundDiffThresh);
 		pd.setRegions(grs.regions);
 		return pd;
 	}
+	public void nextMode() {
+		int nextOrd = imgReturnType.ordinal() + 1;
+		if(nextOrd >= ImgReturnType.values().length) {
+			nextOrd = 0;
+		}
+		imgReturnType =  ImgReturnType.values()[nextOrd];
+		System.out.println("Displaying " + imgReturnType);
+	}
+
+	public void prevMode() {
+		int prevOrd = imgReturnType.ordinal() - 1;
+		if(prevOrd < 0) {
+			prevOrd = ImgReturnType.values().length-1;
+		}
+		imgReturnType =  ImgReturnType.values()[prevOrd];
+		System.out.println("Displaying " + imgReturnType);
+	}
+
+	public ImgReturnType getMode() { return imgReturnType; }
 
 	
 	public void setAdaptation(double d) {
@@ -149,7 +180,12 @@ public class PresenceDetector extends ImageProcessor {
 			}
 		}
 		
-		
+		detectControus.detectContours(threshImage , contourImage);
+		if(tracker != null) {
+			detectControus.detectBlobs();
+			tracker.queueBlobs(detectControus.detectedBlobs);
+			
+		}
 		
 		IplImage returnImage = null;
 		
@@ -173,15 +209,16 @@ public class PresenceDetector extends ImageProcessor {
 			returnImage = threshImage;
 			break;
 		case CONTOUR:
-			detectControus.drawContours(threshImage, contourImage);
-			returnImage = threshImage;
+			detectControus.drawBlobs(contourImage);
+			returnImage = contourImage;
 		}
 
 
 		return returnImage;
 	}
 
-
-	
+	public Vector<Blob> getBlobs() {
+		return detectControus.detectedBlobs;
+	}
 
 }

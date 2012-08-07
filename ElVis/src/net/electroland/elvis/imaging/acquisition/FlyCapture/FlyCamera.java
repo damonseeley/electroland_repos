@@ -1,5 +1,7 @@
 package net.electroland.elvis.imaging.acquisition.FlyCapture;
 
+import java.util.concurrent.ExecutionException;
+
 import net.electroland.elvis.imaging.acquisition.ImageAcquirer;
 import net.electroland.elvis.imaging.acquisition.ImageReceiver;
 
@@ -53,11 +55,15 @@ public class FlyCamera extends Thread implements ImageAcquirer {
 			}
 
 			while(isRunning){			
-				try {
-					imageReceiver.addImage(frameGrabber.grab());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+					try {
+						imageReceiver.addImage(frameGrabber.grab());
+						Thread.sleep(1000/60);
+					} catch(Exception e) {
+						
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 			}
 
 			try {
