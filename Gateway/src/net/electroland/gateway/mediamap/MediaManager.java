@@ -23,6 +23,7 @@ import org.xml.sax.SAXException;
 import oscP5.OscEventListener;
 import oscP5.OscMessage;
 import oscP5.OscP5;
+import oscP5.OscProperties;
 import oscP5.OscStatus;
 
 public class MediaManager implements OscEventListener {
@@ -49,19 +50,13 @@ public class MediaManager implements OscEventListener {
     final public static String SET_ALPHA = "/alpha";
 
     private OscP5 oscP5;
-    private NetAddress playerAddr;
-    protected HashMap<Integer, StudentMedia> studentMedia;
+    private HashMap<Integer, StudentMedia> studentMedia;
 
     public MediaManager(){
 
-        // TODO: move these to an OscClient object.
-        System.err.println("You'll get some registerDispose nonsense here because we're not using PApplet.");
-        System.err.println("Safe to ignore. OscP5 just wants the non-existent PApplet to know to dispose of ");
-        System.err.println("it when it closes.  Includes NullPointerException.");
-        System.err.println();
-        oscP5 = new OscP5(this, MediaManager.PLAYER_RECEIVE_PORT);
-        playerAddr =  new NetAddress(MediaManager.PLAYER_IP, MediaManager.PLAYER_SEND_PORT);
-        Runtime.getRuntime().addShutdownHook(new DisposeOscClient(oscP5, playerAddr));
+        oscP5 = configureOSC(this);
+
+        Runtime.getRuntime().addShutdownHook(new DisposeOscClient(oscP5));
 
         List<StudentMedia> students
             = getRawStudentData(PHOTO_XML_FILENAME);
@@ -79,13 +74,36 @@ public class MediaManager implements OscEventListener {
         logger.info(getStudentsJSON(studentMedia));
     }
 
+
     public static void main(String args[]){
 
         MediaManager mmgr = new MediaManager();
 
-        // TODO: periodically resync and send to webserver
+        // TODO: periodically resync and send StudenMedia to webserver
 
         startScreenSaver(mmgr);
+    }
+
+    public static void sendStudentMediaFile(){
+        // TODO: implement as PUT?
+    }
+
+    private static OscP5 configureOSC(OscEventListener listener){
+
+        OscProperties props = new OscProperties(listener);
+        props.setListeningPort(PLAYER_RECEIVE_PORT);
+        props.setRemoteAddress(new NetAddress(PLAYER_IP, PLAYER_SEND_PORT));
+        props.setSRSP(OscProperties.ON);
+        props.setDatagramSize(1024);
+        props.setNetworkProtocol(OscProperties.UDP);
+
+        // supposedly this was fixed ( http://code.google.com/p/oscp5/issues/detail?id=1 ) but I don't see it in the OscP5 codebase.
+        System.err.println("You'll see a Register Dispose and NullPointerException");
+        System.err.println("here.  That's safely ignorable.  It's just OscP5 letting");
+        System.err.println("the non-existent PApplet know to clean up on shutdown.");
+        System.err.println();
+
+        return new OscP5(listener, props);
     }
 
     private static String getStudentsJSON(HashMap<Integer, StudentMedia>studentMedia){
@@ -103,6 +121,8 @@ public class MediaManager implements OscEventListener {
         return sb.toString();
     }
 
+
+    // TODO: this is just rotating around, not for real.
     private static void startScreenSaver(MediaManager mmgr){
         while(true){
             for (Integer idx : mmgr.studentMedia.keySet()){
@@ -223,14 +243,14 @@ public class MediaManager implements OscEventListener {
     public void setMedia(int idx){
         OscMessage mssg = new OscMessage(SET_MEDIA);
         mssg.add(idx);
-        oscP5.send(mssg, playerAddr);
+        oscP5.send(mssg);
         logger.info("set media to " + idx);
     }
 
     public void setAlpha(float alpha){
         OscMessage mssg = new OscMessage(SET_MEDIA);
         mssg.add(alpha);
-        oscP5.send(mssg, playerAddr);
+        oscP5.send(mssg);
         logger.debug("  set alpha to " + alpha);
     }
 
@@ -248,16 +268,14 @@ public class MediaManager implements OscEventListener {
 class DisposeOscClient extends Thread {
 
     private OscP5 oscP5;
-    private NetAddress addr;
 
-    public DisposeOscClient(OscP5 oscP5, NetAddress addr){
+    public DisposeOscClient(OscP5 oscP5){
         this.oscP5 = oscP5;
-        this.addr = addr;
     }
 
     public void run(){
         System.out.println("disconnecting OscP5...");
-        oscP5.disconnect(addr);
+        oscP5.disconnect(oscP5.properties().remoteAddress());
         oscP5.dispose();
         System.out.println("Goodbye!");
     }
