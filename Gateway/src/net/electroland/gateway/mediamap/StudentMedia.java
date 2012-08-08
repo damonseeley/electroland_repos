@@ -3,12 +3,11 @@ package net.electroland.gateway.mediamap;
 
 public class StudentMedia {
 
-    String firstname, lastname, disambiguator;
-    String guid, srcfilename;
-    Integer idx;
-    Long createDate;
+    protected String firstname, lastname, disambiguator;
+    protected Integer idx;
+    protected Long createDate;
+    protected String guid, srcfilename; // only used enroute to mapping idx to names
 
-    // TODO: implement null checks all around.
     public String toJSON(){
         StringBuffer sb = new StringBuffer();
         sb.append("{");
@@ -29,10 +28,11 @@ public class StudentMedia {
             return "";
         }else if (value instanceof Integer || 
                   value instanceof Float ||
-                  value instanceof Double){
-            return '"' + name + '"' + ':' + value + ',';
+                  value instanceof Double ||
+                  value instanceof Long){
+            return '"' + name + '"' + ':' + value + ','; // TODO: not an ideal place for adding the comma!
         } else {
-                return '"' + name + '"' + ':' + '"' + value + '"' + ',';
+                return '"' + name + '"' + ':' + '"' + value + '"' + ','; // TODO: not an ideal place for adding the comma!
         }
     }
 }

@@ -26,19 +26,19 @@ import oscP5.OscP5;
 import oscP5.OscProperties;
 import oscP5.OscStatus;
 
+// TODO: properties reader
+// TODO: thread to resync periodically.
+// TODO: thread to listen for website requests and play them.
+// TODO: integration tests with nulls
 public class MediaManager implements OscEventListener {
 
     static Logger logger = Logger.getLogger(MediaManager.class);
 
-    // TODO: properties reader
-    // TODO: thread to resync periodically.
-    // TODO: thread to listen for website requests and play them.
-    // TODO: integration tests with nulls
-    final public static int FPS = 33;
-    final public static int CLIP_LENGTH_SECS = 2;
+    final public static int    FPS = 33;
+    final public static int    CLIP_LENGTH_SECS = 2;
     final public static EasingFunction EASING_F = new Linear();
 
-    final public static int DB_SYNC_PERIOD_SECS = 10;
+    final public static int    DB_SYNC_PERIOD_SECS = 10;
     final public static String PHOTO_XML_FILENAME = "/Users/bradley/Documents/Electroland/Gateway/test/photos.xml";
     final public static String NFO_FILES_DIR = "/Users/bradley/Documents/Electroland/Gateway/test/";
     final public static String DMX_MEDIA_MAP_FILENAME = "/Users/bradley/Documents/Electroland/Gateway/test/DMXMediaMap.v3.xml";
@@ -52,12 +52,34 @@ public class MediaManager implements OscEventListener {
     private OscP5 oscP5;
     private HashMap<Integer, StudentMedia> studentMedia;
 
+
     public MediaManager(){
 
+        // TODO: these should be behind some kind of OSC abstraction
         oscP5 = configureOSC(this);
-
         Runtime.getRuntime().addShutdownHook(new DisposeOscClient(oscP5));
 
+        studentMedia = syncStudentMediaFiles();
+        logger.info(getStudentsJSON(studentMedia));
+    }
+
+
+    public static void main(String args[]){
+
+        MediaManager mmgr = new MediaManager();
+
+// TODO: mmgr.startResyncThread(long delay);
+// TODO: mmgr.startPersonalRequestListener(int port);
+        mmgr.startScreenSaver();
+    }
+
+
+    public static void sendStudentMediaFile(){
+        // TODO: implement as PUT?
+    }
+
+
+    private static HashMap<Integer, StudentMedia> syncStudentMediaFiles(){
         List<StudentMedia> students
             = getRawStudentData(PHOTO_XML_FILENAME);
 
@@ -70,23 +92,9 @@ public class MediaManager implements OscEventListener {
         students = applyGuidsToStudents(students, srcFilenameToGuids);
         students = applyIdxsToStudents(students, guidsToIDXs);
 
-        studentMedia = createIdxToStudentMap(students);
-        logger.info(getStudentsJSON(studentMedia));
+        return createIdxToStudentMap(students);
     }
 
-
-    public static void main(String args[]){
-
-        MediaManager mmgr = new MediaManager();
-
-        // TODO: periodically resync and send StudenMedia to webserver
-
-        startScreenSaver(mmgr);
-    }
-
-    public static void sendStudentMediaFile(){
-        // TODO: implement as PUT?
-    }
 
     private static OscP5 configureOSC(OscEventListener listener){
 
@@ -97,10 +105,13 @@ public class MediaManager implements OscEventListener {
         props.setDatagramSize(1024);
         props.setNetworkProtocol(OscProperties.UDP);
 
-        // supposedly this was fixed ( http://code.google.com/p/oscp5/issues/detail?id=1 ) but I don't see it in the OscP5 codebase.
-        System.err.println("You'll see a Register Dispose and NullPointerException");
-        System.err.println("here.  That's safely ignorable.  It's just OscP5 letting");
-        System.err.println("the non-existent PApplet know to clean up on shutdown.");
+        System.err.println("You'll see a \"Register Dispose\" and NullPointerException");
+        System.err.println("here.  Those are safely ignorable.  It's just OscP5 letting");
+        System.err.println("the (non-existent) PApplet know to clean up on shutdown.");
+        System.err.println();
+        System.err.println("According to http://code.google.com/p/oscp5/issues/detail?id=1");
+        System.err.println("this was fixed in version 0.9.8, but that doesn't jive with");
+        System.err.println("their release docs or codebase.");
         System.err.println();
 
         return new OscP5(listener, props);
@@ -122,11 +133,12 @@ public class MediaManager implements OscEventListener {
     }
 
 
-    // TODO: this is just rotating around, not for real.
-    private static void startScreenSaver(MediaManager mmgr){
+    // TODO: proper randomization routine
+    // TODO: place nice with periodic resyncs and manual requests.
+    private void startScreenSaver(){
         while(true){
-            for (Integer idx : mmgr.studentMedia.keySet()){
-                new PlayThread(idx, mmgr).start();
+            for (Integer idx : studentMedia.keySet()){
+                new PlayThread(idx, this).start();
                 try {
                     Thread.sleep(1000 * CLIP_LENGTH_SECS);
                 } catch (InterruptedException e) {
@@ -240,12 +252,14 @@ public class MediaManager implements OscEventListener {
         }
     }
 
+
     public void setMedia(int idx){
         OscMessage mssg = new OscMessage(SET_MEDIA);
         mssg.add(idx);
         oscP5.send(mssg);
         logger.info("set media to " + idx);
     }
+
 
     public void setAlpha(float alpha){
         OscMessage mssg = new OscMessage(SET_MEDIA);
@@ -254,16 +268,19 @@ public class MediaManager implements OscEventListener {
         logger.debug("  set alpha to " + alpha);
     }
 
+
     @Override
     public void oscEvent(OscMessage mssg) {
         logger.debug(mssg);
     }
+
 
     @Override
     public void oscStatus(OscStatus mssg) {
         logger.debug(mssg);
     }
 }
+
 
 class DisposeOscClient extends Thread {
 
@@ -274,9 +291,7 @@ class DisposeOscClient extends Thread {
     }
 
     public void run(){
-        System.out.println("disconnecting OscP5...");
         oscP5.disconnect(oscP5.properties().remoteAddress());
         oscP5.dispose();
-        System.out.println("Goodbye!");
     }
  }

@@ -6,8 +6,8 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class NFOHandler extends DefaultHandler {
 
-    String srcFilename;
-    String guid;
+    protected String srcFilename;
+    protected String guid;
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
