@@ -59,6 +59,9 @@ public class GenerateDB {
         HashMap<String, StudentMedia> studentMedia = createIdxToStudentMap(students);
 
         // TODO: convert studentMedia to JSON and send to webserver
+        for (StudentMedia student : studentMedia.values()){
+            System.out.println(student);
+        }
 
         startScreenSaver(studentMedia);
     }
@@ -69,7 +72,7 @@ public class GenerateDB {
             for (String idx : studentMedia.keySet()){
                 new PlayThread(idx).start();
                 try {
-                    Thread.sleep(fps * clipLengthSecs * 1000);
+                    Thread.sleep(1000 * clipLengthSecs);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -131,7 +134,7 @@ public class GenerateDB {
     public static Map<String, String> mapSrcFilenameToGuids(String mediaDirectory){
 
         HashMap<String, String> srcToMediaFilesnames = new HashMap<String, String>();
-        Iterator<File> i = FileUtils.iterateFiles(new File(mediaDirectory), new String[]{".nfo"} , true);
+        Iterator<File> i = FileUtils.iterateFiles(new File(mediaDirectory), new String[]{"nfo"} , true);
 
         SAXParserFactory factory = SAXParserFactory.newInstance();
         NFOHandler handler = new NFOHandler();
@@ -141,10 +144,10 @@ public class GenerateDB {
             SAXParser saxParser = factory.newSAXParser();
 
             while (i.hasNext()){
-                    File nfoFile = i.next();
-                    saxParser.parse(nfoFile, handler);
-                    srcToMediaFilesnames.put(handler.srcFilename, 
-                                             handler.guid);
+                File nfoFile = i.next();
+                saxParser.parse(nfoFile, handler);
+                srcToMediaFilesnames.put(handler.srcFilename, 
+                                         handler.guid);
             }
         } catch (ParserConfigurationException e) {
             e.printStackTrace();

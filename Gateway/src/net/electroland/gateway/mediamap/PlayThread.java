@@ -17,13 +17,13 @@ public class PlayThread extends Thread {
         // 33 fps * 2 seconds
         float frames = GenerateDB.fps * GenerateDB.clipLengthSecs;
         int played = 0;
-        float percentComplete = played / frames;
 
         EasingFunction ef = new Linear();
 
         setMedia(idx);
 
-        while (played < frames){
+        while (played++ < frames){
+            float percentComplete = played / frames;
             setAlpha(ef.valueAt(percentComplete, 1.0f, 0.0f));
             try {
                 sleep(1000 / GenerateDB.fps);
@@ -34,10 +34,10 @@ public class PlayThread extends Thread {
     }
 
     public void setMedia(String idx){
-        
+        System.out.println("playing " + idx);
     }
 
     public void setAlpha(float alpha){
-        
+        System.out.println("  alpha to " + alpha);
     }
 }

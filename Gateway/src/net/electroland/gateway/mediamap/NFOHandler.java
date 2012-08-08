@@ -15,7 +15,8 @@ public class NFOHandler extends DefaultHandler {
         if ("Info".equalsIgnoreCase(qName) && "name".equalsIgnoreCase(attributes.getValue("name"))){
             srcFilename = attributes.getValue("value");
         }else if ("DefaultVirtualMedia".equalsIgnoreCase(qName)){
-            guid = attributes.getValue("guid");
+            guid = attributes.getValue("guid").toLowerCase();
+            guid = guid.substring(1, guid.length() - 1);
         }
     }
 }

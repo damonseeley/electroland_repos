@@ -24,9 +24,9 @@ public class PhotosHandler extends DefaultHandler {
             student.disambiguator = attributes.getValue("disambiguator").trim();
             student.srcfilename = attributes.getValue("filename").trim();
             String dateStr = attributes.getValue("createDate").trim();
-            Date createDate = null;
+            Long createDate = null;
             if (dateStr != null && dateStr.length() != 0){
-                student.createDate = new Date(attributes.getValue("createDate"));
+                student.createDate = new Long(attributes.getValue("createDate"));
             }
             students.add(student);
         }
