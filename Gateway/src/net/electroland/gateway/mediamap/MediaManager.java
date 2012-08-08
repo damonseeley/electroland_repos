@@ -12,63 +12,88 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import net.electroland.ea.EasingFunction;
+import net.electroland.ea.easing.Linear;
+import netP5.NetAddress;
+
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
-public class GenerateDB {
+import oscP5.OscEventListener;
+import oscP5.OscMessage;
+import oscP5.OscP5;
+import oscP5.OscStatus;
 
-    /**
-     * This thing wakes up at a set period, and checks to see if the DMXMedia
-     * Map file is updated.  If so, it re-renders a hash of usernames to
-     * media IDs.
-     * 
-     * It dumps that hash to disk (JSON) and also holds it in memory.  The
-     * in memory version is used to control the media player.  The disk version
-     * by the web server.
-     * 
-     * Once its in memory, run screen saver mode and respond to requests to 
-     * play videos
-     * 
-     * @param args
-     */
-    // required propertise are 
-    // * location of DMXMediaMap.v3.xml and 
-    // * location .nfo files
-    // * minimum waits between file refreshes
-    // * file refresh poll period
+public class MediaManager implements OscEventListener {
 
+    static Logger logger = Logger.getLogger(MediaManager.class);
+
+    // TODO: properties reader
     // TODO: thread to resync periodically.
     // TODO: thread to listen for website requests and play them.
-    final public static int fps = 33;
-    final public static int clipLengthSecs = 2;
+    // TODO: integration tests with nulls
+    final public static int FPS = 33;
+    final public static int CLIP_LENGTH_SECS = 2;
+    final public static EasingFunction EASING_F = new Linear();
 
-    public static void main(String args[]){
+    final public static int DB_SYNC_PERIOD_SECS = 10;
+    final public static String PHOTO_XML_FILENAME = "/Users/bradley/Documents/Electroland/Gateway/test/photos.xml";
+    final public static String NFO_FILES_DIR = "/Users/bradley/Documents/Electroland/Gateway/test/";
+    final public static String DMX_MEDIA_MAP_FILENAME = "/Users/bradley/Documents/Electroland/Gateway/test/DMXMediaMap.v3.xml";
+
+    final public static String PLAYER_IP = "127.0.0.1"; 
+    final public static int    PLAYER_SEND_PORT = 12000;
+    final public static int    PLAYER_RECEIVE_PORT = 12000;
+    final public static String SET_MEDIA = "/play";
+    final public static String SET_ALPHA = "/alpha";
+
+    private OscP5 oscP5;
+    private NetAddress playerAddr;
+    protected HashMap<Integer, StudentMedia> studentMedia;
+
+    public MediaManager(){
+
+        // TODO: move these to an OscClient object.
+        System.err.println("You'll get some registerDispose nonsense here because we're not using PApplet.");
+        System.err.println("Safe to ignore. OscP5 just wants the non-existent PApplet to know to dispose of ");
+        System.err.println("it when it closes.  Includes NullPointerException.");
+        System.err.println();
+        oscP5 = new OscP5(this, MediaManager.PLAYER_RECEIVE_PORT);
+        playerAddr =  new NetAddress(MediaManager.PLAYER_IP, MediaManager.PLAYER_SEND_PORT);
+        Runtime.getRuntime().addShutdownHook(new DisposeOscClient(oscP5, playerAddr));
 
         List<StudentMedia> students
-            = getRawStudentData("/Users/bradley/Documents/Electroland/Gateway/test/photos.xml");
+            = getRawStudentData(PHOTO_XML_FILENAME);
 
         Map<String, String> srcFilenameToGuids 
-            = mapSrcFilenameToGuids("/Users/bradley/Documents/Electroland/Gateway/test/");
+            = mapSrcFilenameToGuids(NFO_FILES_DIR);
 
-        Map<String, String> guidsToIDXs
-            = mapGuidsToIDXs("/Users/bradley/Documents/Electroland/Gateway/test/DMXMediaMap.v3.xml");
+        Map<String, Integer> guidsToIDXs
+            = mapGuidsToIDXs(DMX_MEDIA_MAP_FILENAME);
 
         students = applyGuidsToStudents(students, srcFilenameToGuids);
         students = applyIdxsToStudents(students, guidsToIDXs);
 
-        HashMap<String, StudentMedia> studentMedia = createIdxToStudentMap(students);
-
-        System.out.println(getStudentsJSON(studentMedia));
-        // TODO: convert studentMedia to JSON and send to webserver
-
-        startScreenSaver(studentMedia);
+        studentMedia = createIdxToStudentMap(students);
+        logger.info(getStudentsJSON(studentMedia));
     }
 
-    private static String getStudentsJSON(HashMap<String, StudentMedia>studentMedia){
+    public static void main(String args[]){
+
+        MediaManager mmgr = new MediaManager();
+
+        // TODO: periodically resync and send to webserver
+
+        startScreenSaver(mmgr);
+    }
+
+    private static String getStudentsJSON(HashMap<Integer, StudentMedia>studentMedia){
         StringBuffer sb = new StringBuffer();
         sb.append('{');
-        for (String key : studentMedia.keySet()){
-            sb.append('"').append(key).append('"').append(':');
+        for (Integer key : studentMedia.keySet()){
+            sb.append(key);
+            sb.append(':');
             sb.append(studentMedia.get(key).toJSON()).append(',');
         }
         if (sb.charAt(sb.length() - 1) == ','){
@@ -78,12 +103,12 @@ public class GenerateDB {
         return sb.toString();
     }
 
-    private static void startScreenSaver(HashMap<String, StudentMedia>studentMedia){
+    private static void startScreenSaver(MediaManager mmgr){
         while(true){
-            for (String idx : studentMedia.keySet()){
-                new PlayThread(idx).start();
+            for (Integer idx : mmgr.studentMedia.keySet()){
+                new PlayThread(idx, mmgr).start();
                 try {
-                    Thread.sleep(1000 * clipLengthSecs);
+                    Thread.sleep(1000 * CLIP_LENGTH_SECS);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -92,9 +117,9 @@ public class GenerateDB {
     }
 
 
-    private static HashMap<String, StudentMedia> createIdxToStudentMap(List<StudentMedia> students){
+    private static HashMap<Integer, StudentMedia> createIdxToStudentMap(List<StudentMedia> students){
 
-        HashMap<String, StudentMedia> idxToStudents = new HashMap<String, StudentMedia>();
+        HashMap<Integer, StudentMedia> idxToStudents = new HashMap<Integer, StudentMedia>();
         for (StudentMedia student : students){
             idxToStudents.put(student.idx, student);
         }
@@ -102,7 +127,7 @@ public class GenerateDB {
     }
 
 
-    public static List<StudentMedia> applyIdxsToStudents(List<StudentMedia> students, Map<String, String> guidsToIDXs){
+    public static List<StudentMedia> applyIdxsToStudents(List<StudentMedia> students, Map<String, Integer> guidsToIDXs){
 
         for (StudentMedia student : students){
             student.idx = guidsToIDXs.get(student.guid);
@@ -120,7 +145,7 @@ public class GenerateDB {
     }
 
 
-    public static Map<String, String> mapGuidsToIDXs(String DMXfilename){
+    public static Map<String, Integer> mapGuidsToIDXs(String DMXfilename){
 
         SAXParserFactory factory = SAXParserFactory.newInstance();
         DMXMediaMapV3Handler handler = new DMXMediaMapV3Handler();
@@ -194,4 +219,46 @@ public class GenerateDB {
             return Collections.emptyList();
         }
     }
+
+    public void setMedia(int idx){
+        OscMessage mssg = new OscMessage(SET_MEDIA);
+        mssg.add(idx);
+        oscP5.send(mssg, playerAddr);
+        logger.info("set media to " + idx);
+    }
+
+    public void setAlpha(float alpha){
+        OscMessage mssg = new OscMessage(SET_MEDIA);
+        mssg.add(alpha);
+        oscP5.send(mssg, playerAddr);
+        logger.debug("  set alpha to " + alpha);
+    }
+
+    @Override
+    public void oscEvent(OscMessage mssg) {
+        logger.debug(mssg);
+    }
+
+    @Override
+    public void oscStatus(OscStatus mssg) {
+        logger.debug(mssg);
+    }
 }
+
+class DisposeOscClient extends Thread {
+
+    private OscP5 oscP5;
+    private NetAddress addr;
+
+    public DisposeOscClient(OscP5 oscP5, NetAddress addr){
+        this.oscP5 = oscP5;
+        this.addr = addr;
+    }
+
+    public void run(){
+        System.out.println("disconnecting OscP5...");
+        oscP5.disconnect(addr);
+        oscP5.dispose();
+        System.out.println("Goodbye!");
+    }
+ }

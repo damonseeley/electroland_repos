@@ -1,43 +1,33 @@
 package net.electroland.gateway.mediamap;
 
-import net.electroland.ea.EasingFunction;
-import net.electroland.ea.easing.Linear;
 
 public class PlayThread extends Thread {
 
-    private String idx;
+    private int idx;
+    private MediaManager mmgr;
 
-    public PlayThread(String idx){
+    public PlayThread(int idx, MediaManager mmgr){
         this.idx = idx;
+        this.mmgr = mmgr;
     }
 
     @Override
     public void run() {
         super.run();
-        // 33 fps * 2 seconds
-        float frames = GenerateDB.fps * GenerateDB.clipLengthSecs;
+
+        float frames = MediaManager.FPS * MediaManager.CLIP_LENGTH_SECS;
         int played = 0;
 
-        EasingFunction ef = new Linear();
-
-        setMedia(idx);
+        mmgr.setMedia(idx);
 
         while (played++ < frames){
             float percentComplete = played / frames;
-            setAlpha(ef.valueAt(percentComplete, 1.0f, 0.0f));
+            mmgr.setAlpha(MediaManager.EASING_F.valueAt(percentComplete, 0.0f, 1.0f));
             try {
-                sleep(1000 / GenerateDB.fps);
+                sleep(1000 / MediaManager.FPS);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-    }
-
-    public void setMedia(String idx){
-        System.out.println("playing " + idx);
-    }
-
-    public void setAlpha(float alpha){
-        System.out.println("  alpha to " + alpha);
     }
 }

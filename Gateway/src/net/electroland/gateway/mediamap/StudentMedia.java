@@ -2,24 +2,37 @@ package net.electroland.gateway.mediamap;
 
 
 public class StudentMedia {
+
     String firstname, lastname, disambiguator;
-    String idx, guid, srcfilename;
+    String guid, srcfilename;
+    Integer idx;
     Long createDate;
 
-    // implement null checks all around.
+    // TODO: implement null checks all around.
     public String toJSON(){
         StringBuffer sb = new StringBuffer();
         sb.append("{");
-        sb.append("\"firstname\":").append('"').append(firstname).append('"');
-        sb.append(',');
-        sb.append("\"lastname\":").append('"').append(lastname).append('"');
-        sb.append(',');
-        if (disambiguator != null && disambiguator.length() > 0){
-            sb.append("\"disambiguator\":").append('"').append(disambiguator).append('"');
-            sb.append(',');
+        sb.append(JSONToken("firstname", firstname));
+        sb.append(JSONToken("lastname", lastname));
+        sb.append(JSONToken("disambiguator", disambiguator));
+        sb.append(JSONToken("createDate", createDate));
+        sb.append(JSONToken("idx", idx));
+        if (sb.charAt(sb.length() - 1) == ','){
+            sb.setLength(sb.length() - 1);
         }
-        sb.append("\"idx\":").append('"').append(idx).append('"');
         sb.append("}");
         return sb.toString();
+    }
+
+    public String JSONToken(String name, Object value){
+        if (value == null || (value instanceof String && ((String)value).length() == 0)){
+            return "";
+        }else if (value instanceof Integer || 
+                  value instanceof Float ||
+                  value instanceof Double){
+            return '"' + name + '"' + ':' + value + ',';
+        } else {
+                return '"' + name + '"' + ':' + '"' + value + '"' + ',';
+        }
     }
 }
