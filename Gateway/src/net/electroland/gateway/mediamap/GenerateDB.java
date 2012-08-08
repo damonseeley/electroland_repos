@@ -58,14 +58,25 @@ public class GenerateDB {
 
         HashMap<String, StudentMedia> studentMedia = createIdxToStudentMap(students);
 
+        System.out.println(getStudentsJSON(studentMedia));
         // TODO: convert studentMedia to JSON and send to webserver
-        for (StudentMedia student : studentMedia.values()){
-            System.out.println(student);
-        }
 
         startScreenSaver(studentMedia);
     }
 
+    private static String getStudentsJSON(HashMap<String, StudentMedia>studentMedia){
+        StringBuffer sb = new StringBuffer();
+        sb.append('{');
+        for (String key : studentMedia.keySet()){
+            sb.append('"').append(key).append('"').append(':');
+            sb.append(studentMedia.get(key).toJSON()).append(',');
+        }
+        if (sb.charAt(sb.length() - 1) == ','){
+            sb.setLength(sb.length() - 1);
+        }
+        sb.append('}');
+        return sb.toString();
+    }
 
     private static void startScreenSaver(HashMap<String, StudentMedia>studentMedia){
         while(true){
