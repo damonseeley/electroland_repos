@@ -17,7 +17,7 @@ public class DMXMediaMapV3Handler extends DefaultHandler {
         if ("Entry".equalsIgnoreCase(qName)){
             String idx     = attributes.getValue("idx");
             String mediaID = attributes.getValue("mediaID");
-            String guid    = mediaID.substring(0, mediaID.indexOf(':'));
+            String guid    = mediaID.substring(0, mediaID.indexOf(':')).toLowerCase();
             if (!NULL_GUID.equals(guid)){
                 guidsToIDXs.put(guid, idx);
             }
