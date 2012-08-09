@@ -1,0 +1,22 @@
+	#
+#Thu Aug 09 13:00:21 PDT 2012
+drawTracks=true
+showConsole=false
+showGraphics=true
+
+camera=Local Axis
+srcWidth=320
+srcHeight=240
+
+
+threshold=100.0
+adaptation=0.0010
+
+
+velocityMatchPercentage=-1.0
+
+maxTrackMove=50
+framesUntilDeleteTrack=40
+provisionalPenalty=50.0
+framesUntilCertainTrack=20
+nonMatchPenalty=100.0

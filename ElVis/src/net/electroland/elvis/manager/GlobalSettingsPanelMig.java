@@ -21,6 +21,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.NumberFormatter;
 
+import net.electroland.elvis.imaging.PresenceDetector;
+import net.electroland.elvis.imaging.PresenceDetector.ImgReturnType;
 import net.electroland.elvis.regions.GlobalRegionSnapshot;
 import net.miginfocom.swing.MigLayout;
 
@@ -111,13 +113,19 @@ public class GlobalSettingsPanelMig implements Colorable {
 
 		imageView =new JComboBox();
 		imageView.setName("view");
-		imageView.addItem(ImagePanel.RAW_IMG);
+		for(ImgReturnType type : ImgReturnType.values()) {
+			String name = type.toString();
+			name = name.toLowerCase();
+			imageView.addItem(name);
+		}
+		/*
 		imageView.addItem(ImagePanel.GRAYSCALE_IMG);
 		imageView.addItem(ImagePanel.BACKGROUND_IMG);
 		imageView.addItem(ImagePanel.BLUR_IMG);
 		imageView.addItem(ImagePanel.BACKDIFF_IMG);
 		imageView.addItem(ImagePanel.THRESHOLD_IMG);
 		imageView.addItem(ImagePanel.CONTOUR_IMG);
+		*/
 		imageView.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				String newSelect = (String)imageView.getSelectedItem();

@@ -7,6 +7,7 @@ import static com.googlecode.javacpp.Loader.*;
 import static com.googlecode.javacv.cpp.opencv_core.cvCreateMemStorage;
 import static com.googlecode.javacv.cpp.opencv_core.cvZero;
 import static com.googlecode.javacv.cpp.opencv_imgproc.CV_CHAIN_APPROX_SIMPLE;
+import static com.googlecode.javacv.cpp.opencv_core.CV_WHOLE_SEQ;
 import static com.googlecode.javacv.cpp.opencv_imgproc.CV_RETR_EXTERNAL;
 import static com.googlecode.javacv.cpp.opencv_imgproc.cvFindContours;
 import static com.googlecode.javacv.cpp.opencv_core.cvScalarAll;
@@ -14,6 +15,7 @@ import static com.googlecode.javacv.cpp.opencv_core.cvPoint;
 import static com.googlecode.javacv.cpp.opencv_core.cvRect;
 import static com.googlecode.javacv.cpp.opencv_core.cvDrawContours;
 import static com.googlecode.javacv.cpp.opencv_imgproc.cvBoundingRect;
+import static com.googlecode.javacv.cpp.opencv_imgproc.cvContourArea;
 import static com.googlecode.javacv.cpp.opencv_imgproc.cvMoments;
 import static com.googlecode.javacv.cpp.opencv_imgproc.cvGetSpatialMoment;
 import static com.googlecode.javacv.cpp.opencv_core.cvScalar;
@@ -31,20 +33,27 @@ import com.googlecode.javacv.cpp.opencv_core.CvSeqBlock;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 
 import net.electroland.elvis.blobtracking.Blob;
+import net.electroland.elvis.util.ElProps;
+
 import java.util.Vector;;
 
 public class DetectContours {
 	Vector<Blob> detectedBlobs; 
 
-	float minBlobSize = 50;
-	float maxBlobSize = 100;
-
+	float minBlobSize;
+	float maxBlobSize;
+	
 	CvMemStorage  mem = null;
 	CvSeq contours = null;
 	int contourCnt;
 	CvMoments moments = null;
+	ElProps props;
 
-	public DetectContours() {
+	public DetectContours(ElProps props) {
+		this.props  = props;
+		 minBlobSize = props.getProperty("minBlobSize", 50);
+		 maxBlobSize = props.getProperty("minBlobSize", 100);
+
 		detectedBlobs = new Vector<Blob>();
 		moments = new CvMoments();
 		mem = CvMemStorage.create();// cvCreateMemStorage(0);//
@@ -54,13 +63,22 @@ public class DetectContours {
 		minBlobSize = f;
 	}
 	public void setMaxBlobsize(float f) {
-		minBlobSize = f;
+		maxBlobSize = f;
 	}
 
 	public float getMinBlobSize() { return minBlobSize;}
 	public float getMaxBlobSize() { return maxBlobSize;}
 	//	public 	void detectContours(IplImage  src, IplImage dst) {
 
+	public double getAverageBlobSize() {
+		double acc= 0;
+		double cnt  =0;
+		for(Blob b : detectedBlobs) {
+			acc += b.getSize();
+			cnt+=1.0;
+		}
+		return acc/cnt;
+	}
 	public void detectBlobs() {
 		if(contours != null) {
 			Vector<Blob> newBlobs = new Vector<Blob>(detectedBlobs.size() + 10); // always be ready for a few more blobs than last time
@@ -69,8 +87,10 @@ public class DetectContours {
 
 			// not sure why I had to add the ! contour.isNull() -- didn't need it before
 			for (CvSeq contour = contours; (contour != null) && (! contour.isNull()); contour = contour.h_next()) {	
+				
 				cvMoments(contour, moments, 0);
 				double area = moments.m00();
+//				double area = cvContourArea(contour, CV_WHOLE_SEQ);
 				if((area > minBlobSize) && (area < maxBlobSize)) {
 					double areaInv = 1.0/area;
 					float x = (float) (cvGetSpatialMoment(moments, 1, 0) *areaInv);
@@ -80,7 +100,7 @@ public class DetectContours {
 				}
 			}
 			detectedBlobs = newBlobs;
-
+			
 		}
 	} 
 

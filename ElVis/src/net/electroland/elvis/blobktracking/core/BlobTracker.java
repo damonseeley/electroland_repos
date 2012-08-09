@@ -30,11 +30,11 @@ public class BlobTracker {
 	
 	public Vector<Blob> newFrameBlobs = new Vector<Blob>();
 	
-	public BlobTracker(int srcWidth, int srcHeight) {
-		w = srcWidth;
-		h = srcHeight;
-		presenceDetector = new PresenceDetector(srcWidth, srcHeight, true);
-		tracker = new Tracker(ElProps.THE_PROPS);
+	public BlobTracker(ElProps props) {
+		w = props.getProperty("srcWidth", 640); 
+		h = props.getProperty("srcHeight", 480);
+		presenceDetector = new PresenceDetector(props, w, h, true);
+		tracker = presenceDetector.tracker;
 
 	}
 	

@@ -5,6 +5,8 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 
+import net.electroland.elvis.util.ElProps;
+
 public class MainFrame extends JFrame {
        
 //	CreatorToolBar ctb;
@@ -16,12 +18,12 @@ public class MainFrame extends JFrame {
 	
 
 	
-	public MainFrame(int w, int h) {
+	public MainFrame(ElProps props, int w, int h) {
 		super("ElVis");
 		if(THE_FRAME != null) return;
 		THE_FRAME = this;
-		
-		imagePanel = new ImagePanel(w,h);
+			
+		imagePanel = new ImagePanel(props, w,h);
 		settings = new SettingsTab();
 		
 		setLayout(null);
@@ -72,7 +74,13 @@ public class MainFrame extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		new MainFrame(640,480);
+		ElProps p;
+		if(args.length > 0) {
+			p= ElProps.init(args[0]);
+		} else {
+			p = ElProps.init("blobTracker.props");
+		}
+		new MainFrame(p, 640,480);
 	}
 
 }

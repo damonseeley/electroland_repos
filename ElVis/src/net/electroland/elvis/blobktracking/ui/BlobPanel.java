@@ -1,5 +1,6 @@
 package net.electroland.elvis.blobktracking.ui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -35,21 +36,23 @@ public class BlobPanel extends JPanel implements ActionListener {
 	AffineTransform imageScaler;
 
 
-	ElProps props = ElProps.THE_PROPS;
+	ElProps props ;
 
 	public BlobTracker blobTracker;
 
-	public BlobPanel(BlobTracker blobTracker) {
-
+	public BlobPanel(ElProps props, BlobTracker blobTracker) {
+		this.props =props;
 		this.blobTracker = blobTracker;		
 		this.blobTracker.presenceDetector.setImageReturn(ImgReturnType.CONTOUR);
+		/*
 		try {
 			this.blobTracker.setSourceStream(ImagePanel.FLY_SRC);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		 */
+
 
 
 
@@ -86,19 +89,22 @@ public class BlobPanel extends JPanel implements ActionListener {
 	public void renderDrawing(Graphics2D g2d) {
 		Vector<Blob> blobs = blobTracker.presenceDetector.getBlobs();
 		boolean drawTracks = props.getProperty("drawTracks", true);
+
 		for(Blob b :blobs) {
 			if (drawTracks) {
 				b.paint(g2d);
 			}
 		}
-
-		for(SimpleTrackListener tl: trackListeners) {
-			Vector<Track> trackCache = tl.tracks;
-			for(Track t : trackCache) {
-				if (props.getProperty("drawTracks", true)) {
-					t.paint(g2d);
-				}
-			}			
+		if(drawTracks) {
+			for(SimpleTrackListener tl: trackListeners) {
+				Vector<Track> trackCache = tl.tracks;
+				for(Track t : trackCache) {
+					if (props.getProperty("drawTracks", true)) {
+						//System.out.println("tracks");
+						t.paint(g2d);
+					}
+				}			
+			}
 		}
 	}
 
@@ -112,7 +118,7 @@ public class BlobPanel extends JPanel implements ActionListener {
 	}
 
 
-	
+
 
 	public static class SimpleTrackListener implements TrackListener {
 		Vector<Track> tracks = new Vector<Track>();
