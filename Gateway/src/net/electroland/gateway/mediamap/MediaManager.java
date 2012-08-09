@@ -20,6 +20,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
+import oscP5.OscBundle;
 import oscP5.OscEventListener;
 import oscP5.OscMessage;
 import oscP5.OscP5;
@@ -34,7 +35,7 @@ public class MediaManager implements OscEventListener {
 
     static Logger logger = Logger.getLogger(MediaManager.class);
 
-    final public static int    FPS = 33;
+    final public static int    FPS = 30;
     final public static int    CLIP_LENGTH_SECS = 2;
     final public static EasingFunction EASING_F = new Linear();
 
@@ -43,15 +44,16 @@ public class MediaManager implements OscEventListener {
     final public static String NFO_FILES_DIR = "/Users/bradley/Documents/Electroland/Gateway/test/";
     final public static String DMX_MEDIA_MAP_FILENAME = "/Users/bradley/Documents/Electroland/Gateway/test/DMXMediaMap.v3.xml";
 
-    final public static String PLAYER_IP = "127.0.0.1"; 
-    final public static int    PLAYER_SEND_PORT = 12000;
-    final public static int    PLAYER_RECEIVE_PORT = 12000;
-    final public static String SET_MEDIA = "/play";
-    final public static String SET_ALPHA = "/alpha";
+    final public static String PLAYER_IP = "10.22.33.77"; 
+    final public static int    PLAYER_SEND_PORT = 5000;
+    final public static int    PLAYER_RECEIVE_PORT = 5001;
+    final public static String SET_MEDIA_1 = "/play1";
+    final public static String SET_MEDIA_2 = "/play2";
+    final public static String SET_ALPHA_1 = "/alpha2";
 
     private OscP5 oscP5;
     private HashMap<Integer, StudentMedia> studentMedia;
-
+    private boolean phase = false;
 
     public MediaManager(){
 
@@ -101,9 +103,11 @@ public class MediaManager implements OscEventListener {
         OscProperties props = new OscProperties(listener);
         props.setListeningPort(PLAYER_RECEIVE_PORT);
         props.setRemoteAddress(new NetAddress(PLAYER_IP, PLAYER_SEND_PORT));
-        props.setSRSP(OscProperties.ON);
+        System.out.println(">" + OscProperties.ON);
+        props.setSRSP(PLAYER_SEND_PORT == PLAYER_RECEIVE_PORT);
         props.setDatagramSize(1024);
         props.setNetworkProtocol(OscProperties.UDP);
+        props.listeners().add(listener);
 
         System.err.println("You'll see a \"Register Dispose\" and NullPointerException");
         System.err.println("here.  Those are safely ignorable.  It's just OscP5 letting");
@@ -140,7 +144,7 @@ public class MediaManager implements OscEventListener {
             for (Integer idx : studentMedia.keySet()){
                 new PlayThread(idx, this).start();
                 try {
-                    Thread.sleep(1000 * CLIP_LENGTH_SECS);
+                    Thread.sleep(1500 * CLIP_LENGTH_SECS);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -253,31 +257,45 @@ public class MediaManager implements OscEventListener {
     }
 
 
+    OscMessage setter;
+    Object lock = new Object();
     public void setMedia(int idx){
-        OscMessage mssg = new OscMessage(SET_MEDIA);
+
+        phase = !phase;
+        OscMessage mssg = new OscMessage(!phase ? SET_MEDIA_1:SET_MEDIA_2);
         mssg.add(idx);
-        oscP5.send(mssg);
-        logger.info("set media to " + idx);
+        synchronized(lock){
+            setter = mssg;
+        }
+        logger.info("send " + (phase ? SET_MEDIA_1:SET_MEDIA_2) + " " + idx);
     }
 
 
     public void setAlpha(float alpha){
-        OscMessage mssg = new OscMessage(SET_MEDIA);
-        mssg.add(alpha);
-        oscP5.send(mssg);
-        logger.debug("  set alpha to " + alpha);
+        OscMessage mssg = new OscMessage(SET_ALPHA_1);
+        mssg.add(phase ? alpha : 1.0f - alpha);
+        OscBundle bndl = new OscBundle();
+        bndl.add(mssg);
+        synchronized(lock){
+            if (setter != null){
+                bndl.add(setter);
+                setter = null;
+            }
+        }
+        oscP5.send(bndl);
+        logger.debug("send " + SET_ALPHA_1 + " " + (phase ? alpha : 1.0f - alpha));
     }
 
 
     @Override
     public void oscEvent(OscMessage mssg) {
-        logger.debug(mssg);
+        logger.info("receive event " + mssg);
     }
 
 
     @Override
     public void oscStatus(OscStatus mssg) {
-        logger.debug(mssg);
+        logger.info("receive status " + mssg);
     }
 }
 
