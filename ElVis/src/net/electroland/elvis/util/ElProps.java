@@ -10,11 +10,12 @@ public class ElProps extends TypedProps {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public static ElProps THE_PROPS = null;
+	private static ElProps THE_PROPS = null;
 
 	public String fileName;
 	
-	
+
+
 	public static ElProps init(String s) {
 		ElProps fp = new ElProps();
 		fp.load(s);

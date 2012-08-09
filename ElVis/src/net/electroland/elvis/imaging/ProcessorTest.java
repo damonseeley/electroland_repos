@@ -12,6 +12,7 @@ import javax.swing.JFrame;
 import javax.swing.Timer;
 
 import net.electroland.elvis.imaging.acquisition.jmyron.WebCam;
+import net.electroland.elvis.util.ElProps;
 
 public class ProcessorTest  extends JFrame implements KeyListener, ActionListener {
 	public static final int scale = 2;
@@ -30,7 +31,7 @@ public class ProcessorTest  extends JFrame implements KeyListener, ActionListene
 
 	public ProcessorTest() {
 		super();
-		processor = new PresenceDetector(w,h, false);
+		processor = new PresenceDetector(new ElProps(), w,h, false);
 		processor.start();
 		new WebCam(w,h,6.0f,processor, false).start();
 //		new NavyCam(processor, true).start();

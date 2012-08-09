@@ -3,21 +3,19 @@ package net.electroland.elvis.blobktracking.ui;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 
 import net.electroland.elvis.blobktracking.core.BlobTracker;
-import net.electroland.elvis.imaging.PresenceDetector;
+import net.electroland.elvis.blobktracking.core.PresenceDetectorKeyListener;
 import net.electroland.elvis.util.ElProps;
 
 
-public class BlobFrame extends JFrame implements  KeyListener, MouseListener, MouseMotionListener{
+public class BlobFrame extends JFrame implements MouseListener, MouseMotionListener{
 
 	/**
 	 * 
@@ -29,10 +27,13 @@ public class BlobFrame extends JFrame implements  KeyListener, MouseListener, Mo
 	int mouseXOffset;
 	int mouseYOffset;
 	
+	ElProps props;
+	
 
-	public BlobFrame(String windowName, BlobTracker blobTracker) {	
+	public BlobFrame(ElProps props, String windowName, BlobTracker blobTracker) {	
 		super(windowName);
-		blobPanel = new BlobPanel(blobTracker);		
+		this.props = props;
+		blobPanel = new BlobPanel(props, blobTracker);		
 		add(blobPanel);
 		setSize(blobPanel.getSize().width + 40, blobPanel.getSize().height + 40);
 
@@ -56,14 +57,9 @@ public class BlobFrame extends JFrame implements  KeyListener, MouseListener, Mo
 //		GridDetectorServer.console.addKeyListener(this);
 
 		addMouseMotionListener(this);
-		addKeyListener(this);
+		addKeyListener(new PresenceDetectorKeyListener(props, blobTracker.presenceDetector));
 
 
-		addWindowListener(new java.awt.event.WindowAdapter() {
-			public void windowClosing(WindowEvent winEvt) {
-				close();
-			}
-		});
 
 
 		JMenuBar menubar = getJMenuBar();
@@ -123,42 +119,42 @@ public class BlobFrame extends JFrame implements  KeyListener, MouseListener, Mo
 	public  BlobPanel getBlobPanel() {
 		return blobPanel;
 	}
-
+/*
 	public void keyPressed(KeyEvent e) {
 		switch(e.getKeyCode()) {
 		case KeyEvent.VK_M:
 			blobPanel.blobTracker.presenceDetector.setThresh(blobPanel.blobTracker.presenceDetector.getThresh() + 1);
 			System.out.println("theshold increased to " + blobPanel.blobTracker.presenceDetector.getThresh() );
-			ElProps.THE_PROPS.setProperty("threshold",blobPanel.blobTracker.presenceDetector.getThresh() );			
+			props.setProperty("threshold",blobPanel.blobTracker.presenceDetector.getThresh() );			
 			break;
 		case KeyEvent.VK_N:
 			blobPanel.blobTracker.presenceDetector.setThresh(blobPanel.blobTracker.presenceDetector.getThresh() -1);
 			System.out.println("theshold increased to " + blobPanel.blobTracker.presenceDetector.getThresh() );
-			ElProps.THE_PROPS.setProperty("threshold",blobPanel.blobTracker.presenceDetector.getThresh() );			
+			props.setProperty("threshold",blobPanel.blobTracker.presenceDetector.getThresh() );			
 			break;
 		case KeyEvent.VK_X:
 			blobPanel.blobTracker.presenceDetector.setThresh(blobPanel.blobTracker.presenceDetector.getAdaptation() + .0001);
 			System.out.println("adaptation increased to " + blobPanel.blobTracker.presenceDetector.getAdaptation() );
-			ElProps.THE_PROPS.setProperty("adaptation",blobPanel.blobTracker.presenceDetector.getAdaptation() );			
+			props.setProperty("adaptation",blobPanel.blobTracker.presenceDetector.getAdaptation() );			
 		break;
 		case KeyEvent.VK_Z:
 			blobPanel.blobTracker.presenceDetector.setThresh(blobPanel.blobTracker.presenceDetector.getAdaptation() - .0001);
 			System.out.println("background adaptation decreased to " +blobPanel.blobTracker.presenceDetector.getAdaptation());
-			ElProps.THE_PROPS.setProperty("adaptation", blobPanel.blobTracker.presenceDetector.getAdaptation());			
+			props.setProperty("adaptation", blobPanel.blobTracker.presenceDetector.getAdaptation());			
 			break;
 			
 		// ds additions	
 		case KeyEvent.VK_P:
 			blobPanel.blobTracker.tracker.csp.setProvisionalPenalty(blobPanel.blobTracker.tracker.csp.getProvisionalPenalty() + 1);
 			System.out.println("provisionalPenalty  increased to " +blobPanel.blobTracker.tracker.csp.getProvisionalPenalty());
-			ElProps.THE_PROPS.setProperty("provisionalPenalty", blobPanel.blobTracker.tracker.csp.getProvisionalPenalty());			
+			props.setProperty("provisionalPenalty", blobPanel.blobTracker.tracker.csp.getProvisionalPenalty());			
 			break;
 		case KeyEvent.VK_O:
 			blobPanel.blobTracker.tracker.csp.setProvisionalPenalty(blobPanel.blobTracker.tracker.csp.getProvisionalPenalty() - 1);
 			System.out.println("provisionalPenalty  decreased to " +blobPanel.blobTracker.tracker.csp.getProvisionalPenalty());
-			ElProps.THE_PROPS.setProperty("provisionalPenalty", blobPanel.blobTracker.tracker.csp.getProvisionalPenalty());			
+			props.setProperty("provisionalPenalty", blobPanel.blobTracker.tracker.csp.getProvisionalPenalty());			
 			break;
-			/* these are not easy to change while running
+			// these are not easy to change while running
 		case KeyEvent.VK_T:
 			blobPanel.blobTracker.regionMap.decMaxTrackMove0();
 			System.out.println("maxTrackMove0 decreased to " + blobPanel.blobTracker.regionMap.getMaxTrackMove0());
@@ -166,16 +162,16 @@ public class BlobFrame extends JFrame implements  KeyListener, MouseListener, Mo
 		case KeyEvent.VK_Y:
 			blobPanel.blobTracker.regionMap.incMaxTrackMove0();
 			System.out.println("maxTrackMove0 increased to " + blobPanel.blobTracker.regionMap.getMaxTrackMove0());
-			break;*/
+			break;//
 		case KeyEvent.VK_I:
 			blobPanel.blobTracker.tracker.csp.setNonMatchPenalty(blobPanel.blobTracker.tracker.csp.getNonMatchPenalty() + 1);
 			System.out.println("nonMatchPenalty  increased to " +blobPanel.blobTracker.tracker.csp.getNonMatchPenalty());
-			ElProps.THE_PROPS.setProperty("nonMatchPenalty", blobPanel.blobTracker.tracker.csp.getNonMatchPenalty());			
+			props.setProperty("nonMatchPenalty", blobPanel.blobTracker.tracker.csp.getNonMatchPenalty());			
 			break;
 		case KeyEvent.VK_U:
 			blobPanel.blobTracker.tracker.csp.setNonMatchPenalty(blobPanel.blobTracker.tracker.csp.getNonMatchPenalty() - 1);
 			System.out.println("nonMatchPenalty  decreased to " +blobPanel.blobTracker.tracker.csp.getNonMatchPenalty());
-			ElProps.THE_PROPS.setProperty("nonMatchPenalty", blobPanel.blobTracker.tracker.csp.getNonMatchPenalty());			
+			props.setProperty("nonMatchPenalty", blobPanel.blobTracker.tracker.csp.getNonMatchPenalty());			
 			break;
 		}	
 	}
@@ -202,7 +198,7 @@ public class BlobFrame extends JFrame implements  KeyListener, MouseListener, Mo
 			
 			break;
 		case 's':
-			ElProps.THE_PROPS.store();
+			props.store();
 			break;	
 		case '.':
 			blobPanel.blobTracker.presenceDetector.nextMode();
@@ -222,5 +218,5 @@ public class BlobFrame extends JFrame implements  KeyListener, MouseListener, Mo
 		// TODO Auto-generated method stub
 		
 	}
-
+*/
 }

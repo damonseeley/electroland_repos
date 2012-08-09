@@ -16,7 +16,7 @@ public class PresenceDetector extends ImageProcessor {
 
 	public static final int CLAMP_VALUE = 20;
 	
-	public static enum ImgReturnType { RAW, GRAY, BGRND, DIFF, THRESH, CONTOUR, BLUR};
+	public static enum ImgReturnType { RAW, BLUR, BACKGROUND,  DIFF, THRESH, CONTOUR, BLOBS};
 
 	ImgReturnType imgReturnType = ImgReturnType.RAW;
 
@@ -49,12 +49,12 @@ public class PresenceDetector extends ImageProcessor {
 	
 
 	
-	public PresenceDetector(int w, int h, boolean withTracker) {
+	public PresenceDetector(ElProps props, int w, int h, boolean withTracker) {
 		super(w, h);
 		extreema = new CalcExtreema();
 		blur = new Blur();
 		background = new BackgroundImage(.001, 60);
-		detectControus = new DetectContours();
+		detectControus = new DetectContours(props);
 		grayImage = IplImage.create(w, h, IPL_DEPTH_8U , 1);
 		blurImage = IplImage.create(w, h, IPL_DEPTH_8U , 1);
 		diffImage = IplImage.create(w, h, IPL_DEPTH_8U , 1);
@@ -62,14 +62,14 @@ public class PresenceDetector extends ImageProcessor {
 		contourImage = IplImage.create(w, h, IPL_DEPTH_8U, 1);
 		
 		if(withTracker) {
-			tracker = new Tracker(ElProps.THE_PROPS);
+			tracker = new Tracker(props);
 			tracker.start();
 		}
 	}
 
-	public static PresenceDetector createFromFile(File f) {
+	public static PresenceDetector createFromFile(ElProps props, File f) {
 		GlobalRegionSnapshot grs = GlobalRegionSnapshot.load(f);
-		PresenceDetector pd = new PresenceDetector(grs.w, grs.h, false);
+		PresenceDetector pd = new PresenceDetector(props, grs.w, grs.h, false);
 		pd.setAdaptation(grs.backgroundAdaptation);
 		pd.setThresh(grs.backgroundDiffThresh);
 		pd.setRegions(grs.regions);
@@ -120,8 +120,19 @@ public class PresenceDetector extends ImageProcessor {
 	}
 
 
+	public float getMinBlobSize() {
+		return detectControus.getMinBlobSize();
+	}
+	public float getMaxBlobSize() {
+		return detectControus.getMaxBlobSize();
+	}
 
-
+	public void setMinBlobSize(float f) {
+		 detectControus.setMinBlobsize(f);
+	}
+	public void setMaxBlobSize(float f) {
+		 detectControus.setMaxBlobsize(f);
+	}
 
 
 	public void resetBackground(int frameSkip) {
@@ -150,13 +161,8 @@ public class PresenceDetector extends ImageProcessor {
 	public IplImage process(IplImage img) {
 
 		grayImage = img;
-		/*  TODO: handel color correction 
-		if(convertFromColor) {
-			imageConversion.convertFromRGB(img, grayImage);			
-		} else {
-			imageConversion.convertFromGray(img, grayImage);
-		}
-		*/
+		// no longer supports color images
+		
 		blur.apply(grayImage, blurImage);
 		IplImage bkImage = background.update(blurImage);
 		if(bkImage == null) return null;
@@ -193,13 +199,13 @@ public class PresenceDetector extends ImageProcessor {
 		case RAW:
 			returnImage = img;
 			break;
-		case GRAY: 
-			returnImage = grayImage;
-			break;
+//		case GRAY: 
+	//		returnImage = grayImage;
+		//	break;
 		case BLUR:
 			returnImage = blurImage;
 			break;
-		case BGRND: 
+		case BACKGROUND: 
 			returnImage = bkImage;
 			break;
 		case DIFF: 
@@ -208,8 +214,10 @@ public class PresenceDetector extends ImageProcessor {
 		case THRESH: 
 			returnImage = threshImage;
 			break;
-		case CONTOUR:
+		case BLOBS:
 			detectControus.drawBlobs(contourImage);
+			// no break on purpose
+		case CONTOUR:
 			returnImage = contourImage;
 		}
 

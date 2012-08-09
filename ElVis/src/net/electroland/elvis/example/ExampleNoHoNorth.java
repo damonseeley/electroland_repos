@@ -4,9 +4,9 @@ import java.io.File;
 import java.util.Vector;
 
 import net.electroland.elvis.imaging.PresenceDetector;
-import net.electroland.elvis.imaging.acquisition.axisCamera.*;
-import net.electroland.elvis.imaging.acquisition.jmyron.WebCam;
+import net.electroland.elvis.imaging.acquisition.axisCamera.NoHoNorthCam;
 import net.electroland.elvis.regions.PolyRegion;
+import net.electroland.elvis.util.ElProps;
 
 public class ExampleNoHoNorth extends Thread {
 	public boolean isRunning = true;
@@ -15,7 +15,7 @@ public class ExampleNoHoNorth extends Thread {
 	PresenceDetector detector;
 	
 	public ExampleNoHoNorth() {
-		detector = PresenceDetector.createFromFile(new File("noho_north.elv"));
+		detector = PresenceDetector.createFromFile(new ElProps(), new File("noho_north.elv"));
 		//cam = new LocalCam(160,120,detector);
 
 		cam = new NoHoNorthCam(160,120, detector, false);

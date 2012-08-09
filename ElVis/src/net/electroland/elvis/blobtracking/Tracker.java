@@ -34,14 +34,14 @@ public class Tracker extends Thread {
 		this.props = props;
 		
 //		framesUntilCertainTrack = ElProps.THE_PROPS.getProperty("framesUntilCertainTrack" , 20);
-		framesUntilCertainTrack = ElProps.THE_PROPS.getProperty("framesUntilCertainTrack" , 20);
-		framesUntilDeleteTrack = ElProps.THE_PROPS.getProperty("framesUntilDeleteTrack" , 40);
-		velocityMatchPercentage = ElProps.THE_PROPS.getProperty("velocityMatchPercentage", -1.0f);
+		framesUntilCertainTrack = props.getProperty("framesUntilCertainTrack" , 20);
+		framesUntilDeleteTrack = props.getProperty("framesUntilDeleteTrack" , 40);
+		velocityMatchPercentage = props.getProperty("velocityMatchPercentage", -1.0f);
 		
 		csp = new CSP();
-		float maxTrackMove = ElProps.THE_PROPS.getProperty("maxTrackMove", 50);
-		float nonMatchPenalty = ElProps.THE_PROPS.getProperty("nonMatchPenalty", 2.0f * maxTrackMove);
-		float provisionalPenalty = ElProps.THE_PROPS.getProperty("provisionalPenalty", maxTrackMove);
+		float maxTrackMove =props.getProperty("maxTrackMove", 50);
+		float nonMatchPenalty = props.getProperty("nonMatchPenalty", 2.0f * maxTrackMove);
+		float provisionalPenalty = props.getProperty("provisionalPenalty", maxTrackMove);
 
 		
 		csp.setNonMatchPenalty(nonMatchPenalty);

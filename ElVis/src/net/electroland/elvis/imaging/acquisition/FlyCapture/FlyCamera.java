@@ -1,13 +1,12 @@
 package net.electroland.elvis.imaging.acquisition.FlyCapture;
 
-import java.util.concurrent.ExecutionException;
-
 import net.electroland.elvis.imaging.acquisition.ImageAcquirer;
 import net.electroland.elvis.imaging.acquisition.ImageReceiver;
 
 import com.googlecode.javacv.FlyCaptureFrameGrabber;
 import com.googlecode.javacv.FrameGrabber.Exception;
 import com.googlecode.javacv.FrameGrabber.ImageMode;
+import com.googlecode.javacv.cpp.opencv_core.IplImage;
 
 public class FlyCamera extends Thread implements ImageAcquirer {
 	int width;
@@ -21,8 +20,8 @@ public class FlyCamera extends Thread implements ImageAcquirer {
 		this.width = w;
 		this.height = h;
 		frameGrabber = new FlyCaptureFrameGrabber(dev);
-//		frameGrabber.setImageHeight(height);
 //		frameGrabber.setImageWidth(width);
+//		frameGrabber.setImageHeight(height);
 		frameGrabber.setImageMode(ImageMode.RAW);
 		this.imageReceiver = imageReceiver;
 	}
@@ -53,16 +52,33 @@ public class FlyCamera extends Thread implements ImageAcquirer {
 
 				}
 			}
+			
+			try {
+				IplImage img = frameGrabber.grab();
+				if((img.width() != width) || (img.height() != height)) {
+					System.out.println("WARNING: FlyCapture settings do not match requested image size:");
+					System.out.println("WARNING:         reqeusted image size: " + width + "x" + height);
+					System.out.println("WARNING:          received image size: " + img.width() + "x" + img.height());
+					System.out.println("WARNING: Change camera settins in FlyCap2 application to fix");
+				}
+			} catch (Exception e1) {
+				e1.printStackTrace();
+				
+			}
+			
+			
 
 			while(isRunning){			
 					try {
 						imageReceiver.addImage(frameGrabber.grab());
-						Thread.sleep(1000/60);
+//						Thread.sleep(1000/60);
 					} catch(Exception e) {
-						
+					/*	
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+					}
+					*/
 					}
 			}
 

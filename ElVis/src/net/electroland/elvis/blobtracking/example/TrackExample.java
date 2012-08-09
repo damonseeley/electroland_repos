@@ -14,14 +14,15 @@ public class TrackExample extends Thread implements TrackListener {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		ElProps p;
 		if(args.length > 0) {
-			ElProps.init(args[0]);
+			p = ElProps.init(args[0]);
 		} else {
-			ElProps.init("blobTracker.props");
+			p = ElProps.init("blobTracker.props");
 		}
 
 		BlobTrackerServer bts = new BlobTrackerServer(
-				ElProps.THE_PROPS
+				p
 		);
 		TrackExample example = new TrackExample();
 		//adding to region 1, not 0

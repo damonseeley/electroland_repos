@@ -19,12 +19,12 @@ import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import net.electroland.elvis.imaging.PresenceDetector;
+import net.electroland.elvis.imaging.PresenceDetector.ImgReturnType;
 import net.electroland.elvis.imaging.acquisition.ImageAcquirer;
 import net.electroland.elvis.imaging.acquisition.FlyCapture.FlyCamera;
 import net.electroland.elvis.imaging.acquisition.axisCamera.FlowerCam;
@@ -34,8 +34,8 @@ import net.electroland.elvis.imaging.acquisition.axisCamera.NoHoNorthCam;
 import net.electroland.elvis.imaging.acquisition.axisCamera.NoHoSouthCam;
 import net.electroland.elvis.imaging.acquisition.jmyron.WebCam;
 import net.electroland.elvis.regions.PolyRegion;
+import net.electroland.elvis.util.ElProps;
 
-import com.googlecode.javacv.CanvasFrame;
 import com.googlecode.javacv.FrameGrabber.Exception;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 public class ImagePanel extends JPanel implements MouseListener, MouseMotionListener, KeyListener, Colorable, ActionListener {
@@ -107,18 +107,18 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 	boolean editMode = true;
 
 	
-	public ImagePanel() {
-		this(160,120);
+	public ImagePanel(ElProps props) {
+		this(props, 160,120);
 	}
 	
-	public ImagePanel(int w, int h) {
+	public ImagePanel(ElProps props, int w, int h) {
 		this.w = w;
 		this.h = h;
 		// adjust scale?
 		ImagePanel.THE_IMAGEPANEL = this;
 //		canvasFrame = new CanvasFrame("Elvis");
 //		THE_IMAGEPANEL = this;
-		presenceDetector = new PresenceDetector(w,h, false);
+		presenceDetector = new PresenceDetector(props, w,h, false);
 		presenceDetector.start();
 		presenceDetector.setRegions(null);
 		setSize(w*SCALE,h*SCALE);
@@ -471,10 +471,19 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 	}
 
 	public void setImageViewType(String s) {
+		for(ImgReturnType type : ImgReturnType.values()) {
+			String name = type.toString();
+			name = name.toLowerCase();
+			if(s.equals(name)) {
+				presenceDetector.setImageReturn(type);	
+				return;
+			}
+		}
+		/*
+		
 		if(s.equals(RAW_IMG)) {
-			presenceDetector.setImageReturn(PresenceDetector.ImgReturnType.RAW);			
-		} else if (s.equals(GRAYSCALE_IMG)) {
-			presenceDetector.setImageReturn(PresenceDetector.ImgReturnType.GRAY);						
+//		} else if (s.equals(GRAYSCALE_IMG)) {
+//			presenceDetector.setImageReturn(PresenceDetector.ImgReturnType.GRAY);						
 		} else if(s.equals(BACKGROUND_IMG)) {
 			presenceDetector.setImageReturn(PresenceDetector.ImgReturnType.BGRND);						
 		} else if(s.equals(BACKDIFF_IMG)) {
@@ -486,6 +495,7 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 		} else if (s.equals(BLUR_IMG)) {
 			presenceDetector.setImageReturn(PresenceDetector.ImgReturnType.BLUR);			
 		}
+		*/
 
 	}
 
