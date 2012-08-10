@@ -8,7 +8,7 @@ import java.util.Properties;
 
 public class TypedProps extends Properties {
 	
-
+	
 	
 	public int setProperty(String key, int value) {
 		Object o = setProperty(key, Integer.toString(value));
@@ -122,6 +122,26 @@ public class TypedProps extends Properties {
 		 }
 		 return Long.valueOf(val);	 
 	 }
+	
+	public int inc(String key, int v, int defv) {
+		 setProperty(key, getProperty(key, defv)+ v);
+		return getProperty(key,defv);
+	}
+
+	public double inc(String key, double v, double defv) {
+		setProperty(key, getProperty(key, defv)+ v);
+		return getProperty(key,defv);
+	}
+
+	public float inc(String key, float v, float defv) {
+		 setProperty(key, getProperty(key, defv)+ v);
+		return getProperty(key,defv);
+	}
+
+	public long inc(String key, long v, long defv) {
+		 setProperty(key, getProperty(key, defv)+ v);
+		return getProperty(key,defv);
+	}
 
 	/*
 	public Bounds getProperty(String key, Bounds defaultValue) {
@@ -153,6 +173,7 @@ public class TypedProps extends Properties {
 		 return parsePoint(val);
 		
 	}
+	
 	 public void load(String path) throws IOException {
 			load(new FileInputStream(path));
 	 }
