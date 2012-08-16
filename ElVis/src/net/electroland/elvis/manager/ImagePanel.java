@@ -239,12 +239,13 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 
 	}
 
+	
 	public void setThresh(double d) {
-		presenceDetector.setThresh(d);
+		presenceDetector.thresh.getParameter(0).setValue(d);
 	}
 
 	public double getThresh() {
-		return presenceDetector.getThresh();
+		return presenceDetector.thresh.getParameter(0).getDoubleValue();
 	}
 	
 	public void stop() {
@@ -569,10 +570,11 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 	}
 
 	public void setAdaptation(double d) {
-		presenceDetector.setAdaptation(d);		
+		presenceDetector.background.getParameter(0).setValue(d);
+//		presenceDetector.setAdaptation(d);		
 	}
 	public double getAdaptation() {
-		return presenceDetector.getAdaptation();		
+		return presenceDetector.background.getParameter(0).getDoubleValue();
 	}
 
 	public void keyTyped(KeyEvent e) {

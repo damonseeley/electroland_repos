@@ -1,22 +1,21 @@
-	#
-#Thu Aug 09 13:00:21 PDT 2012
-drawTracks=true
+#
+#Wed Aug 15 13:49:28 PDT 2012
+provisionalPenalty=50.0
+dilateIterations=1
+erodeIterations=1
+threshold=100.0
+radius=11
+adaption=0.001
+framesUntilCertainTrack=20
+adaptation=0.0010
+framesUntilDeleteTrack=40
+srcWidth=640
+maxTrackMove=50
 showConsole=false
 showGraphics=true
-
-camera=Local Axis
-srcWidth=320
-srcHeight=240
-
-
-threshold=100.0
-adaptation=0.0010
-
-
+blurRadius=5
+drawTracks=true
+camera=Fly Cam
 velocityMatchPercentage=-1.0
-
-maxTrackMove=50
-framesUntilDeleteTrack=40
-provisionalPenalty=50.0
-framesUntilCertainTrack=20
+srcHeight=480
 nonMatchPenalty=100.0

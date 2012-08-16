@@ -40,8 +40,8 @@ public class BlobTrackerServer {
 		if(console != null) {
 		console.addKeyListener(new PresenceDetectorKeyListener(props,blobTracker.presenceDetector));
 		}
-		blobTracker.presenceDetector.setThresh(props.getProperty("threshold", 100.0));
-		blobTracker.presenceDetector.setAdaptation(props.setProperty("adaptation", .001));
+		blobTracker.presenceDetector.thresh.getParameter(0).setValue(props.getProperty("threshold", 100.0));
+		blobTracker.presenceDetector.background.getParameter(0).setValue(props.getProperty("adaptation", .001));
 
 		try {
 //			blobTracker.setSourceStream(props.getProperty("camera", ImagePanel.FLY_SRC));

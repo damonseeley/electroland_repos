@@ -55,7 +55,7 @@ public class TypedProps extends Properties {
 		}
 	}
 
-	private boolean setProperty(String key, boolean defaultValue) {
+	public boolean setProperty(String key, boolean defaultValue) {
 		Object o = setProperty(key, Boolean.toString(defaultValue));
 		if(o == null) {
 			return defaultValue;

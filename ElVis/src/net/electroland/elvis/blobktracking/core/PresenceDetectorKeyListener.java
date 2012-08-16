@@ -4,8 +4,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import net.electroland.elvis.blobtracking.Tracker;
+import net.electroland.elvis.imaging.Filter;
 import net.electroland.elvis.imaging.PresenceDetector;
 import net.electroland.elvis.util.ElProps;
+import net.electroland.elvis.util.parameters.Parameter;
 
 // provides standard key controls for all UIs using presence detector
 public class PresenceDetectorKeyListener implements KeyListener {
@@ -53,8 +55,66 @@ public class PresenceDetectorKeyListener implements KeyListener {
 	}
 	
 	public void keyPressed(KeyEvent e) {
+		Filter curFilter = presenceDetector.getCurrentFilter();
+		if(curFilter == null) return; // nothing to set
+		boolean isInc = true;
+		int curParam = -1;
 		switch(e.getKeyCode()) {
-
+		case KeyEvent.VK_MINUS:
+			isInc = false;
+		case KeyEvent.VK_EQUALS:
+			curParam = 0;
+			break;
+		case KeyEvent.VK_9:
+			isInc = false;
+		case KeyEvent.VK_0:
+			curParam = 1;
+			break;			
+		case KeyEvent.VK_7:
+			isInc = false;
+		case KeyEvent.VK_8:
+			curParam = 2;
+			break;
+		case KeyEvent.VK_5:
+			isInc = false;
+		case KeyEvent.VK_6:
+			curParam = 3;
+			break;
+		case KeyEvent.VK_3:
+			isInc = false;
+		case KeyEvent.VK_4:
+			curParam = 4;
+			break;
+		case KeyEvent.VK_1:
+			isInc = false;
+		case KeyEvent.VK_2:
+			curParam = 5;
+			break;
+		case KeyEvent.VK_OPEN_BRACKET:
+			isInc = false;
+		case KeyEvent.VK_CLOSE_BRACKET:
+			curParam = 6;
+			break;
+		}
+		if(curParam != -1) {
+			if(isInc) {
+				curFilter.incParameter(curParam);
+				Parameter p = curFilter.getParameter(curParam);
+				if(p != null) {
+					System.out.println(p.getName() + " increased to " +p.getDoubleValue());
+				p.writeToProps(props);
+				}
+	
+			} else {
+				curFilter.decParameter(curParam);
+				Parameter p = curFilter.getParameter(curParam);
+				if(p != null) {
+					System.out.println(p.getName() + " increased to " +p.getDoubleValue());
+				p.writeToProps(props);
+				}
+			}
+		}
+		/*
 		case KeyEvent.VK_M:
 			presenceDetector.setThresh(presenceDetector.getThresh() + 1);
 			System.out.println("theshold increased to " + presenceDetector.getThresh() );
@@ -100,6 +160,7 @@ public class PresenceDetectorKeyListener implements KeyListener {
 			blobTracker.regionMap.incMaxTrackMove0();
 			System.out.println("maxTrackMove0 increased to " + blobTracker.regionMap.getMaxTrackMove0());
 			break;*/
+		/*
 		case KeyEvent.VK_I:
 			if(tracker == null) return;
 			tracker.csp.setNonMatchPenalty(tracker.csp.getNonMatchPenalty() + 1);
@@ -133,6 +194,7 @@ public class PresenceDetectorKeyListener implements KeyListener {
 			props.setProperty("minBlobSize", presenceDetector.getMinBlobSize());			
 			break;
 		}	
+		*/
 	}
 
 
