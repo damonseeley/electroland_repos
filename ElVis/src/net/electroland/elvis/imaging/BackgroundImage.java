@@ -1,94 +1,81 @@
 package net.electroland.elvis.imaging;
 
 import static com.googlecode.javacv.cpp.opencv_core.cvAddWeighted;
+import net.electroland.elvis.util.ElProps;
+import net.electroland.elvis.util.parameters.DoubleParameter;
 
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 
 
 
-public class BackgroundImage {
+public class BackgroundImage extends Filter {
+
 
 	int initialFrameSkip = 0; // some cameras have a lot of noise at startup (or fade in light iSight)  don't want to use bad background to start
 
+	public DoubleParameter adaptionParameter;
 
-	double adaptation =  .01 ;
-	double memory =  1.0 - adaptation;
-
-
-
-	IplImage background= null; 
+	//	double adaptation =  .01 ;
+	//	double memory ;
 
 
-	public BackgroundImage() {		
-	}
-	
 
-	public BackgroundImage(double adaptation, int frameSkip) {
-		this.adaptation = adaptation;
-		this.memory= 1.0-adaptation;
+
+
+
+
+	public BackgroundImage(double defAdaptation, int frameSkip, ElProps props) {
+		super();
+		adaptionParameter = new DoubleParameter("BackgroundImageAdaption", .001, defAdaptation, props);
+		parameters.add(adaptionParameter);
 		initialFrameSkip = frameSkip;
 
 	}
 
 	public void reset(int frameSkip) {
 		initialFrameSkip = frameSkip;
-		background = null;
+		dst = null;
 	}
-	
-	
+
+
 	public int getRemainingFrameSkip() {
 		return initialFrameSkip;
 	}
 
-	
-	
+
+
 	/**
 	 * 
 	 * @param bi - should be assumes BufferedImage is of type TYPE_USHORT_GRAY
 	 * @return
 	 */
+
+	@Override
+	public IplImage apply(IplImage im) {
+		return update(im);
+		/*
+		IplImage result = update(im);
+		if(result != null) {
+			cvCopy(update(im), curMask);
+		}
+		 */
+	}
+
+
 	public IplImage update(IplImage bi) {	
-		 if(initialFrameSkip-- > 0) return null;
-		 if(background == null)  {
-			 background = bi.clone();	
-			 return background;
-		 } else { 
-			 if(adaptation == 0) 	return background; // don't bother processing just use static background
-			 cvAddWeighted(background, memory, bi, adaptation, 0, background);
-			 /*
-			 cvScall
-			 
-			 pbAdapt.setSource(bi, 0);
-			 PlanarImage newUpdate  = JAI.create("multiplyConst", pbAdapt);
+		if(initialFrameSkip-- > 0) return null;
+		if(dst == null)  {
+			dst = bi.clone();	
+			return dst;
+		} else { 
+			double adaptation =adaptionParameter.getDoubleValue();
+			if(adaptation == 0) 	return dst; // don't bother processing just use static background
+			double memory = 1.0 - adaptation;
+			cvAddWeighted(dst, memory, bi, adaptation, 0, dst);
 
-			 pbMemory.setSource(background,0);
-			 RenderedOp newBackground  = JAI.create("multiplyConst", pbMemory);
+		}
+		return dst;
+	}
 
 
-			 pbAdd.setSource(newUpdate,0);
-			 pbAdd.setSource(newBackground,1);
-
-
-
-
-			 RenderedOp newBG =JAI.create("add", pbAdd);
-
-			 background.setData(newBG.getData());	
-
-			 //	newBG.dispose();
-			 //	newUpdate.dispose();
-			 //	newBackground.dispose();
-*/
-		 }
-		 return background;
-	 }
-
-	 public double getAdaptation() {
-		 return adaptation;
-	 }
-	 
-	 public void setAdaptation(double d) {
-		 adaptation = d;
-		 memory = 1.0-d;
-	 }
 }

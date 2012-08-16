@@ -15,27 +15,27 @@ import com.googlecode.javacv.cpp.opencv_core.IplImage;
 public class PresenceDetector extends ImageProcessor {
 
 	public static final int CLAMP_VALUE = 20;
-	
-	public static enum ImgReturnType { RAW, BLUR, BACKGROUND,  DIFF, THRESH, CONTOUR, BLOBS};
+
+	public static enum ImgReturnType { RAW, UNWARP, BLUR, BACKGROUND,  DIFF, THRESH, DILATE, ERODE, CONTOUR, BLOBS, SCALE};
 
 	ImgReturnType imgReturnType = ImgReturnType.RAW;
 
 	int[][] threshMask = null;
-	IplImage grayImage;
-	IplImage diffImage;
-	IplImage threshImage;
-	IplImage contourImage; 
-	IplImage blurImage; 
-	
-	BackgroundImage background;
-	
-	DetectContours detectControus;
-	
-	ThreshClamp thresh = new ThreshClamp(20);
-	
-	Blur blur;
-	
-	
+
+	Filter[] filters;
+
+	public Unwarp unwarp;
+	public NoOpFilter raw;
+	public ImageDifference diff;
+	public BackgroundImage background;
+	public DetectContours detectControus;
+	public ThreshClamp thresh;
+	public Blur blur;
+	public Dilate dilate;
+	public Erode erode;
+	public BlobWriter blobWriter;
+	public Scale scale;
+
 	ImageConversion imageConversion = new ImageConversion();
 	Vector<PolyRegion> regions = new Vector<PolyRegion>();
 
@@ -43,24 +43,51 @@ public class PresenceDetector extends ImageProcessor {
 
 	boolean calcExtreema = false;
 	public boolean convertFromColor = false;
-	
-	public Tracker tracker = null;
-	
-	
 
-	
+	public Tracker tracker = null;
+
+
+	public Filter getCurrentFilter() {
+		return filters[imgReturnType.ordinal()];
+
+	}
+
+
 	public PresenceDetector(ElProps props, int w, int h, boolean withTracker) {
 		super(w, h);
+		filters = new Filter[ImgReturnType.values().length];
+		raw = new NoOpFilter();
 		extreema = new CalcExtreema();
-		blur = new Blur();
-		background = new BackgroundImage(.001, 60);
+		unwarp = new Unwarp(w,h, props);
+		diff = new ImageDifference();
+		blur = new Blur(5, props);
+		background = new BackgroundImage(.001, 60, props);
 		detectControus = new DetectContours(props);
-		grayImage = IplImage.create(w, h, IPL_DEPTH_8U , 1);
-		blurImage = IplImage.create(w, h, IPL_DEPTH_8U , 1);
-		diffImage = IplImage.create(w, h, IPL_DEPTH_8U , 1);
-		threshImage = IplImage.create(w, h, IPL_DEPTH_8U , 1);
-		contourImage = IplImage.create(w, h, IPL_DEPTH_8U, 1);
-		
+		blobWriter = new BlobWriter(detectControus);
+		dilate = new Dilate(1, props);
+		erode = new Erode(1,props);
+		thresh = new ThreshClamp(100, "", props);
+		scale = new Scale(w,h, "grid", props);
+		filters[0] = raw;
+		filters[1] = unwarp;
+		filters[2] = blur;
+		filters[3] = background;
+		filters[4] = diff;
+		filters[5] = thresh;
+		filters[6] = dilate;
+		filters[7] = erode;
+		filters[8] = detectControus;
+		filters[9] = blobWriter;
+		filters[10] = scale;
+
+
+		/*
+		images = new IplImage[ImgReturnType.values().length];
+		for(int i = 0; i < images.length; i++) {
+			images[i] = IplImage.create(w, h, IPL_DEPTH_8U , 1);
+		}
+		*/
+
 		if(withTracker) {
 			tracker = new Tracker(props);
 			tracker.start();
@@ -70,8 +97,11 @@ public class PresenceDetector extends ImageProcessor {
 	public static PresenceDetector createFromFile(ElProps props, File f) {
 		GlobalRegionSnapshot grs = GlobalRegionSnapshot.load(f);
 		PresenceDetector pd = new PresenceDetector(props, grs.w, grs.h, false);
-		pd.setAdaptation(grs.backgroundAdaptation);
-		pd.setThresh(grs.backgroundDiffThresh);
+
+		pd.background.adaptionParameter.setValue(grs.backgroundAdaptation);
+		pd.thresh.parameters.get(0).setValue(grs.backgroundAdaptation);
+		//		pd.setAdaptation(grs.backgroundAdaptation);
+		//		pd.setThresh(grs.backgroundDiffThresh);
 		pd.setRegions(grs.regions);
 		return pd;
 	}
@@ -95,7 +125,7 @@ public class PresenceDetector extends ImageProcessor {
 
 	public ImgReturnType getMode() { return imgReturnType; }
 
-	
+	/*
 	public void setAdaptation(double d) {
 		background.setAdaptation(d);
 	}
@@ -106,20 +136,21 @@ public class PresenceDetector extends ImageProcessor {
 		thresh.setThreshold(d);
 		thresh.setClampValue(255);
 	}
-	
+
 	public double getThresh() {
 		return thresh.getThreshold();
 	}
-	
+	 */
 	public void setRegions(	Vector<PolyRegion> r) {
 		regions = r;
 	}
-	
+
+
 	public Vector<PolyRegion> getRegions(){
 		return regions;
 	}
 
-
+/*
 	public float getMinBlobSize() {
 		return detectControus.getMinBlobSize();
 	}
@@ -128,12 +159,12 @@ public class PresenceDetector extends ImageProcessor {
 	}
 
 	public void setMinBlobSize(float f) {
-		 detectControus.setMinBlobsize(f);
+		detectControus.setMinBlobsize(f);
 	}
 	public void setMaxBlobSize(float f) {
-		 detectControus.setMaxBlobsize(f);
+		detectControus.setMaxBlobsize(f);
 	}
-
+*/
 
 	public void resetBackground(int frameSkip) {
 		background.reset(frameSkip);
@@ -153,76 +184,57 @@ public class PresenceDetector extends ImageProcessor {
 		return extreema.getMax();
 	}
 
-	
+
 	public void setImageReturn(ImgReturnType ret) {
 		imgReturnType = ret;
 	}
 
 	public IplImage process(IplImage img) {
-
-		grayImage = img;
-		// no longer supports color images
-		
-		blur.apply(grayImage, blurImage);
-		IplImage bkImage = background.update(blurImage);
-		if(bkImage == null) return null;
-
-		ImageDifference.apply(bkImage, blurImage, diffImage);
+		raw.apply(img);
+		unwarp.apply(raw.getImage());
+		blur.apply(unwarp.getImage());
+		if(background.apply(blur.getImage()) == null) return null;
+		diff.apply(background.getImage(), blur.getImage());
 
 
 
 
 		if(calcExtreema) {
-			extreema.calc(diffImage, null);
+			extreema.calc( diff.getImage(), null);
 		}
 
-		thresh.apply(diffImage, threshImage);
-//		thresh2.apply(threshImage, threshImage2);
+		thresh.apply(diff.getImage());
+		//		thresh2.apply(threshImage, threshImage2);
+		
+		dilate.apply(thresh.getImage());
+		erode.apply(dilate.getImage());
+		
 
 		if(regions != null) {
 			for(PolyRegion r : regions){
-				if(r.isTriggered(threshImage)) {
+				if(r.isTriggered(erode.getImage())) {
 				}
 			}
 		}
+
+		detectControus.apply(erode.getImage());
 		
-		detectControus.detectContours(threshImage , contourImage);
+		scale.apply(thresh.getImage());
+		
 		if(tracker != null) {
 			detectControus.detectBlobs();
 			tracker.queueBlobs(detectControus.detectedBlobs);
-			
+
 		}
-		
-		IplImage returnImage = null;
-		
-		switch(imgReturnType) {
-		case RAW:
-			returnImage = img;
-			break;
-//		case GRAY: 
-	//		returnImage = grayImage;
-		//	break;
-		case BLUR:
-			returnImage = blurImage;
-			break;
-		case BACKGROUND: 
-			returnImage = bkImage;
-			break;
-		case DIFF: 
-			returnImage = diffImage;
-			break; 
-		case THRESH: 
-			returnImage = threshImage;
-			break;
-		case BLOBS:
-			detectControus.drawBlobs(contourImage);
-			// no break on purpose
-		case CONTOUR:
-			returnImage = contourImage;
+		if(imgReturnType == ImgReturnType.BLOBS) {
+			blobWriter.apply(erode.getImage());
 		}
 
+		
+		return getCurrentFilter().getImage();
+		
+		
 
-		return returnImage;
 	}
 
 	public Vector<Blob> getBlobs() {

@@ -10,7 +10,7 @@ public class ImageConversion {
 	ColorConvertOp ccOpFromGray;
 
 	// I think max grey value is 65535
-	
+
 	/**
 	 * copies into gray16 (does not allocate more memory)
 	 * @param rgb8
@@ -33,7 +33,7 @@ public class ImageConversion {
 
 		return gray16;
 	}
-	
+
 	/**
 	 * copies into gray16 (does not allocate more memory)
 	 * @param gray8
@@ -66,7 +66,7 @@ public class ImageConversion {
 
 		return convertFromRGB(gray8, gray16);
 	}
-	
+
 	public  BufferedImage convertFromRGB(BufferedImage rgb8) {
 
 
