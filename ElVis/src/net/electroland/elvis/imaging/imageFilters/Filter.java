@@ -1,18 +1,27 @@
-package net.electroland.elvis.imaging;
+package net.electroland.elvis.imaging.imageFilters;
 
 import java.util.Vector;
+
 
 import net.electroland.elvis.util.parameters.Parameter;
 
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
+import static com.googlecode.javacv.cpp.opencv_core.cvCreateImage;
+import static com.googlecode.javacv.cpp.opencv_core.cvGetSize;
 
 public abstract class Filter {
 	IplImage dst;
 
-	Vector<Parameter> parameters = new Vector<Parameter>();
+	public Vector<Parameter> parameters = new Vector<Parameter>();
 
 
-	public abstract IplImage apply(IplImage src);
+	public abstract IplImage process(IplImage src);
+	
+	public IplImage apply(IplImage src) {
+		
+		dst = (dst == null) ? cvCreateImage(cvGetSize(src), src.depth(), src.nChannels()): dst;
+		return process(src);
+	}
 
 	public Parameter getParameter(int p) {
 		try {

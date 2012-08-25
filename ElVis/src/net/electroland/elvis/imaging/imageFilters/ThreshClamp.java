@@ -1,4 +1,4 @@
-package net.electroland.elvis.imaging;
+package net.electroland.elvis.imaging.imageFilters;
 
 import static com.googlecode.javacv.cpp.opencv_imgproc.CV_THRESH_BINARY;
 import static com.googlecode.javacv.cpp.opencv_imgproc.cvThreshold;
@@ -22,25 +22,8 @@ public class ThreshClamp extends Filter{
 		parameters.add(threshParam);
 	}
 
-	/*
-	public void setThreshold(double v) {
-		thresholdValue = v;
-	}
 
-	public double getThreshold() {
-		return thresholdValue;
-	}
-	 */
-	/*
-	public double getClampValue() {
-		return clampVal;
-	}
-	public void setClampValue(double v) {
-		clampVal = v;
-	}*/
-
-	public IplImage apply(IplImage src) {
-		dst = (dst == null) ? src.clone() : dst;
+	public IplImage process(IplImage src) {
 		cvThreshold(src, dst, threshParam.getDoubleValue(), clampVal, CV_THRESH_BINARY);	
 		return dst;
 	}

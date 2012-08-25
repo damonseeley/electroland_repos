@@ -14,15 +14,11 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 public class GlobalRegionSnapshot implements Serializable {
-	public int w;
-	public int h;
 	public double backgroundAdaptation;
 	public double backgroundDiffThresh;
 	public Vector<PolyRegion> regions;
 
-	public GlobalRegionSnapshot(int w, int h, double adapt, double thresh, Vector<PolyRegion> r) {
-		this.w = w;
-		this.h = h;
+	public GlobalRegionSnapshot(double adapt, double thresh, Vector<PolyRegion> r) {
 		backgroundAdaptation = adapt;
 		backgroundDiffThresh = thresh;
 		regions = r;

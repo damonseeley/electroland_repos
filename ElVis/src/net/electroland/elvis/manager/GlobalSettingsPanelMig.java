@@ -21,9 +21,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.NumberFormatter;
 
-import net.electroland.elvis.imaging.PresenceDetector;
 import net.electroland.elvis.imaging.PresenceDetector.ImgReturnType;
 import net.electroland.elvis.regions.GlobalRegionSnapshot;
+import net.electroland.elvis.util.CameraFactory;
 import net.miginfocom.swing.MigLayout;
 
 public class GlobalSettingsPanelMig implements Colorable {
@@ -64,12 +64,13 @@ public class GlobalSettingsPanelMig implements Colorable {
 		urlBox = new JComboBox();
 		urlBox.addItem("None");
 		urlBox.addItem("Image");
-		urlBox.addItem(ImagePanel.NOHONORTH_SRC);
-		urlBox.addItem(ImagePanel.NOHOSOUTH_SRC);
-		urlBox.addItem(ImagePanel.FLOWER_SRC);
-		urlBox.addItem(ImagePanel.LOCALAXIS_SRC);
-		urlBox.addItem(ImagePanel.JMYRON_SRC);
-		urlBox.addItem(ImagePanel.FLY_SRC);
+		urlBox.addItem(CameraFactory.NOHONORTH_SRC);
+		urlBox.addItem(CameraFactory.NOHOSOUTH_SRC);
+		urlBox.addItem(CameraFactory.FLOWER_SRC);
+		urlBox.addItem(CameraFactory.LOCALAXIS_SRC);
+		urlBox.addItem(CameraFactory.JMYRON_SRC);
+		urlBox.addItem(CameraFactory.FLY_SRC);
+		urlBox.addItem(CameraFactory.OPENCV_SRC);
 		urlBox.setSelectedItem("None");
 		urlBox.setMaximumRowCount(40);
 		urlBox.addItemListener(new ItemListener() {
@@ -271,7 +272,7 @@ public class GlobalSettingsPanelMig implements Colorable {
 		b.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				GlobalRegionSnapshot gsr = new GlobalRegionSnapshot(ImagePanel.THE_IMAGEPANEL.w, ImagePanel.THE_IMAGEPANEL.h, ImagePanel.THE_IMAGEPANEL.getAdaptation(), ImagePanel.THE_IMAGEPANEL.getThresh(), ImagePanel.THE_IMAGEPANEL.regions);
+				GlobalRegionSnapshot gsr = new GlobalRegionSnapshot(ImagePanel.THE_IMAGEPANEL.getAdaptation(), ImagePanel.THE_IMAGEPANEL.getThresh(), ImagePanel.THE_IMAGEPANEL.regions);
 				gsr.save();
 			}});
 		p.add(b, "gaptop 15, align right");

@@ -1,13 +1,19 @@
-package net.electroland.elvis.imaging;
+package net.electroland.elvis.imaging.imageFilters;
 
 
+import static com.googlecode.javacv.cpp.opencv_core.CV_FILLED;
 import static com.googlecode.javacv.cpp.opencv_core.cvCircle;
+import static com.googlecode.javacv.cpp.opencv_core.cvLine;
 import static com.googlecode.javacv.cpp.opencv_core.cvCopy;
+import static com.googlecode.javacv.cpp.opencv_core.cvDrawContours;
+import static com.googlecode.javacv.cpp.opencv_core.cvGetSeqElem;
 import static com.googlecode.javacv.cpp.opencv_core.cvPoint;
 import static com.googlecode.javacv.cpp.opencv_core.cvRectangle;
 import static com.googlecode.javacv.cpp.opencv_core.cvScalar;
+import static com.googlecode.javacv.cpp.opencv_core.cvZero;
 import static com.googlecode.javacv.cpp.opencv_imgproc.CV_CHAIN_APPROX_SIMPLE;
 import static com.googlecode.javacv.cpp.opencv_imgproc.CV_RETR_EXTERNAL;
+import static com.googlecode.javacv.cpp.opencv_imgproc.CV_RETR_FLOODFILL;
 import static com.googlecode.javacv.cpp.opencv_imgproc.cvBoundingRect;
 import static com.googlecode.javacv.cpp.opencv_imgproc.cvFindContours;
 import static com.googlecode.javacv.cpp.opencv_imgproc.cvGetSpatialMoment;
@@ -22,7 +28,9 @@ import net.electroland.elvis.util.parameters.IntParameter;
 import com.googlecode.javacpp.Loader;
 import com.googlecode.javacv.cpp.opencv_core.CvContour;
 import com.googlecode.javacv.cpp.opencv_core.CvMemStorage;
+import com.googlecode.javacv.cpp.opencv_core.CvPoint;
 import com.googlecode.javacv.cpp.opencv_core.CvRect;
+import com.googlecode.javacv.cpp.opencv_core.CvScalar;
 import com.googlecode.javacv.cpp.opencv_core.CvSeq;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 import com.googlecode.javacv.cpp.opencv_imgproc.CvMoments;
@@ -67,6 +75,9 @@ public class DetectContours extends Filter {
 		}
 		return acc/cnt;
 	}
+	public Vector<Blob> getBlobs() {
+		return detectedBlobs;
+	}
 	public void detectBlobs() {
 		if(contours != null) {
 			int minBlobSize = minBlobSizeParam.getIntValue();
@@ -75,18 +86,22 @@ public class DetectContours extends Filter {
 			//TODO:  right now allocating new vector to avoid threading problems with tracker.  should probably reuse for speed (but need to be careful...)
 
 
+
+
 			// not sure why I had to add the ! contour.isNull() -- didn't need it before
 			for (CvSeq contour = contours; (contour != null) && (! contour.isNull()); contour = contour.h_next()) {	
-
-				cvMoments(contour, moments, 0);
-				double area = moments.m00();
-				//				double area = cvContourArea(contour, CV_WHOLE_SEQ);
-				if((area > minBlobSize) && (area < maxBlobSize)) {
-					double areaInv = 1.0/area;
-					float x = (float) (cvGetSpatialMoment(moments, 1, 0) *areaInv);
-					float y = (float) (cvGetSpatialMoment(moments, 0, 1) *areaInv);	    	
-					CvRect boundbox = cvBoundingRect(contour, 0);
-					newBlobs.add(new Blob(x,y,  boundbox.x(), boundbox.x()+boundbox.width(), boundbox.y(), boundbox.y()+boundbox.width(), (float)area));	            
+				if(contour.total() > 0) {
+					cvMoments(contour, moments, 0);
+					double area = moments.m00();
+					//				double area = cvContourArea(contour, CV_WHOLE_SEQ);
+					//				if(true) {
+					if((area > minBlobSize) && (area < maxBlobSize)) {
+						double areaInv = 1.0/area;
+						float x = (float) (cvGetSpatialMoment(moments, 1, 0) *areaInv);
+						float y = (float) (cvGetSpatialMoment(moments, 0, 1) *areaInv);	    	
+						CvRect boundbox = cvBoundingRect(contour, 0);
+						newBlobs.add(new Blob(x,y,  boundbox.x(), boundbox.x()+boundbox.width(), boundbox.y(), boundbox.y()+boundbox.height(), (float)area));	            
+					}
 				}
 			}
 			detectedBlobs = newBlobs;
@@ -113,10 +128,13 @@ public class DetectContours extends Filter {
 	}
 	 */
 	@Override
-	public IplImage apply(IplImage src) {
-		if(dst == null) dst = src.clone();
+	public IplImage process(IplImage src) {
 		cvCopy(src, dst);	 	
-		cvFindContours(dst, mem, contours, 	Loader.sizeof(CvContour.class) , CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);		
+		mem = CvMemStorage.create();// cvCreateMemStorage(0);//
+		contours = new CvSeq();		
+
+
+		cvFindContours(dst, mem, contours, 	Loader.sizeof(CvContour.class) , CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);	
 		return dst;
 
 	}

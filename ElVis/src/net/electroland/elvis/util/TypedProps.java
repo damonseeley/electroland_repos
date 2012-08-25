@@ -4,7 +4,10 @@ import java.awt.Point;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Properties;
+import java.util.Vector;
 
 public class TypedProps extends Properties {
 	
@@ -192,5 +195,16 @@ public class TypedProps extends Properties {
 		 p.y = Integer.parseInt(vals[1]);
 		 return p;
 	 }
+	 // added to alphabetize when store is called
+	 @SuppressWarnings("unchecked")
+	  public synchronized Enumeration keys() {
+	     Enumeration keysEnum = super.keys();
+	     Vector keyList = new Vector();
+	     while(keysEnum.hasMoreElements()){
+	       keyList.add(keysEnum.nextElement());
+	     }
+	     Collections.sort(keyList);
+	     return keyList.elements();
+	  }
 	 
 }

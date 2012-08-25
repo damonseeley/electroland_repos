@@ -1,4 +1,5 @@
-package net.electroland.elvis.imaging;
+package net.electroland.elvis.imaging.imageFilters;
+
 
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 import static com.googlecode.javacv.cpp.opencv_core.cvCopy;
@@ -11,8 +12,7 @@ public class BlobWriter extends Filter {
 		detectContours = dc;
 	}
 	@Override
-	public IplImage apply(IplImage src) {
-		dst = (dst == null) ? src.clone() : dst;
+	public IplImage process(IplImage src) {
 		cvCopy(src, dst);
 		detectContours.drawBlobs(dst);		
 		return dst;
