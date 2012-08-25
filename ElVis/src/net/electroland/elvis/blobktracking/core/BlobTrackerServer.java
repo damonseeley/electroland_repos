@@ -7,6 +7,7 @@ import net.electroland.elvis.blobktracking.ui.BlobFrame;
 import net.electroland.elvis.blobktracking.ui.Console;
 import net.electroland.elvis.blobtracking.TrackListener;
 import net.electroland.elvis.manager.ImagePanel;
+import net.electroland.elvis.util.CameraFactory;
 import net.electroland.elvis.util.ElProps;
 
 public class BlobTrackerServer {
@@ -44,8 +45,9 @@ public class BlobTrackerServer {
 		blobTracker.presenceDetector.background.getParameter(0).setValue(props.getProperty("adaptation", .001));
 
 		try {
+			
 //			blobTracker.setSourceStream(props.getProperty("camera", ImagePanel.FLY_SRC));
-			blobTracker.setSourceStream(props.getProperty("camera", ImagePanel.LOCALAXIS_SRC));
+			blobTracker.setSourceStream(props.getProperty("camera", CameraFactory.OPENCV_SRC));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

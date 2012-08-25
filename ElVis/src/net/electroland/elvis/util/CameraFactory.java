@@ -4,14 +4,14 @@ import java.io.IOException;
 
 import net.electroland.elvis.imaging.acquisition.ImageAcquirer;
 import net.electroland.elvis.imaging.acquisition.ImageReceiver;
-import net.electroland.elvis.imaging.acquisition.FlyCapture.FlyCamera;
 import net.electroland.elvis.imaging.acquisition.axisCamera.FlowerCam;
 import net.electroland.elvis.imaging.acquisition.axisCamera.LocalCam;
 import net.electroland.elvis.imaging.acquisition.axisCamera.NavyCam;
 import net.electroland.elvis.imaging.acquisition.axisCamera.NoHoNorthCam;
 import net.electroland.elvis.imaging.acquisition.axisCamera.NoHoSouthCam;
 import net.electroland.elvis.imaging.acquisition.jmyron.WebCam;
-import net.electroland.elvis.manager.ImagePanel;
+import net.electroland.elvis.imaging.acquisition.openCV.FlyCamera;
+import net.electroland.elvis.imaging.acquisition.openCV.OpenCVCam;
 
 import com.googlecode.javacv.FrameGrabber.Exception;
 
@@ -23,6 +23,7 @@ public class CameraFactory {
 	public static final String JMYRON_SRC = "jMyronCam";
 	public static final String LOCALAXIS_SRC ="Local Axis";
 	public static final String FLY_SRC = "Fly Cam";
+	public static final String OPENCV_SRC = "OpenCV";
 	
 	public static ImageAcquirer camera(String s, int w, int h, ImageReceiver ir) throws IOException, Exception {
 		if(s.equals(NAVY_SRC)) {
@@ -38,7 +39,9 @@ public class CameraFactory {
 		} else if(s.equals(LOCALAXIS_SRC)) {
 			return new LocalCam(w,h,ir, false);
 		} else if(s.equals(FLY_SRC)) {
-				return new FlyCamera(ir, 0 , w, h);
+				return new FlyCamera(ir, w, h, 0);
+		} else if(s.equals(OPENCV_SRC)){
+			return new OpenCVCam(ir, w, h, 0);
 		}else {
 			throw new IOException("Unknown source");
 		}

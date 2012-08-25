@@ -1,4 +1,4 @@
-package net.electroland.elvis.imaging;
+package net.electroland.elvis.imaging.imageFilters;
 
 //static imports
 import static com.googlecode.javacv.cpp.opencv_core.cvCopy;
@@ -22,8 +22,7 @@ public class Blur extends Filter {
 
 
 	@Override
-	public IplImage apply(IplImage src) {
-		dst = (dst == null) ? src.clone() : dst;
+	public IplImage process(IplImage src) {
 
 		int radius = radiusParam.getIntValue();
 		if(radius <= 0)  {

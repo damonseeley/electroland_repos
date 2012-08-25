@@ -1,4 +1,4 @@
-package net.electroland.elvis.imaging;
+package net.electroland.elvis.imaging.imageFilters;
 
 //static imports
 import static com.googlecode.javacv.cpp.opencv_imgproc.cvDilate;
@@ -21,8 +21,7 @@ public class Dilate extends Filter {
 
 
 	@Override
-	public IplImage apply(IplImage src) {
-		dst = (dst == null) ? src.clone() : dst;
+	public IplImage process(IplImage src) {
 		cvDilate(src, dst,null,iterationsParam.getIntValue());
 		return dst;
 

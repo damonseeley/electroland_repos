@@ -4,8 +4,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import net.electroland.elvis.blobtracking.Tracker;
-import net.electroland.elvis.imaging.Filter;
 import net.electroland.elvis.imaging.PresenceDetector;
+import net.electroland.elvis.imaging.imageFilters.Filter;
 import net.electroland.elvis.util.ElProps;
 import net.electroland.elvis.util.parameters.Parameter;
 
@@ -22,18 +22,36 @@ public class PresenceDetectorKeyListener implements KeyListener {
 	}
 	public void keyReleased(KeyEvent e) {
 		if(e.getKeyChar() == '?') {
-			System.out.println("? - this help menu");
-			System.out.println("s - save current properties (will overwrite existing file)");
-			System.out.println(". - view next window mode");
-			System.out.println(", - view prev window mode");
-			System.out.println("m/n - increase/decrease threshold");
-			System.out.println("x/z - increase/decrease background adaption rate");
-			System.out.println("p/o - increase/decrease provisionalPenalty for track");
-			System.out.println("i/u - increase/decrease nonMatchPenalty for track");
-			System.out.println("y/t - increase/decrease max track size");
-			System.out.println("h/g - increase/decrease min track size");
-			System.out.println("r - reset background model");
-		}
+			System.out.println("");
+			System.out.println("prev/next mode - ,/.");
+			System.out.println("save current setting to propty file - s");
+			System.out.println("reset background image - r");
+			Filter curFilter = presenceDetector.getCurrentFilter();
+			int size = curFilter.parameters.size();
+			System.out.println("Mode: " + presenceDetector.getMode());
+			if(size >= 1) {
+				System.out.println("   " + curFilter.parameters.get(0).getName() + "- +/-");
+			}
+			if(size >= 2) {
+				System.out.println("   " + curFilter.parameters.get(1).getName() + "- 9/0");
+			}
+			if(size >= 3) {
+				System.out.println("   " + curFilter.parameters.get(2).getName() + "- 7/8");
+			}
+			if(size >= 4) {
+				System.out.println("   " + curFilter.parameters.get(3).getName() + "- 5/6");
+			}
+			if(size >= 5) {
+				System.out.println("   " + curFilter.parameters.get(4).getName() + "- 3/4");
+			}
+			if(size >= 6) {
+				System.out.println("   " + curFilter.parameters.get(5).getName() + "- 1/2");
+			}
+			if(size >= 7) {
+				System.out.println("   " + curFilter.parameters.get(6).getName() + "- [/]");
+			}
+			return;
+		} 
 		
 		switch(e.getKeyCode()) {
 		case KeyEvent.VK_S:

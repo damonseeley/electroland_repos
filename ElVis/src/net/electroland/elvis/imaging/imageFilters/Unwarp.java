@@ -1,4 +1,4 @@
-package net.electroland.elvis.imaging;
+package net.electroland.elvis.imaging.imageFilters;
 
 import static com.googlecode.javacv.cpp.opencv_core.CV_32F;
 import static com.googlecode.javacv.cpp.opencv_core.cvCopy;
@@ -15,7 +15,7 @@ import com.googlecode.javacv.cpp.opencv_core.IplImage;
 
 public class Unwarp extends Filter {
 
-	public static CvScalar BLACK;
+	public static CvScalar BLACK = cvScalar(0,0,0,0);
 
 	boolean mapNeedsUpdate = true;
 
@@ -41,9 +41,6 @@ public class Unwarp extends Filter {
 
 	public Unwarp(int width, int height, ElProps props) {
 		super();
-		if(BLACK == null) {
-			BLACK =cvScalar(0,0,0,0);
-		}
 		this.width =width;
 		this.height = height;
 		parameters.add(new DoubleParameter("unwarpK1", .0000001, 0,props));
@@ -112,8 +109,7 @@ public class Unwarp extends Filter {
 		mapNeedsUpdate = true;
 	}
 
-	public IplImage apply(IplImage src) {
-		dst = (dst == null) ? src.clone() : dst;
+	public IplImage process(IplImage src) {
 		if(mapNeedsUpdate) {
 			createMap();
 		}

@@ -1,6 +1,9 @@
-package net.electroland.elvis.imaging;
+package net.electroland.elvis.imaging.imageFilters;
 
 import static com.googlecode.javacv.cpp.opencv_core.cvAddWeighted;
+import static com.googlecode.javacv.cpp.opencv_core.cvCreateImage;
+import static com.googlecode.javacv.cpp.opencv_core.cvGetSize;
+import static com.googlecode.javacv.cpp.opencv_core.cvCopy;
 import net.electroland.elvis.util.ElProps;
 import net.electroland.elvis.util.parameters.DoubleParameter;
 
@@ -51,21 +54,22 @@ public class BackgroundImage extends Filter {
 	 */
 
 	@Override
-	public IplImage apply(IplImage im) {
+	public IplImage process(IplImage im) {
 		return update(im);
-		/*
-		IplImage result = update(im);
-		if(result != null) {
-			cvCopy(update(im), curMask);
-		}
-		 */
 	}
+	
+	public IplImage apply(IplImage src) { 
+		// don't want super.apply creating new image if dst == null
+		return update(src);
+	}
+
 
 
 	public IplImage update(IplImage bi) {	
 		if(initialFrameSkip-- > 0) return null;
 		if(dst == null)  {
-			dst = bi.clone();	
+			dst = cvCreateImage(cvGetSize(bi), bi.depth(), bi.nChannels());
+			cvCopy(bi, dst);
 			return dst;
 		} else { 
 			double adaptation =adaptionParameter.getDoubleValue();

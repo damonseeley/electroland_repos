@@ -26,14 +26,15 @@ import javax.swing.Timer;
 import net.electroland.elvis.imaging.PresenceDetector;
 import net.electroland.elvis.imaging.PresenceDetector.ImgReturnType;
 import net.electroland.elvis.imaging.acquisition.ImageAcquirer;
-import net.electroland.elvis.imaging.acquisition.FlyCapture.FlyCamera;
 import net.electroland.elvis.imaging.acquisition.axisCamera.FlowerCam;
 import net.electroland.elvis.imaging.acquisition.axisCamera.LocalCam;
 import net.electroland.elvis.imaging.acquisition.axisCamera.NavyCam;
 import net.electroland.elvis.imaging.acquisition.axisCamera.NoHoNorthCam;
 import net.electroland.elvis.imaging.acquisition.axisCamera.NoHoSouthCam;
 import net.electroland.elvis.imaging.acquisition.jmyron.WebCam;
+import net.electroland.elvis.imaging.acquisition.openCV.FlyCamera;
 import net.electroland.elvis.regions.PolyRegion;
+import net.electroland.elvis.util.CameraFactory;
 import net.electroland.elvis.util.ElProps;
 
 import com.googlecode.javacv.FrameGrabber.Exception;
@@ -43,6 +44,7 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 	public static ImagePanel THE_IMAGEPANEL;
 //	CanvasFrame canvasFrame;
 	boolean aquireInColor = false;
+	/*
 	public static final String NAVY_SRC = "Navy St.";
 	public static final String FLOWER_SRC = "Flower St.";
 	public static final String NOHOSOUTH_SRC = "NoHo South";
@@ -50,6 +52,7 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 	public static final String JMYRON_SRC = "jMyronCam";
 	public static final String LOCALAXIS_SRC ="Local Axis";
 	public static final String FLY_SRC = "Fly Cam";
+	*/
 
 	public static final String RAW_IMG = "Raw";
 	public static final String GRAYSCALE_IMG = "Grayscale";
@@ -112,13 +115,14 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 	}
 	
 	public ImagePanel(ElProps props, int w, int h) {
-		this.w = w;
-		this.h = h;
 		// adjust scale?
 		ImagePanel.THE_IMAGEPANEL = this;
 //		canvasFrame = new CanvasFrame("Elvis");
 //		THE_IMAGEPANEL = this;
-		presenceDetector = new PresenceDetector(props, w,h, false);
+		presenceDetector = new PresenceDetector(props, false);
+		this.w = presenceDetector.getWidth();
+		this.h = presenceDetector.getHeight();
+
 		presenceDetector.start();
 		presenceDetector.setRegions(null);
 		setSize(w*SCALE,h*SCALE);
@@ -262,33 +266,17 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 	public void setBackgroundStream(String s) throws IOException {
 		if(srcStream != null) {
 			srcStream.stopRunning();
+			srcStream = null;
 		}
 		int frameSkip = 2;
-		if(s.equals(NAVY_SRC)) {
-			srcStream = new NavyCam(w,h,presenceDetector, aquireInColor);
-		} else if(s.equals(FLOWER_SRC)) {
-			srcStream = new FlowerCam(w,h,presenceDetector, aquireInColor);
-		} else if(s.equals(NOHOSOUTH_SRC)) {
-				srcStream = new NoHoSouthCam(w,h,presenceDetector, aquireInColor);
-		} else if(s.equals(NOHONORTH_SRC)) {
-			srcStream = new NoHoNorthCam(w,h,presenceDetector, aquireInColor);
-		} else if(s.equals(JMYRON_SRC)) {
-			frameSkip = 50;
-			srcStream = new WebCam(w, h, 12, presenceDetector, aquireInColor);
-		} else if(s.equals(LOCALAXIS_SRC)) {
-			System.out.println("creating local " + w +"x" +h);
-			srcStream = new LocalCam(w,h,presenceDetector, aquireInColor);
-		} else if(s.equals(FLY_SRC)) {
-			System.out.println("creating fly camera " + w +"x" +h);
-			try {
-				srcStream = new FlyCamera(presenceDetector, 0 , w, h);
-			} catch (Exception e) {
-				srcStream = null;
-				e.printStackTrace();
-			}
-		}else {
-			srcStream = null;
-			throw new IOException("Unknown source");
+		try {
+			srcStream = CameraFactory.camera(s, w, h, presenceDetector);
+		} catch (Exception e) {
+			e.printStackTrace();
+			srcStream=null;
+		}
+		if(srcStream == null) {
+			throw new IOException("Unknown or invalid source");
 		}
 		srcStream.start();
 		presenceDetector.resetBackground(frameSkip);

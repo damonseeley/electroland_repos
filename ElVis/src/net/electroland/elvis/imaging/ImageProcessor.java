@@ -21,14 +21,10 @@ public abstract class ImageProcessor extends Thread implements ImageReceiver {
 	
 	public int warningFrameSize = 15;
 	
-	public int w;
-	public int h;
 
 	AtomicReference<IplImage> curImage = new AtomicReference<IplImage>();
 
-	public ImageProcessor(int w, int h) {
-		this.w = w;
-		this.h = h;
+	public ImageProcessor() {
 	}
 
 	

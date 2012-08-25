@@ -63,8 +63,8 @@ public class BlobPanel extends JPanel implements ActionListener {
 		t.setInitialDelay(1000);
 		t.start();
 
-		setSize(blobTracker.presenceDetector.w, blobTracker.presenceDetector.h);
-		setPreferredSize(new Dimension(blobTracker.presenceDetector.w, blobTracker.presenceDetector.h));
+		setSize(blobTracker.presenceDetector.getWidth(), blobTracker.presenceDetector.getHeight());
+		setPreferredSize(new Dimension(blobTracker.presenceDetector.getWidth(), blobTracker.presenceDetector.getHeight()));
 
 
 	}

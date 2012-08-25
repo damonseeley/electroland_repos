@@ -1,4 +1,4 @@
-package net.electroland.elvis.imaging;
+package net.electroland.elvis.imaging.imageFilters;
 //CV_INTER_CUBIC 
 import static com.googlecode.javacv.cpp.opencv_imgproc.CV_INTER_CUBIC;
 import static com.googlecode.javacv.cpp.opencv_imgproc.cvResize;
@@ -41,8 +41,12 @@ public class Scale extends Filter {
 		super.decParameter(p);
 		needsUpdate = true;
 	}
-	@Override
+	@Override // scale allocates dst itself
 	public IplImage apply(IplImage src) {
+		return process(src);
+	}
+	
+	public IplImage process(IplImage src) {
 		if(	needsUpdate) {
 			if(isOn.getBoolValue()) {
 				dst = IplImage.create(scaleXParam.getIntValue(),scaleYParam.getIntValue(), src.depth(),1);
