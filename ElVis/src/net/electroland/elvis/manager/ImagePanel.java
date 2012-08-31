@@ -15,6 +15,8 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.IOException;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
@@ -70,7 +72,7 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 	boolean ctrlDown = false;
 
 	//ds set to 2 for easier tiny region editing
-	public static final int DIST_RADIUS_HALF = 2;
+	public static final int DIST_RADIUS_HALF = 5;
 	public static final int DIST_RADIUS = DIST_RADIUS_HALF + DIST_RADIUS_HALF;
 	public static final int DIST_RADIUS_SQR = DIST_RADIUS * DIST_RADIUS; // pixels square
 
@@ -110,16 +112,16 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 	boolean editMode = true;
 
 	
-	public ImagePanel(ElProps props) {
+	public ImagePanel(ElProps props) throws SocketException, UnknownHostException {
 		this(props, 160,120);
 	}
 	
-	public ImagePanel(ElProps props, int w, int h) {
+	public ImagePanel(ElProps props, int w, int h) throws SocketException, UnknownHostException {
 		// adjust scale?
 		ImagePanel.THE_IMAGEPANEL = this;
 //		canvasFrame = new CanvasFrame("Elvis");
 //		THE_IMAGEPANEL = this;
-		presenceDetector = new PresenceDetector(props, false);
+		presenceDetector = new PresenceDetector(props);
 		this.w = presenceDetector.getWidth();
 		this.h = presenceDetector.getHeight();
 

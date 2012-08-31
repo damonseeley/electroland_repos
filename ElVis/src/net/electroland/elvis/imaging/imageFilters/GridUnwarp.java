@@ -1,9 +1,7 @@
 package net.electroland.elvis.imaging.imageFilters;
 
 import static com.googlecode.javacv.cpp.opencv_core.CV_32F;
-import static com.googlecode.javacv.cpp.opencv_core.CV_64F;
 import static com.googlecode.javacv.cpp.opencv_core.cvCopy;
-import static com.googlecode.javacv.cpp.opencv_core.cvMatMul;
 import static com.googlecode.javacv.cpp.opencv_core.cvScalar;
 import static com.googlecode.javacv.cpp.opencv_core.cvZero;
 import static com.googlecode.javacv.cpp.opencv_imgproc.cvRemap;
@@ -29,7 +27,7 @@ public class GridUnwarp extends Filter {
 
 	boolean mapNeedsUpdate = true;
 
-	public static int IS_ON = 0;
+//	public static int IS_ON = 0;
 
 	IplImage mapx= null;
 	IplImage mapy;
@@ -41,6 +39,7 @@ public class GridUnwarp extends Filter {
 	int height;
 
 	CvPoint[][] grid;
+	BoolParameter isOn;
 
 	CvMat compute_projective_matrix(CvPoint A, CvPoint B, CvPoint C,CvPoint D) {
 		double aux_a = B.x()-D.x();
@@ -70,10 +69,16 @@ public class GridUnwarp extends Filter {
 		super();
 		this.width = width;
 		this.height = height;
-		parameters.add(new BoolParameter("gridUnwarpIsOn", true, props));
+		isOn = new BoolParameter("warpGridIsOn", true, props);
+		parameters.add(isOn);
 		this.grid = grid;
 
 	}
+
+	public GridUnwarp(int width, int height, ElProps props) {
+		this(width, height, readGridFromProps(props, width, height), props);
+	}
+
 
 	public int getWidth() {
 		return width;
@@ -88,7 +93,7 @@ public class GridUnwarp extends Filter {
 	}
 	public void createMap() {
 		mapNeedsUpdate = false;
-		if(parameters.get(IS_ON).getBoolValue()) {
+		if(isOn.getBoolValue()) {
 			createMap(grid);
 		} else {
 			mapx = null;
@@ -163,7 +168,7 @@ public class GridUnwarp extends Filter {
 						matx.put(y, x, newPoint.getX());
 						maty.put(y, x, newPoint.getY());
 						if(uv.size() > 1) {
-							System.out.println("two solutions " + uv.get(0)+ "   " + uv.get(1));
+							System.out.println("Warning: two possible solutions " + uv.get(0)+ "   " + uv.get(1));
 						}
 					} else {
 						matx.put(y,x, -1);
@@ -212,6 +217,56 @@ public class GridUnwarp extends Filter {
 		return dst;
 	}
 
+	public void writeCurrentGridToProps(ElProps props) {
+		StringBuffer sb = new StringBuffer();
+		int cols = grid.length;
+		int rows = grid[0].length;
+		sb.append(cols);
+		sb.append("x");
+		sb.append(rows);
+		sb.append(";"); // was using colon but it was adding and extra slash (don't know why)
+		for(int i = 0; i < cols; i++) {
+			for(int j = 0; j < rows; j++) {
+				CvPoint p = grid[i][j];
+				sb.append(p.x());
+				sb.append(",");
+				sb.append(p.y());
+				sb.append(",");
+			}
+		}
+		sb.deleteCharAt(sb.length()-1);//remove trailing ','
+		props.put("grid", sb.toString());		
+	}
+	public static  CvPoint[][] readGridFromProps(ElProps props, int w, int h) {
+		String s = props.getProperty("warpGrid", "");
+		CvPoint[][] newGrid = null;
+		if(s.equals("")) {
+			int gridWidth = props.getProperty("warpGridWidth",  6);
+			int gridHeight = props.getProperty("warpGridHeight", 4);
+			newGrid = GridDesigner.makeGrid(gridWidth, gridHeight, w, h);
+		} else {
+			int xPos = s.indexOf("x");
+			int cols = new Integer(s.substring(0, xPos));
+			int cPos = s.indexOf(";");
+			int rows = new Integer(s.substring(xPos+1, cPos));
+			s = s.substring(cPos+1);
+			String[] vec = s.split(",");
+			newGrid = GridDesigner.makeGrid(cols-1,rows-1, w, h);
+			int i = 0;
+			int j = 0;
+			for(int k = 0; k < vec.length; k++) {
+				int x = new Integer(vec[k++]);
+				int y = new Integer(vec[k]);
+				newGrid[i][j] = new CvPoint(x,y);
+				j++;
+				if(j == rows) {
+					i++;
+					j = 0;
+				}
+			}
+		}
+		return newGrid;
+	}
 
 
 }

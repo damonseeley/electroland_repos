@@ -5,15 +5,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Hashtable;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
@@ -23,6 +30,7 @@ import javax.swing.text.NumberFormatter;
 
 import net.electroland.elvis.imaging.PresenceDetector.ImgReturnType;
 import net.electroland.elvis.regions.GlobalRegionSnapshot;
+import net.electroland.elvis.regions.PolyRegion;
 import net.electroland.elvis.util.CameraFactory;
 import net.miginfocom.swing.MigLayout;
 
@@ -78,9 +86,9 @@ public class GlobalSettingsPanelMig implements Colorable {
 				String selected = (String) urlBox.getSelectedItem();
 				if(selected.equals(urlSelected)) return; // no change
 				urlSelected = selected;
-//				System.out.println(selected);
+				//				System.out.println(selected);
 				if(urlSelected.equals("Image")) {
-	//				System.out.println("its an image");
+					//				System.out.println("its an image");
 					JFileChooser fc = new JFileChooser ();
 					fc.setDialogTitle ("Open Image");
 					fc.setFileSelectionMode ( JFileChooser.FILES_ONLY);
@@ -89,7 +97,7 @@ public class GlobalSettingsPanelMig implements Colorable {
 					if(f == null) {
 						urlBox.setSelectedItem("None");
 					} else {
-//						System.out.println("Opening " + f.getAbsolutePath());
+						//						System.out.println("Opening " + f.getAbsolutePath());
 						urlBox.setSelectedItem(f.getAbsolutePath().toString());
 						try {
 							ImagePanel.THE_IMAGEPANEL.setBackgroundImage(f);
@@ -126,7 +134,7 @@ public class GlobalSettingsPanelMig implements Colorable {
 		imageView.addItem(ImagePanel.BACKDIFF_IMG);
 		imageView.addItem(ImagePanel.THRESHOLD_IMG);
 		imageView.addItem(ImagePanel.CONTOUR_IMG);
-		*/
+		 */
 		imageView.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				String newSelect = (String)imageView.getSelectedItem();
@@ -148,7 +156,7 @@ public class GlobalSettingsPanelMig implements Colorable {
 
 
 		java.text.NumberFormat numberFormat =
-			java.text.NumberFormat.getIntegerInstance();
+				java.text.NumberFormat.getIntegerInstance();
 		NumberFormatter formatter = new NumberFormatter(numberFormat);
 		int minVal = 0;
 		int maxVal = 255;
@@ -254,26 +262,18 @@ public class GlobalSettingsPanelMig implements Colorable {
 		b.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				GlobalRegionSnapshot gsr = GlobalRegionSnapshot.load();
-				ImagePanel.THE_IMAGEPANEL.setAdaptation(gsr.backgroundAdaptation);
-//				System.out.println("adapt " + gsr.backgroundAdaptation);
-				backgroundAdaptSlider.setValue((int) (gsr.backgroundAdaptation * 10000.0));
-				backgroundAdaptField.setText(Double.toString(gsr.backgroundAdaptation));
-				
-				ImagePanel.THE_IMAGEPANEL.setThresh(gsr.backgroundDiffThresh);
-				triggerThreshSlider.setValue((int)gsr.backgroundDiffThresh);
-				triggerTreshField.setText(Integer.toString((int)gsr.backgroundDiffThresh));
-				ImagePanel.THE_IMAGEPANEL.regions = gsr.regions;
+
+				ImagePanel.THE_IMAGEPANEL.regions = load();
 
 			}});
 		p.add(b, "gaptop 15, align left");
-		
+
 		b = new JButton("Save");
 		b.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				GlobalRegionSnapshot gsr = new GlobalRegionSnapshot(ImagePanel.THE_IMAGEPANEL.getAdaptation(), ImagePanel.THE_IMAGEPANEL.getThresh(), ImagePanel.THE_IMAGEPANEL.regions);
-				gsr.save();
+				save( ImagePanel.THE_IMAGEPANEL.regions);
+
 			}});
 		p.add(b, "gaptop 15, align right");
 		return p;
@@ -296,7 +296,72 @@ public class GlobalSettingsPanelMig implements Colorable {
 
 
 	}
+
+	public static Vector<PolyRegion> load() {
+		JFileChooser chooser = new JFileChooser();
+		chooser.setDialogTitle("Open ElVis file...");
+		if(chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+			File f = chooser.getSelectedFile();
+			return load(f);
+		}
+		return null;
+	}
 	
+	public static Vector<PolyRegion> load(String file) {
+		return load(new File(file));
+	}
+
+	public static Vector<PolyRegion> load(File f) {
+		Vector<PolyRegion>  result = new  Vector<PolyRegion> ();
+
+		if(f.exists()) {
+			try {
+				BufferedReader reader = new BufferedReader(new FileReader(f));
+				String s = reader.readLine();
+				while(s != null) {
+					result.add(PolyRegion.fromString(s));
+					s = reader.readLine();					
+				}
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+	public void save(Vector<PolyRegion> regions) {
+		JFileChooser chooser = new JFileChooser();
+		chooser.setDialogTitle("Save ElVis file...");
+		if(chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+			File f =  chooser.getSelectedFile ();
+			if(f.exists()) {
+				int response = JOptionPane.showConfirmDialog (null,
+						"Overwrite existing file?","Confirm Overwrite",
+						JOptionPane.OK_CANCEL_OPTION,
+						JOptionPane.QUESTION_MESSAGE);
+				if (response == JOptionPane.CANCEL_OPTION) return ;
+			}
+
+			try {
+				BufferedWriter fw = new BufferedWriter(new FileWriter(f));
+				for(PolyRegion region: regions) {
+					String s = region.toString();
+					fw.write(s);
+					fw.newLine();
+				}
+				fw.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		}
+	}
+
 
 
 }

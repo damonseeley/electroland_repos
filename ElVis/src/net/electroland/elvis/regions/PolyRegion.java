@@ -6,26 +6,24 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Stroke;
 import java.io.Serializable;
+import java.util.StringTokenizer;
 import java.util.Vector;
 
-import net.electroland.elvis.imaging.PresenceDetector;
 import net.electroland.elvis.imaging.RoiAve;
 import net.electroland.elvis.manager.ImagePanel;
 
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 
-public class PolyRegion implements Serializable {
+public class PolyRegion extends BasePolyReagion implements Serializable {
 
 
 	transient Vector<TriggerListener> listeners = new Vector<TriggerListener>();
-	
-	public static final double CLAMP_SCALE_VALUE = 1.0 / (double) PresenceDetector.CLAMP_VALUE;;
+
+	public static final double CLAMP_SCALE_VALUE = 1.0 / (double) 255;
 
 
 	public static int CUR_ID = 0;
 
-	public int id = CUR_ID++;
-	public String name = "Region_" + id;
 	public float percentage = .5f;
 
 
@@ -48,19 +46,73 @@ public class PolyRegion implements Serializable {
 
 	protected Polygon poly = new Polygon();
 
-	public boolean isTriggered = false;
+
+	public PolyRegion() {
+		this(CUR_ID++, "regaion_" + CUR_ID);
+	}
+
+	public PolyRegion(int id, String name, Polygon p) {
+		this(id,  name);
+		poly = p;
+		this.updateROI();
+	}
+
+	public PolyRegion(int id, String name) {
+		super(id, false, -1, name);
+	}
+
+
 
 	public boolean isTriggered(IplImage ri) {
-		double mean = roiAve.getAverage(ri);
-		isTriggered = ((mean * CLAMP_SCALE_VALUE) >= percentage);
+		mean = roiAve.getAverage(ri) * CLAMP_SCALE_VALUE;
+
+		isTriggered = mean >= percentage;
 		if(isTriggered) {
 			for(TriggerListener tr : listeners) {
 				tr.trigger(this);
 			}
 		}
 		return isTriggered;
-	}
 
+	}
+//	public PolyRegion(int id, String name, Polygon p) {
+
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(name);
+		sb.append(",");
+		sb.append(poly.npoints);
+		sb.append(",");
+		for(int i = 0; i < poly.npoints; i++) {
+			sb.append(poly.xpoints[i]);
+			sb.append(",");
+		}
+		for(int i = 0; i < poly.npoints; i++) {
+			sb.append(poly.ypoints[i]);
+			sb.append(",");
+		}
+		sb.append(id);
+		return sb.toString();
+	}
+	public static PolyRegion fromString(String s) {
+		StringTokenizer t = new StringTokenizer(s, ",");
+		String name = t.nextToken();
+		int nPoints = Integer.parseInt(t.nextToken());
+		int[] xPoints = new int[nPoints];
+		int[] yPoints = new int[nPoints];
+		for(int i = 0; i < nPoints; i++) {
+			xPoints[i] =  Integer.parseInt(t.nextToken());
+		}
+		for(int i = 0; i < nPoints; i++) {
+			yPoints[i] =  Integer.parseInt(t.nextToken());
+		}
+		int id = Integer.parseInt(t.nextToken());
+		Polygon p = new Polygon(xPoints, yPoints, nPoints);
+		
+		PolyRegion poly =  new PolyRegion( id, name, p); 
+		poly.isFilled = true;
+		return poly;
+	}
 
 	public int getDepth(){
 		return depth;
@@ -97,7 +149,7 @@ public class PolyRegion implements Serializable {
 		selectedColor = new Color(r,g,b,.5f);
 		triggerColor = new Color(r,g,b,.8f);
 		triggerStrokeColor = new Color(1-r, 1-g,1-b, 1);
-		
+
 	}
 	public void removePoint(int x, int y) {
 		Polygon newPoly = new Polygon();
@@ -230,20 +282,20 @@ public class PolyRegion implements Serializable {
 	public static float ptLineDistSq(int X1, int Y1,
 			int X2, int Y2,
 			int PX, int PY) {
-//		Adjust vectors relative to X1,Y1
-//		X2,Y2 becomes relative vector from X1,Y1 to end of segment
+		//		Adjust vectors relative to X1,Y1
+		//		X2,Y2 becomes relative vector from X1,Y1 to end of segment
 		X2 -= X1;
 		Y2 -= Y1;
-//		PX,PY becomes relative vector from X1,Y1 to test point
+		//		PX,PY becomes relative vector from X1,Y1 to test point
 		PX -= X1;
 		PY -= Y1;
 		float dotprod = PX * X2 + PY * Y2;
-//		dotprod is the length of the PX,PY vector
-//		projected on the X1,Y1=>X2,Y2 vector times the
-//		length of the X1,Y1=>X2,Y2 vector
+		//		dotprod is the length of the PX,PY vector
+		//		projected on the X1,Y1=>X2,Y2 vector times the
+		//		length of the X1,Y1=>X2,Y2 vector
 		float projlenSq = (float)(dotprod * dotprod) / (float)(X2 * X2 + Y2 * Y2);
-//		Distance to line is now the length of the relative point
-//		vector minus the length of its projection onto the line
+		//		Distance to line is now the length of the relative point
+		//		vector minus the length of its projection onto the line
 		float lenSq = PX * PX + PY * PY - projlenSq;
 		if (lenSq < 0) {
 			lenSq = 0;
@@ -329,7 +381,7 @@ public class PolyRegion implements Serializable {
 		g.setColor(c);
 		g.fillOval(x-radius_half, y-radius_half, radius, radius);
 	}
-	
+
 	public void restoreTransients() {
 		updateROI();
 		listeners = new Vector<TriggerListener>();
@@ -345,8 +397,10 @@ public class PolyRegion implements Serializable {
 		} 
 		roiAve.setRoi(scaledPoly);
 	}
-	
+
 	public void addTriggerListener(TriggerListener tl) {
 		listeners.add(tl);
 	}
+
+
 }

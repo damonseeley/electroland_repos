@@ -103,6 +103,8 @@ public abstract class ImageProcessor extends Thread implements ImageReceiver {
 		return null;
 	}
 	
+
+	
 	public float getFPS() {
 		return (1000.0f * frameCnt) / ((float) (System.currentTimeMillis() - startTime));
 	}

@@ -1,5 +1,7 @@
 package net.electroland.elvis.blobtracking.example;
 
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import net.electroland.elvis.blobktracking.core.BlobTrackerServer;
@@ -12,8 +14,10 @@ public class TrackExample extends Thread implements TrackListener {
 
 	/**
 	 * @param args
+	 * @throws UnknownHostException 
+	 * @throws SocketException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SocketException, UnknownHostException {
 		ElProps p;
 		if(args.length > 0) {
 			p = ElProps.init(args[0]);

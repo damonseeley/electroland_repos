@@ -9,6 +9,8 @@ import static com.googlecode.javacv.cpp.opencv_core.cvScalar;
 import static com.googlecode.javacv.cpp.opencv_imgproc.CV_GRAY2RGB;
 import static com.googlecode.javacv.cpp.opencv_imgproc.cvCvtColor;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -28,7 +30,7 @@ import com.googlecode.javacv.cpp.opencv_core.CvPoint;
 import com.googlecode.javacv.cpp.opencv_core.CvScalar;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 
-public class GridDesigner implements ImageReceiver, MouseMotionListener, MouseListener {
+public class GridDesigner implements ImageReceiver, MouseMotionListener, MouseListener, KeyListener {
 	
 	GridUnwarp unwarp;
 	
@@ -55,22 +57,28 @@ public class GridDesigner implements ImageReceiver, MouseMotionListener, MouseLi
 	ImageAcquirer camera;
 	
 	boolean isRunning = true;
-	
+	ElProps props;
 	public GridDesigner(ElProps props) throws IOException, com.googlecode.javacv.FrameGrabber.Exception {
+		this.props = props;
 		canvas = new CanvasFrame("GridDesigner", 1);
 		
-		canvas.getCanvas().addMouseListener(this);
-		canvas.getCanvas().addMouseMotionListener(this);
-		
-		gridWidth = props.getProperty("distortionGridWidth",  6);
-		gridHeight = props.getProperty("distortionGridHeight", 4);
+		gridWidth = props.getProperty("warpGridWidth",  6);
+		gridHeight = props.getProperty("warpGridHeight", 4);
 		
 		imgWidth = props.getProperty("srcWidth", 640);
 		imgHeight = props.getProperty("srcHeight", 480);
+		
 
 		gridQueue = new LinkedBlockingQueue<CvPoint[][]>();
-		curGrid = makeGrid(gridWidth,gridHeight,imgWidth, imgHeight);
-		origGrid = copyGrid(curGrid);
+		
+		origGrid = makeGrid(gridWidth,gridHeight,imgWidth, imgHeight);
+		String gridStr = props.getProperty("warpGrid", "");
+		if(gridStr.isEmpty()) {
+			curGrid = copyGrid(origGrid);			
+		} else {
+			curGrid = GridUnwarp.readGridFromProps(props, imgWidth, imgHeight);
+		}
+		 
 		unwarp = new GridUnwarp(imgWidth, imgHeight, curGrid, props);
 
 		camera = CameraFactory.camera(props.getProperty("camera", CameraFactory.OPENCV_SRC),
@@ -80,6 +88,17 @@ public class GridDesigner implements ImageReceiver, MouseMotionListener, MouseLi
 		camera.start();
 		
 		new UpdateThread().start();
+		
+		canvas.getCanvas().addKeyListener(this);
+		canvas.getCanvas().addMouseListener(this);
+		canvas.getCanvas().addMouseMotionListener(this);
+
+	}
+	 
+	public void resetGrids() {
+		origGrid = makeGrid(gridWidth,gridHeight,imgWidth, imgHeight);
+		curGrid = copyGrid(origGrid);		
+		unwarp.updateGrid(copyGrid(curGrid));
 	}
 	
 	public class UpdateThread extends Thread {
@@ -103,7 +122,6 @@ public class GridDesigner implements ImageReceiver, MouseMotionListener, MouseLi
 	}
 
 	public static CvPoint[][] makeGrid(int gridWidth, int gridHeight, int imgWidth, int imgHeight) {
-		System.out.println("makeGrid " + gridWidth + "x"+ gridHeight + "  "  + imgWidth + "x"+imgHeight);
 		CvPoint[][] grid = new CvPoint[gridWidth+1][gridHeight+1];		
 	
 		float xStepSize = (float) imgWidth / (float) gridWidth;
@@ -165,7 +183,6 @@ public class GridDesigner implements ImageReceiver, MouseMotionListener, MouseLi
 			CvPoint p1 = curGrid[i][0];
 			for(int j = 0; j <= gridHeight; j++) {
 				CvPoint p2 = curGrid[i][j];
-//				System.out.println(p1 + " - " + p2);
 				cvLine(lineImage, p1, p2, color, 1, 8, 0);
 				p1 = p2;
 
@@ -227,8 +244,16 @@ public class GridDesigner implements ImageReceiver, MouseMotionListener, MouseLi
 	}
 	@Override
 	public void mouseMoved(MouseEvent arg) {
+		CvPoint oldSelectedPoint = selectedPoint;
+		CvPoint oldHighlightedPoint = highlightedPoint;
+		
 		 highlightedPoint= getPoint(arg.getX(), arg.getY());
 		 selectedPoint= null;
+		 
+		 if((oldSelectedPoint != null) || (oldHighlightedPoint != highlightedPoint) ) {
+			 // something should change visually
+			 renderCanvas();
+		 }
 		
 	}
 	public void mouseClicked(MouseEvent arg0) {
@@ -279,6 +304,57 @@ public class GridDesigner implements ImageReceiver, MouseMotionListener, MouseLi
 	public void mouseReleased(MouseEvent arg0) {
 		selectedPoint = null;		
 	}
+
+	@Override
+	public void keyPressed(KeyEvent arg0) {
+		System.out.println(arg0);
+		if((arg0.getKeyChar() == '?') || (arg0.getKeyChar() == '/')) {
+			System.out.println("left/right to add remove verticle divisions");
+			System.out.println("up/down to add remove horizontal divisions");
+			System.out.println("s to save grid to props");
+			System.out.println("r to reset to undistorted grid");
+			
+		}
+		switch(arg0.getKeyCode()) {
+		case KeyEvent.VK_S:
+			unwarp.writeCurrentGridToProps(props);
+			props.store();
+			break;
+		case KeyEvent.VK_LEFT:
+			gridWidth -=1;
+			resetGrids();
+			break;
+		case KeyEvent.VK_RIGHT:
+			gridWidth +=1;
+			resetGrids();
+			break;
+		case KeyEvent.VK_UP:
+			gridHeight +=1;
+			resetGrids();
+			break;
+		case KeyEvent.VK_DOWN:
+			gridHeight -=1;
+			resetGrids();
+			break;
+		case KeyEvent.VK_R:
+			resetGrids();
+		default:
+		}				
+		
+					
+	}
+
+	@Override
+	public void keyReleased(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+		
+	}
+	
 
 	
 }

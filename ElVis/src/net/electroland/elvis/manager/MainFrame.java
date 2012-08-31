@@ -2,6 +2,8 @@ package net.electroland.elvis.manager;
 
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 import javax.swing.JFrame;
 
@@ -18,7 +20,7 @@ public class MainFrame extends JFrame {
 	
 
 	
-	public MainFrame(ElProps props, int w, int h) {
+	public MainFrame(ElProps props, int w, int h) throws SocketException, UnknownHostException {
 		super("ElVis");
 		if(THE_FRAME != null) return;
 		THE_FRAME = this;
@@ -73,7 +75,7 @@ public class MainFrame extends JFrame {
 		System.exit(0);
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SocketException, UnknownHostException {
 		ElProps p;
 		if(args.length > 0) {
 			p= ElProps.init(args[0]);
