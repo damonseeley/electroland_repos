@@ -6,6 +6,9 @@ public class DoubleParameter extends Parameter {
 	double value;
 	double incAmount;
 	
+	double minValue =  Double.NEGATIVE_INFINITY;
+	double maxValue = Double.POSITIVE_INFINITY;
+	
 	public DoubleParameter(String name, double incAmount, double defvalue, ElProps props) {
 		this(name, incAmount, props.getProperty(name, defvalue));
 	}
@@ -15,6 +18,10 @@ public class DoubleParameter extends Parameter {
 		super(name);
 		this.value = value;
 		this.incAmount = incAmount;
+	}
+	public void setRange(double min, double max) {
+		minValue = min;
+		maxValue = max;
 	}
 
 	@Override
@@ -30,10 +37,13 @@ public class DoubleParameter extends Parameter {
 	@Override
 	public void inc() {
 		value += incAmount;
+		value = value >= maxValue ? maxValue : value; 
 
 	}
 	public void dec() {
 		value -= incAmount;
+		value = value <= minValue ? minValue : value; 
+
 
 	}
 

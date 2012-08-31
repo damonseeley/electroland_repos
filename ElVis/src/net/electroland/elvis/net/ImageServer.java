@@ -108,8 +108,11 @@ public class ImageServer extends Thread {
 //						System.out.println("sending"+ pixels[i]);
 						outputStream.write(pixels[i]);
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
+						timer.cancel();
 						e.printStackTrace();
+					} catch (Exception e) {
+						timer.cancel();
+						e.printStackTrace();						
 					}
 				}
 			}

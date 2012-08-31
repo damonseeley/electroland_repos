@@ -36,6 +36,18 @@ public abstract class ImageClient extends Thread {
 		out.print(",");
 		out.println(Float.toString(fps));
 	}
+	
+	public void stopRunning() {
+		isRunning = false;
+		out.println("stop");
+		interrupt();
+		System.exit(0);
+	}
+	
+	public void close() {
+		isRunning = false;
+		out.println("close");		
+	}
 
 	public void run () {
 		while(isRunning) {

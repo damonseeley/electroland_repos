@@ -17,14 +17,14 @@ import net.electroland.elvis.net.TrackUPDBroadcaster;
 import net.electroland.elvis.util.CameraFactory;
 import net.electroland.elvis.util.ElProps;
 
-public class BlobTrackerServer {
+public class ElVisServer {
 
 	BlobTracker blobTracker;
 	ElProps props;
 	TrackUPDBroadcaster trackBrodcaster;
 	ImageServer imageServer;
 
-	public BlobTrackerServer(ElProps props) throws SocketException, UnknownHostException { 
+	public ElVisServer(ElProps props) throws SocketException, UnknownHostException { 
 		
 		this.props = props;
 
@@ -36,7 +36,7 @@ public class BlobTrackerServer {
 		
 
 		blobTracker = new BlobTracker(props);
-		
+/*		
 		if(props.getProperty("broadcastTracks", false)) {
 			String address = props.getProperty("broadcastTracksAddress", "localhost");
 			int port = props.getProperty("broadcastTracksPort", 3789);
@@ -50,7 +50,7 @@ public class BlobTrackerServer {
 				e.printStackTrace();
 			}
 		}
-
+*/
 		if(props.getProperty("showGraphics", true)) {
 			BlobFrame bf = new BlobFrame(props, "el blob", blobTracker);
 			bf.blobPanel.addKeyListener(new PresenceDetectorKeyListener(props,blobTracker.presenceDetector));
@@ -71,7 +71,7 @@ public class BlobTrackerServer {
 		try {
 
 			//			blobTracker.setSourceStream(props.getProperty("camera", ImagePanel.FLY_SRC));
-			blobTracker.setSourceStream(props.getProperty("camera", CameraFactory.OPENCV_SRC));
+			blobTracker.setSourceStream(props.getProperty("camera", CameraFactory.FLY_SRC));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -120,7 +120,7 @@ public class BlobTrackerServer {
 			props =ElProps.init("blobTracker.props");
 		}
 
-		new BlobTrackerServer(
+		new ElVisServer(
 				props
 				);
 	}

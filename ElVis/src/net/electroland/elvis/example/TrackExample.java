@@ -4,7 +4,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import net.electroland.elvis.blobktracking.core.BlobTrackerServer;
+import net.electroland.elvis.blobktracking.core.ElVisServer;
 import net.electroland.elvis.blobtracking.TrackListener;
 import net.electroland.elvis.blobtracking.TrackResults;
 import net.electroland.elvis.util.ElProps;
@@ -25,7 +25,7 @@ public class TrackExample extends Thread implements TrackListener {
 			p = ElProps.init("blobTracker.props");
 		}
 
-		BlobTrackerServer bts = new BlobTrackerServer(
+		ElVisServer bts = new ElVisServer(
 				p
 		);
 		TrackExample example = new TrackExample();

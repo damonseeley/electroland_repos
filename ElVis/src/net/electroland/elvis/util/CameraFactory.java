@@ -22,7 +22,7 @@ public class CameraFactory {
 	public static final String NOHONORTH_SRC = "NoHo North";
 	public static final String JMYRON_SRC = "jMyronCam";
 	public static final String LOCALAXIS_SRC ="Local Axis";
-	public static final String FLY_SRC = "Fly Cam";
+	public static final String FLY_SRC = "	";
 	public static final String OPENCV_SRC = "OpenCV";
 	
 	public static ImageAcquirer camera(String s, int w, int h, ImageReceiver ir) throws IOException, Exception {
