@@ -1,4 +1,4 @@
-package net.electroland.elvis.blobtracking.example;
+package net.electroland.elvis.example;
 
 import java.net.SocketException;
 import java.net.UnknownHostException;
