@@ -7,6 +7,8 @@ import java.net.UnknownHostException;
 
 import net.electroland.elvis.blobktracking.ui.BlobFrame;
 import net.electroland.elvis.blobktracking.ui.Console;
+import net.electroland.elvis.blobktracking.ui.PresenceDetectorKeyListener;
+import net.electroland.elvis.blobtracking.BlobTracker;
 import net.electroland.elvis.blobtracking.TrackListener;
 import net.electroland.elvis.imaging.PresenceDetector.ImgReturnType;
 import net.electroland.elvis.net.ImageClient;
