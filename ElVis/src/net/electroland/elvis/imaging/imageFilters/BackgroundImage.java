@@ -29,7 +29,7 @@ public class BackgroundImage extends Filter {
 
 	public BackgroundImage(double defAdaptation, int frameSkip, ElProps props) {
 		super();
-		adaptionParameter = new DoubleParameter("BackgroundImageAdaption", .001, defAdaptation, props);
+		adaptionParameter = new DoubleParameter("backgroundImageAdaption", .001, defAdaptation, props);
 		parameters.add(adaptionParameter);
 		initialFrameSkip = frameSkip;
 

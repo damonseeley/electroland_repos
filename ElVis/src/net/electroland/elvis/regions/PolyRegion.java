@@ -24,7 +24,6 @@ public class PolyRegion extends BasePolyReagion implements Serializable {
 
 	public static int CUR_ID = 0;
 
-	public float percentage = .5f;
 
 
 	transient RoiAve roiAve = null;
@@ -48,17 +47,17 @@ public class PolyRegion extends BasePolyReagion implements Serializable {
 
 
 	public PolyRegion() {
-		this(CUR_ID++, "regaion_" + CUR_ID);
+		this(CUR_ID++, "regaion_" + CUR_ID, .5f);
 	}
 
-	public PolyRegion(int id, String name, Polygon p) {
-		this(id,  name);
+	public PolyRegion(int id, String name, Polygon p, float percentage) {
+		this(id,  name, percentage);
 		poly = p;
 		this.updateROI();
 	}
 
-	public PolyRegion(int id, String name) {
-		super(id, false, -1, name);
+	public PolyRegion(int id, String name, float percentage) {
+		super(id, false, -1, name, percentage);
 	}
 
 
@@ -91,6 +90,8 @@ public class PolyRegion extends BasePolyReagion implements Serializable {
 			sb.append(poly.ypoints[i]);
 			sb.append(",");
 		}
+		sb.append(percentage);
+		sb.append(",");		
 		sb.append(id);
 		return sb.toString();
 	}
@@ -106,10 +107,13 @@ public class PolyRegion extends BasePolyReagion implements Serializable {
 		for(int i = 0; i < nPoints; i++) {
 			yPoints[i] =  Integer.parseInt(t.nextToken());
 		}
+		float perc = Float.parseFloat(t.nextToken());
+
 		int id = Integer.parseInt(t.nextToken());
+		
 		Polygon p = new Polygon(xPoints, yPoints, nPoints);
 		
-		PolyRegion poly =  new PolyRegion( id, name, p); 
+		PolyRegion poly =  new PolyRegion( id, name, p, perc); 
 		poly.isFilled = true;
 		return poly;
 	}

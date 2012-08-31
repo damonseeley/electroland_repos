@@ -1,6 +1,8 @@
 package net.electroland.elvis.blobktracking.core;
 
 import java.awt.Graphics;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -20,6 +22,14 @@ public class NetworkImageViewer extends ImageClient {
 	public NetworkImageViewer(String address, int port) throws UnknownHostException, IOException {
 		super(address, port);
 		frame = new ImageFrame("Listening to " + address);
+		frame.addWindowListener(new WindowAdapter()
+		{
+			public void windowClosing(WindowEvent e)
+			{
+				stopRunning();
+			}
+		});
+
 		start();
 	}
 
@@ -54,10 +64,11 @@ public class NetworkImageViewer extends ImageClient {
 			props =ElProps.init("blobTracker.props");
 		}
 
-		new BlobTrackerServer(props);
-
 		NetworkImageViewer niv = new NetworkImageViewer( props );
-		niv.setMode("THRESH", 160, 120, 15);
+		niv.setMode(props.getProperty("imageServerType","RAW"),
+				props.getProperty("imageServerWidth",160),
+				props.getProperty("imageServerheight",120),
+				props.getProperty("imageServerFPS",120));
 
 
 	}
