@@ -10,8 +10,7 @@ import java.awt.event.MouseMotionListener;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 
-import net.electroland.elvis.blobktracking.core.BlobTracker;
-import net.electroland.elvis.blobktracking.core.PresenceDetectorKeyListener;
+import net.electroland.elvis.blobtracking.BlobTracker;
 import net.electroland.elvis.util.ElProps;
 
 
