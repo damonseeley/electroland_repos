@@ -14,13 +14,13 @@ import java.util.Vector;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import net.electroland.elvis.blobktracking.core.BlobTracker;
 import net.electroland.elvis.blobtracking.Blob;
+import net.electroland.elvis.blobtracking.BlobTracker;
 import net.electroland.elvis.blobtracking.Track;
 import net.electroland.elvis.blobtracking.TrackListener;
 import net.electroland.elvis.blobtracking.TrackResults;
 import net.electroland.elvis.imaging.PresenceDetector.ImgReturnType;
-import net.electroland.elvis.manager.ImagePanel;
+import net.electroland.elvis.regionManager.ImagePanel;
 import net.electroland.elvis.util.ElProps;
 
 
