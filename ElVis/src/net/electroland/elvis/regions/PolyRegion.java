@@ -10,7 +10,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import net.electroland.elvis.imaging.RoiAve;
-import net.electroland.elvis.manager.ImagePanel;
+import net.electroland.elvis.regionManager.ImagePanel;
 
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 
