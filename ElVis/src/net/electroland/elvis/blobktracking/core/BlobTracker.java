@@ -1,6 +1,8 @@
 package net.electroland.elvis.blobktracking.core;
 
 import java.io.IOException;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Vector;
 
 import net.electroland.elvis.blobtracking.Blob;
@@ -30,8 +32,8 @@ public class BlobTracker {
 	
 	public Vector<Blob> newFrameBlobs = new Vector<Blob>();
 	
-	public BlobTracker(ElProps props) {
-		presenceDetector = new PresenceDetector(props, true);
+	public BlobTracker(ElProps props) throws SocketException, UnknownHostException {
+		presenceDetector = new PresenceDetector(props);
 		tracker = presenceDetector.tracker;
 
 	}

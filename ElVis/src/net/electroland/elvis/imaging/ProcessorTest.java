@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.AffineTransform;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 import javax.swing.JFrame;
 import javax.swing.Timer;
@@ -29,9 +31,9 @@ public class ProcessorTest  extends JFrame implements KeyListener, ActionListene
 	boolean recalcExtreema = false;
 
 
-	public ProcessorTest() {
+	public ProcessorTest() throws SocketException, UnknownHostException {
 		super();
-		processor = new PresenceDetector(new ElProps(), false);
+		processor = new PresenceDetector(new ElProps());
 		processor.start();
 		new WebCam(w,h,6.0f,processor, false).start();
 //		new NavyCam(processor, true).start();
@@ -85,7 +87,7 @@ public class ProcessorTest  extends JFrame implements KeyListener, ActionListene
 	public void keyTyped(KeyEvent e) {
 	}
 
-	public static void main(String args[]) {
+	public static void main(String args[]) throws SocketException, UnknownHostException {
 		new ProcessorTest();
 	}
 

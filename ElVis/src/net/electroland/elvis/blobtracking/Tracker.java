@@ -113,7 +113,7 @@ public class Tracker extends Thread {
 
 		for(TrackListener l : trackListeners) {
 //			System.out.println("newtracks" + newTracks.size());
-			l.updateTracks(new TrackResults(createdTracks, existingTracks, deletedTracks));
+			l.updateTracks(new TrackResults<Track>(createdTracks, existingTracks, deletedTracks));
 		}
 
 	}

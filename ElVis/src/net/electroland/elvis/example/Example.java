@@ -1,6 +1,8 @@
 package net.electroland.elvis.example;
 
 import java.io.File;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Vector;
 
 import net.electroland.elvis.imaging.PresenceDetector;
@@ -14,9 +16,9 @@ public class Example extends Thread {
 //	WebCam cam;
 	PresenceDetector detector;
 	
-	public Example() {
+	public Example() throws SocketException, UnknownHostException {
 
-		detector = PresenceDetector.createFromFile(new ElProps(), new File("example.elv"));
+		detector = new PresenceDetector(new ElProps());
 		cam = new LocalCam(160,120,detector);
 
 		//cam = new WebCam(160,120, 12, detector, false);
@@ -64,7 +66,7 @@ public void stopRunning() {
 		
 	}
 	
-	public static void main(String args[]) {
+	public static void main(String args[]) throws SocketException, UnknownHostException {
 		new Example().start();
 	}
 }

@@ -2,20 +2,19 @@ package net.electroland.elvis.blobtracking;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.StringTokenizer;
+
+import net.electroland.elvis.net.StringAppender;
 
 
-public class Track {
+public class Track extends BaseTrack  {
 	public float vx=0;
 	public float vy=0;
 
-	public float x;
-	public float y;
 	public float width, height;
-	public int id;
 	String idStr = null;
 	public static int nextId = 0;
 
-	boolean isProvisional = true;
 	boolean isRemoved = false;
 
 	int certianCnt = 0;
@@ -27,7 +26,7 @@ public class Track {
 	public float velocityMatchPercentage;
 
 	public Track(int framesUntilCertian, int frameUntilDeleted, float velocityMatchPercentage) {
-		id= nextId++;
+		super(nextId++);
 		this.framesUntilCertian = framesUntilCertian;
 		this.frameUntilDeleted = frameUntilDeleted;
 		certianCnt = framesUntilCertian;
@@ -35,9 +34,6 @@ public class Track {
 		this.velocityMatchPercentage = velocityMatchPercentage;
 	}
 
-	public String toString() {
-		return "Track:" + id + " (" + x +" ," + y +")"; 
-	}
 
 	public static final Color PROV_COLOR = new Color(55,0,0);
 
@@ -101,4 +97,6 @@ public class Track {
 	public boolean isProvisional() {
 		return isProvisional;
 	}
+
+	
 }
