@@ -25,25 +25,25 @@ public class ControlBar extends JPanel {
     public void layoutControls(){
         this.setLayout(new MigLayout());
         this.add(startStop);
-        this.add(includeRendering);
-        this.add(includeDectectors);
-        this.add(includePresenceGrid);
         this.add(allOn);
         this.add(allOff);
         this.add(sweep);
         this.add(trace);
         this.add(displays);
+        this.add(includeRendering);
+        this.add(includeDectectors);
+        this.add(includePresenceGrid);
     }
 
     public void configureControls(){
         allOn               = new JButton("All off");
         allOff              = new JButton("All on");
-        sweep               = new JButton("sweep");
-        trace               = new JButton("trace");
-        includeRendering    = new JCheckBox("include rendering?", true);
-        includeDectectors   = new JCheckBox("include detectors?", true);
-        includePresenceGrid = new JCheckBox("include presence grid?", true);
-        startStop           = new StatefulLabelButton("start", "stop");
+        sweep               = new JButton("Sweep");
+        trace               = new JButton("Trace");
+        includeRendering    = new JCheckBox("Include rendering?", true);
+        includeDectectors   = new JCheckBox("Include detectors?", true);
+        includePresenceGrid = new JCheckBox("Include presence grid?", true);
+        startStop           = new StatefulLabelButton("Start", "Stop");
         displays            = new JComboBox(new String[]{"North face", "South face"});
     }
 }
