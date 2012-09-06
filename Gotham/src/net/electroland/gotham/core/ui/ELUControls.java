@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import net.electroland.utils.lighting.ELUManager;
@@ -27,6 +28,7 @@ public class ELUControls extends JPanel implements ActionListener, ButtonStateLi
     }
 
     public void layoutControls(){
+        this.add(new JLabel("ELU: "));
         this.add(startStop);
         this.add(allOn);
         this.add(allOff);

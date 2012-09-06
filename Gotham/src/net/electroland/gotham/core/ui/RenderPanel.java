@@ -14,16 +14,19 @@ public class RenderPanel extends JPanel {
 
     public RenderPanel(ELUManager lightingManager){
         this.lightingManager = lightingManager;
+        this.controls = new DisplayControlBar();
     }
 
-    public void enableDisplayControls(){
-        this.controls = new DisplayControlBar();
-        this.add(controls);
+    public DisplayControlBar getDisplayControls(){
+        return controls;
     }
     
     @Override
     public void paint(Graphics g) {
-        // TODO Auto-generated method stub
+        System.out.println("show:                " + controls.getDisplay());
+        System.out.println("includeRendering:    " + controls.includeRendering());
+        System.out.println("includeDectectors:   " + controls.includeDectectors());
+        System.out.println("includePresenceGrid: " + controls.includePresenceGrid());
         super.paint(g);
     }
 

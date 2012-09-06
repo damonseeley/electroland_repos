@@ -2,6 +2,7 @@ package net.electroland.gotham.core.ui;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class DisplayControlBar extends JPanel {
@@ -17,6 +18,7 @@ public class DisplayControlBar extends JPanel {
         includeRendering    = new JCheckBox("Include rendering?", true);
         includeDectectors   = new JCheckBox("Include detectors?", true);
         includePresenceGrid = new JCheckBox("Include presence grid?", true);
+        this.add(new JLabel(" Gotham: "));
         this.add(displays);
         this.add(includeRendering);
         this.add(includeDectectors);
