@@ -95,7 +95,7 @@ public class ELUManager implements Runnable {
                         System.out.println("\tstart");
                         System.out.println("\tstop");
                         System.out.println("\tfps");
-                        System.out.println("\tfps [desired fps]");                        
+                        System.out.println("\tfps [desired fps]");
                         System.out.println("\tallon");
                         System.out.println("\talloff");
                         System.out.println("\ton [tag]");
@@ -382,6 +382,10 @@ public class ELUManager implements Runnable {
         }
     }
 
+    public Object[] getTestSuites(){
+        return suites.keySet().toArray();
+    }
+    
     public ELUManager load() throws IOException, OptionException
     {
         return load("lights.properties");
