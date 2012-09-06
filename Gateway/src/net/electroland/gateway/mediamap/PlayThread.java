@@ -1,6 +1,13 @@
 package net.electroland.gateway.mediamap;
 
-
+/**
+ * Given the Hippotizer's trouble with asyncronous UDP packets, we may have
+ * to kill the multithreaded play model implemented here, so that we can
+ * more easily implemnent OSC bundling.
+ * 
+ * @author bradley
+ *
+ */
 public class PlayThread extends Thread {
 
     private int idx;
