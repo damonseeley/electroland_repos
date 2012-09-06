@@ -44,7 +44,7 @@ public class StatefulLabelButton extends JButton implements ActionListener{
 
     private void notifyListeners(){
         for (ButtonStateListener l : listeners){
-            l.buttonStateChanged(this.isOn);
+            l.buttonStateChanged(this);
         }
     }
 
