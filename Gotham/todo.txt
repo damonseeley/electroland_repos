@@ -1,6 +1,8 @@
-TODO:
-
 * Fix StatefulLabelButton (using Component interface improperly)
-* Move includeFeatureX and displays into RenderPanel
 * Implement RenderPanel
-* sweep & trace should be implemented as Tests
+* Implement tests
+* Run tests button is wonky.  Requires a "stop" option to kill the test.
+  * also, TestSuiteListner might be useful. .started(String) and .finished(String)
+* Move StatefulLabelButton to a util lib
+* Move ELUControls to ELU
+* Remove MigLayout from dependencies
