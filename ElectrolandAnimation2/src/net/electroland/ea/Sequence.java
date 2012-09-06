@@ -28,8 +28,26 @@ public class Sequence {
     public void remove(int step){
         sequence.remove(step);
     }
+
+    // some future nice to haves:
+    // fork the sequence
     public Sequence duplicate(){
-        return null;
+        // TODO: Implement
+        throw new RuntimeException("followWith has not been implemented.");
+    }
+    //  for looping logic
+    public Sequence followWith(Sequence next){
+        // TODO: Implement
+        throw new RuntimeException("followWith has not been implemented.");
+    }
+    // for synchronization
+    public Sequence waitFor(Object announcment){
+        // TODO: Implement
+        throw new RuntimeException("waitFor has not been implemented.");
+    }
+    public Sequence announce(Object announcment){
+        // TODO: Implement
+        throw new RuntimeException("announce has not been implemented.");
     }
 
     // timing

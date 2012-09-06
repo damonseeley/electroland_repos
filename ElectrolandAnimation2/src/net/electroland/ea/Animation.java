@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Vector;
 
 import net.electroland.ea.content.SolidColorContent;
+import net.electroland.ea.easing.Linear;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.ParameterMap;

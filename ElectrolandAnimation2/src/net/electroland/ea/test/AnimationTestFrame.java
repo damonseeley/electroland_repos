@@ -45,19 +45,23 @@ public class AnimationTestFrame extends JFrame implements AnimationListener{
         Clip two = anim.addClip(anim.getContent("slowImage"),  150, 50, 100, 100, 1.0f);
         Clip thr = anim.addClip(anim.getContent("fastImage"),  250, 50, 100, 100, 1.0f);
 
-        Sequence bounce = new Sequence();
-        bounce.yTo(150).yUsing(new QuinticIn())
-              .xBy(100).xUsing(new Linear())
-              .scaleWidth(2.0f)
-              .duration(1000)
-        .newState()
-              .yTo(75).yUsing(new CubicOut())
-              .xBy(100).xUsing(new Linear())
-              .scaleWidth(.5f)
-              .duration(1000);
+        Sequence bounce = new Sequence(); 
 
+                 bounce.yTo(150).yUsing(new QuinticIn()) // would be nice to make easing functions static.
+                       .xBy(100).xUsing(new Linear())
+                       .scaleWidth(2.0f)
+                       .duration(1000)
+                .newState()
+                       .yTo(75).yUsing(new CubicOut())
+                       .xBy(100).xUsing(new Linear())
+                       .scaleWidth(.5f)
+                       .duration(1000);
+
+        // three bouncing clips:
         one.queue(bounce).queue(bounce).queue(bounce).fadeOut(500).deleteWhenDone();
+
         two.pause(1000).queue(bounce).queue(bounce).queue(bounce).fadeOut(500).deleteWhenDone();
+
         thr.queue(bounce).queue(bounce).queue(bounce).fadeOut(500).deleteWhenDone();
 
         // render forever at 33 fps
