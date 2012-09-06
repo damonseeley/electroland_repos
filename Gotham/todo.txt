@@ -1,8 +1,10 @@
-* Fix StatefulLabelButton (using Component interface improperly)
-* Implement RenderPanel
 * Implement tests
 * Run tests button is wonky.  Requires a "stop" option to kill the test.
   * also, TestSuiteListner might be useful. .started(String) and .finished(String)
+* Implement RenderPanel
+* PeopleModel
+* Elvis
+* Fix StatefulLabelButton (using Component interface improperly)
 * Move StatefulLabelButton to a util lib
 * Move ELUControls to ELU
 * Remove MigLayout from dependencies
