@@ -98,7 +98,7 @@ public class MediaManager implements OscEventListener {
     }
 
 
-    private static OscP5 configureOSC(OscEventListener listener){
+    public static OscP5 configureOSC(OscEventListener listener){
 
         OscProperties props = new OscProperties(listener);
         props.setListeningPort(PLAYER_RECEIVE_PORT);
@@ -139,6 +139,8 @@ public class MediaManager implements OscEventListener {
 
     // TODO: proper randomization routine
     // TODO: place nice with periodic resyncs and manual requests.
+    // TODO: this multi-threaded screen saver model is a no go due to the
+    //       hippotizer's trouble with asyncronous UDP packets.
     private void startScreenSaver(){
         while(true){
             for (Integer idx : studentMedia.keySet()){
@@ -257,6 +259,9 @@ public class MediaManager implements OscEventListener {
     }
 
 
+    // TODO: this has a hack to bundle play calls into the next alpha call.  
+    // obviously, that's a problem if there is no alpha call queued up for the 
+    // very near future.
     OscMessage setter;
     Object lock = new Object();
     public void setMedia(int idx){

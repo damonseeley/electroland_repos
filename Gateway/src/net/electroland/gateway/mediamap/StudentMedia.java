@@ -3,6 +3,7 @@ package net.electroland.gateway.mediamap;
 
 public class StudentMedia {
 
+    // TODO: playcounts
     protected String firstname, lastname, disambiguator;
     protected Integer idx;
     protected Long createDate;
