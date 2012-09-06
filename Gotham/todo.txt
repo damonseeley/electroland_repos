@@ -1,10 +1,13 @@
-* Implement tests
+* Implement testSuites (sweep & trace)
+* Implement RenderPanel detector mode (outlines for area, insides for on/off. options for r,g,b)
+* PeopleModel + Elvis
+* Show presence detection on grid
+* implement getPImage & sync
+* Show PImage on grid
 * Run tests button is wonky.  Requires a "stop" option to kill the test.
   * also, TestSuiteListner might be useful. .started(String) and .finished(String)
-* Implement RenderPanel
-* PeopleModel
-* Elvis
 * Fix StatefulLabelButton (using Component interface improperly)
 * Move StatefulLabelButton to a util lib
 * Move ELUControls to ELU
 * Remove MigLayout from dependencies
+* load & fps in ELUControls
