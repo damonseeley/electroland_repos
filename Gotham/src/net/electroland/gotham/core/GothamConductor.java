@@ -6,13 +6,11 @@ import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 
-import net.electroland.gotham.core.ui.ControlBar;
-import net.electroland.gotham.core.ui.ControlBarListener;
+import net.electroland.gotham.core.ui.ELUControls;
 import net.electroland.gotham.core.ui.RenderPanel;
 import net.electroland.utils.lighting.ELUManager;
-import net.miginfocom.swing.MigLayout;
 
-public class GothamConductor extends JFrame implements ControlBarListener {
+public class GothamConductor extends JFrame {
 
     static Logger logger = Logger.getLogger("GothamConductor");
     private static final long serialVersionUID = 6608878881526717236L;
@@ -32,46 +30,11 @@ public class GothamConductor extends JFrame implements ControlBarListener {
     }
 
     public void configureRenderPanel(ELUManager lightingManager){
-        ControlBar controls = new ControlBar();
-        controls.addListener(this);
+        ELUControls controls = new ELUControls(lightingManager);
         this.renderPanel = new RenderPanel(lightingManager);
         this.renderPanel.setLayout(new BorderLayout());
         this.renderPanel.add(controls, BorderLayout.SOUTH);
-        this.setLayout(new MigLayout());
+        this.renderPanel.enableDisplayControls();
         this.setContentPane(renderPanel);
-    }
-
-    @Override
-    public void allOn() {
-        logger.info("all on");
-        lightingManager.allOn();
-    }
-
-    @Override
-    public void allOff() {
-        logger.info("all off");
-        lightingManager.allOff();
-    }
-
-    @Override
-    public void start() {
-        logger.info("start");
-        lightingManager.start();
-    }
-
-    @Override
-    public void stop() {
-        logger.info("stop");
-        lightingManager.stop();
-    }
-
-    @Override
-    public void changeDisplay(String display) {
-        logger.info("change display to " + display);
-    }
-
-    @Override
-    public void run(String runner) {
-        logger.info("run " + runner);
     }
 }

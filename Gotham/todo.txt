@@ -1,0 +1,6 @@
+TODO:
+
+* Fix StatefulLabelButton (using Component interface improperly)
+* Move includeFeatureX and displays into RenderPanel
+* Implement RenderPanel
+* sweep & trace should be implemented as Tests
