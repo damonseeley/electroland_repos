@@ -17,7 +17,7 @@ public class ELUControls extends JPanel implements ActionListener, ButtonStateLi
     private StatefulLabelButton startStop;
     private JButton allOn, allOff, runTest;
     private JComboBox tests;
-
+    // TODO: add widgets for "reload" and fps display
 
     public ELUControls(ELUManager lightingManager){
 
