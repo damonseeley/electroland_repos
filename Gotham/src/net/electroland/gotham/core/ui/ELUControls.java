@@ -28,10 +28,11 @@ public class ELUControls extends JPanel implements ActionListener, ButtonStateLi
     }
 
     public void layoutControls(){
-        this.add(new JLabel("ELU: "));
+        this.add(new JLabel("ELU:"));
         this.add(startStop);
         this.add(allOn);
         this.add(allOff);
+        this.add(new JLabel("|"));
         this.add(tests);
         this.add(runTest);
     }

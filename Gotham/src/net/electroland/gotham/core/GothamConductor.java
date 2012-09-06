@@ -36,8 +36,6 @@ public class GothamConductor extends JFrame {
         this.renderPanel.setLayout(new BorderLayout());
         eluControls.add(this.renderPanel.getDisplayControls());
         this.renderPanel.add(eluControls, BorderLayout.SOUTH);
-//        this.renderPanel.add(this.renderPanel.getDisplayControls(), BorderLayout.NORTH);
-        
         this.setContentPane(renderPanel);
     }
 }

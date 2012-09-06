@@ -8,17 +8,16 @@ import javax.swing.JPanel;
 public class DisplayControlBar extends JPanel {
 
     private static final long serialVersionUID = -626583748057983309L;
-    private JCheckBox includeRendering;
-    private JCheckBox includeDectectors;
-    private JCheckBox includePresenceGrid;
+    private JCheckBox includeRendering, includeDectectors, includePresenceGrid;
     private JComboBox displays;
 
     public DisplayControlBar(){
-        displays            = new JComboBox(new String[]{"North face", "South face"});
-        includeRendering    = new JCheckBox("Include rendering?", true);
-        includeDectectors   = new JCheckBox("Include detectors?", true);
-        includePresenceGrid = new JCheckBox("Include presence grid?", true);
-        this.add(new JLabel(" Gotham: "));
+        includeRendering    = new JCheckBox("canas", true);
+        includeDectectors   = new JCheckBox("detectors", true);
+        includePresenceGrid = new JCheckBox("presence grid", true);
+        displays            = new JComboBox(new String[]{"West RED", "West GREEN", "West BLUE", 
+                                                         "East RED", "East GREEN", "East BLUE"});
+        this.add(new JLabel(" Display:"));
         this.add(displays);
         this.add(includeRendering);
         this.add(includeDectectors);
