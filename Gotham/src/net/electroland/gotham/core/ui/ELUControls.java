@@ -39,10 +39,10 @@ public class ELUControls extends JPanel implements ActionListener, ButtonStateLi
 
     public void configureControls(){
 
-        startStop = new StatefulLabelButton("Start", "Stop");
-        allOn     = new JButton("All off");
-        allOff    = new JButton("All on");
-        runTest   = new JButton("Run test");
+        startStop = new StatefulLabelButton("start", "stop");
+        allOn     = new JButton("all on");
+        allOff    = new JButton("all off");
+        runTest   = new JButton("run test");
         tests     = new JComboBox(lightingManager.getTestSuites());
 
         allOn.addActionListener(this);

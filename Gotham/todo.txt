@@ -1,3 +1,4 @@
+* are all on / all off / not setting CanvasDetectors last state?
 * Implement testSuites (sweep & trace)
 * Implement RenderPanel detector mode (outlines for area, insides for on/off. options for r,g,b)
 * PeopleModel + Elvis
