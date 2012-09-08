@@ -11,5 +11,7 @@ public class East extends ELUPApplet {
         // TODO Auto-generated method stub
 
     }
+    
+    //some whitespace
 
 }
