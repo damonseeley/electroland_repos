@@ -13,19 +13,26 @@ public class West extends ELUPApplet {
     private static final long serialVersionUID = 449793686955037866L;
     static Logger logger = Logger.getLogger("West");
 
-    private Point2D center;
     private Rectangle syncArea;
-    private long startChange = -1;
-    private float smallRadius, largeRadius;
+    private Point2D center;
+
     private boolean isGrowing = true;
-    private EasingFunction ef = new SinusoidalInOut();
+    private long startTime = -1;
+    private float smallRadius, largeRadius;
+
+    // the period that the circle expands/contrats
     final static long DURATION_MILLIS = 1000;
+    // the easing function for expanding/contracting
+    private EasingFunction ef = new SinusoidalInOut();
 
     @Override
     public void setup() {
+        // syncArea is the area of the screen that will be synced to the lights.
         syncArea = this.getSyncArea();
+        // our circle's center will be the middel of the sync area.
         center = new Point2D.Double(syncArea.x + .5 * syncArea.width, 
                                     syncArea.y + .5 * syncArea.height);
+        // it will beat between these radii
         smallRadius = .05f * syncArea.height;
         largeRadius = .4f * syncArea.height;
     }
@@ -39,14 +46,14 @@ public class West extends ELUPApplet {
         rect(0,0,this.getWidth(), this.getHeight());
 
         // check to see if the growth cycle should switch polarity
-        if (System.currentTimeMillis() - startChange > DURATION_MILLIS){
+        if (System.currentTimeMillis() - startTime > DURATION_MILLIS){
             isGrowing = !isGrowing;
-            startChange = System.currentTimeMillis();
+            startTime = System.currentTimeMillis();
         }
 
         // calculate the current radius based on time.
         float radius;
-        float percentComplete = (System.currentTimeMillis() - startChange) / (float)DURATION_MILLIS;
+        float percentComplete = (System.currentTimeMillis() - startTime) / (float)DURATION_MILLIS;
         if (isGrowing){
             radius = ef.valueAt(percentComplete, smallRadius, largeRadius);
         }else{
