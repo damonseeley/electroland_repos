@@ -13,5 +13,7 @@ public class East extends ELUPApplet {
     }
     
     //some whitespace
+    
+    //some more whitespace
 
 }
