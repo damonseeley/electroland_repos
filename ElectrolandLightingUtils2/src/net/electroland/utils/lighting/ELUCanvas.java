@@ -13,6 +13,7 @@ abstract public class ELUCanvas {
 
     private String name;
     private ReferenceDimension realSize;
+    private boolean isSyncing = false;
 
     protected List<CanvasDetector>detectors = Collections.synchronizedList(new ArrayList<CanvasDetector>());
 
@@ -47,6 +48,14 @@ abstract public class ELUCanvas {
     abstract public void configure(ParameterMap params) throws OptionException;
 
     abstract public void map(CanvasDetector d) throws OptionException;
+
+    // for messaging from ELUManager (mostly for ELUCanvas)
+    public void setSyncState(boolean isSyncing){
+        this.isSyncing = isSyncing;
+    }
+    public boolean getSyncState(){
+        return isSyncing;
+    }
 
     /**
      * print debugging info.

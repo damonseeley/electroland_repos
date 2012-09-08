@@ -200,6 +200,11 @@ public class ELUManager implements Runnable {
     {
         long targetDelay = (int)(1000.0 / fps);
 
+        // starts ProcessingCanvases
+        for (ELUCanvas c : canvases.values()){
+            c.setSyncState(true);
+        }
+
         while (isRunning)
         {
             // record start time
@@ -220,6 +225,12 @@ public class ELUManager implements Runnable {
             }
         }
         thread = null;
+
+        // stops ProcessingCanvases
+        for (ELUCanvas c : canvases.values()){
+            c.setSyncState(false);
+        }
+
     }
 
     /** 

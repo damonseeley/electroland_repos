@@ -1,10 +1,17 @@
-* are all on / all off / not setting CanvasDetectors last state?
+* implement start/stop for Canvases
+* enable PApplet to listen for diplay options
+* render detectors in PApplet
+* create some kind of fake rendering in East and West.
+
++ test here +
+
 * Implement testSuites (sweep & trace)
-* Implement RenderPanel detector mode (outlines for area, insides for on/off. options for r,g,b)
+
++ test again +
+
 * PeopleModel + Elvis
 * Show presence detection on grid
-* implement getPImage & sync
-* Show PImage on grid
+
 * Run tests button is wonky.  Requires a "stop" option to kill the test.
   * also, TestSuiteListner might be useful. .started(String) and .finished(String)
 * Fix StatefulLabelButton (using Component interface improperly)

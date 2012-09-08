@@ -1,6 +1,9 @@
 package net.electroland.utils.lighting.canvas;
 
+import java.awt.BorderLayout;
 import java.awt.Rectangle;
+
+import javax.swing.JFrame;
 
 import net.electroland.utils.OptionException;
 import net.electroland.utils.ParameterMap;
@@ -9,7 +12,6 @@ import net.electroland.utils.lighting.InvalidPixelGrabException;
 
 public class ProcessingCanvas extends ELUCanvas2D {
 
-    private boolean isSyncing = false;
     public static final int NONE  = -0;
     public static final int ALL   = 0;
     public static final int RED   = 1;
@@ -27,13 +29,22 @@ public class ProcessingCanvas extends ELUCanvas2D {
         int fps = props.getRequiredInt("fps");
         Object appletObj = props.getRequiredClass("applet");
 
+        System.out.println("instantiating applet " + appletObj);
         if (appletObj instanceof ELUPApplet){
+            System.out.println("instantiating applet " + appletObj);
             applet = (ELUPApplet)appletObj;
-            applet.setSyncArea(new Rectangle(x, y, this.getDimensions().width, this.getDimensions().height));
-            applet.setSyncCanvas(this);
+            JFrame f = new JFrame();
+            f.setTitle(props.get("applet"));
+            f.setLayout(new BorderLayout());
+            f.setSize(this.getDimensions());
+            f.add(applet, BorderLayout.CENTER);
             applet.init();
             applet.frameRate(fps);
-            applet.setVisible(true);
+            applet.setSyncArea(new Rectangle(x, y, this.getDimensions().width, this.getDimensions().height));
+            applet.setSyncCanvas(this);
+            f.setVisible(true);
+            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            System.out.println("and we're done here");
         }
     }
 
@@ -44,17 +55,18 @@ public class ProcessingCanvas extends ELUCanvas2D {
     }
 
     protected CanvasDetector[] pAppletSync(int[] pixels) throws InvalidPixelGrabException {
-        if (isSyncing){
+        if (this.getSyncState()){
             return super.sync(pixels);
         }else{
             return super.getDetectors();
         }
     }
 
-    public void setSyncState(boolean isSyncing){
-        this.isSyncing = isSyncing;
-    }
     public void setOverlay(int overlayState){
         applet.overlayState = overlayState;
+    }
+
+    public ELUPApplet getApplet(){
+        return applet;
     }
 }
