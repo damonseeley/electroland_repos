@@ -18,15 +18,17 @@ abstract public class ELUPApplet extends PApplet {
     abstract public void drawELUContent();
 
     final public void draw(){
+        
         drawELUContent();
         if (canvas != null){
             try {
                 canvas.pAppletSync(this.get(area.x, area.y, area.width, area.height).pixels);
+                System.out.println("render");
             } catch (InvalidPixelGrabException e) {
                 e.printStackTrace();
             }
         }
-        if (overlayDetectors){
+        if (overlayDetectors && canvas != null){
             for (CanvasDetector cd : canvas.getDetectors()){
 
                 // TODO: draw detector (R,G,B as selected)
@@ -43,6 +45,10 @@ abstract public class ELUPApplet extends PApplet {
                 }
             }
         }
+        stroke(0);
+        strokeWeight(1);
+        noFill();
+        this.rect(area.x - 1, area.y - 1, area.width + 2, area.height + 2);
     }
 
     public void setSyncCanvas(ProcessingCanvas canvas){
