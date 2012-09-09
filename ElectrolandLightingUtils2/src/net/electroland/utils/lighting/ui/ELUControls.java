@@ -9,8 +9,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import net.electroland.utils.lighting.ELUManager;
+import net.electroland.utils.lighting.TestSuite;
+import net.electroland.utils.lighting.TestSuiteCompletionListener;
 
-public class ELUControls extends JPanel implements ActionListener, ButtonStateListener {
+public class ELUControls extends JPanel implements ActionListener, ButtonStateListener, TestSuiteCompletionListener {
 
     private static final long serialVersionUID = -1589987975805310686L;
     private ELUManager lightingManager;
@@ -24,6 +26,9 @@ public class ELUControls extends JPanel implements ActionListener, ButtonStateLi
 
         this.configureControls();
         this.layoutControls();
+        for (TestSuite ts : lightingManager.getTestSuites()){
+            ts.addCompletionListener(this);
+        }
     }
 
     public void layoutControls(){
@@ -42,7 +47,7 @@ public class ELUControls extends JPanel implements ActionListener, ButtonStateLi
         allOn     = new JButton("all on");
         allOff    = new JButton("all off");
         runTest   = new JButton("run test");
-        tests     = new JComboBox(lightingManager.getTestSuites());
+        tests     = new JComboBox(lightingManager.getTestSuiteNames());
 
         allOn.addActionListener(this);
         allOff.addActionListener(this);
@@ -57,16 +62,28 @@ public class ELUControls extends JPanel implements ActionListener, ButtonStateLi
         } else if (e.getSource() == allOff) {
             lightingManager.allOff();
         } else if (e.getSource() == runTest) {
-            lightingManager.runTest(tests.getSelectedItem().toString());
+            if (!startStop.isOn()){
+                startStop.setEnabled(false);
+                runTest.setEnabled(false);
+                lightingManager.runTest(tests.getSelectedItem().toString());
+            }
         }
     }
 
     @Override
     public void buttonStateChanged(StatefulLabelButton button) {
         if (button == startStop && button.isOn()) {
+            runTest.setEnabled(false);
             lightingManager.start();
         } else {
+            runTest.setEnabled(true);
             lightingManager.stop();
         }
+    }
+
+    @Override
+    public void testingComplete() {
+        startStop.setEnabled(true);
+        runTest.setEnabled(true);
     }
 }
