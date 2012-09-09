@@ -9,16 +9,15 @@ public class DisplayControlBar extends JPanel {
 
     private static final long serialVersionUID = -626583748057983309L;
     private JCheckBox includeRendering, includeDectectors, includePresenceGrid;
-    private JComboBox displays;
+    private JComboBox detectorColors;
 
     public DisplayControlBar(){
-        includeRendering    = new JCheckBox("canas", true);
+        includeRendering    = new JCheckBox("canvas", true);
         includeDectectors   = new JCheckBox("detectors", true);
         includePresenceGrid = new JCheckBox("presence grid", true);
-        displays            = new JComboBox(new String[]{"West RED", "West GREEN", "West BLUE", 
-                                                         "East RED", "East GREEN", "East BLUE"});
+        detectorColors            = new JComboBox(new String[]{"red", "green", "blue", "composite"});
         this.add(new JLabel(" Display:"));
-        this.add(displays);
+        this.add(detectorColors);
         this.add(includeRendering);
         this.add(includeDectectors);
         this.add(includePresenceGrid);
@@ -34,6 +33,6 @@ public class DisplayControlBar extends JPanel {
         return includePresenceGrid.isSelected();
     }
     public String getDisplay(){
-        return displays.getSelectedItem().toString();
+        return detectorColors.getSelectedItem().toString();
     }
 }

@@ -17,11 +17,13 @@ public class ELUControls extends JPanel implements ActionListener, ButtonStateLi
     private StatefulLabelButton startStop;
     private JButton allOn, allOff, runTest;
     private JComboBox tests;
+    private boolean isProcessing = false;
     // TODO: add widgets for "reload" and fps display
 
-    public ELUControls(ELUManager lightingManager){
+    public ELUControls(ELUManager lightingManager, boolean isProcessing){
 
         this.lightingManager = lightingManager;
+        this.isProcessing = isProcessing;
 
         this.configureControls();
         this.layoutControls();
@@ -65,9 +67,17 @@ public class ELUControls extends JPanel implements ActionListener, ButtonStateLi
     @Override
     public void buttonStateChanged(StatefulLabelButton button) {
         if (button == startStop && button.isOn()) {
-            lightingManager.start();
+            if (isProcessing){
+                lightingManager.pstart();
+            }else{
+                lightingManager.start();
+            }
         } else {
-            lightingManager.stop();
+            if (isProcessing){
+                lightingManager.pstop();
+            }else{
+                lightingManager.stop();
+            }
         }
     }
 }
