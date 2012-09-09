@@ -20,8 +20,8 @@ public class West extends ELUPApplet {
     private long startTime = -1;
     private float smallRadius, largeRadius;
 
-    // the period that the circle expands/contrats
-    final static long DURATION_MILLIS = 1000;
+    // the period that the circle expands/contracts
+    final static long DURATION_MILLIS = 2000;
     // the easing function for expanding/contracting
     private EasingFunction ef = new SinusoidalInOut();
 
@@ -29,7 +29,7 @@ public class West extends ELUPApplet {
     public void setup() {
         // syncArea is the area of the screen that will be synced to the lights.
         syncArea = this.getSyncArea();
-        // our circle's center will be the middel of the sync area.
+        // our circle's center will be the middle of the sync area.
         center = new Point2D.Double(syncArea.x + .5 * syncArea.width, 
                                     syncArea.y + .5 * syncArea.height);
         // it will beat between these radii
@@ -61,8 +61,8 @@ public class West extends ELUPApplet {
         }
 
         // paint a circle
-        color(255);
-        fill(255);
+        color(50, 255, 150);
+        fill(50, 255, 150);
         ellipse((float)center.getX(), (float)center.getY(), radius, radius);
     }
 }
