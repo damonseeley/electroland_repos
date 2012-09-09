@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 
 import net.electroland.utils.lighting.CanvasDetector;
 import net.electroland.utils.lighting.DetectionModel;
-import net.electroland.utils.lighting.InvalidPixelGrabException;
 import processing.core.PApplet;
 
 abstract public class ELUPApplet extends PApplet {

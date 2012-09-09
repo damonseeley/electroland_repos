@@ -42,7 +42,7 @@ abstract public class ELUCanvas {
      * are violated within data in the array.
      * 
      */
-    abstract public CanvasDetector[] sync(int[] pixels) throws InvalidPixelGrabException;
+    abstract public CanvasDetector[] sync(int[] pixels);
 
     abstract public void configure(ParameterMap params) throws OptionException;
 
