@@ -3,11 +3,8 @@ package net.electroland.utils.lighting.canvas;
 import java.awt.Rectangle;
 import java.util.logging.Logger;
 
-import org.apache.log4j.Level;
-
 import net.electroland.utils.lighting.CanvasDetector;
 import net.electroland.utils.lighting.InvalidPixelGrabException;
-
 import processing.core.PApplet;
 
 abstract public class ELUPApplet extends PApplet {
@@ -22,8 +19,9 @@ abstract public class ELUPApplet extends PApplet {
     abstract public void drawELUContent();
 
     final public void draw(){
-        
+
         drawELUContent();
+
         if (canvas != null){
             try {
                 canvas.sync(this.get(area.x, area.y, area.width, area.height).pixels);
@@ -33,20 +31,16 @@ abstract public class ELUPApplet extends PApplet {
         }
         if (overlayDetectors && canvas != null){
             for (CanvasDetector cd : canvas.getDetectors()){
-
-                // TODO: draw detector (R,G,B as selected)
-                //  Remember to offset by x,y
-                switch(overlayState){
-                    case(ProcessingCanvas.ALL):
-                        
-                        break;
-                    case(ProcessingCanvas.RED):
-                        break;
-                    case(ProcessingCanvas.GREEN):
-                        break;
-                    case(ProcessingCanvas.BLUE):
-                        break;
+                stroke(255,0,0);
+                strokeWeight(1);
+                if (cd.getLatestState() == 0){
+                    noFill();
+                }else{
+                    System.out.println("color " + cd.getLatestState());
+                    fill (cd.getLatestState(),0,0);
                 }
+                Rectangle drect = (Rectangle)cd.getBoundary();
+                rect(drect.x, drect.y, 5, 5);
             }
         }
         stroke(0);
