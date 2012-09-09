@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.vecmath.Point3d;
@@ -18,7 +19,7 @@ import net.electroland.utils.ReferenceDimension;
 
 import org.apache.log4j.Logger;
 
-public class ELUManager implements Runnable {
+public class ELUManager implements Runnable, TestSuiteCompletionListener {
 
     // TODO: move into an Enum.
     final public static String FIXTURE = "fixture"; 
@@ -361,8 +362,8 @@ public class ELUManager implements Runnable {
         this.syncAllLights();
     }
 
-    protected void testDone()
-    {
+    @Override
+    public void testingComplete() {
         System.out.println("testSuite complete.");
         this.isRunningTest = false;
     }
@@ -382,10 +383,13 @@ public class ELUManager implements Runnable {
         }
     }
 
-    public Object[] getTestSuites(){
+    public Object[] getTestSuiteNames(){
         return suites.keySet().toArray();
     }
-    
+    public Collection<TestSuite> getTestSuites(){
+        return suites.values();
+    }
+
     public ELUManager load() throws IOException, OptionException
     {
         return load("lights.properties");
@@ -614,21 +618,23 @@ public class ELUManager implements Runnable {
             int fps = ep.getRequiredInt(TEST_SUITE, name, "fps");
             List<String> testStrs = ep.getRequiredList(TEST_SUITE, name, "tests");
             ArrayList<Test> itests = new ArrayList<Test>(testStrs.size());
-            
+
             for (String s : testStrs)
             {
                 Test test = tests.get(s);
                 if (test == null){
                     throw new OptionException("cannot find test '" + s + "' in " + TEST_SUITE + " '" + name + "'");
                 }else{
-                    itests.add(test);                    
+                    itests.add(test);
                 }
             }
 
             int loops = ep.getRequiredInt(TEST_SUITE, name, "loops");
             byte color = ep.getRequiredInt(TEST_SUITE, name, "color").byteValue();
-            
+
             TestSuite it = new TestSuite(name, this, fps, itests, loops, color);
+            it.addCompletionListener(this);
+
             suites.put(name, it);
         }
 
