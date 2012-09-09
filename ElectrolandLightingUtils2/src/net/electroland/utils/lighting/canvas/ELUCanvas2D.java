@@ -29,12 +29,12 @@ public class ELUCanvas2D extends ELUCanvas {
             
         }catch(NumberFormatException e){
             throw new OptionException("cannot parse canvas dimensions " + e);
-        }        
+        }
     }
 
     @Override
     public void map(CanvasDetector d) throws OptionException {
-        
+
         // for each index, get the array indices contained within the boundary
         // and store them in the CanvasDetector.
 
@@ -59,7 +59,7 @@ public class ELUCanvas2D extends ELUCanvas {
     }
 
     @Override
-    public CanvasDetector[] sync(int[] pixels) throws InvalidPixelGrabException {
+    public CanvasDetector[] sync(int[] pixels) {
         
         synchronized(detectors){
             for (CanvasDetector d : detectors)
