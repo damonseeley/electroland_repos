@@ -18,14 +18,13 @@ public class ProcessingCanvas extends ELUCanvas2D {
     public static final int GREEN = 2;
     public static final int BLUE  = 3;
     private ELUPApplet applet;
+    private boolean isSyncing = false;
 
     @Override
     public void configure(ParameterMap props) throws OptionException {
 
         super.configure(props);
 
-        int x = props.getRequiredInt("x");
-        int y = props.getRequiredInt("y");
         int fps = props.getRequiredInt("fps");
         Object appletObj = props.getRequiredClass("applet");
 
@@ -33,6 +32,11 @@ public class ProcessingCanvas extends ELUCanvas2D {
         if (appletObj instanceof ELUPApplet){
             System.out.println("instantiating applet " + appletObj);
             applet = (ELUPApplet)appletObj;
+
+            // make sure this is precedes init(). otherwise there is a race
+            // condition against setup().
+            applet.setSyncArea(new Rectangle(0, 0, this.getDimensions().width, this.getDimensions().height));
+
             JFrame f = new JFrame();
             f.setTitle(props.get("applet"));
             f.setLayout(new BorderLayout());
@@ -40,7 +44,6 @@ public class ProcessingCanvas extends ELUCanvas2D {
             f.add(applet, BorderLayout.CENTER);
             applet.init();
             applet.frameRate(fps);
-            applet.setSyncArea(new Rectangle(x, y, this.getDimensions().width, this.getDimensions().height));
             applet.setSyncCanvas(this);
             f.setVisible(true);
             f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -55,13 +58,18 @@ public class ProcessingCanvas extends ELUCanvas2D {
     }
 
     protected CanvasDetector[] pAppletSync(int[] pixels) throws InvalidPixelGrabException {
-        if (this.getSyncState()){
+        if (isSyncing){
             return super.sync(pixels);
         }else{
             return super.getDetectors();
         }
     }
 
+    // TODO: break abstraction and allow ELUManager.start() and stop() to
+    //       set the sync state.
+    public void setSyncState(boolean isSyncing){
+        this.isSyncing = isSyncing;
+    }
     public void setOverlay(int overlayState){
         applet.overlayState = overlayState;
     }

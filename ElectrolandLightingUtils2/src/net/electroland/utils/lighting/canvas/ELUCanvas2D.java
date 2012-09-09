@@ -54,7 +54,7 @@ public class ELUCanvas2D extends ELUCanvas {
                 if (current > -1 && current < pixels){
                     d.getPixelIndices().add(current);
                 }
-            }            
+            }
         }
     }
 
