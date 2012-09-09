@@ -46,16 +46,17 @@ abstract public class ELUPApplet extends PApplet {
             for (CanvasDetector cd : canvas.getDetectors()){
                 
                 if (showOnly == null || cd.getDetectorModel().getClass() == showOnly.getClass()){
-                    stroke(100,100,100);
                     strokeWeight(1);
                     if (cd.getLatestState() == 0){
-                        noFill();
+                        stroke(100,100,100);
+                        fill(100,100,100);
                     }else{
                         Color c = cd.getDetectorModel().getColor(cd.getLatestState());
+                        stroke(c.getRGB());
                         fill(c.getRGB());
                     }
                     Rectangle drect = (Rectangle)cd.getBoundary();
-                    rect(drect.x, drect.y, 5, 5);
+                    rect(drect.x, drect.y, drect.width, drect.height);
                 }
             }
         }
