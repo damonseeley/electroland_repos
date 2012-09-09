@@ -34,7 +34,7 @@ public class West extends ELUPApplet {
                                     syncArea.y + .5 * syncArea.height);
         // it will beat between these radii
         smallRadius = .05f * syncArea.height;
-        largeRadius = .4f * syncArea.height;
+        largeRadius = .8f * syncArea.height;
     }
 
     @Override
