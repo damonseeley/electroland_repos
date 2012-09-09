@@ -15,7 +15,6 @@ import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.FrameRateRingBuffer;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.ReferenceDimension;
-import net.electroland.utils.lighting.canvas.ProcessingCanvas;
 
 import org.apache.log4j.Logger;
 
