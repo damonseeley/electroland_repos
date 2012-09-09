@@ -27,4 +27,8 @@ public class RedDetectionModel implements DetectionModel {
     public Color getColor(byte b) {
         return new Color(b & 0xff, 0, 0);
     }
+
+    public String toString(){
+        return "Red";
+    }
 }
