@@ -20,20 +20,20 @@ import net.electroland.utils.lighting.detection.RedDetectionModel;
 public class DisplayControlBar extends JPanel implements ActionListener, ChangeListener{
 
     private static final long serialVersionUID = -626583748057983309L;
-    private JCheckBox includeRendering, includeDectectors, includePresenceGrid;
+    private JCheckBox includeRendering, includeDectectors;//, includePresenceGrid;
     private JComboBox detectorColors;
     private Vector<ELUPApplet> listeners;
 
     public DisplayControlBar(){
         includeRendering    = new JCheckBox("canvas", true);
         includeDectectors   = new JCheckBox("detectors", true);
-        includePresenceGrid = new JCheckBox("presence grid", true); includePresenceGrid.setEnabled(false);
+        //includePresenceGrid = new JCheckBox("presence grid", true);
         detectorColors            = new JComboBox(new DetectionModel[]{null, new RedDetectionModel(), new BlueDetectionModel(), new GreenDetectionModel()});
         this.add(new JLabel(" Display:"));
         this.add(detectorColors);
         this.add(includeRendering);
         this.add(includeDectectors);
-        this.add(includePresenceGrid);
+        //this.add(includePresenceGrid);
         this.listeners = new Vector<ELUPApplet>();
         detectorColors.addActionListener(this);
         includeRendering.addChangeListener(this);
@@ -45,19 +45,6 @@ public class DisplayControlBar extends JPanel implements ActionListener, ChangeL
     }
     public void removeListener(ELUPApplet applet){
         listeners.remove(applet);
-    }
-
-    public boolean includeRendering(){
-        return includeRendering.isSelected();
-    }
-    public boolean includeDectectors(){
-        return includeDectectors.isSelected();
-    }
-    public boolean includePresenceGrid(){
-        return includePresenceGrid.isSelected();
-    }
-    public String getDisplay(){
-        return detectorColors.getSelectedItem().toString();
     }
 
     @Override

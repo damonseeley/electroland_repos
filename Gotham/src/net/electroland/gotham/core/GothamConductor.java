@@ -7,10 +7,10 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 import net.electroland.gotham.core.ui.DisplayControlBar;
-import net.electroland.gotham.core.ui.ELUControls;
 import net.electroland.utils.lighting.ELUCanvas;
 import net.electroland.utils.lighting.ELUManager;
 import net.electroland.utils.lighting.canvas.ProcessingCanvas;
+import net.electroland.utils.lighting.ui.ELUControls;
 
 public class GothamConductor extends JFrame {
 
