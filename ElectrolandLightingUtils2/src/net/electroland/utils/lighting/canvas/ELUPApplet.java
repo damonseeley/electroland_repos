@@ -14,7 +14,8 @@ abstract public class ELUPApplet extends PApplet {
     private static final long serialVersionUID = -8484348842116122238L;
     private Rectangle area;
     private ProcessingCanvas canvas;
-    private boolean overlayDetectors = true;
+    private boolean showDetectors = true;
+    private boolean showRendering = true;
     protected int overlayState = ProcessingCanvas.ALL;
     private DetectionModel showOnly;
 
@@ -24,10 +25,24 @@ abstract public class ELUPApplet extends PApplet {
 
         drawELUContent();
 
+        // sync content to lights
         if (canvas != null){
             canvas.sync(this.get(area.x, area.y, area.width, area.height).pixels);
         }
-        if (overlayDetectors && canvas != null){
+
+        // draw outline of sync area.  
+        stroke(255);
+        strokeWeight(1);
+        // erase the rendering if it was requested not to show it on the UI
+        if (showRendering){
+            noFill();
+        }else{
+            fill(0);
+        }
+        this.rect(area.x - 1, area.y - 1, area.width + 2, area.height + 2);
+
+        // show detectors (if requested)
+        if (showDetectors && canvas != null){
             for (CanvasDetector cd : canvas.getDetectors()){
                 
                 if (showOnly == null || cd.getDetectorModel().getClass() == showOnly.getClass()){
@@ -44,10 +59,6 @@ abstract public class ELUPApplet extends PApplet {
                 }
             }
         }
-        stroke(255);
-        strokeWeight(1);
-        noFill();
-        this.rect(area.x - 1, area.y - 1, area.width + 2, area.height + 2);
     }
 
     public void setSyncCanvas(ProcessingCanvas canvas){
@@ -62,8 +73,12 @@ abstract public class ELUPApplet extends PApplet {
         this.area = area;
     }
 
-    public void setOverlayDetectors(boolean overlayDetectors){
-        this.overlayDetectors = overlayDetectors;
+    public void setShowDetectors(boolean showDetectors){
+        this.showDetectors = showDetectors;
+    }
+
+    public void setShowRendering(boolean showRendering){
+        this.showRendering = showRendering;
     }
 
     public void showOnly(DetectionModel detectionModel){
