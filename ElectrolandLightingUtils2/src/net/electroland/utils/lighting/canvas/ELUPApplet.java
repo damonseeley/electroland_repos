@@ -36,8 +36,7 @@ abstract public class ELUPApplet extends PApplet {
                 if (cd.getLatestState() == 0){
                     noFill();
                 }else{
-                    System.out.println("color " + cd.getLatestState());
-                    fill (cd.getLatestState(),0,0);
+                    fill (255,0,0);
                 }
                 Rectangle drect = (Rectangle)cd.getBoundary();
                 rect(drect.x, drect.y, 5, 5);
