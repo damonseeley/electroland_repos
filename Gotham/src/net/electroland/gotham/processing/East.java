@@ -5,7 +5,7 @@ import java.awt.geom.Point2D;
 import java.util.logging.Logger;
 
 import net.electroland.ea.EasingFunction;
-import net.electroland.ea.easing.SinusoidalInOut;
+import net.electroland.ea.easing.QuinticInOut;
 import net.electroland.utils.lighting.canvas.ELUPApplet;
 
 public class East extends ELUPApplet {
@@ -23,7 +23,7 @@ public class East extends ELUPApplet {
     // the period that the circle expands/contrats
     final static long DURATION_MILLIS = 1000;
     // the easing function for expanding/contracting
-    private EasingFunction ef = new SinusoidalInOut();
+    private EasingFunction ef = new QuinticInOut();
 
     @Override
     public void setup() {
@@ -34,7 +34,7 @@ public class East extends ELUPApplet {
                                     syncArea.y + .5 * syncArea.height);
         // it will beat between these radii
         smallRadius = .05f * syncArea.height;
-        largeRadius = .4f * syncArea.height;
+        largeRadius = .8f * syncArea.height;
     }
 
     @Override
