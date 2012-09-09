@@ -23,7 +23,6 @@ abstract public class ELUPApplet extends PApplet {
         if (canvas != null){
             try {
                 canvas.pAppletSync(this.get(area.x, area.y, area.width, area.height).pixels);
-                System.out.println("render");
             } catch (InvalidPixelGrabException e) {
                 e.printStackTrace();
             }
@@ -35,6 +34,7 @@ abstract public class ELUPApplet extends PApplet {
                 //  Remember to offset by x,y
                 switch(overlayState){
                     case(ProcessingCanvas.ALL):
+                        
                         break;
                     case(ProcessingCanvas.RED):
                         break;

@@ -15,6 +15,7 @@ import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.FrameRateRingBuffer;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.ReferenceDimension;
+import net.electroland.utils.lighting.canvas.ProcessingCanvas;
 
 import org.apache.log4j.Logger;
 
@@ -200,11 +201,6 @@ public class ELUManager implements Runnable {
     {
         long targetDelay = (int)(1000.0 / fps);
 
-        // starts ProcessingCanvases
-        for (ELUCanvas c : canvases.values()){
-            c.setSyncState(true);
-        }
-
         while (isRunning)
         {
             // record start time
@@ -225,12 +221,23 @@ public class ELUManager implements Runnable {
             }
         }
         thread = null;
+    }
 
-        // stops ProcessingCanvases
+    public final void pstart(){
+        // starts ProcessingCanvases
         for (ELUCanvas c : canvases.values()){
-            c.setSyncState(false);
+            if (c instanceof ProcessingCanvas){
+                ((ProcessingCanvas)c).setSyncState(true);
+            }
         }
-
+    }
+    public final void pstop(){
+        // starts ProcessingCanvases
+        for (ELUCanvas c : canvases.values()){
+            if (c instanceof ProcessingCanvas){
+                ((ProcessingCanvas)c).setSyncState(false);
+            }
+        }
     }
 
     /** 
