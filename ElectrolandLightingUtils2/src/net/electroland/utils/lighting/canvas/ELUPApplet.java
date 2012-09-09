@@ -1,10 +1,13 @@
 package net.electroland.utils.lighting.canvas;
 
+import java.awt.Color;
 import java.awt.Rectangle;
 import java.util.logging.Logger;
 
 import net.electroland.utils.lighting.CanvasDetector;
+import net.electroland.utils.lighting.DetectionModel;
 import net.electroland.utils.lighting.InvalidPixelGrabException;
+import net.electroland.utils.lighting.detection.BlueDetectionModel;
 import processing.core.PApplet;
 
 abstract public class ELUPApplet extends PApplet {
@@ -15,6 +18,7 @@ abstract public class ELUPApplet extends PApplet {
     private ProcessingCanvas canvas;
     private boolean overlayDetectors = true;
     protected int overlayState = ProcessingCanvas.ALL;
+    private DetectionModel showOnly;
 
     abstract public void drawELUContent();
 
@@ -31,15 +35,19 @@ abstract public class ELUPApplet extends PApplet {
         }
         if (overlayDetectors && canvas != null){
             for (CanvasDetector cd : canvas.getDetectors()){
-                stroke(255,0,0);
-                strokeWeight(1);
-                if (cd.getLatestState() == 0){
-                    noFill();
-                }else{
-                    fill ((int)cd.getLatestState() & 0xff,0,0);
+                
+                if (showOnly == null || cd.getDetectorModel().getClass() == showOnly.getClass()){
+                    stroke(100,100,100);
+                    strokeWeight(1);
+                    if (cd.getLatestState() == 0){
+                        noFill();
+                    }else{
+                        Color c = cd.getDetectorModel().getColor(cd.getLatestState());
+                        fill(c.getRGB());
+                    }
+                    Rectangle drect = (Rectangle)cd.getBoundary();
+                    rect(drect.x, drect.y, 5, 5);
                 }
-                Rectangle drect = (Rectangle)cd.getBoundary();
-                rect(drect.x, drect.y, 5, 5);
             }
         }
         stroke(0);
@@ -62,5 +70,12 @@ abstract public class ELUPApplet extends PApplet {
 
     public void setOverlayDetectors(boolean overlayDetectors){
         this.overlayDetectors = overlayDetectors;
+    }
+
+    public void showOnly(DetectionModel detectionModel){
+        showOnly = detectionModel;
+    }
+    public void showAll(){
+        showOnly = null;
     }
 }

@@ -1,5 +1,7 @@
 package net.electroland.utils.lighting.detection;
 
+import java.awt.Color;
+
 import net.electroland.utils.lighting.DetectionModel;
 
 /**
@@ -12,11 +14,17 @@ import net.electroland.utils.lighting.DetectionModel;
  */
 public class GreenDetectionModel implements DetectionModel {
 
-	final public byte getValue(int[] pixels) {
-		float g = 0;
-		for (int i = 0; i < pixels.length; i++){
-			g += (pixels[i] >> 8 & 0xFF);
-		}
-		return (byte)(g / pixels.length);
-	}
+    @Override
+    public byte getValue(int[] pixels) {
+        float g = 0;
+        for (int i = 0; i < pixels.length; i++){
+            g += (pixels[i] >> 8 & 0xFF);
+        }
+        return (byte)(g / pixels.length);
+    }
+
+    @Override
+    public Color getColor(byte b) {
+        return new Color(0, b & 0xff, 0);
+    }
 }

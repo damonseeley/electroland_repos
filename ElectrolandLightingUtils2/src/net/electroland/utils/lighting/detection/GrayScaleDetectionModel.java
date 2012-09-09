@@ -1,5 +1,7 @@
 package net.electroland.utils.lighting.detection;
 
+import java.awt.Color;
+
 import net.electroland.utils.lighting.DetectionModel;
 
 public class GrayScaleDetectionModel implements DetectionModel {
@@ -27,5 +29,11 @@ public class GrayScaleDetectionModel implements DetectionModel {
             }
         }
         return (byte)(total / pixels.length);
+    }
+
+    @Override
+    public Color getColor(byte b) {
+        int i = b & 0xff;
+        return new Color(i,i,i);
     }
 }
