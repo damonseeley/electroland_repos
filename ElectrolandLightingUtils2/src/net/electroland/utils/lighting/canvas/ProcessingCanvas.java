@@ -7,8 +7,6 @@ import javax.swing.JFrame;
 
 import net.electroland.utils.OptionException;
 import net.electroland.utils.ParameterMap;
-import net.electroland.utils.lighting.CanvasDetector;
-import net.electroland.utils.lighting.InvalidPixelGrabException;
 
 public class ProcessingCanvas extends ELUCanvas2D {
 
@@ -18,7 +16,6 @@ public class ProcessingCanvas extends ELUCanvas2D {
     public static final int GREEN = 2;
     public static final int BLUE  = 3;
     private ELUPApplet applet;
-    private boolean isSyncing = false;
 
     @Override
     public void configure(ParameterMap props) throws OptionException {
@@ -51,25 +48,6 @@ public class ProcessingCanvas extends ELUCanvas2D {
         }
     }
 
-    // NOT ALLOWED!  sync will automatically be called by the ELUPapplet after
-    // each frame is rendered.
-    final public CanvasDetector[] sync(int[] pixels) {
-        throw new RuntimeException("ProcessingCanvases cannot be manually sync'ed.");
-    }
-
-    protected CanvasDetector[] pAppletSync(int[] pixels) throws InvalidPixelGrabException {
-        if (isSyncing){
-            return super.sync(pixels);
-        }else{
-            return super.getDetectors();
-        }
-    }
-
-    // TODO: break abstraction and allow ELUManager.start() and stop() to
-    //       set the sync state.
-    public void setSyncState(boolean isSyncing){
-        this.isSyncing = isSyncing;
-    }
     public void setOverlay(int overlayState){
         applet.overlayState = overlayState;
     }

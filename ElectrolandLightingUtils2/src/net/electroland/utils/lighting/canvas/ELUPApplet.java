@@ -1,6 +1,9 @@
 package net.electroland.utils.lighting.canvas;
 
 import java.awt.Rectangle;
+import java.util.logging.Logger;
+
+import org.apache.log4j.Level;
 
 import net.electroland.utils.lighting.CanvasDetector;
 import net.electroland.utils.lighting.InvalidPixelGrabException;
@@ -9,6 +12,7 @@ import processing.core.PApplet;
 
 abstract public class ELUPApplet extends PApplet {
 
+    static Logger logger = Logger.getLogger("ELUPApplet");
     private static final long serialVersionUID = -8484348842116122238L;
     private Rectangle area;
     private ProcessingCanvas canvas;
@@ -22,7 +26,7 @@ abstract public class ELUPApplet extends PApplet {
         drawELUContent();
         if (canvas != null){
             try {
-                canvas.pAppletSync(this.get(area.x, area.y, area.width, area.height).pixels);
+                canvas.sync(this.get(area.x, area.y, area.width, area.height).pixels);
             } catch (InvalidPixelGrabException e) {
                 e.printStackTrace();
             }
