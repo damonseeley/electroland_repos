@@ -8,7 +8,9 @@ import javax.swing.JFrame;
 
 import net.electroland.gotham.core.ui.DisplayControlBar;
 import net.electroland.gotham.core.ui.ELUControls;
+import net.electroland.utils.lighting.ELUCanvas;
 import net.electroland.utils.lighting.ELUManager;
+import net.electroland.utils.lighting.canvas.ProcessingCanvas;
 
 public class GothamConductor extends JFrame {
 
@@ -33,6 +35,11 @@ public class GothamConductor extends JFrame {
     public void configureRenderPanel(ELUManager lightingManager){
         ELUControls eluControls = new ELUControls(lightingManager);
         DisplayControlBar displayControls = new DisplayControlBar();
+        for (ELUCanvas c : lightingManager.getCanvases().values()){
+            if (c instanceof ProcessingCanvas){
+                displayControls.addListener(((ProcessingCanvas)c).getApplet());
+            }
+        }
         eluControls.add(displayControls);
         this.setLayout(new BorderLayout());
         this.add(eluControls, BorderLayout.SOUTH);
