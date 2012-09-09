@@ -26,11 +26,7 @@ abstract public class ELUPApplet extends PApplet {
         drawELUContent();
 
         if (canvas != null){
-            try {
-                canvas.sync(this.get(area.x, area.y, area.width, area.height).pixels);
-            } catch (InvalidPixelGrabException e) {
-                e.printStackTrace();
-            }
+            canvas.sync(this.get(area.x, area.y, area.width, area.height).pixels);
         }
         if (overlayDetectors && canvas != null){
             for (CanvasDetector cd : canvas.getDetectors()){
