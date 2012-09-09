@@ -41,8 +41,8 @@ public class West extends ELUPApplet {
     public void drawELUContent() {
 
         // erase background
-        color(255);
-        fill(255);
+        color(0);
+        fill(0);
         rect(0,0,this.getWidth(), this.getHeight());
 
         // check to see if the growth cycle should switch polarity
@@ -61,8 +61,8 @@ public class West extends ELUPApplet {
         }
 
         // paint a circle
-        color(0);
-        fill(0);
+        color(255);
+        fill(255);
         ellipse((float)center.getX(), (float)center.getY(), radius, radius);
     }
 }
