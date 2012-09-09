@@ -55,6 +55,8 @@ abstract public class ELUPApplet extends PApplet {
                         stroke(c.getRGB());
                         fill(c.getRGB());
                     }
+                    // TODO: there's no guarantee that cd.getBoundary is a Rectangle.  It's a Shape object-
+                    //       however Processing can't draw java.aw.Shapes.
                     Rectangle drect = (Rectangle)cd.getBoundary();
                     rect(drect.x, drect.y, drect.width, drect.height);
                 }
