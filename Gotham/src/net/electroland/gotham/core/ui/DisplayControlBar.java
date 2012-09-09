@@ -31,8 +31,8 @@ public class DisplayControlBar extends JPanel implements ActionListener, ChangeL
         detectorColors            = new JComboBox(new DetectionModel[]{null, new RedDetectionModel(), new BlueDetectionModel(), new GreenDetectionModel()});
         this.add(new JLabel(" Display:"));
         this.add(detectorColors);
-        this.add(includeRendering);
         this.add(includeDectectors);
+        this.add(includeRendering);
         //this.add(includePresenceGrid);
         this.listeners = new Vector<ELUPApplet>();
         detectorColors.addActionListener(this);
