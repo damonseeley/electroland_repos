@@ -1,7 +1,7 @@
 package net.electroland.utils.lighting;
 
 @SuppressWarnings("serial")
-public class InvalidPixelGrabException extends Exception {
+public class InvalidPixelGrabException extends RuntimeException {
 
 	public InvalidPixelGrabException()
 	{
