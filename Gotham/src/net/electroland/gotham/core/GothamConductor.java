@@ -31,7 +31,7 @@ public class GothamConductor extends JFrame {
     }
 
     public void configureRenderPanel(ELUManager lightingManager){
-        ELUControls eluControls = new ELUControls(lightingManager, true);
+        ELUControls eluControls = new ELUControls(lightingManager);
         DisplayControlBar displayControls = new DisplayControlBar();
         eluControls.add(displayControls);
         this.setLayout(new BorderLayout());

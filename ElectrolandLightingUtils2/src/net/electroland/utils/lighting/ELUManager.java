@@ -223,23 +223,6 @@ public class ELUManager implements Runnable {
         thread = null;
     }
 
-    public final void pstart(){
-        // starts ProcessingCanvases
-        for (ELUCanvas c : canvases.values()){
-            if (c instanceof ProcessingCanvas){
-                ((ProcessingCanvas)c).setSyncState(true);
-            }
-        }
-    }
-    public final void pstop(){
-        // starts ProcessingCanvases
-        for (ELUCanvas c : canvases.values()){
-            if (c instanceof ProcessingCanvas){
-                ((ProcessingCanvas)c).setSyncState(false);
-            }
-        }
-    }
-
     /** 
      * Start autosyncing.  Will sync the latest array sent to each canvas with
      * the real world lights.

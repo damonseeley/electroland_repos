@@ -61,11 +61,13 @@ public class ELUCanvas2D extends ELUCanvas {
     @Override
     public CanvasDetector[] sync(int[] pixels) throws InvalidPixelGrabException {
         
-        for (CanvasDetector d : detectors)
-        {
-            d.eval(pixels);
+        synchronized(detectors){
+            for (CanvasDetector d : detectors)
+            {
+                d.eval(pixels);
+            }
         }
-        
+
         return super.getDetectors();
     }
 
