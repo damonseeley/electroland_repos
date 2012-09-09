@@ -49,7 +49,7 @@ abstract public class ELUPApplet extends PApplet {
                 }
             }
         }
-        stroke(0);
+        stroke(255);
         strokeWeight(1);
         noFill();
         this.rect(area.x - 1, area.y - 1, area.width + 2, area.height + 2);
