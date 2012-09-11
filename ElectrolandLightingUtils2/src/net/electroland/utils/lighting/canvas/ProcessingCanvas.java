@@ -10,11 +10,6 @@ import net.electroland.utils.ParameterMap;
 
 public class ProcessingCanvas extends ELUCanvas2D {
 
-    public static final int NONE  = -0;
-    public static final int ALL   = 0;
-    public static final int RED   = 1;
-    public static final int GREEN = 2;
-    public static final int BLUE  = 3;
     private ELUPApplet applet;
 
     @Override
@@ -22,31 +17,30 @@ public class ProcessingCanvas extends ELUCanvas2D {
 
         super.configure(props);
 
+        // get the custom config variables
         int fps = props.getRequiredInt("fps");
         Object appletObj = props.getRequiredClass("applet");
 
+        // load the applet
         if (appletObj instanceof ELUPApplet){
-            applet = (ELUPApplet)appletObj;
 
-            // make sure this is precedes init(). otherwise there is a race
+            // make sure setSyncArea(...)  precedes init(). otherwise there is a race
             // condition against setup().
+            applet = (ELUPApplet)appletObj;
             applet.setSyncArea(new Rectangle(0, 0, this.getDimensions().width, this.getDimensions().height));
+            applet.setSyncCanvas(this);
+            applet.init();
+            applet.frameRate(fps);
 
+            // open it in its own window
             JFrame f = new JFrame();
             f.setTitle(props.get("applet"));
             f.setLayout(new BorderLayout());
             f.setSize(this.getDimensions());
             f.add(applet, BorderLayout.CENTER);
-            applet.init();
-            applet.frameRate(fps);
-            applet.setSyncCanvas(this);
-            f.setVisible(true);
             f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            f.setVisible(true);
         }
-    }
-
-    public void setOverlay(int overlayState){
-        applet.overlayState = overlayState;
     }
 
     public ELUPApplet getApplet(){
