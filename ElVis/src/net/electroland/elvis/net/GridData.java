@@ -6,9 +6,9 @@ import java.util.StringTokenizer;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 
 public  class GridData implements StringAppender {
-	int width;
-	int height;
-	byte[] data;
+	public int width;
+	public int height;
+	public byte[] data;
 
 	public GridData(String s) {
 		StringTokenizer tokenizer = new StringTokenizer(s,",");
