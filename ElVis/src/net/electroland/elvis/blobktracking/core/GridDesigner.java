@@ -161,7 +161,7 @@ public class GridDesigner implements ImageReceiver, MouseMotionListener, MouseLi
 		if(arg.length > 0) {
 			props = ElProps.init(arg[0]);
 		} else {
-			props =ElProps.init("blobTracker.props");
+			props =ElProps.init("depends/blobTracker.props");
 		}
 		
 				

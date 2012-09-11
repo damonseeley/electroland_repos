@@ -82,7 +82,7 @@ public class RegionDesigner extends JFrame {
 		if(args.length > 0) {
 			p= ElProps.init(args[0]);
 		} else {
-			p = ElProps.init("blobTracker.props");
+			p = ElProps.init("depends/blobTracker.props");
 		}
 		new RegionDesigner(p, 640,480);
 	}
