@@ -21,7 +21,7 @@ public class DisplayControlBar extends JPanel implements ActionListener, ChangeL
 
     private static final long serialVersionUID = -626583748057983309L;
     private JCheckBox includeRendering, includeDectectors;//, includePresenceGrid;
-    private JComboBox detectorColors;
+    private JComboBox detectorColors, detectorScale;
     private Vector<ELUPApplet> listeners;
 
     public DisplayControlBar(){
@@ -29,13 +29,17 @@ public class DisplayControlBar extends JPanel implements ActionListener, ChangeL
         includeDectectors   = new JCheckBox("detectors", true);
         //includePresenceGrid = new JCheckBox("presence grid", true);
         detectorColors            = new JComboBox(new DetectionModel[]{null, new RedDetectionModel(), new BlueDetectionModel(), new GreenDetectionModel()});
+        detectorScale            = new JComboBox(new Float[]{1.0f, 2.0f, 5.0f, 10.0f});
         this.add(new JLabel(" Display:"));
         this.add(detectorColors);
         this.add(includeDectectors);
+        this.add(new JLabel("at scale:"));
+        this.add(detectorScale);
         this.add(includeRendering);
         //this.add(includePresenceGrid);
         this.listeners = new Vector<ELUPApplet>();
         detectorColors.addActionListener(this);
+        detectorScale.addActionListener(this);
         includeRendering.addChangeListener(this);
         includeDectectors.addChangeListener(this);
     }
@@ -56,6 +60,10 @@ public class DisplayControlBar extends JPanel implements ActionListener, ChangeL
                 }else{
                     a.showAll();
                 }
+            }
+        } else if (evt.getSource() == detectorScale){
+            for (ELUPApplet a : listeners){
+                a.setDetectorScale((Float)detectorScale.getSelectedItem());
             }
         }
     }
