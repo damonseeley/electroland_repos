@@ -4,14 +4,14 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="libraries/JMyron.jar"/>
 	<classpathentry kind="lib" path="libraries/miglayout15-swing.jar"/>
-	<classpathentry kind="lib" path="/Users/eitan/Documents/javacv-bin/javacpp.jar"/>
-	<classpathentry kind="lib" path="/Users/eitan/Documents/javacv-bin/javacv-android-arm.jar"/>
-	<classpathentry kind="lib" path="/Users/eitan/Documents/javacv-bin/javacv-linux-arm.jar"/>
-	<classpathentry kind="lib" path="/Users/eitan/Documents/javacv-bin/javacv-linux-x86_64.jar"/>
-	<classpathentry kind="lib" path="/Users/eitan/Documents/javacv-bin/javacv-linux-x86.jar"/>
-	<classpathentry kind="lib" path="/Users/eitan/Documents/javacv-bin/javacv-macosx-x86_64.jar"/>
-	<classpathentry kind="lib" path="/Users/eitan/Documents/javacv-bin/javacv-windows-x86_64.jar"/>
-	<classpathentry kind="lib" path="/Users/eitan/Documents/javacv-bin/javacv-windows-x86.jar"/>
-	<classpathentry kind="lib" path="/Users/eitan/Documents/javacv-bin/javacv.jar"/>
+	<classpathentry kind="lib" path="libraries/javacpp.jar"/>
+	<classpathentry kind="lib" path="libraries/javacv-android-arm.jar"/>
+	<classpathentry kind="lib" path="libraries/javacv-linux-arm.jar"/>
+	<classpathentry kind="lib" path="libraries/javacv-linux-x86_64.jar"/>
+	<classpathentry kind="lib" path="libraries/javacv-linux-x86.jar"/>
+	<classpathentry kind="lib" path="libraries/javacv-macosx-x86_64.jar"/>
+	<classpathentry kind="lib" path="libraries/javacv-windows-x86_64.jar"/>
+	<classpathentry kind="lib" path="libraries/javacv-windows-x86.jar"/>
+	<classpathentry kind="lib" path="libraries/javacv.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
