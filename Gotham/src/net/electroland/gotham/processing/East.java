@@ -3,17 +3,18 @@ package net.electroland.gotham.processing;
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
-import java.util.logging.Logger;
 
 import net.electroland.ea.EasingFunction;
 import net.electroland.ea.easing.QuinticInOut;
 import net.electroland.ea.easing.SinusoidalInOut;
-import net.electroland.utils.lighting.canvas.ELUPApplet;
+import net.electroland.gotham.core.People;
 
-public class East extends ELUPApplet {
+import org.apache.log4j.Logger;
+
+public class East extends GothamPApplet {
 
     private static final long serialVersionUID = 449793686955037866L;
-    static Logger logger = Logger.getLogger("West");
+    static Logger logger = Logger.getLogger(East.class);
 
     private Rectangle syncArea;
     private Point2D center;
@@ -44,6 +45,12 @@ public class East extends ELUPApplet {
 
     @Override
     public void drawELUContent() {
+
+        // get the presence grid (not doing anything with it yet.
+        People pm = getPeople();
+        if (pm != null){
+            logger.debug(pm);
+        }
 
         // erase background
         color(0);
@@ -82,5 +89,4 @@ public class East extends ELUPApplet {
     public Color randomColor() {
         return new Color((int)(Math.random() * 255), (int)(Math.random() * 255), (int)(Math.random() * 255));
     }
-
 }
