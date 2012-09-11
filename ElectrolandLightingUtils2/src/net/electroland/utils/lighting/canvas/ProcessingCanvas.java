@@ -25,9 +25,7 @@ public class ProcessingCanvas extends ELUCanvas2D {
         int fps = props.getRequiredInt("fps");
         Object appletObj = props.getRequiredClass("applet");
 
-        System.out.println("instantiating applet " + appletObj);
         if (appletObj instanceof ELUPApplet){
-            System.out.println("instantiating applet " + appletObj);
             applet = (ELUPApplet)appletObj;
 
             // make sure this is precedes init(). otherwise there is a race
@@ -44,7 +42,6 @@ public class ProcessingCanvas extends ELUCanvas2D {
             applet.setSyncCanvas(this);
             f.setVisible(true);
             f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            System.out.println("and we're done here");
         }
     }
 
