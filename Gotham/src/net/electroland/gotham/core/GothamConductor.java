@@ -2,20 +2,23 @@ package net.electroland.gotham.core;
 
 import java.awt.BorderLayout;
 import java.io.IOException;
-import java.util.logging.Logger;
+import java.net.SocketException;
 
 import javax.swing.JFrame;
 
 import net.electroland.gotham.core.ui.DisplayControlBar;
+import net.electroland.gotham.processing.GothamPApplet;
 import net.electroland.utils.lighting.ELUCanvas;
 import net.electroland.utils.lighting.ELUManager;
 import net.electroland.utils.lighting.canvas.ProcessingCanvas;
 import net.electroland.utils.lighting.ui.ELUControls;
 
+import org.apache.log4j.Logger;
+
 public class GothamConductor extends JFrame {
 
-    static Logger logger = Logger.getLogger("GothamConductor");
     private static final long serialVersionUID = 6608878881526717236L;
+    static Logger logger = Logger.getLogger(GothamConductor.class);
     private ELUManager lightingManager;
 
     public static void main(String[] args) throws IOException {
@@ -30,6 +33,16 @@ public class GothamConductor extends JFrame {
         conductor.setTitle("Gotham Electroland Lighting Controls");
         conductor.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         conductor.setVisible(true);
+
+        conductor.configureUDPClient(conductor.lightingManager);
+    }
+
+    public void configureUDPClient(ELUManager lightingManager) throws SocketException{
+        GothamPresenceGridUDPClient client = new GothamPresenceGridUDPClient(8000);
+        for (ELUCanvas c : lightingManager.getCanvases().values()){
+            GothamPApplet g = (GothamPApplet)((ProcessingCanvas)c).getApplet();
+            client.addListener(g);
+        }
     }
 
     public void configureRenderPanel(ELUManager lightingManager){
