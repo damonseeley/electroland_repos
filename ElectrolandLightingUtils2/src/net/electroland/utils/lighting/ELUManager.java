@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 
 import javax.vecmath.Point3d;
@@ -605,7 +604,7 @@ public class ELUManager implements Runnable, TestSuiteCompletionListener {
         logger.info("\tgetting " + TEST + "s...");
         for (String name : ep.getObjectNames(TEST))
         {
-            logger.info("\tgetting " + TEST + ".name");
+            logger.info("\tgetting " + TEST + "." + name);
             Test test = new Test(name, ep.getRequiredList("test", name, "tags"));
             tests.put(name, test);
         }
@@ -614,7 +613,7 @@ public class ELUManager implements Runnable, TestSuiteCompletionListener {
         logger.info("\tgetting " + TEST_SUITE + "s...");
         for (String name : ep.getObjectNames(TEST_SUITE))
         {
-            logger.info("\tgetting " + TEST_SUITE + ".name");
+            logger.info("\tgetting " + TEST_SUITE + "." + name);
             int fps = ep.getRequiredInt(TEST_SUITE, name, "fps");
             List<String> testStrs = ep.getRequiredList(TEST_SUITE, name, "tests");
             ArrayList<Test> itests = new ArrayList<Test>(testStrs.size());
