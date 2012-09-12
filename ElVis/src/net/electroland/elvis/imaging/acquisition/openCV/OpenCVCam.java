@@ -93,6 +93,7 @@ public class OpenCVCam extends Thread implements ImageAcquirer {
 		}
 
 		//Seems to need a small delay before grabbing
+		if(delay > 0) {
 		synchronized(this) {
 			try {
 				this.wait(delay);
@@ -100,6 +101,7 @@ public class OpenCVCam extends Thread implements ImageAcquirer {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
 		}
 
 
@@ -140,4 +142,3 @@ public class OpenCVCam extends Thread implements ImageAcquirer {
 		}
 	}
 }
-
