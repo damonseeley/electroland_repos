@@ -9,12 +9,12 @@ import com.googlecode.javacv.FrameGrabber.ImageMode;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 
 public class FlyCamera extends OpenCVCam  {
-	int width;
-	int height;
+	//int width;
+	//int height;
 
-	FlyCaptureFrameGrabber frameGrabber;
-	ImageReceiver imageReceiver;
-	boolean isRunning;
+    //FlyCaptureFrameGrabber frameGrabber; //commented out by Eitan on Sept 11, 2012 while trying to troubleshoot FlyCam connection
+	//ImageReceiver imageReceiver;
+	//boolean isRunning;
 
 	public FlyCamera (ImageReceiver imageReceiver, int w, int h, int dev) throws Exception {
 		super(imageReceiver, w,h , new FlyCaptureFrameGrabber(dev));
