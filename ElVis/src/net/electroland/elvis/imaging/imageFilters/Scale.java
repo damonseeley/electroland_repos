@@ -1,24 +1,24 @@
 package net.electroland.elvis.imaging.imageFilters;
 //CV_INTER_CUBIC 
-import static com.googlecode.javacv.cpp.opencv_core.cvCopy;
 import static com.googlecode.javacv.cpp.opencv_imgproc.CV_INTER_AREA;
 import static com.googlecode.javacv.cpp.opencv_imgproc.cvResize;
-
-import java.nio.IntBuffer;
-import java.util.StringTokenizer;
-
-import net.electroland.elvis.net.StringAppender;
 import net.electroland.elvis.util.ElProps;
 import net.electroland.elvis.util.parameters.BoolParameter;
+import net.electroland.elvis.util.parameters.DoubleParameter;
 import net.electroland.elvis.util.parameters.IntParameter;
+import static com.googlecode.javacv.cpp.opencv_imgproc.CV_THRESH_BINARY;
+import static com.googlecode.javacv.cpp.opencv_imgproc.cvThreshold;
+import static com.googlecode.javacv.cpp.opencv_core.cvCopy;
+
 
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 
 public class Scale extends Filter {
-	
+
 	boolean needsUpdate = true;
 	IntParameter scaleXParam;
 	IntParameter scaleYParam;
+	DoubleParameter threshParam;
 	BoolParameter isOn;
 	IplImage smallImg;
 
@@ -35,6 +35,8 @@ public class Scale extends Filter {
 		scaleYParam.setMinValue(0);
 		parameters.add(scaleYParam);
 
+		threshParam = new DoubleParameter(propPrefix+"Threshold", 1, -1, props);
+		parameters.add(threshParam);		
 
 	}
 	public IplImage getSmallImg() {
@@ -65,27 +67,20 @@ public class Scale extends Filter {
 		}
 		if(isOn.getBoolValue()) {
 			cvResize(src, smallImg, CV_INTER_AREA);
+			if(threshParam.getDoubleValue() >= 0 ) {
+				cvThreshold(smallImg, smallImg, threshParam.getDoubleValue(), 255, CV_THRESH_BINARY);	
+			}
 			cvResize(smallImg, dst, CV_INTER_AREA );			
 		} else {
 			cvCopy(src, dst);
 		}
 
 
-		/*
-		if(isOn.getBoolValue()) {
-			ByteBuffer bb = dst.getByteBuffer();
-			int cnt = 0;
-			System.out.println("==");
-			while(bb.hasRemaining()) {
-				Short val =(short)(  (short) bb.get() & 0xff);
-				System.out.println(cnt++ + " " +val);
-			}
-		}
-		 */
+
 		return dst;
 
 
 	}
-	
+
 
 }
