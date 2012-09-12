@@ -1,18 +1,22 @@
 package net.electroland.utils.lighting.canvas;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Rectangle;
-import java.util.logging.Logger;
 
 import net.electroland.utils.lighting.CanvasDetector;
 import net.electroland.utils.lighting.DetectionModel;
+
+import org.apache.log4j.Logger;
+
 import processing.core.PApplet;
+import processing.core.PImage;
 
 abstract public class ELUPApplet extends PApplet {
 
-    static Logger logger = Logger.getLogger("ELUPApplet");
+    static Logger logger = Logger.getLogger(ELUPApplet.class);
     private static final long serialVersionUID = -8484348842116122238L;
-    private Rectangle area;
+    private Dimension dim;
     private ProcessingCanvas canvas;
     private boolean showDetectors = true;
     private boolean showRendering = true;
@@ -27,7 +31,20 @@ abstract public class ELUPApplet extends PApplet {
 
         // sync content to lights
         if (canvas != null){
-            canvas.sync(this.get(area.x, area.y, area.width, area.height).pixels);
+            PImage image = this.get(0, 0, dim.width, dim.height);
+            int[] pixels;
+            if (image.width == dim.width){
+                if (image.height != dim.height){
+                    pixels = new int[dim.width * dim.height];
+                    // zero pad (if necessary)
+                    System.arraycopy(image.pixels, 0, pixels, 0, image.pixels.length);
+                }else{
+                    pixels = image.pixels;
+                }
+                canvas.sync(pixels);
+            }else{
+                logger.error("Cannot sync when Applet is narrower than " + dim.width + " pixels.");
+            }
         }
 
         // draw outline of sync area and...
@@ -39,7 +56,7 @@ abstract public class ELUPApplet extends PApplet {
         }else{
             fill(0);
         }
-        this.rect(area.x - 1, area.y - 1, area.width + 2, area.height + 2);
+        this.rect(- 1, - 1, dim.width + 2, dim.height + 2);
 
         // show detectors (if user clicked preference for detetors)
         if (showDetectors && canvas != null){
@@ -69,16 +86,16 @@ abstract public class ELUPApplet extends PApplet {
         this.canvas = canvas;
     }
 
-    public Rectangle getSyncArea(){
-        return area;
+    public Dimension getSyncArea(){
+        return dim;
     }
 
     public void setDetectorScale(float scale){
         this.scale = scale;
     }
 
-    public void setSyncArea(Rectangle area){
-        this.area = area;
+    public void setSyncArea(Dimension dimensions){
+        this.dim = dimensions;
     }
 
     public void setShowDetectors(boolean showDetectors){
@@ -92,6 +109,7 @@ abstract public class ELUPApplet extends PApplet {
     public void showOnly(DetectionModel detectionModel){
         showOnly = detectionModel;
     }
+
     public void showAll(){
         showOnly = null;
     }
