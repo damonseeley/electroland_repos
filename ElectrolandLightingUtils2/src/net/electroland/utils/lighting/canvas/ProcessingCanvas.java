@@ -27,7 +27,7 @@ public class ProcessingCanvas extends ELUCanvas2D {
             // make sure setSyncArea(...)  precedes init(). otherwise there is a race
             // condition against setup().
             applet = (ELUPApplet)appletObj;
-            applet.setSyncArea(new Rectangle(0, 0, this.getDimensions().width, this.getDimensions().height));
+            applet.setSyncArea(this.getDimensions());
             applet.setSyncCanvas(this);
             applet.init();
             applet.frameRate(fps);

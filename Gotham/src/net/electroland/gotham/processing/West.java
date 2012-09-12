@@ -1,6 +1,6 @@
 package net.electroland.gotham.processing;
 
-import java.awt.Rectangle;
+import java.awt.Dimension;
 import java.awt.geom.Point2D;
 
 import net.electroland.ea.EasingFunction;
@@ -14,7 +14,7 @@ public class West extends GothamPApplet {
     private static final long serialVersionUID = 449793686955037866L;
     static Logger logger = Logger.getLogger(GothamPApplet.class);
 
-    private Rectangle syncArea;
+    private Dimension syncArea;
     private Point2D center;
 
     private boolean isGrowing = true;
@@ -31,8 +31,8 @@ public class West extends GothamPApplet {
         // syncArea is the area of the screen that will be synced to the lights.
         syncArea = this.getSyncArea();
         // our circle's center will be the middle of the sync area.
-        center = new Point2D.Double(syncArea.x + .5 * syncArea.width, 
-                                    syncArea.y + .5 * syncArea.height);
+        center = new Point2D.Double(.5 * syncArea.width, 
+                                    .5 * syncArea.height);
         // it will beat between these radii
         smallRadius = .05f * syncArea.height;
         largeRadius = 1.2f * syncArea.height;
