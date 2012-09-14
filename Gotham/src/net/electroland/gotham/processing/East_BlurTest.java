@@ -35,16 +35,16 @@ public class East_BlurTest extends GothamPApplet {
         
         //Added by Michael
         off = createGraphics(width / scaler, height / scaler, PApplet.P3D);
-		off.beginDraw();
-		off.rectMode(PApplet.CENTER);
-		off.noStroke();
-		off.endDraw();
-		colorMode(HSB, 360, 100, 100);
-        
-		Ani.init(this);
-		stripes = new ArrayList<Stripe>();
-		stripes.add(new Stripe(this, off));
-		DURATION = 15000 / (long)Stripe.w*2;
+//        off.beginDraw();
+//		off.rectMode(PApplet.CENTER);
+//		off.noStroke();
+//		off.endDraw();
+//		colorMode(HSB, 360, 100, 100);
+//        
+//		Ani.init(this);
+//		stripes = new ArrayList<Stripe>();
+//		stripes.add(new Stripe(this, off));
+//		DURATION = 15000 / (long)Stripe.w*2;
     }
 
     @Override
@@ -61,12 +61,12 @@ public class East_BlurTest extends GothamPApplet {
         //fill(0);
         //rect(0,0,this.getWidth(), this.getHeight());
         
-        for (int i = stripes.size() - 1; i >= 0; i--) {
-			Stripe s = stripes.get(i);
-			s.run();
-			if (s.kill())
-				stripes.remove(i);
-		}
+//        for (int i = stripes.size() - 1; i >= 0; i--) {
+//			Stripe s = stripes.get(i);
+//			s.run();
+//			if (s.kill())
+//				stripes.remove(i);
+//		}
 
 //		if (System.currentTimeMillis() - startTime > DURATION){
 //			stripes.add(new Stripe(this, off));

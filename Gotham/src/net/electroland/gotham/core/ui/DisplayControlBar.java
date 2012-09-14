@@ -105,7 +105,7 @@ public class DisplayControlBar extends JPanel implements ActionListener, ChangeL
     public File getFilename() {
         JFileChooser chooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter(
-            "JPG, PNG or MOV Files", "jpg", "mov", "png");
+            "JPG, PNG, MP4 or MOV Files", "jpg", "mov", "png", "mp4");
         chooser.setFileFilter(filter);
         int returnVal = chooser.showOpenDialog(this);
         if(returnVal == JFileChooser.APPROVE_OPTION) {
