@@ -33,6 +33,8 @@
 	<classpathentry kind="lib" path="libraries/jogl-all.jar"/>
 	<classpathentry kind="lib" path="libraries/Ani.jar"/>
 	<classpathentry kind="lib" path="libraries/video.jar"/>
+	<classpathentry kind="lib" path="libraries/gstreamer-java.jar"/>
+	<classpathentry kind="lib" path="libraries/jna.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ElectrolandAnimation2"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ElVis"/>
 	<classpathentry kind="output" path="target/classes"/>
