@@ -29,7 +29,7 @@ public class GothamConductor extends JFrame {
         conductor.lightingManager.load(args.length > 0 ? args[0] : "lights.properties");
 
         conductor.configureRenderPanel(conductor.lightingManager);
-        conductor.setSize(600, 100);
+        conductor.setSize(800, 100);
         conductor.setTitle("Gotham Electroland Lighting Controls");
         conductor.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         conductor.setVisible(true);
