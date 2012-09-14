@@ -24,15 +24,19 @@ public class MovieOrImagePApplet extends GothamPApplet {
     @Override
     public void fileReceived(File file){
         String name = file.getAbsolutePath();
-        System.out.println("loading " + name);
         if (name.toLowerCase().endsWith(".mov") || name.toLowerCase().endsWith(".mp4")){
             movie = new Movie(this, name);
             movie.play();
             image = null;
-            System.out.println("loading movie " + movie);
+            System.out.println("loaded movie " + movie);
         } else if (name.toLowerCase().endsWith(".jpg") || name.toLowerCase().endsWith(".png")) {
             image = loadImage(file.getAbsolutePath());
             movie = null;
         }
     }
+
+    void movieEvent(Movie m) {
+        m.read();
+      }
+
 }
