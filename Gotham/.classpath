@@ -33,7 +33,11 @@
 	<classpathentry kind="lib" path="libraries/jogl-all.jar"/>
 	<classpathentry kind="lib" path="libraries/Ani.jar"/>
 	<classpathentry kind="lib" path="libraries/video.jar"/>
-	<classpathentry kind="lib" path="libraries/gstreamer-java.jar"/>
+	<classpathentry kind="lib" path="libraries/gstreamer-java.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Gotham/libraries"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="libraries/jna.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ElectrolandAnimation2"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ElVis"/>

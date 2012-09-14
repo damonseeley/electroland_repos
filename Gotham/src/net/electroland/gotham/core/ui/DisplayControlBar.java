@@ -21,6 +21,7 @@ import net.electroland.utils.lighting.canvas.ELUPApplet;
 import net.electroland.utils.lighting.detection.BlueDetectionModel;
 import net.electroland.utils.lighting.detection.GreenDetectionModel;
 import net.electroland.utils.lighting.detection.RedDetectionModel;
+import processing.core.PApplet;
 
 public class DisplayControlBar extends JPanel implements ActionListener, ChangeListener{
 
