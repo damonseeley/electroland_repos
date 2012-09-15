@@ -39,6 +39,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="libraries/jna.jar"/>
+	<classpathentry kind="lib" path="libraries/controlP5.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ElectrolandAnimation2"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ElVis"/>
 	<classpathentry kind="output" path="target/classes"/>
