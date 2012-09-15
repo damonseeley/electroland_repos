@@ -5,29 +5,20 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import net.electroland.gotham.core.People;
 import org.apache.log4j.Logger;
-
 import de.looksgood.ani.Ani;
-import processing.core.PImage;
-import processing.core.PApplet;
-import processing.core.PGraphics;
 
 public class East_BlurTest extends GothamPApplet {
 
-	@Override
-	public void drawELUContent(){
-	
-	}
-	/*private static final long serialVersionUID = 1L;
-	static Logger logger = Logger.getLogger(East.class);
-
+	private static final long serialVersionUID = 1L;
+	static Logger logger = Logger.getLogger(GothamPApplet.class);
 	private Dimension syncArea;
 
 	ArrayList<Stripe> stripes;
+	public static final float rate = 30; //Number of seconds needed to traverse the sync area
 	int scaler = 5; // amt by which to scale down the offscreen texture
-	private static long DURATION;
+	private static float DURATION;
 	private long startTime = 0;
 
-	public PGraphics test = createGraphics(syncArea.width,syncArea.height, PApplet.P3D);
 	@Override
 	public void setup() {
 		// syncArea is the area of the screen that will be synced to the lights.
@@ -35,11 +26,14 @@ public class East_BlurTest extends GothamPApplet {
 		// our square's center will be the middle of the sync area.
 		colorMode(HSB, 360, 100, 100);
 
-//		Ani.init(this);
-//		stripes = new ArrayList<Stripe>();
-//		stripes.add(new Stripe(this));
-		
-		DURATION = 15000 / (long) Stripe.w;
+		rectMode(CENTER);
+		Ani.init(this);
+		stripes = new ArrayList<Stripe>();
+		stripes.add(new Stripe(this, syncArea));
+
+		DURATION = 1000 * ( rate / ((syncArea.width + Stripe.w * 2) / Stripe.w ));
+		//Set this to false in order to turn off the white highlight.
+		Stripe.setMouseHighlight(false);
 	}
 
 	@Override
@@ -51,29 +45,23 @@ public class East_BlurTest extends GothamPApplet {
 			logger.debug(pm);
 		}
 
-//		for (int i = stripes.size() - 1; i >= 0; i--) {
-//			Stripe s = stripes.get(i);
-//			s.run();
-//			if (s.kill())
-//				stripes.remove(i);
-//		}
+		background(0);
+		for (int i = stripes.size() - 1; i >= 0; i--) {
+			Stripe s = stripes.get(i);
+			s.run();
+			if (s.kill())
+				stripes.remove(i);
+		}
 
-//		 if (System.currentTimeMillis() - startTime > DURATION){
-//		 stripes.add(new Stripe(this));
-//		 startTime = System.currentTimeMillis();
-//		 }
+		 if (millis() - startTime >= DURATION) {
+		 stripes.add(new Stripe(this, syncArea));
+		 startTime = millis();
+		 }
 
-		// off.loadPixels();
-		// fastBlur(off, 4);
-		// off.updatePixels();
-
-		//image(Stripe.getOffScreenCanvas(), 0, 0, syncArea.width, syncArea.height);
-		// Testing...
-		test.beginDraw();
-		test.fill(0, 100, 100);
-		test.ellipse(width / 2, height / 2, 50, 50);
-		test.endDraw();
-		image(test, 0,0,syncArea.width, syncArea.height);
+		 //Right now, blur is controlled by the vertical mouse component.
+		 loadPixels();
+		 fastBlur(pixels, floor(map(mouseY, 0,height, 1,50)));
+		 updatePixels();
 	}
 
 	// ==================================================
@@ -81,13 +69,13 @@ public class East_BlurTest extends GothamPApplet {
 	// by Mario Klingemann
 	// http://incubator.quasimondo.com/processing/superfast_blur.php
 	// ==================================================
-	void fastBlur(PImage img, int radius) {
+	void fastBlur(int[] img, int radius) {
 
 		if (radius < 1) {
 			return;
 		}
-		int w = img.width;
-		int h = img.height;
+		int w = width;
+		int h = height;
 		int wm = w - 1;
 		int hm = h - 1;
 		int wh = w * h;
@@ -108,7 +96,7 @@ public class East_BlurTest extends GothamPApplet {
 		for (y = 0; y < h; y++) {
 			rsum = gsum = bsum = 0;
 			for (i = -radius; i <= radius; i++) {
-				p = img.pixels[yi + min(wm, max(i, 0))];
+				p = img[yi + min(wm, max(i, 0))];
 				rsum += (p & 0xff0000) >> 16;
 				gsum += (p & 0x00ff00) >> 8;
 				bsum += p & 0x0000ff;
@@ -123,8 +111,8 @@ public class East_BlurTest extends GothamPApplet {
 					vmin[x] = min(x + radius + 1, wm);
 					vmax[x] = max(x - radius, 0);
 				}
-				p1 = img.pixels[yw + vmin[x]];
-				p2 = img.pixels[yw + vmax[x]];
+				p1 = img[yw + vmin[x]];
+				p2 = img[yw + vmax[x]];
 
 				rsum += ((p1 & 0xff0000) - (p2 & 0xff0000)) >> 16;
 				gsum += ((p1 & 0x00ff00) - (p2 & 0x00ff00)) >> 8;
@@ -146,7 +134,7 @@ public class East_BlurTest extends GothamPApplet {
 			}
 			yi = x;
 			for (y = 0; y < h; y++) {
-				img.pixels[yi] = 0xff000000 | (dv[rsum] << 16)
+				img[yi] = 0xff000000 | (dv[rsum] << 16)
 						| (dv[gsum] << 8) | dv[bsum];
 				if (x == 0) {
 					vmin[y] = min(y + radius + 1, hm) * w;
@@ -163,5 +151,5 @@ public class East_BlurTest extends GothamPApplet {
 			}
 		}
 	}
-	*/
+
 }

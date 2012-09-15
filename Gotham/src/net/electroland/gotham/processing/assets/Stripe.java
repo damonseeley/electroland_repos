@@ -1,67 +1,39 @@
 package net.electroland.gotham.processing.assets;
-
+import net.electroland.gotham.processing.East_BlurTest;
+import java.awt.Dimension;
 import processing.core.PApplet;
-import processing.core.PGraphics;
 import de.looksgood.ani.Ani;
 
 public class Stripe {
 	public float xpos;
-	
-	private float h;
+	private float h; //the hue of this Stripe
 	Ani vel;
 	private float target;
-	private float rate;
 	PApplet p;
-	PGraphics off;
-	public static int scaler = 5;
-	public static float w = 50 / scaler;
-float pxp;
+	public static float w = 100; // with of a stripe
+	public static float hw = w * 0.5f; // half width
+	private static boolean highlight = true;
 
-	public Stripe(PApplet p, PGraphics pg) {
+	public Stripe(PApplet p, Dimension d) {
 		this.p = p;
-		off = pg;
-		xpos = -w;
-		target = pg.width + w;
+		xpos = -hw; //start offscreen
+		target = d.width + hw; //end offscreen
 		h = p.random(360);
-		// rate = random(3, 5); //amt of seconds it would ordinarily take to go
-		// full L to R
-		rate = 15.0f;
-		vel = new Ani(this, rate, "xpos", target, Ani.LINEAR, "onEnd:kill");
+		vel = new Ani(this, East_BlurTest.rate, "xpos", target, Ani.LINEAR); //the tween
 	}
 
+	public static void setMouseHighlight(boolean b){
+		highlight = b ? true : false;
+	}
 	public void run() {
-		off.beginDraw();
-
-		// if(mouseDist() < w*5.5){
-		float s = PApplet.map(mouseDist(), 300, 0, 90, 0);
-		s = PApplet.constrain(s, 0, 90);
-		off.fill(p.color(h, s, 90));
-		// }
-		// else off.fill(color(h, 90,90));
-
-		// off.fill(c);
-		off.rect(xpos, off.height / 2, (w * 2) + 2, off.height);
-		off.endDraw();
+		float s = highlight ? PApplet.constrain(mouseDist(), 0, 90) : 90;
+		p.fill(p.color(h, s, 90));
+		p.rect(xpos, p.height / 2, w, p.height);	
 	}
-
-	public boolean okgo() {
-		if (xpos >= w && pxp < w) {
-			return true;
-		} else {
-			pxp = xpos;
-			return false;
-		}
-	}
-
 	public boolean kill() {
-		if (xpos >= target) {
-			return true;
-		} else
-			return false;
+		return xpos >= target;
 	}
-
-	public float mouseDist() {
-		return PApplet.dist(p.mouseX, 0, xpos * scaler, 0);
+	private float mouseDist() {
+		return Math.abs(p.mouseX-xpos);
 	}
 }
-
