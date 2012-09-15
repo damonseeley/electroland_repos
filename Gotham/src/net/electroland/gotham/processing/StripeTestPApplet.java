@@ -17,9 +17,9 @@ public class StripeTestPApplet extends GothamPApplet {
 	//Select Horizontal or Vertical stripes
 	private boolean horizontal = true;
 	
-	private boolean useMouse = false; //If you set this to false, dial in your blur const below
+	private boolean useMouse = true; //If you set this to false, dial in your blur const below
 	private final int BLUR_AMT = 20;
-	private final int BLUR_MAX = 30; //If using the mouse, this constrains the blurriness. 
+	private final int BLUR_MAX = 100; //If using the mouse, this constrains the blurriness. 
 
 	@Override
 	public void setup() {
@@ -36,7 +36,7 @@ public class StripeTestPApplet extends GothamPApplet {
 		for (int i = 0; i < numStripes; i++) {
 			fill(hues[i]);
 			if(horizontal)
-				rect(i * inc-offset, 0, inc+offset*2, syncArea.height);
+				rect(i * inc-offset, 0, inc+offset*2, syncArea.height*2);
 			else
 				rect(0, i*inc-offset, syncArea.width, inc+offset*2);
 		}
