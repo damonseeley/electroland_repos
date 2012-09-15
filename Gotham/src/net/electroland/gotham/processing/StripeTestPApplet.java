@@ -51,7 +51,7 @@ public class StripeTestPApplet extends GothamPApplet {
 		colorButton = control.addBang("setNewColors").setPosition(100, 40)
 				.setSize(20, 20).setTriggerEvent(Bang.RELEASE);
 		// Init blur knob
-		blurKnob = control.addKnob("blurAmt").setRange(1, 40).setValue(10)
+		blurKnob = control.addKnob("blurAmt").setRange(1, 100).setValue(10)
 				.setPosition(100, 100).setRadius(30)
 				.setColorForeground(color(255))
 				.setColorBackground(color(0, 160, 100))
