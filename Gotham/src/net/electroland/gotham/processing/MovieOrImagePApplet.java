@@ -35,7 +35,7 @@ public class MovieOrImagePApplet extends GothamPApplet {
         }
     }
 
-    void movieEvent(Movie m) {
+    public void movieEvent(Movie m) {
         m.read();
       }
 
