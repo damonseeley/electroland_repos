@@ -1,8 +1,15 @@
 package net.electroland.gotham.processing;
 
 import java.awt.Dimension;
+
 import org.apache.log4j.Logger;
-import controlP5.*;
+
+import controlP5.Bang;
+import controlP5.ControlP5;
+import controlP5.ControlWindow;
+import controlP5.Controller;
+import controlP5.Knob;
+import controlP5.Toggle;
 
 public class StripeTestPApplet extends GothamPApplet {
 
@@ -58,10 +65,10 @@ public class StripeTestPApplet extends GothamPApplet {
 				.setColorActive(color(255, 255, 0))
 				.setDragDirection(Knob.HORIZONTAL);
 		// Set controls to window object
-		((Toggle) tg).setWindow(window);
-		((Knob) blurKnob).setWindow(window);
-		((Knob) stripeKnob).setWindow(window);	//Apparently these are depricated but they work.
-		((Bang) colorButton).setWindow(window); //This is the latest release of Cp5. Can't find any other method.
+		((Toggle) tg).moveTo(window);
+		((Knob) blurKnob).moveTo(window);
+		((Knob) stripeKnob).moveTo(window);	//Apparently these are depricated but they work.
+		((Bang) colorButton).moveTo(window); //This is the latest release of Cp5. Can't find any other method.
 
 		// Store random hues... Not efficient but fine for now.
 		colorMode(HSB, 360, 100, 100);

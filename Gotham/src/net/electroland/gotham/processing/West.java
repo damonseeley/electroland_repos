@@ -5,7 +5,6 @@ import java.awt.geom.Point2D;
 
 import net.electroland.ea.EasingFunction;
 import net.electroland.ea.easing.SinusoidalInOut;
-import net.electroland.gotham.core.People;
 
 import org.apache.log4j.Logger;
 
@@ -40,12 +39,6 @@ public class West extends GothamPApplet {
 
     @Override
     public void drawELUContent() {
-
-        // get the presence grid (not doing anything with it yet.
-        People pm = getPeople();
-        if (pm != null){
-            logger.debug(pm);
-        }
 
         // erase background
         color(0);

@@ -1,10 +1,12 @@
 package net.electroland.gotham.processing;
 
-import net.electroland.gotham.processing.assets.Stripe;
 import java.awt.Dimension;
 import java.util.ArrayList;
-import net.electroland.gotham.core.People;
+
+import net.electroland.gotham.processing.assets.Stripe;
+
 import org.apache.log4j.Logger;
+
 import de.looksgood.ani.Ani;
 
 public class East_BlurTest extends GothamPApplet {
@@ -38,12 +40,6 @@ public class East_BlurTest extends GothamPApplet {
 
 	@Override
 	public void drawELUContent() {
-
-		// get the presence grid (not doing anything with it yet.
-		People pm = getPeople();
-		if (pm != null) {
-			logger.debug(pm);
-		}
 
 		background(0);
 		for (int i = stripes.size() - 1; i >= 0; i--) {
