@@ -10,7 +10,7 @@ import net.electroland.utils.lighting.canvas.ELUPApplet;
 
 abstract public class GothamPApplet extends ELUPApplet {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 8991292715035010606L;
     private Room room;
 
     public void handle(GridData d) {

@@ -40,8 +40,10 @@ public class GothamConductor extends JFrame {
     public void configureUDPClient(ELUManager lightingManager) throws SocketException{
         GothamPresenceGridUDPClient client = new GothamPresenceGridUDPClient(3458);
         for (ELUCanvas c : lightingManager.getCanvases().values()){
-            GothamPApplet g = (GothamPApplet)((ProcessingCanvas)c).getApplet();
-            client.addListener(g);
+            if (((ProcessingCanvas)c).getApplet() instanceof GothamPApplet){
+                GothamPApplet g = (GothamPApplet)((ProcessingCanvas)c).getApplet();
+                client.addListener(g);
+            }
         }
     }
 
