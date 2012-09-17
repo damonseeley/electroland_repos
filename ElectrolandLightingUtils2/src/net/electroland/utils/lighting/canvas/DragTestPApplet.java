@@ -11,6 +11,7 @@ public class DragTestPApplet extends ELUPApplet {
     @Override
     public void setup() {
         registerMethod("mouseEvent", this);
+        noLoop();
     }
 
     @Override
@@ -27,11 +28,7 @@ public class DragTestPApplet extends ELUPApplet {
     public void mouseEvent(MouseEvent event) {
         x = event.getX();
         y = event.getY();
-
-        switch (event.getAction()) {
-          case MouseEvent.DRAGGED:
-            break;
-        }
-       }
+        redraw();
+    }
 
 }
