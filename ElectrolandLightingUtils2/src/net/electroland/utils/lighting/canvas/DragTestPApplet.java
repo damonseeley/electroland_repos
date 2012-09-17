@@ -26,8 +26,13 @@ public class DragTestPApplet extends ELUPApplet {
     }
 
     public void mouseEvent(MouseEvent event) {
-        x = event.getX();
-        y = event.getY();
+        switch(event.getAction()){
+        case(MouseEvent.DRAGGED):
+        case(MouseEvent.PRESSED):
+            x = event.getX();
+            y = event.getY();
+            break;
+        }
         redraw();
     }
 
