@@ -18,7 +18,7 @@ public class ThreshClamp extends Filter{
 
 	public ThreshClamp(int defThresh, String prefPrefix, ElProps props) {
 		super();
-		threshParam = new DoubleParameter(prefPrefix+"threshold", defThresh, 1, props);
+		threshParam = new DoubleParameter(prefPrefix+"threshold", 1,defThresh, props);
 		threshParam.setRange(0, 255);
 		parameters.add(threshParam);
 	}
