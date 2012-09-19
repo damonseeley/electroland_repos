@@ -5,6 +5,8 @@ import static com.googlecode.javacv.cpp.opencv_core.cvCountNonZero;
 import static com.googlecode.javacv.cpp.opencv_core.cvGetSubRect;
 import static com.googlecode.javacv.cpp.opencv_core.cvScalarAll;
 import static com.googlecode.javacv.cpp.opencv_core.cvSet;
+import static com.googlecode.javacv.cpp.opencv_imgproc.CV_THRESH_BINARY;
+import static com.googlecode.javacv.cpp.opencv_imgproc.cvThreshold;
 import net.electroland.elvis.util.ElProps;
 import net.electroland.elvis.util.parameters.BoolParameter;
 import net.electroland.elvis.util.parameters.IntParameter;
@@ -28,22 +30,28 @@ public class GridCount extends Filter {
 	int imgHeight;
 	IntParameter countGridWidth;
 	IntParameter countGridHeight;
+	IntParameter gridThresholdParam;
 	int cellWidth;
 	int cellHeight;
 	int cols;
 	int rows;
+	int gridThreshold;
+	
 	public GridCount(int srcWidth, int srcHeight, ElProps props) {
 		imgWidth = srcWidth;
 		imgHeight = srcHeight;
 		// add ison param here
-
-		isOnParam  = new BoolParameter("grdCountIsOn", true);
-		shouldRenderParam  = new BoolParameter("grdCountIsRendering", true);
+		
+		isOnParam  = new BoolParameter("countGridIsOn", true);
+		shouldRenderParam  = new BoolParameter("countGridIsRendering", true);
 		countGridWidth = new IntParameter("countGridWidth", 1, srcWidth / 10);
 		countGridHeight = new IntParameter("countGridHeight", 1, srcHeight / 10);
+		gridThresholdParam = new IntParameter("countGridThreshold", 1, 50);
+		gridThresholdParam.setMinValue(-1);
 		this.parameters.add(isOnParam);
 		this.parameters.add(countGridWidth);
 		this.parameters.add(countGridHeight);
+		this.parameters.add(gridThresholdParam);
 		update();
 
 
@@ -95,6 +103,8 @@ public class GridCount extends Filter {
 		j = rows -1;
 		rects[i][j] = new CvRect(i*cellWidth, j*cellHeight, lastColWidth, lastRowHeight);
 		areas[i][j] = lastRowHeight * lastColWidth;
+		
+		gridThreshold = gridThresholdParam.getIntValue();
 	}
 	public void incParameter(int p) {
 		super.incParameter(p);
@@ -114,13 +124,19 @@ public class GridCount extends Filter {
 			cvCopy(dst, src);
 		}
 		
+		
+
+		
 		if(isOn) {
 			for(int i =0; i < rects.length; i++) {
 				for(int j = 0; j< rects[0].length; j++) {
 					CvMat subimg = new CvMat();
 					cvGetSubRect(src, subimg, rects[i][j]);
 					int total = cvCountNonZero(subimg);
-					totals[i][j] = cvCountNonZero(subimg);
+					if(gridThreshold >= 0) {
+						total = (total >= gridThreshold) ? 255 : 0;
+					}
+					totals[i][j] = total;
 					if(isRendering) {
 						CvScalar scalar = cvScalarAll((int) (255 * (float)total/(float)areas[i][j]));
 						cvSet(subimg, scalar);
