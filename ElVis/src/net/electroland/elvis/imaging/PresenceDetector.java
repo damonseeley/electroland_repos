@@ -18,6 +18,7 @@ import net.electroland.elvis.imaging.imageFilters.Filter;
 import net.electroland.elvis.imaging.imageFilters.GridUnwarp;
 import net.electroland.elvis.imaging.imageFilters.ImageDifference;
 import net.electroland.elvis.imaging.imageFilters.Mask;
+import net.electroland.elvis.imaging.imageFilters.Rotate;
 import net.electroland.elvis.imaging.imageFilters.Scale;
 import net.electroland.elvis.imaging.imageFilters.ThreshClamp;
 import net.electroland.elvis.imaging.imageFilters.Unwarp;
@@ -25,7 +26,6 @@ import net.electroland.elvis.net.PresenceGridUPDBroadcaster;
 import net.electroland.elvis.net.RegionUPDBroadcaster;
 import net.electroland.elvis.net.TrackUPDBroadcaster;
 import net.electroland.elvis.regionManager.GlobalSettingsPanelMig;
-import net.electroland.elvis.regions.GlobalRegionSnapshot;
 import net.electroland.elvis.regions.PolyRegion;
 import net.electroland.elvis.util.ElProps;
 
@@ -37,7 +37,7 @@ import com.googlecode.javacv.cpp.opencv_core.IplImage;
 public class PresenceDetector extends ImageProcessor {
 
 
-	public static enum ImgReturnType { RAW, BLUR, MASK, UNWARP, GRID_UNWARP, BACKGROUND,  DIFF, THRESH, DILATE, ERODE, CONTOUR, BLOBS, GRIDCOUNT};
+	public static enum ImgReturnType { RAW, BLUR, MASK, ROTATE, UNWARP, GRID_UNWARP, BACKGROUND,  DIFF, THRESH, DILATE, ERODE, CONTOUR, BLOBS, GRIDCOUNT};
 
 
 	boolean netImageNeedsUpdate = false;
@@ -52,6 +52,7 @@ public class PresenceDetector extends ImageProcessor {
 
 	public ROI roi = null;
 	public Mask mask;
+	public Rotate rotate;
 	public Unwarp unwarp;
 	public GridUnwarp gridUnwarp;
 	public Copy raw;
@@ -63,7 +64,6 @@ public class PresenceDetector extends ImageProcessor {
 	public Dilate dilate;
 	public Erode erode;
 	public BlobWriter blobWriter;
-	///public GridCount gridcount;
 	public Scale scale;
 
 	ImageConversion imageConversion = new ImageConversion();
@@ -132,6 +132,7 @@ public class PresenceDetector extends ImageProcessor {
 		raw = new Copy();
 		//		mask = new Mask(props.getProperty("mask", "testMask.png"));
 		mask = new Mask("testMask.png");
+		rotate = new Rotate(props);
 		extreema = new CalcExtreema();
 		unwarp = new Unwarp(roiWidth,roiHeight, props);
 		gridUnwarp = new GridUnwarp(roiWidth, roiHeight, props);
@@ -149,6 +150,7 @@ public class PresenceDetector extends ImageProcessor {
 		filters[i++] = raw;
 		filters[i++] = blur;
 		filters[i++] = mask;
+		filters[i++] = rotate;
 		filters[i++] = unwarp;
 		filters[i++] = gridUnwarp;
 		filters[i++] = background;
@@ -289,7 +291,8 @@ public class PresenceDetector extends ImageProcessor {
 		}
 		blur.apply(raw.getImage());
 		mask.apply(blur.getImage());
-		unwarp.apply(mask.getImage());
+		rotate.apply(mask.getImage());
+		unwarp.apply(rotate.getImage());
 		gridUnwarp.apply(unwarp.getImage());
 		if(background.apply(gridUnwarp.getImage()) == null) return null;
 		diff.apply(background.getImage(), gridUnwarp.getImage());
