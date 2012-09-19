@@ -29,7 +29,7 @@ public class Rotate extends Filter {
 
 	public Rotate(ElProps props) {
 		super();
-		angleParam = new DoubleParameter("rotate", .5, 0, props);
+		angleParam = new DoubleParameter("rotateAngle", .5, 0, props);
 		angleParam.setRange(-180, 180);
 		parameters.add(angleParam);
 
