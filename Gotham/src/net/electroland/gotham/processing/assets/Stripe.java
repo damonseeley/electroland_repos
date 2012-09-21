@@ -3,7 +3,7 @@ import java.awt.Dimension;
 import processing.core.PApplet;
 import net.electroland.ea.EasingFunction;
 import net.electroland.ea.easing.Linear;
-import net.electroland.gotham.processing.East_BlurTest;
+import net.electroland.gotham.processing.EastBlurTest;
 
 public class Stripe {
 
@@ -31,7 +31,7 @@ public class Stripe {
 		h = p.random(360);
 		prevMillis = p.millis(); //Start our timer
 		dist = target - begin;
-		timeAcross = East_BlurTest.randomSpeeds ? 30.0f + (float)Math.random()*90 : 60.0f * (dist/d.width);
+		timeAcross = EastBlurTest.randomSpeeds ? 30.0f + (float)Math.random()*90 : 60.0f * (dist/d.width);
 	}
 	//Overloaded Constructor. Only used to fill the screen with Stripe on startup.
 	public Stripe(PApplet p, Dimension d, int inc){
@@ -40,7 +40,7 @@ public class Stripe {
 		hw = w * 0.5f;
 		begin = (-hw) + inc * w;
 		dist = target - begin;
-		timeAcross = East_BlurTest.randomSpeeds ? 30.0f + (float)Math.random()*90 : 60.0f * (dist/d.width);
+		timeAcross = EastBlurTest.randomSpeeds ? 30.0f + (float)Math.random()*90 : 60.0f * (dist/d.width);
 	}
 	
 	public void run() {
@@ -49,7 +49,7 @@ public class Stripe {
 			percentComplete = elapsed / (timeAcross*1000);
 		
 		xpos = ef.valueAt(percentComplete, begin, target);
-		p.fill(p.color(h, 90, 90), 200);
+		p.fill(p.color(h, 90, 90));
 		p.rect(xpos, p.height / 2, w, p.height+50);	
 	}
 	public boolean isOffScreen() {
