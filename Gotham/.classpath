@@ -31,7 +31,6 @@
 	<classpathentry kind="lib" path="libraries/jogl-all-natives-windows-amd64.jar"/>
 	<classpathentry kind="lib" path="libraries/jogl-all-natives-windows-i586.jar"/>
 	<classpathentry kind="lib" path="libraries/jogl-all.jar"/>
-	<classpathentry kind="lib" path="libraries/Ani.jar"/>
 	<classpathentry kind="lib" path="libraries/video.jar"/>
 	<classpathentry kind="lib" path="libraries/gstreamer-java.jar">
 		<attributes>
