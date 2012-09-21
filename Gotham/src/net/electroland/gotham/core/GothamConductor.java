@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 
 import net.electroland.gotham.core.ui.DisplayControlBar;
 import net.electroland.gotham.processing.GothamPApplet;
+import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.lighting.ELUCanvas;
 import net.electroland.utils.lighting.ELUManager;
 import net.electroland.utils.lighting.canvas.ProcessingCanvas;
@@ -20,13 +21,16 @@ public class GothamConductor extends JFrame {
     private static final long serialVersionUID = 6608878881526717236L;
     static Logger logger = Logger.getLogger(GothamConductor.class);
     private ELUManager lightingManager;
+    public static ElectrolandProperties props;
 
     public static void main(String[] args) throws IOException {
 
         GothamConductor conductor = new GothamConductor();
+        
+        conductor.initProps();
 
         conductor.lightingManager = new ELUManager();
-        conductor.lightingManager.load(args.length > 0 ? args[0] : "lights.properties");
+        conductor.lightingManager.load(args.length > 0 ? args[0] : "Gotham-ELU2.properties");
 
         conductor.configureRenderPanel(conductor.lightingManager);
         conductor.setSize(800, 100);
@@ -45,6 +49,10 @@ public class GothamConductor extends JFrame {
                 client.addListener(g);
             }
         }
+    }
+    
+    public void initProps() {
+        props = new ElectrolandProperties("Gotham-global.properties");
     }
 
     public void configureRenderPanel(ELUManager lightingManager){
