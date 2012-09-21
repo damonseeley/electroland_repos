@@ -9,7 +9,7 @@ import net.electroland.utils.ElectrolandProperties;
 
 import org.apache.log4j.Logger;
 
-public class East_BlurTest extends GothamPApplet {
+public class EastBlurTest extends GothamPApplet {
 
 	public static boolean randomSpeeds = true;
 
@@ -45,7 +45,7 @@ public class East_BlurTest extends GothamPApplet {
 
 	@Override
 	public void drawELUContent() {
-		background(color(0,0,100));
+		background(color(0,0,0));
 		
 		for (int i = stripes.size() - 1; i >= 0; i--) {
 			Stripe s = stripes.get(i);
