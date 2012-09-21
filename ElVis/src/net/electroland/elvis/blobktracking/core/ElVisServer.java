@@ -1,5 +1,6 @@
 package net.electroland.elvis.blobktracking.core;
 
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.SocketException;
@@ -32,7 +33,7 @@ public class ElVisServer {
 		if(props.getProperty("showConsole", false)) {
 			console  = new Console("");
 			console.setVisible(true);
-		} 
+		}
 		
 
 		blobTracker = new BlobTracker(props);
@@ -51,12 +52,14 @@ public class ElVisServer {
 			}
 		}
 */
+		
 		if(props.getProperty("showGraphics", true)) {
 			BlobFrame bf = new BlobFrame(props, "el blob", blobTracker);
 			bf.blobPanel.addKeyListener(new PresenceDetectorKeyListener(props,blobTracker.presenceDetector));
 			bf.addWindowListener(new java.awt.event.WindowAdapter() {
 				public void windowClosing(WindowEvent winEvt) {
 					blobTracker.stopRunning();
+					System.exit(0); //calling the method is a must
 				}
 			});
 
@@ -91,8 +94,9 @@ public class ElVisServer {
 		
 		//temp
 		
-
 	}
+	
+	
 
 
 
