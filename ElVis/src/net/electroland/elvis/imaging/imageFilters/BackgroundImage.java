@@ -90,7 +90,7 @@ public class BackgroundImage extends Filter {
 			cvConvertScale(bi, internalSrc, 1, 0);
 
 			cvAddWeighted(internalModel, memory, internalSrc, adaptation, 0, internalModel);
-			cvConvertScale(bi, internalModel, 1, 0);
+			cvConvertScale(internalModel, dst, 1, 0);
 			
 
 		}
