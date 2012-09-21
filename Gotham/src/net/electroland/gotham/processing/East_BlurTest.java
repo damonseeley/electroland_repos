@@ -2,23 +2,19 @@ package net.electroland.gotham.processing;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
-
 import net.electroland.gotham.processing.assets.Stripe;
-
 import org.apache.log4j.Logger;
 
-import de.looksgood.ani.Ani;
-
 public class East_BlurTest extends GothamPApplet {
+
+	public static boolean randomSpeeds = true;
 
 	private static final long serialVersionUID = 1L;
 	static Logger logger = Logger.getLogger(GothamPApplet.class);
 	private Dimension syncArea;
 
 	ArrayList<Stripe> stripes;
-	public static final float rate = 30; //Number of seconds needed to traverse the sync area
-	int scaler = 5; // amt by which to scale down the offscreen texture
-	private static float DURATION;
+	private float spawnRate;
 	private long startTime = 0;
 
 	@Override
@@ -27,37 +23,38 @@ public class East_BlurTest extends GothamPApplet {
 		syncArea = this.getSyncArea();
 		// our square's center will be the middle of the sync area.
 		colorMode(HSB, 360, 100, 100);
-
 		rectMode(CENTER);
-		Ani.init(this);
-		stripes = new ArrayList<Stripe>();
-		stripes.add(new Stripe(this, syncArea));
 
-		DURATION = 1000 * ( rate / ((syncArea.width + Stripe.w * 2) / Stripe.w ));
-		//Set this to false in order to turn off the white highlight.
-		Stripe.setMouseHighlight(false);
+		stripes = new ArrayList<Stripe>();
+		for(int i=6; i>=0; i--) stripes.add(new Stripe(this, syncArea, i));
+		// How often to generate a new stripe
+		spawnRate = stripes.get(stripes.size() - 1).getSpawnRate();
+		startTime = millis();
 	}
 
 	@Override
 	public void drawELUContent() {
-
-		background(0);
+		background(color(0,0,100));
+		
 		for (int i = stripes.size() - 1; i >= 0; i--) {
 			Stripe s = stripes.get(i);
 			s.run();
-			if (s.kill())
+			if (s.isOffScreen())
 				stripes.remove(i);
 		}
-
-		 if (millis() - startTime >= DURATION) {
-		 stripes.add(new Stripe(this, syncArea));
-		 startTime = millis();
-		 }
-
-		 //Right now, blur is controlled by the vertical mouse component.
-		 loadPixels();
-		 fastBlur(pixels, floor(map(mouseY, 0,height, 1,50)));
-		 updatePixels();
+		
+		//System.out.println(stripes.size());
+		
+		if (millis() - startTime >= (spawnRate - 100)) {
+			stripes.add(new Stripe(this, syncArea));
+			spawnRate = stripes.get(stripes.size() - 1).getSpawnRate();
+			startTime = millis();
+		}
+		
+		// Right now, blur is controlled by the vertical mouse component.
+		loadPixels();
+		fastBlur(pixels, floor(map(mouseY, 0, height, 1, 50)));
+		updatePixels();
 	}
 
 	// ==================================================
@@ -130,8 +127,8 @@ public class East_BlurTest extends GothamPApplet {
 			}
 			yi = x;
 			for (y = 0; y < h; y++) {
-				img[yi] = 0xff000000 | (dv[rsum] << 16)
-						| (dv[gsum] << 8) | dv[bsum];
+				img[yi] = 0xff000000 | (dv[rsum] << 16) | (dv[gsum] << 8)
+						| dv[bsum];
 				if (x == 0) {
 					vmin[y] = min(y + radius + 1, hm) * w;
 					vmax[y] = max(y - radius, 0) * w;
