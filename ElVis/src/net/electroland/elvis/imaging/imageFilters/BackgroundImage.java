@@ -5,7 +5,7 @@ import static com.googlecode.javacv.cpp.opencv_core.cvAddWeighted;
 import static com.googlecode.javacv.cpp.opencv_core.cvCopy;
 import static com.googlecode.javacv.cpp.opencv_core.cvCreateImage;
 import static com.googlecode.javacv.cpp.opencv_core.cvGetSize;
-import static com.googlecode.javacv.cpp.opencv_highgui.cvConvertImage;
+import static com.googlecode.javacv.cpp.opencv_core.cvConvertScale;
 import net.electroland.elvis.util.ElProps;
 import net.electroland.elvis.util.parameters.DoubleParameter;
 
@@ -14,6 +14,9 @@ import com.googlecode.javacv.cpp.opencv_core.IplImage;
 
 public class BackgroundImage extends Filter {
 
+	
+	double scaler = 1.0/255.0;
+	
 	IplImage internalModel; 
 	IplImage internalSrc; 
 	
@@ -72,17 +75,26 @@ public class BackgroundImage extends Filter {
 		if(initialFrameSkip-- > 0) return null;
 		if(dst == null)  {
 			dst = cvCreateImage(cvGetSize(bi), bi.depth(), bi.nChannels());
+			internalSrc = cvCreateImage(cvGetSize(bi), IPL_DEPTH_32F, bi.nChannels());
+			internalModel = cvCreateImage(cvGetSize(bi), IPL_DEPTH_32F, bi.nChannels());
+			
+			cvConvertScale(bi, internalModel, 1, 0);
+			
 			cvCopy(bi, dst);
 			return dst;
 		} else { 
 			double adaptation =adaptionParameter.getDoubleValue();
 			if(adaptation == 0) 	return dst; // don't bother processing just use static background
 			double memory = 1.0 - adaptation;
-			cvAddWeighted(dst, memory, bi, adaptation, 0, dst);
+
+			cvConvertScale(bi, internalSrc, 1, 0);
+
+			cvAddWeighted(internalModel, memory, internalSrc, adaptation, 0, internalModel);
+			cvConvertScale(bi, internalModel, 1, 0);
+			
 
 		}
 		return dst;
-		//whitespace
 	}
 
 
