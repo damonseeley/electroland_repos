@@ -72,22 +72,17 @@ public class BackgroundImage extends Filter {
 		if(initialFrameSkip-- > 0) return null;
 		if(dst == null)  {
 			dst = cvCreateImage(cvGetSize(bi), bi.depth(), bi.nChannels());
-			internalSrc = cvCreateImage(cvGetSize(bi), IPL_DEPTH_32F, bi.nChannels());
-			internalModel = cvCreateImage(cvGetSize(bi), IPL_DEPTH_32F, bi.nChannels());
-			cvConvertImage(bi, internalModel,0);
 			cvCopy(bi, dst);
 			return dst;
 		} else { 
 			double adaptation =adaptionParameter.getDoubleValue();
 			if(adaptation == 0) 	return dst; // don't bother processing just use static background
 			double memory = 1.0 - adaptation;
-			cvConvertImage(bi, internalSrc,0);
-			cvAddWeighted(internalModel, memory, internalSrc, adaptation, 0, internalModel);
-			cvConvertImage(internalModel, dst,0);
-			
+			cvAddWeighted(dst, memory, bi, adaptation, 0, dst);
 
 		}
 		return dst;
+		//whitespace
 	}
 
 
