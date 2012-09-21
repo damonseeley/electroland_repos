@@ -2,7 +2,11 @@ package net.electroland.gotham.processing;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
+
+import net.electroland.gotham.core.GothamConductor;
 import net.electroland.gotham.processing.assets.Stripe;
+import net.electroland.utils.ElectrolandProperties;
+
 import org.apache.log4j.Logger;
 
 public class East_BlurTest extends GothamPApplet {
@@ -16,6 +20,8 @@ public class East_BlurTest extends GothamPApplet {
 	ArrayList<Stripe> stripes;
 	private float spawnRate;
 	private long startTime = 0;
+	
+	private ElectrolandProperties props = GothamConductor.props;
 
 	@Override
 	public void setup() {
@@ -30,6 +36,11 @@ public class East_BlurTest extends GothamPApplet {
 		// How often to generate a new stripe
 		spawnRate = stripes.get(stripes.size() - 1).getSpawnRate();
 		startTime = millis();
+		
+		//PROPS FILE EXAMPLE
+		logger.info("MICHAEL - here are some props from the global prop file");
+		int numStripesTemp = props.getOptionalInt("wall", "East", "stripes");
+		logger.info("Number of stripes = " + numStripesTemp);
 	}
 
 	@Override
