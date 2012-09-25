@@ -8,6 +8,8 @@ import net.electroland.utils.ElectrolandProperties;
 
 import org.apache.log4j.Logger;
 
+import controlP5.ControlEvent;
+
 public class EastBlurTest extends GothamPApplet{
 
 	private static final long serialVersionUID = 1L;
@@ -20,10 +22,10 @@ public class EastBlurTest extends GothamPApplet{
 	public float blurAmt;
 	public boolean blackOrWhite;
 	public static boolean randomSpeeds;
+	private int selector = 0; // Which color swatch from the props file to use.
 
 	StripeGUIManager gui;
 	ArrayList<Stripe> stripes;
-	public static int selector = 0; // Which color swatch from the props file to use.
 	private float spawnRate;
 	private long startTime = 0;
 	private float percentComplete;
@@ -44,9 +46,10 @@ public class EastBlurTest extends GothamPApplet{
 		nStripes = props.getOptionalInt("wall", "East", "initialStripes");
 		defaultScaler = (float) props.getOptionalInt("wall", "East", "initialScaler");
 
-		gui = new StripeGUIManager(this);
 		cp = new ColorPalette(this); // Instantiate Color Palette by sampling the listed swatch.
-		stripeColors = cp.getPalette();
+		stripeColors = cp.getPalette(selector);
+		
+		gui = new StripeGUIManager(this);
 		
 		for (int i = nStripes; i >= 0; i--)
 			stripes.add(new Stripe(this, syncArea, i));
@@ -57,10 +60,10 @@ public class EastBlurTest extends GothamPApplet{
 		logger.info("Initial OnScreen Stripes: " + nStripes);
 		logger.info("Initial Speed Scaler: " + scalerAmt);
 	}
-
+	
 	@Override
 	public void drawELUContent() {
-
+		
 		float bri = blackOrWhite ? 0 : 100;
 		background(color(0, 0, bri));
 
@@ -87,5 +90,13 @@ public class EastBlurTest extends GothamPApplet{
 		FastBlur.performBlur(pixels, width, height,
 				floor(blurAmt));
 		updatePixels();
+	}
+	
+	public void controlEvent(ControlEvent theEvent){
+		if(theEvent.isGroup() && theEvent.getName()=="whichSwatch"){
+		    selector = (int)theEvent.getValue();
+		    stripeColors = cp.getPalette(selector);
+			logger.info("Switching to Swatch " + (int)(theEvent.getValue()+1));
+		}
 	}
 }
