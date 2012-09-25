@@ -41,7 +41,13 @@ public class StripeGUIManager{
 				.setDragDirection(Knob.HORIZONTAL);
 		// Init blur knob
 		blurKnob = control.addKnob("blurAmt").setRange(1, 100).setValue(5)
-				.setPosition(100, 100).setRadius(30)
+				.setPosition(90, 100).setRadius(30)
+				.setColorForeground(p.color(255))
+				.setColorBackground(p.color(200, 160, 100))
+				.setColorActive(p.color(255, 60, 60))
+				.setDragDirection(Knob.HORIZONTAL);
+		howRandom = control.addKnob("rScaler").setRange(0, 30f)
+				.setValue(10).setPosition(170, 100).setRadius(30)
 				.setColorForeground(p.color(255))
 				.setColorBackground(p.color(200, 160, 100))
 				.setColorActive(p.color(255, 60, 60))
@@ -58,19 +64,19 @@ public class StripeGUIManager{
 			ListBoxItem lbi = ((ListBox) swatchList).addItem("Swatch "+i, i-1);
 		    lbi.setColorBackground(p.color(0));
 		}
-		
 		// Init toggle switch
 		bgColor = control.addToggle("blackOrWhite").setPosition(10, 40)
-				.setSize(50, 20).setValue(true).setMode(ControlP5.SWITCH);
+				.setSize(50, 20).setValue(true).setMode(ControlP5.SWITCH); //true = black, false = white
 
 		rSpeeds = control.addToggle("randomSpeeds").setPosition(80, 40)
-				.setSize(50, 20).setMode(ControlP5.SWITCH);
+				.setSize(50, 20).setValue(EastBlurTest.randomOnStart).setMode(ControlP5.SWITCH);
 
 		// Set controls to window object
 		((Toggle) bgColor).moveTo(window);
 		((Knob) blurKnob).moveTo(window);
 		((Knob) speedKnob).moveTo(window);
 		((Toggle) rSpeeds).moveTo(window);
+		((Knob) howRandom).moveTo(window);
 		swatchList.moveTo(window);
 
 		//blah.label.setText( ... );

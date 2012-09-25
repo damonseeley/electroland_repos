@@ -17,11 +17,14 @@ public class EastBlurTest extends GothamPApplet {
 	private Dimension syncArea;
 	private int nStripes; // Num Stripes that begin on screen.
 	public static float defaultScaler;
+	public static boolean randomOnStart;
 
 	public static float scalerAmt;
+	public static float rScaler;
 	public float blurAmt;
 	public boolean blackOrWhite;
 	public static boolean randomSpeeds;
+	
 	private int selector = 0; // Which color swatch from the props file to use.
 
 	StripeGUIManager gui;
@@ -46,6 +49,7 @@ public class EastBlurTest extends GothamPApplet {
 		nStripes = props.getOptionalInt("wall", "East", "initialStripes");
 		defaultScaler = (float) props.getOptionalInt("wall", "East",
 				"initialScaler");
+		randomOnStart = props.getOptionalBoolean("wall", "East", "randomOnStart");
 
 		cp = new ColorPalette(this); // Instantiate Color Palette by sampling
 										// the listed swatch.
