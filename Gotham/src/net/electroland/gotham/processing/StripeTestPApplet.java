@@ -30,9 +30,9 @@ public class StripeTestPApplet extends GothamPApplet {
 	private ControlP5 control;
 	private ControlWindow window;
 	private Controller<Toggle> tg;
+	private Controller<Bang> colorButton;
 	private Controller<Knob> blurKnob;
 	private Controller<Knob> stripeKnob;
-	private Controller<Bang> colorButton;
 
 	@Override
 	public void setup() {
@@ -67,8 +67,8 @@ public class StripeTestPApplet extends GothamPApplet {
 		// Set controls to window object
 		((Toggle) tg).moveTo(window);
 		((Knob) blurKnob).moveTo(window);
-		((Knob) stripeKnob).moveTo(window);	//Apparently these are depricated but they work.
-		((Bang) colorButton).moveTo(window); //This is the latest release of Cp5. Can't find any other method.
+		((Knob) stripeKnob).moveTo(window);
+		((Bang) colorButton).moveTo(window);
 
 		// Store random hues... Not efficient but fine for now.
 		colorMode(HSB, 360, 100, 100);

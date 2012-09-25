@@ -62,7 +62,7 @@ public class Stripe {
 	}
 
 	public void run() {
-		float inc = ((p.millis() - prevMillis) / (timeAcross*1000)) * EastBlurTest.scaler;
+		float inc = ((p.millis() - prevMillis) / (timeAcross*1000)) * EastBlurTest.scalerAmt;
 		percentComplete += inc;
 		prevMillis = p.millis();
 
