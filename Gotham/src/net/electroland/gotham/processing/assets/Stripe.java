@@ -39,13 +39,13 @@ public class Stripe {
 		hw = w * 0.5f;
 		begin = -100-hw; // start offscreen
 		target = d.width + 200; // end offscreen
-		//h = p.random(360);
+		
 		stripeColor = EastBlurTest.stripeColors[(int)(Math.random()*EastBlurTest.stripeColors.length)];
 		prevMillis = p.millis(); // Start our timer
 		dist = target - begin;
 		baseTime = props.getOptionalInt("wall", "East", "baseTime");
-		timeAcross = EastBlurTest.randomSpeeds ? baseTime / 2f
-				+ (float) Math.random() * 60 : baseTime * (dist / d.width);
+		timeAcross = EastBlurTest.randomSpeeds ? baseTime 
+				+ p.random(-EastBlurTest.rScaler, EastBlurTest.rScaler) : baseTime * (dist / d.width);
 	}
 
 	// Overloaded Constructor. Only used to fill the screen with Stripe on
@@ -57,8 +57,8 @@ public class Stripe {
 		begin = (-100-hw) + spacer * w;
 		dist = target - begin;
 		baseTime = props.getOptionalInt("wall", "East", "baseTime");
-		timeAcross = EastBlurTest.randomSpeeds ? baseTime / 2f
-				+ (float) Math.random() * 60 : baseTime * (dist / d.width);
+		timeAcross = EastBlurTest.randomSpeeds ? baseTime
+				+ p.random(-EastBlurTest.rScaler,EastBlurTest.rScaler) : baseTime * (dist / d.width);
 	}
 
 	public void run() {
@@ -67,7 +67,7 @@ public class Stripe {
 		prevMillis = p.millis();
 
 		xpos = ef.valueAt(percentComplete, begin, target);
-		//p.fill(p.color(h, 90, 90));
+	
 		p.fill(stripeColor);
 		p.rect(xpos, p.height / 2, w*1.3f, p.height + 50); //w and h are exagerated for the benefit of blurring.
 	}
