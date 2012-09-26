@@ -9,9 +9,13 @@ import controlP5.Toggle;
 import controlP5.ListBox;
 import controlP5.ListBoxItem;
 import processing.core.PApplet;
-import net.electroland.gotham.processing.EastBlurTest;
+import net.electroland.gotham.core.GothamConductor;
+import net.electroland.utils.ElectrolandProperties;
 
 public class StripeGUIManager{
+	
+	private boolean randomOnStart;
+	private int defaultScaler;
 
 	private ControlP5 control;
 	private ControlWindow window;
@@ -24,9 +28,16 @@ public class StripeGUIManager{
 	private Controller<Knob> howOften;
 	
 	private ControlGroup<ListBox> swatchList;
+	
+	private ElectrolandProperties props = GothamConductor.props;
 
 	public StripeGUIManager(PApplet p) {
 		control = new ControlP5(p);
+		
+		//Get any initial info you need from the props file
+		randomOnStart = props.getOptionalBoolean("wall", "East", "randomOnStart");
+		defaultScaler = props.getOptionalInt("wall", "East",
+				"initialScaler");
 
 		// Init window
 		window = control
@@ -34,7 +45,7 @@ public class StripeGUIManager{
 				.hideCoordinates().setBackground(p.color(90));
 		// Speed Scaler Knob
 		speedKnob = control.addKnob("scalerAmt").setRange(-3.5f, 3.5f)
-				.setValue(EastBlurTest.defaultScaler).setPosition(10, 100).setRadius(30)
+				.setValue(defaultScaler).setPosition(10, 100).setRadius(30)
 				.setColorForeground(p.color(255))
 				.setColorBackground(p.color(200, 160, 100))
 				.setColorActive(p.color(255, 60, 60))
@@ -49,8 +60,8 @@ public class StripeGUIManager{
 				.setDragDirection(Knob.HORIZONTAL)
 				.setCaptionLabel("Blur Amt");
 		//Randomness Offset knob
-		howRandom = control.addKnob("rScaler").setRange(0, 30f)
-				.setValue(10).setPosition(170, 100).setRadius(30)
+		howRandom = control.addKnob("rScaler").setRange(0, 20f)
+				.setValue(4).setPosition(170, 100).setRadius(30)
 				.setColorForeground(p.color(255))
 				.setColorBackground(p.color(200, 160, 100))
 				.setColorActive(p.color(255, 60, 60))
@@ -81,7 +92,7 @@ public class StripeGUIManager{
 				.setSize(50, 20).setValue(true).setMode(ControlP5.DEFAULT).setCaptionLabel("Black bg?");  //true = black, false = white
 
 		rSpeeds = control.addToggle("randomSpeeds").setPosition(80, 40)
-				.setSize(50, 20).setValue(EastBlurTest.randomOnStart).setMode(ControlP5.DEFAULT)
+				.setSize(50, 20).setValue(randomOnStart).setMode(ControlP5.DEFAULT)
 				.setCaptionLabel("Randomize Speeds?");
 
 		// Set controls to window object
