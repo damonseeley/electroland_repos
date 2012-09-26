@@ -20,9 +20,9 @@ public class RegionUDPBroadcaster extends UDPBroadcaster {
 	
 	public void updateRegions(Vector<PolyRegion> regions) {
 		if((regions == null) || (regions.isEmpty())) return;
-		StringAppender.TrivialAppender restuls = new StringAppender.TrivialAppender();
-		restuls.setString(PolyRegionResults.buildString(regions));
-		this.send(restuls);
+		StringAppender.TrivialAppender results = new StringAppender.TrivialAppender();
+		results.setString(PolyRegionResults.buildString(regions));
+		this.send(results);
 		
 	}
 	
