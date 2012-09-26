@@ -38,7 +38,7 @@ public class DoNothing extends GothamPApplet {
 
 	@Override
 	public void drawELUContent() {
-		background(color(0, 0, 20));
+		background(color(40, 40, 40));
 
 		loadPixels();
 		updatePixels();
