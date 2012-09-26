@@ -18,7 +18,7 @@ public class GothamPresenceGridUDPClient extends PresenceGridUDPClient {
     }
 
     @Override
-    public void handel(GridData t) {
+    public void handle(GridData t) {
         for (GothamPApplet p : listeners){
             p.handle(t);
         }
