@@ -21,7 +21,10 @@ public class GothamConductor extends JFrame {
     private static final long serialVersionUID = 6608878881526717236L;
     static Logger logger = Logger.getLogger(GothamConductor.class);
     private ELUManager lightingManager;
+    private GothamRegionUDPClient regionClient;
+    
     public static ElectrolandProperties props;
+    
 
     public static void main(String[] args) throws IOException {
 
@@ -38,10 +41,10 @@ public class GothamConductor extends JFrame {
         conductor.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         conductor.setVisible(true);
 
-        conductor.configureUDPClient(conductor.lightingManager);
+        conductor.configureUDPClients(conductor.lightingManager);
     }
 
-    public void configureUDPClient(ELUManager lightingManager) throws SocketException{
+    public void configureUDPClients(ELUManager lightingManager) throws SocketException{
         GothamPresenceGridUDPClient client = new GothamPresenceGridUDPClient(3458);
         for (ELUCanvas c : lightingManager.getCanvases().values()){
             if (((ProcessingCanvas)c).getApplet() instanceof GothamPApplet){
@@ -49,6 +52,7 @@ public class GothamConductor extends JFrame {
                 client.addListener(g);
             }
         }
+        regionClient = new GothamRegionUDPClient(3457);
     }
     
     public void initProps() {
