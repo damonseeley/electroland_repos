@@ -10,12 +10,12 @@ import net.electroland.elvis.blobtracking.TrackResults;
 // quick test to make sure tracks broadcaster and client work (at least on localhost)
 public class TrackUDPTest {
 	public static final int TEST_PORT = 3434;
-	TrackUPDBroadcaster broadcaster;
+	TrackUDPBroadcaster broadcaster;
 	TrackUDPClient client;
 	
 	
 	public TrackUDPTest() throws SocketException, UnknownHostException {
-		broadcaster = new TrackUPDBroadcaster(TEST_PORT);
+		broadcaster = new TrackUDPBroadcaster(TEST_PORT);
 		client = new TrackUDPClient(TEST_PORT) {
 			public void handle(TrackResults<BaseTrack> t) {
 				System.out.println(t);
