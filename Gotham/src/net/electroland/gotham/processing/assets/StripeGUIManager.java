@@ -92,5 +92,7 @@ public class StripeGUIManager{
 		((Knob) howRandom).moveTo(window);
 		((Knob) howOften).moveTo(window);
 		swatchList.moveTo(window);
+		
+		
 	}
 }
