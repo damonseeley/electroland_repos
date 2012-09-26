@@ -17,14 +17,10 @@ public class EastBlurTest extends GothamPApplet {
 	private Dimension syncArea;
 	private int nStripes; // Num Stripes that begin on screen.
 	public static float defaultScaler;
-	public static boolean randomOnStart;
-
-	public static float scalerAmt;
-	public static float spawnScaler;
-	public static float rScaler;
+	
 	public float blurAmt;
 	public boolean blackOrWhite;
-	public static boolean randomSpeeds;
+	
 
 	private int selector = 0; // Which color swatch from the props file to use.
 
@@ -36,7 +32,6 @@ public class EastBlurTest extends GothamPApplet {
 
 	private ElectrolandProperties props = GothamConductor.props;
 
-	public static int[] stripeColors;
 	ColorPalette cp;
 
 	@Override
@@ -49,11 +44,9 @@ public class EastBlurTest extends GothamPApplet {
 		nStripes = props.getOptionalInt("wall", "East", "initialStripes");
 		defaultScaler = (float) props.getOptionalInt("wall", "East",
 				"initialScaler");
-		randomOnStart = props.getOptionalBoolean("wall", "East",
-				"randomOnStart");
 
 		cp = new ColorPalette(this);
-		stripeColors = cp.getPalette(selector);
+		cp.createNewPalette(0);
 		gui = new StripeGUIManager(this);
 
 		// Populate the screen with several existing stripes.
@@ -62,9 +55,6 @@ public class EastBlurTest extends GothamPApplet {
 		// How often to generate a new stripe
 		spawnRate = stripes.get(stripes.size() - 1).getSpawnRate();
 		startTime = millis();
-
-		logger.info("Initial OnScreen Stripes: " + nStripes);
-		logger.info("Initial Speed Scaler: " + scalerAmt);
 	}
 
 	@Override
@@ -83,7 +73,7 @@ public class EastBlurTest extends GothamPApplet {
 
 		// Timing Controls for each new Stripe
 		float inc = ((millis() - startTime) / (spawnRate))
-				* Math.abs(scalerAmt);
+				* Math.abs(Stripe.scalerAmt);
 		percentComplete += inc;
 		startTime = millis();
 		if (percentComplete > 0.98) {
@@ -106,23 +96,27 @@ public class EastBlurTest extends GothamPApplet {
 	}
 
 	public void controlEvent(ControlEvent theEvent) {
-
+		
 		if (theEvent.isGroup() && theEvent.getName() == "whichSwatch") {
 			selector = (int) theEvent.getValue();
-			stripeColors = cp.getPalette(selector);
+			cp.createNewPalette(selector);
 			logger.info("Switching to Swatch "
 					+ (int) (theEvent.getValue() + 1) + " ("
 					+ ColorPalette.getNumColors() + " Colors)");
 		} else if (theEvent.getController().getName() == "blurAmt") {
 			logger.info("Resetting Blur Amount To: " + blurAmt);
 		} else if (theEvent.getController().getName() == "scalerAmt") {
-			logger.info("Resetting Speed Scaler To: " + scalerAmt);
+			Stripe.setScalerAmt(theEvent.getController().getValue());
+			logger.info("Resetting Speed Scaler To: " + theEvent.getController().getValue());
 		} else if (theEvent.getController().getName() == "rScaler") {
-			logger.info("Resetting Stripe Randomness To: " + rScaler);
+			Stripe.setRandomScaler(theEvent.getController().getValue());
+			logger.info("Resetting Stripe Randomness To: " + theEvent.getController().getValue());
 		} else if (theEvent.getController().getName() == "spawnScaler") {
-			logger.info("Resetting Spawn Rate To: " + spawnScaler);
+			Stripe.setSpawnScaler(theEvent.getController().getValue());
+			logger.info("Resetting Spawn Rate To: " + theEvent.getController().getValue());
 		} else if (theEvent.getController().getName() == "randomSpeeds") {
-			logger.info("Randomize Speed? " + randomSpeeds);
+			Stripe.setUseRandomSpeeds(theEvent.getController().getValue());
+			logger.info("Randomize Speed? " + theEvent.getController().getValue());
 		} else if (theEvent.getController().getName() == "blackOrWhite") {
 			logger.info("Black Background? " + blackOrWhite);
 		}

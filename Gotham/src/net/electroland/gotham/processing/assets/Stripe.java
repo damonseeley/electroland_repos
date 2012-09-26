@@ -5,7 +5,6 @@ import processing.core.PApplet;
 import net.electroland.ea.EasingFunction;
 import net.electroland.ea.easing.Linear;
 import net.electroland.gotham.core.GothamConductor;
-import net.electroland.gotham.processing.EastBlurTest;
 import net.electroland.gotham.processing.GothamPApplet;
 import net.electroland.utils.ElectrolandProperties;
 import org.apache.log4j.Logger;
@@ -16,6 +15,11 @@ public class Stripe {
 	private ElectrolandProperties props = GothamConductor.props;
 	private Dimension d;
 
+	public static float scalerAmt;
+	public static boolean randomSpeeds;
+	public static float rScaler;
+	public static float spawnScaler;
+	
 	private EasingFunction ef;
 	public float begin;
 	public float target;
@@ -39,11 +43,11 @@ public class Stripe {
 		this.p = p;
 		this.d = d;
 		ef = new Linear();
-		w = (30 + (float) Math.random()*120) * EastBlurTest.spawnScaler;
+		w = (30 + (float) Math.random()*120) * spawnScaler;
 		hw = w * 0.5f;
-		direction = EastBlurTest.scalerAmt > 0 ? 1 : -1;
+		direction = scalerAmt > 0 ? 1 : -1;
 		pDirection = direction;
-		if (EastBlurTest.scalerAmt > 0) {
+		if (scalerAmt > 0) {
 			begin = -100 - hw; // start offscreen
 			target = d.width + 200; // end offscreen
 		} else {
@@ -51,12 +55,12 @@ public class Stripe {
 			target = -100 - hw;
 		}
 
-		stripeColor = EastBlurTest.stripeColors[(int) (Math.random() * EastBlurTest.stripeColors.length)];
+		stripeColor = ColorPalette.getRandomColor();
 		prevMillis = p.millis(); // Start our timer
 		dist = Math.abs(target - begin);
 		baseTime = props.getOptionalInt("wall", "East", "baseTime");
-		timeAcross = EastBlurTest.randomSpeeds ? baseTime
-				+ p.random(-EastBlurTest.rScaler, EastBlurTest.rScaler)
+		timeAcross = randomSpeeds ? baseTime
+				+ p.random(-rScaler, rScaler)
 				: baseTime * (dist / d.width);
 	}
 
@@ -67,7 +71,7 @@ public class Stripe {
 		w = d.width / 6;
 		hw = w * 0.5f;
 
-		if (EastBlurTest.scalerAmt > 0) {
+		if (scalerAmt > 0) {
 			begin = (-hw) + spacer * w;
 			target = d.width + 200;
 		} else {
@@ -77,18 +81,18 @@ public class Stripe {
 
 		dist = Math.abs(target - begin);
 		baseTime = props.getOptionalInt("wall", "East", "baseTime");
-		timeAcross = EastBlurTest.randomSpeeds ? baseTime
-				+ p.random(-EastBlurTest.rScaler, EastBlurTest.rScaler)
+		timeAcross = randomSpeeds ? baseTime
+				+ p.random(-rScaler, rScaler)
 				: baseTime * (dist / d.width);
 
 	}
 
 	public void run() {
-		direction = EastBlurTest.scalerAmt > 0 ? 1 : -1;
+		direction = scalerAmt > 0 ? 1 : -1;
 		changing = false;
 		
 		float inc = ((p.millis() - prevMillis) / (timeAcross * 1000))
-				* Math.abs(EastBlurTest.scalerAmt);
+				* Math.abs(scalerAmt);
 		percentComplete += inc;
 		prevMillis = p.millis();
 
@@ -106,7 +110,7 @@ public class Stripe {
 	}
 
 	public boolean isOffScreen() {
-		if (EastBlurTest.scalerAmt > 0)
+		if (scalerAmt > 0)
 			return xpos >= target;
 		else
 			return xpos <= target;
@@ -119,7 +123,7 @@ public class Stripe {
 		// other side
 		return ((w / dist) * (timeAcross * 1000));
 	}
-
+	
 	private void resetDirection(int dir) {
 		begin = xpos;
 		percentComplete = 0;
@@ -129,9 +133,23 @@ public class Stripe {
 			target = -100 - hw;
 		}
 		dist = Math.abs(target - begin);
-		timeAcross = EastBlurTest.randomSpeeds ? (baseTime + p.random(
-				-EastBlurTest.rScaler, EastBlurTest.rScaler))
+		timeAcross = randomSpeeds ? (baseTime + p.random(
+				-rScaler, rScaler))
 				* (dist / d.width) : baseTime * (dist / d.width);
 		
 	}
+	
+	public static void setScalerAmt(float amt){
+		scalerAmt = amt;
+	}
+	public static void setUseRandomSpeeds(float rs){
+		randomSpeeds = rs > 0 ? true : false;
+	}
+	public static void setRandomScaler(float rscaler){
+		rScaler = rscaler;
+	}
+	public static void setSpawnScaler(float ss){
+		spawnScaler = ss;
+	}
+	
 }
