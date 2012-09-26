@@ -29,6 +29,9 @@ abstract public class ELUPApplet extends PApplet {
 
         drawELUContent();
 
+        translate(0,0);
+        rectMode(CORNER);
+
         // sync content to lights
         if (canvas != null){
             PImage image = this.get(0, 0, dim.width, dim.height);
@@ -87,7 +90,7 @@ abstract public class ELUPApplet extends PApplet {
     }
 
     public Dimension getSyncArea(){
-        return dim;
+        return new Dimension(dim);
     }
 
     public void setDetectorScale(float scale){
