@@ -48,7 +48,7 @@ public abstract class UDPClient<T> extends Thread {
 	}
 	public abstract T parse(String s) ;
 	
-	public abstract void handel(T t);
+	public abstract void handle(T t);
 	
 	
 	public class ObjHandlerThread extends Thread {
@@ -58,7 +58,7 @@ public abstract class UDPClient<T> extends Thread {
 		public void run() {
 			while(isRunning) {
 				try {
-					handel(receivedObject.take());
+					handle(receivedObject.take());
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

@@ -14,7 +14,7 @@ public class PollablePresenceGridUDPClient extends PresenceGridUDPClient {
 	}
 
 	@Override
-	public void handel(GridData t) {
+	public void handle(GridData t) {
 			mostRecent = t;
 	}
 	

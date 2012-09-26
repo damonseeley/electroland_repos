@@ -14,7 +14,7 @@ public class PollableTrackUDPClient extends TrackUDPClient {
 	}
 
 	@Override
-	public void handel(TrackResults<BaseTrack> t) {
+	public void handle(TrackResults<BaseTrack> t) {
 			mostRecent = t;
 	}
 	

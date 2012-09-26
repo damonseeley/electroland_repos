@@ -14,7 +14,7 @@ public class PollableRegionUDPClient extends RegionUDPClient {
 	}
 
 	@Override
-	public void handel(PolyRegionResults<BasePolyReagion> t) {
+	public void handle(PolyRegionResults<BasePolyReagion> t) {
 		mostRecent = t;
 	}
 	
