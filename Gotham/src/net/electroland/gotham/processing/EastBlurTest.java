@@ -45,15 +45,17 @@ public class EastBlurTest extends GothamPApplet {
 		colorMode(HSB, 360, 100, 100);
 
 		stripes = new ArrayList<Stripe>();
-		
+
 		nStripes = props.getOptionalInt("wall", "East", "initialStripes");
-		defaultScaler = (float) props.getOptionalInt("wall", "East", "initialScaler");
-		randomOnStart = props.getOptionalBoolean("wall", "East", "randomOnStart");
+		defaultScaler = (float) props.getOptionalInt("wall", "East",
+				"initialScaler");
+		randomOnStart = props.getOptionalBoolean("wall", "East",
+				"randomOnStart");
 
 		cp = new ColorPalette(this);
 		stripeColors = cp.getPalette(selector);
 		gui = new StripeGUIManager(this);
-		
+
 		// Populate the screen with several existing stripes.
 		for (int i = nStripes; i >= 0; i--)
 			stripes.add(new Stripe(this, syncArea, i));
@@ -85,11 +87,10 @@ public class EastBlurTest extends GothamPApplet {
 		percentComplete += inc;
 		startTime = millis();
 		if (percentComplete > 0.98) {
-			System.out.println("New Stripe");
 			stripes.add(new Stripe(this, syncArea));
-			//If this new stripe is the first in a dirctional shift, it's timer
-			//should be based on list item 0, not size-1.
-			if(Stripe.changing){
+			// If this new stripe is the first in a dirctional shift, it's timer
+			// should be based on list item 0, not size-1.
+			if (Stripe.changing) {
 				spawnRate = stripes.get(0).getSpawnRate();
 			} else {
 				spawnRate = stripes.get(stripes.size() - 1).getSpawnRate();
@@ -105,12 +106,26 @@ public class EastBlurTest extends GothamPApplet {
 	}
 
 	public void controlEvent(ControlEvent theEvent) {
+
 		if (theEvent.isGroup() && theEvent.getName() == "whichSwatch") {
 			selector = (int) theEvent.getValue();
 			stripeColors = cp.getPalette(selector);
 			logger.info("Switching to Swatch "
 					+ (int) (theEvent.getValue() + 1) + " ("
 					+ ColorPalette.getNumColors() + " Colors)");
+		} else if (theEvent.getController().getName() == "blurAmt") {
+			logger.info("Resetting Blur Amount To: " + blurAmt);
+		} else if (theEvent.getController().getName() == "scalerAmt") {
+			logger.info("Resetting Speed Scaler To: " + scalerAmt);
+		} else if (theEvent.getController().getName() == "rScaler") {
+			logger.info("Resetting Stripe Randomness To: " + rScaler);
+		} else if (theEvent.getController().getName() == "spawnScaler") {
+			logger.info("Resetting Spawn Rate To: " + spawnScaler);
+		} else if (theEvent.getController().getName() == "randomSpeeds") {
+			logger.info("Randomize Speed? " + randomSpeeds);
+		} else if (theEvent.getController().getName() == "blackOrWhite") {
+			logger.info("Black Background? " + blackOrWhite);
 		}
+
 	}
 }
