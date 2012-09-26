@@ -23,7 +23,6 @@ public class UDPBroadcaster extends Thread {
 
 	public UDPBroadcaster(String address, int port) throws SocketException, UnknownHostException {
 		super();
-		//System.out.println("UDPBroadcaster address: " + address + " port: " + port);
 		buffer = new StringBuilder();
 		socket = new DatagramSocket();
 		if(address.equals("broadcast")) {
@@ -61,7 +60,6 @@ public class UDPBroadcaster extends Thread {
 		sa.buildString(buffer);
 		packet.setData(buffer.toString().getBytes());
 		try {
-			//System.out.println("Sending UDP on port: " + socket.getPort());
 			socket.send(packet);
 		} catch (IOException e) {
 			e.printStackTrace();
