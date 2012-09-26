@@ -14,10 +14,11 @@ public class Stripe {
 
 	static Logger logger = Logger.getLogger(GothamPApplet.class);
 	private ElectrolandProperties props = GothamConductor.props;
+	private Dimension d;
 
 	private EasingFunction ef;
 	public float begin;
-	public static float target;
+	public float target;
 	private float prevMillis;
 	private float percentComplete;
 	private float baseTime;
@@ -26,26 +27,37 @@ public class Stripe {
 
 	PApplet p;
 	private float xpos;
-	//private float h; // the hue of this Stripe
+	// private float h; // the hue of this Stripe
 	int stripeColor;
 	private float w; // with of a stripe
 	private float hw; // half width
 	public float dist;
+	private int pDirection, direction;
+	public static boolean changing = false;
 
 	public Stripe(PApplet p, Dimension d) {
 		this.p = p;
+		this.d = d;
 		ef = new Linear();
-		w = 30 + (float) Math.random() * 120;
+		w = (30 + (float) Math.random()*120) * EastBlurTest.spawnScaler;
 		hw = w * 0.5f;
-		begin = -100-hw; // start offscreen
-		target = d.width + 200; // end offscreen
-		
-		stripeColor = EastBlurTest.stripeColors[(int)(Math.random()*EastBlurTest.stripeColors.length)];
+		direction = EastBlurTest.scalerAmt > 0 ? 1 : -1;
+		pDirection = direction;
+		if (EastBlurTest.scalerAmt > 0) {
+			begin = -100 - hw; // start offscreen
+			target = d.width + 200; // end offscreen
+		} else {
+			begin = d.width + 200;
+			target = -100 - hw;
+		}
+
+		stripeColor = EastBlurTest.stripeColors[(int) (Math.random() * EastBlurTest.stripeColors.length)];
 		prevMillis = p.millis(); // Start our timer
-		dist = target - begin;
+		dist = Math.abs(target - begin);
 		baseTime = props.getOptionalInt("wall", "East", "baseTime");
-		timeAcross = EastBlurTest.randomSpeeds ? baseTime 
-				+ p.random(-EastBlurTest.rScaler, EastBlurTest.rScaler) : baseTime * (dist / d.width);
+		timeAcross = EastBlurTest.randomSpeeds ? baseTime
+				+ p.random(-EastBlurTest.rScaler, EastBlurTest.rScaler)
+				: baseTime * (dist / d.width);
 	}
 
 	// Overloaded Constructor. Only used to fill the screen with Stripe on
@@ -54,26 +66,50 @@ public class Stripe {
 		this(p, d);
 		w = d.width / 6;
 		hw = w * 0.5f;
-		begin = (-100-hw) + spacer * w;
-		dist = target - begin;
+
+		if (EastBlurTest.scalerAmt > 0) {
+			begin = (-hw) + spacer * w;
+			target = d.width + 200;
+		} else {
+			begin = (-hw) + spacer * w;
+			target = -100 - hw;
+		}
+
+		dist = Math.abs(target - begin);
 		baseTime = props.getOptionalInt("wall", "East", "baseTime");
 		timeAcross = EastBlurTest.randomSpeeds ? baseTime
-				+ p.random(-EastBlurTest.rScaler,EastBlurTest.rScaler) : baseTime * (dist / d.width);
+				+ p.random(-EastBlurTest.rScaler, EastBlurTest.rScaler)
+				: baseTime * (dist / d.width);
+
 	}
 
 	public void run() {
-		float inc = ((p.millis() - prevMillis) / (timeAcross*1000)) * EastBlurTest.scalerAmt;
+		direction = EastBlurTest.scalerAmt > 0 ? 1 : -1;
+		changing = false;
+		
+		float inc = ((p.millis() - prevMillis) / (timeAcross * 1000))
+				* Math.abs(EastBlurTest.scalerAmt);
 		percentComplete += inc;
 		prevMillis = p.millis();
 
+		if (direction != pDirection) { // We've changed direction
+			resetDirection(direction);
+			changing = true;
+		}
 		xpos = ef.valueAt(percentComplete, begin, target);
-	
+
+		p.rectMode(PApplet.CENTER);
 		p.fill(stripeColor);
-		p.rect(xpos, p.height / 2, w*1.3f, p.height + 50); //w and h are exagerated for the benefit of blurring.
+		p.rect(xpos, p.height / 2, w, p.height + 50);
+
+		pDirection = direction;
 	}
 
 	public boolean isOffScreen() {
-		return xpos >= target;
+		if (EastBlurTest.scalerAmt > 0)
+			return xpos >= target;
+		else
+			return xpos <= target;
 	}
 
 	// Only used if we want different sized Stripes to file in perfectly one
@@ -81,7 +117,21 @@ public class Stripe {
 	public float getSpawnRate() {
 		// (this stripe's width : total distance to travel) * time to get to the
 		// other side
-		return ((w / dist) * (timeAcross*1000));
+		return ((w / dist) * (timeAcross * 1000));
 	}
 
+	private void resetDirection(int dir) {
+		begin = xpos;
+		percentComplete = 0;
+		if (dir > 0) {
+			target = d.width + 200;
+		} else {
+			target = -100 - hw;
+		}
+		dist = Math.abs(target - begin);
+		timeAcross = EastBlurTest.randomSpeeds ? (baseTime + p.random(
+				-EastBlurTest.rScaler, EastBlurTest.rScaler))
+				* (dist / d.width) : baseTime * (dist / d.width);
+		
+	}
 }

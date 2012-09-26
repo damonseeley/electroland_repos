@@ -21,7 +21,7 @@ public class StripeGUIManager{
 	private Controller<Knob> speedKnob;
 	
 	private Controller<Knob> howRandom;
-	private Controller<Knob> howWide;
+	private Controller<Knob> howOften;
 	
 	private ControlGroup<ListBox> swatchList;
 
@@ -33,30 +33,42 @@ public class StripeGUIManager{
 				.addControlWindow("Stripe_Control_Window", 100, 100, 400, 200)
 				.hideCoordinates().setBackground(p.color(90));
 		// Speed Scaler Knob
-		speedKnob = control.addKnob("scalerAmt").setRange(0.2f, 3.5f)
+		speedKnob = control.addKnob("scalerAmt").setRange(-3.5f, 3.5f)
 				.setValue(EastBlurTest.defaultScaler).setPosition(10, 100).setRadius(30)
 				.setColorForeground(p.color(255))
 				.setColorBackground(p.color(200, 160, 100))
 				.setColorActive(p.color(255, 60, 60))
-				.setDragDirection(Knob.HORIZONTAL);
+				.setDragDirection(Knob.HORIZONTAL)
+				.setCaptionLabel("Speed");
 		// Init blur knob
 		blurKnob = control.addKnob("blurAmt").setRange(1, 100).setValue(5)
 				.setPosition(90, 100).setRadius(30)
 				.setColorForeground(p.color(255))
 				.setColorBackground(p.color(200, 160, 100))
 				.setColorActive(p.color(255, 60, 60))
-				.setDragDirection(Knob.HORIZONTAL);
+				.setDragDirection(Knob.HORIZONTAL)
+				.setCaptionLabel("Blur Amt");
+		//Randomness Offset knob
 		howRandom = control.addKnob("rScaler").setRange(0, 30f)
 				.setValue(10).setPosition(170, 100).setRadius(30)
 				.setColorForeground(p.color(255))
 				.setColorBackground(p.color(200, 160, 100))
 				.setColorActive(p.color(255, 60, 60))
-				.setDragDirection(Knob.HORIZONTAL);
+				.setDragDirection(Knob.HORIZONTAL)
+				.setCaptionLabel("Amt Of Randomness");
+		//SpawnRate scaler knob
+		howOften = control.addKnob("spawnScaler").setRange(0.5f, 2f)
+				.setValue(1.5f).setPosition(260, 100).setRadius(30)
+				.setColorForeground(p.color(255))
+				.setColorBackground(p.color(200, 160, 100))
+				.setColorActive(p.color(255, 60, 60))
+				.setDragDirection(Knob.HORIZONTAL)
+				.setCaptionLabel("Spawn Rate");
+		//List of Color Swatches
 		swatchList = control.addListBox("whichSwatch")
 			         .setPosition(250, 20)
 			         .setSize(80, 80)
 			         .setItemHeight(15)
-			        // .setBarHeight(15)
 			         .setColorBackground(p.color(40, 128))
 			         .setColorActive(p.color(255, 128));
 		swatchList.setCaptionLabel("Pick a color swatch");
@@ -66,10 +78,11 @@ public class StripeGUIManager{
 		}
 		// Init toggle switch
 		bgColor = control.addToggle("blackOrWhite").setPosition(10, 40)
-				.setSize(50, 20).setValue(true).setMode(ControlP5.SWITCH); //true = black, false = white
+				.setSize(50, 20).setValue(true).setMode(ControlP5.DEFAULT).setCaptionLabel("Black bg?");  //true = black, false = white
 
 		rSpeeds = control.addToggle("randomSpeeds").setPosition(80, 40)
-				.setSize(50, 20).setValue(EastBlurTest.randomOnStart).setMode(ControlP5.SWITCH);
+				.setSize(50, 20).setValue(EastBlurTest.randomOnStart).setMode(ControlP5.DEFAULT)
+				.setCaptionLabel("Randomize Speeds?");
 
 		// Set controls to window object
 		((Toggle) bgColor).moveTo(window);
@@ -77,8 +90,7 @@ public class StripeGUIManager{
 		((Knob) speedKnob).moveTo(window);
 		((Toggle) rSpeeds).moveTo(window);
 		((Knob) howRandom).moveTo(window);
+		((Knob) howOften).moveTo(window);
 		swatchList.moveTo(window);
-
-		//blah.label.setText( ... );
 	}
 }
