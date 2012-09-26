@@ -165,7 +165,8 @@ public class PresenceDetector extends ImageProcessor {
 
 		File regionFile = new File(props.getProperty("regionFile", "testRegions.elv"));
 		if(regionFile.exists()) {
-			setRegions(GlobalSettingsPanelMig.load(regionFile));			
+			setRegions(GlobalSettingsPanelMig.load(regionFile));
+			System.out.println("Using legit region file: " + regionFile);
 		}
 
 
