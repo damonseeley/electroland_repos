@@ -20,11 +20,12 @@ public class EastBlurTest extends GothamPApplet {
 	public static boolean randomOnStart;
 
 	public static float scalerAmt;
+	public static float spawnScaler;
 	public static float rScaler;
 	public float blurAmt;
 	public boolean blackOrWhite;
 	public static boolean randomSpeeds;
-	
+
 	private int selector = 0; // Which color swatch from the props file to use.
 
 	StripeGUIManager gui;
@@ -42,21 +43,18 @@ public class EastBlurTest extends GothamPApplet {
 	public void setup() {
 		syncArea = this.getSyncArea();
 		colorMode(HSB, 360, 100, 100);
-		rectMode(CENTER);
 
 		stripes = new ArrayList<Stripe>();
-		// Populate the screen with several existing stripes.
+		
 		nStripes = props.getOptionalInt("wall", "East", "initialStripes");
-		defaultScaler = (float) props.getOptionalInt("wall", "East",
-				"initialScaler");
+		defaultScaler = (float) props.getOptionalInt("wall", "East", "initialScaler");
 		randomOnStart = props.getOptionalBoolean("wall", "East", "randomOnStart");
 
-		cp = new ColorPalette(this); // Instantiate Color Palette by sampling
-										// the listed swatch.
+		cp = new ColorPalette(this);
 		stripeColors = cp.getPalette(selector);
-
 		gui = new StripeGUIManager(this);
-
+		
+		// Populate the screen with several existing stripes.
 		for (int i = nStripes; i >= 0; i--)
 			stripes.add(new Stripe(this, syncArea, i));
 		// How often to generate a new stripe
@@ -81,17 +79,26 @@ public class EastBlurTest extends GothamPApplet {
 				stripes.remove(i);
 		}
 
-		// Timing Control for each new Stripe
-		float inc = ((millis() - startTime) / (spawnRate)) * scalerAmt;
+		// Timing Controls for each new Stripe
+		float inc = ((millis() - startTime) / (spawnRate))
+				* Math.abs(scalerAmt);
 		percentComplete += inc;
 		startTime = millis();
 		if (percentComplete > 0.98) {
+			System.out.println("New Stripe");
 			stripes.add(new Stripe(this, syncArea));
-			spawnRate = stripes.get(stripes.size() - 1).getSpawnRate();
+			//If this new stripe is the first in a dirctional shift, it's timer
+			//should be based on list item 0, not size-1.
+			if(Stripe.changing){
+				spawnRate = stripes.get(0).getSpawnRate();
+			} else {
+				spawnRate = stripes.get(stripes.size() - 1).getSpawnRate();
+			}
 			percentComplete = 0;
 		}
 
-		// Blur. Right now, blur is controlled by the vertical mouse component.
+		// System.out.println(stripes.size());
+
 		loadPixels();
 		FastBlur.performBlur(pixels, width, height, floor(blurAmt));
 		updatePixels();
