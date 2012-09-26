@@ -2,23 +2,23 @@ package net.electroland.elvis.net;
 
 import java.net.SocketException;
 
-import net.electroland.elvis.regions.BasePolyReagion;
+import net.electroland.elvis.regions.BasePolyRegion;
 import net.electroland.elvis.regions.PolyRegionResults;
 
 public class PollableRegionUDPClient extends RegionUDPClient {
-	protected PolyRegionResults<BasePolyReagion> mostRecent;
+	protected PolyRegionResults<BasePolyRegion> mostRecent;
 
 	public PollableRegionUDPClient(int port) throws SocketException {
 		super(port);
-		mostRecent = new PolyRegionResults<BasePolyReagion>();
+		mostRecent = new PolyRegionResults<BasePolyRegion>();
 	}
 
 	@Override
-	public void handle(PolyRegionResults<BasePolyReagion> t) {
+	public void handle(PolyRegionResults<BasePolyRegion> t) {
 		mostRecent = t;
 	}
 	
-	public PolyRegionResults<BasePolyReagion> getResults() {
+	public PolyRegionResults<BasePolyRegion> getResults() {
 		return mostRecent;
 	}
 
