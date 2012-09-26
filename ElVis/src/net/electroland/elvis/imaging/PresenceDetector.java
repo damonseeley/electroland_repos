@@ -23,7 +23,7 @@ import net.electroland.elvis.imaging.imageFilters.Scale;
 import net.electroland.elvis.imaging.imageFilters.ThreshClamp;
 import net.electroland.elvis.imaging.imageFilters.Unwarp;
 import net.electroland.elvis.net.PresenceGridUPDBroadcaster;
-import net.electroland.elvis.net.RegionUPDBroadcaster;
+import net.electroland.elvis.net.RegionUDPBroadcaster;
 import net.electroland.elvis.net.TrackUPDBroadcaster;
 import net.electroland.elvis.regionManager.GlobalSettingsPanelMig;
 import net.electroland.elvis.regions.PolyRegion;
@@ -82,7 +82,7 @@ public class PresenceDetector extends ImageProcessor {
 	int roiHeight;
 
 	TrackUPDBroadcaster trackbroadcaster;
-	RegionUPDBroadcaster regionBroadcaster;
+	RegionUDPBroadcaster regionBroadcaster;
 	PresenceGridUPDBroadcaster gridBroadcaster;
 
 	public Filter getCurrentNetFilter() {
@@ -192,7 +192,7 @@ public class PresenceDetector extends ImageProcessor {
 		if(props.getProperty("broadcastRegions", true)) {
 			String address = props.getProperty("broadcastRegionsAddress", "localhost");
 			int port = props.getProperty("broadcastRegionsPort", 3457);
-			regionBroadcaster = new RegionUPDBroadcaster(address, port);
+			regionBroadcaster = new RegionUDPBroadcaster(address, port);
 			regionBroadcaster.start();
 
 		}
