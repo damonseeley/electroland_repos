@@ -61,16 +61,16 @@ public class StripeGUIManager{
 				.setDragDirection(Knob.HORIZONTAL)
 				.setCaptionLabel("Blur Amt");
 		//Randomness Offset knob
-		howRandom = control.addKnob("rScaler").setRange(0, 20f)
-				.setValue(4).setPosition(170, 200).setRadius(30)
-				.setColorForeground(p.color(255))
+		howRandom = control.addKnob("rScaler").setRange(0, 20f)  //I think 20 might be too much. They have to start
+				.setValue(4.25f).setPosition(170, 200).setRadius(30) //pretty far to the left (offscreen). Too high a randomness
+				.setColorForeground(p.color(255))					//can make them already "behind" another stripe before it enters syncArea
 				.setColorBackground(p.color(200, 160, 100))
 				.setColorActive(p.color(255, 60, 60))
 				.setDragDirection(Knob.HORIZONTAL)
 				.setCaptionLabel("Amt Of Randomness");
 		//SpawnRate scaler knob
-		howOften = control.addKnob("spawnScaler").setRange(0.5f, 2f)
-				.setValue(1.85f).setPosition(260, 200).setRadius(30)
+		howOften = control.addKnob("spawnScaler").setRange(0, 10000f)
+				.setValue(5630).setPosition(260, 200).setRadius(30)
 				.setColorForeground(p.color(255))
 				.setColorBackground(p.color(200, 160, 100))
 				.setColorActive(p.color(255, 60, 60))
