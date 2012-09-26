@@ -17,7 +17,7 @@ public class TrackUDPTest {
 	public TrackUDPTest() throws SocketException, UnknownHostException {
 		broadcaster = new TrackUPDBroadcaster(TEST_PORT);
 		client = new TrackUDPClient(TEST_PORT) {
-			public void handel(TrackResults<BaseTrack> t) {
+			public void handle(TrackResults<BaseTrack> t) {
 				System.out.println(t);
 			}
 
