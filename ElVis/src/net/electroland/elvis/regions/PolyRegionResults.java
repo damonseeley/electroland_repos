@@ -6,7 +6,7 @@ import java.util.Vector;
 import net.electroland.elvis.blobtracking.BaseTrack;
 import net.electroland.elvis.net.StringAppender;
 
-public class PolyRegionResults<T extends BasePolyReagion > implements StringAppender {
+public class PolyRegionResults<T extends BasePolyRegion > implements StringAppender {
 	Vector<T> regions;
 	
 	public PolyRegionResults() {
@@ -18,7 +18,7 @@ public class PolyRegionResults<T extends BasePolyReagion > implements StringAppe
 	}
 	@Override
 	public void buildString(StringBuilder sb) {
-		for(BasePolyReagion r : regions) {
+		for(BasePolyRegion r : regions) {
 			r.buildString(sb);
 			sb.append(",");
 		}		
@@ -26,19 +26,19 @@ public class PolyRegionResults<T extends BasePolyReagion > implements StringAppe
 
 	public static String buildString(Vector<PolyRegion> regions) {
 		StringBuilder sb = new StringBuilder();
-		for(BasePolyReagion r : regions) {
+		for(BasePolyRegion r : regions) {
 			r.buildString(sb);
 			sb.append(",");
 		}		
 		return sb.toString();		
 	}
 
-	public static PolyRegionResults<BasePolyReagion> buildFromStringTokenizer(StringTokenizer t) {
-		Vector<BasePolyReagion> regions = new Vector<BasePolyReagion>();
-		BasePolyReagion r = BasePolyReagion.buildFromTokenizer(t);
+	public static PolyRegionResults<BasePolyRegion> buildFromStringTokenizer(StringTokenizer t) {
+		Vector<BasePolyRegion> regions = new Vector<BasePolyRegion>();
+		BasePolyRegion r = BasePolyRegion.buildFromTokenizer(t);
 		while(r != null) {
 			regions.add(r);
-			r = BasePolyReagion.buildFromTokenizer(t);
+			r = BasePolyRegion.buildFromTokenizer(t);
 		}
 		return new PolyRegionResults(regions);
 

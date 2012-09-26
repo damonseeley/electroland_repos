@@ -14,7 +14,7 @@ import net.electroland.elvis.regionManager.ImagePanel;
 
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 
-public class PolyRegion extends BasePolyReagion implements Serializable {
+public class PolyRegion extends BasePolyRegion implements Serializable {
 
 
 	transient Vector<TriggerListener> listeners = new Vector<TriggerListener>();
