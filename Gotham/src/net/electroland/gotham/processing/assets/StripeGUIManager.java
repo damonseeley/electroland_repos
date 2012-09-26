@@ -42,11 +42,11 @@ public class StripeGUIManager{
 
 		// Init window
 		window = control
-				.addControlWindow("Stripe_Control_Window", 100, 100, 400, 200)
+				.addControlWindow("Stripe_Control_Window", 100, 100, 400, 400)
 				.hideCoordinates().setBackground(p.color(90));
 		// Speed Scaler Knob
 		speedKnob = control.addKnob("scalerAmt").setRange(-3.5f, 3.5f)
-				.setValue(defaultScaler).setPosition(10, 100).setRadius(30)
+				.setValue(defaultScaler).setPosition(10, 200).setRadius(30)
 				.setColorForeground(p.color(255))
 				.setColorBackground(p.color(200, 160, 100))
 				.setColorActive(p.color(255, 60, 60))
@@ -54,7 +54,7 @@ public class StripeGUIManager{
 				.setCaptionLabel("Speed");
 		// Init blur knob
 		blurKnob = control.addKnob("blurAmt").setRange(1, 100).setValue(5)
-				.setPosition(90, 100).setRadius(30)
+				.setPosition(90, 200).setRadius(30)
 				.setColorForeground(p.color(255))
 				.setColorBackground(p.color(200, 160, 100))
 				.setColorActive(p.color(255, 60, 60))
@@ -62,7 +62,7 @@ public class StripeGUIManager{
 				.setCaptionLabel("Blur Amt");
 		//Randomness Offset knob
 		howRandom = control.addKnob("rScaler").setRange(0, 20f)
-				.setValue(4).setPosition(170, 100).setRadius(30)
+				.setValue(4).setPosition(170, 200).setRadius(30)
 				.setColorForeground(p.color(255))
 				.setColorBackground(p.color(200, 160, 100))
 				.setColorActive(p.color(255, 60, 60))
@@ -70,7 +70,7 @@ public class StripeGUIManager{
 				.setCaptionLabel("Amt Of Randomness");
 		//SpawnRate scaler knob
 		howOften = control.addKnob("spawnScaler").setRange(0.5f, 2f)
-				.setValue(1.85f).setPosition(260, 100).setRadius(30)
+				.setValue(1.85f).setPosition(260, 200).setRadius(30)
 				.setColorForeground(p.color(255))
 				.setColorBackground(p.color(200, 160, 100))
 				.setColorActive(p.color(255, 60, 60))
@@ -79,7 +79,7 @@ public class StripeGUIManager{
 		//List of Color Swatches
 		swatchList = control.addListBox("whichSwatch")
 			         .setPosition(250, 20)
-			         .setSize(80, 80)
+			         .setSize(80, 150)
 			         .setItemHeight(15)
 			         .setColorBackground(p.color(40, 128))
 			         .setColorActive(p.color(255, 128));
