@@ -42,8 +42,8 @@ public class EastBlurTest extends GothamPApplet {
 		stripes = new ArrayList<Stripe>();
 
 		nStripes = props.getOptionalInt("wall", "East", "initialStripes");
-		defaultScaler = (float) props.getOptionalInt("wall", "East",
-				"initialScaler");
+		defaultScaler = (float) (props.getOptionalDouble("wall", "East",
+				"initialScaler")*1.0f); // hacky mult by 1.0f to allow cast to float
 
 		cp = new ColorPalette(this);
 		cp.createNewPalette(0);

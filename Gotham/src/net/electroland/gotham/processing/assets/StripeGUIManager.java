@@ -15,7 +15,7 @@ import net.electroland.utils.ElectrolandProperties;
 public class StripeGUIManager{
 	
 	private boolean randomOnStart;
-	private int defaultScaler;
+	private float defaultScaler;
 
 	private ControlP5 control;
 	private ControlWindow window;
@@ -36,8 +36,9 @@ public class StripeGUIManager{
 		
 		//Get any initial info you need from the props file
 		randomOnStart = props.getOptionalBoolean("wall", "East", "randomOnStart");
-		defaultScaler = props.getOptionalInt("wall", "East",
-				"initialScaler");
+		
+		defaultScaler = (float) (props.getOptionalDouble("wall", "East",
+				"initialScaler")*1.0f); // hacky mult by 1.0f to allow cast to float
 
 		// Init window
 		window = control
@@ -69,7 +70,7 @@ public class StripeGUIManager{
 				.setCaptionLabel("Amt Of Randomness");
 		//SpawnRate scaler knob
 		howOften = control.addKnob("spawnScaler").setRange(0.5f, 2f)
-				.setValue(1.5f).setPosition(260, 100).setRadius(30)
+				.setValue(1.85f).setPosition(260, 100).setRadius(30)
 				.setColorForeground(p.color(255))
 				.setColorBackground(p.color(200, 160, 100))
 				.setColorActive(p.color(255, 60, 60))
