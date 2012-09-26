@@ -22,9 +22,9 @@ import net.electroland.elvis.imaging.imageFilters.Rotate;
 import net.electroland.elvis.imaging.imageFilters.Scale;
 import net.electroland.elvis.imaging.imageFilters.ThreshClamp;
 import net.electroland.elvis.imaging.imageFilters.Unwarp;
-import net.electroland.elvis.net.PresenceGridUPDBroadcaster;
+import net.electroland.elvis.net.PresenceGridUDPBroadcaster;
 import net.electroland.elvis.net.RegionUDPBroadcaster;
-import net.electroland.elvis.net.TrackUPDBroadcaster;
+import net.electroland.elvis.net.TrackUDPBroadcaster;
 import net.electroland.elvis.regionManager.GlobalSettingsPanelMig;
 import net.electroland.elvis.regions.PolyRegion;
 import net.electroland.elvis.util.ElProps;
@@ -81,9 +81,9 @@ public class PresenceDetector extends ImageProcessor {
 	int roiWidth;
 	int roiHeight;
 
-	TrackUPDBroadcaster trackbroadcaster;
+	TrackUDPBroadcaster trackbroadcaster;
 	RegionUDPBroadcaster regionBroadcaster;
-	PresenceGridUPDBroadcaster gridBroadcaster;
+	PresenceGridUDPBroadcaster gridBroadcaster;
 
 	public Filter getCurrentNetFilter() {
 		return filters[netImgReturnType.ordinal()];
@@ -185,7 +185,7 @@ public class PresenceDetector extends ImageProcessor {
 			if(props.getProperty("broadcastTracks", true)) {
 				String address = props.getProperty("broadcastTracksAddress", "localhost");
 				int port = props.getProperty("broadcastTracksPort", 3456);
-				trackbroadcaster = new TrackUPDBroadcaster(address, port);
+				trackbroadcaster = new TrackUDPBroadcaster(address, port);
 				tracker.addListener(trackbroadcaster);
 				trackbroadcaster.start();
 			}
@@ -200,7 +200,7 @@ public class PresenceDetector extends ImageProcessor {
 		if(props.getProperty("broadcastGrid", true)) {
 			String address = props.getProperty("broadcastGridAddress", "localhost");
 			int port = props.getProperty("broadcastGridPort", 3458);
-			gridBroadcaster = new PresenceGridUPDBroadcaster(address, port);	
+			gridBroadcaster = new PresenceGridUDPBroadcaster(address, port);	
 			gridBroadcaster.start();
 		}
 
