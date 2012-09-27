@@ -2,6 +2,7 @@ package net.electroland.gotham.processing;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
+import net.electroland.elvis.net.GridData;
 //import net.electroland.gotham.core.GothamConductor;
 import net.electroland.gotham.processing.assets.*;
 //import net.electroland.utils.ElectrolandProperties;
@@ -14,15 +15,27 @@ public class StripeIxTest extends GothamPApplet {
 	static Logger logger = Logger.getLogger(GothamPApplet.class);
 	private Dimension syncArea;
 	//private int nStripes; // Num Stripes that begin on screen.
-	
+
 	private int selector = 0; // Which color swatch from the props file to use.
-	
+
 	private long interval = 3000;
 	private Timer timer;
 
 	ArrayList<StripeSimple> stripes;
 
 	ColorPalette cp;
+
+	@Override
+	public void handle(GridData t) {
+		//System.out.println("--");
+		//for(int y =0; y < t.height; y++) {
+			//for(int x =0; x < t.width; x++) {
+
+				//System.out.print(t.getValue(x, y) + "  ");
+			//}
+			//System.out.println("");
+		//}
+	}
 
 	@Override
 	public void setup() {
@@ -52,9 +65,9 @@ public class StripeIxTest extends GothamPApplet {
 			StripeSimple s = stripes.get(i);
 			s.run();
 			if(i!=0)
-			
-			if (s.isOffScreen())
-				stripes.remove(i);
+
+				if (s.isOffScreen())
+					stripes.remove(i);
 		}
 
 		// Timing Controls for each new Stripe
@@ -64,11 +77,11 @@ public class StripeIxTest extends GothamPApplet {
 			stripes.add(new StripeSimple(this, syncArea, xloc));
 			timer.reset((long)(1000.0 + (Math.random()*5))); //Randomize the timer each time. Result: stripes of diff widths
 		}
-	
+
 
 		loadPixels();
 		updatePixels();
 	}
 
-	
+
 }
