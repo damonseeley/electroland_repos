@@ -14,7 +14,7 @@ import net.electroland.elvis.blobtracking.TrackListener;
 import net.electroland.elvis.imaging.PresenceDetector.ImgReturnType;
 import net.electroland.elvis.net.ImageClient;
 import net.electroland.elvis.net.ImageServer;
-import net.electroland.elvis.net.TrackUPDBroadcaster;
+import net.electroland.elvis.net.TrackUDPBroadcaster;
 import net.electroland.elvis.util.CameraFactory;
 import net.electroland.elvis.util.ElProps;
 
@@ -22,7 +22,7 @@ public class ElVisServer {
 
 	BlobTracker blobTracker;
 	ElProps props;
-	TrackUPDBroadcaster trackBrodcaster;
+	TrackUDPBroadcaster trackBrodcaster;
 	ImageServer imageServer;
 
 	public ElVisServer(ElProps props) throws SocketException, UnknownHostException { 
