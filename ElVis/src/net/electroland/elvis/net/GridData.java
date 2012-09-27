@@ -25,11 +25,14 @@ public  class GridData implements StringAppender {
 					data[i] =  Byte.parseByte(tokenizer.nextToken());
 				}
 			} catch(RuntimeException e) {
-				e.printStackTrace();
-
+//				e.printStackTrace();
 			}
 		}
 
+	}
+	
+	public int getValue(int x, int y) {
+		return (short) data[x + y * width]  & 0xff;
 	}
 
 	public GridData(IplImage img) {
