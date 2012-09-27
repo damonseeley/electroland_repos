@@ -24,9 +24,10 @@ abstract public class GothamPApplet extends ELUPApplet {
     }
 
     public void handle(GridData d) {
-        synchronized(room){
-            room = new Room(d);
-        }
+        //synchronized(room){
+            //room = new Room(d);
+        //}
+    	
     }
 
     public Collection<Person> getPersons(){
