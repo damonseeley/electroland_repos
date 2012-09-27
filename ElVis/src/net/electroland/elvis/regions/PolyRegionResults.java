@@ -7,7 +7,7 @@ import net.electroland.elvis.blobtracking.BaseTrack;
 import net.electroland.elvis.net.StringAppender;
 
 public class PolyRegionResults<T extends BasePolyRegion > implements StringAppender {
-	Vector<T> regions;
+	public Vector<T> regions;
 	
 	public PolyRegionResults() {
 		this( new Vector<T>());
@@ -30,6 +30,7 @@ public class PolyRegionResults<T extends BasePolyRegion > implements StringAppen
 			r.buildString(sb);
 			sb.append(",");
 		}		
+		sb.deleteCharAt(sb.length()-1);//remove trailing ,
 		return sb.toString();		
 	}
 

@@ -32,20 +32,23 @@ public class BasePolyRegion implements StringAppender {
 		sb.append(mean);
 		sb.append(",");
 		sb.append(percentage);
-		sb.append(",");
 	}
 
 
 	public static BasePolyRegion buildFromTokenizer(StringTokenizer t) {
-		if (! t.hasMoreTokens()) {
+		try {
+			if (! t.hasMoreTokens()) {
+				return null;
+			}
+			int id = Integer.parseInt(t.nextToken());
+			String name = t.nextToken();
+			Boolean trig = Boolean.parseBoolean(t.nextToken());
+			Double d = Double.parseDouble(t.nextToken());
+			float p = Float.parseFloat(t.nextToken());
+			return new BasePolyRegion(id, trig, d, name, p);
+		} catch (RuntimeException e) {
 			return null;
 		}
-		int id = Integer.parseInt(t.nextToken());
-		String name = t.nextToken();
-		Boolean trig = Boolean.parseBoolean(t.nextToken());
-		Double d = Double.parseDouble(t.nextToken());
-		float p = Float.parseFloat(t.nextToken());
-		return new BasePolyRegion(id, trig, d, name, p);
 	}
 
 
