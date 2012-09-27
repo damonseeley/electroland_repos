@@ -4,6 +4,8 @@ import java.net.SocketException;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
+
 import net.electroland.elvis.net.GridData;
 import net.electroland.elvis.net.PresenceGridUDPClient;
 import net.electroland.gotham.processing.GothamPApplet;
@@ -11,6 +13,7 @@ import net.electroland.gotham.processing.GothamPApplet;
 public class GothamPresenceGridUDPClient extends PresenceGridUDPClient {
 
     private List <GothamPApplet>listeners;
+    static Logger logger = Logger.getLogger(GothamRegionUDPClient.class); 
 
     public GothamPresenceGridUDPClient(int port) throws SocketException {
         super(port);
@@ -19,6 +22,7 @@ public class GothamPresenceGridUDPClient extends PresenceGridUDPClient {
 
     @Override
     public void handle(GridData t) {
+    	logger.info("GridData: " + t);
         for (GothamPApplet p : listeners){
             p.handle(t);
         }
