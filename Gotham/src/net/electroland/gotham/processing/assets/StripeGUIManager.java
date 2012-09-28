@@ -16,6 +16,9 @@ public class StripeGUIManager{
 	
 	private boolean randomOnStart;
 	private float defaultScaler;
+	private int baseSpawnRate;
+	private int baseBlurAmt;
+	private float baseRandomness;
 
 	private ControlP5 control;
 	private ControlWindow window;
@@ -36,6 +39,9 @@ public class StripeGUIManager{
 		
 		//Get any initial info you need from the props file
 		randomOnStart = props.getOptionalBoolean("wall", "East", "randomOnStart");
+		baseSpawnRate = props.getOptionalInt("wall", "East", "baseSpawnRate");
+		baseBlurAmt = props.getOptionalInt("wall", "East", "blurAmt");
+		baseRandomness = (float)(props.getOptionalDouble("wall", "East", "baseRandomness")*1.0f);
 		
 		defaultScaler = (float) (props.getOptionalDouble("wall", "East",
 				"initialScaler")*1.0f); // hacky mult by 1.0f to allow cast to float
@@ -53,7 +59,7 @@ public class StripeGUIManager{
 				.setDragDirection(Knob.HORIZONTAL)
 				.setCaptionLabel("Speed");
 		// Init blur knob
-		blurKnob = control.addKnob("blurAmt").setRange(1, 100).setValue(5)
+		blurKnob = control.addKnob("blurAmt").setRange(1, 100).setValue(baseBlurAmt)
 				.setPosition(90, 200).setRadius(30)
 				.setColorForeground(p.color(255))
 				.setColorBackground(p.color(200, 160, 100))
@@ -62,7 +68,7 @@ public class StripeGUIManager{
 				.setCaptionLabel("Blur Amt");
 		//Randomness Offset knob
 		howRandom = control.addKnob("rScaler").setRange(0, 20f)  //I think 20 might be too much. They have to start
-				.setValue(4.25f).setPosition(170, 200).setRadius(30) //pretty far to the left (offscreen). Too high a randomness
+				.setValue(baseRandomness).setPosition(170, 200).setRadius(30) //pretty far to the left (offscreen). Too high a randomness
 				.setColorForeground(p.color(255))					//can make them already "behind" another stripe before it enters syncArea
 				.setColorBackground(p.color(200, 160, 100))
 				.setColorActive(p.color(255, 60, 60))
@@ -70,7 +76,7 @@ public class StripeGUIManager{
 				.setCaptionLabel("Amt Of Randomness");
 		//SpawnRate scaler knob
 		howOften = control.addKnob("spawnScaler").setRange(0, 10000f)
-				.setValue(5630).setPosition(260, 200).setRadius(30)
+				.setValue(baseSpawnRate).setPosition(260, 200).setRadius(30)
 				.setColorForeground(p.color(255))
 				.setColorBackground(p.color(200, 160, 100))
 				.setColorActive(p.color(255, 60, 60))
