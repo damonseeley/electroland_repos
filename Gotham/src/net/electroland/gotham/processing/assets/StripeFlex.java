@@ -5,6 +5,7 @@ import processing.core.PApplet;
 import net.electroland.ea.EasingFunction;
 import net.electroland.ea.easing.Linear;
 import net.electroland.gotham.core.GothamConductor;
+import net.electroland.gotham.processing.EastFlex;
 import net.electroland.gotham.processing.GothamPApplet;
 import net.electroland.utils.ElectrolandProperties;
 import org.apache.log4j.Logger;
@@ -15,7 +16,7 @@ public class StripeFlex {
 	private ElectrolandProperties props = GothamConductor.props;
 	private Dimension d;
 
-	private final int offset = 300;
+	private final int offset = 600;
 	
 	public static float scalerAmt;
 	public static boolean randomSpeeds;
@@ -29,6 +30,7 @@ public class StripeFlex {
 	private float baseTime;
 	public float timeAcross; // Number of seconds needed to traverse the sync
 								// area, based off defaultTime
+	private float localNoiseOffset = 0;
 
 	PApplet p;
 	private float xpos;
@@ -39,6 +41,7 @@ public class StripeFlex {
 	public float dist;
 	private int pDirection, direction;
 	public static boolean changing = false;
+	private int noiseSeed;
 
 	public StripeFlex(PApplet p, Dimension d) {
 		this.p = p;
@@ -65,15 +68,19 @@ public class StripeFlex {
 		timeAcross = randomSpeeds ? baseTime
 				+ p.random(-rScaler, rScaler)
 				: baseTime * (dist / d.width);
+		noiseSeed = p.frameCount;
 	}
 
 	public void run() {
 		direction = scalerAmt > 0 ? 1 : -1;
 		changing = false;
+		localNoiseOffset = 2.1f - p.noise(p.millis()/6000.0f + noiseSeed)*2; //=0;
 		
-		float inc = ((p.millis() - prevMillis) / (timeAcross * 1000))
-				* Math.abs(scalerAmt);
-		percentComplete += inc;
+		//Scale the inc by the knob input + the noise offset 
+		//If you don't like the effect, you can just delecte localNoiseOffset below.
+		float inc = ((p.millis() - prevMillis) / (timeAcross * 1000)) * (Math.abs(scalerAmt)+localNoiseOffset);
+		//On top of that, give each individual stripe it's own little bit of noise.
+		percentComplete += (inc);
 		prevMillis = p.millis();
 
 		if (direction != pDirection) { // We've changed direction
@@ -85,7 +92,7 @@ public class StripeFlex {
 		pDirection = direction;
 	}
 	
-	//TODO: Add some kind of sliders to contrain width MIN and MAX
+	//TODO: Add some kind of sliders to constrain width MIN and MAX
 	public void setWidth(StripeFlex inFront){
 		w = (inFront.xpos) - this.xpos; //Lets try out inversion of the stripe width.
 		//w = PApplet.constrain( ((inFront.xpos) - this.xpos), 1, 300);

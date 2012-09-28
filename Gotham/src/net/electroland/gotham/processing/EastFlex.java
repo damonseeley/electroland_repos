@@ -13,14 +13,14 @@ public class EastFlex extends GothamPApplet {
 	private static final long serialVersionUID = 1L;
 	static Logger logger = Logger.getLogger(GothamPApplet.class);
 	private Dimension syncArea;
-	//private int nStripes; // Num Stripes that begin on screen.
 	public static float spawnScaler;
 	public float blurAmt;
 	public boolean blackOrWhite;
 	
 	private long interval = 3000;
-	private Timer timer;
-
+	private Timer stripeTimer;
+	private Timer paletteTimer;
+	public static float noiseOffset;
 	private int selector = 0; // Which color swatch from the props file to use.
 
 	StripeGUIManager gui;
@@ -38,13 +38,13 @@ public class EastFlex extends GothamPApplet {
 
 		stripes = new ArrayList<StripeFlex>();
 
-		//nStripes = props.getOptionalInt("wall", "East", "initialStripes");
-
 		cp = new ColorPalette(this);
 		cp.createNewPalette(0);
 		gui = new StripeGUIManager(this);
-		timer = new Timer(interval);
-		timer.start();
+		stripeTimer = new Timer(interval);
+		paletteTimer = new Timer(10000);
+		stripeTimer.start();
+		paletteTimer.start();
 
 		stripes.add(new StripeFlex(this, syncArea));
 		stripes.get(0).forcePosition(syncArea.width);
@@ -56,6 +56,7 @@ public class EastFlex extends GothamPApplet {
 
 		float bri = blackOrWhite ? 0 : 100;
 		background(color(0, 0, bri));
+		noiseOffset = noise(millis()/100000.0f); //noramlized
 
 		// Handle Stripes
 		for (int i = stripes.size() - 1; i >= 0; i--) {
@@ -69,9 +70,15 @@ public class EastFlex extends GothamPApplet {
 		}
 
 		// Timing Controls for each new Stripe
-		if (timer.isFinished()) {
+		if (stripeTimer.isFinished()) {
 			stripes.add(new StripeFlex(this, syncArea));
-			timer.reset((long)(1000.0 + (Math.random()*spawnScaler))); //Randomize the timer each time. Result: stripes of diff widths
+			stripeTimer.reset((long)(1000.0 + (Math.random()*spawnScaler))); //Randomize the timer each time. Result: stripes of diff widths
+		}
+		if(paletteTimer.isFinished()){
+			int n = (int) (Math.random()*ColorPalette.getNumSwatches());
+			cp.createNewPalette(n);
+			System.out.println("Created new color palette " + n);
+			paletteTimer.reset((long)(600000 + random(-300000, 300000))); //random interval between 5 and 15 mins
 		}
 	
 		//System.out.println(stripes.size());
