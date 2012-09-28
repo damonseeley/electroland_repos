@@ -35,7 +35,10 @@ public class GothamRegionUDPClient extends RegionUDPClient {
 	@Override
 	public void handle(PolyRegionResults<BasePolyRegion> t) {
 		// TODO Auto-generated method stub
-		logger.info("Region: " + t);
+		logger.info("----");
+		for(BasePolyRegion r : t.regions) {
+			logger.info(r.name + " " + r.isTriggered);
+		}
 		
 	}
 }
