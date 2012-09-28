@@ -8,7 +8,7 @@ import net.electroland.elvis.net.PresenceGridUDPClient;
 
 public class RecordPresenceGrid extends PresenceGridUDPClient {
 
-    private FileRecorder recorder;
+    private Recorder recorder;
 
     public RecordPresenceGrid(int port) throws SocketException {
         super(port);

@@ -9,7 +9,7 @@ import net.electroland.elvis.net.TrackUDPClient;
 
 public class RecordTracks extends TrackUDPClient {
 
-    private FileRecorder recorder;
+    private Recorder recorder;
 
     public RecordTracks(int port) throws SocketException {
         super(port);
