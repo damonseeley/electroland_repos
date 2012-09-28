@@ -52,7 +52,7 @@ public class FileRecorder implements Recorder {
     }
 
     private void writeLn(String line) throws IOException {
-        output.write(buffer.toString());
+        output.write(line);
         output.newLine();
         output.flush();
     }
