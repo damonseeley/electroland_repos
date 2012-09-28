@@ -49,7 +49,9 @@ public class GridOverlay extends GothamPApplet {
 		int insetLeft = 80;
 		int insetTop = 70;
 		double dilate = 6.0;
-		background(color(0, 0, 50));
+		
+		fill(color(0, 0, 50),8); //fill with a light alpha white
+		rect(0,0,syncArea.width,syncArea.height); //fill the whole area
 
 		if (gd != null){
 			//System.out.println("Grid width: " + gd.width + " height: " + gd.height + " payload: " + gd.data.length);
@@ -78,7 +80,7 @@ public class GridOverlay extends GothamPApplet {
 					if (gd.getValue(x, y) > 0){
 						fill(color(0, 255, gd.getValue(x, y)));
 						
-						ellipse(syncArea.width-(insetLeft*2)+hShift-y*cellHeight+insetLeft, x*cellWidth+insetTop, (int)(cellHeight*dilate), (int)(cellWidth*dilate)); //rotated
+						ellipse(syncArea.width-(insetLeft*2)+hShift-y*cellHeight+insetLeft, syncArea.height-(insetTop*2)-x*cellWidth+insetTop, (int)(cellHeight*dilate), (int)(cellWidth*dilate)); //rotated
 						//rect(x*cellWidth+insetLeft, y*cellHeight+insetTop, (int)(cellHeight*dilate), (int)(cellWidth*dilate));
 
 					}
