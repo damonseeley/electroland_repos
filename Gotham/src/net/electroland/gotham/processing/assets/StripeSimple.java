@@ -1,13 +1,16 @@
 package net.electroland.gotham.processing.assets;
 
 import java.awt.Dimension;
-import processing.core.PApplet;
+
 import net.electroland.ea.EasingFunction;
 import net.electroland.ea.easing.Linear;
 import net.electroland.gotham.core.GothamConductor;
 import net.electroland.gotham.processing.GothamPApplet;
 import net.electroland.utils.ElectrolandProperties;
+
 import org.apache.log4j.Logger;
+
+import processing.core.PApplet;
 
 public class StripeSimple {
 

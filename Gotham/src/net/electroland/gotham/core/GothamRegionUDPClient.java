@@ -4,14 +4,12 @@ import java.net.SocketException;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
-
-import net.electroland.elvis.net.GridData;
-import net.electroland.elvis.net.PresenceGridUDPClient;
 import net.electroland.elvis.net.RegionUDPClient;
 import net.electroland.elvis.regions.BasePolyRegion;
 import net.electroland.elvis.regions.PolyRegionResults;
 import net.electroland.gotham.processing.GothamPApplet;
+
+import org.apache.log4j.Logger;
 
 public class GothamRegionUDPClient extends RegionUDPClient {
 
