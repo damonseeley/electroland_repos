@@ -29,7 +29,7 @@ public class RecordTracks extends TrackUDPClient {
     public void handle(TrackResults<BaseTrack> t) {
         if (recorder != null){
             try {
-                recorder.record(t);
+                recorder.recordLine(t);
             } catch (IOException e) {
                 e.printStackTrace();
                 recorder.close();

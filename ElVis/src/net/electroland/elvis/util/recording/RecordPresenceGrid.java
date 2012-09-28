@@ -28,7 +28,7 @@ public class RecordPresenceGrid extends PresenceGridUDPClient {
     public void handle(GridData t) {
         if (recorder != null){
             try {
-                recorder.record(t);
+                recorder.recordLine(t);
             } catch (IOException e) {
                 e.printStackTrace();
                 recorder.close();
