@@ -10,26 +10,38 @@ import net.electroland.elvis.net.StringAppender;
 public class FileRecorder {
 
     private BufferedWriter output;
-    private StringBuilder buffer;
+    private StringBuilder  buffer;
 
-    public FileRecorder(String filename) throws IOException {
+    public FileRecorder(String filename, String header) throws IOException {
+        open(filename);
+        recordHeader(header);
+    }
+
+    public void open(String filename) throws IOException {
+        if (output != null){
+            close();
+        }
         output = new BufferedWriter(new FileWriter(new File(filename)));
         buffer = new StringBuilder();
     }
 
-    public void recored(StringAppender a) throws IOException {
-        if (output != null){
+    public void recordHeader(String header) throws IOException {
+        output.write(header);
+        output.newLine();
+        output.flush();
+    }
 
-            buffer.setLength(0);
-            buffer.append(System.currentTimeMillis());
-            buffer.append(':');
+    public void record(StringAppender a) throws IOException {
 
-            a.buildString(buffer);
+        buffer.setLength(0);
+        buffer.append(System.currentTimeMillis());
+        buffer.append(':');
 
-            output.write(buffer.toString());
-            output.newLine();
-            output.flush();
-        }
+        a.buildString(buffer);
+
+        output.write(buffer.toString());
+        output.newLine();
+        output.flush();
     }
 
     public void close() {
