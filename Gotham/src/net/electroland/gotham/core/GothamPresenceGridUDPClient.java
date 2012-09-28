@@ -13,7 +13,7 @@ import net.electroland.gotham.processing.GothamPApplet;
 public class GothamPresenceGridUDPClient extends PresenceGridUDPClient {
 
     private List <GothamPApplet>listeners;
-    static Logger logger = Logger.getLogger(GothamRegionUDPClient.class); 
+    static Logger logger = Logger.getLogger(GothamPresenceGridUDPClient.class); 
 
     public GothamPresenceGridUDPClient(int port) throws SocketException {
         super(port);
