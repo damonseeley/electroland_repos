@@ -20,11 +20,13 @@ public class GridOverlay extends GothamPApplet {
 
 	private long interval = 3000;
 	private Timer timer;
-	private GridData gd;
 
 	ArrayList<StripeSimple> stripes;
 
 	ColorPalette cp;
+	
+	
+	private GridData gd;
 
 	@Override
 	public void handle(GridData t) {
