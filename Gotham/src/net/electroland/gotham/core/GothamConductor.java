@@ -55,7 +55,7 @@ public class GothamConductor extends JFrame {
 //        GothamRegionUDPClient regionClient = new GothamRegionUDPClient(3457);
         //add listeners!!!
         
-        gridClient.start();
+        //gridClient.start();
         //regionClient.start();
     }
     
