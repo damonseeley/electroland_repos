@@ -34,7 +34,7 @@ public class FileRecorder implements Recorder {
     }
 
     @Override
-    public void record(StringAppender a) throws IOException {
+    public void recordLine(StringAppender a) throws IOException {
 
         buffer.setLength(0);
         buffer.append(System.currentTimeMillis());
