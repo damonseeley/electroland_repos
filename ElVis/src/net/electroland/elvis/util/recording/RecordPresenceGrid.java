@@ -6,7 +6,7 @@ import java.net.SocketException;
 import net.electroland.elvis.net.GridData;
 import net.electroland.elvis.net.PresenceGridUDPClient;
 
-public class RecordPresenceGrid extends PresenceGridUDPClient {
+public class RecordPresenceGrid extends PresenceGridUDPClient implements Shutdownable {
 
     private Recorder recorder;
 
@@ -20,6 +20,7 @@ public class RecordPresenceGrid extends PresenceGridUDPClient {
             System.exit(-1);
         }else{
             RecordPresenceGrid r = new RecordPresenceGrid(new Integer(args[0]));
+            Runtime.getRuntime().addShutdownHook(new ShutdownThread(r));
             r.recorder = new FileRecorder(args[1], "Recorded from " + r.getClass().getName());
             r.start();
         }
@@ -32,9 +33,15 @@ public class RecordPresenceGrid extends PresenceGridUDPClient {
                 recorder.recordLine(t);
             } catch (IOException e) {
                 e.printStackTrace();
-                recorder.close();
-                this.stopRunning();
+                shutdown();
             }
         }
+    }
+
+    @Override
+    public void shutdown(){
+        System.out.println("Shutting down...");
+        recorder.close();
+        this.stopRunning();
     }
 }
