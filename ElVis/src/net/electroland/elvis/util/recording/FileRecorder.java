@@ -28,9 +28,7 @@ public class FileRecorder implements Recorder {
 
     @Override
     public void recordHeader(String header) throws IOException {
-        output.write(header);
-        output.newLine();
-        output.flush();
+        writeLn(header);
     }
 
     @Override
@@ -39,12 +37,9 @@ public class FileRecorder implements Recorder {
         buffer.setLength(0);
         buffer.append(System.currentTimeMillis());
         buffer.append(':');
-
         a.buildString(buffer);
 
-        output.write(buffer.toString());
-        output.newLine();
-        output.flush();
+        writeLn(buffer.toString());
     }
 
     @Override
@@ -54,5 +49,11 @@ public class FileRecorder implements Recorder {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void writeLn(String line) throws IOException {
+        output.write(buffer.toString());
+        output.newLine();
+        output.flush();
     }
 }
