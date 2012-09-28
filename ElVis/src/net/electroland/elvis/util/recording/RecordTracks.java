@@ -22,6 +22,7 @@ public class RecordTracks extends TrackUDPClient {
         }else{
             RecordTracks r = new RecordTracks(new Integer(args[0]));
             r.recorder = new FileRecorder(args[1], "Recorded from " + r.getClass().getName());
+            r.start();
         }
     }
 
