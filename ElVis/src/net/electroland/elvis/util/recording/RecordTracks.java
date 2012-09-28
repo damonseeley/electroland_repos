@@ -1,14 +1,10 @@
 package net.electroland.elvis.util.recording;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.SocketException;
 
 import net.electroland.elvis.blobtracking.BaseTrack;
 import net.electroland.elvis.blobtracking.TrackResults;
-import net.electroland.elvis.net.GridData;
 import net.electroland.elvis.net.TrackUDPClient;
 
 public class RecordTracks extends TrackUDPClient {

@@ -23,11 +23,12 @@ public class FileRecorder {
             buffer.setLength(0);
             buffer.append(System.currentTimeMillis());
             buffer.append(':');
+
             a.buildString(buffer);
 
-                output.write(buffer.toString());
-                output.newLine();
-                output.flush();
+            output.write(buffer.toString());
+            output.newLine();
+            output.flush();
         }
     }
 
