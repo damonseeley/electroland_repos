@@ -17,9 +17,10 @@ public class RecordPresenceGrid extends PresenceGridUDPClient {
     public static void main(String args[]) throws Exception {
         if (args.length != 2){
             System.out.println("Usage: RecordPresenceGrid [port] [filename]");
+            System.exit(-1);
         }else{
             RecordPresenceGrid r = new RecordPresenceGrid(new Integer(args[0]));
-            r.recorder = new FileRecorder(args[1]);
+            r.recorder = new FileRecorder(args[1], "Recorded from " + r.getClass().getName());
         }
     }
 
@@ -27,10 +28,11 @@ public class RecordPresenceGrid extends PresenceGridUDPClient {
     public void handle(GridData t) {
         if (recorder != null){
             try {
-                recorder.recored(t);
+                recorder.record(t);
             } catch (IOException e) {
                 e.printStackTrace();
                 recorder.close();
+                this.stopRunning();
             }
         }
     }
