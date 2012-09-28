@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import net.electroland.elvis.net.StringAppender;
 
-public class FileRecorder {
+public class FileRecorder implements Recorder {
 
     private BufferedWriter output;
     private StringBuilder  buffer;
@@ -17,6 +17,7 @@ public class FileRecorder {
         recordHeader(header);
     }
 
+    @Override
     public void open(String filename) throws IOException {
         if (output != null){
             close();
@@ -25,12 +26,14 @@ public class FileRecorder {
         buffer = new StringBuilder();
     }
 
+    @Override
     public void recordHeader(String header) throws IOException {
         output.write(header);
         output.newLine();
         output.flush();
     }
 
+    @Override
     public void record(StringAppender a) throws IOException {
 
         buffer.setLength(0);
@@ -44,6 +47,7 @@ public class FileRecorder {
         output.flush();
     }
 
+    @Override
     public void close() {
         try {
             output.close();
