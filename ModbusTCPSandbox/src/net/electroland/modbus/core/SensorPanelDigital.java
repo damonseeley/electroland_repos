@@ -13,7 +13,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
-public class SensorPanel extends JPanel implements MouseMotionListener { // change mouselistener to mousemotionlistener to allow smooth drags
+public class SensorPanelDigital extends JPanel implements MouseMotionListener { // change mouselistener to mousemotionlistener to allow smooth drags
 
 	private static final long serialVersionUID = 1L;
 	//private static BasicStroke stroke = new BasicStroke(2.0f); Never used EGM
@@ -29,7 +29,7 @@ public class SensorPanel extends JPanel implements MouseMotionListener { // chan
 	private int boxWidth;
 
 	//constructor
-	public SensorPanel (int w, int h) {
+	public SensorPanelDigital (int w, int h) {
 
 		this.width = w;
 		this.height = h;

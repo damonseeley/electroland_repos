@@ -1,4 +1,4 @@
-package net.electroland.modbus.core;
+package example;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -17,30 +17,34 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 
+import net.electroland.modbus.core.MTMPhoenixAnalogThread;
+import net.electroland.modbus.core.MTMPhoenixDigitalThread;
+import net.electroland.modbus.core.SensorPanelAnalog;
+import net.electroland.modbus.core.SensorPanelDigital;
 import net.miginfocom.swing.MigLayout;
 import net.wimpi.modbus.util.BitVector;
 
 import org.apache.log4j.Logger;
 
-public class EIAInstallTool extends JFrame implements Runnable  {
+public class ReadPhoenixAnalogTool extends JFrame implements Runnable  {
 
 	protected JButton startButton, stopButton;
 	protected JTextField ipAddressInput;
 	protected ButtonGroup buttonGroup;
 	protected JLabel ipCmds, sensorOutput;
 
-	SensorPanel sp;
+	SensorPanelAnalog sp;
 
-	private MTMThread mtmt;
+	private MTMPhoenixAnalogThread mtmt;
 	private String startIP;
 	private int startFramerate;
 
 	private int windowWidth,windowHeight;
 	private int sensorWidth,sensorHeight;
 
-	static Logger logger = Logger.getLogger(EIAInstallTool.class);
+	static Logger logger = Logger.getLogger(ReadPhoenixAnalogTool.class);
 
-	public EIAInstallTool() {
+	public ReadPhoenixAnalogTool() {
 
 		super("EIA Setup Tool");
 
@@ -49,8 +53,8 @@ public class EIAInstallTool extends JFrame implements Runnable  {
 		sensorWidth = 992;
 		sensorHeight = 600;
 
-		startIP = "192.168.247.61";
-		startFramerate = 60;
+		startIP = "192.168.247.21";
+		startFramerate = 30;
 
 		JPanel ipPanel = new JPanel();
 		ipPanel.setBorder(BorderFactory.createTitledBorder("IP Address Info"));
@@ -81,7 +85,7 @@ public class EIAInstallTool extends JFrame implements Runnable  {
 			}
 		});
 
-		sp = new SensorPanel(sensorWidth,sensorHeight);
+		sp = new SensorPanelAnalog(sensorWidth,sensorHeight);
 		this.add(sp);
 
 		//setup window
@@ -96,7 +100,7 @@ public class EIAInstallTool extends JFrame implements Runnable  {
 					}
 				});
 
-		mtmt = new MTMThread(startIP,startFramerate,sp);
+		mtmt = new MTMPhoenixAnalogThread(startIP,startFramerate,sp);
 		
 		Thread t=new Thread (this);
 		t. start();
@@ -146,7 +150,7 @@ public class EIAInstallTool extends JFrame implements Runnable  {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		EIAInstallTool eiait = new EIAInstallTool();
+		ReadPhoenixAnalogTool eiait = new ReadPhoenixAnalogTool();
 
 	}
 
