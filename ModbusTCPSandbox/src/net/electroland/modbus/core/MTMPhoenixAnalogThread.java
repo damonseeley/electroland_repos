@@ -11,7 +11,7 @@ import net.wimpi.modbus.util.BitVector;
 
 import org.apache.log4j.Logger;
 
-public class MTMThread  extends Thread {
+public class MTMPhoenixAnalogThread  extends Thread {
 
 	ModbusTCPMaster mtm;
 
@@ -25,37 +25,29 @@ public class MTMThread  extends Thread {
 	BufferedReader br;
 
 	public String ip;
+	
+	public int regOffset;
 
-	public SensorPanel sp;
+	public SensorPanelAnalog sp;
 
-	static Logger logger = Logger.getLogger(MTMThread.class);
+	static Logger logger = Logger.getLogger(MTMPhoenixAnalogThread.class);
 
-	public boolean[] sensorStates = new boolean[8];
 	public boolean[] sensorChanged = new boolean[8];
 	private int[] sensorBits = new int[16];
 	public double[] tripTimes = new double[sensorBits.length];
 	public double[] tripTimesCalc = new double[sensorBits.length];
 
-	public MTMThread(String ip, int fr, SensorPanel sp) {
+	public MTMPhoenixAnalogThread(String ip, int fr, SensorPanelAnalog sp) {
 
 		framerate = fr;
 		this.sp = sp;
 		this.ip = ip;
+		
+		regOffset = 192; // the specific offset for PhoenixBusCoupler analog inputs
 
 		mtm = new ModbusTCPMaster(ip);
 
 		double startTime = System.currentTimeMillis();
-
-		for (int i=0; i<sensorStates.length; i++) {
-			sensorStates[i] = false;
-			sensorChanged[i] = false;
-		}
-		for (int i=0; i<sensorBits.length; i++){
-			sensorBits[i] = 0;
-			tripTimes[i] = startTime;
-		}
-
-		sp.paintSensors(sensorStates, sensorChanged);
 
 		/////////////// THREAD STUFF
 		isRunning = false;
@@ -108,8 +100,11 @@ public class MTMThread  extends Thread {
 		while (true) {
 			if (isRunning) {
 				try {
-					InputRegister[] regs = mtm.readInputRegisters(0, 1);
-					updateSensorStates(regs[0].toBytes());
+					InputRegister[] regs = mtm.readInputRegisters(regOffset, 1);
+	                InputRegister[] regs2 = mtm.readInputRegisters(regOffset+1, 1);
+
+					//logger.info(regs[0].toBytes()[0] + "  " + regs2[0].toBytes()[0]);
+					updateSensorStates(regs[0].toBytes()[0],regs2[0].toBytes()[0]);
 
 					if (cycle >= reportFreq){
 						double rateAvg = 0.0;
@@ -140,58 +135,14 @@ public class MTMThread  extends Thread {
 	BitVector bvPrev = new BitVector(16);
 	public int lastInputTripped = 0;
 
-	private void updateSensorStates(byte[] bytes) {
+	private void updateSensorStates(byte v1, byte v2) {
 
-		BitVector bv = BitVector.createBitVector(bytes);
-		//System.out.println(bv);
-
-		boolean anyChange = false;
-
-		//update sensor states
-		for (int i=0; i < sensorStates.length; i++) {
-			if (bv.getBit(i+8) == true){
-				sensorStates[i] = true;
-			} else {
-				sensorStates[i] = false;
-			}
-			if (bv.getBit(i+8) != bvPrev.getBit(i+8)){
-				anyChange = true;
-				sensorChanged[i] = true;
-				tripTimes[i] = System.currentTimeMillis();
-			}
-		}
-
-		bvPrev = bv.createBitVector(bv.getBytes());
-
-		/*
-		//calculate trip times as time elapsed
-		double tempTime = System.currentTimeMillis();
-		for (int i=0; i < tripTimes.length; i++) {
-			tripTimesCalc[i] =  tempTime - tripTimes[i];
-		}
-		 */
-
-		if (anyChange) {
-			//logger.info("Painting");
-			sp.paintSensors(sensorStates, sensorChanged);
-			//System.out.println("Last input tripped = " + (lastInputTripped+1));
-		}
-
-		//reset
-		for (int i=0; i<sensorChanged.length; i++) {
-			sensorChanged[i] = false;
-		}
+			sp.paint2SensorsAnalog(v1,v2);
 
 	}
 
 
-	private void printSensorStates() {
-		for (int i=0; i < sensorStates.length; i++) {
-			System.out.print(sensorStates[i] + " ");
-		}
-		System.out.println("");
-	}
-
+	
 	private void printTripTimes() {
 		for (int i=8; i < tripTimes.length; i++) {
 			System.out.print(tripTimesCalc[i] + " - ");
@@ -200,12 +151,6 @@ public class MTMThread  extends Thread {
 	}
 
 
-	private void printSensorBits(BitVector bv) {
-		for (int i=0; i < bv.size(); i++) {
-			System.out.print(bv.getBit(i) + " ");
-		}
-		System.out.println(" ");
-	}
 
 
 	public void stopClean(){
