@@ -25,6 +25,7 @@ public class FlexingStripes extends GothamPApplet {
 	private int selector = 5; // Which color swatch from the props file to use.
 	private float pScalerAmt;
 	private boolean switchDirection;
+	private boolean pinState;
 
 	StripeGUIManager gui;
 	ArrayList<Stripe> stripes;
@@ -56,7 +57,9 @@ public class FlexingStripes extends GothamPApplet {
 			stripes.add(new StripeFlexRight(this, syncArea));
 			((StripeFlexRight) stripes.get(i)).forcePosition(syncArea.width - (i*200));
 		}
-
+		
+		setPinning(false);
+		
 	}
 
 	@Override
@@ -72,16 +75,15 @@ public class FlexingStripes extends GothamPApplet {
 			Stripe s = stripes.get(i);
 			s.update();
 			s.display();
+			
 			//check for affectors
 			//apply existing affector to the current stripe.
-
-			// if(pms.onScreen())
-			// s.checkHover(pms.getLocation(), pms.standing());
-			s.checkHover(pms);
+			s.performColorShift(pms, 100);
+			if(pinState)
+				s.checkPinning(pms);
 
 			if (i != 0)
-				s.setWidth(stripes.get(i - 1)); // Set the width of this stripe,
-												// based on the guy in front.
+				s.setWidth(stripes.get(i - 1)); 
 
 			if (s.isOffScreen())
 				stripes.remove(i);
@@ -108,7 +110,7 @@ public class FlexingStripes extends GothamPApplet {
 
 		if (DEBUG) {
 			for (Stripe s : stripes) {
-				System.out.print(s.getBehavior().toString() + "\t");
+				System.out.print(s.getBehavior().toString() + " " + s.xpos + "\t");
 			}
 			System.out.println();
 		}
@@ -137,6 +139,10 @@ public class FlexingStripes extends GothamPApplet {
 		updatePixels();
 		pScalerAmt = Stripe.scalerAmt;
 		switchDirection = false;
+	}
+	
+	public void setPinning(boolean p){
+		pinState = p;
 	}
 
 	// Event method for the GUI knobs

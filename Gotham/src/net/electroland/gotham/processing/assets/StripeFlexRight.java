@@ -21,8 +21,9 @@ public class StripeFlexRight extends Stripe {
 
 	@Override
 	public void display() {
-		// p.rectMode(PApplet.CENTER);
-		p.fill(stripeColor);
+		float h = p.hue(stripeColor);
+		float v = p.brightness(stripeColor);
+		p.fill(h, saturation, v);
 		// p.stroke(p.color(0,100,100));
 		p.rect(xpos, -25, w+20, p.height + 50);
 	}
@@ -60,17 +61,15 @@ public class StripeFlexRight extends Stripe {
 	private Point2D.Float ploc = new Point2D.Float(0,0);
 
 	@Override
-	public void checkHover(PersonMouseSimulator pm) {
+	public void checkPinning(PersonMouseSimulator pm) {
 		loc = pm.getLocation();
 
-		// if (loc.getX() < xpos && loc.getX() > (xpos + w)) {
 		if (loc.getY() >= d.height - 50
 				&& ploc.getY() < d.height - 50
 				&& movement instanceof MoveRight) {
 			if (pm.getZone() >= xpos && pm.getZone() <= (xpos + w))
 				setBehavior(new Pin(p, d, xpos));
 		}
-		// }
 		if (movement instanceof Pin) {
 			if ((loc.getY() < d.height - 50 && ploc.getY() >= d.height - 50)
 					|| pm.zoneChanged()) {
@@ -90,6 +89,7 @@ public class StripeFlexRight extends Stripe {
 		}
 		ploc.setLocation(loc);
 	}
+	
 
 	@Override
 	public float getLocation() {
@@ -98,7 +98,7 @@ public class StripeFlexRight extends Stripe {
 
 	@Override
 	public boolean isOffScreen() {
-		return xpos > d.width + 600 || Math.abs(this.w) < 5;
+		return (Math.abs(xpos - movement.getTarget()) < 10 || Math.abs(this.w) < 2);
 	}
 
 	@Override

@@ -17,7 +17,8 @@ public abstract class Stripe {
 	public static boolean grow;
 
 	public float xpos;
-	int stripeColor;
+	public int stripeColor;
+	public float saturation;
 	public float w; // with of a stripe
 
 	public MoveBehavior movement;
@@ -32,7 +33,7 @@ public abstract class Stripe {
 	public abstract void setWidth(Stripe s);
 	public abstract boolean isOffScreen();
 	//public abstract void checkHover(Point2D.Float loc, boolean standing);
-	public abstract void checkHover(PersonMouseSimulator pm);
+	public abstract void checkPinning(PersonMouseSimulator pm);
 	public abstract void forcePosition(float p);
 	public abstract void update();
 	public abstract void display();
@@ -41,6 +42,17 @@ public abstract class Stripe {
 
 	public void setBehavior(MoveBehavior mb) {
 		movement = mb;
+	}
+	
+	public void performColorShift(PersonMouseSimulator pm, int radius){
+		//if we go to the bottom 50px of the screen
+		if (pm.getLocation().getY() >= d.height - 50) {
+			float d = Math.abs(pm.getZone() - (xpos+w/2)); 
+			if(d <= radius){
+				saturation = (int)PApplet.map(d, radius,0, 40, 100);
+			} else saturation = 40;
+		}
+		else saturation = 40;
 	}
 	
 	//Hook here?
