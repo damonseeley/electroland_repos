@@ -4,13 +4,13 @@ import java.awt.Dimension;
 import processing.core.PApplet;
 import java.awt.geom.Point2D;
 
-public class StripeFlexRight extends Stripe {
+public class StripeFlexLeft extends Stripe {
 
 	private boolean pstanding = true;
 
-	public StripeFlexRight(PApplet p, Dimension d) {
+	public StripeFlexLeft(PApplet p, Dimension d) {
 		super(p, d);
-		movement = new MoveRight(p, d);
+		movement = new MoveLeft(p, d);
 	}
 
 	@Override
@@ -24,7 +24,7 @@ public class StripeFlexRight extends Stripe {
 		// p.rectMode(PApplet.CENTER);
 		p.fill(stripeColor);
 		// p.stroke(p.color(0,100,100));
-		p.rect(xpos, -25, w+20, p.height + 50);
+		p.rect(xpos, -25, w - 20, p.height + 50);
 	}
 
 	@Override
@@ -37,24 +37,23 @@ public class StripeFlexRight extends Stripe {
 		}
 	}
 
-//	@Override
-//	public void checkHover(Point2D.Float loc, boolean standing) {
-		//
-		// if (loc.getX() > xpos && loc.getX() < (xpos + w)) {
-		// if (standing && !pstanding)
-		// setBehavior(new Pin(p, d, xpos));
-		// if (!standing && pstanding) {
-		// // setBehavior(new Move(p, d, xpos, target));
-		// if (w >= 300)
-		// setBehavior(new SpringLeft(p, d, xpos, movement.getTarget()));
-		// //something like that
-		// else
-		// setBehavior(new MoveLeft(p, d));
-		// }
-		// }
-		//
-		// pstanding = standing;
-//	}
+	// @Override
+	// public void checkHover(Point2D.Float loc, boolean standing) {
+	//
+	// if (loc.getX() < xpos && loc.getX() > (xpos - w)) {
+	// if (standing && !pstanding)
+	// setBehavior(new Pin(p, d, xpos));
+	// if (!standing && pstanding) {
+	// // setBehavior(new Move(p, d, xpos, target));
+	// if (Math.abs(w) >= 300)
+	// setBehavior(new SpringLeft(p, d, xpos, movement.getTarget()));
+	// else
+	// setBehavior(new MoveLeft(p, d));
+	// }
+	// }
+	//
+	// pstanding = standing;
+	// }
 
 	private Point2D.Float loc = new Point2D.Float(0,0);
 	private Point2D.Float ploc = new Point2D.Float(0,0);
@@ -66,8 +65,8 @@ public class StripeFlexRight extends Stripe {
 		// if (loc.getX() < xpos && loc.getX() > (xpos + w)) {
 		if (loc.getY() >= d.height - 50
 				&& ploc.getY() < d.height - 50
-				&& movement instanceof MoveRight) {
-			if (pm.getZone() >= xpos && pm.getZone() <= (xpos + w))
+				&& movement instanceof MoveLeft) {
+			if (pm.getZone() <= xpos && pm.getZone() >= (xpos + w))
 				setBehavior(new Pin(p, d, xpos));
 		}
 		// }
@@ -98,14 +97,14 @@ public class StripeFlexRight extends Stripe {
 
 	@Override
 	public boolean isOffScreen() {
-		return xpos > d.width + 600 || Math.abs(this.w) < 5;
+		return xpos < -600 || Math.abs(this.w) < 5;
 	}
 
 	@Override
 	public void forcePosition(float tx) {
-		// setBehavior(new MoveLeft(this.p, this.d, tx, target));
+		// setBehavior(new MoveLeft(this.p, this.d, tx, this.target));
 		movement.setPosition(tx);
-		// movement = new MoveRight(this.p, this.d, tx);
+		// movement = new MoveLeft(this.p, this.d, tx);
 	}
 
 	@Override

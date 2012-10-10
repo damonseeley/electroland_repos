@@ -24,6 +24,7 @@ public class StripeGUIManager{
 	private ControlWindow window;
 	private Controller<Toggle> bgColor;
 	private Controller<Toggle> rSpeeds;
+	private Controller<Toggle> stripesGrow;
 	private Controller<Knob> blurKnob;
 	private Controller<Knob> speedKnob;
 	
@@ -90,14 +91,15 @@ public class StripeGUIManager{
 			         .setColorBackground(p.color(40, 128))
 			         .setColorActive(p.color(255, 128));
 		swatchList.setCaptionLabel("Pick a color swatch");
-		for(int i=1; i<=ColorPalette.getNumSwatches(); i++){
-			ListBoxItem lbi = ((ListBox) swatchList).addItem("Swatch "+i, i-1);
+		for(int i=0; i<ColorPalette.getNumSwatches(); i++){
+			ListBoxItem lbi = ((ListBox) swatchList).addItem(ColorPalette.getSwatchName(i), i);//"Swatch "+i, i-1);
 		    lbi.setColorBackground(p.color(0));
 		}
 		// Init toggle switch
 		bgColor = control.addToggle("blackOrWhite").setPosition(10, 40)
 				.setSize(50, 20).setValue(true).setMode(ControlP5.DEFAULT).setCaptionLabel("Black bg?");  //true = black, false = white
-
+		stripesGrow = control.addToggle("grow").setPosition(10, 80)
+				.setSize(50, 20).setValue(true).setMode(ControlP5.DEFAULT).setCaptionLabel("Pinned Stripes Grow?"); 
 		rSpeeds = control.addToggle("randomSpeeds").setPosition(80, 40)
 				.setSize(50, 20).setValue(randomOnStart).setMode(ControlP5.DEFAULT)
 				.setCaptionLabel("Randomize Speeds?");
@@ -109,8 +111,8 @@ public class StripeGUIManager{
 		((Toggle) rSpeeds).moveTo(window);
 		((Knob) howRandom).moveTo(window);
 		((Knob) howOften).moveTo(window);
+		((Toggle) stripesGrow).moveTo(window);
 		swatchList.moveTo(window);
-		
-		
+
 	}
 }
