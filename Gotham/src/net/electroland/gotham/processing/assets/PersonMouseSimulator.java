@@ -1,10 +1,12 @@
 package net.electroland.gotham.processing.assets;
 
+import java.awt.Dimension;
 import java.awt.geom.Point2D;
 import processing.core.PApplet;
 
 public class PersonMouseSimulator {
 	private PApplet p;
+	private Dimension d;
 	private Point2D.Float position;
 	private long timeNotMoving;
 	private float px;
@@ -12,8 +14,9 @@ public class PersonMouseSimulator {
 	private boolean still = false;
 	private boolean pstill = false;
 
-	public PersonMouseSimulator(PApplet p) {
+	public PersonMouseSimulator(PApplet p, Dimension d) {
 		this.p = p;
+		this.d = d;
 		position = new Point2D.Float();
 		startTime = p.millis();
 		px = p.mouseX;
@@ -48,6 +51,25 @@ public class PersonMouseSimulator {
 
 	public Point2D.Float getLocation() {
 		return position;
+	}
+	
+	public float getZone(){
+		if(p.mouseX <= d.width/3){
+			return d.width/6;
+		}
+		else if(p.mouseX > d.width/3 && p.mouseX <= (2*d.width/3)){
+			return d.width/2;
+		} else return 5*d.width/6;
+		
+	}
+	public boolean zoneChanged(){
+//		if(p.pmouseX <= d.width/3 && p.mouseX > d.width/3 //A to B
+//				|| p.pmouseX >= d.width/3 && p.mouseX < d.width/3 //B to A
+//				|| p.pmouseX <= 2*d.width/3 && p.mouseX > 2*d.width/3 //B to C
+//				|| p.pmouseX <= 2*d.width/3 && p.mouseX < 2*d.width/3)//C to B
+//			return true;
+//		else return false;
+		return false;
 	}
 
 	// For Testing

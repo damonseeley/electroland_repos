@@ -10,16 +10,18 @@ import processing.core.PApplet;
 public class ColorPalette {
 	private static ElectrolandProperties props = GothamConductor.props;
 	PApplet p;
+	
 	private static int[] colors;
 	private static int numSwatches;
 	private static int numColors;
+	private static List<String> fileNames;
 	
 	public ColorPalette(PApplet p) {
 		this.p = p;
 	}
 
 	public void createNewPalette(int n) {
-		List<String> fileNames = props.getOptionalList("wall", "East", "colorPalettes");
+		fileNames = props.getOptionalList("wall", "East", "colorPalettes");
 		numSwatches = fileNames.size();
 		
 		int num = 0;
@@ -31,6 +33,9 @@ public class ColorPalette {
 			colors[num] = thisImage.get(i, thisImage.height / 2);
 			num++;
 		}
+	}
+	public static String getSwatchName(int i){
+		return fileNames.get(i);
 	}
 	
 	public static int getRandomColor(){
