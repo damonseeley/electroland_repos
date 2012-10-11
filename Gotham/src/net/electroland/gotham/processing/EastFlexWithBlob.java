@@ -25,7 +25,7 @@ public class EastFlexWithBlob extends GothamPApplet {
 	private int selector = 0; // Which color swatch from the props file to use.
 
 	StripeGUIManager gui;
-	ArrayList<StripeFlex> stripes;
+	ArrayList<StripeFlexLeft> stripes;
 
 	//private ElectrolandProperties props = GothamConductor.props;
 
@@ -44,7 +44,7 @@ public class EastFlexWithBlob extends GothamPApplet {
 		syncArea = this.getSyncArea();
 		colorMode(HSB, 360, 100, 100);
 
-		stripes = new ArrayList<StripeFlex>();
+		stripes = new ArrayList<StripeFlexLeft>();
 
 		//nStripes = props.getOptionalInt("wall", "East", "initialStripes");
 
@@ -54,9 +54,9 @@ public class EastFlexWithBlob extends GothamPApplet {
 		timer = new Timer(interval);
 		timer.start();
 
-		stripes.add(new StripeFlex(this, syncArea));
+		stripes.add(new StripeFlexLeft(this, syncArea));
 		stripes.get(0).forcePosition(syncArea.width);
-		stripes.add(new StripeFlex(this, syncArea));
+		stripes.add(new StripeFlexLeft(this, syncArea));
 	}
 
 	@Override
@@ -67,8 +67,9 @@ public class EastFlexWithBlob extends GothamPApplet {
 
 		// Handle Stripes
 		for (int i = stripes.size() - 1; i >= 0; i--) {
-			StripeFlex s = stripes.get(i);
-			s.run();
+			StripeFlexLeft s = stripes.get(i);
+			//s.run();
+			s.update();
 			if(i!=0)
 				s.setWidth(stripes.get(i-1)); //Set the width of this stripe, based on the guy in front.
 			
@@ -78,7 +79,7 @@ public class EastFlexWithBlob extends GothamPApplet {
 
 		// Timing Controls for each new Stripe
 		if (timer.isFinished()) {
-			stripes.add(new StripeFlex(this, syncArea));
+			stripes.add(new StripeFlexLeft(this, syncArea));
 			timer.reset((long)(1000.0 + (Math.random()*spawnScaler))); //Randomize the timer each time. Result: stripes of diff widths
 		}
 	
@@ -143,15 +144,15 @@ public class EastFlexWithBlob extends GothamPApplet {
 		} else if (theEvent.getController().getName() == "blurAmt") {
 			logger.info("Resetting Blur Amount To: " + blurAmt);
 		} else if (theEvent.getController().getName() == "scalerAmt") {
-			StripeFlex.setScalerAmt(theEvent.getController().getValue());
+			StripeFlexLeft.setScalerAmt(theEvent.getController().getValue());
 			logger.info("Resetting Speed Scaler To: " + theEvent.getController().getValue());
 		} else if (theEvent.getController().getName() == "rScaler") {
-			StripeFlex.setRandomScaler(theEvent.getController().getValue());
+			StripeFlexLeft.setRandomScaler(theEvent.getController().getValue());
 			logger.info("Resetting Stripe Randomness To: " + theEvent.getController().getValue());
 		} else if (theEvent.getController().getName() == "spawnScaler") {
 			logger.info("Resetting Spawn Rate To: " + theEvent.getController().getValue());
 		} else if (theEvent.getController().getName() == "randomSpeeds") {
-			StripeFlex.setUseRandomSpeeds(theEvent.getController().getValue());
+			StripeFlexLeft.setUseRandomSpeeds(theEvent.getController().getValue());
 			logger.info("Randomize Speed? " + theEvent.getController().getValue());
 		} else if (theEvent.getController().getName() == "blackOrWhite") {
 			logger.info("Black Background? " + blackOrWhite);
