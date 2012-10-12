@@ -12,14 +12,18 @@ public abstract class Stripe {
 	Dimension d;
 
 	public static float scalerAmt;
-	public static boolean randomSpeeds;
+	public static boolean randomSpeeds = false;
 	public static float rScaler;
 	public static boolean grow;
 
 	public float xpos;
 	public int stripeColor;
-	public float saturation;
+	public float hue;
+	public float saturation = 100;
+	public float brightness = 100;
 	public float w; // with of a stripe
+	public float widthScaler = 1; //used for the width affecter
+	public float xoff;
 
 	public MoveBehavior movement;
 
@@ -39,30 +43,32 @@ public abstract class Stripe {
 	public abstract void display();
 	public abstract float getLocation();
 	public abstract MoveBehavior getBehavior();
-
+	public abstract void performColorShift(PersonMouseSimulator pm, String value);
 	public void setBehavior(MoveBehavior mb) {
 		movement = mb;
 	}
 	
-	public void performColorShift(PersonMouseSimulator pm, int radius){
-		//if we go to the bottom 50px of the screen
+	public void performWidthShift(PersonMouseSimulator pm, String value){
+		String[] vals = PApplet.splitTokens(value, "$");
+		int radius = Integer.parseInt(vals[0]);
+		float min = Float.parseFloat(vals[1]);
+		float max = Float.parseFloat(vals[2]);
+		
 		if (pm.getLocation().getY() >= d.height - 50) {
-			float d = Math.abs(pm.getZone() - (xpos+w/2)); 
+			float d = Math.abs(pm.getZone() - xpos); 
 			if(d <= radius){
-				saturation = (int)PApplet.map(d, radius,0, 40, 100);
-			} else saturation = 40;
-		}
-		else saturation = 40;
+				widthScaler = PApplet.map(d, radius,0, min, max);
+			} else widthScaler = min;
+		} else widthScaler = min;
 	}
-	
-	//Hook here?
-	public static void setScaler(float norm){
-		//scalerAmt = PAppet.map(norm, -1,1, X,Y);
+
+	public static void setWindScaler(float val){
+		scalerAmt = PApplet.constrain(val * 3.5f, -3.5f, 3.5f); //If input val is -1 to 1, then this scales it up.
 	}
 
 
 	// Gui Stuff
-	public static void setScalerAmt(float amt) {
+	public static void setScalerAmtFromKnob(float amt) {
 		scalerAmt = amt;
 	}
 
