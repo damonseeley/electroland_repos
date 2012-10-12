@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import processing.core.PApplet;
 import java.awt.geom.Point2D;
 
+import net.electroland.gotham.processing.FlexingStripes;
+
 public class StripeFlexLeft extends Stripe {
 
 	private boolean pstanding = true;
@@ -16,16 +18,21 @@ public class StripeFlexLeft extends Stripe {
 	@Override
 	public void update() {
 		movement.move();
+		// TODO fix hardcoding of 1 and 2 below
+		float targetoffset = FlexingStripes.widthShift ? PApplet.map(widthScaler, 1, 2, 0, w / 4) : 0;
+		xoff += (targetoffset - xoff) * 0.05;
+
 		xpos = movement.getPosition();
 	}
 
 	@Override
 	public void display() {
-		float h = p.hue(stripeColor);
-		float v = p.brightness(stripeColor);
-		p.fill(h,saturation,v);
+		hue = p.hue(stripeColor);
+		brightness = p.brightness(stripeColor);
+		p.fill(hue, saturation, brightness);
 		// p.stroke(p.color(0,100,100));
-		p.rect(xpos, -25, w - 20, p.height + 50);
+
+		p.rect(xpos+xoff, -25, w-20, p.height + 50);
 	}
 
 	@Override
@@ -38,36 +45,35 @@ public class StripeFlexLeft extends Stripe {
 		}
 	}
 
-	// @Override
-	// public void checkHover(Point2D.Float loc, boolean standing) {
-	//
-	// if (loc.getX() < xpos && loc.getX() > (xpos - w)) {
-	// if (standing && !pstanding)
-	// setBehavior(new Pin(p, d, xpos));
-	// if (!standing && pstanding) {
-	// // setBehavior(new Move(p, d, xpos, target));
-	// if (Math.abs(w) >= 300)
-	// setBehavior(new SpringLeft(p, d, xpos, movement.getTarget()));
-	// else
-	// setBehavior(new MoveLeft(p, d));
-	// }
-	// }
-	//
-	// pstanding = standing;
-	// }
+	public void performColorShift(PersonMouseSimulator pm, String value){
+		String[] vals = PApplet.splitTokens(value, "$");
+		int radius = Integer.parseInt(vals[0]);
+		float minwidth = Integer.parseInt(vals[1]);
+		float maxwidth = Integer.parseInt(vals[2]);
+		
+		//if we go to the bottom 50px of the screen
+		if (pm.getLocation().getY() >= d.height - 50) {
+			float d = Math.abs(pm.getZone() - (xpos-w/2)); //keep this w/2???
+			if(d <= radius){
+				saturation = (int)PApplet.map(d, radius,0, minwidth, maxwidth);
+			} else saturation = minwidth;
+		}
+		else saturation = minwidth;
+	}
 
-	private Point2D.Float loc = new Point2D.Float(0,0);
-	private Point2D.Float ploc = new Point2D.Float(0,0);
+	private Point2D.Float loc = new Point2D.Float(0, 0);
+	private Point2D.Float ploc = new Point2D.Float(0, 0);
 
 	@Override
 	public void checkPinning(PersonMouseSimulator pm) {
 		loc = pm.getLocation();
 
-		if (loc.getY() >= d.height - 50
-				&& ploc.getY() < d.height - 50
+		if (loc.getY() >= d.height - 50 && ploc.getY() < d.height - 50
 				&& movement instanceof MoveLeft) {
-			//getZone returns the centroid of the three "zones" described by Damon
-			//We only pin a strip if it's currently on top of the "zone" we're standing in.
+			// getZone returns the centroid of the three "zones" described by
+			// Damon
+			// We only pin a strip if it's currently on top of the "zone" we're
+			// standing in.
 			if (pm.getZone() <= xpos && pm.getZone() >= (xpos + w))
 				setBehavior(new Pin(p, d, xpos));
 		}

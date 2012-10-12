@@ -40,6 +40,7 @@ public class MoveRight implements MoveBehavior {
 		startTime = p.millis(); // Start our timer
 		dist = Math.abs(target - begin);
 		baseTime = props.getOptionalInt("wall", "East", "baseTime"); 
+		System.out.println(Stripe.randomSpeeds);
 		timeAcross = Stripe.randomSpeeds ? (baseTime + p.random(-Stripe.rScaler, Stripe.rScaler))* (dist / d.width)
 				: baseTime * (dist / d.width);
 		noiseSeed = p.millis();
@@ -61,7 +62,7 @@ public class MoveRight implements MoveBehavior {
 		
 		//Scale the inc by the knob input + the noise offset 
 		//If you don't like the effect, you can just delecte localNoiseOffset below.
-		float inc = ((p.millis() - startTime) / (timeAcross * 1000)) * (Math.abs(StripeFlexRight.scalerAmt)+localNoiseOffset);
+		float inc = ((p.millis() - startTime) / (timeAcross * 1000)) * (Math.abs(Stripe.scalerAmt)+localNoiseOffset);
 		//On top of that, give each individual stripe it's own little bit of noise.
 		percentComplete += (inc);
 		startTime = p.millis();

@@ -144,7 +144,7 @@ public class EastFlexWithBlob extends GothamPApplet {
 		} else if (theEvent.getController().getName() == "blurAmt") {
 			logger.info("Resetting Blur Amount To: " + blurAmt);
 		} else if (theEvent.getController().getName() == "scalerAmt") {
-			StripeFlexLeft.setScalerAmt(theEvent.getController().getValue());
+			StripeFlexLeft.setScalerAmtFromKnob(theEvent.getController().getValue());
 			logger.info("Resetting Speed Scaler To: " + theEvent.getController().getValue());
 		} else if (theEvent.getController().getName() == "rScaler") {
 			StripeFlexLeft.setRandomScaler(theEvent.getController().getValue());
