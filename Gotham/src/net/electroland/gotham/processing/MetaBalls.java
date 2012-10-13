@@ -10,23 +10,19 @@ public class MetaBalls extends GothamPApplet {
     private static final long serialVersionUID = 7554567212859904536L;
 
     final int   NUM_BALLS       = 6;
-    final float FRICTION        = 0.999f;
-    final float MOUSE_REPEL     = 60f;
-    final float MAX_VEL         = 5;
-    final float COHESION_WEIGHT = 0.05f;
-    final float THRESH_1        = 5;
-    final float THRESH_2        = 5.5f;
-    final float THRESH_3        = 6;
-    final float THRESH_4        = 7;
-    final int   MIN_RADIUS      = 90;
-    final int   MAX_RADIUS      = 140;
+    final int   MIN_RADIUS      = 90;    // initial ball radius min
+    final int   MAX_RADIUS      = 140;   // initial ball radius max
+
+    final float FRICTION        = 1.5f;  // higher = less
+    final float MAX_VEL         = 15;    // higher = faster
+    final float COHESION_WEIGHT = 1.0f;  // higher = more
 
     // TODO: should cycle hue and saturation from an image file
     private int hue             = 0;
     private int saturation      = 100;
 
-    // might be nice to clean these up by putting them in a Metaball object
-    private float[] mbRadius    = new float[NUM_BALLS];
+    // might be nice to clean these up by putting them in a Collection of Metaballs.
+    private float[]   mbRadius  = new float[NUM_BALLS];
     private PVector[] mbPos     = new PVector[NUM_BALLS];
     private PVector[] mbVel     = new PVector[NUM_BALLS];
 
@@ -44,19 +40,9 @@ public class MetaBalls extends GothamPApplet {
     public void drawELUContent() {
 
         PVector center = new PVector(0, 0, 0);
+
         //update meta ball positions
         for(int i=0; i < NUM_BALLS; i++) {
-          // we'll replace mouse with vision
-//          if(mousePressed) {
-//            PVector m = new PVector();
-//            m.set(mouseX,mouseY,0);
-//            float mDistance = PVector.dist(mbPos[i],m);
-//            PVector repel = PVector.sub(mbPos[i],m);
-//            repel.normalize();
-//            repel.mult(MOUSE_REPEL/(mDistance*mDistance));
-//            mbVel[i].add(repel);
-//          }
-
             center.add(mbPos[i]);
             mbVel[i].mult(FRICTION);
             mbVel[i].limit(MAX_VEL);
@@ -65,13 +51,14 @@ public class MetaBalls extends GothamPApplet {
         center.div(NUM_BALLS);
 
         for(int i = 0; i < NUM_BALLS; i++) {
+
             // gravity to center
             PVector c = PVector.sub(center, mbPos[i]);
             c.normalize();
             c.mult(COHESION_WEIGHT);
             mbVel[i].add(c);
             mbPos[i].add(mbVel[i]);
-    
+
               // simple bounce when beyond bounds.  only accomplishes 90 or 180
               // degree turns.
             if(mbPos[i].x > this.getSyncArea().width) {
@@ -95,16 +82,15 @@ public class MetaBalls extends GothamPApplet {
         // render
         background(0);
         hue++; // cycle hue
-        float sum;
-        
-        // this thing is compositing every single pixel on the screen.
+
+        // given that computation goes up with square of dimensions, it would
+        // make sense to do something like determine the boundaries of the
+        // detectors and only render that range.
         for(int i = 0; i < width; i++) {
             for(int j = 0; j < height; j++) {
-                sum = 0;
-                // times every ball.  doesn't seem right.  should be able to just reset the entire
-                // grid and THEN composite the balls in a separate pass.
+                float sum = 0;
                 for(int m = 0; m < NUM_BALLS; m++) {
-                  sum += mbRadius[m] / sqrt(sq(i-mbPos[m].x) + sq(j-mbPos[m].y));
+                    sum += mbRadius[m] / sqrt(sq(i - mbPos[m].x) + sq(j - mbPos[m].y));
                 }
                 set(i, j, color(hue % 360, saturation, (sum * sum * sum) / 3));
             }
