@@ -35,11 +35,13 @@ public class ELUManager implements Runnable, TestSuiteCompletionListener {
 
     private int fps;
 
-    private HashMap<String, Recipient> recipients;
-    private HashMap<String, ELUCanvas>canvases;
-    private HashMap<String, Test>tests;
-    private HashMap<String, TestSuite>suites;
-    private HashMap<String, Fixture>fixtures;
+    private Map<String, Recipient> recipients;
+    private Map<String, ELUCanvas>canvases;
+    private Map<String, Test>tests;
+    private Map<String, TestSuite>suites;
+    private Map<String, Fixture>fixtures;
+
+    private List<ConfigurationListener> configListeners; 
 
     private Thread thread;
     boolean isRunning = false;
@@ -389,11 +391,33 @@ public class ELUManager implements Runnable, TestSuiteCompletionListener {
         return suites.values();
     }
 
+    public void addConfigListener(ConfigurationListener cl) {
+        if (configListeners == null){
+            configListeners = new Vector<ConfigurationListener>();
+        }
+        configListeners.add(cl);
+    }
+
+    public void removeConfigListner(ConfigurationListener cl) {
+        if (configListeners != null){
+            configListeners.remove(cl);
+        }
+    }
+
     public ELUManager load() throws IOException, OptionException
     {
         return load("lights.properties");
     }
 
+    public void notifyConfigListeners(){
+
+        if (configListeners != null){
+            for (ConfigurationListener cl : configListeners){
+                cl.configurationLoaded();
+            }
+        }
+    }
+    
     /** Configure the system using "lights.properties"
      * 
      * Currently a gross way of doing this.
@@ -638,7 +662,7 @@ public class ELUManager implements Runnable, TestSuiteCompletionListener {
         }
 
         Runtime.getRuntime().addShutdownHook(new BlackOutThread(this));
-        
+        notifyConfigListeners();
         return this;
     }
 
