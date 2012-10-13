@@ -21,7 +21,7 @@ public class MetaBalls extends GothamPApplet {
     final float THRESH_4        = 7;
 
     // TODO: should cycle hue and saturation from an image file
-    private int hue               = 360;
+    private int hue               = 0;
     private int saturation        = 100;
 
     // might be nice to clean these up by putting them in a Metaball object
@@ -97,6 +97,7 @@ public class MetaBalls extends GothamPApplet {
 
         // render
         background(0);
+        hue++; // cycle hue
         float sum;
         for(int i=0; i<width; i++) {
           for(int j=0; j<height; j++) {
@@ -104,7 +105,7 @@ public class MetaBalls extends GothamPApplet {
             for(int m=0; m<NUM_BALLS; m++) {
               sum += mbRadius[m] / sqrt(sq(i-mbPos[m].x) + sq(j-mbPos[m].y));
             }
-            set(i,j,color(hue, saturation, (sum*sum*sum)/3));
+            set(i,j,color(hue%360, saturation, (sum*sum*sum)/3));
           }
         }
     }
