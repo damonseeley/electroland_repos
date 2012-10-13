@@ -86,8 +86,9 @@ public class MetaBalls extends GothamPApplet {
         // given that computation goes up with square of dimensions, it would
         // make sense to do something like determine the boundaries of the
         // detectors and only render that range.
-        for(int i = 0; i < width; i++) {
-            for(int j = 0; j < height; j++) {
+        
+        for(int i = 0; i < this.getSyncArea().width; i++) {
+            for(int j = 0; j < this.getSyncArea().height; j++) {
                 float sum = 0;
                 for(int m = 0; m < NUM_BALLS; m++) {
                     sum += mbRadius[m] / sqrt(sq(i - mbPos[m].x) + sq(j - mbPos[m].y));
