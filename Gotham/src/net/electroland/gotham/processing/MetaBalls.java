@@ -11,7 +11,7 @@ public class MetaBalls extends GothamPApplet {
     private static final long serialVersionUID = 7554567212859904536L;
 
     final int NUM_BALLS         = 6;
-    final float FRICTION        = 0.999f; // higher = less friction
+    final float FRICTION        = 0.999f;
     final float MOUSE_REPEL     = 60f;
     final float MAX_VEL         = 5;
     final float COHESION_WEIGHT = 0.05f;
@@ -22,9 +22,9 @@ public class MetaBalls extends GothamPApplet {
 
     private float[] mbRadius    = new float[NUM_BALLS];
     private float mDistance;
-    private float sum           = 0.0f;
     private PVector[] mbPos     = new PVector[NUM_BALLS];
     private PVector[] mbVel     = new PVector[NUM_BALLS];
+    private float sum           = 0.0f;
     private PVector m           = new PVector();
     private PVector c           = new PVector();
     private PVector repel       = new PVector();
@@ -37,21 +37,18 @@ public class MetaBalls extends GothamPApplet {
         if (!started){ // setup is flaking out.
 
             colorMode(HSB,360,100,100);
-            //size(400, 400, P2D);
             for(int i=0; i< NUM_BALLS; i++) {
-              mbPos[i] = new PVector(random(0,width),random(0,height));
+              mbPos[i] = new PVector(random(200,600),random(100,400));
               mbVel[i] = new PVector(random(-1,1),random(-1,1));
               mbRadius[i] = random(90,140);
             }
-
-
             started = true;
         }
 
         centre.set(0,0,0);
         //update meta ball positions
         for(int i=0;i<NUM_BALLS;i++) {
-          // when we want people to interact, we'll use this (not mouse)
+          // we'll replace mouse with vision
           if(mousePressed) {
             m.set(mouseX,mouseY,0);
             mDistance = PVector.dist(mbPos[i],m);
@@ -105,7 +102,7 @@ public class MetaBalls extends GothamPApplet {
             for(int m=0; m<NUM_BALLS; m++) {
               sum += mbRadius[m] / sqrt(sq(i-mbPos[m].x) + sq(j-mbPos[m].y));
             }
-            set(i,j,color(360,100,(sum*sum*sum)/3)); // modulate only brightness
+            set(i,j,color(360,100,(sum*sum*sum)/3));
           }
         }
     }
