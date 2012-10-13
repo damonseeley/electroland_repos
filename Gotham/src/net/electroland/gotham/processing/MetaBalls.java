@@ -29,9 +29,7 @@ public class MetaBalls extends GothamPApplet {
     private PVector[] mbPos     = new PVector[NUM_BALLS];
     private PVector[] mbVel     = new PVector[NUM_BALLS];
 
-    private PVector centre      = new PVector(0,0); // need to understand this.
-//  private PVector m           = new PVector(); // mouse
-//  private PVector repel       = new PVector(); // mouse repel
+    private PVector center      = new PVector(0,0); // need to understand this.
 
     @Override
     public void setup(){
@@ -46,30 +44,31 @@ public class MetaBalls extends GothamPApplet {
     @Override
     public void drawELUContent() {
 
-        centre.set(0,0,0);
+        center.set(0,0,0);
         //update meta ball positions
-//        for(int i=0;i<NUM_BALLS;i++) {
-//          // we'll replace mouse with vision
+        for(int i=0;i<NUM_BALLS;i++) {
+          // we'll replace mouse with vision
 //          if(mousePressed) {
+//            PVector m = new PVector();
 //            m.set(mouseX,mouseY,0);
 //            float mDistance = PVector.dist(mbPos[i],m);
-//            repel = PVector.sub(mbPos[i],m);
+//            PVector repel = PVector.sub(mbPos[i],m);
 //            repel.normalize();
 //            repel.mult(MOUSE_REPEL/(mDistance*mDistance));
 //            mbVel[i].add(repel);
 //          }
-//
-//          centre.add(mbPos[i]);
-//          mbVel[i].mult(FRICTION);
-//          mbVel[i].limit(MAX_VEL);
-//        }
 
-        centre.div(NUM_BALLS);
+          center.add(mbPos[i]);
+          mbVel[i].mult(FRICTION);
+          mbVel[i].limit(MAX_VEL);
+        }
+
+        center.div(NUM_BALLS);
 
         for(int i=0;i<NUM_BALLS;i++) {
 
           // gravity to center
-          PVector c = PVector.sub(centre,mbPos[i]);
+          PVector c = PVector.sub(center,mbPos[i]);
           c.normalize();
           c.mult(COHESION_WEIGHT);
           mbVel[i].add(c);
