@@ -37,9 +37,8 @@ public class MetaBalls extends GothamPApplet {
         if (!started){ // setup is flaking out.
 
             colorMode(HSB,360,100,100);
-            int wSector = getSyncArea().width/NUM_BALLS;
             for(int i=0; i< NUM_BALLS; i++) {
-              mbPos[i] = new PVector(random(0,wSector) + (wSector * i),random(0,getSyncArea().height));
+              mbPos[i] = new PVector(random(0,this.getSyncArea().width),random(0,getSyncArea().height));
               mbVel[i] = new PVector(random(-1,1),random(-1,1));
               mbRadius[i] = random(90,140);
             }
@@ -77,16 +76,16 @@ public class MetaBalls extends GothamPApplet {
           mbPos[i].add(mbVel[i]);
 
           // wall bouncing
-          if(mbPos[i].x > width) {
-            mbPos[i].x = width;
+          if(mbPos[i].x > this.getSyncArea().width) {
+            mbPos[i].x = this.getSyncArea().width;
             mbVel[i].x *= -1.0;
           }
           if(mbPos[i].x < 0) {
             mbPos[i].x = 0;
             mbVel[i].x *= -1.0;
           }
-          if(mbPos[i].y > height) {
-            mbPos[i].y = height;
+          if(mbPos[i].y > this.getSyncArea().height) {
+            mbPos[i].y = this.getSyncArea().height;
             mbVel[i].y *= -1.0;
           }
           if(mbPos[i].y < 0) {
