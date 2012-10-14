@@ -1,5 +1,9 @@
 package net.electroland.gotham.processing;
 
+import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.List;
+
 import processing.core.PVector;
 
 /**
@@ -22,17 +26,14 @@ public class MetaBalls extends GothamPApplet {
     private int saturation      = 100;
 
     // might be nice to clean these up by putting them in a Collection of Metaballs.
-    private float[]   mbRadius  = new float[NUM_BALLS];
-    private PVector[] mbPos     = new PVector[NUM_BALLS];
-    private PVector[] mbVel     = new PVector[NUM_BALLS];
+    private List<Metaball> balls;
 
     @Override
     public void setup(){
         colorMode(HSB, 360, 100, 100);
+        balls = new ArrayList<Metaball>();
         for(int i = 0; i < NUM_BALLS; i++) {
-          mbPos[i]    = new PVector(random(0, this.getSyncArea().width),random(0, getSyncArea().height));
-          mbVel[i]    = new PVector(random(-1, 1),random(-1, 1));
-          mbRadius[i] = random(MIN_RADIUS, MAX_RADIUS);
+            balls.add(new Metaball(this.getSyncArea()));
         }
     }
 
@@ -42,41 +43,23 @@ public class MetaBalls extends GothamPApplet {
         PVector center = new PVector(0, 0, 0);
 
         //update meta ball positions
-        for(int i=0; i < NUM_BALLS; i++) {
-            center.add(mbPos[i]);
-            mbVel[i].mult(FRICTION);
-            mbVel[i].limit(MAX_VEL);
+        for (Metaball ball : balls){
+            center.add(ball.position);
+            ball.velocity.mult(FRICTION);
+            ball.velocity.limit(MAX_VEL);
         }
 
         center.div(NUM_BALLS);
 
-        for(int i = 0; i < NUM_BALLS; i++) {
+        for (Metaball ball : balls){
 
-            // gravity to center
-            PVector c = PVector.sub(center, mbPos[i]);
+            PVector c = PVector.sub(center, ball.position);
             c.normalize();
             c.mult(COHESION_WEIGHT);
-            mbVel[i].add(c);
-            mbPos[i].add(mbVel[i]);
+            ball.velocity.add(c);
+            ball.position.add(ball.velocity);
 
-              // simple bounce when beyond bounds.  only accomplishes 90 or 180
-              // degree turns.
-            if(mbPos[i].x > this.getSyncArea().width) {
-                mbPos[i].x = this.getSyncArea().width;
-                mbVel[i].x = -mbVel[i].x;
-            }
-            if(mbPos[i].x < 0) {
-                mbPos[i].x = 0;
-                mbVel[i].x = -mbVel[i].x;
-            }
-            if(mbPos[i].y > this.getSyncArea().height) {
-                mbPos[i].y = this.getSyncArea().height;
-                mbVel[i].y = -mbVel[i].y;
-            }
-            if(mbPos[i].y < 0) {
-                mbPos[i].y = 0;
-                mbVel[i].y = -mbVel[i].y;
-            }
+            ball.checkBounds();
         }
 
         // render
@@ -90,10 +73,47 @@ public class MetaBalls extends GothamPApplet {
         for(int i = 0; i < this.getSyncArea().width; i++) {
             for(int j = 0; j < this.getSyncArea().height; j++) {
                 float sum = 0;
-                for(int m = 0; m < NUM_BALLS; m++) {
-                    sum += mbRadius[m] / sqrt(sq(i - mbPos[m].x) + sq(j - mbPos[m].y));
+                for (Metaball ball : balls){
+                    sum += ball.radius / sqrt(sq(i - ball.position.x) + sq(j - ball.position.y));
                 }
                 set(i, j, color(hue % 360, saturation, (sum * sum * sum) / 3));
+            }
+        }
+    }
+
+    class Metaball {
+
+        float radius;
+        PVector position;
+        PVector velocity;
+        int hue;
+        Dimension area;
+
+        public Metaball(Dimension initArea){
+            position = new PVector(random(0, initArea.width),random(0, initArea.height));
+            velocity = new PVector(random(-1, 1),random(-1, 1));
+            radius   = random(MIN_RADIUS, MAX_RADIUS);
+            this.area = initArea;
+        }
+        
+        public void checkBounds(){
+            // simple bounce when beyond bounds.  only accomplishes 90 or 180
+            // degree turns.
+            if(position.x > area.width) {
+                position.x = area.width;
+                velocity.x = -velocity.x;
+            }
+            if(position.x < 0) {
+                position.x = 0;
+                velocity.x = -velocity.x;
+            }
+            if(position.y > area.height) {
+                position.y = area.height;
+                velocity.y = -velocity.y;
+            }
+            if(position.y < 0) {
+                position.y = 0;
+                velocity.y = -velocity.y;
             }
         }
     }
