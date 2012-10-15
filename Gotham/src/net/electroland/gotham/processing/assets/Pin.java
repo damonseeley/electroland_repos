@@ -47,4 +47,16 @@ public class Pin implements MoveBehavior {
 		return "Pin";
 	}
 
+	@Override
+	public float getDist() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getTimeAcross() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }
