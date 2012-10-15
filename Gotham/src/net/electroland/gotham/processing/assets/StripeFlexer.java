@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import processing.core.PApplet;
 import java.awt.geom.Point2D;
 
+import net.electroland.gotham.processing.FlexingStripes;
+
 public class StripeFlexer extends Stripe {
 
 	// private boolean pstanding = true;
@@ -48,6 +50,7 @@ public class StripeFlexer extends Stripe {
 		xpos += (targetxpos - xpos) * 0.08;
 		//xpos = movement.getPosition();
 		
+		//Added these so I can pause other stripes while one is being inserted dynamically
 		if(Math.abs(targetw-w) > 1)
 			stillEasing = true;
 		else stillEasing = false;
@@ -72,8 +75,8 @@ public class StripeFlexer extends Stripe {
 		// p.stroke(p.color(200,100,100));
 		// p.line(xpos-xoff, 0, xpos-xoff, p.height);
 		// p.stroke(p.color(0,100,100));
-		p.rect(xpos, -25, w * (widthScaler), d.height+50);
-		p.rect(xpos, -25, -w * (widthScaler), d.height+50);
+		p.rect(xpos, -25, w * (widthScaler)+20, d.height+50);
+		p.rect(xpos, -25, -w * (widthScaler)-20, d.height+50);
 
 	}
 	
@@ -82,17 +85,20 @@ public class StripeFlexer extends Stripe {
 	@Override
 	public void display(float targetoff){
 		offset += (targetoff - offset) * 0.08;
-		w += (targetw - w) * 0.08;
+		w += (targetw - w) * 0.1;
 		
 		p.fill(hue, saturation, brightness);
-		p.rect(xpos+offset, -25, (w * (widthScaler))+5,   d.height+50);
-		p.rect(xpos+offset, -25, (-w * (widthScaler))+5,  d.height+50);
+		p.rect(xpos+offset, -25, (w * (widthScaler))+10,   d.height+50);
+		p.rect(xpos+offset, -25, (-w * (widthScaler))-10,  d.height+50);
 	}
 	
 
 	@Override
 	public void setWidth(Stripe inFront) {
-		targetw = 50; //(inFront.getLeftSide() - (this.xpos));
+		if(!FlexingStripes.flexMode)
+			targetw = 50; 
+		else
+			targetw = (inFront.getLeftSide() - (this.xpos));
 	}
 	
 	@Override
