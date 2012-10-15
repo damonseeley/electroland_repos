@@ -30,6 +30,7 @@ public class FlexingStripes extends GothamPApplet {
 	private boolean switchDirection;
 	private boolean pinMode;
 	private boolean insertMode;
+	public static boolean flexMode;
 
 	StripeGUIManager gui;
 	ArrayList<Stripe> stripes;
@@ -71,6 +72,7 @@ public class FlexingStripes extends GothamPApplet {
 		// I recommend turning off insert to test the affectors.
 		// Pinning hasn't been updated for center-registerd stripes, so leave it
 		// off.
+		setFlexing(true);
 		setPinning(false);
 		setInsert(true);
 		// affecters.put("SATURATION", "$150$40$100"); // radius, min, max
@@ -223,16 +225,15 @@ public class FlexingStripes extends GothamPApplet {
 		// Timing Controls for each new Stripe
 		if (stripeTimer.isFinished()) {
 			Stripe lastOne = stripes.get(stripes.size() - 1);
+			
 			if (lastOne.getLeftSide() > -MoveBehavior.offset) {
 				stripes.add(new StripeFlexer(this, syncArea));
 
-				// if (widthShift) {
-				// stripeTimer.reset((long) (1000.0 + (Math.random() *
-				// spawnScaler)));
-				// } else {
-				// stripeTimer.reset(lastOne.getSpawnRate());
-				stripeTimer.reset((long) spawnScaler);
-				// }
+				if(flexMode)
+					stripeTimer.reset((long) (1000.0 + (Math.random() *spawnScaler)));
+				else
+					stripeTimer.reset((long) spawnScaler); //Around 1900s for 100px wide stripes
+
 			}
 		}
 
@@ -261,6 +262,9 @@ public class FlexingStripes extends GothamPApplet {
 
 	public void setPinning(boolean p) {
 		pinMode = p;
+	}
+	public void setFlexing(boolean f){
+		flexMode = f;
 	}
 
 	public void setInsert(boolean i) {
