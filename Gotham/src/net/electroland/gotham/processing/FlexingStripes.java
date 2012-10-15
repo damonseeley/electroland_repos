@@ -25,20 +25,22 @@ public class FlexingStripes extends GothamPApplet {
 	private Timer stripeTimer;
 	private Timer paletteTimer;
 	public static float noiseOffset;
-	private int selector = 5; // Which color swatch from the props file to use.
+	private int selector = 3; // Which color swatch from the props file to use.
 	private float pScalerAmt;
 	private boolean switchDirection;
-	private boolean pinState;
+	private boolean pinMode;
+	private boolean insertMode;
 
 	StripeGUIManager gui;
 	ArrayList<Stripe> stripes;
-	HashMap<String,String> affecters;
+	HashMap<String, String> affecters;
 
 	private final boolean DEBUG = false;
 	ColorPalette cp;
 	private float wind;
 	public static boolean widthShift;
 	private ElectrolandProperties props = GothamConductor.props;
+	private boolean insertStripe = false;
 
 	@Override
 	public void setup() {
@@ -47,7 +49,7 @@ public class FlexingStripes extends GothamPApplet {
 		pms = new PersonMouseSimulator(this, syncArea);
 
 		stripes = new ArrayList<Stripe>();
-		affecters = new HashMap<String,String>();
+		affecters = new HashMap<String, String>();
 
 		cp = new ColorPalette(this);
 		cp.createNewPalette(selector);
@@ -58,54 +60,124 @@ public class FlexingStripes extends GothamPApplet {
 		stripeTimer.start();
 		paletteTimer.start();
 
-		for (int i = 0; i < 7; i++) {
-			stripes.add(new StripeFlexRight(this, syncArea));
-			((StripeFlexRight) stripes.get(i)).forcePosition(syncArea.width
-					- (i * 200));
+		for (int i = 0; i < 17; i++) {
+			stripes.add(new StripeFlexer(this, syncArea));
+			((StripeFlexer) stripes.get(i)).forcePosition(syncArea.width
+					- (i * 100));
 		}
 		wind = (float) (props
 				.getOptionalDouble("wall", "East", "initialScaler") * 1.0f) / 3.5f;
-		
-		setPinning(false);
-		//affecters.put("COLORS", "$150$40$100");
-		affecters.put("WIDTH", "$200$1$2"); //a hack: for now you also have to change 1 and 2 in StripeFlexRight
 
+		//I recommend turning off insert to test the affectors.
+		//Pinning hasn't been updated for center-registerd stripes, so leave it off.
+		setPinning(false);
+		setInsert(false);
+		affecters.put("SATURATION", "$150$40$100"); // radius, min, max
+		affecters.put("HUE", "$150"); // radius
+	    affecters.put("WIDTH", "$50$1$2"); //radius, min scaler, max scaler
 	}
 
 	@Override
 	public void drawELUContent() {
+
+		//System.out.println(stripes.size());
+
 		pms.update();
 		float bri = blackOrWhite ? 0 : 100;
 		background(color(0, 0, bri));
 		noiseOffset = 0;// noise(millis()/100000.0f); //noramlized
 
 		// Handle Stripes
-		for (int i = stripes.size() - 1; i >= 0; i--) {
-			Stripe s = stripes.get(i);
-			s.update();			
-
-			// check for affectors
-			// apply existing affector to the current stripe.
-			
-			if(affecters.containsKey("COLORS")){
-				s.performColorShift(pms, affecters.get("COLORS"));
+		for (Stripe s : stripes) {
+			s.update();
+			if (stripes.indexOf(s) != 0) {
+				s.setWidth(stripes.get(stripes.indexOf(s) - 1));
 			}
-			if(affecters.containsKey("WIDTH")){
-				s.performWidthShift(pms, affecters.get("WIDTH"));
+			if (affecters.containsKey("SATURATION")) {
+				s.performSaturationShift(pms, affecters.get("SATURATION"));
+			}
+			if (affecters.containsKey("HUE")) {
+				s.performHueShift(pms, affecters.get("HUE"));
+			}
+			if (affecters.containsKey("WIDTH")) {
+				((StripeFlexer) s).performWidthShift(pms,
+						affecters.get("WIDTH"));
+
 				widthShift = true;
-			} else widthShift = false;
-			
-			if (pinState)
+			} else
+				widthShift = false;
+
+			if (pinMode)
 				s.checkPinning(pms);
 
-			if (i != 0)
-				s.setWidth(stripes.get(i - 1));
-			
-			s.display();
-			
+			if (!widthShift)
+				s.display();
 
+			// For testing. Prints the list index
+			fill(360);
+			textSize(25);
+			text(stripes.indexOf(s), s.xpos, 50);
+		}
+
+		// This loops handles the shifting/offset of other stripes, based
+		// on how many stripes (above loop) are being expanded by audience
+		// presence in the With Affecter
+		if (widthShift) {		
+			
+			for (int i = 0; i < stripes.size(); i++) {
+				Stripe s = stripes.get(i);
+				float offset = 0;
+				if (!s.isGrowing()) {
+					for (int j = 0; j < stripes.size(); j++) {
+						if (stripes.get(j).isGrowing()) {
+							offset += (s.w / (j - i));
+						}
+					}
+					s.setWidth((float)(1.0 - (stripes.size()/50))); //not working
+				}
+				if (stripes.indexOf(s) != 0) {
+					s.setWidth(stripes.get(stripes.indexOf(s) - 1));
+				}
+				s.display(offset);
+			}
+
+		}
+
+		// removal of offscreen stripes.
+		for (int i = stripes.size() - 1; i >= 0; i--) {
+			Stripe s = stripes.get(i);
 			if (s.isOffScreen())
 				stripes.remove(i);
+		}
+
+		if (insertStripe && insertMode) {
+			int index = -1;
+			float pos = 0;
+			for (Stripe s : stripes) {
+				if (s.containsLocation(pms.getZone())) {
+					index = stripes.indexOf(s);
+					pos = s.getLocation();
+				}
+			}
+			if (index >= 0) {
+
+				System.out.println("Inserting a Stripe at position "
+						+ (index - 1));
+
+				for (int i = stripes.size() - 1; i >= index; i--) {
+					Stripe s = stripes.get(i);
+					float loc = s.getLocation();
+					s.forcePosition(loc - (s.w * 2));
+				}
+				stripes.add(index, new StripeFlexer(this, syncArea, pos));
+				// stripes.get(index).forcePosition(pos);
+				stripes.get(index).setWidth(50);
+
+				for (int i = 0; i < stripes.size() - 1; i++) {
+					if (i > 0)
+						stripes.get(i).setWidth(stripes.get(i - 1));
+				}
+			}
 		}
 
 		if ((Stripe.scalerAmt >= 0 && pScalerAmt < 0)
@@ -137,14 +209,17 @@ public class FlexingStripes extends GothamPApplet {
 
 		// Timing Controls for each new Stripe
 		if (stripeTimer.isFinished()) {
-			if (Stripe.scalerAmt > 0)
-				stripes.add(new StripeFlexRight(this, syncArea));
-			else if (Stripe.scalerAmt < 0)
-				stripes.add(new StripeFlexLeft(this, syncArea));
+			Stripe lastOne = stripes.get(stripes.size() - 1);
+			if (lastOne.getLeftSide() > -MoveBehavior.offset) {
+				stripes.add(new StripeFlexer(this, syncArea));
 
-			if(!widthShift)
-				stripeTimer.reset((long) (1000.0 + (Math.random() * spawnScaler)));
-			else stripeTimer.reset((long)(spawnScaler));
+				//if (widthShift) {
+				//	stripeTimer.reset((long) (1000.0 + (Math.random() * spawnScaler)));
+				//} else {
+					// stripeTimer.reset(lastOne.getSpawnRate());
+					stripeTimer.reset((long) spawnScaler);
+				//}
+			}
 		}
 
 		// Timer to pick new color palettes
@@ -161,23 +236,33 @@ public class FlexingStripes extends GothamPApplet {
 		updatePixels();
 		pScalerAmt = Stripe.scalerAmt;
 		switchDirection = false;
+		insertStripe = false;
+	}
+
+	@Override
+	public void mousePressed() {
+		if(insertMode)
+			insertStripe = true;
 	}
 
 	public void setPinning(boolean p) {
-		pinState = p;
+		pinMode = p;
+	}
+	public void setInsert(boolean i){
+		insertMode = i;
 	}
 
 	// Processing Key Event shortcut. Used just to test wind.
 	// One left/right arrow key represents a person passing by.
 	// Assuming a "wind" value between -1 and 1
-	//*** Note: Key events aren't working. Did we disable key events someplace? 
+	// *** Note: Key events aren't working. Did we disable key events someplace?
 	@Override
 	public void keyPressed() {
 		System.out.println("key");
 		if (key == CODED) {
 			if (keyCode == RIGHT) {
 				wind += 0.1;
-			} else if (keyCode==LEFT) {
+			} else if (keyCode == LEFT) {
 				wind -= 0.1;
 			}
 		}
@@ -211,9 +296,10 @@ public class FlexingStripes extends GothamPApplet {
 			logger.info("Resetting Spawn Rate To: "
 					+ theEvent.getController().getValue());
 		} else if (theEvent.getController().getName() == "randomSpeeds") {
-			if(!widthShift)
+			if (!widthShift)
 				Stripe.setUseRandomSpeeds(theEvent.getController().getValue());
-			else Stripe.setUseRandomSpeeds(-1);
+			else
+				Stripe.setUseRandomSpeeds(-1);
 			logger.info("Randomize Speed? "
 					+ theEvent.getController().getValue());
 		} else if (theEvent.getController().getName() == "blackOrWhite") {

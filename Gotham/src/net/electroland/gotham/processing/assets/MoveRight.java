@@ -24,8 +24,6 @@ public class MoveRight implements MoveBehavior {
 	private float localNoiseOffset = 0;
 	private int noiseSeed;
 	public float dist;
-	
-	public final int offset = 600;
 
 	public MoveRight(PApplet p, Dimension d) {
 		this.d = d;
@@ -34,13 +32,12 @@ public class MoveRight implements MoveBehavior {
 		begin = -offset;
 		target = d.width + offset;
 		//ef = new Linear();
-		ef = new SinusoidalOut();
+		ef = new Linear();
 		
 
 		startTime = p.millis(); // Start our timer
 		dist = Math.abs(target - begin);
 		baseTime = props.getOptionalInt("wall", "East", "baseTime"); 
-		System.out.println(Stripe.randomSpeeds);
 		timeAcross = Stripe.randomSpeeds ? (baseTime + p.random(-Stripe.rScaler, Stripe.rScaler))* (dist / d.width)
 				: baseTime * (dist / d.width);
 		noiseSeed = p.millis();
@@ -96,6 +93,16 @@ public class MoveRight implements MoveBehavior {
 	
 	public String toString(){
 		return "R";
+	}
+	
+	@Override
+	public float getDist(){
+		return dist;
+	}
+	
+	@Override
+	public float getTimeAcross(){
+		return timeAcross;
 	}
 
 }

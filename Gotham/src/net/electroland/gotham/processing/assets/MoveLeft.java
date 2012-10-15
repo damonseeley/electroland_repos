@@ -92,5 +92,15 @@ public class MoveLeft implements MoveBehavior {
 	public String toString(){
 		return "L";
 	}
+	
+	@Override
+	public float getDist(){
+		return dist;
+	}
+	
+	@Override
+	public float getTimeAcross(){
+		return timeAcross;
+	}
 
 }
