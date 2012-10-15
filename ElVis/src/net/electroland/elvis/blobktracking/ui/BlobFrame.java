@@ -2,15 +2,16 @@ package net.electroland.elvis.blobktracking.ui;
 
 import java.awt.Insets;
 import java.awt.Point;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.Vector;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 
 import net.electroland.elvis.blobtracking.BlobTracker;
+import net.electroland.elvis.regions.PolyRegion;
 import net.electroland.elvis.util.ElProps;
 
 
@@ -27,7 +28,6 @@ public class BlobFrame extends JFrame implements MouseListener, MouseMotionListe
 	int mouseYOffset;
 	
 	ElProps props;
-	
 
 	public BlobFrame(ElProps props, String windowName, BlobTracker blobTracker) {	
 		super(windowName);
@@ -80,6 +80,9 @@ public class BlobFrame extends JFrame implements MouseListener, MouseMotionListe
 	}
 
 
+	public void setPolyRegions(Vector<PolyRegion> regions) {
+		blobPanel.setPolyRegions(regions);
+	}
 
 
 	public void mouseClicked(MouseEvent e) {
@@ -218,4 +221,6 @@ public class BlobFrame extends JFrame implements MouseListener, MouseMotionListe
 		
 	}
 */
+
+
 }

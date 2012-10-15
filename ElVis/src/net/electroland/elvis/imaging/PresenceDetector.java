@@ -341,8 +341,8 @@ public class PresenceDetector extends ImageProcessor {
 		//		TrackUPDBroadcaster trackbroadcaster;
 		//		RegionUPDBroadcaster regionBroadcaster;
 		//		PresenceGridUPDBroadcaster gridBroadcaster;
-		if(regionBroadcaster != null) regionBroadcaster.updateRegions(regions);
-		if (gridBroadcaster != null) gridBroadcaster.updateGrid(scale.getSmallImg());
+		if (regionBroadcaster != null) regionBroadcaster.updateRegions(regions);
+		if (gridBroadcaster != null)   gridBroadcaster.updateGrid(scale.getSmallImg());
 
 		return getCurrentFilter().getImage();
 
