@@ -68,19 +68,20 @@ public class FlexingStripes extends GothamPApplet {
 		wind = (float) (props
 				.getOptionalDouble("wall", "East", "initialScaler") * 1.0f) / 3.5f;
 
-		//I recommend turning off insert to test the affectors.
-		//Pinning hasn't been updated for center-registerd stripes, so leave it off.
+		// I recommend turning off insert to test the affectors.
+		// Pinning hasn't been updated for center-registerd stripes, so leave it
+		// off.
 		setPinning(false);
-		setInsert(false);
-		affecters.put("SATURATION", "$150$40$100"); // radius, min, max
-		affecters.put("HUE", "$150"); // radius
-	    affecters.put("WIDTH", "$50$1$2"); //radius, min scaler, max scaler
+		setInsert(true);
+		// affecters.put("SATURATION", "$150$40$100"); // radius, min, max
+		// affecters.put("HUE", "$150"); // radius
+		// affecters.put("WIDTH", "$50$1$2"); //radius, min scaler, max scaler
 	}
 
 	@Override
 	public void drawELUContent() {
 
-		//System.out.println(stripes.size());
+		// System.out.println(stripes.size());
 
 		pms.update();
 		float bri = blackOrWhite ? 0 : 100;
@@ -122,8 +123,8 @@ public class FlexingStripes extends GothamPApplet {
 		// This loops handles the shifting/offset of other stripes, based
 		// on how many stripes (above loop) are being expanded by audience
 		// presence in the With Affecter
-		if (widthShift) {		
-			
+		if (widthShift) {
+
 			for (int i = 0; i < stripes.size(); i++) {
 				Stripe s = stripes.get(i);
 				float offset = 0;
@@ -133,7 +134,8 @@ public class FlexingStripes extends GothamPApplet {
 							offset += (s.w / (j - i));
 						}
 					}
-					s.setWidth((float)(1.0 - (stripes.size()/50))); //not working
+					s.setWidth((float) (1.0 - (stripes.size() / 50))); // not
+																		// working
 				}
 				if (stripes.indexOf(s) != 0) {
 					s.setWidth(stripes.get(stripes.indexOf(s) - 1));
@@ -150,32 +152,43 @@ public class FlexingStripes extends GothamPApplet {
 				stripes.remove(i);
 		}
 
-		if (insertStripe && insertMode) {
-			int index = -1;
-			float pos = 0;
-			for (Stripe s : stripes) {
-				if (s.containsLocation(pms.getZone())) {
-					index = stripes.indexOf(s);
-					pos = s.getLocation();
+		if (insertMode) {
+			if (insertStripe) {
+				int index = -1;
+				float pos = 0;
+
+				for (Stripe s : stripes) {
+					if (s.containsLocation(pms.getZone())) {
+						index = stripes.indexOf(s);
+						//pos = the space in between index and index-1
+						pos = stripes.get(index).getLeftSide()-10;
+					}
+				}
+				if (index >= 0) {
+					System.out.println("Inserting a Stripe at position "
+							+ (index+1));
+
+					stripes.add(index+1, new StripeFlexer(this, syncArea, pos));
+					//stripes.get(index+1).setWidth(50);
 				}
 			}
-			if (index >= 0) {
 
-				System.out.println("Inserting a Stripe at position "
-						+ (index - 1));
-
-				for (int i = stripes.size() - 1; i >= index; i--) {
-					Stripe s = stripes.get(i);
-					float loc = s.getLocation();
-					s.forcePosition(loc - (s.w * 2));
+			// When a new strip is gonna be added, pause all the prior stripes
+			for (Stripe s : stripes) {
+				if (s.stillEasing && millis() > 5000) {
+					for (int i = stripes.size() - 1; i > stripes.indexOf(s); i--) {
+						// float loc = s.getLocation();
+						// s.forcePosition(loc - (s.w * 2));
+						stripes.get(i).getBehavior().pause();
+					}
 				}
-				stripes.add(index, new StripeFlexer(this, syncArea, pos));
-				// stripes.get(index).forcePosition(pos);
-				stripes.get(index).setWidth(50);
-
-				for (int i = 0; i < stripes.size() - 1; i++) {
-					if (i > 0)
-						stripes.get(i).setWidth(stripes.get(i - 1));
+			}
+			for (Stripe s : stripes) {
+				if (s.justFinishedEasing() && millis() > 5000) {
+					System.out.println("resume");
+					for (int i = stripes.size() - 1; i > stripes.indexOf(s); i--) {
+						stripes.get(i).getBehavior().resume();
+					}
 				}
 			}
 		}
@@ -213,12 +226,13 @@ public class FlexingStripes extends GothamPApplet {
 			if (lastOne.getLeftSide() > -MoveBehavior.offset) {
 				stripes.add(new StripeFlexer(this, syncArea));
 
-				//if (widthShift) {
-				//	stripeTimer.reset((long) (1000.0 + (Math.random() * spawnScaler)));
-				//} else {
-					// stripeTimer.reset(lastOne.getSpawnRate());
-					stripeTimer.reset((long) spawnScaler);
-				//}
+				// if (widthShift) {
+				// stripeTimer.reset((long) (1000.0 + (Math.random() *
+				// spawnScaler)));
+				// } else {
+				// stripeTimer.reset(lastOne.getSpawnRate());
+				stripeTimer.reset((long) spawnScaler);
+				// }
 			}
 		}
 
@@ -241,14 +255,15 @@ public class FlexingStripes extends GothamPApplet {
 
 	@Override
 	public void mousePressed() {
-		if(insertMode)
+		if (insertMode)
 			insertStripe = true;
 	}
 
 	public void setPinning(boolean p) {
 		pinMode = p;
 	}
-	public void setInsert(boolean i){
+
+	public void setInsert(boolean i) {
 		insertMode = i;
 	}
 

@@ -31,6 +31,7 @@ public abstract class Stripe {
 	public float targethue;
 	public float xoff;
 	public float dist;
+	public boolean stillEasing, pStillEasing;
 
 	public MoveBehavior movement;
 
@@ -43,6 +44,7 @@ public abstract class Stripe {
 
 	public abstract void setWidth(Stripe s);
 	public abstract void setWidth(float num);
+	public abstract boolean justFinishedEasing();
 	public abstract float getLeftSide();
 	public abstract boolean isOffScreen();
 	//public abstract void checkHover(Point2D.Float loc, boolean standing);
