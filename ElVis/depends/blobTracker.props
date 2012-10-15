@@ -18,6 +18,7 @@ dilateIterations=1
 distortionGridHeight=4
 distortionGridWidth=6
 drawTracks=true
+drawRegions=false
 erodeIterations=1
 framesUntilCertainTrack=20
 framesUntilDeleteTrack=40
