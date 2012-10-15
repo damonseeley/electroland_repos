@@ -15,8 +15,8 @@ public class MetaBalls extends GothamPApplet {
 
     final int   COARSNESS       = 5;
     final int   NUM_BALLS       = 3;
-    final int   MIN_RADIUS      = 90;    // initial ball radius min
-    final int   MAX_RADIUS      = 200;   // initial ball radius max
+    final int   MIN_RADIUS      = 200;    // initial ball radius min
+    final int   MAX_RADIUS      = 400;   // initial ball radius max
 
     final float FRICTION        = 1.0f;  // higher = less
     final float MAX_VEL         = 15;    // higher = faster
