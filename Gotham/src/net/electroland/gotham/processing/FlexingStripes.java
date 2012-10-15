@@ -29,7 +29,7 @@ public class FlexingStripes extends GothamPApplet {
 	private float pScalerAmt;
 	private boolean switchDirection;
 	private boolean pinMode;
-	private boolean insertMode;
+	public static boolean insertMode;
 	public static boolean flexMode;
 
 	StripeGUIManager gui;
@@ -72,12 +72,12 @@ public class FlexingStripes extends GothamPApplet {
 		// I recommend turning off insert to test the affectors.
 		// Pinning hasn't been updated for center-registerd stripes, so leave it
 		// off.
-		setFlexing(true);
-		setPinning(false);
+		setFlexing(false);
+		setPinning(false); //TODO: fix pinning
 		setInsert(true);
-		// affecters.put("SATURATION", "$150$40$100"); // radius, min, max
-		// affecters.put("HUE", "$150"); // radius
-		// affecters.put("WIDTH", "$50$1$2"); //radius, min scaler, max scaler
+		affecters.put("SATURATION", "$190$50$100"); // radius, min, max
+		affecters.put("HUE", "$150"); // radius
+		//affecters.put("WIDTH", "$50$1$2"); //radius, min scaler, max scaler
 	}
 
 	@Override
@@ -187,7 +187,7 @@ public class FlexingStripes extends GothamPApplet {
 			}
 			for (Stripe s : stripes) {
 				if (s.justFinishedEasing() && millis() > 5000) {
-					System.out.println("resume");
+					//System.out.println("resume");
 					for (int i = stripes.size() - 1; i > stripes.indexOf(s); i--) {
 						stripes.get(i).getBehavior().resume();
 					}
