@@ -24,6 +24,8 @@ public class MoveRight implements MoveBehavior {
 	private float localNoiseOffset = 0;
 	private int noiseSeed;
 	public float dist;
+	private boolean pause = false;
+	float pausedx;
 
 	public MoveRight(PApplet p, Dimension d) {
 		this.d = d;
@@ -59,12 +61,25 @@ public class MoveRight implements MoveBehavior {
 		
 		//Scale the inc by the knob input + the noise offset 
 		//If you don't like the effect, you can just delecte localNoiseOffset below.
-		float inc = ((p.millis() - startTime) / (timeAcross * 1000)) * (Math.abs(Stripe.scalerAmt)+localNoiseOffset);
-		//On top of that, give each individual stripe it's own little bit of noise.
-		percentComplete += (inc);
-		startTime = p.millis();
-
+		if(!pause){
+			float inc = ((p.millis() - startTime) / (timeAcross * 1000)) * (Math.abs(Stripe.scalerAmt)+localNoiseOffset);
+			//On top of that, give each individual stripe it's own little bit of noise.
+			percentComplete += (inc);
+			startTime = p.millis();
+		}
 	}
+	
+	@Override
+	public void pause() {
+		pausedx = ef.valueAt(percentComplete, begin, target);
+		pause = true;
+	}
+	@Override
+	public void resume() {		
+		setPosition(pausedx);
+		pause = false;
+	}
+	
 	@Override
 	public float getPosition(){
 		return ef.valueAt(percentComplete, begin, target);

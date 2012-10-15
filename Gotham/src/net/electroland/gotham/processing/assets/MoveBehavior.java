@@ -10,4 +10,6 @@ public interface MoveBehavior {
 	public float getTimeAcross();
 	public float getTarget();
 	public float getBegin();
+	public void pause();
+	public void resume();
 }

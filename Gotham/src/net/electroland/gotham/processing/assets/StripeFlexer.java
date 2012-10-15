@@ -11,7 +11,7 @@ public class StripeFlexer extends Stripe {
 	private float h;
 	public float r, g, b, oldr, oldg, oldb;
 	public float targetr, targetb, targetg;
-	
+	public boolean justFinished;
 
 	public StripeFlexer(PApplet p, Dimension d) {
 		super(p, d);
@@ -47,6 +47,21 @@ public class StripeFlexer extends Stripe {
 		targetxpos = movement.getPosition();
 		xpos += (targetxpos - xpos) * 0.08;
 		//xpos = movement.getPosition();
+		
+		if(Math.abs(targetw-w) > 1)
+			stillEasing = true;
+		else stillEasing = false;
+		
+		if(!stillEasing && pStillEasing){
+			justFinished = true;
+		} else justFinished = false;
+		
+		pStillEasing = stillEasing;
+	}
+	
+	@Override
+	public boolean justFinishedEasing(){
+		return justFinished;
 	}
 
 	@Override

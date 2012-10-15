@@ -2,7 +2,7 @@ package net.electroland.gotham.processing.assets;
 
 import java.awt.Dimension;
 import net.electroland.ea.EasingFunction;
-import net.electroland.ea.easing.CubicInOut;
+import net.electroland.ea.easing.Linear;
 import net.electroland.ea.easing.SinusoidalOut;
 import net.electroland.gotham.core.GothamConductor;
 import net.electroland.utils.ElectrolandProperties;
@@ -32,7 +32,7 @@ public class MoveLeft implements MoveBehavior {
 		target = -offset;
 		//ef = new Linear();
 		//ef = new SinusoidalInOut();
-		ef = new SinusoidalOut();
+		ef = new Linear();
 		
 
 		startTime = p.millis(); // Start our timer
@@ -50,6 +50,17 @@ public class MoveLeft implements MoveBehavior {
 				: baseTime * (dist / d.width);
 		startTime = p.millis();
 		percentComplete = 0;
+	}
+	
+	@Override
+	public void pause() {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void resume() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
