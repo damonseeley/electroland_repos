@@ -21,6 +21,7 @@ import net.electroland.elvis.blobtracking.TrackListener;
 import net.electroland.elvis.blobtracking.TrackResults;
 import net.electroland.elvis.imaging.PresenceDetector.ImgReturnType;
 import net.electroland.elvis.regionManager.ImagePanel;
+import net.electroland.elvis.regions.PolyRegion;
 import net.electroland.elvis.util.ElProps;
 
 
@@ -39,6 +40,8 @@ public class BlobPanel extends JPanel implements ActionListener {
 	ElProps props ;
 
 	public BlobTracker blobTracker;
+	
+	Vector<PolyRegion> polyRegions;
 
 	public BlobPanel(ElProps props, BlobTracker blobTracker) {
 		this.props =props;
@@ -89,23 +92,29 @@ public class BlobPanel extends JPanel implements ActionListener {
 	public void renderDrawing(Graphics2D g2d) {
 		Vector<Blob> blobs = blobTracker.presenceDetector.getBlobs();
 		boolean drawTracks = props.getProperty("drawTracks", true);
+		boolean drawRegions = props.getProperty("drawRegions", true);
 
-		for(Blob b :blobs) {
-			if (drawTracks) {
+		if(drawTracks) {
+			for(Blob b :blobs) {
 				b.paint(g2d);
 			}
-		}
-		if(drawTracks) {
 			for(SimpleTrackListener tl: trackListeners) {
 				Vector<Track> trackCache = tl.tracks;
 				for(Track t : trackCache) {
 					if (props.getProperty("drawTracks", true)) {
-						//System.out.println("tracks");
 						t.paint(g2d);
 					}
 				}			
 			}
 		}
+		if(drawRegions) {
+			if(polyRegions != null) {
+				for(PolyRegion r : polyRegions) {
+					r.render(g2d);
+				}
+			}
+		}
+	
 	}
 
 
@@ -117,6 +126,9 @@ public class BlobPanel extends JPanel implements ActionListener {
 		blobTracker.stopRunning();
 	}
 
+	public void setPolyRegions(Vector<PolyRegion> regions) {
+		polyRegions = regions;
+	}
 
 
 

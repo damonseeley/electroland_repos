@@ -55,6 +55,7 @@ public class ElVisServer {
 		
 		if(props.getProperty("showGraphics", true)) {
 			BlobFrame bf = new BlobFrame(props, "el blob", blobTracker);
+			bf.setPolyRegions(blobTracker.presenceDetector.getRegions());
 			bf.blobPanel.addKeyListener(new PresenceDetectorKeyListener(props,blobTracker.presenceDetector));
 			bf.addWindowListener(new java.awt.event.WindowAdapter() {
 				public void windowClosing(WindowEvent winEvt) {
