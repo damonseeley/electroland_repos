@@ -23,6 +23,7 @@ public class Blob {
 	
 	public Blob() {
 		id = nextId++;
+		nextId %= (Integer.MAX_VALUE - 2);
 	}
 	
 	public Blob(float x, float y, int minX, int maxX, int minY, int maxY, float size) {
