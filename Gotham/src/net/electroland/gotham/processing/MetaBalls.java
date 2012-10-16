@@ -17,16 +17,18 @@ public class MetaBalls extends GothamPApplet {
 
     // we want the lava to stay on screen
     final Rectangle BOUNDARY    = new Rectangle(60,60,580,390);
+    final float BORDER_CLOSENESS = 1.5f; // higher = more of the ball can go beyond the border
 
     final int   COARSENESS      = 5;
     final int   NUM_BALLS       = 3;
-    final int   MIN_RADIUS      = 200;    // initial ball radius min
-    final int   MAX_RADIUS      = 350;   // initial ball radius max
+    final int   MIN_RADIUS      = 100;    // initial ball radius min
+    final int   MAX_RADIUS      = 200;   // initial ball radius max
 
-    final float FRICTION        =   .99f;  // higher = less
-    final float P_FRICTION      =  1.0f;
-    final float MAX_VEL         = 15;    // higher = faster
-    final float COHESION =   .05f;  // higher = more
+    final float FRICTION        =  0.99f;  // higher = less
+    final float P_FRICTION      =  1.25f;
+    final float MAX_VEL         = 10;    // higher = faster
+    final float MIN_VEL         = 1;    // higher = faster
+    final float COHESION        =   .003f;  // higher = more
     final float P_COHESION      = -COHESION;
 
     // might be nice to clean these up by putting them in a Collection of Metaballs.
@@ -57,6 +59,8 @@ public class MetaBalls extends GothamPApplet {
             center.add(ball.position);
             ball.velocity.mult(mainPresence != null ? P_FRICTION : FRICTION);
             ball.velocity.limit(MAX_VEL);
+            if (ball.velocity.mag() < MIN_VEL)
+                ball.velocity.setMag(MIN_VEL);
         }
 
         center.div(NUM_BALLS);
@@ -131,20 +135,20 @@ public class MetaBalls extends GothamPApplet {
         public void checkBounds(){
             // simple bounce when beyond bounds.  only accomplishes 90 or 180
             // degree turns.
-            if(position.x + (radius / 4) > BOUNDARY.x + BOUNDARY.width) {
-                position.x = BOUNDARY.x + BOUNDARY.width - (radius / 4);
+            if(position.x + (radius / BORDER_CLOSENESS) > BOUNDARY.x + BOUNDARY.width) {
+                position.x = BOUNDARY.x + BOUNDARY.width - (radius / BORDER_CLOSENESS);
                 velocity.x = -velocity.x;
             }
-            if(position.x -(radius / 4) < BOUNDARY.x) {
-                position.x = BOUNDARY.x + (radius / 4);
+            if(position.x -(radius / BORDER_CLOSENESS) < BOUNDARY.x) {
+                position.x = BOUNDARY.x + (radius / BORDER_CLOSENESS);
                 velocity.x = -velocity.x;
             }
-            if(position.y + (radius / 4)> BOUNDARY.y + BOUNDARY.height) {
-                position.y = BOUNDARY.y + BOUNDARY.height - (radius / 4);
+            if(position.y + (radius / BORDER_CLOSENESS)> BOUNDARY.y + BOUNDARY.height) {
+                position.y = BOUNDARY.y + BOUNDARY.height - (radius / BORDER_CLOSENESS);
                 velocity.y = -velocity.y;
             }
-            if(position.y - (radius / 4) < BOUNDARY.y) {
-                position.y = BOUNDARY.y + (radius / 4);
+            if(position.y - (radius / BORDER_CLOSENESS) < BOUNDARY.y) {
+                position.y = BOUNDARY.y + (radius / BORDER_CLOSENESS);
                 velocity.y = -velocity.y;
             }
         }
