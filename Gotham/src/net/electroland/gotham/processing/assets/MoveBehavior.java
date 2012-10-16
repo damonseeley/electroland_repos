@@ -12,4 +12,5 @@ public interface MoveBehavior {
 	public float getBegin();
 	public void pause();
 	public void resume();
+	public boolean pauseState();
 }

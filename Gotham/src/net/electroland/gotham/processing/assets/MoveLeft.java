@@ -113,5 +113,10 @@ public class MoveLeft implements MoveBehavior {
 	public float getTimeAcross(){
 		return timeAcross;
 	}
+	@Override
+	public boolean pauseState() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 }
