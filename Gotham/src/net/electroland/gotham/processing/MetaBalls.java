@@ -18,22 +18,16 @@ public class MetaBalls extends GothamPApplet {
     // we want the lava to stay on screen
     final Rectangle BOUNDARY    = new Rectangle(60,60,580,390);
 
-    final int   COARSNESS       = 5;
+    final int   COARSENESS      = 5;
     final int   NUM_BALLS       = 3;
     final int   MIN_RADIUS      = 200;    // initial ball radius min
-    final int   MAX_RADIUS      = 400;   // initial ball radius max
+    final int   MAX_RADIUS      = 350;   // initial ball radius max
 
-    final float FRICTION        =   .75f;  // higher = less
+    final float FRICTION        =   .99f;  // higher = less
     final float P_FRICTION      =  1.0f;
     final float MAX_VEL         = 15;    // higher = faster
     final float COHESION =   .05f;  // higher = more
     final float P_COHESION      = -COHESION;
-
-
-    // TODO: should cycle hue and saturation from an image file
-    private int hue             = 0;
-    private int saturation      = 100;
-
 
     // might be nice to clean these up by putting them in a Collection of Metaballs.
     private List<Metaball> balls;
@@ -55,7 +49,8 @@ public class MetaBalls extends GothamPApplet {
     @Override
     public void drawELUContent() {
 
-        PVector center = new PVector(0, 0, 0);
+        PVector center = mainPresence == null ? new PVector(0, 0, 0) : 
+                                                new PVector(mainPresence.x, mainPresence.y, 0);
 
         //update meta ball positions
         for (Metaball ball : balls){
@@ -78,25 +73,25 @@ public class MetaBalls extends GothamPApplet {
         }
 
         // render
-        //hue++; // cheaply cycle hue
-
         noStroke();
-        for(int i = 0; i < this.getSyncArea().width; i+= COARSNESS) {
-            for(int j = 0; j < this.getSyncArea().height; j+= COARSNESS) {
+        for(int i = 0; i < this.getSyncArea().width; i+= COARSENESS) {
+            for(int j = 0; j < this.getSyncArea().height; j+= COARSENESS) {
                 float sum = 0;
                 for (Metaball ball : balls){
                     // radius divided by distance from this pixel to the center of the ball.  meaning max = ball.radius 
                     ball.pixelImpact = ball.radius / sqrt(sq(i - ball.position.x) + sq(j - ball.position.y));
                     sum += ball.pixelImpact;
                 }
-                fill(hue % 360, saturation, (sum * sum * sum) / 3);
-                this.rect(i, j, COARSNESS, COARSNESS);
+                float color = (sum * sum * sum) / 3;
+                fill(0, 100, color);
+//                fill(color, color, color);
+                this.rect(i, j, COARSENESS, COARSENESS);
             }
         }
 
         // show where the mouse was clicked
         if (mainPresence != null){
-            stroke(0, 0, 255);
+            stroke(0, 0, 100);
             line(mainPresence.x - 10, mainPresence.y, mainPresence.x + 10, mainPresence.y);
             line(mainPresence.x, mainPresence.y - 10, mainPresence.x, mainPresence.y + 10);
         }
@@ -136,20 +131,20 @@ public class MetaBalls extends GothamPApplet {
         public void checkBounds(){
             // simple bounce when beyond bounds.  only accomplishes 90 or 180
             // degree turns.
-            if(position.x > BOUNDARY.x + BOUNDARY.width) {
-                position.x = BOUNDARY.x + BOUNDARY.width;
+            if(position.x + (radius / 4) > BOUNDARY.x + BOUNDARY.width) {
+                position.x = BOUNDARY.x + BOUNDARY.width - (radius / 4);
                 velocity.x = -velocity.x;
             }
-            if(position.x < BOUNDARY.x) {
-                position.x = BOUNDARY.x;
+            if(position.x -(radius / 4) < BOUNDARY.x) {
+                position.x = BOUNDARY.x + (radius / 4);
                 velocity.x = -velocity.x;
             }
-            if(position.y > BOUNDARY.y + BOUNDARY.height) {
-                position.y = BOUNDARY.y + BOUNDARY.height;
+            if(position.y + (radius / 4)> BOUNDARY.y + BOUNDARY.height) {
+                position.y = BOUNDARY.y + BOUNDARY.height - (radius / 4);
                 velocity.y = -velocity.y;
             }
-            if(position.y < BOUNDARY.y) {
-                position.y = BOUNDARY.y;
+            if(position.y - (radius / 4) < BOUNDARY.y) {
+                position.y = BOUNDARY.y + (radius / 4);
                 velocity.y = -velocity.y;
             }
         }
