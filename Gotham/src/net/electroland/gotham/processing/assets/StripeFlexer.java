@@ -14,7 +14,7 @@ public class StripeFlexer extends Stripe {
 	public float r, g, b, oldr, oldg, oldb;
 	public float targetr, targetb, targetg;
 	public boolean justFinished;
-	public float satScaler = 100;
+	public float satScaler = 1;
 
 	public StripeFlexer(PApplet p, Dimension d) {
 		super(p, d);
@@ -23,10 +23,15 @@ public class StripeFlexer extends Stripe {
 		else
 			movement = new MoveLeft(p, d);
 		h = p.random(300, 500);
-
+		isNew = false;
+		xpos = movement.getBegin();
 		hue = p.hue(stripeColor);
-		saturation = p.saturation(stripeColor);
 		brightness = p.brightness(stripeColor);
+		if(FlexingStripes.insertMode)
+			saturation = 40;
+		else
+			saturation = p.saturation(stripeColor);
+		
 
 		originalhue = hue;
 
@@ -38,6 +43,12 @@ public class StripeFlexer extends Stripe {
 
 	public StripeFlexer(PApplet p, Dimension d, float startx) {
 		this(p, d);
+		isNew = true; //This is a stripe that was inserted by a user
+		stripeColor = findInverseColor(stripeColor);
+		hue = p.hue(stripeColor);
+		saturation = p.saturation(stripeColor);
+		brightness = p.brightness(stripeColor);
+		xpos = movement.getBegin();
 		if (scalerAmt >= 0)
 			movement = new MoveRight(p, d, startx);
 		else
@@ -50,7 +61,6 @@ public class StripeFlexer extends Stripe {
 		movement.move();
 		targetxpos = movement.getPosition();
 		xpos += (targetxpos - xpos) * 0.08;
-		// xpos = movement.getPosition();
 
 		// Added these so I can pause other stripes while one is being inserted
 		// dynamically
@@ -76,15 +86,17 @@ public class StripeFlexer extends Stripe {
 
 	@Override
 	public void display() {
-		w += (targetw - w) * 0.08;
-
-		p.fill(hue, saturation, brightness);
+		w += (targetw - w) * 0.14;
+		
+		p.fill(hue, saturation*satScaler, brightness);
 		// p.stroke(p.color(200,100,100));
 		// p.line(xpos-xoff, 0, xpos-xoff, p.height);
 		// p.stroke(p.color(0,100,100));
 		p.rect(xpos, -25, w * (widthScaler) + 20, d.height + 50);
-		p.rect(xpos, -25, -w * (widthScaler) - 20, d.height + 50);
-
+		if(!(movement instanceof Pin))
+			p.rect(xpos, -25, -w * (widthScaler) - 20, d.height + 50);
+		else
+			p.rect(xpos, -25, -50, d.height+50);
 	}
 
 	// This is a overload of display() that is used with the WIDTH affecter
@@ -105,7 +117,7 @@ public class StripeFlexer extends Stripe {
 		if (!FlexingStripes.flexMode)
 			targetw = 50;
 		else
-			targetw = (inFront.getLeftSide() - (this.xpos));
+			targetw = (inFront.getLeftSide() - (this.xpos));	
 	}
 
 	@Override
@@ -113,16 +125,15 @@ public class StripeFlexer extends Stripe {
 		targetw = n;
 	}
 
-	public void performWidthShift(PersonMouseSimulator pm, String value) {
+	public void performWidthShift(float zoneCoord, String value) {
 		String[] vals = PApplet.splitTokens(value, "$");
 		int radius = Integer.parseInt(vals[0]);
 		float min = Float.parseFloat(vals[1]);
 		float max = Float.parseFloat(vals[2]);
 		widthShiftFactor = max;
-		dist = Math.abs(pm.getZone() - xpos);
+		dist = Math.abs(zoneCoord - xpos);
 
-		if (pm.getLocation().getY() >= d.height - 50) {
-
+		if (zoneCoord > 0) {
 			if (dist <= radius) {
 				wtarget = max;
 			} else {
@@ -134,33 +145,28 @@ public class StripeFlexer extends Stripe {
 		widthScaler += (wtarget - widthScaler) * 0.08;
 	}
 
-	public void performSaturationShift(PersonMouseSimulator pm, String value) {
+	public void performSaturationShift(float zoneCoord, String value) {
 		String[] vals = PApplet.splitTokens(value, "$");
 		int radius = Integer.parseInt(vals[0]);
 		float minsat = Integer.parseInt(vals[1]);
 		float maxsat = Integer.parseInt(vals[2]);
-
-		// if we go to the bottom 50px of the screen
-		if (pm.getLocation().getY() >= d.height - 50) {
-			float d = Math.abs(pm.getZone() - (xpos)); // keep this w/2???
+		if(zoneCoord > 0){
+			float d = Math.abs(zoneCoord - (xpos)); // keep this w/2???
 			if (d <= radius) {
 				targetsaturation = maxsat/100;
 			} else
 				targetsaturation = minsat/100;
-		} else
-			targetsaturation = minsat/100;
-
+		} else targetsaturation = minsat/100;
 		satScaler += (targetsaturation - satScaler) * 0.08;
 	}
 
-	public void performHueShift(PersonMouseSimulator pm, String value) {
+	public void performHueShift(float zoneCoord, String value) {
 		String[] vals = PApplet.splitTokens(value, "$");
 		int radius = Integer.parseInt(vals[0]);
 		// int howFar = Integer.parseInt(vals[1]);
 		// int newHue = (int)((originalhue + howFar) % 360);
-
-		if (pm.getLocation().getY() >= d.height - 50) {
-			float d = Math.abs(pm.getZone() - (xpos)); // keep this w/2???
+		if(zoneCoord > 0){
+			float d = Math.abs(zoneCoord - (xpos)); // keep this w/2???
 			if (d <= radius) {
 				targetr = Math.abs(255 - oldr);// ((newHue >> 16) & 0xFF);
 				targetg = Math.abs(255 - oldg);// ((newHue >> 8) & 0xFF);
@@ -177,9 +183,9 @@ public class StripeFlexer extends Stripe {
 			targetb = oldb;
 		}
 
-		r += ((targetr - r) * 0.1);
-		g += ((targetg - g) * 0.1);
-		b += ((targetb - b) * 0.1);
+		r += ((targetr - r) * 0.07);
+		g += ((targetg - g) * 0.07);
+		b += ((targetb - b) * 0.07);
 
 		float[] hsb = Color.RGBtoHSB((int) r, (int) g, (int) b, null);
 		hue = hsb[0] * 360;
@@ -218,11 +224,22 @@ public class StripeFlexer extends Stripe {
 		}
 		ploc.setLocation(loc);
 	}
+	
+	private int findInverseColor(int oldColor){
+		int r = 255 - ((oldColor >> 16) & 0xFF);
+		int g = 255 - ((oldColor >> 8) & 0xFF); 
+		int b = 255 - ((oldColor) & 0xFF);
+		float[] hsb = Color.RGBtoHSB((int) r, (int) g, (int) b, null);
+		return p.color(hsb[0] * 360, hsb[1] * 100, hsb[2] * 100 );
+	}
 
 	@Override
 	public float getLeftSide() {
 		return ((this.xpos) - (this.w));
-
+	}
+	@Override
+	public float getRightSide(){
+		return (this.xpos + (this.w));
 	}
 
 	@Override

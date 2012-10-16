@@ -33,7 +33,6 @@ public class MoveRight implements MoveBehavior {
 		
 		begin = -offset;
 		target = d.width + offset;
-		//ef = new Linear();
 		ef = new Linear();
 		
 
@@ -78,6 +77,10 @@ public class MoveRight implements MoveBehavior {
 	public void resume() {		
 		setPosition(pausedx);
 		pause = false;
+	}
+	@Override
+	public boolean pauseState(){
+		return pause;
 	}
 	
 	@Override

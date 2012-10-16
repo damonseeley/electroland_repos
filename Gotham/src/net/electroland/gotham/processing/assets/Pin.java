@@ -71,4 +71,10 @@ public class Pin implements MoveBehavior {
 		
 	}
 
+	@Override
+	public boolean pauseState() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

@@ -32,6 +32,7 @@ public abstract class Stripe {
 	public float xoff;
 	public float dist;
 	public boolean stillEasing, pStillEasing;
+	public boolean isNew;
 
 	public MoveBehavior movement;
 
@@ -46,6 +47,7 @@ public abstract class Stripe {
 	public abstract void setWidth(float num);
 	public abstract boolean justFinishedEasing();
 	public abstract float getLeftSide();
+	public abstract float getRightSide();
 	public abstract boolean isOffScreen();
 	//public abstract void checkHover(Point2D.Float loc, boolean standing);
 	public abstract void checkPinning(PersonMouseSimulator pm);
@@ -55,8 +57,8 @@ public abstract class Stripe {
 	public abstract void display(float n);
 	public abstract float getLocation();
 	public abstract MoveBehavior getBehavior();
-	public abstract void performSaturationShift(PersonMouseSimulator pm, String value);
-	public abstract void performHueShift(PersonMouseSimulator pm, String value);
+	public abstract void performSaturationShift(float zoneCoord, String value);
+	public abstract void performHueShift(float zoneCoord, String value);
 	
 	public void setBehavior(MoveBehavior mb) {
 		movement = mb;
