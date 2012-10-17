@@ -16,6 +16,7 @@ public class Metaballs2 extends GothamPApplet {
     public static final float COHESION        = .003f; // higher = more
     public static final float P_FRICTION      =  1.1f;
     public static final float P_COHESION      = -COHESION;
+    public static final float MOUSE_REPEL     = 200;
     public static final float SQUISHINESS     = 50;    // higher = more
     public static final Rectangle RANGE = new Rectangle(80, 70, 621 - 80, 435 - 70);
 
@@ -43,8 +44,18 @@ public class Metaballs2 extends GothamPApplet {
 
         PVector center = new PVector(0, 0, 0);
         for (Metaball ball : balls){
+
+            if(mousePressed) {
+                PVector m = new PVector(mouseX, mouseY, 0);
+                float mDistance = PVector.dist(ball.position, m);
+                PVector repel = PVector.sub(ball.position, m);
+                repel.normalize();
+                repel.mult(MOUSE_REPEL / (mDistance * mDistance));
+                ball.velocity.add(repel);
+              }
+
             center.add(ball.position);
-            ball.velocity.mult(mainPresence != null ? P_FRICTION : FRICTION);
+            ball.velocity.mult(FRICTION);
             ball.velocity.limit(MAX_VEL);
             if (ball.velocity.mag() < MIN_VEL)
                 ball.velocity.setMag(MIN_VEL);
@@ -54,7 +65,7 @@ public class Metaballs2 extends GothamPApplet {
         for (Metaball ball : balls){
             PVector c = PVector.sub(center, ball.position);
             c.normalize();
-            c.mult(mainPresence != null ? P_COHESION : COHESION);
+            c.mult(COHESION);
             ball.velocity.add(c);
             ball.position.add(ball.velocity);
 
