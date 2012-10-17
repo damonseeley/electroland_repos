@@ -68,8 +68,11 @@ abstract public class ELUPApplet extends PApplet {
                 if (showOnly == null || cd.getDetectorModel().getClass() == showOnly.getClass()){
                     noStroke();
                     if (cd.getLatestState() == (byte)0){
-                        fill(100,100,100);
+                        stroke(50,50,50);
+                        noFill();
                     }else{
+                        stroke(50,50,50);
+                        noStroke();
                         Color c = cd.getDetectorModel().getColor(cd.getLatestState());
                         fill(c.getRGB());
                     }

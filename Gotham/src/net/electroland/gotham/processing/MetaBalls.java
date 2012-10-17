@@ -16,25 +16,23 @@ public class MetaBalls extends GothamPApplet {
     private static final long serialVersionUID = 7554567212859904536L;
 
     // we want the lava to stay on screen
-    final Rectangle BOUNDARY    = new Rectangle(60,60,580,390);
+    final Rectangle BOUNDARY    = new Rectangle(80, 70, 621 - 80, 435 - 70);
     final float BORDER_CLOSENESS = 1.5f; // higher = more of the ball can go beyond the border
 
-    final int   COARSENESS      = 5;
+    final int   COARSENESS      = 10;
     final int   NUM_BALLS       = 3;
     final int   MIN_RADIUS      = 100;    // initial ball radius min
-    final int   MAX_RADIUS      = 200;   // initial ball radius max
+    final int   MAX_RADIUS      = 200;    // initial ball radius max
 
-    final float FRICTION        =  0.99f;  // higher = less
-    final float P_FRICTION      =  1.25f;
-    final float MAX_VEL         = 10;    // higher = faster
-    final float MIN_VEL         = 1;    // higher = faster
-    final float COHESION        =   .003f;  // higher = more
+    final float FRICTION        =  0.9f; // higher = less
+    final float P_FRICTION      =  1.1f;
+    final float MAX_VEL         = 10;     // higher = faster
+    final float MIN_VEL         = .5f;    // higher = faster
+    final float COHESION        = .003f;  // higher = more
     final float P_COHESION      = -COHESION;
 
-    // might be nice to clean these up by putting them in a Collection of Metaballs.
     private List<Metaball> balls;
     private Point mainPresence;
-
 
     @Override
     public void setup(){
@@ -43,16 +41,16 @@ public class MetaBalls extends GothamPApplet {
         background(0);
 
         balls = new ArrayList<Metaball>();
-        for(int i = 0; i < NUM_BALLS; i++) {
-            balls.add(new Metaball(this.getSyncArea()));
-        }
+        balls.add(new Metaball(0,  new Dimension(200,200), this.getSyncArea()));
+        balls.add(new Metaball(40, new Dimension(200,200), this.getSyncArea()));
+        balls.add(new Metaball(80, new Dimension(300,300), this.getSyncArea()));
     }
 
+    float max = 0;
     @Override
     public void drawELUContent() {
 
-        PVector center = mainPresence == null ? new PVector(0, 0, 0) : 
-                                                new PVector(mainPresence.x, mainPresence.y, 0);
+        PVector center = new PVector(0, 0, 0);
 
         //update meta ball positions
         for (Metaball ball : balls){
@@ -82,20 +80,18 @@ public class MetaBalls extends GothamPApplet {
             for(int j = 0; j < this.getSyncArea().height; j+= COARSENESS) {
                 float sum = 0;
                 for (Metaball ball : balls){
-                    // radius divided by distance from this pixel to the center of the ball.  meaning max = ball.radius 
-                    ball.pixelImpact = ball.radius / sqrt(sq(i - ball.position.x) + sq(j - ball.position.y));
-                    sum += ball.pixelImpact;
+                    ball.distance = sqrt(sq(i - ball.position.x) + sq(j - ball.position.y));
+                    sum += ball.radius / ball.distance;
                 }
-                float color = (sum * sum * sum) / 3;
-                fill(0, 100, color);
-//                fill(color, color, color);
+
+                float brightness = (sum * sum * sum) / 5;
+                fill(0, 100, brightness);
                 this.rect(i, j, COARSENESS, COARSENESS);
             }
         }
-
         // show where the mouse was clicked
         if (mainPresence != null){
-            stroke(0, 0, 100);
+            stroke(255, 255, 255);
             line(mainPresence.x - 10, mainPresence.y, mainPresence.x + 10, mainPresence.y);
             line(mainPresence.x, mainPresence.y - 10, mainPresence.x, mainPresence.y + 10);
         }
@@ -122,14 +118,18 @@ public class MetaBalls extends GothamPApplet {
         float radius;
         PVector position;
         PVector velocity;
-        Dimension area;
-        float pixelImpact;
+        Dimension range;
+        Dimension size;
+        float distance;
+        int hue;
 
-        public Metaball(Dimension initArea){
-            this.area = initArea;
-            position  = new PVector(random(0, initArea.width),random(0, initArea.height));
+        public Metaball(int hue, Dimension size, Dimension range){
+            this.hue = hue;
+            this.range = range;
+            this.size = size;
+            position  = new PVector(random(0, range.width),random(0, range.height));
             velocity  = new PVector(random(-1, 1),random(-1, 1));
-            radius    = random(MIN_RADIUS, MAX_RADIUS);
+            radius    = size.width;
         }
 
         public void checkBounds(){
