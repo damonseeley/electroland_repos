@@ -84,9 +84,9 @@ public class FlexingStripes extends GothamPApplet {
 	
 		setController(Controller.MOUSE); // Options: MOUSE, HOOK
 
-		setFlexing(false);
-		Stripe.setUseRandomSpeeds(-1); //Set to 1 to force random speeds if you want flexing.
-		setInsert(true);
+		setFlexing(true);
+		Stripe.setUseRandomSpeeds(1); //Set to 1 to force random speeds if you want flexing.
+		setInsert(false);
 		setPinning(false);
 		//affecters.put("SATURATION", "$80$20$100"); // radius, min, max
 		//affecters.put("WIDTH", "$50$1$2"); // radius, min scaler, max scaler
@@ -101,7 +101,7 @@ public class FlexingStripes extends GothamPApplet {
 		accentColors[2] = color(0, 100,100);
 		
 		
-		for (int i = 0; i < 17; i++) {	
+		for (int i = 0; i <17; i++) {	
 			stripes.add(new StripeFlexer(this, syncArea));
 			((StripeFlexer) stripes.get(i)).forcePosition(syncArea.width- (i * 100));
 		}
@@ -116,18 +116,35 @@ public class FlexingStripes extends GothamPApplet {
 		float bri = blackOrWhite ? 0 : 100;
 		background(color(0, 0, bri));
 		noiseOffset = 0;// noise(millis()/100000.0f); //noramlized
-
+		
 		// Handle Stripes
 		for (Stripe s : stripes) {
 			s.update();
-
-			if(s.getBehavior() instanceof MoveRight && !s.boundaryStripe){
-				if (stripes.indexOf(s) != 0) 
-					s.setWidth(stripes.get(stripes.indexOf(s) - 1));
-			} else if(s.getBehavior() instanceof MoveLeft && !s.boundaryStripe){
-				if(stripes.indexOf(s) != stripes.size()-1)
-					s.setWidth(stripes.get(stripes.indexOf(s) + 1));
+			
+			/*
+			 //Original Attempt at bi-directional flexing
+			if(stripes.indexOf(s)!=0 
+					&& stripes.get(stripes.indexOf(s)-1 ).boundaryStripe){
+				s.setWidth(stripes.get(0));
 			}
+			else if(s.relic){
+				if(!s.boundaryStripe)//(stripes.indexOf(s) != stripes.size()-1)
+					s.setWidth(stripes.get(stripes.indexOf(s)+1));
+			}
+			else{
+				if (stripes.indexOf(s) != 0 ) 
+					s.setWidth(stripes.get(stripes.indexOf(s) - 1));
+			}*/
+			
+			//Hacky comprimise. Any "leftover" stripes oncreen after a dir change, don't flex.
+			if(stripes.indexOf(s) != 0){
+				if(!s.leftover && !stripes.get(stripes.indexOf(s)-1).leftover)
+					s.setWidth(stripes.get(stripes.indexOf(s) - 1));
+				else if(!s.leftover && stripes.get(stripes.indexOf(s)-1).leftover){
+					s.setWidth(stripes.get(0));
+				} 
+			}
+
 
 			// Check Saturation Affecter
 			if (affecters.containsKey("SATURATION")) {
@@ -177,9 +194,9 @@ public class FlexingStripes extends GothamPApplet {
 			}
 			// Check Width Affecter
 			if (affecters.containsKey("WIDTH")) {
+				widthShift = true;
 				switch (controller) {
 				case MOUSE:
-					widthShift = true;
 					if (pms.getLocation().getY() >= syncArea.height - 50) {
 						((StripeFlexer) s).performWidthShift(
 								zoneToCoord(floor(map(mouseX, 0,
@@ -190,7 +207,6 @@ public class FlexingStripes extends GothamPApplet {
 								affecters.get("WIDTH"));
 					break;
 				case HOOK:
-					widthShift = true;
 					if (triggeredZone > 0)
 						((StripeFlexer) s).performWidthShift(
 								zoneToCoord(triggeredZone),
@@ -266,6 +282,11 @@ public class FlexingStripes extends GothamPApplet {
 		if ((Stripe.scalerAmt >= 0 && pScalerAmt < 0)
 				|| (Stripe.scalerAmt <= 0 && pScalerAmt > 0)) {
 			switchDirection = true;
+			//stripes.get(0).boundaryStripe = true;
+			stripes.get(stripes.size()-1).boundaryStripe = true;
+			
+			for(Stripe n : stripes)
+				n.leftover = true;
 		}
 		if (switchDirection) {
 			if (DEBUG)
@@ -277,11 +298,7 @@ public class FlexingStripes extends GothamPApplet {
 				} else {
 					s.setBehavior(new MoveRight(this, syncArea, tx));
 				}
-			}
-			for(Stripe s : stripes)
-				s.stopFlexing = true;
-			stripes.get(0).boundaryStripe = true;
-			stripes.get(stripes.size()-1).boundaryStripe = true;
+			}			
 		}
 
 		if (DEBUG) {

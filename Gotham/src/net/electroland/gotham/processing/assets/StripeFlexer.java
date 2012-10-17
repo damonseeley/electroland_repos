@@ -96,11 +96,8 @@ public class StripeFlexer extends Stripe {
 		// p.stroke(p.color(200,100,100));
 		// p.line(xpos-xoff, 0, xpos-xoff, p.height);
 		// p.stroke(p.color(0,100,100));
-		p.rect(xpos, -25, w * (widthScaler) + 20, d.height + 50);
-		if (!(movement instanceof Pin))
-			p.rect(xpos, -25, -w * (widthScaler) - 20, d.height + 50);
-		else
-			p.rect(xpos, -25, -50, d.height + 50);
+		p.rect(xpos, -25, w * (widthScaler) + 10, d.height + 50);
+		p.rect(xpos, -25, -w * (widthScaler) - 10, d.height + 50);
 	}
 
 	// This is a overload of display() that is used with the WIDTH affecter
@@ -121,20 +118,14 @@ public class StripeFlexer extends Stripe {
 		if (!FlexingStripes.flexMode)
 			targetw = 50;
 		else {
-			if (!stopFlexing) {
-				if (movement instanceof MoveRight) {
-					if (inFront.boundaryStripe)
-						targetw = FlexingStripes.stripes.get(0).getLeftSide()
-								- this.xpos;
-					else
-						targetw = (inFront.getLeftSide() - (this.xpos));
+			if(!this.leftover){
+				if (scalerAmt >= 0) {
+					targetw = Math.abs((inFront.getLeftSide() - (this.xpos)));
 				} else {
-					if (inFront.boundaryStripe)
-						targetw = this.xpos
-								- FlexingStripes.stripes.get(0).getRightSide();
-					else
-						targetw = (this.xpos - inFront.getRightSide());
+					targetw = Math.abs((this.xpos - inFront.getRightSide()));
 				}
+			} else {
+				targetw = 10;
 			}
 		}
 	}
