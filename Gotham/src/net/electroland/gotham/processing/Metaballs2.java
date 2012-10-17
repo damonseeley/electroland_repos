@@ -1,5 +1,6 @@
 package net.electroland.gotham.processing;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,10 +14,13 @@ public class Metaballs2 extends GothamPApplet {
     public static final float MAX_VEL         = 10;    // higher = faster
     public static final float MIN_VEL         = .5f;   // higher = faster
     public static final float COHESION        = .003f; // higher = more
+    public static final float P_FRICTION      =  1.1f;
+    public static final float P_COHESION      = -COHESION;
     public static final float SQUISHINESS     = 50;    // higher = more
     public static final Rectangle RANGE = new Rectangle(80, 70, 621 - 80, 435 - 70);
 
     private List <Metaball>balls;
+    private Point mainPresence;
 
     @Override
     public void setup(){
@@ -40,7 +44,7 @@ public class Metaballs2 extends GothamPApplet {
         PVector center = new PVector(0, 0, 0);
         for (Metaball ball : balls){
             center.add(ball.position);
-            ball.velocity.mult(FRICTION);
+            ball.velocity.mult(mainPresence != null ? P_FRICTION : FRICTION);
             ball.velocity.limit(MAX_VEL);
             if (ball.velocity.mag() < MIN_VEL)
                 ball.velocity.setMag(MIN_VEL);
@@ -50,7 +54,7 @@ public class Metaballs2 extends GothamPApplet {
         for (Metaball ball : balls){
             PVector c = PVector.sub(center, ball.position);
             c.normalize();
-            c.mult(COHESION);
+            c.mult(mainPresence != null ? P_COHESION : COHESION);
             ball.velocity.add(c);
             ball.position.add(ball.velocity);
 
@@ -68,10 +72,25 @@ public class Metaballs2 extends GothamPApplet {
             this.ellipse(ball.position.x, ball.position.y, ball.width(), ball.height());
         }
         filter(BLUR, 3);
+
+        if (mainPresence != null){
+            stroke(255, 255, 255);
+            line(mainPresence.x - 10, mainPresence.y, mainPresence.x + 10, mainPresence.y);
+            line(mainPresence.x, mainPresence.y - 10, mainPresence.x, mainPresence.y + 10);
+        }
     }
 
-    public void mousePressed(){
-        System.out.println(mouseX + ", " + mouseY);
+    public void mousePressed() {
+        mainPresence = new Point(mouseX, mouseY);
+    }
+
+    public void mouseDragged(){
+        mainPresence = new Point(mouseX, mouseY);
+    }
+
+    public void mouseReleased(){
+        mainPresence = new Point(mouseX, mouseY);
+        mainPresence = null;
     }
 }
 
