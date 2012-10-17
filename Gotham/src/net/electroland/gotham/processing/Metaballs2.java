@@ -27,8 +27,8 @@ public class Metaballs2 extends GothamPApplet {
         balls.add(new Metaball(200, new Color(255,0,0)));
  
         for (Metaball ball : balls){
-            ball.position  = new PVector(random(RANGE.x, RANGE.width + RANGE.x),
-                                         random(RANGE.y, RANGE.height + RANGE.y));
+            ball.position  = new PVector(random(RANGE.x + SQUISHINESS, RANGE.width + RANGE.x - (2 * SQUISHINESS)),
+                                         random(RANGE.y + SQUISHINESS, RANGE.height + RANGE.y - (2 * SQUISHINESS)));
             ball.velocity = new PVector(random(-1,1), random(-1,1));
         }
     }
