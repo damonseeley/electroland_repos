@@ -5,6 +5,8 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.electroland.gotham.processing.assets.FastBlur;
+
 import processing.core.PVector;
 
 @SuppressWarnings("serial")
@@ -17,12 +19,15 @@ public class Metaballs2 extends GothamPApplet {
     private int mode = MOUSE; // set the reaction mode
 	
 	
-	public static final float FRICTION        	= .999f;  // higher = less
-    public static final float MAX_VEL         	= 0.75f;  // higher = faster
-    public static final float MAX_RUN_VEL     	= 30.0f;  // max velocity when mouse is down or presence is felt.
-    public static final float REPELL_FORCE   	= 750; 	  // repell force of mouse or track (higher = more)
+	public static final float FRICTION        	= .999f;  // higher = less .999
+    public static final float MAX_VEL         	= 0.75f;  // base velocity with no interaction or tracks higher = faster
+    // push vars
+    public static final float MAX_RUN_VEL     	= 1000.0f;  // max velocity when mouse is down or presence is felt.  //30
+    public static final float REPELL_FORCE   	= 1000; // repell force of mouse or track (higher = more)
+    // ball group props
     public static final float BALL_REPELL_FORCE	= 20;	  // group to group repell force (higher = more)
     public static final float COHESION        	= .005f;   // higher = more
+    // ball scale
     public static final float ELLIPSE_SCALE   	= 2.0f;   // percent
 
     // don't touch:
@@ -142,8 +147,15 @@ public class Metaballs2 extends GothamPApplet {
         // presence
         if (mode == MOUSE && mousePressed){
             fill(255, 255, 255);
-            ellipse(mouseX, mouseY, 60, 40);
+            //ellipse(mouseX, mouseY, 60, 40);
+            ellipse(mouseX, mouseY, 140, 100);
         }
+        
+        
+        loadPixels();
+		FastBlur.performBlur(pixels, width, height, floor(20));
+		updatePixels();
+		
     }
 }
 
