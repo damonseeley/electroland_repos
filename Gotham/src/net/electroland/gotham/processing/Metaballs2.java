@@ -10,14 +10,16 @@ import processing.core.PVector;
 @SuppressWarnings("serial")
 public class Metaballs2 extends GothamPApplet {
 
-    public static final float FRICTION        = .999f; // higher = less
-    public static final float MAX_VEL         = 1.0f;     // higher = faster
-    public static final float MAX_RUN_VEL     = 2.0f;     // higher = faster
-    public static final float MIN_VEL         = .75f;     // higher = faster
-    public static final float COHESION        = .05f;  // higher = more
-    public static final float SQUISHINESS     = 50;    // higher = more
-    public static final float ELLIPSE_SCALE   = 2.0f;  // percent
-    public static final Rectangle RANGE = new Rectangle(80, 70, 621 - 80, 435 - 70);
+    public static final float FRICTION        	= .999f; // higher = less
+    public static final float MAX_VEL         	= 0.75f;     // higher = faster
+    public static final float MAX_RUN_VEL     	= 15.0f;     // higher = faster
+    public static final float REPELL_FORCE   	= 100; // higher = more
+    public static final float BALL_REPELL_FORCE	= 1;
+    public static final float MIN_VEL         	= .75f;     // higher = faster
+    public static final float COHESION        	= .05f;  // higher = more
+    public static final float SQUISHINESS     	= 50;    // higher = more
+    public static final float ELLIPSE_SCALE   	= 2.0f;  // percent
+    public static final Rectangle RANGE 		= new Rectangle(80, 70, 621 - 80, 435 - 70);
 
     private List <MetaballGroup>groups;
     private Point mainPresence;
@@ -31,23 +33,32 @@ public class Metaballs2 extends GothamPApplet {
     	// groups of balls
         groups = new ArrayList<MetaballGroup>();
 
-        MetaballGroup red = new MetaballGroup(new Rectangle(80 - 50, 70 - 50, 580 + 75, 384 + 75), new Color(255, 0, 0), SQUISHINESS);
+        MetaballGroup red = new MetaballGroup(new Rectangle(-100, -100, this.getSyncArea().width + 100, this.getSyncArea().height +100), new Color(255, 0, 0), SQUISHINESS);
         groups.add(red);
         red.add(new Metaball(75 * ELLIPSE_SCALE));
         red.add(new Metaball(100 * ELLIPSE_SCALE));
         red.add(new Metaball(100 * ELLIPSE_SCALE));
+        red.add(new Metaball(75 * ELLIPSE_SCALE));
+        red.add(new Metaball(100 * ELLIPSE_SCALE));
+        red.add(new Metaball(100 * ELLIPSE_SCALE));
 
-        MetaballGroup orange = new MetaballGroup(new Rectangle(80 - 50, 70 - 50, 580 + 75, 384 + 75), new Color(255, 127, 0), SQUISHINESS);
+        MetaballGroup orange = new MetaballGroup(new Rectangle(-100, -100, this.getSyncArea().width + 100, this.getSyncArea().height +100), new Color(255, 127, 0), SQUISHINESS);
         groups.add(orange);
         orange.add(new Metaball(75 * ELLIPSE_SCALE));
         orange.add(new Metaball(100 * ELLIPSE_SCALE));
         orange.add(new Metaball(100 * ELLIPSE_SCALE));
+        orange.add(new Metaball(75 * ELLIPSE_SCALE));
+        orange.add(new Metaball(100 * ELLIPSE_SCALE));
+        orange.add(new Metaball(100 * ELLIPSE_SCALE));
 
-        MetaballGroup purple = new MetaballGroup(new Rectangle(80 - 50, 70 - 50, 580 + 75, 384 + 75), new Color(128, 0, 128), SQUISHINESS);
+        MetaballGroup purple = new MetaballGroup(new Rectangle(0, 0, this.getSyncArea().width, this.getSyncArea().height), new Color(128, 0, 128), SQUISHINESS);
         groups.add(purple);
-        purple.add(new Metaball(75 * ELLIPSE_SCALE));
-        purple.add(new Metaball(100 * ELLIPSE_SCALE));
-        purple.add(new Metaball(100 * ELLIPSE_SCALE));
+        purple.add(new Metaball(25 * ELLIPSE_SCALE));
+        purple.add(new Metaball(50 * ELLIPSE_SCALE));
+        purple.add(new Metaball(50 * ELLIPSE_SCALE));
+        purple.add(new Metaball(25 * ELLIPSE_SCALE));
+        purple.add(new Metaball(50 * ELLIPSE_SCALE));
+        purple.add(new Metaball(50 * ELLIPSE_SCALE));
 
         // probably should be in ball constructors
         for (MetaballGroup group : groups){
@@ -72,7 +83,7 @@ public class Metaballs2 extends GothamPApplet {
 
     			// mousePressed = proxy for presence grid repelling
     		    if(mousePressed) {
-    		    	ball.repell(new PVector(mouseX, mouseY, 0));
+    		    	ball.repell(new PVector(mouseX, mouseY, 0), REPELL_FORCE);
     		    	ball.spaceCheck(groups);
     		    }
 
@@ -213,12 +224,12 @@ class Metaball {
         */
     }
     
-    public void repell(PVector point){
+    public void repell(PVector point, float force){
     	
     	float mDistance = PVector.dist(position, point);
     	PVector repel = PVector.sub(position, point);
         repel.normalize();
-        repel.mult(60 / (mDistance * mDistance));
+        repel.mult(force / (mDistance * mDistance));
         velocity.add(repel);
     	
     }
@@ -228,7 +239,7 @@ class Metaball {
     		if (group != this.group) {
     	    	for (Metaball ball : group.balls){
     	    		if (ball.overlaps(this) || ball.group != this.group){
-    	    			this.repell(ball.position);
+    	    			this.repell(ball.position, Metaballs2.BALL_REPELL_FORCE);
     	    		}
     	    	}
     		}
