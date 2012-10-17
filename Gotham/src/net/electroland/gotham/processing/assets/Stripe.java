@@ -33,6 +33,9 @@ public abstract class Stripe {
 	public float dist;
 	public boolean stillEasing, pStillEasing;
 	public boolean isNew;
+	//used to determine if we need to follow a diff stripe since direction changed.
+	public boolean boundaryStripe = false;
+	public boolean stopFlexing = false;
 
 	public MoveBehavior movement;
 
