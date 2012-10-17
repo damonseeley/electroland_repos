@@ -10,84 +10,119 @@ import processing.core.PVector;
 @SuppressWarnings("serial")
 public class Metaballs2 extends GothamPApplet {
 
-    public static final float FRICTION        =  0.999f; // higher = less
-    public static final float MAX_VEL         = 15;    // higher = faster
-    public static final float MIN_VEL         = .5f;   // higher = faster
-    public static final float COHESION        = .003f; // higher = more
-    public static final float P_FRICTION      =  1.1f;
-    public static final float P_COHESION      = -COHESION;
-    public static final float MOUSE_REPEL     = 200;
+    public static final float FRICTION        = .999f; // higher = less
+    public static final float MAX_VEL         = 1.0f;     // higher = faster
+    public static final float MAX_RUN_VEL     = 2.0f;     // higher = faster
+    public static final float MIN_VEL         = .75f;     // higher = faster
+    public static final float COHESION        = .05f;  // higher = more
     public static final float SQUISHINESS     = 50;    // higher = more
+    public static final float ELLIPSE_SCALE   = 2.0f;  // percent
     public static final Rectangle RANGE = new Rectangle(80, 70, 621 - 80, 435 - 70);
 
-    private List <Metaball>balls;
+    private List <MetaballGroup>groups;
     private Point mainPresence;
 
     @Override
     public void setup(){
-        background(0);
-        balls = new ArrayList<Metaball>();
-        balls.add(new Metaball(300, new Color(255,0,0)));
-        balls.add(new Metaball(200, new Color(255, 97, 3)));
-        balls.add(new Metaball(200, new Color(255,0,0)));
- 
-        for (Metaball ball : balls){
-            ball.position  = new PVector(random(RANGE.x + SQUISHINESS, RANGE.width + RANGE.x - (2 * SQUISHINESS)),
-                                         random(RANGE.y + SQUISHINESS, RANGE.height + RANGE.y - (2 * SQUISHINESS)));
-            ball.velocity = new PVector(random(-1,1), random(-1,1));
+
+    	// set background color
+    	background(0);
+
+    	// groups of balls
+        groups = new ArrayList<MetaballGroup>();
+
+        MetaballGroup red = new MetaballGroup(new Rectangle(80 - 50, 70 - 50, 580 + 75, 384 + 75), new Color(255, 0, 0), SQUISHINESS);
+        groups.add(red);
+        red.add(new Metaball(75 * ELLIPSE_SCALE));
+        red.add(new Metaball(100 * ELLIPSE_SCALE));
+        red.add(new Metaball(100 * ELLIPSE_SCALE));
+
+        MetaballGroup orange = new MetaballGroup(new Rectangle(80 - 50, 70 - 50, 580 + 75, 384 + 75), new Color(255, 127, 0), SQUISHINESS);
+        groups.add(orange);
+        orange.add(new Metaball(75 * ELLIPSE_SCALE));
+        orange.add(new Metaball(100 * ELLIPSE_SCALE));
+        orange.add(new Metaball(100 * ELLIPSE_SCALE));
+
+        MetaballGroup purple = new MetaballGroup(new Rectangle(80 - 50, 70 - 50, 580 + 75, 384 + 75), new Color(128, 0, 128), SQUISHINESS);
+        groups.add(purple);
+        purple.add(new Metaball(75 * ELLIPSE_SCALE));
+        purple.add(new Metaball(100 * ELLIPSE_SCALE));
+        purple.add(new Metaball(100 * ELLIPSE_SCALE));
+
+        // probably should be in ball constructors
+        for (MetaballGroup group : groups){
+        	for (Metaball ball : group.balls){
+                ball.position  = new PVector(random(RANGE.x + SQUISHINESS, RANGE.width + RANGE.x - (2 * SQUISHINESS)),
+                        random(RANGE.y + SQUISHINESS, RANGE.height + RANGE.y - (2 * SQUISHINESS)));
+                ball.velocity = new PVector(random(-1,1), random(-1,1));
+        	}
         }
     }
 
     @Override
     public void drawELUContent() {
+
         // move balls
+    	for (MetaballGroup group : groups){
 
-        PVector center = new PVector(0, 0, 0);
-        for (Metaball ball : balls){
+    		// cohesion, etc. are per group
+    		PVector center = new PVector(0, 0, 0);
 
-            if(mousePressed) {
-                PVector m = new PVector(mouseX, mouseY, 0);
-                float mDistance = PVector.dist(ball.position, m);
-                PVector repel = PVector.sub(ball.position, m);
-                repel.normalize();
-                repel.mult(MOUSE_REPEL / (mDistance * mDistance));
-                ball.velocity.add(repel);
-              }
+    		for (Metaball ball : group.balls){
 
-            center.add(ball.position);
-            ball.velocity.mult(FRICTION);
-            ball.velocity.limit(MAX_VEL);
-            if (ball.velocity.mag() < MIN_VEL)
-                ball.velocity.setMag(MIN_VEL);
-        }
-        center.div(balls.size());
+    			// mousePressed = proxy for presence grid repelling
+    		    if(mousePressed) {
+    		    	ball.repell(new PVector(mouseX, mouseY, 0));
+    		    	ball.spaceCheck(groups);
+    		    }
 
-        for (Metaball ball : balls){
-            PVector c = PVector.sub(center, ball.position);
-            c.normalize();
-            c.mult(COHESION);
-            ball.velocity.add(c);
-            ball.position.add(ball.velocity);
+    		    center.add(ball.position);
+                ball.velocity.mult(FRICTION);
+                ball.velocity.limit(mainPresence != null ? MAX_RUN_VEL : MAX_VEL);
+                if (ball.velocity.mag() < MIN_VEL)
+                    ball.velocity.setMag(MIN_VEL);
+            }
 
-            ball.checkBounds(RANGE, SQUISHINESS);
-        }
+    		center.div(group.balls.size());
+
+            for (Metaball ball : group.balls){
+                PVector c = PVector.sub(center, ball.position);
+                c.normalize();
+                c.mult(COHESION);
+                ball.velocity.add(c);
+                ball.position.add(ball.velocity);
+            }
+            
+        	group.checkBounds();
+    	}
 
         // erase screen
         this.fill(0);
         this.rect(0, 0, width, height);
 
-        // render balls
-        for (Metaball ball : balls){
-            this.noStroke();
-            this.fill(ball.color.r, ball.color.g, ball.color.b, 255/2);
-            this.ellipse(ball.position.x, ball.position.y, ball.width(), ball.height());
+        
+        // render each group's bounding box
+        for (MetaballGroup group : groups){
+        	this.stroke(255,255,255);
+        	this.noFill();
+        	this.rect(group.range.x, group.range.y, group.range.width, group.range.height);
         }
-        filter(BLUR, 3);
+        
+        // render groups of balls
+    	for (MetaballGroup group : groups){
+	        for (Metaball ball : group.balls){
+	            this.noStroke();
+	            this.fill(group.color.r, group.color.g, group.color.b, 255/2);
+	            this.ellipse(ball.position.x, ball.position.y, ball.width(), ball.height());
+	        }
+    	}
+    	// blur the whole thing
+        //filter(BLUR, 3);
 
+        // mouse cursor
         if (mainPresence != null){
-            stroke(255, 255, 255);
-            line(mainPresence.x - 10, mainPresence.y, mainPresence.x + 10, mainPresence.y);
-            line(mainPresence.x, mainPresence.y - 10, mainPresence.x, mainPresence.y + 10);
+            fill(255, 255, 255);
+            ellipse(mainPresence.x, mainPresence.y, 60, 40);
         }
     }
 
@@ -105,19 +140,46 @@ public class Metaballs2 extends GothamPApplet {
     }
 }
 
+class MetaballGroup {
+	
+	Rectangle range;
+	float squishiness;
+    PVector position;
+    PVector velocity;
+    Color color;
+    List <Metaball>balls;
+
+    public MetaballGroup(Rectangle range, Color color, float squishiness){
+    	this.range = range;
+    	this.color = color;
+    	this.squishiness = squishiness;
+    	balls = new ArrayList<Metaball>();
+    }
+    
+    public void add(Metaball ball){
+    	ball.group = this;
+    	balls.add(ball);
+    }
+    
+    public void checkBounds(){
+    	for (Metaball ball : balls){
+    		ball.checkBounds(range,  squishiness);
+    	}
+    }
+}
+
 class Metaball {
 
     float radius;
-    Color color;
 
     PVector position;
     PVector velocity;
     float xsquish = 0;
     float ysquish = 0;
+    MetaballGroup group;
 
-    public Metaball(float radius, Color color){
+    public Metaball(float radius){
         this.radius = radius;
-        this.color = color;
     }
 
     public void checkBounds(Rectangle range, float squishiness){
@@ -136,7 +198,8 @@ class Metaball {
             setBottom(range.height + range.y);
             velocity.y = -velocity.y;
         }
-        // squish
+        // squish (needs work)
+        /*
         if (left() < range.x + squishiness){
             xsquish -= velocity.x;
         } else if (right() > range.width + range.x - squishiness){
@@ -147,9 +210,36 @@ class Metaball {
         } else if (bottom() > range.height + range.y - squishiness){
             ysquish += velocity.y;
         }
-
+        */
+    }
+    
+    public void repell(PVector point){
+    	
+    	float mDistance = PVector.dist(position, point);
+    	PVector repel = PVector.sub(position, point);
+        repel.normalize();
+        repel.mult(60 / (mDistance * mDistance));
+        velocity.add(repel);
+    	
     }
 
+    public void spaceCheck(List<MetaballGroup> groups){
+    	for (MetaballGroup group : groups) {
+    		if (group != this.group) {
+    	    	for (Metaball ball : group.balls){
+    	    		if (ball.overlaps(this) || ball.group != this.group){
+    	    			this.repell(ball.position);
+    	    		}
+    	    	}
+    		}
+    	}
+    }
+    
+    public boolean overlaps(Metaball ball){
+    	float distance = ball.position.dist(this.position);
+    	return distance < ball.radius || distance < this.radius;
+    }
+    
     public float width(){
         return radius - xsquish;
     }
