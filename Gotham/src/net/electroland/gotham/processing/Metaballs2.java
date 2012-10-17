@@ -10,18 +10,28 @@ import processing.core.PVector;
 @SuppressWarnings("serial")
 public class Metaballs2 extends GothamPApplet {
 
-    public static final float FRICTION        	= .999f; // higher = less
-    public static final float MAX_VEL         	= 0.75f;     // higher = faster
-    public static final float MAX_RUN_VEL     	= 15.0f;     // higher = faster
-    public static final float REPELL_FORCE   	= 100; // higher = more
-    public static final float BALL_REPELL_FORCE	= 1;
-    public static final float MIN_VEL         	= .75f;     // higher = faster
-    public static final float COHESION        	= .05f;  // higher = more
-    public static final float SQUISHINESS     	= 50;    // higher = more
-    public static final float ELLIPSE_SCALE   	= 2.0f;  // percent
-    public static final Rectangle RANGE 		= new Rectangle(80, 70, 621 - 80, 435 - 70);
+	public static final int NONE 				= 0;
+	public static final int MOUSE 				= 1;
+	public static final int TRACK	 			= 2;
 
+    private int mode = MOUSE; // set the reaction mode
+	
+	
+	public static final float FRICTION        	= .999f;  // higher = less
+    public static final float MAX_VEL         	= 0.75f;  // higher = faster
+    public static final float MAX_RUN_VEL     	= 30.0f;  // max velocity when mouse is down or presence is felt.
+    public static final float REPELL_FORCE   	= 750; 	  // repell force of mouse or track (higher = more)
+    public static final float BALL_REPELL_FORCE	= 20;	  // group to group repell force (higher = more)
+    public static final float COHESION        	= .005f;   // higher = more
+    public static final float ELLIPSE_SCALE   	= 2.0f;   // percent
+
+    // don't touch:
+    public static final float SQUISHINESS     	= 50;     // higher = more
+    public static final float MIN_VEL         	= .75f;   // higher = faster
+
+    
     private List <MetaballGroup>groups;
+    
     private Point mainPresence;
 
     @Override
@@ -63,8 +73,7 @@ public class Metaballs2 extends GothamPApplet {
         // probably should be in ball constructors
         for (MetaballGroup group : groups){
         	for (Metaball ball : group.balls){
-                ball.position  = new PVector(random(RANGE.x + SQUISHINESS, RANGE.width + RANGE.x - (2 * SQUISHINESS)),
-                        random(RANGE.y + SQUISHINESS, RANGE.height + RANGE.y - (2 * SQUISHINESS)));
+                ball.position  = new PVector(random(0, this.getSyncArea().width), random (0, this.getSyncArea().height));
                 ball.velocity = new PVector(random(-1,1), random(-1,1));
         	}
         }
@@ -82,7 +91,7 @@ public class Metaballs2 extends GothamPApplet {
     		for (Metaball ball : group.balls){
 
     			// mousePressed = proxy for presence grid repelling
-    		    if(mousePressed) {
+    		    if(mode == MOUSE && mousePressed) {
     		    	ball.repell(new PVector(mouseX, mouseY, 0), REPELL_FORCE);
     		    	ball.spaceCheck(groups);
     		    }
@@ -130,24 +139,11 @@ public class Metaballs2 extends GothamPApplet {
     	// blur the whole thing
         //filter(BLUR, 3);
 
-        // mouse cursor
-        if (mainPresence != null){
+        // presence
+        if (mode == MOUSE && mousePressed){
             fill(255, 255, 255);
-            ellipse(mainPresence.x, mainPresence.y, 60, 40);
+            ellipse(mouseX, mouseY, 60, 40);
         }
-    }
-
-    public void mousePressed() {
-        mainPresence = new Point(mouseX, mouseY);
-    }
-
-    public void mouseDragged(){
-        mainPresence = new Point(mouseX, mouseY);
-    }
-
-    public void mouseReleased(){
-        mainPresence = new Point(mouseX, mouseY);
-        mainPresence = null;
     }
 }
 
