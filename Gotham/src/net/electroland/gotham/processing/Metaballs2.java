@@ -10,8 +10,8 @@ import processing.core.PVector;
 @SuppressWarnings("serial")
 public class Metaballs2 extends GothamPApplet {
 
-    public static final float FRICTION        =  0.9f; // higher = less
-    public static final float MAX_VEL         = 10;    // higher = faster
+    public static final float FRICTION        =  0.999f; // higher = less
+    public static final float MAX_VEL         = 15;    // higher = faster
     public static final float MIN_VEL         = .5f;   // higher = faster
     public static final float COHESION        = .003f; // higher = more
     public static final float P_FRICTION      =  1.1f;
