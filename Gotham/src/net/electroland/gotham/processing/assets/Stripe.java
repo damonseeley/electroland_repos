@@ -35,14 +35,14 @@ public abstract class Stripe {
 	public boolean isNew;
 	//used to determine if we need to follow a diff stripe since direction changed.
 	public boolean boundaryStripe = false;
-	public boolean stopFlexing = false;
+	public boolean leftover = false;
 
 	public MoveBehavior movement;
 
 	public Stripe(PApplet p, Dimension d) {
 		this.p = p;
 		this.d = d;
-		w = 5;
+		w = 10;
 		stripeColor = ColorPalette.getRandomColor();
 	}
 
