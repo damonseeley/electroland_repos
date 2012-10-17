@@ -16,7 +16,6 @@ public class FlexingStripes extends GothamPApplet {
 	static Logger logger = Logger.getLogger(GothamPApplet.class);
 	private Dimension syncArea;
 	private ElectrolandProperties props = GothamConductor.props;
-	public static final int numZones = 3; //Change NUM ZONES here
 
 	public static float spawnScaler; //GUI fields
 	public float blurAmt;
@@ -27,7 +26,6 @@ public class FlexingStripes extends GothamPApplet {
 	private Timer stripeTimer;
 	// private Timer paletteTimer;
 	public static float noiseOffset;
-	private int selector = 0; // Which color swatch from the props file to use.
 	private float pScalerAmt;
 	private boolean switchDirection;
 	private boolean pinMode;
@@ -40,11 +38,19 @@ public class FlexingStripes extends GothamPApplet {
 	public int triggeredZone = -1;
 
 	public StripeGUIManager gui;
-	public ArrayList<Stripe> stripes;
+	public static ArrayList<Stripe> stripes;
 	public HashMap<String, String> affecters;
-
 	private final boolean DEBUG = false;
 	private float wind;
+	public static int[] accentColors;
+	
+	/*	Below:
+	 *  Selector = Which color palette to begin with.
+	 *  numZones = How many zones from 0 to num-1
+	 */
+	private int selector = 0; 
+	public static final int numZones = 3; 
+	
 
 	@Override
 	public void setup() {
@@ -64,30 +70,47 @@ public class FlexingStripes extends GothamPApplet {
 		stripeTimer.start();
 		// paletteTimer.start();
 
-		setController(Controller.HOOK); // Options: MOUSE, HOOK
+		
+		/*
+		 * Demo 1: Stripe Insertion with a desaturated bg and a "hot" colored new stripe
+		 * Flexing, Pinning: False, Random Speeds: -1, Insert: True, All Affecters out except saturation if you want.
+		 * Demo 2: Hue and Saturation Affecters
+		 * Flexing, Inserting, Pinning: False, Random Speeds; -1, Width Affecter commented out
+		 * Demo 3: Width Affecter
+		 * Everything False, Random Speeds -1, Hue/Sat Affecters commented out.
+		 * Demo 4: Autonomous Stripes
+		 * Flexing: True, Random Speeds: 1,  Everything else False, Every affecter commented out.
+		 */
+	
+		setController(Controller.MOUSE); // Options: MOUSE, HOOK
 
-		setFlexing(true);
-		Stripe.setUseRandomSpeeds(1); //Set to 1 to force random speeds if you want flexing.
-		setInsert(false);
+		setFlexing(false);
+		Stripe.setUseRandomSpeeds(-1); //Set to 1 to force random speeds if you want flexing.
+		setInsert(true);
 		setPinning(false);
-		// affecters.put("SATURATION", "$80$50$100"); // radius, min, max
+		//affecters.put("SATURATION", "$80$20$100"); // radius, min, max
 		//affecters.put("WIDTH", "$50$1$2"); // radius, min scaler, max scaler
 		//affecters.put("HUE", "$80"); // radius
-
-		for (int i = 0; i < 17; i++) {
+	
+		/*
+		 * "Hot" colors for hue affecter and stripe insertion.
+		 */
+		accentColors = new int[3];
+		accentColors[0] = color(30,100,100); //in hsv
+		accentColors[1] = color(317, 100,100);
+		accentColors[2] = color(0, 100,100);
+		
+		
+		for (int i = 0; i < 17; i++) {	
 			stripes.add(new StripeFlexer(this, syncArea));
-			((StripeFlexer) stripes.get(i)).forcePosition(syncArea.width
-					- (i * 100));
+			((StripeFlexer) stripes.get(i)).forcePosition(syncArea.width- (i * 100));
 		}
 		wind = (float) (props
 				.getOptionalDouble("wall", "East", "initialScaler") * 1.0f) / 3.5f;
-
 	}
 
 	@Override
 	public void drawELUContent() {
-
-		System.out.println(stripes.size());
 
 		pms.update();
 		float bri = blackOrWhite ? 0 : 100;
@@ -98,8 +121,12 @@ public class FlexingStripes extends GothamPApplet {
 		for (Stripe s : stripes) {
 			s.update();
 
-			if (stripes.indexOf(s) != 0) {
-				s.setWidth(stripes.get(stripes.indexOf(s) - 1));
+			if(s.getBehavior() instanceof MoveRight && !s.boundaryStripe){
+				if (stripes.indexOf(s) != 0) 
+					s.setWidth(stripes.get(stripes.indexOf(s) - 1));
+			} else if(s.getBehavior() instanceof MoveLeft && !s.boundaryStripe){
+				if(stripes.indexOf(s) != stripes.size()-1)
+					s.setWidth(stripes.get(stripes.indexOf(s) + 1));
 			}
 
 			// Check Saturation Affecter
@@ -186,9 +213,9 @@ public class FlexingStripes extends GothamPApplet {
 				s.display();
 
 			// For testing. Prints the list index
-			fill(360);
-			textSize(25);
-			text(stripes.indexOf(s), s.xpos, 50);
+			//fill(360);
+			//textSize(25);
+			//text(stripes.indexOf(s), s.xpos, 50);
 		}
 
 		// This loops handles the shifting/offset of other stripes, based
@@ -251,6 +278,10 @@ public class FlexingStripes extends GothamPApplet {
 					s.setBehavior(new MoveRight(this, syncArea, tx));
 				}
 			}
+			for(Stripe s : stripes)
+				s.stopFlexing = true;
+			stripes.get(0).boundaryStripe = true;
+			stripes.get(stripes.size()-1).boundaryStripe = true;
 		}
 
 		if (DEBUG) {
@@ -261,22 +292,32 @@ public class FlexingStripes extends GothamPApplet {
 			System.out.println();
 		}
 
-		// Timing Controls for each new Stripe
+		/*
+		 *   Timing Controls for each new Stripe
+		 */
 		if (stripeTimer.isFinished()) {
-			Stripe lastOne = stripes.get(stripes.size() - 1);
+			if(Stripe.scalerAmt >= 0){
+				Stripe lastOne = stripes.get(stripes.size() - 1);
+				if (lastOne.getLeftSide() > -MoveBehavior.offset
+						&& lastOne.getBehavior().pauseState() == false) {
+					stripes.add(new StripeFlexer(this, syncArea));
 
-			if (lastOne.getLeftSide() > -MoveBehavior.offset
-					&& lastOne.getBehavior().pauseState() == false) {
-				stripes.add(new StripeFlexer(this, syncArea));
+					if (flexMode)
+						stripeTimer.reset((long) (1000.0 + (Math.random() * spawnScaler)));
+					else
+						stripeTimer.reset((long) spawnScaler);
+				}
+			} else {
+				Stripe lastOne = stripes.get(stripes.size() - 1);
+				if (lastOne.getRightSide() < syncArea.width+MoveBehavior.offset
+						&& lastOne.getBehavior().pauseState() == false) {
+					stripes.add(new StripeFlexer(this, syncArea));
 
-				if (flexMode)
-					stripeTimer
-							.reset((long) (1000.0 + (Math.random() * spawnScaler)));
-				else
-					stripeTimer.reset((long) spawnScaler); // Around 1900s for
-															// 100px wide
-															// stripes
-
+					if (flexMode)
+						stripeTimer.reset((long) (1000.0 + (Math.random() * spawnScaler)));
+					else
+						stripeTimer.reset((long) spawnScaler);
+				}
 			}
 		}
 
