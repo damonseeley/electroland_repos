@@ -1,6 +1,5 @@
 package net.electroland.gotham.processing;
 
-import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,7 @@ public class Metaballs2 extends GothamPApplet {
         background(0);
         balls = new ArrayList<Metaball>();
         balls.add(new Metaball(300, new Color(255,0,0)));
-        balls.add(new Metaball(200, new Color(100,255,0)));
+        balls.add(new Metaball(200, new Color(255, 97, 3)));
         balls.add(new Metaball(200, new Color(255,0,0)));
  
         for (Metaball ball : balls){
@@ -68,12 +67,12 @@ public class Metaballs2 extends GothamPApplet {
             this.fill(ball.color.r, ball.color.g, ball.color.b, 255/2);
             this.ellipse(ball.position.x, ball.position.y, ball.width(), ball.height());
         }
+        filter(BLUR, 3);
     }
 
     public void mousePressed(){
         System.out.println(mouseX + ", " + mouseY);
     }
-
 }
 
 class Metaball {
