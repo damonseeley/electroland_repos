@@ -1,16 +1,13 @@
 package net.electroland.gotham.core;
 
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 import java.util.Vector;
 
 import net.electroland.elvis.blobtracking.BaseTrack;
 import net.electroland.elvis.blobtracking.TrackResults;
-import net.electroland.elvis.net.RegionUDPClient;
 import net.electroland.elvis.net.TrackUDPClient;
-import net.electroland.elvis.regions.BasePolyRegion;
-import net.electroland.elvis.regions.PolyRegionResults;
 import net.electroland.gotham.processing.GothamPApplet;
 
 import org.apache.log4j.Logger;
@@ -34,31 +31,25 @@ public class GothamTrackUDPClient extends TrackUDPClient {
         listeners.remove(listener);
     }
 
-	@Override
-	public void handle(TrackResults<BaseTrack> t) {
-		// TODO Auto-generated method stub
-		
-			//logger.info("CREATED: " + t.created);
-			//logger.info("EXISTING: " + t.existing);
-			
-			for (BaseTrack tr : t.created) {
-				if (!tr.isProvisional) {
-					logger.info(tr);
-					for (GothamPApplet p : listeners){
-			            p.handle(tr);
-			        }
-				}
-			}
-			
-			for (BaseTrack tr : t.existing) {
-				if (!tr.isProvisional) {
-					logger.info(tr);
-					for (GothamPApplet p : listeners){
-			            p.handle(tr);
-			        }
-				}
-			}
-		
-		
-	}
+    @Override
+    public void handle(TrackResults<BaseTrack> t) {
+
+        List<BaseTrack>usableTracks = new ArrayList<BaseTrack>();
+
+        for (BaseTrack tr : t.created) {
+            if (!tr.isProvisional) {
+                usableTracks.add(tr);
+            }
+        }
+
+        for (BaseTrack tr : t.existing) {
+            if (!tr.isProvisional) {
+                usableTracks.add(tr);
+            }
+        }
+
+        for (GothamPApplet p : listeners){
+            p.handle(usableTracks);
+        }
+    }
 }
