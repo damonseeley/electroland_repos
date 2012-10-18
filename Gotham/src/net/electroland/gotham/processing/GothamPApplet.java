@@ -1,5 +1,6 @@
 package net.electroland.gotham.processing;
 
+import java.util.List;
 import java.io.File;
 import java.util.Collection;
 
@@ -24,19 +25,11 @@ abstract public class GothamPApplet extends ELUPApplet {
         logger.debug("Ignoring key events in GothamPApplet.");
     }
 
-    public void handle(GridData d) {
-        //synchronized(room){
-            //room = new Room(d);
-        //}
-    	
-    }
-    
-    public void handle(BaseTrack tr) {
-        //synchronized(room){
-            //room = new Room(d);
-        //}
-    	
-    }
+    // TODO: should probably make this abstract, but a bunch of subclasses have not implemented yet.
+    public void handle(GridData d) {}
+
+    // TODO: should probably make this abstract, but a bunch of subclasses have not implemented yet.
+    public void handle(List<BaseTrack> tr) {}
 
     public Collection<Person> getPersons(){
         return room.getPersons();

@@ -52,11 +52,23 @@ public class GothamConductor extends JFrame {
             }
         }
         
-//        GothamRegionUDPClient regionClient = new GothamRegionUDPClient(3457);
+        GothamRegionUDPClient regionClient = new GothamRegionUDPClient(3457);
         //add listeners!!!
         
-        //gridClient.start();
-        //regionClient.start();
+        
+        GothamTrackUDPClient trackClient = new GothamTrackUDPClient(3456);
+        for (ELUCanvas c : lightingManager.getCanvases().values()){
+            if (((ProcessingCanvas)c).getApplet() instanceof GothamPApplet){
+                GothamPApplet g = (GothamPApplet)((ProcessingCanvas)c).getApplet();
+                trackClient.addListener(g);
+            }
+        }
+ 
+        
+        //Start the clients up
+        trackClient.start();
+        gridClient.start();
+        regionClient.start();
     }
     
     public void initProps() {
