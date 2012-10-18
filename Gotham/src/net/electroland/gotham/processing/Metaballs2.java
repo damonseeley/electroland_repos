@@ -29,8 +29,8 @@ public class Metaballs2 extends GothamPApplet {
     public static final float BALL_REPELL_FORCE    = 20;      // group to group repell force (higher = more)
     public static final float COHESION            = .005f;   // higher = more
     // ball scale
-    public static final float ELLIPSE_SCALE       = 2.0f;   // percent
-    public static final int ELLIPSE_ALPHA       = 150;   // value/255
+    public static final float ELLIPSE_SCALE       = 2.4f;   // percent
+    public static final int ELLIPSE_ALPHA       = 255;   // value/255
 
     // don't touch:
     public static final float SQUISHINESS         = 50;     // higher = more
@@ -132,12 +132,17 @@ public class Metaballs2 extends GothamPApplet {
             group.checkBounds();
         }
 
-        // erase screen
-        fill(color(0, 0, 0),2); //fill with a light alpha white
-		rect(0,0,width,height); //fill the whole area
-        //BRADLEY
+        // erase screen slowly
+        //fill(color(0, 0, 0),2); //fill with a light alpha white
+		//rect(0,0,width,height); //fill the whole area
+        
+		//BRADLEY
         //this.fill(0);
         //this.rect(0, 0, width, height);
+		
+		//full fill
+		fill(color(255, 255, 255),127); //fill with a light alpha white
+		rect(0,0,width,height); //fill the whole area
 
         
         // render each group's bounding box
@@ -197,7 +202,8 @@ public class Metaballs2 extends GothamPApplet {
                     for(int y = gridYStart; y < gridYMax; y++) {
                         for(int x = gridXStart; x < gridXMax; x++) {
                             if (gridData.getValue(x, y) > 0){
-                                fill(color(255, 255, 255));
+                                //fill(color(255, 255, 255));
+                                fill(color(20, 240, 255));
                                 ellipse(this.getSyncArea().width-(insetLeft*2)+hShift-y*cellHeight+insetLeft, this.getSyncArea().height-(insetTop*2)-x*cellWidth+insetTop, (int)(cellHeight*dilate), (int)(cellWidth*dilate)); //rotated
 
                             }
@@ -208,7 +214,7 @@ public class Metaballs2 extends GothamPApplet {
         }
 
         loadPixels();
-        FastBlur.performBlur(pixels, width, height, floor(20));
+        FastBlur.performBlur(pixels, width, height, floor(18));
         updatePixels();
 
     }
