@@ -3,6 +3,7 @@ package net.electroland.gotham.processing;
 import java.io.File;
 import java.util.Collection;
 
+import net.electroland.elvis.blobtracking.BaseTrack;
 import net.electroland.elvis.net.GridData;
 import net.electroland.gotham.core.Person;
 import net.electroland.gotham.core.Room;
@@ -24,6 +25,13 @@ abstract public class GothamPApplet extends ELUPApplet {
     }
 
     public void handle(GridData d) {
+        //synchronized(room){
+            //room = new Room(d);
+        //}
+    	
+    }
+    
+    public void handle(BaseTrack tr) {
         //synchronized(room){
             //room = new Room(d);
         //}
