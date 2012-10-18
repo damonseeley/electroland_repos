@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.electroland.elvis.net.GridData;
 import net.electroland.gotham.processing.assets.FastBlur;
 
 import processing.core.PVector;
@@ -38,6 +39,8 @@ public class Metaballs2 extends GothamPApplet {
     private List <MetaballGroup>groups;
     
     private Point mainPresence;
+    
+	private GridData gd;
 
     @Override
     public void setup(){
@@ -149,7 +152,49 @@ public class Metaballs2 extends GothamPApplet {
             fill(255, 255, 255);
             //ellipse(mouseX, mouseY, 60, 40);
             ellipse(mouseX, mouseY, 140, 100);
+        } else if (mode == TRACK) {
+        	
+        	
+        	
+        	
+        	// RENDER THE GRID CELLS AS VISUAL WHITE THINGS
+        	
+        	int insetLeft = 80;
+    		int insetTop = 70;
+    		double dilate = 6.0;
+    		
+    		fill(color(0, 0, 50),8); //fill with a light alpha white
+    		rect(0,0,this.getSyncArea().width,this.getSyncArea().height); //fill the whole area
+
+    		if (gd != null){
+    			int gridXStart = 2;
+    			int gridXMax = 70;
+    			int gridYStart = 2; // test start inset on top
+    			int gridYMax = 25; //all of the height
+    			
+    			int hShift = -0;
+
+    			int cellWidth = (this.getSyncArea().width-(insetLeft*2))/(gridXMax-gridXStart);
+    			int cellHeight = (this.getSyncArea().height-(insetTop*2))/(gridYMax-gridYStart);
+
+    			for(int y = gridYStart; y < gridYMax; y++) {
+    				for(int x = gridXStart; x < gridXMax; x++) {
+    					if (gd.getValue(x, y) > 0){
+    						fill(color(255, 255, 255));
+    						ellipse(this.getSyncArea().width-(insetLeft*2)+hShift-y*cellHeight+insetLeft, this.getSyncArea().height-(insetTop*2)-x*cellWidth+insetTop, (int)(cellHeight*dilate), (int)(cellWidth*dilate)); //rotated
+
+    					}
+    				}
+    			}
+    		}
+        	
         }
+        
+        
+        
+        
+        
+        
         
         
         loadPixels();
@@ -157,6 +202,13 @@ public class Metaballs2 extends GothamPApplet {
 		updatePixels();
 		
     }
+    
+	@Override
+	public void handle(GridData t) {
+		gd = t;
+	}
+    
+    
 }
 
 class MetaballGroup {
