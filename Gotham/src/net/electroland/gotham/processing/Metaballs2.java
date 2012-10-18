@@ -18,18 +18,18 @@ public class Metaballs2 extends GothamPApplet {
     public static final int MOUSE                 = 1;
     public static final int TRACK                 = 2;
 
-    private int mode = TRACK; // set the reaction mode
+    private int mode = MOUSE; // set the reaction mode
 
     public static final float FRICTION            = .999f;  // higher = less .999
-    public static final float MAX_VEL             = 0.75f;  // base velocity with no interaction or tracks higher = faster
+    public static final float MAX_VEL             = 1.0f;  // base velocity with no interaction or tracks higher = faster was 0.75
     // push vars
     public static final float MAX_RUN_VEL         = 1000.0f;  // max velocity when mouse is down or presence is felt.  //30
     public static final float REPELL_FORCE       = 1000; // repell force of mouse or track (higher = more)
     // ball group props
     public static final float BALL_REPELL_FORCE    = 20;      // group to group repell force (higher = more)
-    public static final float COHESION            = .005f;   // higher = more
+    public static final float COHESION            = .01f;   // higher = more was .005
     // ball scale
-    public static final float ELLIPSE_SCALE       = 2.4f;   // percent
+    public static final float ELLIPSE_SCALE       = 3.5f;   // percent 2.0-2.4
     public static final int ELLIPSE_ALPHA       = 255;   // value/255
 
     // don't touch:
@@ -51,8 +51,11 @@ public class Metaballs2 extends GothamPApplet {
 
         // groups of balls
         groups = new ArrayList<MetaballGroup>();
+        
+        int redOrgRoam = 30; //was 100
+        int purpRoam = 0; //was 0
 
-        MetaballGroup red = new MetaballGroup(new Rectangle(-100, -100, this.getSyncArea().width + 100, this.getSyncArea().height +100), new Color(255, 0, 0), SQUISHINESS);
+        MetaballGroup red = new MetaballGroup(new Rectangle(-redOrgRoam, -redOrgRoam, this.getSyncArea().width + redOrgRoam, this.getSyncArea().height +redOrgRoam), new Color(255, 0, 0), SQUISHINESS);
         groups.add(red);
         red.add(new Metaball(75 * ELLIPSE_SCALE));
         red.add(new Metaball(80 * ELLIPSE_SCALE));
@@ -61,7 +64,7 @@ public class Metaballs2 extends GothamPApplet {
         red.add(new Metaball(80 * ELLIPSE_SCALE));
         red.add(new Metaball(100 * ELLIPSE_SCALE));
 
-        MetaballGroup orange = new MetaballGroup(new Rectangle(-100, -100, this.getSyncArea().width + 100, this.getSyncArea().height +100), new Color(255, 127, 0), SQUISHINESS);
+        MetaballGroup orange = new MetaballGroup(new Rectangle(-redOrgRoam, -redOrgRoam, this.getSyncArea().width + redOrgRoam, this.getSyncArea().height +redOrgRoam), new Color(255, 127, 0), SQUISHINESS);
         groups.add(orange);
         orange.add(new Metaball(75 * ELLIPSE_SCALE));
         orange.add(new Metaball(80 * ELLIPSE_SCALE));
@@ -70,7 +73,7 @@ public class Metaballs2 extends GothamPApplet {
         orange.add(new Metaball(80 * ELLIPSE_SCALE));
         orange.add(new Metaball(100 * ELLIPSE_SCALE));
 
-        MetaballGroup purple = new MetaballGroup(new Rectangle(0, 0, this.getSyncArea().width, this.getSyncArea().height), new Color(128, 0, 255), SQUISHINESS);
+        MetaballGroup purple = new MetaballGroup(new Rectangle(purpRoam, purpRoam, this.getSyncArea().width + purpRoam, this.getSyncArea().height + purpRoam), new Color(128, 0, 255), SQUISHINESS);
         groups.add(purple);
         purple.add(new Metaball(40 * ELLIPSE_SCALE));
         purple.add(new Metaball(50 * ELLIPSE_SCALE));
