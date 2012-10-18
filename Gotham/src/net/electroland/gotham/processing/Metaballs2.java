@@ -163,15 +163,18 @@ public class Metaballs2 extends GothamPApplet {
             fill(255, 255, 255);
             //ellipse(mouseX, mouseY, 60, 40);
             ellipse(mouseX, mouseY, 140, 100);
-        } else if (mode == TRACK && trackData !=null) {
-            synchronized(trackData){
-                for (BaseTrack track : trackData){
-                    fill(255, 255, 255);
-                    int blobSize = 80;
-                    ellipse(track.x, track.y, blobSize, blobSize);
-                }
-            }
-            /**  IF YOU ACTIVATE THIS CODE, make sure to change (mode == TRACK && trackData != null) (above) to gridData != null
+        //} else if (mode == TRACK && trackData !=null) {
+        } else if (mode == TRACK && gridData !=null) {
+
+//            synchronized(trackData){
+//                for (BaseTrack track : trackData){
+//                    fill(255, 255, 255);
+//                    int blobSize = 80;
+//                    ellipse(track.x, track.y, blobSize, blobSize);
+//                }
+//            }
+            
+            /**  IF YOU ACTIVATE THIS CODE, make sure to change (mode == TRACK && trackData != null) (above) to gridData != null */
             int insetLeft = 80;
             int insetTop = 70;
             double dilate = 6.0;
@@ -201,7 +204,7 @@ public class Metaballs2 extends GothamPApplet {
                         }
                     }
                 }
-            }*/
+            }
         }
 
         loadPixels();
