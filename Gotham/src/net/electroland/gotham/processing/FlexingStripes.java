@@ -49,7 +49,7 @@ public class FlexingStripes extends GothamPApplet {
 	 *  numZones = How many zones from 0 to num-1
 	 */
 	private int selector = 0; 
-	public static final int numZones = 3; 
+	public static final int numZones = 5; 
 	
 
 	@Override
@@ -84,12 +84,12 @@ public class FlexingStripes extends GothamPApplet {
 	
 		setController(Controller.MOUSE); // Options: MOUSE, HOOK
 
-		setFlexing(true);
-		Stripe.setUseRandomSpeeds(1); //Set to 1 to force random speeds if you want flexing.
+		setFlexing(false);
+		Stripe.setUseRandomSpeeds(-1); //Set to 1 to force random speeds if you want flexing.
 		setInsert(false);
 		setPinning(false);
-		//affecters.put("SATURATION", "$80$20$100"); // radius, min, max
-		//affecters.put("WIDTH", "$50$1$2"); // radius, min scaler, max scaler
+		affecters.put("SATURATION", "$80$15$100"); // radius, min, max
+		affecters.put("WIDTH", "$50$1$2"); // radius, min scaler, max scaler
 		//affecters.put("HUE", "$80"); // radius
 	
 		/*
