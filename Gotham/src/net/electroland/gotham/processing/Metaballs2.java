@@ -234,12 +234,18 @@ public class Metaballs2 extends GothamPApplet {
                 float cameraHeight = 480;
                 float gridWidth = 80;
                 float gridHeight = 40;
-                float subsetWidth = (cameraWidth / gridWidth) * (70 - 2); // grid insets (left & right)
-                float subsetHeight = (cameraHeight / gridHeight) * (25 - 2);  // grid insets (top & bottom)
+                int gridXMax = 70;
+                int gridXMin = 2;
+                int gridYMax = 25;
+                int gridYMin = 2;
+                int canvasInsetX = 80;
+                int canvasInsetY =70;
+                float subsetWidth = (cameraWidth / gridWidth) * (gridXMax - gridXMin); // grid insets (left & right)
+                float subsetHeight = (cameraHeight / gridHeight) * (gridYMax - gridYMin);  // grid insets (top & bottom)
                 float subsetLeftInset = (cameraWidth / gridWidth) * 2;
                 float subsetTopInset = (cameraWidth / gridHeight) * 2;
-                float finalWidth = this.getSyncArea().width - (2 * 80f); // 80 = canvas x inset
-                float finalHeight = this.getSyncArea().height - (2 * 70f); // 70 = canvas y inset
+                float finalWidth = this.getSyncArea().width - (2 * canvasInsetX); // 80 = canvas x inset
+                float finalHeight = this.getSyncArea().height - (2 * canvasInsetY); // 70 = canvas y inset
                 float finalWidthFactor =  finalWidth / subsetWidth;
                 float finalHeightFactor =  finalHeight / subsetHeight;
 
