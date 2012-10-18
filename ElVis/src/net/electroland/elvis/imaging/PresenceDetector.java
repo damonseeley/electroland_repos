@@ -130,8 +130,8 @@ public class PresenceDetector extends ImageProcessor {
 		}
 		filters = new Filter[ImgReturnType.values().length];
 		raw = new Copy();
-		//		mask = new Mask(props.getProperty("mask", "testMask.png"));
-		mask = new Mask("testMask.png");
+		mask = new Mask(props.getProperty("mask", "testMask.png"));
+		//mask = new Mask("testMask.png");
 		rotate = new Rotate(props);
 		extreema = new CalcExtreema();
 		unwarp = new Unwarp(roiWidth,roiHeight, props);
