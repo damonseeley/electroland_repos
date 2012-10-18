@@ -30,6 +30,7 @@ public class Metaballs2 extends GothamPApplet {
     public static final float COHESION            = .005f;   // higher = more
     // ball scale
     public static final float ELLIPSE_SCALE       = 2.0f;   // percent
+    public static final int ELLIPSE_ALPHA       = 150;   // value/255
 
     // don't touch:
     public static final float SQUISHINESS         = 50;     // higher = more
@@ -54,29 +55,29 @@ public class Metaballs2 extends GothamPApplet {
         MetaballGroup red = new MetaballGroup(new Rectangle(-100, -100, this.getSyncArea().width + 100, this.getSyncArea().height +100), new Color(255, 0, 0), SQUISHINESS);
         groups.add(red);
         red.add(new Metaball(75 * ELLIPSE_SCALE));
-        red.add(new Metaball(100 * ELLIPSE_SCALE));
+        red.add(new Metaball(80 * ELLIPSE_SCALE));
         red.add(new Metaball(100 * ELLIPSE_SCALE));
         red.add(new Metaball(75 * ELLIPSE_SCALE));
-        red.add(new Metaball(100 * ELLIPSE_SCALE));
+        red.add(new Metaball(80 * ELLIPSE_SCALE));
         red.add(new Metaball(100 * ELLIPSE_SCALE));
 
         MetaballGroup orange = new MetaballGroup(new Rectangle(-100, -100, this.getSyncArea().width + 100, this.getSyncArea().height +100), new Color(255, 127, 0), SQUISHINESS);
         groups.add(orange);
         orange.add(new Metaball(75 * ELLIPSE_SCALE));
-        orange.add(new Metaball(100 * ELLIPSE_SCALE));
+        orange.add(new Metaball(80 * ELLIPSE_SCALE));
         orange.add(new Metaball(100 * ELLIPSE_SCALE));
         orange.add(new Metaball(75 * ELLIPSE_SCALE));
-        orange.add(new Metaball(100 * ELLIPSE_SCALE));
+        orange.add(new Metaball(80 * ELLIPSE_SCALE));
         orange.add(new Metaball(100 * ELLIPSE_SCALE));
 
-        MetaballGroup purple = new MetaballGroup(new Rectangle(0, 0, this.getSyncArea().width, this.getSyncArea().height), new Color(128, 0, 128), SQUISHINESS);
+        MetaballGroup purple = new MetaballGroup(new Rectangle(0, 0, this.getSyncArea().width, this.getSyncArea().height), new Color(128, 0, 255), SQUISHINESS);
         groups.add(purple);
-        purple.add(new Metaball(25 * ELLIPSE_SCALE));
+        purple.add(new Metaball(40 * ELLIPSE_SCALE));
         purple.add(new Metaball(50 * ELLIPSE_SCALE));
+        purple.add(new Metaball(70 * ELLIPSE_SCALE));
+        purple.add(new Metaball(40 * ELLIPSE_SCALE));
         purple.add(new Metaball(50 * ELLIPSE_SCALE));
-        purple.add(new Metaball(25 * ELLIPSE_SCALE));
-        purple.add(new Metaball(50 * ELLIPSE_SCALE));
-        purple.add(new Metaball(50 * ELLIPSE_SCALE));
+        purple.add(new Metaball(70 * ELLIPSE_SCALE));
 
         // probably should be in ball constructors
         for (MetaballGroup group : groups){
@@ -132,8 +133,11 @@ public class Metaballs2 extends GothamPApplet {
         }
 
         // erase screen
-        this.fill(0);
-        this.rect(0, 0, width, height);
+        fill(color(0, 0, 0),2); //fill with a light alpha white
+		rect(0,0,width,height); //fill the whole area
+        //BRADLEY
+        //this.fill(0);
+        //this.rect(0, 0, width, height);
 
         
         // render each group's bounding box
@@ -147,7 +151,7 @@ public class Metaballs2 extends GothamPApplet {
         for (MetaballGroup group : groups){
             for (Metaball ball : group.balls){
                 this.noStroke();
-                this.fill(group.color.r, group.color.g, group.color.b, 255/2);
+                this.fill(group.color.r, group.color.g, group.color.b, ELLIPSE_ALPHA);
                 this.ellipse(ball.position.x, ball.position.y, ball.width(), ball.height());
             }
         }
@@ -163,7 +167,8 @@ public class Metaballs2 extends GothamPApplet {
             synchronized(trackData){
                 for (BaseTrack track : trackData){
                     fill(255, 255, 255);
-                    ellipse(track.x, track.y, 40, 40);
+                    int blobSize = 80;
+                    ellipse(track.x, track.y, blobSize, blobSize);
                 }
             }
             /**  IF YOU ACTIVATE THIS CODE, make sure to change (mode == TRACK && trackData != null) (above) to gridData != null
