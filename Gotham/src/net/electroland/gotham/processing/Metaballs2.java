@@ -197,11 +197,11 @@ public class Metaballs2 extends GothamPApplet {
                 }
             }*/
         }
-        /**
+
         loadPixels();
         FastBlur.performBlur(pixels, width, height, floor(20));
         updatePixels();
-        */
+
     }
 
     @Override
