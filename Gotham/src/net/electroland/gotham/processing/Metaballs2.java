@@ -252,12 +252,12 @@ public class Metaballs2 extends GothamPApplet {
                 // scale to size of detector system
                 transformedTrack = scale(incomingTracks, new PVector(finalWidthFactor, finalHeightFactor, 0));
 
-                // inset to detector system top,left
-                transformedTrack = slide(incomingTracks, new PVector(80, 70, 0));
-
                 // mirror
                 transformedTrack = flipHorizontal(incomingTracks, finalWidth);
                 trackData = transformedTrack;
+
+                // inset to detector system top,left
+                transformedTrack = slide(incomingTracks, new PVector(80, 70, 0));
             }
         }
     }
