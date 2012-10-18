@@ -52,7 +52,7 @@ public class Metaballs2 extends GothamPApplet {
         // groups of balls
         groups = new ArrayList<MetaballGroup>();
         
-        int redOrgRoam = 30; //was 100
+        int redOrgRoam = 40; //was 100
         int purpRoam = 0; //was 0
 
         MetaballGroup red = new MetaballGroup(new Rectangle(-redOrgRoam, -redOrgRoam, this.getSyncArea().width + redOrgRoam, this.getSyncArea().height +redOrgRoam), new Color(255, 0, 0), SQUISHINESS);
@@ -168,9 +168,9 @@ public class Metaballs2 extends GothamPApplet {
 
         // presence
         if (mode == MOUSE && mousePressed){
-            fill(255, 255, 255);
+            fill(10, 200, 255);
             //ellipse(mouseX, mouseY, 60, 40);
-            ellipse(mouseX, mouseY, 140, 100);
+            ellipse(mouseX, mouseY, 120, 120);
         //} else if (mode == TRACK && trackData !=null) {
         } else if (mode == TRACK && gridData !=null) {
 
