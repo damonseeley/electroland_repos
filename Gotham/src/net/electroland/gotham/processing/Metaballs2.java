@@ -255,6 +255,8 @@ public class Metaballs2 extends GothamPApplet {
                 // inset to detector system top,left
                 transformedTrack = slide(incomingTracks, new PVector(80, 70, 0));
 
+                // mirror
+                transformedTrack = flipHorizontal(incomingTracks, finalWidth);
                 trackData = transformedTrack;
             }
         }
@@ -303,6 +305,15 @@ public class Metaballs2 extends GothamPApplet {
         }
         return in;
     }
+
+    // slide the coordinates of all tracks
+    public static List<BaseTrack> flipHorizontal(List<BaseTrack> in, float rightEdge){
+        for (BaseTrack track : in){
+            track.x = rightEdge - track.x;
+        }
+        return in;
+    }
+
 }
 
 class MetaballGroup {
