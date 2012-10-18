@@ -47,7 +47,7 @@ public class PolyRegion extends BasePolyRegion implements Serializable {
 
 
 	public PolyRegion() {
-		this(CUR_ID++, "regaion_" + CUR_ID, .5f);
+		this(CUR_ID++, "region_" + CUR_ID, .5f);
 	}
 
 	public PolyRegion(int id, String name, Polygon p, float percentage) {
