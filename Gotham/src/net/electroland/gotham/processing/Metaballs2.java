@@ -102,6 +102,7 @@ public class Metaballs2 extends GothamPApplet {
                 if(mode == MOUSE && mousePressed) {
                     ball.repell(new PVector(mouseX, mouseY, 0), REPELL_FORCE);
                     ball.spaceCheck(groups);
+
                 } else if (mode == TRACK && trackData != null) {
                     synchronized(trackData){
                     	for (BaseTrack track : trackData){
@@ -226,14 +227,14 @@ public class Metaballs2 extends GothamPApplet {
     
                 float cameraWidth = 544;
                 float cameraHeight = 480;
-                float leftInset = 80;
-                float topInset = 40;
-                float subsetWidth = (cameraWidth / leftInset) * (70 - 2);
-                float subsetHeight = (cameraHeight / topInset) * (25 - 2);
-                float subsetLeftInset = (cameraWidth / leftInset) * 2;
-                float subsetTopInset = (cameraWidth / topInset) * 2;
-                float finalWidth = this.getSyncArea().width - (2 * 80f);
-                float finalHeight = this.getSyncArea().height - (2 * 70f);
+                float gridWidth = 80;
+                float gridHeight = 40;
+                float subsetWidth = (cameraWidth / gridWidth) * (70 - 2); // grid insets (left & right)
+                float subsetHeight = (cameraHeight / gridHeight) * (25 - 2);  // grid insets (top & bottom)
+                float subsetLeftInset = (cameraWidth / gridWidth) * 2;
+                float subsetTopInset = (cameraWidth / gridHeight) * 2;
+                float finalWidth = this.getSyncArea().width - (2 * 80f); // 80 = canvas x inset
+                float finalHeight = this.getSyncArea().height - (2 * 70f); // 70 = canvas y inset
                 float finalWidthFactor =  finalWidth / subsetWidth;
                 float finalHeightFactor =  finalHeight / subsetHeight;
 
