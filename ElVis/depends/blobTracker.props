@@ -1,5 +1,5 @@
 #
-#Tue Sep 25 20:05:36 EDT 2012
+#Thu Oct 18 16:06:19 EDT 2012
 BackgroundImageAdaption=0.009
 adaptation=0.008
 backgroundImageAdaption=0.0010
@@ -17,8 +17,8 @@ camera=FlyCam
 dilateIterations=1
 distortionGridHeight=4
 distortionGridWidth=6
+drawRegions=false
 drawTracks=true
-drawRegions=true
 erodeIterations=1
 framesUntilCertainTrack=20
 framesUntilDeleteTrack=40
@@ -28,9 +28,9 @@ gridScaleY=40
 gridThreshold=2
 imageServerPort=3598
 mask=testMask.png
-maxBlobSize=2000
+maxBlobSize=5000
 maxTrackMove=50
-minBlobSize=40
+minBlobSize=70
 nonMatchPenalty=100.0
 provisionalPenalty=50.0
 regionFile=depends/gothamRegionTest.elv
@@ -46,7 +46,7 @@ showConsole=false
 showGraphics=true
 srcHeight=480
 srcWidth=544
-threshold=50.0
+threshold=40.0
 trackerIsOn=true
 unwarpCenterX=320
 unwarpCenterY=240
