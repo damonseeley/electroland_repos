@@ -18,7 +18,7 @@ public class Metaballs2 extends GothamPApplet {
     public static final int MOUSE                 = 1;
     public static final int TRACK                 = 2;
 
-    private int mode = MOUSE; // set the reaction mode
+    private int mode = TRACK; // set the reaction mode
 
     public static final float FRICTION            = .999f;  // higher = less .999
     public static final float MAX_VEL             = 1.0f;  // base velocity with no interaction or tracks higher = faster was 0.75
@@ -29,8 +29,8 @@ public class Metaballs2 extends GothamPApplet {
     public static final float BALL_REPELL_FORCE    = 20;      // group to group repell force (higher = more)
     public static final float COHESION            = .01f;   // higher = more was .005
     // ball scale
-    public static final float ELLIPSE_SCALE       = 3.5f;   // percent 2.0-2.4
-    public static final int ELLIPSE_ALPHA       = 255;   // value/255
+    public static final float ELLIPSE_SCALE       = 5.0f;   // percent 2.0-2.4 then 3.5 for most testting
+    public static final int ELLIPSE_ALPHA       = 200;   // value/255
 
     // don't touch:
     public static final float SQUISHINESS         = 50;     // higher = more
@@ -66,20 +66,20 @@ public class Metaballs2 extends GothamPApplet {
 
         MetaballGroup orange = new MetaballGroup(new Rectangle(-redOrgRoam, -redOrgRoam, this.getSyncArea().width + redOrgRoam, this.getSyncArea().height +redOrgRoam), new Color(255, 127, 0), SQUISHINESS);
         groups.add(orange);
-        orange.add(new Metaball(75 * ELLIPSE_SCALE));
+        orange.add(new Metaball(70 * ELLIPSE_SCALE));
         orange.add(new Metaball(80 * ELLIPSE_SCALE));
-        orange.add(new Metaball(100 * ELLIPSE_SCALE));
-        orange.add(new Metaball(75 * ELLIPSE_SCALE));
+        orange.add(new Metaball(90 * ELLIPSE_SCALE));
+        orange.add(new Metaball(70 * ELLIPSE_SCALE));
         orange.add(new Metaball(80 * ELLIPSE_SCALE));
-        orange.add(new Metaball(100 * ELLIPSE_SCALE));
+        orange.add(new Metaball(90 * ELLIPSE_SCALE));
 
         MetaballGroup purple = new MetaballGroup(new Rectangle(purpRoam, purpRoam, this.getSyncArea().width + purpRoam, this.getSyncArea().height + purpRoam), new Color(128, 0, 255), SQUISHINESS);
         groups.add(purple);
+        purple.add(new Metaball(30 * ELLIPSE_SCALE));
         purple.add(new Metaball(40 * ELLIPSE_SCALE));
         purple.add(new Metaball(50 * ELLIPSE_SCALE));
-        purple.add(new Metaball(70 * ELLIPSE_SCALE));
-        purple.add(new Metaball(40 * ELLIPSE_SCALE));
         purple.add(new Metaball(50 * ELLIPSE_SCALE));
+        purple.add(new Metaball(60 * ELLIPSE_SCALE));
         purple.add(new Metaball(70 * ELLIPSE_SCALE));
 
         // probably should be in ball constructors
@@ -144,7 +144,9 @@ public class Metaballs2 extends GothamPApplet {
         //this.rect(0, 0, width, height);
 		
 		//full fill
-		fill(color(255, 255, 255),127); //fill with a light alpha white
+        fill(color(20, 240, 255),127); //fil with turquiose
+
+		//fill(color(255, 255, 255),127); //fill with a light alpha white
 		rect(0,0,width,height); //fill the whole area
 
         
@@ -192,10 +194,10 @@ public class Metaballs2 extends GothamPApplet {
 
             synchronized(gridData){
                 if (gridData != null){
-                    int gridXStart = 2;
+                    int gridXStart = 2; //was 2 10/18
                     int gridXMax = 70;
-                    int gridYStart = 2; // test start inset on top
-                    int gridYMax = 25; //all of the height
+                    int gridYStart = 4; // test start inset on top was 4 on 10/18
+                    int gridYMax = 25; //all of the height was 25 10/18
                     
                     int hShift = -0;
 
@@ -205,8 +207,8 @@ public class Metaballs2 extends GothamPApplet {
                     for(int y = gridYStart; y < gridYMax; y++) {
                         for(int x = gridXStart; x < gridXMax; x++) {
                             if (gridData.getValue(x, y) > 0){
-                                //fill(color(255, 255, 255));
-                                fill(color(20, 240, 255));
+                                fill(color(255, 255, 255));
+                                //fill(color(20, 240, 255));
                                 ellipse(this.getSyncArea().width-(insetLeft*2)+hShift-y*cellHeight+insetLeft, this.getSyncArea().height-(insetTop*2)-x*cellWidth+insetTop, (int)(cellHeight*dilate), (int)(cellWidth*dilate)); //rotated
 
                             }
