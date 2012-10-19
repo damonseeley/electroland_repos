@@ -244,7 +244,7 @@ public class FlexingStripes extends GothamPApplet {
 				if (!s.isGrowing()) {
 					for (int j = 0; j < stripes.size(); j++) {
 						if (stripes.get(j).isGrowing()) {
-							offset += (s.w / (j - i));
+							offset += (stripes.get(j).w / (j - i));
 						}
 					}
 					s.setWidth((float) (1.0 - (stripes.size() / 50))); // not
@@ -490,6 +490,18 @@ public class FlexingStripes extends GothamPApplet {
 		} else if (theEvent.getController().getName() == "grow") {
 			Stripe.setGrow(theEvent.getController().getValue());
 			logger.info("Growing Stripes? "
+					+ theEvent.getController().getValue());
+		} else if (theEvent.getController().getName() == "saturationMin") {
+			Stripe.setSatMin(theEvent.getController().getValue());
+			logger.info("Resetting Saturation Min: "
+					+ theEvent.getController().getValue());
+		} else if (theEvent.getController().getName() == "saturationMax") {
+			Stripe.setSatMax(theEvent.getController().getValue());
+			logger.info("Resetting Saturation Max: "
+					+ theEvent.getController().getValue());
+		} else if (theEvent.getController().getName() == "widthMax") {
+			Stripe.setWidthMax(theEvent.getController().getValue());
+			logger.info("Resetting Width Affecter Max: "
 					+ theEvent.getController().getValue());
 		}
 
