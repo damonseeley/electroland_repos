@@ -36,6 +36,7 @@ public class FlexingStripes extends GothamPApplet {
 	public Controller controller;
 	ColorPalette cp;
 	public int triggeredZone = -1;
+	public float colorOffset;
 
 	public StripeGUIManager gui;
 	public static ArrayList<Stripe> stripes;
@@ -69,7 +70,12 @@ public class FlexingStripes extends GothamPApplet {
 
 		stripeTimer.start();
 		// paletteTimer.start();
-
+		
+		//Init here. Updated in draw()
+		accentColors = new int[3];
+		accentColors[0] = color(0, 100,100); //in hsv
+		accentColors[1] = color(0, 100,100);
+		accentColors[2] = color(0, 100,100);
 		
 		/*
 		 * Demo 1: Stripe Insertion with a desaturated bg and a "hot" colored new stripe
@@ -88,17 +94,9 @@ public class FlexingStripes extends GothamPApplet {
 		Stripe.setUseRandomSpeeds(-1); //Set to 1 to force random speeds if you want flexing.
 		setInsert(false);
 		setPinning(false);
-		affecters.put("SATURATION", "$80$15$100"); // radius, min, max
-		affecters.put("WIDTH", "$50$1$2"); // radius, min scaler, max scaler
-		//affecters.put("HUE", "$80"); // radius
-	
-		/*
-		 * "Hot" colors for hue affecter and stripe insertion.
-		 */
-		accentColors = new int[3];
-		accentColors[0] = color(30,100,100); //in hsv
-		accentColors[1] = color(317, 100,100);
-		accentColors[2] = color(0, 100,100);
+		//affecters.put("SATURATION", "$80$15$100"); // radius, min, max
+		//affecters.put("WIDTH", "$50$1$2"); // radius, min scaler, max scaler
+		affecters.put("HUE", "$80"); // radius
 		
 		
 		for (int i = 0; i <17; i++) {	
@@ -112,6 +110,14 @@ public class FlexingStripes extends GothamPApplet {
 	@Override
 	public void drawELUContent() {
 
+		/*
+		 * "Hot" colors for hue affecter and stripe insertion.
+		 */
+		accentColors = new int[3];
+		accentColors[0] = color(Math.abs(colorOffset + 0),100,100); //in hsv
+		accentColors[1] = color(Math.abs(colorOffset + 15), 100,100);
+		accentColors[2] = color(Math.abs(colorOffset + 30), 100,100);
+		
 		pms.update();
 		float bri = blackOrWhite ? 0 : 100;
 		background(color(0, 0, bri));
@@ -503,6 +509,8 @@ public class FlexingStripes extends GothamPApplet {
 			Stripe.setWidthMax(theEvent.getController().getValue());
 			logger.info("Resetting Width Affecter Max: "
 					+ theEvent.getController().getValue());
+		} else if (theEvent.getController().getName() == "colOffset") {
+			colorOffset = theEvent.getController().getValue();
 		}
 
 	}
