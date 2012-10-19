@@ -31,6 +31,11 @@ public class StripeGUIManager{
 	private Controller<Knob> howRandom;
 	private Controller<Knob> howOften;
 	
+	private Controller<Knob> satMin;
+	private Controller<Knob> satMax;
+	private Controller<Knob> widthAmt;
+	
+	
 	private ControlGroup<ListBox> swatchList;
 	
 	private ElectrolandProperties props = GothamConductor.props;
@@ -103,6 +108,30 @@ public class StripeGUIManager{
 		rSpeeds = control.addToggle("randomSpeeds").setPosition(80, 40)
 				.setSize(50, 20).setValue(randomOnStart).setMode(ControlP5.DEFAULT)
 				.setCaptionLabel("Randomize Speeds?");
+		
+		satMin  = control.addKnob("saturationMin").setRange(0,50)
+				.setValue(15).setPosition(10, 300).setRadius(30)
+				.setColorForeground(p.color(255))
+				.setColorBackground(p.color(200, 160, 100))
+				.setColorActive(p.color(255, 60, 60))
+				.setDragDirection(Knob.HORIZONTAL)
+				.setCaptionLabel("Saturation MIN");
+		satMax  = control.addKnob("saturationMax").setRange(50,100)
+				.setValue(100).setPosition(90, 300).setRadius(30)
+				.setColorForeground(p.color(255))
+				.setColorBackground(p.color(200, 160, 100))
+				.setColorActive(p.color(255, 60, 60))
+				.setDragDirection(Knob.HORIZONTAL)
+				.setCaptionLabel("Saturation MAX");		
+		
+		widthAmt  = control.addKnob("widthMax").setRange(1,4)
+				.setValue(2).setPosition(170, 300).setRadius(30)
+				.setColorForeground(p.color(255))
+				.setColorBackground(p.color(200, 160, 100))
+				.setColorActive(p.color(255, 60, 60))
+				.setDragDirection(Knob.HORIZONTAL)
+				.setCaptionLabel("Width MAX");	
+			
 
 		// Set controls to window object
 		((Toggle) bgColor).moveTo(window);
@@ -113,6 +142,9 @@ public class StripeGUIManager{
 		((Knob) howOften).moveTo(window);
 		((Toggle) stripesGrow).moveTo(window);
 		swatchList.moveTo(window);
+		((Knob) satMin).moveTo(window);
+		((Knob) satMax).moveTo(window);
+		((Knob) widthAmt).moveTo(window);
 
 	}
 }

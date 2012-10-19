@@ -14,6 +14,9 @@ public abstract class Stripe {
 	public static boolean randomSpeeds = false;
 	public static float rScaler;
 	public static boolean grow;
+	public static float satMin;
+	public static float satMax;
+	public static float widthMax;
 
 	public float xpos;
 	public float targetxpos;
@@ -27,7 +30,6 @@ public abstract class Stripe {
 	public float targetw;
 	public float widthScaler = 1; //used for the width affecter
 	public float wtarget = 1;
-	public float widthShiftFactor;
 	public float targethue;
 	public float xoff;
 	public float dist;
@@ -100,4 +102,14 @@ public abstract class Stripe {
 	public static void setGrow(float g){
 		grow = g > 0 ? true : false;
 	}
+	public static void setSatMin(float n) {
+		satMin = n;
+	}
+	public static void setSatMax(float n) {
+		satMax = n;
+	}
+	public static void setWidthMax(float n) {
+		widthMax = n;
+	}
+	
 }

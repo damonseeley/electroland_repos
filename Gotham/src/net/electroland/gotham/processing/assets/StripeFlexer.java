@@ -139,13 +139,12 @@ public class StripeFlexer extends Stripe {
 		String[] vals = PApplet.splitTokens(value, "$");
 		int radius = Integer.parseInt(vals[0]);
 		float min = Float.parseFloat(vals[1]);
-		float max = Float.parseFloat(vals[2]);
-		widthShiftFactor = max;
+		//float max = Float.parseFloat(vals[2]);
 		dist = Math.abs(zoneCoord - xpos);
 
 		if (zoneCoord > 0) {
 			if (dist <= radius) {
-				wtarget = max;
+				wtarget = widthMax;
 			} else {
 				wtarget = min;
 			}
@@ -158,16 +157,16 @@ public class StripeFlexer extends Stripe {
 	public void performSaturationShift(float zoneCoord, String value) {
 		String[] vals = PApplet.splitTokens(value, "$");
 		int radius = Integer.parseInt(vals[0]);
-		float minsat = Integer.parseInt(vals[1]);
-		float maxsat = Integer.parseInt(vals[2]);
+		//satMin = Integer.parseInt(vals[1]);
+		//satMax = Integer.parseInt(vals[2]);
 		if (zoneCoord > 0) {
 			float d = Math.abs(zoneCoord - (xpos)); // keep this w/2???
 			if (d <= radius) {
-				targetsaturation = maxsat / 100;
+				targetsaturation = satMax / 100;
 			} else
-				targetsaturation = minsat / 100;
+				targetsaturation = satMin / 100;
 		} else
-			targetsaturation = minsat / 100;
+			targetsaturation = satMin / 100;
 		satScaler += (targetsaturation - satScaler) * 0.08;
 	}
 
