@@ -34,6 +34,7 @@ public class StripeGUIManager{
 	private Controller<Knob> satMin;
 	private Controller<Knob> satMax;
 	private Controller<Knob> widthAmt;
+	private Controller<Knob> colorOffset;
 	
 	
 	private ControlGroup<ListBox> swatchList;
@@ -131,6 +132,14 @@ public class StripeGUIManager{
 				.setColorActive(p.color(255, 60, 60))
 				.setDragDirection(Knob.HORIZONTAL)
 				.setCaptionLabel("Width MAX");	
+		
+		colorOffset  = control.addKnob("colOffset").setRange(0,360)
+				.setValue(0).setPosition(260, 300).setRadius(30)
+				.setColorForeground(p.color(255))
+				.setColorBackground(p.color(200, 160, 100))
+				.setColorActive(p.color(255, 60, 60))
+				.setDragDirection(Knob.HORIZONTAL)
+				.setCaptionLabel("Highlight Offset");	
 			
 
 		// Set controls to window object
@@ -145,6 +154,7 @@ public class StripeGUIManager{
 		((Knob) satMin).moveTo(window);
 		((Knob) satMax).moveTo(window);
 		((Knob) widthAmt).moveTo(window);
+		((Knob) colorOffset).moveTo(window);
 
 	}
 }

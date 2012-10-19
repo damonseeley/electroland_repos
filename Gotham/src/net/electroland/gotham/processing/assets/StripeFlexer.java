@@ -15,6 +15,7 @@ public class StripeFlexer extends Stripe {
 	public boolean justFinished;
 	public float satScaler = 1;
 	private int accentColor;
+	int accentSelector;
 
 	public StripeFlexer(PApplet p, Dimension d) {
 		super(p, d);
@@ -27,8 +28,8 @@ public class StripeFlexer extends Stripe {
 		xpos = movement.getBegin();
 		hue = p.hue(stripeColor);
 		brightness = p.brightness(stripeColor);
-		accentColor = FlexingStripes.accentColors[(int) (p
-				.random(FlexingStripes.accentColors.length))];
+		accentSelector = (int) (p.random(FlexingStripes.accentColors.length));
+		accentColor = FlexingStripes.accentColors[accentSelector];
 		if (FlexingStripes.insertMode)
 			saturation = 60;
 		else
@@ -46,8 +47,7 @@ public class StripeFlexer extends Stripe {
 		this(p, d);
 		isNew = true; // This is a stripe that was inserted by a user
 		// stripeColor = findInverseColor(stripeColor);
-		accentColor = FlexingStripes.accentColors[(int) (p
-				.random(FlexingStripes.accentColors.length))];
+		accentColor = FlexingStripes.accentColors[accentSelector];
 		stripeColor = accentColor;
 		hue = p.hue(stripeColor);
 		saturation = p.saturation(stripeColor);
@@ -79,7 +79,8 @@ public class StripeFlexer extends Stripe {
 			} else
 				justFinished = false;
 		}
-
+		//Keep updating the accent color
+		accentColor = FlexingStripes.accentColors[accentSelector];
 		pStillEasing = stillEasing;
 	}
 
@@ -184,8 +185,6 @@ public class StripeFlexer extends Stripe {
 				targetr = ((accentColor >> 16) & 0xFF);
 				targetg = ((accentColor >> 8) & 0xFF);
 				targetb = ((accentColor) & 0xFF);
-				// System.out.println(targetr + ", " + targetg + ", " +
-				// targetb);
 			} else {
 				targetr = oldr;
 				targetg = oldg;
