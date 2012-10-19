@@ -1,5 +1,6 @@
 package net.electroland.gotham.processing;
 
+@SuppressWarnings("serial")
 public class StripesColor extends FlexingStripes {
 
 	public void setup(){

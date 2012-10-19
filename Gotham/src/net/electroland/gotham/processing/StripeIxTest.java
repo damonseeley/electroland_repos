@@ -2,12 +2,13 @@ package net.electroland.gotham.processing;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
+
 import net.electroland.elvis.net.GridData;
-//import net.electroland.gotham.core.GothamConductor;
-import net.electroland.gotham.processing.assets.*;
-//import net.electroland.utils.ElectrolandProperties;
+import net.electroland.gotham.processing.assets.ColorPalette;
+import net.electroland.gotham.processing.assets.StripeSimple;
+import net.electroland.gotham.processing.assets.Timer;
+
 import org.apache.log4j.Logger;
-import controlP5.ControlEvent;
 
 public class StripeIxTest extends GothamPApplet {
 
@@ -15,8 +16,6 @@ public class StripeIxTest extends GothamPApplet {
 	static Logger logger = Logger.getLogger(GothamPApplet.class);
 	private Dimension syncArea;
 	//private int nStripes; // Num Stripes that begin on screen.
-
-	private int selector = 0; // Which color swatch from the props file to use.
 
 	private long interval = 3000;
 	private Timer timer;
