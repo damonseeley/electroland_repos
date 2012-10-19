@@ -94,8 +94,8 @@ public class FlexingStripes extends GothamPApplet {
 		Stripe.setUseRandomSpeeds(-1); //Set to 1 to force random speeds if you want flexing.
 		setInsert(false);
 		setPinning(false);
-		//affecters.put("SATURATION", "$80$15$100"); // radius, min, max
-		//affecters.put("WIDTH", "$50$1$2"); // radius, min scaler, max scaler
+		affecters.put("SATURATION", "$80$15$100"); // radius, min, max
+		affecters.put("WIDTH", "$50$1$2"); // radius, min scaler, max scaler
 		affecters.put("HUE", "$80"); // radius
 		
 		
