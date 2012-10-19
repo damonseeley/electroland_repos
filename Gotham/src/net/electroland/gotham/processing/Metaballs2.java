@@ -27,10 +27,10 @@ public class Metaballs2 extends GothamPApplet {
     public static final float REPELL_FORCE       = 1000; // repell force of mouse or track (higher = more)
     // ball group props
     public static final float BALL_REPELL_FORCE    = 20;      // group to group repell force (higher = more)
-    public static final float COHESION            = .01f;   // higher = more was .005
+    public static final float COHESION            = .005f;   // higher = more was .005 .01 monday
     // ball scale
     public static final float ELLIPSE_SCALE       = 5.0f;   // percent 2.0-2.4 then 3.5 for most testting
-    public static final int ELLIPSE_ALPHA       = 200;   // value/255
+    public static final int ELLIPSE_ALPHA       = 150;   // value/255
 
     // don't touch:
     public static final float SQUISHINESS         = 50;     // higher = more
@@ -73,7 +73,9 @@ public class Metaballs2 extends GothamPApplet {
         orange.add(new Metaball(80 * ELLIPSE_SCALE));
         orange.add(new Metaball(90 * ELLIPSE_SCALE));
 
-        MetaballGroup purple = new MetaballGroup(new Rectangle(purpRoam, purpRoam, this.getSyncArea().width + purpRoam, this.getSyncArea().height + purpRoam), new Color(128, 0, 255), SQUISHINESS);
+      //fill(color(20, 240, 255));
+        MetaballGroup purple = new MetaballGroup(new Rectangle(purpRoam, purpRoam, this.getSyncArea().width + purpRoam, this.getSyncArea().height + purpRoam), new Color(20, 240, 255), SQUISHINESS);
+        //MetaballGroup purple = new MetaballGroup(new Rectangle(purpRoam, purpRoam, this.getSyncArea().width + purpRoam, this.getSyncArea().height + purpRoam), new Color(128, 0, 255), SQUISHINESS);
         groups.add(purple);
         purple.add(new Metaball(30 * ELLIPSE_SCALE));
         purple.add(new Metaball(40 * ELLIPSE_SCALE));
@@ -144,7 +146,9 @@ public class Metaballs2 extends GothamPApplet {
         //this.rect(0, 0, width, height);
 		
 		//full fill
-        fill(color(20, 240, 255),127); //fil with turquiose
+        //fill(color(20, 240, 255),127); //fil with turquiose
+        fill(color(128, 0, 255),127); //fil with purple
+        
 
 		//fill(color(255, 255, 255),127); //fill with a light alpha white
 		rect(0,0,width,height); //fill the whole area
