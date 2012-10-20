@@ -66,9 +66,9 @@ public class GothamConductor extends JFrame {
  
         
         //Start the clients up
-        trackClient.start();
+        //trackClient.start();
         gridClient.start();
-        regionClient.start();
+        //regionClient.start();
     }
     
     public void initProps() {
