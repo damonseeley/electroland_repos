@@ -231,6 +231,10 @@ public class AxisCamera extends Thread implements ImageAcquirer {
 		readStream();
 	}
 
+	public void stopRunningForce() {
+		stopRunning();
+		
+	}
 
 
 

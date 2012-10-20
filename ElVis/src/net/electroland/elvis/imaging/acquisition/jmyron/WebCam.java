@@ -59,4 +59,10 @@ public class WebCam implements ImageAcquirer {
 		}
 	}
 
+	@Override
+	public void stopRunningForce() {
+		stopRunning();
+		
+	}
+
 }

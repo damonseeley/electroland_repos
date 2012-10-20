@@ -2,6 +2,8 @@ package net.electroland.elvis.imaging.acquisition.openCV;
 
 import net.electroland.elvis.imaging.acquisition.ImageAcquirer;
 import net.electroland.elvis.imaging.acquisition.ImageReceiver;
+import net.electroland.elvis.util.TimeOutMonitorThread;
+import net.electroland.elvis.util.TimeOutMonitorThread.TimeOutListener;
 
 import com.googlecode.javacv.FrameGrabber;
 import com.googlecode.javacv.FrameGrabber.Exception;
@@ -21,9 +23,12 @@ public class OpenCVCam extends Thread implements ImageAcquirer {
 	ImageReceiver imageReceiver;
 	boolean isRunning;
 
+	TimeOutMonitorThread timeOutMonitorThread;
+
 
 	public OpenCVCam (ImageReceiver imageReceiver, int w, int h, int dev) throws Exception {
 		this(imageReceiver, w, h, new OpenCVFrameGrabber(dev));
+//		timeOutMonitorThread = new  TimeOutMonitorThread(2000,"Camera");
 		frameGrabber.setImageMode(ImageMode.GRAY);
 		setFPS(15);// seems like thinks don't work well if you grab w/o limits
 	}
@@ -47,6 +52,13 @@ public class OpenCVCam extends Thread implements ImageAcquirer {
 	}
 
 
+	public void setTimeOutMonitorThread(TimeOutMonitorThread tomt) {
+		if(timeOutMonitorThread != null) {
+			timeOutMonitorThread.stopRunning();
+		}
+		timeOutMonitorThread = tomt;
+	}
+
 
 
 	@Override
@@ -54,6 +66,20 @@ public class OpenCVCam extends Thread implements ImageAcquirer {
 		isRunning = false;
 		synchronized(this) {
 			this.notify(); // stop waiting
+		}
+	}
+	
+	/**
+	 * forced stop running in case camera is blocking 
+	 * will try to shutdown camera (not sure if it makes a difference
+	 */
+	public void stopRunningForce() {
+		stopRunning();
+		try {
+			frameGrabber.stop();
+			frameGrabber.release();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -80,6 +106,7 @@ public class OpenCVCam extends Thread implements ImageAcquirer {
 		if(isRunning) {
 			try {
 				IplImage img = frameGrabber.grab();
+				if(timeOutMonitorThread != null) timeOutMonitorThread.updateTimeOut();
 				if((img.width() != width) || (img.height() != height)) {
 					System.out.println("WARNING: FrameGrabber settings do not match requested image size:");
 					System.out.println("WARNING:         reqeusted image size: " + width + "x" + height);
@@ -94,14 +121,14 @@ public class OpenCVCam extends Thread implements ImageAcquirer {
 
 		//Seems to need a small delay before grabbing
 		if(delay > 0) {
-		synchronized(this) {
-			try {
-				this.wait(delay);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			synchronized(this) {
+				try {
+					this.wait(delay);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
-		}
 		}
 
 
@@ -123,6 +150,7 @@ public class OpenCVCam extends Thread implements ImageAcquirer {
 
 			try {
 				imageReceiver.addImage(frameGrabber.grab());
+				if(timeOutMonitorThread != null) timeOutMonitorThread.updateTimeOut();
 			} catch(Exception e) {
 				/*	
 					} catch (InterruptedException e) {
@@ -141,4 +169,5 @@ public class OpenCVCam extends Thread implements ImageAcquirer {
 			e.printStackTrace();
 		}
 	}
+
 }
