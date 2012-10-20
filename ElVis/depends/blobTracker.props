@@ -15,6 +15,7 @@ broadcastTracksAddress=localhost
 broadcastTracksPort=3456
 camera=FlyCam
 cameraTimeOutDuration =5000
+cameraTimeOutWait=3000
 cameraTimeOutRestart=true
 dilateIterations=1
 distortionGridHeight=4
