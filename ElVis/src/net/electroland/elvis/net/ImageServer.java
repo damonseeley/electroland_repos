@@ -16,6 +16,8 @@ import java.util.TimerTask;
 
 import net.electroland.elvis.imaging.PresenceDetector;
 
+import org.apache.log4j.Logger;
+
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 
 
@@ -43,7 +45,7 @@ public class ImageServer extends Thread {
 
 
 	public void interpretCommand(String s) {
-		System.out.println("interpreting " + s);
+//		System.out.println("interpreting " + s);
 		try {
 			String[] command = s.split(",");
 			if(s.equals("stop")) {
@@ -53,7 +55,8 @@ public class ImageServer extends Thread {
 				try {
 					socket.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					Logger logger = Logger.getLogger("com.electroland.ElVis");
+					logger.error("IOExceptionin ImageServer\n" + e.toString());
 				}
 			} else if(command.length == 4) {
 				if(timer != null) timer.cancel();
@@ -67,8 +70,8 @@ public class ImageServer extends Thread {
 				timer.scheduleAtFixedRate(new ImageSender(), period, period);	
 			} 
 		} catch (RuntimeException e) {
-			System.out.println("Exception while parsing " + s);
-			e.printStackTrace();
+			Logger logger = Logger.getLogger("com.electroland.ElVis");
+			logger.error("RuntimeException while parsing " + s);
 
 		}
 	}
@@ -85,8 +88,8 @@ public class ImageServer extends Thread {
 					interpretCommand(inputLine);
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Logger logger = Logger.getLogger("com.electroland.ElVis");
+				logger.error("IOExceptionin ImageServer\n" + e.toString());
 			}
 		}
 
@@ -103,9 +106,7 @@ public class ImageServer extends Thread {
 				int[] pixels = new int[width*height];
 				pixels = raster.getPixels(0, 0, width, height, pixels);
 				for(int i = 0; i < pixels.length; i++) {
-//					System.out.println("sending " + pixels[i]);
 					try {
-//						System.out.println("sending"+ pixels[i]);
 						outputStream.write(pixels[i]);
 					} catch (IOException e) {
 						timer.cancel();

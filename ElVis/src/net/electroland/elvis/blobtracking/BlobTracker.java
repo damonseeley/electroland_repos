@@ -67,9 +67,16 @@ public class BlobTracker {
 		if(srcStream == null) {
 			throw new IOException("Unknown or invalid source");
 		}
+		
+		
+		
 		srcStream.start();
 		presenceDetector.resetBackground(frameSkip);
 		
+	}
+	
+	public ImageAcquirer getSourceStream() {
+		return srcStream;
 	}
 	
 	public Vector<Track> getTracks() {
