@@ -17,11 +17,13 @@ public class PlayGrids extends UDPBroadcaster{
     public PlayGrids(int port) throws SocketException,
             UnknownHostException {
         super("localhost", port);
+        this.start();
     }
 
     public PlayGrids(String address, int port) throws SocketException,
             UnknownHostException {
         super(address, port);
+        this.start();
     }
 
     /**
@@ -52,7 +54,6 @@ public class PlayGrids extends UDPBroadcaster{
                     long last = samples.get(0).time; // slight bug: first sample has zero sleep.
                     for (GridDataPoint sample : samples){
                         pg.send(sample.data);
-                        System.out.println(sample.data + " " + (sample.time - last));
                         Thread.sleep(sample.time - last);
                         last = sample.time;
                     }
