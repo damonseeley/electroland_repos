@@ -1,6 +1,5 @@
 package net.electroland.elvis.blobktracking.core;
 
-import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.SocketException;
@@ -11,33 +10,37 @@ import net.electroland.elvis.blobktracking.ui.Console;
 import net.electroland.elvis.blobktracking.ui.PresenceDetectorKeyListener;
 import net.electroland.elvis.blobtracking.BlobTracker;
 import net.electroland.elvis.blobtracking.TrackListener;
-import net.electroland.elvis.imaging.PresenceDetector.ImgReturnType;
-import net.electroland.elvis.net.ImageClient;
 import net.electroland.elvis.net.ImageServer;
 import net.electroland.elvis.net.TrackUDPBroadcaster;
 import net.electroland.elvis.util.CameraFactory;
 import net.electroland.elvis.util.ElProps;
+import net.electroland.elvis.util.TimeOutMonitorThread;
+import net.electroland.elvis.util.TimeOutMonitorThread.TimeOutListener;
 
-public class ElVisServer {
+import org.apache.log4j.Logger;
 
+public class ElVisServer implements TimeOutListener {
+	public static Logger logger = Logger.getLogger("com.electroland.ElVis");
 	BlobTracker blobTracker;
 	ElProps props;
 	TrackUDPBroadcaster trackBrodcaster;
 	ImageServer imageServer;
 
-	public ElVisServer(ElProps props) throws SocketException, UnknownHostException { 
-		
+	public ElVisServer(ElProps props) throws SocketException, UnknownHostException { 		
+		logger.info("ElVis starting up with property file " + props.fileName);
 		this.props = props;
 
 		Console console = null;
 		if(props.getProperty("showConsole", false)) {
 			console  = new Console("");
 			console.setVisible(true);
+		} else {
+			logger.info("not showing console, showConsole is false");
 		}
-		
+
 
 		blobTracker = new BlobTracker(props);
-/*		
+		/*		
 		if(props.getProperty("broadcastTracks", false)) {
 			String address = props.getProperty("broadcastTracksAddress", "localhost");
 			int port = props.getProperty("broadcastTracksPort", 3789);
@@ -51,8 +54,8 @@ public class ElVisServer {
 				e.printStackTrace();
 			}
 		}
-*/
-		
+		 */
+
 		if(props.getProperty("showGraphics", true)) {
 			BlobFrame bf = new BlobFrame(props, "el blob", blobTracker);
 			bf.setPolyRegions(blobTracker.presenceDetector.getRegions());
@@ -65,6 +68,8 @@ public class ElVisServer {
 			});
 
 
+		} else {
+			logger.info("not showing GUI, showGraphics is false");
 		}
 		if(console != null) {
 			console.addKeyListener(new PresenceDetectorKeyListener(props,blobTracker.presenceDetector));
@@ -75,29 +80,43 @@ public class ElVisServer {
 		try {
 
 			//			blobTracker.setSourceStream(props.getProperty("camera", ImagePanel.FLY_SRC));
-			blobTracker.setSourceStream(props.getProperty("camera", CameraFactory.FLY_SRC));
+			String cameraSrcString = props.getProperty("camera", CameraFactory.FLY_SRC);
+			blobTracker.setSourceStream(cameraSrcString);
+			if(cameraSrcString.equals(CameraFactory.FLY_SRC)) {
+				long cameraTimeOutDuration = props.getProperty("cameraTimeOutDuration", 2000);
+				if(cameraTimeOutDuration > 0) {
+					logger.info("camera timeout duration " + cameraTimeOutDuration);
+					TimeOutMonitorThread tom = new TimeOutMonitorThread(cameraTimeOutDuration);
+					tom.addTimeOutListener(this);
+					tom.start();
+				} else {
+					logger.info("not monitoring camera time outs, cameraTimeOutDuration <= 0");
+				}
+			}
+
+
 		} catch (IOException e) {
+			logger.error(e.toString());
 			e.printStackTrace();
 		}
 
 
 		blobTracker.presenceDetector.start();
-		
+
 		if(props.getProperty("runImageServer", true)) {
 			try {
 				imageServer= new ImageServer(blobTracker.presenceDetector, props.getProperty("imageServerPort", 3598));
 				imageServer.start();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				logger.error(e.toString());
 				e.printStackTrace();
 			}
 		}
-		
-		//temp
-		
+
+
 	}
-	
-	
+
+
 
 
 
@@ -128,5 +147,44 @@ public class ElVisServer {
 		new ElVisServer(
 				props
 				);
+	}
+
+
+
+
+
+
+
+
+
+
+
+	@Override
+	public void monitorTimedOut(TimeOutMonitorThread sender) {
+		logger.error("Camera timed out");
+		if(props.getProperty("cameraTimeOutRestart", false)) {
+			logger.warn("attempting to restart camera");
+			sender.stopRunning();
+			blobTracker.getSourceStream().stopRunningForce();
+			String cameraSrcString = props.getProperty("camera", CameraFactory.FLY_SRC);
+			long cameraTimeOutDuration = props.getProperty("cameraTimeOutDuration", 2000);
+			if(cameraTimeOutDuration > 0) {
+				logger.info("camera timeout duration " + cameraTimeOutDuration);
+				TimeOutMonitorThread tom = new TimeOutMonitorThread(cameraTimeOutDuration);
+				tom.addTimeOutListener(this);
+				tom.start();
+			}
+
+			try {
+				blobTracker.setSourceStream(cameraSrcString);
+				logger.warn("camera re-started");
+			} catch (IOException e) {
+				logger.error("untable to restart camera");
+				logger.error(e.toString());
+			}
+		} else {
+			logger.warn("camera restart not requested");			
+		}
+
 	}
 }
