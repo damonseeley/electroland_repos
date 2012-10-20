@@ -1,13 +1,13 @@
 #
-#Thu Oct 18 16:06:19 EDT 2012
+#Thu Oct 18 19:38:46 EDT 2012
 BackgroundImageAdaption=0.009
 adaptation=0.008
 backgroundImageAdaption=0.0010
-blurRadius=3
+blurRadius=5
 broadcastGrid=true
 broadcastGridAddress=localhost
 broadcastGridPort=3458
-broadcastRegions=true
+broadcastRegions=false
 broadcastRegionsAddress=localhost
 broadcastRegionsPort=3457
 broadcastTracks=true
@@ -46,7 +46,7 @@ showConsole=false
 showGraphics=true
 srcHeight=480
 srcWidth=544
-threshold=40.0
+threshold=34.0
 trackerIsOn=true
 unwarpCenterX=320
 unwarpCenterY=240
