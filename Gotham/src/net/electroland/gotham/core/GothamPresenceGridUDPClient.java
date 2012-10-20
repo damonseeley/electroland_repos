@@ -22,13 +22,20 @@ public class GothamPresenceGridUDPClient extends PresenceGridUDPClient {
 
     @Override
     public void handle(GridData t) {
-    	//logger.info("GridData: " + t);
+    	//logger.info("GridData: " + containsPresence(t));
         for (GothamPApplet p : listeners){
             p.handle(t);
         }
 
     }
 
+    public boolean containsPresence(GridData t){
+    	for (int i = 0 ; i < t.data.length; i++){
+    		if (t.data[i] != (byte)0) return true;
+    	}
+    	return false;
+    }
+    
     public void addListener(GothamPApplet listener){
         listeners.add(listener);
     }
