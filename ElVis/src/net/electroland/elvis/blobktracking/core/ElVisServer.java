@@ -168,9 +168,21 @@ public class ElVisServer implements TimeOutListener {
 		logger.error("Camera timed out");
 		if(props.getProperty("cameraTimeOutRestart", false)) {
 			// replace everything in this if statement with exit(0)
+			logger.warn("attempting to restart camera - stopping current threads");
 			sender.stopRunning();
-			logger.warn("attempting to restart camera");
 			blobTracker.getSourceStream().stopRunningForce();
+			long delay = props.getProperty("cameraTimeOutWait", 5000);
+			logger.info("waiting " +delay + " to restart camera");
+			synchronized(this) {
+				try {
+					wait(delay);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+			logger.info("attempting to restart camera");
 			setupCamera();
 		} else {
 			logger.warn("camera restart not requested");			
