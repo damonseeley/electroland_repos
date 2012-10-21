@@ -208,7 +208,6 @@ public class Metaballs3 extends GothamPApplet {
 
                     float cellWidth = gridOnCanvas.width / (float)gridData.width;
                     float cellHeight = gridOnCanvas.height / (float)gridData.height;
-                    System.out.println(gridOnCanvas);
 
                     if (presenceMode != GRID_DEFAULT){
                         stroke(255);
