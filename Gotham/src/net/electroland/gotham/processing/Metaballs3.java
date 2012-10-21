@@ -12,6 +12,7 @@ import net.electroland.elvis.net.GridData;
 import net.electroland.gotham.processing.assets.Color;
 import net.electroland.gotham.processing.assets.FastBlur;
 import net.electroland.gotham.processing.assets.MetaballsGUI;
+import net.electroland.utils.ElectrolandProperties;
 import processing.core.PVector;
 
 @SuppressWarnings("serial")
@@ -27,17 +28,14 @@ public class Metaballs3 extends GothamPApplet {
     public static final int GRID_EDIT_CANVAS_DIM    = 4;
 
     private int mode = GRID; // set the reaction mode
-    private int presenceMode = GRID_DEFAULT;
-
+    private int presenceMode;
+    
     public static final float FRICTION            = .999f;  // higher = less .999
     public static final float MAX_VEL             = 1.0f;  // base velocity with no interaction or tracks higher = faster was 0.75
     // push vars
     public static final float MAX_RUN_VEL         = 1000.0f;  // max velocity when mouse is down or presence is felt.  //30
-    //public static final float REPELL_FORCE        = 1000; // repell force of mouse or track (higher = more)
-    //public static final int   RUN_TOLERANCE       = 30;
     // ball group props
     public static final float BALL_REPELL_FORCE   = 20;      // group to group repell force (higher = more)
-    //public static final float COHESION            = .005f;   // higher = more was .005 .01 monday
     // ball scale
     public static final float ELLIPSE_SCALE       = 5.0f;   // percent 2.0-2.4 then 3.5 for most testting
     public static final int ELLIPSE_ALPHA         = 150;   // value/255
@@ -51,15 +49,27 @@ public class Metaballs3 extends GothamPApplet {
 
     private GridData gridData;
     // specifies the section of the incoming grid that we want to subset
-    private Rectangle grid = new Rectangle(2, 4, 68, 21);
+    private Rectangle grid;
     // specifies how the grid will be translated and scaled to the canvas
-    private Rectangle gridOnCanvas = new Rectangle(80, 70, 0, 0);
+    private Rectangle gridOnCanvas;
 
     MetaballsGUI gui;
 
 
     @Override
     public void setup(){
+
+        ElectrolandProperties ep = new ElectrolandProperties("Gotham-global.properties");
+        grid = new Rectangle(ep.getRequiredInt("lava", "grid", "xinset"),
+                ep.getRequiredInt("lava", "grid", "yinset"),
+                ep.getRequiredInt("lava", "grid", "width"),
+                ep.getRequiredInt("lava", "grid", "height"));
+        gridOnCanvas = new Rectangle(ep.getRequiredInt("lava", "gridOnCanvas", "xinset"),
+                ep.getRequiredInt("lava", "gridOnCanvas", "yinset"),
+                ep.getRequiredInt("lava", "gridOnCanvas", "width"),
+                ep.getRequiredInt("lava", "gridOnCanvas", "height"));
+
+        presenceMode = ep.getRequiredBoolean("lava", "gridOnCanvas", "debug") ? 1 : 0;
 
         gui = new MetaballsGUI(this);
 
@@ -196,11 +206,9 @@ public class Metaballs3 extends GothamPApplet {
 
                 synchronized(gridData){
 
-                    gridOnCanvas = new Rectangle(80, 70, 
-                            this.getSyncArea().width - 160, 
-                            this.getSyncArea().height - 140);
                     float cellWidth = gridOnCanvas.width / (float)gridData.width;
                     float cellHeight = gridOnCanvas.height / (float)gridData.height;
+                    System.out.println(gridOnCanvas);
 
                     if (presenceMode != GRID_DEFAULT){
                         stroke(255);
@@ -231,16 +239,15 @@ public class Metaballs3 extends GothamPApplet {
                             }
                         }
                     }
-
-                    // render the presences
                 }
             }
         }
 
-        loadPixels();
-        FastBlur.performBlur(pixels, width, height, floor(18));
-        updatePixels();
-
+        if (presenceMode == 0){
+            loadPixels();
+            FastBlur.performBlur(pixels, width, height, floor(18));
+            updatePixels();
+        }
     }
 
     public List<Point> getObjects(GridData grid){
