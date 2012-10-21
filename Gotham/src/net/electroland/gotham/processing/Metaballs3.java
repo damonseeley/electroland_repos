@@ -2,13 +2,16 @@ package net.electroland.gotham.processing;
 
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.electroland.elvis.blobtracking.BaseTrack;
+import controlP5.ControlEvent;
+import controlP5.ControlListener;
+
 import net.electroland.elvis.net.GridData;
+import net.electroland.gotham.processing.assets.Color;
 import net.electroland.gotham.processing.assets.FastBlur;
+import net.electroland.gotham.processing.assets.MetaballsGUI;
 import processing.core.PVector;
 
 @SuppressWarnings("serial")
@@ -16,57 +19,60 @@ public class Metaballs3 extends GothamPApplet {
 
     public static final int NONE                    = 0;
     public static final int MOUSE                   = 1;
-    public static final int TRACK                   = 2;
+    public static final int GRID                    = 2;
     public static final int GRID_DEFAULT            = 0;
     public static final int GRID_EDIT_TOPLEFT       = 1;
     public static final int GRID_EDIT_DIM           = 2;
     public static final int GRID_EDIT_INSET         = 3;
     public static final int GRID_EDIT_CANVAS_DIM    = 4;
-    
-    private int mode = TRACK; // set the reaction mode
+
+    private int mode = GRID; // set the reaction mode
     private int presenceMode = GRID_DEFAULT;
 
     public static final float FRICTION            = .999f;  // higher = less .999
     public static final float MAX_VEL             = 1.0f;  // base velocity with no interaction or tracks higher = faster was 0.75
     // push vars
     public static final float MAX_RUN_VEL         = 1000.0f;  // max velocity when mouse is down or presence is felt.  //30
-    public static final float REPELL_FORCE       = 1000; // repell force of mouse or track (higher = more)
+    //public static final float REPELL_FORCE        = 1000; // repell force of mouse or track (higher = more)
+    //public static final int   RUN_TOLERANCE       = 30;
     // ball group props
-    public static final float BALL_REPELL_FORCE    = 20;      // group to group repell force (higher = more)
-    public static final float COHESION            = .005f;   // higher = more was .005 .01 monday
+    public static final float BALL_REPELL_FORCE   = 20;      // group to group repell force (higher = more)
+    //public static final float COHESION            = .005f;   // higher = more was .005 .01 monday
     // ball scale
     public static final float ELLIPSE_SCALE       = 5.0f;   // percent 2.0-2.4 then 3.5 for most testting
-    public static final int ELLIPSE_ALPHA       = 150;   // value/255
+    public static final int ELLIPSE_ALPHA         = 150;   // value/255
     // presence scale
-    public static final float DILATE            = 6.0f;
-    
+    public static final float DILATE              = 6.0f;
+
     // don't touch:
-    public static final float SQUISHINESS         = 50;     // higher = more
     public static final float MIN_VEL             = .75f;   // higher = faster
 
     private List <MetaballGroup>groups;
 
     private GridData gridData;
     // specifies the section of the incoming grid that we want to subset
-    Rectangle grid = new Rectangle(2, 4, 68, 21);
+    private Rectangle grid = new Rectangle(2, 4, 68, 21);
     // specifies how the grid will be translated and scaled to the canvas
-    Rectangle gridOnCanvas = new Rectangle(80, 70, 0, 0);
+    private Rectangle gridOnCanvas = new Rectangle(80, 70, 0, 0);
 
-    private List<BaseTrack>trackData;
+    MetaballsGUI gui;
+
 
     @Override
     public void setup(){
 
-        // set background color
-        background(0);
+        gui = new MetaballsGUI(this);
 
         // groups of balls
         groups = new ArrayList<MetaballGroup>();
-        
+
         int redOrgRoam = 40; //was 100
         int purpRoam = 0; //was 0
 
-        MetaballGroup red = new MetaballGroup(new Rectangle(-redOrgRoam, -redOrgRoam, this.getSyncArea().width + redOrgRoam, this.getSyncArea().height +redOrgRoam), new Color(255, 0, 0), SQUISHINESS);
+        MetaballGroup red = new MetaballGroup(new Rectangle(-redOrgRoam, -redOrgRoam, this.getSyncArea().width + redOrgRoam, this.getSyncArea().height +redOrgRoam), gui.getColor1());
+        gui.r1.addListener(red);
+        gui.g1.addListener(red);
+        gui.b1.addListener(red);
         groups.add(red);
         red.add(new Metaball(75 * ELLIPSE_SCALE));
         red.add(new Metaball(80 * ELLIPSE_SCALE));
@@ -75,7 +81,10 @@ public class Metaballs3 extends GothamPApplet {
         red.add(new Metaball(80 * ELLIPSE_SCALE));
         red.add(new Metaball(100 * ELLIPSE_SCALE));
 
-        MetaballGroup orange = new MetaballGroup(new Rectangle(-redOrgRoam, -redOrgRoam, this.getSyncArea().width + redOrgRoam, this.getSyncArea().height +redOrgRoam), new Color(255, 127, 0), SQUISHINESS);
+        MetaballGroup orange = new MetaballGroup(new Rectangle(-redOrgRoam, -redOrgRoam, this.getSyncArea().width + redOrgRoam, this.getSyncArea().height +redOrgRoam), gui.getColor2());
+        gui.r2.addListener(orange);
+        gui.g2.addListener(orange);
+        gui.b2.addListener(orange);
         groups.add(orange);
         orange.add(new Metaball(70 * ELLIPSE_SCALE));
         orange.add(new Metaball(80 * ELLIPSE_SCALE));
@@ -84,7 +93,10 @@ public class Metaballs3 extends GothamPApplet {
         orange.add(new Metaball(80 * ELLIPSE_SCALE));
         orange.add(new Metaball(90 * ELLIPSE_SCALE));
 
-        MetaballGroup purple = new MetaballGroup(new Rectangle(purpRoam, purpRoam, this.getSyncArea().width + purpRoam, this.getSyncArea().height + purpRoam), new Color(20, 240, 255), SQUISHINESS);
+        MetaballGroup purple = new MetaballGroup(new Rectangle(purpRoam, purpRoam, this.getSyncArea().width + purpRoam, this.getSyncArea().height + purpRoam), gui.getColor3());
+        gui.r3.addListener(purple);
+        gui.g3.addListener(purple);
+        gui.b3.addListener(purple);
         groups.add(purple);
         purple.add(new Metaball(30 * ELLIPSE_SCALE));
         purple.add(new Metaball(40 * ELLIPSE_SCALE));
@@ -108,23 +120,23 @@ public class Metaballs3 extends GothamPApplet {
         // move balls
         for (MetaballGroup group : groups){
 
-            // cohesion, etc. are per group
             PVector center = new PVector(0, 0, 0);
 
             for (Metaball ball : group.balls){
 
                 boolean runningAway = false;
-                // mousePressed = proxy for presence grid repelling
+
                 if(mode == MOUSE && mousePressed) {
-                    ball.repell(new PVector(mouseX, mouseY, 0), REPELL_FORCE);
+                    ball.repell(new PVector(mouseX, mouseY, 0), gui.getRepelForce());
                     ball.spaceCheck(groups);
                     runningAway = true;
 
-                } else if (mode == TRACK && trackData != null) {
-                    synchronized(trackData){
-                        runningAway = trackData.size() > 0;
-                        for (BaseTrack track : trackData){
-                            ball.repell(new PVector(track.x, track.y, 0), REPELL_FORCE);
+                } else if (mode == GRID && gridData != null) {
+                    synchronized(gridData){
+                        List<Point> points = this.getObjects(gridData);
+                        runningAway = points.size() > gui.getThreshold();
+                        for (Point point : points){
+                            ball.repell(new PVector(point.x, point.y, 0), gui.getRepelForce());
                         }
                     }
                 }
@@ -132,8 +144,10 @@ public class Metaballs3 extends GothamPApplet {
                 center.add(ball.position);
                 ball.velocity.mult(FRICTION);
                 ball.velocity.limit(runningAway ? MAX_RUN_VEL : MAX_VEL);
-                if (ball.velocity.mag() < MIN_VEL)
+
+                if (ball.velocity.mag() < MIN_VEL){
                     ball.velocity.setMag(MIN_VEL);
+                }
             }
 
             center.div(group.balls.size());
@@ -141,16 +155,16 @@ public class Metaballs3 extends GothamPApplet {
             for (Metaball ball : group.balls){
                 PVector c = PVector.sub(center, ball.position);
                 c.normalize();
-                c.mult(COHESION);
+                c.mult(gui.getCohesiveness());
                 ball.velocity.add(c);
                 ball.position.add(ball.velocity);
             }
-            
+
             group.checkBounds();
         }
 
         // fill the whole area with purple
-        fill(color(128, 0, 255), 127);
+        fill(gui.getBGColor().r, gui.getBGColor().g, gui.getBGColor().b, 127);
         rect(0, 0, width, height);
 
         // render each group's bounding box
@@ -173,7 +187,7 @@ public class Metaballs3 extends GothamPApplet {
         if (mode == MOUSE && mousePressed){
             fill(10, 200, 255);
             ellipse(mouseX, mouseY, 120, 120);
-        } else if (mode == TRACK && gridData !=null) {
+        } else if (mode == GRID && gridData !=null) {
 
             fill(color(0, 0, 50), 8); //fill with a light alpha white
             rect(0, 0, this.getSyncArea().width, this.getSyncArea().height); //fill the whole area
@@ -228,10 +242,24 @@ public class Metaballs3 extends GothamPApplet {
         updatePixels();
 
     }
- 
+
+    public List<Point> getObjects(GridData grid){
+        List<Point>objects = new ArrayList<Point>();
+        for (int i = 0; i < grid.data.length; i++){
+            if (grid.data[i] != (byte)0){
+                int y = i / grid.width;
+                int x = i - (y * grid.width);
+                objects.add(new Point(x,y));
+            }
+        }
+        return objects;
+    }
+
     @Override
     public void keyPressed() {
-        System.out.println(keyCode);
+        super.keyPressed();
+        System.out.println("key:  " + key);
+        System.out.println("code: " + keyCode);
     }
 
     @Override
@@ -258,15 +286,6 @@ public class Metaballs3 extends GothamPApplet {
         }
     }
 
-    public static void print(GridData d){
-        for (int i = 0; i < d.data.length; i++){
-            System.out.print(d.data[i] + " ");
-            if ((i + 1) % d.width == 0)
-                System.out.println();
-        }
-        System.out.println();
-    }
-    
     /**
      * returns new GridData where data is a subset of the original based on
      * a Rectangular boundary.
@@ -321,7 +340,7 @@ public class Metaballs3 extends GothamPApplet {
         }
         return in;
     }
-
+/**
     @Override
     public void handle(List<BaseTrack> incomingTracks){
         if (trackData == null){
@@ -422,20 +441,18 @@ public class Metaballs3 extends GothamPApplet {
         }
         return in;
     }
-
-    class MetaballGroup {
+*/
+    class MetaballGroup implements ControlListener{
         
         Rectangle range;
-        float squishiness;
         PVector position;
         PVector velocity;
         Color color;
         List <Metaball>balls;
 
-        public MetaballGroup(Rectangle range, Color color, float squishiness){
+        public MetaballGroup(Rectangle range, Color color){
             this.range = range;
             this.color = color;
-            this.squishiness = squishiness;
             balls = new ArrayList<Metaball>();
         }
 
@@ -446,7 +463,19 @@ public class Metaballs3 extends GothamPApplet {
         
         public void checkBounds(){
             for (Metaball ball : balls){
-                ball.checkBounds(range,  squishiness);
+                ball.checkBounds(range);
+            }
+        }
+
+        // hacky code to get events from controlP5
+        @Override 
+        public void controlEvent(ControlEvent evt) {
+            if (evt.getController().getName().toLowerCase().startsWith("red")){
+                this.color.r = evt.getValue();
+            }else if (evt.getController().getName().toLowerCase().startsWith("green")){
+                this.color.g = evt.getValue();
+            }else if (evt.getController().getName().toLowerCase().startsWith("blue")){
+                this.color.b = evt.getValue();
             }
         }
     }
@@ -465,7 +494,7 @@ public class Metaballs3 extends GothamPApplet {
             this.radius = radius;
         }
 
-        public void checkBounds(Rectangle range, float squishiness){
+        public void checkBounds(Rectangle range){
             // bounce
             if (left() < range.x){
                 setLeft(range.x);
@@ -544,12 +573,5 @@ public class Metaballs3 extends GothamPApplet {
         }
     }
 
-    class Color {
-        float r, g, b;
-        public Color(float r, float g, float b){
-            this.r = r;
-            this.g = g;
-            this.b = b;
-        }
-    }
+
 }

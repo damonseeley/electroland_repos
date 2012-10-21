@@ -1,0 +1,119 @@
+package net.electroland.gotham.processing.assets;
+
+import net.electroland.utils.ElectrolandProperties;
+import processing.core.PApplet;
+import controlP5.Button;
+import controlP5.ControlEvent;
+import controlP5.ControlListener;
+import controlP5.ControlP5;
+import controlP5.ControlWindow;
+import controlP5.Controller;
+import controlP5.Knob;
+import controlP5.Slider;
+
+public class MetaballsGUI implements ControlListener {
+
+    private ControlP5 control;
+    private ControlWindow window;
+
+    public Controller<Knob> r1, r2, r3, bgR;
+    public Controller<Knob> g1, g2, g3, bgG;
+    public Controller<Knob> b1, b2, b3, bgB;
+
+    private Controller<Slider> cohesiveness, repelVelocity, repelForce, threshold;
+    private Controller<Button> dump;
+
+    public MetaballsGUI(PApplet p) {
+
+        ElectrolandProperties ep = new ElectrolandProperties("Gotham-global.properties");
+
+        control = new ControlP5(p);
+        window = control
+                .addControlWindow("Lava_Control_Window", 100, 100, 400, 450)
+                .hideCoordinates().setBackground(0);
+
+        r1 = control.addKnob("red 1").setRange(0, 255).setValue(ep.getRequiredDouble("lava", "color1", "r").floatValue()).setPosition(10, 10).setRadius(30);
+        g1 = control.addKnob("green 1").setRange(0, 255).setValue(ep.getRequiredDouble("lava", "color1", "g").floatValue()).setPosition(10, 90).setRadius(30);
+        b1 = control.addKnob("blue 1").setRange(0, 255).setValue(ep.getRequiredDouble("lava", "color1", "b").floatValue()).setPosition(10, 170).setRadius(30);
+        r1.moveTo(window);
+        g1.moveTo(window);
+        b1.moveTo(window);
+
+        r2 = control.addKnob("red 2").setRange(0, 255).setValue(ep.getRequiredDouble("lava", "color2", "r").floatValue()).setPosition(90, 10).setRadius(30);
+        g2 = control.addKnob("green 2").setRange(0, 255).setValue(ep.getRequiredDouble("lava", "color2", "g").floatValue()).setPosition(90, 90).setRadius(30);
+        b2 = control.addKnob("blue 2").setRange(0, 255).setValue(ep.getRequiredDouble("lava", "color2", "b").floatValue()).setPosition(90, 170).setRadius(30);
+        r2.moveTo(window);
+        g2.moveTo(window);
+        b2.moveTo(window);
+
+        r3 = control.addKnob("red 3").setRange(0, 255).setValue(ep.getRequiredDouble("lava", "color3", "r").floatValue()).setPosition(170, 10).setRadius(30);
+        g3 = control.addKnob("green 3").setRange(0, 255).setValue(ep.getRequiredDouble("lava", "color3", "g").floatValue()).setPosition(170, 90).setRadius(30);
+        b3 = control.addKnob("blue 3").setRange(0, 255).setValue(ep.getRequiredDouble("lava", "color3", "b").floatValue()).setPosition(170, 170).setRadius(30);
+        r3.moveTo(window);
+        g3.moveTo(window);
+        b3.moveTo(window);
+
+        bgR = control.addKnob("background red").setRange(0, 255).setValue(ep.getRequiredDouble("lava", "background", "r").floatValue()).setPosition(250, 10).setRadius(30);
+        bgG = control.addKnob("background green").setRange(0, 255).setValue(ep.getRequiredDouble("lava", "background", "g").floatValue()).setPosition(250, 90).setRadius(30);
+        bgB = control.addKnob("background blue").setRange(0, 255).setValue(ep.getRequiredDouble("lava", "background", "b").floatValue()).setPosition(250, 170).setRadius(30);
+        bgR.moveTo(window);
+        bgG.moveTo(window);
+        bgB.moveTo(window);
+
+        cohesiveness = control.addSlider("cohesiveness").setRange(.005f, .01f).setValue(ep.getRequiredDouble("lava", "physics", "cohesivness").floatValue()).setPosition(10, 270).setWidth(250);
+        cohesiveness.moveTo(window);
+
+        repelVelocity = control.addSlider("repelVelocity").setRange(10, 1000).setValue(ep.getRequiredDouble("lava", "physics", "maxVelocity").floatValue()).setPosition(10, 300).setWidth(250);
+        repelVelocity.moveTo(window);
+
+        repelForce = control.addSlider("repelForce").setRange(10, 1000).setValue(ep.getRequiredDouble("lava", "physics", "repellForce").floatValue()).setPosition(10, 330).setWidth(250);
+        repelForce.moveTo(window);
+
+        threshold = control.addSlider("threshold").setRange(0, 100).setValue(ep.getRequiredDouble("lava", "physics", "threshold").floatValue()).setPosition(10, 360).setWidth(250);
+        threshold.moveTo(window);
+
+        dump = control.addButton("console dump").setPosition(10, 390);
+        dump.addListener(this);
+        dump.moveTo(window);
+    }
+
+    public Color getColor1(){
+        return new Color(r1.getValue(), g1.getValue(), b1.getValue());
+    }
+    public Color getColor2(){
+        return new Color(r2.getValue(), g2.getValue(), b2.getValue());
+    }
+    public Color getColor3(){
+        return new Color(r3.getValue(), g3.getValue(), b3.getValue());
+    }
+    public Color getBGColor(){
+        return new Color(bgR.getValue(), bgG.getValue(), bgB.getValue());
+    }
+    public float getCohesiveness(){
+        return cohesiveness.getValue();
+    }
+    public float getRepelVelocity(){
+        return repelVelocity.getValue();
+    }
+    public float getRepelForce(){
+        return repelForce.getValue();
+    }
+    public float getThreshold(){
+        return threshold.getValue();
+    }
+
+    @Override
+    public void controlEvent(ControlEvent arg0) {
+        System.out.println();
+        System.out.println("current values:");
+        System.out.println("===============");
+        System.out.println("color1:           (" + r1.getValue() + ", " + g1.getValue() + ", " + b1.getValue() + ")");
+        System.out.println("color2:           (" + r2.getValue() + ", " + g2.getValue() + ", " + b2.getValue() + ")");
+        System.out.println("color3:           (" + r3.getValue() + ", " + g3.getValue() + ", " + b3.getValue() + ")");
+        System.out.println("bg color:         (" + bgR.getValue() + ", " + bgG.getValue() + ", " + bgB.getValue() + ")");
+        System.out.println("cohesiveness:     " + cohesiveness.getValue());
+        System.out.println("repell velocity:  " + repelVelocity.getValue());
+        System.out.println("repell force:     " + repelForce.getValue());
+        System.out.println("threshold:        " + threshold.getValue());
+    }
+}
