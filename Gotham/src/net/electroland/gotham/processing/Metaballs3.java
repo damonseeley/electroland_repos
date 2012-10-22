@@ -5,15 +5,13 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import controlP5.ControlEvent;
-import controlP5.ControlListener;
-
 import net.electroland.elvis.net.GridData;
 import net.electroland.gotham.processing.assets.Color;
 import net.electroland.gotham.processing.assets.FastBlur;
 import net.electroland.gotham.processing.assets.MetaballsGUI;
-import net.electroland.utils.ElectrolandProperties;
 import processing.core.PVector;
+import controlP5.ControlEvent;
+import controlP5.ControlListener;
 
 @SuppressWarnings("serial")
 public class Metaballs3 extends GothamPApplet {
@@ -21,15 +19,9 @@ public class Metaballs3 extends GothamPApplet {
     public static final int NONE                    = 0;
     public static final int MOUSE                   = 1;
     public static final int GRID                    = 2;
-    public static final int GRID_DEFAULT            = 0;
-    public static final int GRID_EDIT_TOPLEFT       = 1;
-    public static final int GRID_EDIT_DIM           = 2;
-    public static final int GRID_EDIT_INSET         = 3;
-    public static final int GRID_EDIT_CANVAS_DIM    = 4;
 
     private int mode = GRID; // set the reaction mode
-    private int presenceMode;
-    
+
     public static final float FRICTION            = .999f;  // higher = less .999
     public static final float MAX_VEL             = 1.0f;  // base velocity with no interaction or tracks higher = faster was 0.75
     // push vars
@@ -48,28 +40,12 @@ public class Metaballs3 extends GothamPApplet {
     private List <MetaballGroup>groups;
 
     private GridData gridData;
-    // specifies the section of the incoming grid that we want to subset
-    private Rectangle grid;
-    // specifies how the grid will be translated and scaled to the canvas
-    private Rectangle gridOnCanvas;
 
     MetaballsGUI gui;
 
 
     @Override
     public void setup(){
-
-        ElectrolandProperties ep = new ElectrolandProperties("Gotham-global.properties");
-        grid = new Rectangle(ep.getRequiredInt("lava", "grid", "xinset"),
-                ep.getRequiredInt("lava", "grid", "yinset"),
-                ep.getRequiredInt("lava", "grid", "width"),
-                ep.getRequiredInt("lava", "grid", "height"));
-        gridOnCanvas = new Rectangle(ep.getRequiredInt("lava", "gridOnCanvas", "xinset"),
-                ep.getRequiredInt("lava", "gridOnCanvas", "yinset"),
-                ep.getRequiredInt("lava", "gridOnCanvas", "width"),
-                ep.getRequiredInt("lava", "gridOnCanvas", "height"));
-
-        presenceMode = ep.getRequiredBoolean("lava", "gridOnCanvas", "debug") ? 1 : 0;
 
         gui = new MetaballsGUI(this);
 
@@ -206,10 +182,10 @@ public class Metaballs3 extends GothamPApplet {
 
                 synchronized(gridData){
 
-                    float cellWidth = gridOnCanvas.width / (float)gridData.width;
-                    float cellHeight = gridOnCanvas.height / (float)gridData.height;
+                    float cellWidth = gui.getGridCanvas().width / (float)gridData.width;
+                    float cellHeight = gui.getGridCanvas().height / (float)gridData.height;
 
-                    if (presenceMode != GRID_DEFAULT){
+                    if (gui.showGrid()){
                         stroke(255);
                     }else{
                         noStroke();
@@ -218,20 +194,20 @@ public class Metaballs3 extends GothamPApplet {
 
                     for (int x = 0; x < gridData.width; x++){
                         for (int y = 0; y < gridData.height; y++){
-                            if (presenceMode != GRID_DEFAULT){
+                            if (gui.showGrid()){
                                 if (gridData.getValue(x, y) != (byte)0){
                                     fill(255);
                                 }else{
                                     noFill();
                                 }
-                                this.rect(gridOnCanvas.x + (x * cellWidth), 
-                                          gridOnCanvas.y + (y * cellHeight), 
+                                this.rect(gui.getGridCanvas().x + (x * cellWidth), 
+                                        gui.getGridCanvas().y + (y * cellHeight), 
                                           cellWidth, 
                                           cellHeight);
                             } else {
                                 if (gridData.getValue(x, y) != (byte)0){
-                                    this.ellipse(gridOnCanvas.x + (x * cellWidth), 
-                                                 gridOnCanvas.y + (y * cellHeight), 
+                                    this.ellipse(gui.getGridCanvas().x + (x * cellWidth), 
+                                            gui.getGridCanvas().y + (y * cellHeight), 
                                                  cellWidth * DILATE, 
                                                  cellHeight * DILATE);
                                 }
@@ -242,7 +218,7 @@ public class Metaballs3 extends GothamPApplet {
             }
         }
 
-        if (presenceMode == 0){
+        if (!gui.showGrid()){
             loadPixels();
             FastBlur.performBlur(pixels, width, height, floor(18));
             updatePixels();
@@ -281,7 +257,7 @@ public class Metaballs3 extends GothamPApplet {
                 srcData.buildString(sb);
                 srcData = new GridData(sb.toString());
 
-                srcData = subset(srcData, grid);
+                srcData = subset(srcData, gui.getGrid());
 
                 srcData = counterClockwise(srcData);
 
@@ -346,108 +322,7 @@ public class Metaballs3 extends GothamPApplet {
         }
         return in;
     }
-/**
-    @Override
-    public void handle(List<BaseTrack> incomingTracks){
-        if (trackData == null){
-            trackData = incomingTracks;
-        } else {
-            synchronized(trackData){
-                trackData = incomingTracks;
-                List<BaseTrack> transformedTrack;
-    
-                float cameraWidth = 544;
-                float cameraHeight = 480;
-                float gridWidth = 80;
-                float gridHeight = 40;
-                int gridXMax = 70;
-                int gridXMin = 2;
-                int gridYMax = 25;
-                int gridYMin = 2;
-                int canvasInsetX = 80;
-                int canvasInsetY =70;
-                float subsetWidth = (cameraWidth / gridWidth) * (gridXMax - gridXMin); // grid insets (left & right)
-                float subsetHeight = (cameraHeight / gridHeight) * (gridYMax - gridYMin);  // grid insets (top & bottom)
-                float subsetLeftInset = (cameraWidth / gridWidth) * 2;
-                float subsetTopInset = (cameraWidth / gridHeight) * 2;
-                float finalWidth = this.getSyncArea().width - (2 * canvasInsetX); // 80 = canvas x inset
-                float finalHeight = this.getSyncArea().height - (2 * canvasInsetY); // 70 = canvas y inset
-                float finalWidthFactor =  finalWidth / subsetWidth;
-                float finalHeightFactor =  finalHeight / subsetHeight;
 
-                // take subset
-                transformedTrack = subset(incomingTracks, new Rectangle((int)subsetLeftInset, (int)subsetTopInset , (int)subsetWidth, (int)subsetHeight));
-
-                // rotate around center of subset
-                transformedTrack = rotate(incomingTracks, -90, new Point((int)(subsetWidth / 2), (int)(subsetHeight / 2)));
-
-                // scale to size of detector system
-                transformedTrack = scale(incomingTracks, new PVector(finalWidthFactor, finalHeightFactor, 0));
-
-                // mirror
-                transformedTrack = flipHorizontal(incomingTracks, finalWidth);
-
-                // inset to detector system top,left
-                transformedTrack = slide(incomingTracks, new PVector(80, 70, 0));
-
-
-                trackData = transformedTrack;
-            }
-        }
-    }
-
-    // pull out all tracks from a subset of the space they were originally contained in
-    // using the same coordinate system.  The resulting subset will be boundary.width x boundary.height in dimensions, 
-    // with all tracks shifted to a coordinate space where the top left is 0,0 (so that future rotations don't go amuck)
-    public static List<BaseTrack> subset(List<BaseTrack> in, Rectangle boundary){
-        ArrayList<BaseTrack>out = new ArrayList<BaseTrack>();
-        for (BaseTrack track : in){
-            if (boundary.contains(track.x, track.y)){
-                track.x -= boundary.x;
-                track.y -= boundary.y;
-                out.add(track);
-            }
-        }
-        return out;
-    }
-
-    // rotate around an arbitraty point.  negative = clockwise
-    public static List<BaseTrack> rotate(List<BaseTrack> in, float degrees, Point center){
-        for (BaseTrack track : in){
-            float[] pt = {track.x, track.y};
-            AffineTransform.getRotateInstance(Math.toRadians(degrees), center.x, center.y).transform(pt, 0, pt, 0, 1);
-            track.x = pt[0];
-            track.y = pt[1];
-        }
-        return in;
-    }
-
-    // scale the coordinates of all tracks
-    public static List<BaseTrack> scale(List<BaseTrack> in, PVector scaleValues){
-        for (BaseTrack track : in){
-            track.x *= scaleValues.x;
-            track.y *= scaleValues.y;
-        }
-        return in;
-    }
-
-    // slide the coordinates of all tracks
-    public static List<BaseTrack> slide(List<BaseTrack> in, PVector slideValues){
-        for (BaseTrack track : in){
-            track.x += slideValues.x;
-            track.y += slideValues.y;
-        }
-        return in;
-    }
-
-    // slide the coordinates of all tracks
-    public static List<BaseTrack> flipHorizontal(List<BaseTrack> in, float rightEdge){
-        for (BaseTrack track : in){
-            track.x = rightEdge - track.x;
-        }
-        return in;
-    }
-*/
     class MetaballGroup implements ControlListener{
         
         Rectangle range;
