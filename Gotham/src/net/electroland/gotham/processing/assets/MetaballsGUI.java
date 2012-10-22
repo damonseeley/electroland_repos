@@ -1,5 +1,7 @@
 package net.electroland.gotham.processing.assets;
 
+import java.awt.Rectangle;
+
 import net.electroland.utils.ElectrolandProperties;
 import processing.core.PApplet;
 import controlP5.Button;
@@ -10,6 +12,8 @@ import controlP5.ControlWindow;
 import controlP5.Controller;
 import controlP5.Knob;
 import controlP5.Slider;
+import controlP5.Textfield;
+import controlP5.Toggle;
 
 public class MetaballsGUI implements ControlListener {
 
@@ -23,25 +27,64 @@ public class MetaballsGUI implements ControlListener {
     private Controller<Slider> cohesiveness, repelVelocity, repelForce, threshold;
     private Controller<Button> dump;
 
+    private Controller<Textfield> gridXinset, gridYinset, gridWidth, gridHeight;
+    private Controller<Textfield> gridCanvasXinset, gridCanvasYinset, gridCanvasWidth, gridCanvasHeight;
+    private Controller<Toggle> showGrid;
+    
+    private Rectangle grid, canvas;
+
     public MetaballsGUI(PApplet p) {
 
         ElectrolandProperties ep = new ElectrolandProperties("Gotham-global.properties");
 
+        grid = new Rectangle(ep.getRequiredInt("lava", "grid", "xinset"),
+                ep.getRequiredInt("lava", "grid", "yinset"),
+                ep.getRequiredInt("lava", "grid", "width"),
+                ep.getRequiredInt("lava", "grid", "height"));
+        canvas = new Rectangle(ep.getRequiredInt("lava", "gridOnCanvas", "xinset"),
+                ep.getRequiredInt("lava", "gridOnCanvas", "yinset"),
+                ep.getRequiredInt("lava", "gridOnCanvas", "width"),
+                ep.getRequiredInt("lava", "gridOnCanvas", "height"));
+
         control = new ControlP5(p);
         window = control
-                .addControlWindow("Lava_Control_Window", 100, 100, 400, 450)
+                .addControlWindow("Lava_Control_Window", 100, 100, 600, 450)
                 .hideCoordinates().setBackground(0);
 
-        r1 = control.addKnob("red 1").setRange(0, 255).setValue(ep.getRequiredDouble("lava", "color1", "r").floatValue()).setPosition(10, 10).setRadius(30);
-        g1 = control.addKnob("green 1").setRange(0, 255).setValue(ep.getRequiredDouble("lava", "color1", "g").floatValue()).setPosition(10, 90).setRadius(30);
-        b1 = control.addKnob("blue 1").setRange(0, 255).setValue(ep.getRequiredDouble("lava", "color1", "b").floatValue()).setPosition(10, 170).setRadius(30);
+        r1 = control.addKnob("red 1")
+                    .setRange(0, 255)
+                    .setValue(ep.getRequiredDouble("lava", "color1", "r").floatValue())
+                    .setPosition(10, 10)
+                    .setRadius(30);
+        g1 = control.addKnob("green 1")
+                    .setRange(0, 255)
+                    .setValue(ep.getRequiredDouble("lava", "color1", "g").floatValue())
+                    .setPosition(10, 90)
+                    .setRadius(30);
+        b1 = control.addKnob("blue 1")
+                    .setRange(0, 255)
+                    .setValue(ep.getRequiredDouble("lava", "color1", "b").floatValue())
+                    .setPosition(10, 170)
+                    .setRadius(30);
         r1.moveTo(window);
         g1.moveTo(window);
         b1.moveTo(window);
 
-        r2 = control.addKnob("red 2").setRange(0, 255).setValue(ep.getRequiredDouble("lava", "color2", "r").floatValue()).setPosition(90, 10).setRadius(30);
-        g2 = control.addKnob("green 2").setRange(0, 255).setValue(ep.getRequiredDouble("lava", "color2", "g").floatValue()).setPosition(90, 90).setRadius(30);
-        b2 = control.addKnob("blue 2").setRange(0, 255).setValue(ep.getRequiredDouble("lava", "color2", "b").floatValue()).setPosition(90, 170).setRadius(30);
+        r2 = control.addKnob("red 2")
+                    .setRange(0, 255)
+                    .setValue(ep.getRequiredDouble("lava", "color2", "r").floatValue())
+                    .setPosition(90, 10)
+                    .setRadius(30);
+        g2 = control.addKnob("green 2")
+                    .setRange(0, 255)
+                    .setValue(ep.getRequiredDouble("lava", "color2", "g").floatValue())
+                    .setPosition(90, 90)
+                    .setRadius(30);
+        b2 = control.addKnob("blue 2")
+                    .setRange(0, 255)
+                    .setValue(ep.getRequiredDouble("lava", "color2", "b").floatValue())
+                    .setPosition(90, 170)
+                    .setRadius(30);
         r2.moveTo(window);
         g2.moveTo(window);
         b2.moveTo(window);
@@ -75,6 +118,27 @@ public class MetaballsGUI implements ControlListener {
         dump = control.addButton("console dump").setPosition(10, 390);
         dump.addListener(this);
         dump.moveTo(window);
+
+        gridXinset = control.addTextfield("grid X inset").setText("2").setPosition(400, 10).setWidth(90);
+        gridYinset = control.addTextfield("grid Y inset").setText("4").setPosition(500, 10).setWidth(90);
+        gridWidth = control.addTextfield("grid width").setText("68").setPosition(400, 50).setWidth(90);
+        gridHeight = control.addTextfield("grid height").setText("21").setPosition(500, 50).setWidth(90);
+        gridXinset.moveTo(window);
+        gridYinset.moveTo(window);
+        gridWidth.moveTo(window);
+        gridHeight.moveTo(window);
+
+        gridCanvasXinset = control.addTextfield("grid canvas X inset").setText("80").setPosition(400, 110).setWidth(90);
+        gridCanvasYinset = control.addTextfield("grid canvas Y inset").setText("70").setPosition(500, 110).setWidth(90);
+        gridCanvasWidth = control.addTextfield("grid canvas width").setText("540").setPosition(400, 150).setWidth(90);
+        gridCanvasHeight = control.addTextfield("grid canvas height").setText("364").setPosition(500, 150).setWidth(90);
+        gridCanvasXinset.moveTo(window);
+        gridCanvasYinset.moveTo(window);
+        gridCanvasWidth.moveTo(window);
+        gridCanvasHeight.moveTo(window);
+
+        showGrid = control.addToggle("show grid").setState(ep.getRequiredBoolean("lava", "gridOnCanvas", "debug")).setPosition(400, 200);
+        showGrid.moveTo(window);
     }
 
     public Color getColor1(){
@@ -100,6 +164,56 @@ public class MetaballsGUI implements ControlListener {
     }
     public float getThreshold(){
         return threshold.getValue();
+    }
+
+    public Rectangle getGrid(){
+
+        // parse inputs
+        int x = getVal(gridXinset, grid.x);
+        int y = getVal(gridYinset, grid.y);
+        int w = getVal(gridWidth, grid.width);
+        int h = getVal(gridHeight, grid.height);
+
+//        ((Textfield)gridXinset).setText("" + x);
+//        ((Textfield)gridYinset).setText("" + y);
+//        ((Textfield)gridWidth).setText("" + w);
+//        ((Textfield)gridHeight).setText("" + h);
+
+        // write back if anything failed
+        grid = new Rectangle(x,y,w,h);
+
+        return grid;
+    }
+
+    public Rectangle getGridCanvas(){
+        // parse inputs
+        int x = getVal(gridCanvasXinset, grid.x);
+        int y = getVal(gridCanvasYinset, grid.y);
+        int w = getVal(gridCanvasWidth, grid.width);
+        int h = getVal(gridCanvasHeight, grid.height);
+
+//        ((Textfield)gridCanvasXinset).setText("" + x);
+//        ((Textfield)gridCanvasYinset).setText("" + y);
+//        ((Textfield)gridCanvasWidth).setText("" + w);
+//        ((Textfield)gridCanvasHeight).setText("" + h);
+
+        // write back if anything failed
+        canvas = new Rectangle(x,y,w,h);
+
+        return canvas;
+    }
+
+    public boolean showGrid(){
+        return ((Toggle)showGrid).getState();
+    }
+
+    public static int getVal(Controller<Textfield> input, int fail){
+        try{
+            Integer i = Integer.parseInt(((Textfield)input).getText());
+            return i.intValue();
+        }catch(NumberFormatException e){
+            return fail;
+        }
     }
 
     @Override
