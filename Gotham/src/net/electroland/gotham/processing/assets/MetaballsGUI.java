@@ -89,33 +89,74 @@ public class MetaballsGUI implements ControlListener {
         g2.moveTo(window);
         b2.moveTo(window);
 
-        r3 = control.addKnob("red 3").setRange(0, 255).setValue(ep.getRequiredDouble("lava", "color3", "r").floatValue()).setPosition(170, 10).setRadius(30);
-        g3 = control.addKnob("green 3").setRange(0, 255).setValue(ep.getRequiredDouble("lava", "color3", "g").floatValue()).setPosition(170, 90).setRadius(30);
-        b3 = control.addKnob("blue 3").setRange(0, 255).setValue(ep.getRequiredDouble("lava", "color3", "b").floatValue()).setPosition(170, 170).setRadius(30);
+        r3 = control.addKnob("red 3")
+                    .setRange(0, 255)
+                    .setValue(ep.getRequiredDouble("lava", "color3", "r").floatValue())
+                    .setPosition(170, 10)
+                    .setRadius(30);
+        g3 = control.addKnob("green 3")
+                    .setRange(0, 255)
+                    .setValue(ep.getRequiredDouble("lava", "color3", "g").floatValue())
+                    .setPosition(170, 90)
+                    .setRadius(30);
+        b3 = control.addKnob("blue 3")
+                    .setRange(0, 255)
+                    .setValue(ep.getRequiredDouble("lava", "color3", "b").floatValue())
+                    .setPosition(170, 170)
+                    .setRadius(30);
         r3.moveTo(window);
         g3.moveTo(window);
         b3.moveTo(window);
 
-        bgR = control.addKnob("background red").setRange(0, 255).setValue(ep.getRequiredDouble("lava", "background", "r").floatValue()).setPosition(250, 10).setRadius(30);
-        bgG = control.addKnob("background green").setRange(0, 255).setValue(ep.getRequiredDouble("lava", "background", "g").floatValue()).setPosition(250, 90).setRadius(30);
-        bgB = control.addKnob("background blue").setRange(0, 255).setValue(ep.getRequiredDouble("lava", "background", "b").floatValue()).setPosition(250, 170).setRadius(30);
+        bgR = control.addKnob("background red")
+                    .setRange(0, 255)
+                    .setValue(ep.getRequiredDouble("lava", "background", "r").floatValue())
+                    .setPosition(250, 10)
+                    .setRadius(30);
+        bgG = control.addKnob("background green")
+                    .setRange(0, 255)
+                    .setValue(ep.getRequiredDouble("lava", "background", "g").floatValue())
+                    .setPosition(250, 90)
+                    .setRadius(30);
+        bgB = control.addKnob("background blue")
+                    .setRange(0, 255)
+                    .setValue(ep.getRequiredDouble("lava", "background", "b").floatValue())
+                    .setPosition(250, 170)
+                    .setRadius(30);
         bgR.moveTo(window);
         bgG.moveTo(window);
         bgB.moveTo(window);
 
-        cohesiveness = control.addSlider("cohesiveness").setRange(.005f, .01f).setValue(ep.getRequiredDouble("lava", "physics", "cohesivness").floatValue()).setPosition(10, 270).setWidth(250);
+        cohesiveness = control.addSlider("cohesiveness")
+                    .setRange(.005f, .01f)
+                    .setValue(ep.getRequiredDouble("lava", "physics", "cohesivness").floatValue())
+                    .setPosition(10, 270)
+                    .setWidth(250);
         cohesiveness.moveTo(window);
 
-        repelVelocity = control.addSlider("repelVelocity").setRange(10, 1000).setValue(ep.getRequiredDouble("lava", "physics", "maxVelocity").floatValue()).setPosition(10, 300).setWidth(250);
+        repelVelocity = control.addSlider("repelVelocity")
+                    .setRange(10, 1000) 
+                    .setValue(ep.getRequiredDouble("lava", "physics", "maxVelocity").floatValue())
+                    .setPosition(10, 300)
+                    .setWidth(250);
         repelVelocity.moveTo(window);
 
-        repelForce = control.addSlider("repelForce").setRange(10, 1000).setValue(ep.getRequiredDouble("lava", "physics", "repellForce").floatValue()).setPosition(10, 330).setWidth(250);
+        repelForce = control.addSlider("repelForce")
+                    .setRange(10, 1000)
+                    .setValue(ep.getRequiredDouble("lava", "physics", "repellForce").floatValue())
+                    .setPosition(10, 330)
+                    .setWidth(250);
         repelForce.moveTo(window);
 
-        threshold = control.addSlider("threshold").setRange(0, 100).setValue(ep.getRequiredDouble("lava", "physics", "threshold").floatValue()).setPosition(10, 360).setWidth(250);
+        threshold = control.addSlider("threshold")
+                    .setRange(0, 100)
+                    .setValue(ep.getRequiredDouble("lava", "physics", "threshold").floatValue())
+                    .setPosition(10, 360)
+                    .setWidth(250);
         threshold.moveTo(window);
 
-        dump = control.addButton("console dump").setPosition(10, 390);
+        dump = control.addButton("console dump")
+                    .setPosition(10, 390);
         dump.addListener(this);
         dump.moveTo(window);
 
@@ -174,11 +215,14 @@ public class MetaballsGUI implements ControlListener {
         int w = getVal(gridWidth, grid.width);
         int h = getVal(gridHeight, grid.height);
 
-//        ((Textfield)gridXinset).setText("" + x);
-//        ((Textfield)gridYinset).setText("" + y);
-//        ((Textfield)gridWidth).setText("" + w);
-//        ((Textfield)gridHeight).setText("" + h);
-
+        if (x + w > 80){
+            System.err.println("illegal inset/width");
+            return grid;
+        }
+        if (y + h > 40){
+            System.err.println("illegal inset/height");
+            return grid;
+        }
         // write back if anything failed
         grid = new Rectangle(x,y,w,h);
 
@@ -191,11 +235,6 @@ public class MetaballsGUI implements ControlListener {
         int y = getVal(gridCanvasYinset, grid.y);
         int w = getVal(gridCanvasWidth, grid.width);
         int h = getVal(gridCanvasHeight, grid.height);
-
-//        ((Textfield)gridCanvasXinset).setText("" + x);
-//        ((Textfield)gridCanvasYinset).setText("" + y);
-//        ((Textfield)gridCanvasWidth).setText("" + w);
-//        ((Textfield)gridCanvasHeight).setText("" + h);
 
         // write back if anything failed
         canvas = new Rectangle(x,y,w,h);

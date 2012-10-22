@@ -38,16 +38,14 @@ public class Metaballs3 extends GothamPApplet {
     public static final float MIN_VEL             = .75f;   // higher = faster
 
     private List <MetaballGroup>groups;
-
     private GridData gridData;
-
-    MetaballsGUI gui;
+    private MetaballsGUI prefs;
 
 
     @Override
     public void setup(){
 
-        gui = new MetaballsGUI(this);
+        prefs = new MetaballsGUI(this);
 
         // groups of balls
         groups = new ArrayList<MetaballGroup>();
@@ -55,10 +53,10 @@ public class Metaballs3 extends GothamPApplet {
         int redOrgRoam = 40; //was 100
         int purpRoam = 0; //was 0
 
-        MetaballGroup red = new MetaballGroup(new Rectangle(-redOrgRoam, -redOrgRoam, this.getSyncArea().width + redOrgRoam, this.getSyncArea().height +redOrgRoam), gui.getColor1());
-        gui.r1.addListener(red);
-        gui.g1.addListener(red);
-        gui.b1.addListener(red);
+        MetaballGroup red = new MetaballGroup(new Rectangle(-redOrgRoam, -redOrgRoam, this.getSyncArea().width + redOrgRoam, this.getSyncArea().height +redOrgRoam), prefs.getColor1());
+        prefs.r1.addListener(red);
+        prefs.g1.addListener(red);
+        prefs.b1.addListener(red);
         groups.add(red);
         red.add(new Metaball(75 * ELLIPSE_SCALE));
         red.add(new Metaball(80 * ELLIPSE_SCALE));
@@ -67,10 +65,10 @@ public class Metaballs3 extends GothamPApplet {
         red.add(new Metaball(80 * ELLIPSE_SCALE));
         red.add(new Metaball(100 * ELLIPSE_SCALE));
 
-        MetaballGroup orange = new MetaballGroup(new Rectangle(-redOrgRoam, -redOrgRoam, this.getSyncArea().width + redOrgRoam, this.getSyncArea().height +redOrgRoam), gui.getColor2());
-        gui.r2.addListener(orange);
-        gui.g2.addListener(orange);
-        gui.b2.addListener(orange);
+        MetaballGroup orange = new MetaballGroup(new Rectangle(-redOrgRoam, -redOrgRoam, this.getSyncArea().width + redOrgRoam, this.getSyncArea().height +redOrgRoam), prefs.getColor2());
+        prefs.r2.addListener(orange);
+        prefs.g2.addListener(orange);
+        prefs.b2.addListener(orange);
         groups.add(orange);
         orange.add(new Metaball(70 * ELLIPSE_SCALE));
         orange.add(new Metaball(80 * ELLIPSE_SCALE));
@@ -79,10 +77,10 @@ public class Metaballs3 extends GothamPApplet {
         orange.add(new Metaball(80 * ELLIPSE_SCALE));
         orange.add(new Metaball(90 * ELLIPSE_SCALE));
 
-        MetaballGroup purple = new MetaballGroup(new Rectangle(purpRoam, purpRoam, this.getSyncArea().width + purpRoam, this.getSyncArea().height + purpRoam), gui.getColor3());
-        gui.r3.addListener(purple);
-        gui.g3.addListener(purple);
-        gui.b3.addListener(purple);
+        MetaballGroup purple = new MetaballGroup(new Rectangle(purpRoam, purpRoam, this.getSyncArea().width + purpRoam, this.getSyncArea().height + purpRoam), prefs.getColor3());
+        prefs.r3.addListener(purple);
+        prefs.g3.addListener(purple);
+        prefs.b3.addListener(purple);
         groups.add(purple);
         purple.add(new Metaball(30 * ELLIPSE_SCALE));
         purple.add(new Metaball(40 * ELLIPSE_SCALE));
@@ -113,16 +111,16 @@ public class Metaballs3 extends GothamPApplet {
                 boolean runningAway = false;
 
                 if(mode == MOUSE && mousePressed) {
-                    ball.repell(new PVector(mouseX, mouseY, 0), gui.getRepelForce());
+                    ball.repell(new PVector(mouseX, mouseY, 0), prefs.getRepelForce());
                     ball.spaceCheck(groups);
                     runningAway = true;
 
                 } else if (mode == GRID && gridData != null) {
                     synchronized(gridData){
                         List<Point> points = this.getObjects(gridData);
-                        runningAway = points.size() > gui.getThreshold();
+                        runningAway = points.size() > prefs.getThreshold();
                         for (Point point : points){
-                            ball.repell(new PVector(point.x, point.y, 0), gui.getRepelForce());
+                            ball.repell(new PVector(point.x, point.y, 0), prefs.getRepelForce());
                         }
                     }
                 }
@@ -141,7 +139,7 @@ public class Metaballs3 extends GothamPApplet {
             for (Metaball ball : group.balls){
                 PVector c = PVector.sub(center, ball.position);
                 c.normalize();
-                c.mult(gui.getCohesiveness());
+                c.mult(prefs.getCohesiveness());
                 ball.velocity.add(c);
                 ball.position.add(ball.velocity);
             }
@@ -150,7 +148,7 @@ public class Metaballs3 extends GothamPApplet {
         }
 
         // fill the whole area with purple
-        fill(gui.getBGColor().r, gui.getBGColor().g, gui.getBGColor().b, 127);
+        fill(prefs.getBGColor().r, prefs.getBGColor().g, prefs.getBGColor().b, 127);
         rect(0, 0, width, height);
 
         // render each group's bounding box
@@ -182,10 +180,10 @@ public class Metaballs3 extends GothamPApplet {
 
                 synchronized(gridData){
 
-                    float cellWidth = gui.getGridCanvas().width / (float)gridData.width;
-                    float cellHeight = gui.getGridCanvas().height / (float)gridData.height;
+                    float cellWidth = prefs.getGridCanvas().width / (float)gridData.width;
+                    float cellHeight = prefs.getGridCanvas().height / (float)gridData.height;
 
-                    if (gui.showGrid()){
+                    if (prefs.showGrid()){
                         stroke(255);
                     }else{
                         noStroke();
@@ -194,20 +192,20 @@ public class Metaballs3 extends GothamPApplet {
 
                     for (int x = 0; x < gridData.width; x++){
                         for (int y = 0; y < gridData.height; y++){
-                            if (gui.showGrid()){
+                            if (prefs.showGrid()){
                                 if (gridData.getValue(x, y) != (byte)0){
                                     fill(255);
                                 }else{
                                     noFill();
                                 }
-                                this.rect(gui.getGridCanvas().x + (x * cellWidth), 
-                                        gui.getGridCanvas().y + (y * cellHeight), 
+                                this.rect(prefs.getGridCanvas().x + (x * cellWidth), 
+                                        prefs.getGridCanvas().y + (y * cellHeight), 
                                           cellWidth, 
                                           cellHeight);
                             } else {
                                 if (gridData.getValue(x, y) != (byte)0){
-                                    this.ellipse(gui.getGridCanvas().x + (x * cellWidth), 
-                                            gui.getGridCanvas().y + (y * cellHeight), 
+                                    this.ellipse(prefs.getGridCanvas().x + (x * cellWidth), 
+                                            prefs.getGridCanvas().y + (y * cellHeight), 
                                                  cellWidth * DILATE, 
                                                  cellHeight * DILATE);
                                 }
@@ -218,7 +216,7 @@ public class Metaballs3 extends GothamPApplet {
             }
         }
 
-        if (!gui.showGrid()){
+        if (!prefs.showGrid()){
             loadPixels();
             FastBlur.performBlur(pixels, width, height, floor(18));
             updatePixels();
@@ -237,15 +235,10 @@ public class Metaballs3 extends GothamPApplet {
         return objects;
     }
 
-    @Override
-    public void keyPressed() {
-        super.keyPressed();
-        System.out.println("key:  " + key);
-        System.out.println("code: " + keyCode);
-    }
 
     @Override
     public void handle(GridData srcData) {
+
         if (gridData == null){
             gridData = srcData;
         } else {
@@ -257,7 +250,7 @@ public class Metaballs3 extends GothamPApplet {
                 srcData.buildString(sb);
                 srcData = new GridData(sb.toString());
 
-                srcData = subset(srcData, gui.getGrid());
+                srcData = subset(srcData, prefs.getGrid());
 
                 srcData = counterClockwise(srcData);
 
@@ -267,6 +260,7 @@ public class Metaballs3 extends GothamPApplet {
             }
         }
     }
+
 
     /**
      * returns new GridData where data is a subset of the original based on
@@ -364,7 +358,6 @@ public class Metaballs3 extends GothamPApplet {
     class Metaball {
 
         float radius;
-
         PVector position;
         PVector velocity;
         float xsquish = 0;
@@ -414,12 +407,12 @@ public class Metaballs3 extends GothamPApplet {
                 }
             }
         }
-        
+
         public boolean overlaps(Metaball ball){
             float distance = ball.position.dist(this.position);
             return distance < ball.radius || distance < this.radius;
         }
-        
+
         public float width(){
             return radius - xsquish;
         }
