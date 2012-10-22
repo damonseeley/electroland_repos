@@ -200,14 +200,15 @@ public class Metaballs3 extends GothamPApplet {
                                 }
                                 this.rect(prefs.getGridCanvas().x + (x * cellWidth), 
                                         prefs.getGridCanvas().y + (y * cellHeight), 
-                                          cellWidth, 
-                                          cellHeight);
+                                        cellWidth, 
+                                        cellHeight);
                             } else {
                                 if (gridData.getValue(x, y) != (byte)0){
                                     this.ellipse(prefs.getGridCanvas().x + (x * cellWidth), 
                                             prefs.getGridCanvas().y + (y * cellHeight), 
-                                                 cellWidth * DILATE, 
-                                                 cellHeight * DILATE);
+                                                 //cellWidth * DILATE, 
+                                                 //cellHeight * DILATE);
+                                    			60,60);
                                 }
                             }
                         }
