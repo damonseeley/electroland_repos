@@ -120,7 +120,14 @@ public class Metaballs3 extends GothamPApplet {
                         List<Point> points = this.getObjects(gridData);
                         runningAway = points.size() > prefs.getThreshold();
                         for (Point point : points){
-                            ball.repell(new PVector(point.x, point.y, 0), prefs.getRepelForce());
+
+                            float cellWidth = prefs.getGridCanvas().width / (float)gridData.width;
+                            float cellHeight = prefs.getGridCanvas().height / (float)gridData.height;
+
+                            PVector translated = new PVector((cellWidth * point.x) + prefs.getGridCanvas().x, 
+                                                         (cellHeight * point.y)  + prefs.getGridCanvas().y);
+
+                            ball.repell(translated, prefs.getRepelForce());
                         }
                     }
                 }
