@@ -75,7 +75,7 @@ public class Metaballs3 extends GothamPApplet {
         orange.add(new Metaball(90 * ELLIPSE_SCALE));
         orange.add(new Metaball(70 * ELLIPSE_SCALE));
         orange.add(new Metaball(80 * ELLIPSE_SCALE));
-        orange.add(new Metaball(90 * ELLIPSE_SCALE));
+        //orange.add(new Metaball(90 * ELLIPSE_SCALE));
 
         MetaballGroup purple = new MetaballGroup(new Rectangle(purpRoam, purpRoam, this.getSyncArea().width + purpRoam, this.getSyncArea().height + purpRoam), prefs.getColor3());
         prefs.r3.addListener(purple);
@@ -87,7 +87,7 @@ public class Metaballs3 extends GothamPApplet {
         purple.add(new Metaball(50 * ELLIPSE_SCALE));
         purple.add(new Metaball(50 * ELLIPSE_SCALE));
         purple.add(new Metaball(60 * ELLIPSE_SCALE));
-        purple.add(new Metaball(70 * ELLIPSE_SCALE));
+        //purple.add(new Metaball(60 * ELLIPSE_SCALE));
 
         // probably should be in ball constructors
         for (MetaballGroup group : groups){
@@ -208,7 +208,7 @@ public class Metaballs3 extends GothamPApplet {
                                             prefs.getGridCanvas().y + (y * cellHeight), 
                                                  //cellWidth * DILATE, 
                                                  //cellHeight * DILATE);
-                                    			60,60);
+                                    			80,80);
                                 }
                             }
                         }
@@ -219,7 +219,7 @@ public class Metaballs3 extends GothamPApplet {
 
         if (!prefs.showGrid()){
             loadPixels();
-            FastBlur.performBlur(pixels, width, height, floor(18));
+            FastBlur.performBlur(pixels, width, height, floor(20));
             updatePixels();
         }
     }

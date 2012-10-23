@@ -82,7 +82,7 @@ public class Metaballs2 extends GothamPApplet {
         purple.add(new Metaball(50 * ELLIPSE_SCALE));
         purple.add(new Metaball(50 * ELLIPSE_SCALE));
         purple.add(new Metaball(60 * ELLIPSE_SCALE));
-        purple.add(new Metaball(70 * ELLIPSE_SCALE));
+        //purple.add(new Metaball(70 * ELLIPSE_SCALE));
 
         // probably should be in ball constructors
         for (MetaballGroup group : groups){
@@ -198,10 +198,10 @@ public class Metaballs2 extends GothamPApplet {
 
             synchronized(gridData){
                 if (gridData != null){
-                    int gridXStart = 2; //was 2 10/18
-                    int gridXMax = 70;
-                    int gridYStart = 4; // test start inset on top was 4 on 10/18
-                    int gridYMax = 25; //all of the height was 25 10/18
+                    int gridXStart = 1; //was 2 10/18  was 2
+                    int gridXMax = 60; //was 70
+                    int gridYStart = 6; // test start inset on top was 4 on 10/18 was 4
+                    int gridYMax = 27; //all of the height was 25 10/18  was 25
                     
                     int hShift = -0;
 
