@@ -160,10 +160,10 @@ public class MetaballsGUI implements ControlListener {
         dump.addListener(this);
         dump.moveTo(window);
 
-        gridXinset = control.addTextfield("grid X inset").setText("2").setPosition(400, 10).setWidth(90);
-        gridYinset = control.addTextfield("grid Y inset").setText("4").setPosition(500, 10).setWidth(90);
-        gridWidth = control.addTextfield("grid width").setText("68").setPosition(400, 50).setWidth(90);
-        gridHeight = control.addTextfield("grid height").setText("21").setPosition(500, 50).setWidth(90);
+        gridXinset = control.addTextfield("grid X inset").setText(ep.getRequiredInt("lava", "grid", "xinset").toString()).setPosition(400, 10).setWidth(90);
+        gridYinset = control.addTextfield("grid Y inset").setText(ep.getRequiredInt("lava", "grid", "yinset").toString()).setPosition(500, 10).setWidth(90);
+        gridWidth = control.addTextfield("grid width").setText(ep.getRequiredInt("lava", "grid", "width").toString()).setPosition(400, 50).setWidth(90);
+        gridHeight = control.addTextfield("grid height").setText(ep.getRequiredInt("lava", "grid", "height").toString()).setPosition(500, 50).setWidth(90);
         gridXinset.moveTo(window);
         gridYinset.moveTo(window);
         gridWidth.moveTo(window);
