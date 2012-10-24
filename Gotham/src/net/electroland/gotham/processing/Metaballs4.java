@@ -23,7 +23,6 @@ public class Metaballs4 extends GothamPApplet {
     public void setup(){
 
         String name = this.getProperties().getRequired("name");
-        // TODO: get the proper name from parent (and possible the props file)
         props = new MetaballsProps(this, name, new ElectrolandProperties("Gotham-global.properties"));
 
         // groups of balls
@@ -82,6 +81,9 @@ public class Metaballs4 extends GothamPApplet {
         boolean showGrid     = props.getState(MetaballsProps.SHOW_GRID);
         boolean enableGrid  = props.getState(MetaballsProps.ENABLE_GRID);
 
+        // TODO: a lot of inefficiency here, getting values from the props file
+        // in loops.
+
         // move balls
         for (MetaballGroup group : groups){
 
@@ -109,8 +111,12 @@ public class Metaballs4 extends GothamPApplet {
                             float cellHeight = gridCanvas.height / (float)gridData.height;
 
                             PVector translated = new PVector((cellWidth * point.x) + gridCanvas.x, 
-                                                         (cellHeight * point.y)  + gridCanvas.y);
-
+                                                             (cellHeight * point.y)  + gridCanvas.y);
+                            // TODO: problem: we're applying force to the top left of each ball instead of
+                            // it's center.  not so easy to fix: can't apply to translated vectors 
+                            // because it would be per ball.  Can't apply to the balls easily because
+                            // the ball object currently does boundary checks with the assumption that
+                            // x,y is the top,left.
                             ball.repell(translated, props.getValue(MetaballsProps.REPELL_FORCE));
                         }
                     }
@@ -118,6 +124,9 @@ public class Metaballs4 extends GothamPApplet {
 
                 center.add(ball.position);
                 ball.velocity.mult(props.getValue(MetaballsProps.FRICTION));
+                // TODO: limit would work better as a coefficient.
+                //  ball.velocity.limit(props.getValue(MetaballsProps.MAX_VELOCITY)) + num_balls * Coefficient
+                //   should be calculated in head to avoid doing it over and over again.
                 ball.velocity.limit(runningAway ? props.getValue(MetaballsProps.REPELL_VELOCITY_CEILING) : 
                                                   props.getValue(MetaballsProps.MAX_VELOCITY));
 
@@ -160,8 +169,6 @@ public class Metaballs4 extends GothamPApplet {
             for (Metaball ball : group.balls){
                 this.noStroke();
                 this.fill(color.r, color.g, color.b, ballOpacity);
-
-                // PROBLEM: force is applied to x,y- but that's not the center.
                 this.ellipse(ball.position.x, ball.position.y, ball.width() * scale, ball.height() * scale);
             }
         }
