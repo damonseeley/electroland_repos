@@ -28,7 +28,7 @@ public class GothamConductor extends JFrame {
     public static void main(String[] args) throws IOException {
 
         GothamConductor conductor = new GothamConductor();
-        
+
         conductor.initProps();
 
         conductor.lightingManager = new ELUManager();
