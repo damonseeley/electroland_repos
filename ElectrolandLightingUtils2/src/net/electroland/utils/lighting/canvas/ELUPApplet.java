@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 
+import net.electroland.utils.ParameterMap;
 import net.electroland.utils.lighting.CanvasDetector;
 import net.electroland.utils.lighting.DetectionModel;
 
@@ -22,7 +23,12 @@ abstract public class ELUPApplet extends PApplet {
     private boolean showRendering = true;
     private DetectionModel showOnly;
     private float scale = 1.0f;
+    protected ParameterMap properties;
 
+    public ParameterMap getProperties(){
+        return properties;
+    }
+    
     abstract public void drawELUContent();
 
     final public void draw(){
