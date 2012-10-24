@@ -262,8 +262,9 @@ public class Metaballs4 extends GothamPApplet {
 
                 srcData = counterClockwise(srcData);
 
-                srcData = flipHorizontal(srcData);
-
+                if (props.getState(MetaballsProps.MIRROR)){
+                    srcData = flipHorizontal(srcData);
+                }
                 gridData = srcData;
             }
         }

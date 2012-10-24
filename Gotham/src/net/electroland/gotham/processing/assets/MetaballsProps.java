@@ -37,6 +37,7 @@ public class MetaballsProps implements ControlListener {
     final static public String GRID_ON_CANVAS          = "gridOnCanvas";
     final static public String ENABLE_GRID             = "enableGrid";
     final static public String SHOW_GRID               = "showGrid";
+    final static public String MIRROR                  = "mirror";
 
     private String wallName;
     private ControlP5 p5;
@@ -77,6 +78,7 @@ public class MetaballsProps implements ControlListener {
 
         addSwitch(ENABLE_GRID,             props);
         addSwitch(SHOW_GRID,               props);
+        addSwitch(MIRROR,                  props);
 
         addConsoleOutputButton();
         addReloadButton();
