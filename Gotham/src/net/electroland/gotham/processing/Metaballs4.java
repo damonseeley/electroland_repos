@@ -262,8 +262,11 @@ public class Metaballs4 extends GothamPApplet {
 
                 srcData = counterClockwise(srcData);
 
-                if (props.getState(MetaballsProps.MIRROR)){
+                if (props.getState(MetaballsProps.MIRROR_HORIZONTAL)){
                     srcData = flipHorizontal(srcData);
+                }
+                if (props.getState(MetaballsProps.MIRROR_VERTICAL)){
+                    srcData = flipVertical(srcData);
                 }
                 gridData = srcData;
             }
@@ -310,6 +313,16 @@ public class Metaballs4 extends GothamPApplet {
         return in;
     }
 
+    public static GridData flipVertical(GridData in){
+        byte[] flipped = new byte[in.data.length];
+
+        for (int y = 0; y < in.height; y++){
+            System.arraycopy(in.data, y * in.width, flipped, flipped.length - ((y + 1) * in.width), in.width);
+        }
+        in.data = flipped;
+        return in;
+    }
+
     public static GridData flipHorizontal(GridData in){
         int center = in.width / 2;
         byte buffer;
@@ -325,7 +338,6 @@ public class Metaballs4 extends GothamPApplet {
         }
         return in;
     }
-
     class MetaballGroup {
 
         Rectangle range;
