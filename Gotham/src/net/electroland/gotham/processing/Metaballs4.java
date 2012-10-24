@@ -273,6 +273,32 @@ public class Metaballs4 extends GothamPApplet {
         }
     }
 
+    // unit test for grid operations
+    public static void main(String args[]){
+        GridData data = new GridData("6,5,0,1,2,3,4,5,0,0,0,0,0,0,0,1,2,3,4,5,1,1,1,1,1,1,0,1,2,3,4,5");
+        printGrid(data);
+        data = subset(data, new Rectangle(2,1,3,4));
+        printGrid(data);
+        data = counterClockwise(data);
+        printGrid(data);
+        data = counterClockwise(data);
+        printGrid(data);
+        data = flipVertical(data);
+        printGrid(data);
+        data = flipHorizontal(data);
+        printGrid(data);
+    }
+
+    public static void printGrid(GridData grid){
+        for (int y = 0; y < grid.height; y++){
+            for (int x = 0; x < grid.width; x++){
+                System.out.print(grid.data[y * grid.width + x]);
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+
 
     /**
      * returns new GridData where data is a subset of the original based on
@@ -287,11 +313,10 @@ public class Metaballs4 extends GothamPApplet {
         byte[] target = new byte[boundary.width * boundary.height];
         for (int y = 0; y < boundary.height; y++) {
             try {
-				System.arraycopy(in.data, ((y + boundary.y) * in.width) + (boundary.x), target, y * boundary.width, boundary.width);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+                System.arraycopy(in.data, ((y + boundary.y) * in.width) + (boundary.x), target, y * boundary.width, boundary.width);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         in.data  = target;
         in.height = boundary.height;
