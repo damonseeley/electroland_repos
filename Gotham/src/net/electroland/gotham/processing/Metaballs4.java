@@ -286,7 +286,12 @@ public class Metaballs4 extends GothamPApplet {
 
         byte[] target = new byte[boundary.width * boundary.height];
         for (int y = 0; y < boundary.height; y++) {
-            System.arraycopy(in.data, ((y + boundary.y) * in.width) + (boundary.x), target, y * boundary.width, boundary.width);
+            try {
+				System.arraycopy(in.data, ((y + boundary.y) * in.width) + (boundary.x), target, y * boundary.width, boundary.width);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
         in.data  = target;
         in.height = boundary.height;
