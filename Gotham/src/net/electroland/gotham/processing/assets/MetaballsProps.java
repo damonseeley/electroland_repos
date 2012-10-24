@@ -137,17 +137,37 @@ public class MetaballsProps implements ControlListener {
 
     // TODO: this needs to be based on image cycling.
     public Color getColor(int ballId){
-        switch (ballId){
-            case(0): // BACKGROUND
-                return new Color(0, 50, 255);
-            case(1): // balls.1
-                return new Color(255, 0, 0);
-            case(2): // balls.2
-                return new Color(255, 127, 0);
-            case(3): // balls.3
-                return new Color(255, 0, 255);
-            default:
-                return null;
+
+        if (wallName.equalsIgnoreCase("east")){
+ 
+            switch (ballId){
+                case(0): // BACKGROUND
+                    return new Color(0, 50, 255);
+                case(1): // balls.1
+                    return new Color(255, 0, 0);
+                case(2): // balls.2
+                    return new Color(255, 127, 0);
+                case(3): // balls.3
+                    return new Color(255, 0, 255);
+                default:
+                    return null;
+            }
+        } else if (wallName.equalsIgnoreCase("west")){
+
+            switch (ballId){
+                case(0): // BACKGROUND
+                    return new Color(0, 50, 255);
+                case(1): // balls.1
+                    return new Color(255, 0, 0);
+                case(2): // balls.2
+                    return new Color(255, 127, 0);
+                case(3): // balls.3
+                    return new Color(255, 0, 255);
+                default:
+                    return null;
+            }
+        } else {
+            return null;
         }
     }
 
