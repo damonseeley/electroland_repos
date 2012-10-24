@@ -1,9 +1,9 @@
 #
-#Wed Oct 24 15:26:55 EDT 2012
+#Wed Oct 24 18:49:42 EDT 2012
 BackgroundImageAdaption=0.009
 adaptation=0.008
-backgroundImageAdaption=0.0040
-blurRadius=0
+backgroundImageAdaption=0.0060
+blurRadius=9
 broadcastGrid=true
 broadcastGridAddress=localhost
 broadcastGridPort=3458
@@ -26,8 +26,8 @@ erodeIterations=1
 framesUntilCertainTrack=20
 framesUntilDeleteTrack=40
 gridIsOn=true
-gridScaleX=80
-gridScaleY=40
+gridScaleX=136
+gridScaleY=120
 gridThreshold=2
 imageServerPort=3598
 mask=testMask.png
