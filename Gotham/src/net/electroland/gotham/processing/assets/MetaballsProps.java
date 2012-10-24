@@ -2,6 +2,8 @@ package net.electroland.gotham.processing.assets;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.electroland.utils.ElectrolandProperties;
 import processing.core.PApplet;
@@ -40,39 +42,46 @@ public class MetaballsProps implements ControlListener {
     private ControlP5 p5;
     private ControlWindow window;
     private Point placement = new Point(10, 20);
+    private Map<Integer, Color> colors;
+    private ElectrolandProperties props;
 
     public MetaballsProps(PApplet parent, String wallName, ElectrolandProperties props){
 
-            this.wallName = wallName;
+        this.props = props;
 
-            p5 = new ControlP5(parent);
+        this.wallName = wallName;
 
-            window = p5
-                     .addControlWindow(wallName + " controller", 100, 100, 600, 500)
-                     .hideCoordinates().setBackground(0);
+        p5 = new ControlP5(parent);
 
-            addSlider(COHESIVENESS,            props);
-            addSlider(REPELL_FORCE,            props);
-            addSlider(REPELL_VELOCITY_CEILING, props);
-            addSlider(THRESHOLD,               props);
-            addSlider(FRICTION,                props);
-            addSlider(MIN_VELOCITY,            props);
-            addSlider(MAX_VELOCITY,            props);
-            addSlider(BALL_SCALE,              props);
-            addSlider(BALL_OPACITY,            props);
-            addSlider(PRESENCE_RADIUS,         props);
-            addSlider(PRESENCE_OPACITY,        props);
-            addSlider(BLUR,                    props);
+        window = p5
+                 .addControlWindow(wallName + " controller", 100, 100, 600, 500)
+                 .hideCoordinates().setBackground(0);
 
-            nextColumn();
+        addSlider(COHESIVENESS,            props);
+        addSlider(REPELL_FORCE,            props);
+        addSlider(REPELL_VELOCITY_CEILING, props);
+        addSlider(THRESHOLD,               props);
+        addSlider(FRICTION,                props);
+        addSlider(MIN_VELOCITY,            props);
+        addSlider(MAX_VELOCITY,            props);
+        addSlider(BALL_SCALE,              props);
+        addSlider(BALL_OPACITY,            props);
+        addSlider(PRESENCE_RADIUS,         props);
+        addSlider(PRESENCE_OPACITY,        props);
+        addSlider(BLUR,                    props);
 
-            addBoundary(GRID,                  props);
-            addBoundary(GRID_ON_CANVAS,        props);
+        nextColumn();
 
-            addSwitch(ENABLE_GRID,             props);
-            addSwitch(SHOW_GRID,               props);
+        addBoundary(GRID,                  props);
+        addBoundary(GRID_ON_CANVAS,        props);
 
-            addConsoleOutputButton();
+        addSwitch(ENABLE_GRID,             props);
+        addSwitch(SHOW_GRID,               props);
+
+        addConsoleOutputButton();
+        addReloadButton();
+
+        reloadColors();
     }
 
     private void addSlider(String sliderName, ElectrolandProperties props){
@@ -137,37 +146,8 @@ public class MetaballsProps implements ControlListener {
 
     // TODO: this needs to be based on image cycling.
     public Color getColor(int ballId){
-
-        if (wallName.equalsIgnoreCase("east")){
- 
-            switch (ballId){
-                case(0): // BACKGROUND
-                    return new Color(0, 50, 255);
-                case(1): // balls.1
-                    return new Color(255, 0, 0);
-                case(2): // balls.2
-                    return new Color(255, 127, 0);
-                case(3): // balls.3
-                    return new Color(255, 0, 255);
-                default:
-                    return null;
-            }
-        } else if (wallName.equalsIgnoreCase("west")){
-
-            switch (ballId){
-                case(0): // BACKGROUND
-                    return new Color(0, 50, 255);
-                case(1): // balls.1
-                    return new Color(255, 0, 0);
-                case(2): // balls.2
-                    return new Color(255, 127, 0);
-                case(3): // balls.3
-                    return new Color(255, 0, 255);
-                default:
-                    return null;
-            }
-        } else {
-            return null;
+        synchronized(colors){
+            return colors.get(ballId);
         }
     }
 
@@ -210,14 +190,55 @@ public class MetaballsProps implements ControlListener {
 
     }
 
+    private void addReloadButton(){
+        Controller<Button> dump = p5.addButton("reload colors")
+                .setPosition(placement.x + 75, placement.y);
+        dump.addListener(this);
+        dump.moveTo(window);
+        nextRow();
+    }
+
     @Override
     public void controlEvent(ControlEvent arg0) {
-        for (ControllerInterface<?> list : p5.getAll()){
-            Controller<?> c = p5.getController(list.getName());
-            if (c instanceof Slider){
-                System.out.println(c.getName() + "=" + c.getValue());
-            } else if (c instanceof Textfield){
-                System.out.println(c.getName() + "=" + ((Textfield)c).getText());
+
+        if (arg0.getController().getName().equals("console dump")) {
+
+            for (ControllerInterface<?> list : p5.getAll()){
+                Controller<?> c = p5.getController(list.getName());
+                if (c instanceof Slider){
+                    System.out.println(c.getName() + "=" + c.getValue());
+                } else if (c instanceof Textfield){
+                    System.out.println(c.getName() + "=" + ((Textfield)c).getText());
+                }
+            }
+        } else if (arg0.getController().getName().equals("reload colors")) {
+            System.out.println("reloading colors...");
+            reloadColors();
+        }
+    }
+    
+    public void reloadColors(){
+
+        // props really requires a reload() method.
+        props = new ElectrolandProperties("Gotham-global.properties");
+
+        if (colors == null){
+            colors = new HashMap<Integer, Color>();
+        }
+
+        synchronized(colors){
+
+            colors = new HashMap<Integer, Color>();
+
+            for (String name : props.getObjectNames(wallName)){
+                if (name.startsWith("color")){
+                    int index = Integer.parseInt(name.substring(name.indexOf('.') + 1, name.length()));
+                    int r = props.getRequiredInt(wallName, name, "r");
+                    int g = props.getRequiredInt(wallName, name, "g");
+                    int b = props.getRequiredInt(wallName, name, "b");
+
+                    colors.put(index, new Color(r,g,b));
+                }
             }
         }
     }
