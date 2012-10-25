@@ -105,28 +105,28 @@ public class MetaballsProps implements ControlListener {
     }
     public void addBoundary(String name, ElectrolandProperties props){
 
-        int x = props.getRequiredInt(wallName, name, "x");
-        int y = props.getRequiredInt(wallName, name, "y");
-        int w = props.getRequiredInt(wallName, name, "width");
-        int h = props.getRequiredInt(wallName, name, "height");
+        int x = props.getRequiredInt(wallName, name, "x1");
+        int y = props.getRequiredInt(wallName, name, "y1");
+        int w = props.getRequiredInt(wallName, name, "x2") - x;
+        int h = props.getRequiredInt(wallName, name, "y2") - y;
 
         // DO NOT change the label names, because we use them as hash keys.
-        Controller<Textfield> xc = p5.addTextfield(name + " x inset")
+        Controller<Textfield> xc = p5.addTextfield(name + " x1")
                                      .setText("" + x)
                                      .setPosition(placement.x + 75, placement.y)
                                      .setWidth(90);
-        Controller<Textfield> yc = p5.addTextfield(name + " y inset")
+        Controller<Textfield> yc = p5.addTextfield(name + " y1")
                                      .setText("" + y)
                                      .setPosition(placement.x + 175, placement.y)
                                      .setWidth(90);
         nextRow();
 
         // DO NOT change the label names, because we use them as hash keys.
-        Controller<Textfield> wc = p5.addTextfield(name + " width")
+        Controller<Textfield> wc = p5.addTextfield(name + " x2")
                                      .setText("" + w)
                                      .setPosition(placement.x + 75, placement.y)
                                      .setWidth(90);
-        Controller<Textfield> hc = p5.addTextfield(name + " height")
+        Controller<Textfield> hc = p5.addTextfield(name + " y2")
                                      .setText("" + h)
                                      .setPosition(placement.x + 175, placement.y)
                                      .setWidth(90);
@@ -166,11 +166,10 @@ public class MetaballsProps implements ControlListener {
     public Rectangle getBoundary(String name){
 
         try{
-            int x = new Integer(((Textfield)p5.getController(name + " x inset")).getText());
-            int y = new Integer(((Textfield)p5.getController(name + " y inset")).getText());
-            int w = new Integer(((Textfield)p5.getController(name + " width")).getText());
-            int h = new Integer(((Textfield)p5.getController(name + " height")).getText());
-
+            int x = new Integer(((Textfield)p5.getController(name + " x1")).getText());
+            int y = new Integer(((Textfield)p5.getController(name + " y1")).getText());
+            int w = new Integer(((Textfield)p5.getController(name + " x2")).getText());
+            int h = new Integer(((Textfield)p5.getController(name + " y2")).getText());
             return new Rectangle(x, y, w, h);
         }catch(NumberFormatException e){
             return new Rectangle(0, 0, 1, 1);
