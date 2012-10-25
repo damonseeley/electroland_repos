@@ -2,10 +2,11 @@
 #Wed Oct 24 18:49:42 EDT 2012
 BackgroundImageAdaption=0.009
 adaptation=0.008
-backgroundImageAdaption=0.0060
+backgroundImageAdaption=0.0050
 blurRadius=9
 broadcastGrid=true
 broadcastGridAddress=localhost
+#broadcastGridAddress=192.168.247.108
 broadcastGridPort=3458
 broadcastRegions=false
 broadcastRegionsAddress=localhost
