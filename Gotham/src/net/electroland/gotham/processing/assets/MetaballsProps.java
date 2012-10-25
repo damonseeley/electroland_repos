@@ -107,8 +107,8 @@ public class MetaballsProps implements ControlListener {
 
         int x = props.getRequiredInt(wallName, name, "x1");
         int y = props.getRequiredInt(wallName, name, "y1");
-        int w = props.getRequiredInt(wallName, name, "x2") - x;
-        int h = props.getRequiredInt(wallName, name, "y2") - y;
+        int w = props.getRequiredInt(wallName, name, "x2");
+        int h = props.getRequiredInt(wallName, name, "y2");
 
         // DO NOT change the label names, because we use them as hash keys.
         Controller<Textfield> xc = p5.addTextfield(name + " x1")
@@ -168,8 +168,8 @@ public class MetaballsProps implements ControlListener {
         try{
             int x = new Integer(((Textfield)p5.getController(name + " x1")).getText());
             int y = new Integer(((Textfield)p5.getController(name + " y1")).getText());
-            int w = new Integer(((Textfield)p5.getController(name + " x2")).getText());
-            int h = new Integer(((Textfield)p5.getController(name + " y2")).getText());
+            int w = new Integer(((Textfield)p5.getController(name + " x2")).getText()) - x;
+            int h = new Integer(((Textfield)p5.getController(name + " y2")).getText()) - y;
             return new Rectangle(x, y, w, h);
         }catch(NumberFormatException e){
             return new Rectangle(0, 0, 1, 1);
