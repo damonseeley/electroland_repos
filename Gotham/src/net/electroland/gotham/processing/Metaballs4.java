@@ -310,17 +310,22 @@ public class Metaballs4 extends GothamPApplet {
      */
     public static GridData subset(GridData in, Rectangle boundary){
 
-        byte[] target = new byte[boundary.width * boundary.height];
-        for (int y = 0; y < boundary.height; y++) {
-            try {
-                System.arraycopy(in.data, ((y + boundary.y) * in.width) + (boundary.x), target, y * boundary.width, boundary.width);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        in.data  = target;
-        in.height = boundary.height;
-        in.width  = boundary.width;
+        try {
+			byte[] target = new byte[boundary.width * boundary.height];
+			for (int y = 0; y < boundary.height; y++) {
+			    try {
+			        System.arraycopy(in.data, ((y + boundary.y) * in.width) + (boundary.x), target, y * boundary.width, boundary.width);
+			    } catch (Exception e) {
+			        e.printStackTrace();
+			    }
+			}
+			in.data  = target;
+			in.height = boundary.height;
+			in.width  = boundary.width;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         return in;
     }
 
