@@ -29,6 +29,10 @@ public class ELUControls extends JPanel implements ActionListener, ButtonStateLi
         for (TestSuite ts : lightingManager.getTestSuites()){
             ts.addCompletionListener(this);
         }
+        if (lightingManager.isAutostarted()){
+            runTest.setEnabled(false);
+            startStop.setState(true);
+        }
     }
 
     public void layoutControls(){
@@ -73,12 +77,19 @@ public class ELUControls extends JPanel implements ActionListener, ButtonStateLi
     @Override
     public void buttonStateChanged(StatefulLabelButton button) {
         if (button == startStop && button.isOn()) {
-            runTest.setEnabled(false);
-            lightingManager.start();
+            start();
         } else {
-            runTest.setEnabled(true);
-            lightingManager.stop();
+            stop();
         }
+    }
+
+    public void start(){
+        runTest.setEnabled(false);
+        lightingManager.start();
+    }
+    public void stop(){
+        runTest.setEnabled(true);
+        lightingManager.stop();
     }
 
     @Override

@@ -44,8 +44,9 @@ public class ELUManager implements Runnable, TestSuiteCompletionListener {
     private List<ConfigurationListener> configListeners; 
 
     private Thread thread;
-    boolean isRunning = false;
-    boolean isRunningTest = false;
+    private boolean isRunning = false;
+    private boolean isRunningTest = false;
+    private int autostart = -1;
 
     // assume a general 45 fps over 10 seconds.
     private FrameRateRingBuffer fpsBuffer = new FrameRateRingBuffer(45 * 10);
@@ -663,6 +664,12 @@ public class ELUManager implements Runnable, TestSuiteCompletionListener {
 
         Runtime.getRuntime().addShutdownHook(new BlackOutThread(this));
         notifyConfigListeners();
+
+        autostart = ep.getDefaultInt("settings", "global", "autostart", -1);
+        if (autostart >=0 ){
+            new AutostartThread(this, autostart).start();
+        }
+
         return this;
     }
 
@@ -671,6 +678,9 @@ public class ELUManager implements Runnable, TestSuiteCompletionListener {
         return fixtures.values();
     }
 
+    public boolean isAutostarted(){
+        return autostart >= 0;
+    }
 
     /**
      * return the canvas referenced by name in lights.properties.
@@ -724,5 +734,27 @@ class BlackOutThread extends Thread{
     {
         elu.stop();
         elu.allOff();
+    }
+}
+
+class AutostartThread extends Thread {
+
+    private ELUManager elu;
+    private int delay;
+
+    public AutostartThread(ELUManager elu, int delay)
+    {
+        this.elu   = elu;
+        this.delay = delay;
+    }
+    public void run()
+    {
+        try {
+            Thread.sleep(1000 * delay);
+            System.out.println("autostarting ELU...");
+            elu.start();
+        } catch (InterruptedException e) {
+            e.printStackTrace(System.err);
+        }
     }
 }
