@@ -751,7 +751,6 @@ class AutostartThread extends Thread {
     {
         try {
             Thread.sleep(1000 * delay);
-            System.out.println("autostarting ELU...");
             elu.start();
         } catch (InterruptedException e) {
             e.printStackTrace(System.err);
