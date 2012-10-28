@@ -145,7 +145,7 @@ public class ElVisServer implements TimeOutListener {
 		if(arg.length > 0) {
 			props = ElProps.init(arg[0]);
 		} else {
-			props =ElProps.init("depends/blobTracker.props");
+			props =ElProps.init("elvis.properties");
 		}
 
 		new ElVisServer(
