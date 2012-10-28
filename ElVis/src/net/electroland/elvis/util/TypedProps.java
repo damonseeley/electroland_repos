@@ -1,9 +1,9 @@
 package net.electroland.elvis.util;
 
 import java.awt.Point;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -178,7 +178,17 @@ public class TypedProps extends Properties {
 	}
 	
 	 public void load(String path) throws IOException {
-			load(new FileInputStream(path));
+
+		 try{
+		 	 InputStream is = this.getClass().getClassLoader().getResourceAsStream(path);
+			 load(is);
+		 }catch(NullPointerException e){
+			 System.out.println("Make sure that '" + path + "' is in your classpath.");
+			 e.printStackTrace(System.err);
+		 }catch(IOException e){
+			 System.out.println("Make sure that '" + path + "' is in your classpath.");
+			 e.printStackTrace(System.err);
+		 }
 	 }
 	 
 	 public void store(String path, String comments) throws IOException {

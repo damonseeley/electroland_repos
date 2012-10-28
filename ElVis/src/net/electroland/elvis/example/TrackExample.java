@@ -22,7 +22,7 @@ public class TrackExample extends Thread implements TrackListener {
 		if(args.length > 0) {
 			p = ElProps.init(args[0]);
 		} else {
-			p = ElProps.init("depends/blobTracker.props");
+			p = ElProps.init("elvis.properties");
 		}
 
 		ElVisServer bts = new ElVisServer(

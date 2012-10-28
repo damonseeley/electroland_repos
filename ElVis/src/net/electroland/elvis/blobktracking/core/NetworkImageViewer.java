@@ -61,7 +61,7 @@ public class NetworkImageViewer extends ImageClient {
 		if(args.length > 0) {
 			props = ElProps.init(args[0]);
 		} else {
-			props =ElProps.init("depends/blobTracker.props");
+			props =ElProps.init("elvis.properties");
 		}
 
 		NetworkImageViewer niv = new NetworkImageViewer( props );
