@@ -15,6 +15,12 @@ import controlP5.Slider;
 import controlP5.Textfield;
 import controlP5.Toggle;
 
+/** This is ONLY used by Metaballs3 which is NOT the production version.  For the UI
+ * for the production version, please see MetaballsProps.java
+ * 
+ * @author damon
+ *
+ */
 public class MetaballsGUI implements ControlListener {
 
     private ControlP5 control;
