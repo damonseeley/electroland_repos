@@ -2,9 +2,11 @@ package net.electroland.gotham.processing.assets;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.electroland.gotham.processing.Metaballs4;
 import net.electroland.utils.ElectrolandProperties;
 import processing.core.PApplet;
 import controlP5.Button;
@@ -46,10 +48,13 @@ public class MetaballsProps implements ControlListener {
     private Point placement = new Point(10, 20);
     private Map<Integer, Color> colors;
     private ElectrolandProperties props;
+    private PApplet parent;
 
     public MetaballsProps(PApplet parent, String wallName, ElectrolandProperties props){
 
-        this.props = props;
+    	this.parent = parent;
+
+    	this.props = props;
 
         this.wallName = wallName;
 
@@ -206,6 +211,10 @@ public class MetaballsProps implements ControlListener {
 
         if (arg0.getController().getName().equals("console dump")) {
 
+        	System.out.println();
+        	System.out.println("Dump at " + new Date());
+        	System.out.println("====================================");
+        	
             for (ControllerInterface<?> list : p5.getAll()){
                 Controller<?> c = p5.getController(list.getName());
                 if (c instanceof Slider){
@@ -214,6 +223,11 @@ public class MetaballsProps implements ControlListener {
                     System.out.println(c.getName() + "=" + ((Textfield)c).getText());
                 }
             }
+            
+            System.out.println();
+            ((Metaballs4)parent).consoleDump();
+        	System.out.println();
+        
         } else if (arg0.getController().getName().equals("reload colors")) {
             System.out.println("reloading colors...");
             reloadColors();

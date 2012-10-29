@@ -373,11 +373,18 @@ public class Metaballs4 extends GothamPApplet {
         }
         return in;
     }
+
+    public void consoleDump(){
+    	for (MetaballGroup group : groups){
+    		for (Metaball ball : group.balls){
+    			System.out.println(ball);
+    		}
+    	}
+    }
+    
     class MetaballGroup {
 
         Rectangle range;
-        PVector position;
-        PVector velocity;
         int id;
         List <Metaball>balls;
 
@@ -404,14 +411,23 @@ public class Metaballs4 extends GothamPApplet {
         float radius;
         PVector position;
         PVector velocity;
-        float xsquish = 0;
-        float ysquish = 0;
         MetaballGroup group;
 
         public Metaball(float radius){
             this.radius = radius;
         }
 
+        public String toString(){
+        	StringBuffer br = new StringBuffer("Metaball[");
+        	br.append("group=").append(group.id).append(", ");
+        	br.append("radius=").append(radius).append(", ");
+        	br.append("position=").append(position).append(", ");
+        	br.append("velocity=").append(velocity).append(", ");
+        	br.append("color=").append(props.getColor(group.id));
+        	br.append(']');
+        	return br.toString();
+        }
+        
         public void checkBounds(Rectangle range){
             // bounce
             if (left() < range.x){
@@ -458,10 +474,10 @@ public class Metaballs4 extends GothamPApplet {
         }
 
         public float width(){
-            return radius - xsquish;
+            return radius;
         }
         public float height(){
-            return radius - ysquish;
+            return radius;
         }
 
         public float left(){
