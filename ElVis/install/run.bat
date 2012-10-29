@@ -1,1 +1,1 @@
-java -classpath ./depends;javacpp.jar;javacv-windows-x86_64.jar;javacv-windows-x86.jar;javacv.jar;JMyron.jar;log4j-1.2.9.jar;miglayout15-swing.jar;ELVIS.jar; net.electroland.elvis.blobktracking.core.ElVisServer
+java -classpath ./depends;javacpp.jar;./libraries/javacv-windows-x86_64.jar;./libraries/javacv-windows-x86.jar;./libraries/javacv.jar;./libraries/JMyron.jar;./libraries/log4j-1.2.9.jar;./libraries/miglayout15-swing.jar;ELVIS.jar; net.electroland.elvis.blobktracking.core.ElVisServer
