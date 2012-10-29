@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="dist" name="Gotham">
+    <property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+    <path id="Gotham.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="libraries/core.jar"/>
+        <pathelement location="libraries/gluegen-rt-natives-linux-amd64.jar"/>
+        <pathelement location="libraries/gluegen-rt-natives-linux-i586.jar"/>
+        <pathelement location="libraries/gluegen-rt-natives-macosx-universal.jar"/>
+        <pathelement location="libraries/gluegen-rt-natives-windows-amd64.jar"/>
+        <pathelement location="libraries/gluegen-rt-natives-windows-i586.jar"/>
+        <pathelement location="libraries/gluegen-rt.jar"/>
+        <pathelement location="libraries/jogl-all-natives-linux-amd64.jar"/>
+        <pathelement location="libraries/jogl-all-natives-linux-i586.jar"/>
+        <pathelement location="libraries/jogl-all-natives-macosx-universal.jar"/>
+        <pathelement location="libraries/jogl-all-natives-windows-amd64.jar"/>
+        <pathelement location="libraries/jogl-all-natives-windows-i586.jar"/>
+        <pathelement location="libraries/jogl-all.jar"/>
+        <pathelement location="libraries/video.jar"/>
+        <pathelement location="libraries/gstreamer-java.jar"/>
+        <pathelement location="libraries/jna.jar"/>
+        <pathelement location="libraries/controlP5.jar"/>
+        <pathelement location="libraries/ELVIS.jar"/>
+        <pathelement location="libraries/log4j-1.2.15.jar"/>
+        <pathelement location="libraries/vecmath.jar"/>
+        <pathelement location="libraries/j3dcore.jar"/>
+        <pathelement location="libraries/j3dutils.jar"/>
+        <pathelement location="libraries/EL-Config.jar"/>
+        <pathelement location="libraries/EA2.jar"/>
+        <pathelement location="libraries/ELU2.jar"/>
+    </path>
+    <path id="run.GothamConductor.classpath">
+        <path refid="Gotham.classpath"/>
+        <pathelement location="depends"/>
+        <pathelement location="libraries"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="dist" depends="build-eclipse-compiler" description="Jar it all up">
+        <echo>Jarring it all up.</echo>
+        <jar destfile="dist/gotham.jar" basedir="bin">
+            <manifest>
+                <attribute name="Built-By" value="${user.name}"/>
+                <attribute name="Implementation-Vendor" value="Electroland"/>
+                <attribute name="Implementation-Title" value="gotham"/>
+                <attribute name="Implementation-Version" value="1.0"/>
+                <attribute name="includeantruntime" value="false"/>
+            </manifest>  
+        </jar>
+         <echo>and done.</echo>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="Gotham.classpath"/>
+        </javac>
+    </target>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+    <target name="FlexingStripes">
+        <java classname="sun.applet.AppletViewer" dir="." failonerror="true" fork="yes">
+            <arg line="FlexingStripes.html"/>
+            <classpath refid="Gotham.classpath"/>
+        </java>
+    </target>
+    <target name="GothamConductor">
+        <java classname="net.electroland.gotham.core.GothamConductor" failonerror="true" fork="yes">
+            <classpath refid="run.GothamConductor.classpath"/>
+        </java>
+    </target>
+</project>
