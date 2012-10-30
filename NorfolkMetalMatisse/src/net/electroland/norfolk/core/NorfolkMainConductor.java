@@ -56,12 +56,12 @@ public class NorfolkMainConductor extends Thread implements ActionListener, Mode
     {
         context = new Hashtable<String, Object>();
 
-        String propsFileName = "EIA-local.properties";
+        String propsFileName = "Norfolk-local.properties";
         logger.info("EIAMain loading " + propsFileName);
         props = new ElectrolandProperties(propsFileName);
         context.put("props",props);
 
-        String propsGlobalFileName = "EIA-global.properties";
+        String propsGlobalFileName = "Norfolk-global.properties";
         logger.info("EIAMain loading " + propsGlobalFileName);
         propsGlobal = new ElectrolandProperties(propsGlobalFileName);
         context.put("propsGlobal",propsGlobal);
@@ -78,12 +78,12 @@ public class NorfolkMainConductor extends Thread implements ActionListener, Mode
         }
 
         try {
-            elu.load("EIA-ELU-3ch.properties");
+            elu.load("Norfolk-ELU.properties");
             
             if (eioplayback){
-                eio.load("EIA-EIO-playback.properties");
+                eio.load("Norfolk-EIO.properties");
             } else {
-                eio.load("EIA-EIO.properties");
+                eio.load("Norfolk-EIO.properties");
             }
             eio.start();
         } catch (OptionException e) {
@@ -105,10 +105,10 @@ public class NorfolkMainConductor extends Thread implements ActionListener, Mode
         context.put("canvas",canvas);
 
         // create an AnimationManager
-        anim = new AnimationManager("EIA-anim.properties");
+        anim = new AnimationManager("Norfolk-anim.properties");
 
         context.put("anim",anim);
-        context.put("animpropsfile", "EIA-anim.properties");
+        context.put("animpropsfile", "Norfolk-anim.properties");
 
         soundController = new SoundController(context);
         context.put("soundController", soundController);
@@ -127,9 +127,9 @@ public class NorfolkMainConductor extends Thread implements ActionListener, Mode
         ElectrolandProperties clipNames;
         // watchers per istate
         if (Boolean.parseBoolean(props.getOptional("settings", "sensortest", "testing"))) {
-            clipNames = new ElectrolandProperties("EIA-clipSchedule-test.properties");
+            clipNames = new ElectrolandProperties("Norfolk-clipSchedule.properties");
         } else {
-            clipNames = new ElectrolandProperties("EIA-clipSchedule.properties");
+            clipNames = new ElectrolandProperties("Norfolk-clipSchedule.properties");
         }
         
         for (IState state : eio.getIStates())
