@@ -447,13 +447,18 @@ public class Metaballs4 extends GothamPApplet {
         }
 
         public void repell(PVector point, float force){
-            
+
             float mDistance = PVector.dist(position, point);
-            PVector repel = PVector.sub(position, point);
-            repel.normalize();
-            repel.mult(force / (mDistance * mDistance));
-            velocity.add(repel);
-            
+            if (mDistance > 0){ // potential divide-by-zero
+                PVector repel = PVector.sub(position, point);
+                repel.normalize();
+                repel.mult(force / (mDistance * mDistance));
+                velocity.add(repel);
+            }else{
+                // what's a proper resolution here?
+                System.err.println("divide by zero in repell.");
+                System.out.println("and velcity is left at ..." + velocity);
+            }
         }
 
         public void spaceCheck(List<MetaballGroup> groups){
