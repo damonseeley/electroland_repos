@@ -94,7 +94,7 @@ public class MetaballsProps implements ControlListener {
     }
 
     private void addSlider(String sliderName, ElectrolandProperties props){
-        System.out.println(sliderName);
+
         float left  = props.getRequiredDouble("lava",   sliderName, "min").floatValue();
         float right = props.getRequiredDouble("lava",   sliderName, "max").floatValue();
         float init  = props.getRequiredDouble(wallName, sliderName, "default").floatValue();
