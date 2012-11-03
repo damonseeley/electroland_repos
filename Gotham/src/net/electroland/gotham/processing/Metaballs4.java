@@ -22,7 +22,8 @@ public class Metaballs4 extends GothamPApplet {
     private List <MetaballGroup>groups;
     private GridData gridData;
     private MetaballsProps props;
-    private Collection<GridData> gridHistory;
+    private BoundedFifoBuffer<GridData> gridHistory;
+    private final static int HISTORY_LENGTH = 5;
 
     @Override
     public void setup(){
@@ -32,7 +33,7 @@ public class Metaballs4 extends GothamPApplet {
 
         // groups of balls
         groups = new ArrayList<MetaballGroup>();
-        gridHistory = new BoundedFifoBuffer<GridData>();
+        gridHistory = new BoundedFifoBuffer<GridData>(HISTORY_LENGTH);
 
 
         int redOrgRoam = 40; //was 100
@@ -148,7 +149,8 @@ public class Metaballs4 extends GothamPApplet {
                 PVector c = PVector.sub(center, ball.position);
                 c.normalize();
                 c.mult(props.getValue(MetaballsProps.COHESIVENESS));
-                ball.velocity.add(c);
+// disabled as a test case for keeping balls disperse.
+                //                ball.velocity.add(c);
                 ball.position.add(ball.velocity);
             }
 
@@ -200,32 +202,40 @@ public class Metaballs4 extends GothamPApplet {
 
                     if (showGrid){
                         stroke(255);
-                    }else{
-                        noStroke();
-                        fill(255, 255, 255, (int)props.getValue(MetaballsProps.PRESENCE_OPACITY));
-                    }
 
-                    for (int x = 0; x < gridData.width; x++){
-                        for (int y = 0; y < gridData.height; y++){
-                            if (showGrid){
-                                if (gridData.getValue(x, y) != (byte)0){
+                        for (int x = 0; x < gridData.width; x++){
+                            for (int y = 0; y < gridData.height; y++){
+
+                            	if (gridData.getValue(x, y) != (byte)0){
                                     fill(255);
                                 }else{
                                     noFill();
                                 }
                                 this.rect(gridCanvas.x + (x * cellWidth), 
-                                        gridCanvas.y + (y * cellHeight), 
-                                        cellWidth, 
-                                        cellHeight);
-                            } else {
-                                if (gridData.getValue(x, y) != (byte)0){
-                                    this.ellipse(gridCanvas.x + (x * cellWidth), 
-                                                 gridCanvas.y + (y * cellHeight), 
-                                                 props.getValue(MetaballsProps.PRESENCE_RADIUS),
-                                                 props.getValue(MetaballsProps.PRESENCE_RADIUS));
-                                }
+                                		  gridCanvas.y + (y * cellHeight), 
+                                		  cellWidth, 
+                                		  cellHeight);
                             }
+                        }                    
+                    
+                    }else{
+
+                    	noStroke();
+                        fill(255, 255, 255, (int)props.getValue(MetaballsProps.PRESENCE_OPACITY));
+                        float presenceRadius = props.getValue(MetaballsProps.PRESENCE_RADIUS);
+
+                        for (GridData data : gridHistory){
+                        	for (int x = 0; x < data.width; x++){
+                                for (int y = 0; y < data.height; y++){
+                                    if (data.getValue(x, y) != (byte)0){
+                                        this.ellipse(gridCanvas.x + (x * cellWidth), 
+                                                     gridCanvas.y + (y * cellHeight), 
+                                                     presenceRadius, presenceRadius);
+                                    }
+                                }
+                            }                         	
                         }
+                                      
                     }
                 }
             }
@@ -276,6 +286,8 @@ public class Metaballs4 extends GothamPApplet {
                     srcData = flipVertical(srcData);
                 }
                 gridData = srcData;
+                if (gridHistory.isFull()){ gridHistory.remove(); }
+                gridHistory.add(gridData);
             }
         }
     }
