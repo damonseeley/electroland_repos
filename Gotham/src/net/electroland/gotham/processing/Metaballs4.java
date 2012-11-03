@@ -3,6 +3,7 @@ package net.electroland.gotham.processing;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import net.electroland.elvis.net.GridData;
@@ -10,6 +11,9 @@ import net.electroland.gotham.processing.assets.Color;
 import net.electroland.gotham.processing.assets.FastBlur;
 import net.electroland.gotham.processing.assets.MetaballsProps;
 import net.electroland.utils.ElectrolandProperties;
+
+import org.apache.commons.collections15.buffer.BoundedFifoBuffer;
+
 import processing.core.PVector;
 
 @SuppressWarnings("serial")
@@ -18,6 +22,7 @@ public class Metaballs4 extends GothamPApplet {
     private List <MetaballGroup>groups;
     private GridData gridData;
     private MetaballsProps props;
+    private Collection<GridData> gridHistory;
 
     @Override
     public void setup(){
@@ -27,6 +32,8 @@ public class Metaballs4 extends GothamPApplet {
 
         // groups of balls
         groups = new ArrayList<MetaballGroup>();
+        gridHistory = new BoundedFifoBuffer<GridData>();
+
 
         int redOrgRoam = 40; //was 100
         int purpRoam = 0; //was 0
