@@ -100,6 +100,7 @@ public class Metaballs4 extends GothamPApplet {
             for (Metaball ball : group.balls){
 
                 boolean runningAway = false;
+                int presenceCount = 1;
 
                 if(!enableGrid){
 
@@ -109,10 +110,12 @@ public class Metaballs4 extends GothamPApplet {
                         runningAway = true;
                     }
 
-                } else if (gridData != null) {
-                    synchronized(gridData){
+                } else if (gridData != null) { // THIS IS HAPPENING (NEEDLESSLY) PER BALL.
+
+                	synchronized(gridData){
                         List<Point> points = this.getObjects(gridData);
-                        runningAway = points.size() > props.getValue("threshold");
+                        presenceCount = points.size() == 0 ? 1 : points.size();
+
                         for (Point point : points){
 
                             float cellWidth  = gridCanvas.width / (float)gridData.width;
@@ -132,12 +135,9 @@ public class Metaballs4 extends GothamPApplet {
 
                 center.add(ball.position);
                 ball.velocity.mult(props.getValue(MetaballsProps.FRICTION));
-                // TODO: limit would work better as a coefficient.
-                //  ball.velocity.limit(props.getValue(MetaballsProps.MAX_VELOCITY)) + num_balls * Coefficient
-                //   should be calculated in head to avoid doing it over and over again.
-                ball.velocity.limit(runningAway ? props.getValue(MetaballsProps.REPELL_VELOCITY_CEILING) : 
-                                                  props.getValue(MetaballsProps.MAX_VELOCITY));
 
+                ball.velocity.limit(props.getValue(MetaballsProps.MAX_VELOCITY) * presenceCount * props.getValue(MetaballsProps.REPELL_VELOCITY_MULT));
+                
                 if (ball.velocity.mag() < props.getValue(MetaballsProps.MIN_VELOCITY)){
                     ball.velocity.setMag(props.getValue(MetaballsProps.MIN_VELOCITY));
                 }
