@@ -1,6 +1,5 @@
 package net.electroland.gotham.processing;
 
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,7 +11,6 @@ import net.electroland.gotham.processing.assets.FastBlur;
 import net.electroland.gotham.processing.assets.MetaballsProps;
 import net.electroland.utils.ElectrolandProperties;
 
-import org.apache.commons.collections15.Buffer;
 import org.apache.commons.collections15.buffer.BoundedFifoBuffer;
 
 import processing.core.PVector;
@@ -20,11 +18,12 @@ import processing.core.PVector;
 @SuppressWarnings("serial")
 public class Metaballs4 extends GothamPApplet {
 
+    private final static int HISTORY_LENGTH = 5; // should put in props file
+
     private List <MetaballGroup>groups;
     private GridData gridData;
     private MetaballsProps props;
-    private Buffer<GridData> gridHistory;
-    private final static int HISTORY_LENGTH = 3;
+    private BoundedFifoBuffer<List<PVector>> gridHistory;
 
     @Override
     public void setup(){
@@ -34,7 +33,7 @@ public class Metaballs4 extends GothamPApplet {
 
         // groups of balls
         groups = new ArrayList<MetaballGroup>();
-        gridHistory = new BoundedFifoBuffer<GridData>(HISTORY_LENGTH);
+        gridHistory = new BoundedFifoBuffer<List<PVector>>(HISTORY_LENGTH);
 
 
         int redOrgRoam = 40; //was 100
@@ -90,7 +89,12 @@ public class Metaballs4 extends GothamPApplet {
         boolean isGridAffectingBalls  = props.getState(MetaballsProps.ENABLE_GRID);
 
         // -------- move balls ----------
-        List<Point> repellingPoints = this.getObjects(gridData);
+        List<PVector> repellingPoints = this.getObjects(gridData, gridCanvas); // needs to be synchronized against gridData
+        if (gridHistory.isFull()){
+        	gridHistory.remove();
+        }
+        gridHistory.add(repellingPoints);
+        
         int presenceCount = repellingPoints.size() == 0 ? 1 : repellingPoints.size();
         float presenceImpact = props.getValue(MetaballsProps.MAX_VELOCITY) * presenceCount * props.getValue(MetaballsProps.REPELL_VELOCITY_MULT);
 
@@ -108,13 +112,9 @@ public class Metaballs4 extends GothamPApplet {
 
             	if (isGridAffectingBalls){
 
-            		for (Point point : repellingPoints){
-
-                        PVector translated = new PVector((cellWidth * point.x) + gridCanvas.x, // this could be cached outside of the loop.
-                                                         (cellHeight * point.y)  + gridCanvas.y);
-                        // TODO: problem: we're applying force to the top left of each ball instead of
-                        // it's center.
-                        ball.repell(translated, props.getValue(MetaballsProps.REPELL_FORCE));
+            		for (PVector point : repellingPoints){
+                        // TODO: problem: we're applying force to the top left of each ball instead of it's center.
+                        ball.repell(point, props.getValue(MetaballsProps.REPELL_FORCE));
                     }
             	}
 
@@ -170,23 +170,20 @@ public class Metaballs4 extends GothamPApplet {
 
             	if (gridData != null){
                     stroke(255);
-	                synchronized(gridData){ // show the actual grid, with blocks for "on" cells.
-	                	
-	                    for (int x = 0; x < gridData.width; x++){
-	                        for (int y = 0; y < gridData.height; y++){
-	
-	                        	if (gridData.getValue(x, y) != (byte)0){
-	                                fill(255);
-	                            }else{
-	                                noFill();
-	                            }
-	                            this.rect(gridCanvas.x + (x * cellWidth), 
-	                            		  gridCanvas.y + (y * cellHeight), 
-	                            		  cellWidth, 
-	                            		  cellHeight);
-	                        }
-	                    }                    
-	                }
+                    for (int x = 0; x < gridData.width; x++){
+                        for (int y = 0; y < gridData.height; y++){
+
+                        	if (gridData.getValue(x, y) != (byte)0){
+                                fill(255);
+                            }else{
+                                noFill();
+                            }
+                            this.rect(gridCanvas.x + (x * cellWidth), 
+                            		  gridCanvas.y + (y * cellHeight), 
+                            		  cellWidth, 
+                            		  cellHeight);
+                        }
+                    }                    
                 }
 
             }else{ // render grid as ghostly presence
@@ -195,20 +192,11 @@ public class Metaballs4 extends GothamPApplet {
                 fill(255, 255, 255, (int)props.getValue(MetaballsProps.PRESENCE_OPACITY));
                 float presenceRadius = props.getValue(MetaballsProps.PRESENCE_RADIUS);
 
-                synchronized(gridHistory){
-                	
-	                for (GridData data : gridHistory){
-	                	for (int x = 0; x < data.width; x++){
-	                        for (int y = 0; y < data.height; y++){
-	                            if (data.getValue(x, y) != (byte)0){
-	                                this.ellipse(gridCanvas.x + (x * cellWidth), 
-	                                             gridCanvas.y + (y * cellHeight), 
-	                                             presenceRadius, presenceRadius);
-	                            }
-	                        }
-	                    }                         	
-	                }
-                }
+            	for (List<PVector> points : gridHistory){
+            		for (PVector point : points){
+            			this.ellipse(point.x, point.y, presenceRadius, presenceRadius);
+            		}
+            	}                	
             }
         }
 
@@ -219,17 +207,21 @@ public class Metaballs4 extends GothamPApplet {
         }
     }
 
-    public List<Point> getObjects(GridData grid){
+    public List<PVector> getObjects(GridData grid, Rectangle gridCanvas){
 
     	if (grid == null)
     		return Collections.emptyList();
 
-        List<Point>objects = new ArrayList<Point>();
+        float cellWidth  = gridCanvas.width / (float)gridData.width;
+        float cellHeight = gridCanvas.height / (float)gridData.height;        	
+    	
+        List<PVector>objects = new ArrayList<PVector>();
         for (int i = 0; i < grid.data.length; i++){
             if (grid.data[i] != (byte)0){
                 int y = i / grid.width;
                 int x = i - (y * grid.width);
-                objects.add(new Point(x,y));
+                objects.add(new PVector(cellWidth * x + gridCanvas.x,
+                				      cellHeight * y + gridCanvas.y));
             }
         }
         return objects;
@@ -242,33 +234,23 @@ public class Metaballs4 extends GothamPApplet {
         if (gridData == null){
             gridData = srcData;
         } else {
-            synchronized(gridData){
+            // copy the original source, so we don't accidentally change
+            // the source for other clients using this data.
+            StringBuilder sb = new StringBuilder();
+            srcData.buildString(sb);
+            srcData = new GridData(sb.toString());
 
-                // copy the original source, so we don't accidentally change
-                // the source for other clients using this data.
-                StringBuilder sb = new StringBuilder();
-                srcData.buildString(sb);
-                srcData = new GridData(sb.toString());
+            srcData = subset(srcData, props.getBoundary(MetaballsProps.GRID));
 
-                srcData = subset(srcData, props.getBoundary(MetaballsProps.GRID));
+            srcData = counterClockwise(srcData);
 
-                srcData = counterClockwise(srcData);
-
-                if (props.getState(MetaballsProps.MIRROR_HORIZONTAL)){
-                    srcData = flipHorizontal(srcData);
-                }
-                if (props.getState(MetaballsProps.MIRROR_VERTICAL)){
-                    srcData = flipVertical(srcData);
-                }
-                gridData = srcData;
+            if (props.getState(MetaballsProps.MIRROR_HORIZONTAL)){
+                srcData = flipHorizontal(srcData);
             }
-        }
-
-        synchronized(gridHistory){
-            if (gridHistory.size() == HISTORY_LENGTH){ 
-            	gridHistory.remove(); 
+            if (props.getState(MetaballsProps.MIRROR_VERTICAL)){
+                srcData = flipVertical(srcData);
             }
-            gridHistory.add(gridData);            	
+            gridData = srcData;
         }
     }
 
