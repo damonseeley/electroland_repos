@@ -18,8 +18,6 @@ import processing.core.PVector;
 @SuppressWarnings("serial")
 public class Metaballs4 extends GothamPApplet {
 
-    private final static int HISTORY_LENGTH = 5; // should put in props file
-
     private List <MetaballGroup>groups;
     private GridData gridData;
     private MetaballsProps props;
@@ -29,11 +27,12 @@ public class Metaballs4 extends GothamPApplet {
     public void setup(){
 
         String name = this.getProperties().getRequired("name");
+        ElectrolandProperties globalProps = new ElectrolandProperties("Gotham-global.properties");
+        int historyLength = globalProps.getRequiredInt("lava", "gridHistory", "frameLength");
         props = new MetaballsProps(this, name, new ElectrolandProperties("Gotham-global.properties"));
-
         // groups of balls
         groups = new ArrayList<MetaballGroup>();
-        gridHistory = new BoundedFifoBuffer<List<PVector>>(HISTORY_LENGTH);
+        gridHistory = new BoundedFifoBuffer<List<PVector>>(historyLength);
 
 
         int redOrgRoam = 40; //was 100
@@ -230,7 +229,7 @@ public class Metaballs4 extends GothamPApplet {
 
     @Override
     public void handle(GridData srcData) {
-
+    	
         if (gridData == null){
             gridData = srcData;
         } else {
