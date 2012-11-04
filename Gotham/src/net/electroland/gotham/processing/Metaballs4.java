@@ -22,6 +22,7 @@ public class Metaballs4 extends GothamPApplet {
     private GridData gridData;
     private MetaballsProps props;
     private BoundedFifoBuffer<List<PVector>> gridHistory;
+    private boolean showFPS = false;
 
     @Override
     public void setup(){
@@ -29,6 +30,7 @@ public class Metaballs4 extends GothamPApplet {
         String name = this.getProperties().getRequired("name");
         ElectrolandProperties globalProps = new ElectrolandProperties("Gotham-global.properties");
         int historyLength = globalProps.getRequiredInt("lava", "gridHistory", "frameLength");
+        showFPS = globalProps.getOptionalBoolean("lava", "global", "showFPS");
         props = new MetaballsProps(this, name, new ElectrolandProperties("Gotham-global.properties"));
         // groups of balls
         groups = new ArrayList<MetaballGroup>();
@@ -81,10 +83,21 @@ public class Metaballs4 extends GothamPApplet {
         }
     }
 
+    private long lastFrameTime = 0;
+    
     @Override
     public void drawELUContent() {
 
-        Rectangle gridCanvas = props.getBoundary(MetaballsProps.GRID_ON_CANVAS);
+    	if (showFPS){
+    		long currentFrameTime = System.currentTimeMillis();
+    		long delay = currentFrameTime - lastFrameTime;
+    		if (delay > 50){
+        		System.out.println(this.getName() + " FPS: " + delay);
+    		}
+    		lastFrameTime = currentFrameTime;
+    	}
+
+    	Rectangle gridCanvas = props.getBoundary(MetaballsProps.GRID_ON_CANVAS);
         boolean isGridAffectingBalls  = props.getState(MetaballsProps.ENABLE_GRID);
 
         // -------- move balls ----------
@@ -193,7 +206,7 @@ public class Metaballs4 extends GothamPApplet {
 
             	for (List<PVector> points : gridHistory){
             		for (PVector point : points){
-            			this.ellipse(point.x, point.y, presenceRadius, presenceRadius);
+            			this.rect(point.x, point.y, presenceRadius, presenceRadius);
             		}
             	}                	
             }
