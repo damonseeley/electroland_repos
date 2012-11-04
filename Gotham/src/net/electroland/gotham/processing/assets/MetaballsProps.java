@@ -25,8 +25,7 @@ public class MetaballsProps implements ControlListener {
     // DO NOT CHANGE ANY OF THESE: HASH KEYS!
     final static public String COHESIVENESS            = "cohesiveness";
     final static public String REPELL_FORCE            = "repellForce";
-    final static public String REPELL_VELOCITY_CEILING = "repellVelocityCeiling";
-    final static public String THRESHOLD               = "threshold";
+    final static public String REPELL_VELOCITY_MULT    = "repellVelocityCoefficient";
     final static public String FRICTION                = "friction";
     final static public String MIN_VELOCITY            = "minVelocity";
     final static public String MAX_VELOCITY            = "maxVelocity";
@@ -66,8 +65,7 @@ public class MetaballsProps implements ControlListener {
 
         addSlider(COHESIVENESS,            props);
         addSlider(REPELL_FORCE,            props);
-        addSlider(REPELL_VELOCITY_CEILING, props);
-        addSlider(THRESHOLD,               props);
+        addSlider(REPELL_VELOCITY_MULT,    props);
         addSlider(FRICTION,                props);
         addSlider(MIN_VELOCITY,            props);
         addSlider(MAX_VELOCITY,            props);
