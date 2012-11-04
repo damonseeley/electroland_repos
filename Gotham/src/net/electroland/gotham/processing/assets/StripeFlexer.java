@@ -2,14 +2,14 @@ package net.electroland.gotham.processing.assets;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import processing.core.PApplet;
 import java.awt.geom.Point2D;
+
 import net.electroland.gotham.processing.FlexingStripes;
+import processing.core.PApplet;
 
 public class StripeFlexer extends Stripe {
 
 	// private boolean pstanding = true;
-	private float h;
 	public float r, g, b, oldr, oldg, oldb;
 	public float targetr, targetb, targetg;
 	public boolean justFinished;
@@ -23,7 +23,6 @@ public class StripeFlexer extends Stripe {
 			movement = new MoveRight(p, d);
 		else
 			movement = new MoveLeft(p, d);
-		h = p.random(300, 500);
 		isNew = false;
 		xpos = movement.getBegin();
 		hue = p.hue(stripeColor);
@@ -236,14 +235,6 @@ public class StripeFlexer extends Stripe {
 			}
 		}
 		ploc.setLocation(loc);
-	}
-
-	private int findInverseColor(int oldColor) {
-		int r = 255 - ((oldColor >> 16) & 0xFF);
-		int g = 255 - ((oldColor >> 8) & 0xFF);
-		int b = 255 - ((oldColor) & 0xFF);
-		float[] hsb = Color.RGBtoHSB((int) r, (int) g, (int) b, null);
-		return p.color(hsb[0] * 360, hsb[1] * 100, hsb[2] * 100);
 	}
 
 	@Override
