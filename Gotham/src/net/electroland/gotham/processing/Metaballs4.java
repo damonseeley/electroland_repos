@@ -381,6 +381,7 @@ public class Metaballs4 extends GothamPApplet {
         Rectangle range;
         int id;
         List <Metaball>balls;
+        float hueVariace;
 
         public MetaballGroup(int id, Rectangle range){
             this.range = range;

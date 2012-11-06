@@ -122,14 +122,9 @@ public class TimeEffectSet {
 
         float percentComplete = minPrev / (minPrev + minNext);
 
-        float v1 = effects.prior.hueVariation;
-        float v2 = effects.next.hueVariation;
-        newEffect.hueVariation = easingFunction.valueAt(percentComplete, v1, v2);
-
         // set colors
         for (Integer cid : effects.prior.colors.keySet()){
             Color newColor = getColor(effects.prior, effects.next, 
-                                      newEffect.hueVariation, 
                                       cid, percentComplete);
 
             newEffect.colors.put(cid, newColor);
@@ -141,7 +136,7 @@ public class TimeEffectSet {
         return newEffect;
     }
 
-    private Color getColor(TimeEffect prior, TimeEffect next, float variation, int cid, float percentComplete){
+    private Color getColor(TimeEffect prior, TimeEffect next, int cid, float percentComplete){
 
         Color priorColor = prior.getColor(cid);
         Color nextColor  = next.getColor(cid);
