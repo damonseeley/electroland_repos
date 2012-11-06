@@ -4,9 +4,8 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
+import net.electroland.ea.EasingFunction;
 import net.electroland.gotham.processing.Metaballs4;
 import net.electroland.utils.ElectrolandProperties;
 import processing.core.PApplet;
@@ -46,17 +45,21 @@ public class MetaballsProps implements ControlListener {
     private ControlP5 p5;
     private ControlWindow window;
     private Point placement = new Point(10, 20);
-    private Map<Integer, Color> colors;
-    private ElectrolandProperties props;
     private PApplet parent;
+    private TimeEffectSet timeEffects;
 
     public MetaballsProps(PApplet parent, String wallName, ElectrolandProperties props){
 
     	this.parent = parent;
-
-    	this.props = props;
-
         this.wallName = wallName;
+
+        // load the time effects
+        timeEffects = new TimeEffectSet((EasingFunction)(props.getRequiredClass(wallName, "easingFunction","class")));
+        for (String name : props.getObjectNames(wallName)){
+            if (name.startsWith("timeEffect")){
+                timeEffects.add(new TimeEffect(props.getParams(wallName, name)));
+            }
+        }
 
         // TODO: getting a null pointer here occasionally.
         p5 = new ControlP5(parent);
@@ -88,9 +91,6 @@ public class MetaballsProps implements ControlListener {
         addSwitch(MIRROR_HORIZONTAL,       props);
 
         addConsoleOutputButton();
-        addReloadButton();
-
-        reloadColors();
     }
 
     private void addSlider(String sliderName, ElectrolandProperties props){
@@ -155,9 +155,7 @@ public class MetaballsProps implements ControlListener {
 
     // TODO: this needs to be based on image cycling.
     public Color getColor(int ballId){
-        synchronized(colors){
-            return colors.get(ballId);
-        }
+        return timeEffects.getEffect(new Date()).getColor(ballId);
     }
 
     public float getValue(String name){
@@ -198,14 +196,6 @@ public class MetaballsProps implements ControlListener {
 
     }
 
-    private void addReloadButton(){
-        Controller<Button> dump = p5.addButton("reload colors")
-                .setPosition(placement.x + 75, placement.y);
-        dump.addListener(this);
-        dump.moveTo(window);
-        nextRow();
-    }
-
     @Override
     public void controlEvent(ControlEvent arg0) {
 
@@ -223,40 +213,11 @@ public class MetaballsProps implements ControlListener {
                     System.out.println(c.getName() + "=" + ((Textfield)c).getText());
                 }
             }
-            
+
             System.out.println();
             ((Metaballs4)parent).consoleDump();
         	System.out.println();
         
-        } else if (arg0.getController().getName().equals("reload colors")) {
-            System.out.println("reloading colors...");
-            reloadColors();
-        }
-    }
-    
-    public void reloadColors(){
-
-        // props really requires a reload() method.
-        props = new ElectrolandProperties("Gotham-global.properties");
-
-        if (colors == null){
-            colors = new HashMap<Integer, Color>();
-        }
-
-        synchronized(colors){
-
-            colors = new HashMap<Integer, Color>();
-
-            for (String name : props.getObjectNames(wallName)){
-                if (name.startsWith("color")){
-                    int index = Integer.parseInt(name.substring(name.indexOf('.') + 1, name.length()));
-                    int r = props.getRequiredInt(wallName, name, "r");
-                    int g = props.getRequiredInt(wallName, name, "g");
-                    int b = props.getRequiredInt(wallName, name, "b");
-
-                    colors.put(index, new Color(r,g,b));
-                }
-            }
         }
     }
 }
