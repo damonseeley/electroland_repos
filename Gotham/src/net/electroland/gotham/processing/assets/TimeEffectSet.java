@@ -60,9 +60,8 @@ public class TimeEffectSet {
     }
 
     public void add(TimeEffect te){
-
-        effects.add(te);
-        Collections.sort(effects);
+        this.effects.add(te);
+        Collections.sort(this.effects);
     }
 
     public Bracket getEffectBracket(int hours, int minutes){
@@ -80,16 +79,21 @@ public class TimeEffectSet {
 
         TimeEffect first = effects.get(0);
 
-        if (bracket.prior == null){ // e.g., you only had one effect, and it happened earlier.
+        if (bracket.prior == null){ // prior effect was yesterday
             bracket.prior = effects.get(effects.size() - 1);
         }
-        if (bracket.next == null){ // e.g., wraparound at end of day
+        if (bracket.next == null){ // next effect is tomorrow
             bracket.next = first;
         }
 
         return bracket;
     }
 
+    /** 
+     * convert date to hours, minutes (0:0 to 23:59)
+     * @param date
+     * @return
+     */
     public static int[] getTime(Date date){
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
@@ -118,19 +122,19 @@ public class TimeEffectSet {
 
         float v1 = effects.prior.hueVariation;
         float v2 = effects.next.hueVariation;
-        newEffect.setHueVariation(easingFunction.valueAt(percentComplete, v1, v2));
+        newEffect.hueVariation = easingFunction.valueAt(percentComplete, v1, v2);
 
         // set colors
         for (Integer cid : effects.prior.colors.keySet()){
             Color newColor = getColor(effects.prior, effects.next, 
-                                      newEffect.getHueVariation(), 
+                                      newEffect.hueVariation, 
                                       cid, percentComplete);
 
             newEffect.colors.put(cid, newColor);
         }
 
         // entropy 
-        newEffect.setEntropy(easingFunction.valueAt(percentComplete, effects.prior.entropy, effects.next.entropy));
+        newEffect.entropy = easingFunction.valueAt(percentComplete, effects.prior.entropy, effects.next.entropy);
 
         return newEffect;
     }
@@ -139,6 +143,8 @@ public class TimeEffectSet {
 
         Color priorColor = prior.getColor(cid);
         Color nextColor  = next.getColor(cid);
+
+        System.out.println("blending " + cid + " at " + percentComplete + "% with variation " + variation);
 
         float r1 = priorColor.getRed();
         float r2 = nextColor.getRed();
@@ -149,21 +155,21 @@ public class TimeEffectSet {
         float b1 = priorColor.getBlue();
         float b2 = nextColor.getBlue();
 
-        Color color = new Color(
-                easingFunction.valueAt(percentComplete, r1, r2),
-                easingFunction.valueAt(percentComplete, g1, g2),
-                easingFunction.valueAt(percentComplete, b1, b2)
-                );
 
-        float[] hsb = java.awt.Color.RGBtoHSB((int)color.getRed(), 
-                                              (int)color.getGreen(), 
-                                              (int)color.getBlue(), 
-                                              new float[3]);
+        float r3 = easingFunction.valueAt(percentComplete, r1, r2);
+        float g3 = easingFunction.valueAt(percentComplete, g1, g2);
+        float b3 = easingFunction.valueAt(percentComplete, b1, b2);
 
+        return new Color((int)r3, (int)g3, (int)b3);
 
-        hsb[0] = adjustHue(hsb[0], variation);
-
-        return new Color(Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]));
+//      doh.  hue variation really needs to be precalculated and stored persistently with each ball.
+//        System.out.println("got: " + r3 + ", " + g3 + ", " + b3);
+//        
+//        float[] hsb = java.awt.Color.RGBtoHSB((int)r3, (int)g3, (int)b3, new float[3]);
+//
+//        hsb[0] = adjustHue(hsb[0], variation);
+//
+//        return new Color(Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]));
     }
 
     private float adjustHue(float hue, float variation){

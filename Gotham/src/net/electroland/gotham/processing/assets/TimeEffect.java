@@ -32,21 +32,30 @@ public class TimeEffect implements Comparable<TimeEffect> {
         this.minutes = minutes;
     }
 
-    private void parseColors(String paletteFileName, int x, int y, int dy){
-        /**
-east.color.0 = $r 0 $g 110 $b 150
-east.color.1 = $r 255 $g 0 $b 0
-east.color.2 = $r 255 $g 127 $b 0
-east.color.3 = $r 255 $g 230 $b 40
+    public Color getColor(int colorId) {
+        return colors.get(colorId);
+    }
 
-west.color.0 = $r 80 $g 0 $b 80
-west.color.1 = $r 255 $g 0 $b 50
-#west.color.2 = $r 127 $g 0 $b 255
-west.color.2 = $r 0 $g 255 $b 255
-west.color.3 = $r 0 $g 100 $b 255
-         */
-        
-        // TODO
+    public float getEntropy() {
+        return entropy;
+    }
+
+    private void parseColors(String paletteFileName, int x, int y, int dy){
+
+        if (paletteFileName.startsWith("east")){
+            // set 1
+            colors.put(0, new Color(0, 110, 150));
+            colors.put(1, new Color(255, 0, 0));
+            colors.put(2, new Color(255, 127, 0));
+            colors.put(3, new Color(255, 230, 40));
+
+        }else if (paletteFileName.startsWith("west")){
+            // set 1
+            colors.put(0, new Color(80, 0, 80));
+            colors.put(1, new Color(255, 0, 50));
+            colors.put(2, new Color(0, 255, 255));
+            colors.put(3, new Color(0, 100, 255));
+        }
     }
 
     public boolean isBefore(int referenceHours, int referenceMinutes)
@@ -67,27 +76,8 @@ west.color.3 = $r 0 $g 100 $b 255
     }
 
     public int minutesUntil(int referenceHours, int referenceMinutes){
+        // 1440 = 24 hours * 60 minutes
         return 1440 - minutesSince(referenceHours, referenceMinutes);
-    }
-
-    public Color getColor(int colorId) {
-        return colors.get(colorId);
-    }
-
-    public float getHueVariation() {
-        return hueVariation;
-    }
-
-    public void setHueVariation(float hueVariation) {
-        this.hueVariation = hueVariation;
-    }
-
-    public float getEntropy() {
-        return entropy;
-    }
-
-    public void setEntropy(float entropy) {
-        this.entropy = entropy;
     }
 
     @Override
