@@ -10,14 +10,12 @@ public class TimeEffect implements Comparable<TimeEffect> {
 
     protected int hours, minutes;
     protected Map<Integer,Color> colors = new HashMap<Integer, Color>();
-    protected float hueVariation;
     protected float entropy;
 
     public TimeEffect(ParameterMap vals){
 
         hours = vals.getRequiredInt("hours");
         minutes = vals.getRequiredInt("minutes");
-        hueVariation = vals.getRequiredDouble("hueVariation").floatValue();
         entropy = vals.getRequiredDouble("entropy").floatValue();
 
         int x = vals.getRequiredInt("x");
@@ -90,7 +88,6 @@ public class TimeEffect implements Comparable<TimeEffect> {
         sb.append("hours=").append(hours).append(", ");
         sb.append("minutes=").append(minutes).append(", ");
         sb.append("entropy=").append(entropy).append(", ");
-        sb.append("hueVariation=").append(hueVariation).append(", ");
         sb.append("colors=").append(colors).append(", ");
 
         return sb.append(']').toString();
