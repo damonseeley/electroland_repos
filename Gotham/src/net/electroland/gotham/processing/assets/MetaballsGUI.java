@@ -1,5 +1,6 @@
 package net.electroland.gotham.processing.assets;
 
+import java.awt.Color;
 import java.awt.Rectangle;
 
 import net.electroland.utils.ElectrolandProperties;

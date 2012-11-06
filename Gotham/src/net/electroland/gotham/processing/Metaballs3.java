@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.electroland.elvis.net.GridData;
-import net.electroland.gotham.processing.assets.Color;
 import net.electroland.gotham.processing.assets.FastBlur;
 import net.electroland.gotham.processing.assets.MetaballsGUI;
 import processing.core.PVector;
@@ -155,7 +154,7 @@ public class Metaballs3 extends GothamPApplet {
         }
 
         // fill the whole area with purple
-        fill(prefs.getBGColor().r, prefs.getBGColor().g, prefs.getBGColor().b, 127);
+        fill(prefs.getBGColor().getRed(), prefs.getBGColor().getGreen(), prefs.getBGColor().getBlue(), 127);
         rect(0, 0, width, height);
 
         // render each group's bounding box
@@ -169,7 +168,7 @@ public class Metaballs3 extends GothamPApplet {
         for (MetaballGroup group : groups){
             for (Metaball ball : group.balls){
                 this.noStroke();
-                this.fill(group.color.r, group.color.g, group.color.b, ELLIPSE_ALPHA);
+                this.fill(group.color.getRed(), group.color.getGreen(), group.color.getBlue(), ELLIPSE_ALPHA);
                 this.ellipse(ball.position.x, ball.position.y, ball.width(), ball.height());
             }
         }
@@ -330,10 +329,10 @@ public class Metaballs3 extends GothamPApplet {
         Rectangle range;
         PVector position;
         PVector velocity;
-        Color color;
+        java.awt.Color color;
         List <Metaball>balls;
 
-        public MetaballGroup(Rectangle range, Color color){
+        public MetaballGroup(Rectangle range, java.awt.Color color){
             this.range = range;
             this.color = color;
             balls = new ArrayList<Metaball>();
@@ -354,11 +353,11 @@ public class Metaballs3 extends GothamPApplet {
         @Override 
         public void controlEvent(ControlEvent evt) {
             if (evt.getController().getName().toLowerCase().startsWith("red")){
-                this.color.r = evt.getValue();
+//                this.color.set() = evt.getValue();
             }else if (evt.getController().getName().toLowerCase().startsWith("green")){
-                this.color.g = evt.getValue();
+//                this.color.g = evt.getValue();
             }else if (evt.getController().getName().toLowerCase().startsWith("blue")){
-                this.color.b = evt.getValue();
+//                this.color.b = evt.getValue();
             }
         }
     }

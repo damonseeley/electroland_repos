@@ -1,12 +1,12 @@
 package net.electroland.gotham.processing;
 
+import java.awt.Color;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import net.electroland.elvis.net.GridData;
-import net.electroland.gotham.processing.assets.Color;
 import net.electroland.gotham.processing.assets.FastBlur;
 import net.electroland.gotham.processing.assets.MetaballsProps;
 import net.electroland.utils.ElectrolandProperties;
@@ -158,7 +158,7 @@ public class Metaballs4 extends GothamPApplet {
         
         // fill the whole area with purple
         Color bgColor = props.getColor(0);
-        fill(bgColor.r, bgColor.g, bgColor.b, 127);
+        fill(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), 127);
         rect(0, 0, width, height);
 
         // render groups of balls
@@ -170,7 +170,7 @@ public class Metaballs4 extends GothamPApplet {
 
             for (Metaball ball : group.balls){
                 this.noStroke();
-                this.fill(color.r, color.g, color.b, ballOpacity);
+                this.fill(color.getRed(), color.getGreen(), color.getBlue(), ballOpacity);
                 this.ellipse(ball.position.x, ball.position.y, ball.width() * scale, ball.height() * scale);
             }
         }
@@ -252,6 +252,7 @@ public class Metaballs4 extends GothamPApplet {
             srcData.buildString(sb);
             srcData = new GridData(sb.toString());
 
+            // TODO: startup null pointer points to here.
             srcData = subset(srcData, props.getBoundary(MetaballsProps.GRID));
 
             srcData = counterClockwise(srcData);
