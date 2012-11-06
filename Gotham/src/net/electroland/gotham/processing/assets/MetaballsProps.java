@@ -38,8 +38,10 @@ public class MetaballsProps implements ControlListener {
     final static public String GRID_ON_CANVAS          = "gridOnCanvas";
     final static public String ENABLE_GRID             = "enableGrid";
     final static public String SHOW_GRID               = "showGrid";
+    final static public String USE_TIME_SLIDER         = "useTimeSlider";
     final static public String MIRROR_HORIZONTAL       = "mirrorHorizontal";
     final static public String MIRROR_VERTICAL         = "mirrorVertical";
+    final static public String HOUR                    = "hour";
 
     private String wallName;
     private ControlP5 p5;
@@ -79,6 +81,7 @@ public class MetaballsProps implements ControlListener {
         addSlider(PRESENCE_RADIUS,         props);
         addSlider(PRESENCE_OPACITY,        props);
         addSlider(BLUR,                    props);
+        addSlider(HOUR,                    props);
 
         nextColumn();
 
@@ -89,6 +92,7 @@ public class MetaballsProps implements ControlListener {
         addSwitch(SHOW_GRID,               props);
         addSwitch(MIRROR_VERTICAL,         props);
         addSwitch(MIRROR_HORIZONTAL,       props);
+        addSwitch(USE_TIME_SLIDER,         props);
 
         addConsoleOutputButton();
     }
@@ -155,7 +159,15 @@ public class MetaballsProps implements ControlListener {
 
     // TODO: this needs to be based on image cycling.
     public Color getColor(int ballId){
-        return timeEffects.getEffect(new Date()).getColor(ballId);
+        if (getState(USE_TIME_SLIDER)){
+            int minutes = (int)getValue(HOUR);
+            int hours = 0;
+            hours = minutes / 60;
+            minutes = minutes % 60;
+            return timeEffects.getEffect(hours, minutes, 0).getColor(ballId);
+        }else{
+            return timeEffects.getEffect(new Date()).getColor(ballId);
+        }
     }
 
     public float getValue(String name){
