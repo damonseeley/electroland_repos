@@ -25,9 +25,9 @@ public class TimeEffectSet {
 
         ElectrolandProperties ep = new ElectrolandProperties("Gotham-global.properties");
 
-        for (String name : ep.getObjectNames("east")){
+        for (String name : ep.getObjectNames("west")){
             if (name.startsWith("timeEffect")){
-                set.add(new TimeEffect(ep.getParams("east", name)));
+                set.add(new TimeEffect(ep.getParams("west", name)));
             }
         }
 
@@ -40,12 +40,12 @@ public class TimeEffectSet {
         }
 
         for (int hour = 0; hour < 24; hour++){
-            int minutes = (int)(Math.random() * 60);
+            int minutes = 25;
             Bracket b = set.getEffectBracket(hour, minutes);
             System.out.println("for " + hour + ":" + minutes  + "...");
             System.out.println("last:  " + b.prior);
             System.out.println("next: " + b.next);
-            System.out.println("blended: " + set.getEffect(hour, minutes));
+//            System.out.println("blended: " + set.getEffect(hour, minutes));
             System.out.println();
         }
 
@@ -101,26 +101,33 @@ public class TimeEffectSet {
         calendar.setTime(date);
         int hours   = calendar.get(Calendar.HOUR) + 12;
         int minutes = calendar.get(Calendar.MINUTE);
-        if (hours <= 12 && calendar.get(Calendar.AM_PM) == 1){
+        int seconds = calendar.get(Calendar.SECOND);
+        if (hours < 12 && calendar.get(Calendar.AM_PM) == 1){
             hours += 12;
         }
-        return new int[]{hours, minutes};
+        if (hours == 12 && calendar.get(Calendar.AM_PM) == 0){
+            hours = 0;
+        }
+        return new int[]{hours, minutes, seconds};
     }
 
     public TimeEffect getEffect(Date date){
         int[] time = getTime(date);
-        return getEffect(time[0], time[1]);
+        return getEffect(time[0], time[1], time[2]);
     }
 
-    public TimeEffect getEffect(int hours, int minutes){
+    public TimeEffect getEffect(int hours, int minutes, int seconds){
 
         TimeEffect newEffect = new TimeEffect(hours, minutes);
         Bracket effects = getEffectBracket(hours, minutes);
 
-        float minPrev = effects.prior.minutesSince(hours, minutes);
-        float minNext  = effects.next.minutesUntil(hours, minutes);
+        int minPrev = effects.prior.minutesSince(hours, minutes);
+        minPrev *= 60; minPrev += seconds;
+        int minNext  = effects.next.minutesUntil(hours, minutes);
+         minNext *= 60; minNext -= seconds;
 
-        float percentComplete = minPrev / (minPrev + minNext);
+        float percentComplete = (float)(minPrev / (double)(minPrev + minNext));
+//        System.out.println(minPrev + ":" + minNext + ":" + percentComplete);
 
         // set colors
         for (Integer cid : effects.prior.colors.keySet()){
