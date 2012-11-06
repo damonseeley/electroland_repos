@@ -1,5 +1,6 @@
 package net.electroland.gotham.processing.assets;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Date;
@@ -57,6 +58,7 @@ public class MetaballsProps implements ControlListener {
 
         this.wallName = wallName;
 
+        // TODO: getting a null pointer here occasionally.
         p5 = new ControlP5(parent);
 
         window = p5
