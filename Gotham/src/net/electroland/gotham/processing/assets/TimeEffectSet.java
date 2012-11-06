@@ -64,7 +64,7 @@ public class TimeEffectSet {
         Collections.sort(this.effects);
     }
 
-    public Bracket getEffectBracket(int hours, int minutes){
+    private Bracket getEffectBracket(int hours, int minutes){
 
         Bracket bracket = new Bracket();
 
@@ -144,8 +144,6 @@ public class TimeEffectSet {
         Color priorColor = prior.getColor(cid);
         Color nextColor  = next.getColor(cid);
 
-        System.out.println("blending " + cid + " at " + percentComplete + "% with variation " + variation);
-
         float r1 = priorColor.getRed();
         float r2 = nextColor.getRed();
 
@@ -155,26 +153,11 @@ public class TimeEffectSet {
         float b1 = priorColor.getBlue();
         float b2 = nextColor.getBlue();
 
-
         float r3 = easingFunction.valueAt(percentComplete, r1, r2);
         float g3 = easingFunction.valueAt(percentComplete, g1, g2);
         float b3 = easingFunction.valueAt(percentComplete, b1, b2);
 
         return new Color((int)r3, (int)g3, (int)b3);
-
-//      doh.  hue variation really needs to be precalculated and stored persistently with each ball.
-//        System.out.println("got: " + r3 + ", " + g3 + ", " + b3);
-//        
-//        float[] hsb = java.awt.Color.RGBtoHSB((int)r3, (int)g3, (int)b3, new float[3]);
-//
-//        hsb[0] = adjustHue(hsb[0], variation);
-//
-//        return new Color(Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]));
-    }
-
-    private float adjustHue(float hue, float variation){
-        float range = hue * variation;
-        return (hue - (range / 2)) + (float)(Math.random() * range);
     }
 
     class Bracket{
