@@ -40,26 +40,33 @@ public class TimeEffect implements Comparable<TimeEffect> {
 
     private void parseColors(String paletteFileName, int x, int y, int dy){
 
-        if (paletteFileName.startsWith("east")){
+        if (paletteFileName.equals("east")){
             // set 1
             colors.put(0, new Color(0, 110, 150));
             colors.put(1, new Color(255, 0, 0));
             colors.put(2, new Color(255, 127, 0));
             colors.put(3, new Color(255, 230, 40));
 
-        }else if (paletteFileName.startsWith("west")){
+        }else if (paletteFileName.equals("west")){
             // set 1
             colors.put(0, new Color(80, 0, 80));
             colors.put(1, new Color(255, 0, 50));
             colors.put(2, new Color(0, 255, 255));
             colors.put(3, new Color(0, 100, 255));
         }
+        else if (paletteFileName.equals("westBW")){
+            // set 1
+            colors.put(0, new Color(80, 80, 80));
+            colors.put(1, new Color(50, 50, 50));
+            colors.put(2, new Color(255, 255, 255));
+            colors.put(3, new Color(100, 100, 100));
+        }
     }
 
     public boolean isBefore(int referenceHours, int referenceMinutes)
     {
         return hours < referenceHours ||
-               hours == referenceHours && referenceMinutes > minutes;
+               hours == referenceHours && referenceMinutes >= minutes;
     }
 
     public int minutesSince(int referenceHours, int referenceMinutes){
