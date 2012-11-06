@@ -52,12 +52,22 @@ west.color.3 = $r 0 $g 100 $b 255
     public boolean isBefore(int referenceHours, int referenceMinutes)
     {
         return hours < referenceHours ||
-               hours == referenceHours && minutes < referenceMinutes;
+               hours == referenceHours && referenceMinutes > minutes;
     }
 
-    public int minutesBetween(int referenceHours, int referenceMinutes)
-    {
-        return (60 * (referenceHours - hours)) + referenceMinutes - minutes;
+    public int minutesSince(int referenceHours, int referenceMinutes){
+        // it happened today e.g., current time is 12:00, effect was at 9:30
+        if (isBefore(referenceHours, referenceMinutes)){
+            return ((referenceHours - hours) * 60) + referenceMinutes - minutes;
+        }else{
+            // it happened yesterday
+            // e.g., it is 0:51 and it happend at 20:00
+            return ((24 - hours + referenceHours) * 60) + (referenceMinutes - minutes);
+        }
+    }
+
+    public int minutesUntil(int referenceHours, int referenceMinutes){
+        return 1440 - minutesSince(referenceHours, referenceMinutes);
     }
 
     public Color getColor(int colorId) {
@@ -82,6 +92,17 @@ west.color.3 = $r 0 $g 100 $b 255
 
     @Override
     public int compareTo(TimeEffect in) {
-        return this.minutesBetween(in.hours, in.minutes);
+        return this.isBefore(in.hours, in.minutes) ? -1 : 1;
+    }
+
+    public String toString(){
+        StringBuffer sb = new StringBuffer("TimeEffect[");
+        sb.append("hours=").append(hours).append(", ");
+        sb.append("minutes=").append(minutes).append(", ");
+        sb.append("entropy=").append(entropy).append(", ");
+        sb.append("hueVariation=").append(hueVariation).append(", ");
+        sb.append("colors=").append(colors).append(", ");
+
+        return sb.append(']').toString();
     }
 }

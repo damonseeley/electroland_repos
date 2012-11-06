@@ -8,11 +8,51 @@ import java.util.Date;
 import java.util.List;
 
 import net.electroland.ea.EasingFunction;
+import net.electroland.ea.easing.Linear;
+import net.electroland.utils.ElectrolandProperties;
 
 public class TimeEffectSet {
 
     private EasingFunction easingFunction;
     private List<TimeEffect>effects;
+
+    // unit tests
+    public static void main(String args[]){
+
+        TimeEffectSet set = new TimeEffectSet(new Linear());
+
+        ElectrolandProperties ep = new ElectrolandProperties("Gotham-global.properties");
+
+        for (String name : ep.getObjectNames("east")){
+            if (name.startsWith("timeEffect")){
+                set.add(new TimeEffect(ep.getParams("east", name)));
+            }
+        }
+
+        for (TimeEffect effect : set.effects){
+            System.out.println(effect);
+            TimeEffect first = set.effects.get(0);
+            System.out.println("effect is before first " + effect.isBefore(first.hours, first.minutes));
+            System.out.println("first is effect first " + first.isBefore(effect.hours, effect.minutes));
+            System.out.println("");
+        }
+
+        for (int hour = 0; hour < 24; hour++){
+            int minutes = (int)(Math.random() * 60);
+            Bracket b = set.getEffectBracket(hour, minutes);
+            System.out.println("for " + hour + ":" + minutes  + "...");
+            System.out.println("last:  " + b.prior);
+            System.out.println("next: " + b.next);
+            System.out.println("blended: " + set.getEffect(hour, minutes));
+            System.out.println();
+        }
+
+        int[] now = TimeEffectSet.getTime(new Date());
+        System.out.println(set.getEffectBracket(now[0], now[1]).prior);
+        System.out.println(set.getEffectBracket(now[0], now[1]).next);
+
+        // get color
+    }
 
     public TimeEffectSet(EasingFunction easingFunction){
         this.easingFunction = easingFunction;
@@ -38,34 +78,47 @@ public class TimeEffectSet {
             }
         }
 
+        TimeEffect first = effects.get(0);
+
         if (bracket.prior == null){ // e.g., you only had one effect, and it happened earlier.
-            bracket.prior = effects.get(0);
+            bracket.prior = effects.get(effects.size() - 1);
         }
         if (bracket.next == null){ // e.g., wraparound at end of day
-            bracket.next = effects.get(0);
+            bracket.next = first;
         }
 
         return bracket;
     }
 
-    public TimeEffect getEffect(Date date){
-
+    public static int[] getTime(Date date){
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        int hours   = calendar.get(Calendar.HOUR);
+        int hours   = calendar.get(Calendar.HOUR) + 12;
         int minutes = calendar.get(Calendar.MINUTE);
+        if (hours <= 12 && calendar.get(Calendar.AM_PM) == 1){
+            hours += 12;
+        }
+        return new int[]{hours, minutes};
+    }
+
+    public TimeEffect getEffect(Date date){
+        int[] time = getTime(date);
+        return getEffect(time[0], time[1]);
+    }
+
+    public TimeEffect getEffect(int hours, int minutes){
 
         TimeEffect newEffect = new TimeEffect(hours, minutes);
         Bracket effects = getEffectBracket(hours, minutes);
 
-        float dBefore = Math.abs(effects.prior.minutesBetween(hours, minutes));
-        float dAfter  = Math.abs(effects.prior.minutesBetween(hours, minutes));
+        float minPrev = effects.prior.minutesSince(hours, minutes);
+        float minNext  = effects.next.minutesUntil(hours, minutes);
 
-        float percentComplete = dBefore / dBefore + dAfter;
+        float percentComplete = minPrev / (minPrev + minNext);
 
         float v1 = effects.prior.hueVariation;
         float v2 = effects.next.hueVariation;
-        newEffect.setHueVariation(easingFunction.valueAt(v1, v2, percentComplete));
+        newEffect.setHueVariation(easingFunction.valueAt(percentComplete, v1, v2));
 
         // set colors
         for (Integer cid : effects.prior.colors.keySet()){
@@ -77,7 +130,7 @@ public class TimeEffectSet {
         }
 
         // entropy 
-        newEffect.setEntropy(easingFunction.valueAt(effects.prior.entropy, effects.next.entropy, percentComplete));
+        newEffect.setEntropy(easingFunction.valueAt(percentComplete, effects.prior.entropy, effects.next.entropy));
 
         return newEffect;
     }
@@ -97,9 +150,9 @@ public class TimeEffectSet {
         float b2 = nextColor.getBlue();
 
         Color color = new Color(
-                easingFunction.valueAt(r1, r2, percentComplete),
-                easingFunction.valueAt(g1, g2, percentComplete),
-                easingFunction.valueAt(b1, b2, percentComplete)
+                easingFunction.valueAt(percentComplete, r1, r2),
+                easingFunction.valueAt(percentComplete, g1, g2),
+                easingFunction.valueAt(percentComplete, b1, b2)
                 );
 
         float[] hsb = java.awt.Color.RGBtoHSB((int)color.getRed(), 
