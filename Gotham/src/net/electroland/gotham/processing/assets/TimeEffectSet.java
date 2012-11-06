@@ -18,6 +18,8 @@ public class TimeEffectSet {
 
     // unit tests
     public static void main(String args[]){
+        
+        System.out.println(TimeEffectSet.getTime(new Date())[0]);
 
         TimeEffectSet set = new TimeEffectSet(new Linear());
 
