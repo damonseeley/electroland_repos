@@ -59,7 +59,7 @@ public class MetaballsProps implements ControlListener {
         timeEffects = new TimeEffectSet((EasingFunction)(props.getRequiredClass(wallName, "easingFunction","class")));
         for (String name : props.getObjectNames(wallName)){
             if (name.startsWith("timeEffect")){
-                timeEffects.add(new TimeEffect(props.getParams(wallName, name)));
+                timeEffects.add(new TimeEffect(props.getParams(wallName, name), parent));
             }
         }
 
