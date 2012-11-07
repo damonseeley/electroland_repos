@@ -5,15 +5,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.electroland.utils.ParameterMap;
+import processing.core.PApplet;
 
 public class TimeEffect implements Comparable<TimeEffect> {
 
     protected int hours, minutes;
     protected Map<Integer,Color> colors = new HashMap<Integer, Color>();
     protected float entropy;
+    protected PApplet parent;
 
-    public TimeEffect(ParameterMap vals){
+    public TimeEffect(ParameterMap vals, PApplet parent){
 
+        this.parent = parent;
         hours = vals.getRequiredInt("hours");
         minutes = vals.getRequiredInt("minutes");
         entropy = vals.getRequiredDouble("entropy").floatValue();
@@ -38,8 +41,18 @@ public class TimeEffect implements Comparable<TimeEffect> {
         return entropy;
     }
 
-    private void parseColors(String paletteFileName, int x, int y, int dy){
+    private void parseColors(String paletteFileName, int x, int initY, int dy){
 
+        /** untested code for getting data from image
+        PImage palette = parent.loadImage(paletteFileName);
+
+        int cid = 0;
+        for (int y = initY; y < palette.height; y += dy){
+            colors.put(cid++, new Color(palette.get(x, y)));
+        }
+        **/
+        
+        // once the above is tested, delete this:
         if (paletteFileName.equals("east")){
             // set 1
             colors.put(0, new Color(0, 110, 150));

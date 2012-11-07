@@ -27,7 +27,7 @@ public class TimeEffectSet {
 
         for (String name : ep.getObjectNames("west")){
             if (name.startsWith("timeEffect")){
-                set.add(new TimeEffect(ep.getParams("west", name)));
+                set.add(new TimeEffect(ep.getParams("west", name), null));
             }
         }
 
