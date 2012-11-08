@@ -157,7 +157,6 @@ public class MetaballsProps implements ControlListener {
         nextRow();
     }
 
-    // TODO: this needs to be based on image cycling.
     public Color getColor(int ballId){
         if (getState(USE_TIME_SLIDER)){
             int minutes = (int)getValue(HOUR);
@@ -167,6 +166,18 @@ public class MetaballsProps implements ControlListener {
             return timeEffects.getEffect(hours, minutes, 0).getColor(ballId);
         }else{
             return timeEffects.getEffect(new Date()).getColor(ballId);
+        }
+    }
+
+    public float getEntropy(){
+        if (getState(USE_TIME_SLIDER)){
+            int minutes = (int)getValue(HOUR);
+            int hours = 0;
+            hours = minutes / 60;
+            minutes = minutes % 60;
+            return timeEffects.getEffect(hours, minutes, 0).getEntropy();
+        }else{
+            return timeEffects.getEffect(new Date()).getEntropy();
         }
     }
 

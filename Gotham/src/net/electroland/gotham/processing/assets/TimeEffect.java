@@ -6,6 +6,7 @@ import java.util.Map;
 
 import net.electroland.utils.ParameterMap;
 import processing.core.PApplet;
+import processing.core.PImage;
 
 public class TimeEffect implements Comparable<TimeEffect> {
 
@@ -43,36 +44,12 @@ public class TimeEffect implements Comparable<TimeEffect> {
 
     private void parseColors(String paletteFileName, int x, int initY, int dy){
 
-        /** untested code for getting data from image
         PImage palette = parent.loadImage(paletteFileName);
 
         int cid = 0;
         for (int y = initY; y < palette.height; y += dy){
-            colors.put(cid++, new Color(palette.get(x, y)));
-        }
-        **/
-        
-        // once the above is tested, delete this:
-        if (paletteFileName.equals("east")){
-            // set 1
-            colors.put(0, new Color(0, 110, 150));
-            colors.put(1, new Color(255, 0, 0));
-            colors.put(2, new Color(255, 127, 0));
-            colors.put(3, new Color(255, 230, 40));
-
-        }else if (paletteFileName.equals("west")){
-            // set 1
-            colors.put(0, new Color(80, 0, 80));
-            colors.put(1, new Color(255, 0, 50));
-            colors.put(2, new Color(0, 255, 255));
-            colors.put(3, new Color(0, 100, 255));
-        }
-        else if (paletteFileName.equals("westBW")){
-            // set 1
-            colors.put(0, new Color(80, 80, 80));
-            colors.put(1, new Color(50, 50, 50));
-            colors.put(2, new Color(255, 255, 255));
-            colors.put(3, new Color(100, 100, 100));
+            Color color = new Color(palette.get(x, y));
+            colors.put(cid++, color);
         }
     }
 
