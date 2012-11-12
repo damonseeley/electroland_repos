@@ -37,34 +37,34 @@ public class Metaballs4 extends GothamPApplet {
         gridHistory = new BoundedFifoBuffer<List<PVector>>(historyLength);
 
 
-        int redRoam =  globalProps.getDefaultInt(name, "balls.1", "roam", 0);
-        MetaballGroup red = new MetaballGroup(1, new Rectangle(-redRoam, 
-                                                            -redRoam, 
-                                                            this.getSyncArea().width + redRoam, 
-                                                            this.getSyncArea().height + redRoam));
-        groups.add(red);
+        int groupARoam =  globalProps.getDefaultInt(name, "balls.1", "roam", 0);
+        MetaballGroup groupA = new MetaballGroup(1, new Rectangle(-groupARoam, 
+                                                            -groupARoam, 
+                                                            this.getSyncArea().width + groupARoam, 
+                                                            this.getSyncArea().height + groupARoam));
+        groups.add(groupA);
         for (String size : globalProps.getRequiredList(name, "balls.1", "sizes")){
-            red.add(new Metaball(Integer.parseInt(size)));
+            groupA.add(new Metaball(Integer.parseInt(size)));
         }
 
-        int orangeRoam =  globalProps.getDefaultInt(name, "balls.2", "roam", 0);
-        MetaballGroup orange = new MetaballGroup(2, new Rectangle(-orangeRoam, 
-                                                               -orangeRoam, 
-                                                               this.getSyncArea().width + orangeRoam, 
-                                                               this.getSyncArea().height + orangeRoam));
-        groups.add(orange);
+        int groupBRoam =  globalProps.getDefaultInt(name, "balls.2", "roam", 0);
+        MetaballGroup groupB = new MetaballGroup(2, new Rectangle(-groupBRoam, 
+                                                               -groupBRoam, 
+                                                               this.getSyncArea().width + groupBRoam, 
+                                                               this.getSyncArea().height + groupBRoam));
+        groups.add(groupB);
         for (String size : globalProps.getRequiredList(name, "balls.2", "sizes")){
-            orange.add(new Metaball(Integer.parseInt(size)));
+            groupB.add(new Metaball(Integer.parseInt(size)));
         }
 
-        int purpleRoam =  globalProps.getDefaultInt(name, "balls.3", "roam", 0);
-        MetaballGroup purple = new MetaballGroup(3, new Rectangle(purpleRoam, 
-                purpleRoam, 
-                                                               this.getSyncArea().width + purpleRoam, 
-                                                               this.getSyncArea().height + purpleRoam));
-        groups.add(purple);
+        int groupCRoam =  globalProps.getDefaultInt(name, "balls.3", "roam", 0);
+        MetaballGroup groupC = new MetaballGroup(3, new Rectangle(groupCRoam, 
+                groupCRoam, 
+                                                               this.getSyncArea().width + groupCRoam, 
+                                                               this.getSyncArea().height + groupCRoam));
+        groups.add(groupC);
         for (String size : globalProps.getRequiredList(name, "balls.3", "sizes")){
-            purple.add(new Metaball(Integer.parseInt(size)));
+            groupC.add(new Metaball(Integer.parseInt(size)));
         }
 
         // probably should be in ball constructors
