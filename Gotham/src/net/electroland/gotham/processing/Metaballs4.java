@@ -36,35 +36,41 @@ public class Metaballs4 extends GothamPApplet {
         groups = new ArrayList<MetaballGroup>();
         gridHistory = new BoundedFifoBuffer<List<PVector>>(historyLength);
 
-
-        int groupARoam =  globalProps.getDefaultInt(name, "balls.1", "roam", 0);
-        MetaballGroup groupA = new MetaballGroup(1, new Rectangle(-groupARoam, 
-                                                            -groupARoam, 
-                                                            this.getSyncArea().width + groupARoam, 
-                                                            this.getSyncArea().height + groupARoam));
-        groups.add(groupA);
+        // this should really be driven by an iterator.  borrowed from old code
+        int redRoam =  globalProps.getDefaultInt(name, "balls.1", "roam", 0);
+        float redHueVar = globalProps.getRequiredDouble(name, "balls.1", "hueVariance").floatValue();
+        MetaballGroup red = new MetaballGroup(1, new Rectangle(-redRoam, 
+                                                            -redRoam, 
+                                                            this.getSyncArea().width + redRoam, 
+                                                            this.getSyncArea().height + redRoam),
+                                                            redHueVar);
+        groups.add(red);
         for (String size : globalProps.getRequiredList(name, "balls.1", "sizes")){
-            groupA.add(new Metaball(Integer.parseInt(size)));
+            red.add(new Metaball(Integer.parseInt(size)));
         }
 
-        int groupBRoam =  globalProps.getDefaultInt(name, "balls.2", "roam", 0);
-        MetaballGroup groupB = new MetaballGroup(2, new Rectangle(-groupBRoam, 
-                                                               -groupBRoam, 
-                                                               this.getSyncArea().width + groupBRoam, 
-                                                               this.getSyncArea().height + groupBRoam));
-        groups.add(groupB);
+        int orangeRoam =  globalProps.getDefaultInt(name, "balls.2", "roam", 0);
+        float orangeHueVar = globalProps.getRequiredDouble(name, "balls.2", "hueVariance").floatValue();
+        MetaballGroup orange = new MetaballGroup(2, new Rectangle(-orangeRoam, 
+                                                               -orangeRoam, 
+                                                               this.getSyncArea().width + orangeRoam, 
+                                                               this.getSyncArea().height + orangeRoam),
+                                                               orangeHueVar);
+        groups.add(orange);
         for (String size : globalProps.getRequiredList(name, "balls.2", "sizes")){
-            groupB.add(new Metaball(Integer.parseInt(size)));
+            orange.add(new Metaball(Integer.parseInt(size)));
         }
 
-        int groupCRoam =  globalProps.getDefaultInt(name, "balls.3", "roam", 0);
-        MetaballGroup groupC = new MetaballGroup(3, new Rectangle(groupCRoam, 
-                groupCRoam, 
-                                                               this.getSyncArea().width + groupCRoam, 
-                                                               this.getSyncArea().height + groupCRoam));
-        groups.add(groupC);
+        int purpleRoam =  globalProps.getDefaultInt(name, "balls.3", "roam", 0);
+        float purpleHueVar = globalProps.getRequiredDouble(name, "balls.3", "hueVariance").floatValue();
+        MetaballGroup purple = new MetaballGroup(3, new Rectangle(purpleRoam, 
+                                                                  purpleRoam, 
+                                                               this.getSyncArea().width + purpleRoam, 
+                                                               this.getSyncArea().height + purpleRoam),
+                                                               purpleHueVar);
+        groups.add(purple);
         for (String size : globalProps.getRequiredList(name, "balls.3", "sizes")){
-            groupC.add(new Metaball(Integer.parseInt(size)));
+            purple.add(new Metaball(Integer.parseInt(size)));
         }
 
         // probably should be in ball constructors
@@ -158,12 +164,20 @@ public class Metaballs4 extends GothamPApplet {
         for (MetaballGroup group : groups){
 
         	Color color = props.getColor(group.id);
-            float scale = props.getValue(MetaballsProps.BALL_SCALE);
+        	float scale = props.getValue(MetaballsProps.BALL_SCALE);
             int ballOpacity = (int)props.getValue(MetaballsProps.BALL_OPACITY);
 
+            float hsb[] = new float[3];
             for (Metaball ball : group.balls){
                 this.noStroke();
-                this.fill(color.getRed(), color.getGreen(), color.getBlue(), ballOpacity);
+                // hue variation
+                float dHue = ball.dHue;
+                Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), hsb);
+                hsb[0] += dHue;
+                if (hsb[0] > 1.0) hsb[0] = 1.0f;
+                Color newHue = new Color(Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]));
+                this.fill(newHue.getRed(), newHue.getGreen(), newHue.getBlue(), ballOpacity);
+                //this.fill(color.getRed(), color.getGreen(), color.getBlue(), ballOpacity);
                 this.ellipse(ball.position.x, ball.position.y, ball.width() * scale, ball.height() * scale);
             }
         }
@@ -374,16 +388,19 @@ public class Metaballs4 extends GothamPApplet {
         Rectangle range;
         int id;
         List <Metaball>balls;
-        float hueVariace;
+        float hueVariance;
 
-        public MetaballGroup(int id, Rectangle range){
+        public MetaballGroup(int id, Rectangle range, float hueVariance){
             this.range = range;
             this.id = id;
+            this.hueVariance = hueVariance;
             balls = new ArrayList<Metaball>();
         }
 
         public void add(Metaball ball){
             ball.group = this;
+            ball.dHue = (float)(Math.random() * hueVariance) - (.5f * hueVariance);
+            System.out.println("dHue===================" + ball.dHue);
             balls.add(ball);
         }
         
@@ -400,6 +417,7 @@ public class Metaballs4 extends GothamPApplet {
         PVector position;
         PVector velocity;
         MetaballGroup group;
+        float dHue;
 
         public Metaball(float radius){
             this.radius = radius;
