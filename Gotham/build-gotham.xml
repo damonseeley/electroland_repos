@@ -30,7 +30,8 @@
         <pathelement location="libraries/j3dutils.jar"/>
         <pathelement location="libraries/EL-Config.jar"/>
         <pathelement location="libraries/EA2.jar"/>
-        <pathelement location="libraries/ELU2.jar"/>
+    	<pathelement location="libraries/ELU2.jar"/>
+    	<pathelement location="libraries/collections-generic-4.01.jar"/>
     </path>
     <path id="run.GothamConductor.classpath">
         <path refid="Gotham.classpath"/>
