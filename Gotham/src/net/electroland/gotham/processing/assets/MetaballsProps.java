@@ -63,8 +63,19 @@ public class MetaballsProps implements ControlListener {
             }
         }
 
-        // TODO: getting a null pointer here occasionally.
-        p5 = new ControlP5(parent);
+        while (p5 == null){
+            try{
+                p5 = new ControlP5(parent);
+                System.out.println("P5 instantiated.");
+            }catch(NullPointerException e){
+                System.out.println("Trying to instantiate P5 again...");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace(System.err);
+                }
+            }
+        }
 
         window = p5
                  .addControlWindow(wallName + " controller", 100, 100, 600, 500)
