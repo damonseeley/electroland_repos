@@ -400,7 +400,6 @@ public class Metaballs4 extends GothamPApplet {
         public void add(Metaball ball){
             ball.group = this;
             ball.dHue = (float)(Math.random() * hueVariance) - (.5f * hueVariance);
-            System.out.println("dHue===================" + ball.dHue);
             balls.add(ball);
         }
         
