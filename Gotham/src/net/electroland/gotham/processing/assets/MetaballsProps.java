@@ -42,6 +42,7 @@ public class MetaballsProps implements ControlListener {
     final static public String MIRROR_HORIZONTAL       = "mirrorHorizontal";
     final static public String MIRROR_VERTICAL         = "mirrorVertical";
     final static public String HOUR                    = "hour";
+    final static public String GO_TO_BLACK             = "goToBlack";
 
     private String wallName;
     private ControlP5 p5;
@@ -104,6 +105,10 @@ public class MetaballsProps implements ControlListener {
         addSwitch(MIRROR_VERTICAL,         props);
         addSwitch(MIRROR_HORIZONTAL,       props);
         addSwitch(USE_TIME_SLIDER,         props);
+
+        nextRow();
+
+        addSwitch(GO_TO_BLACK,            props);
 
         addConsoleOutputButton();
     }

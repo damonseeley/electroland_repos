@@ -87,16 +87,18 @@ public class Metaballs4 extends GothamPApplet {
     @Override
     public void drawELUContent() {
 
-    	if (showFPS){
-    		long currentFrameTime = System.currentTimeMillis();
-    		long delay = currentFrameTime - lastFrameTime;
-    		if (delay > 50){
-        		System.out.println(this.getName() + " FPS: " + delay);
-    		}
-    		lastFrameTime = currentFrameTime;
-    	}
+        if (showFPS){
+            long currentFrameTime = System.currentTimeMillis();
+            long delay = currentFrameTime - lastFrameTime;
+            if (delay > 50){
+                System.out.println(this.getName() + " FPS: " + delay);
+            }
+            lastFrameTime = currentFrameTime;
+        }
 
-    	Rectangle gridCanvas = props.getBoundary(MetaballsProps.GRID_ON_CANVAS);
+        this.setGoToBlack(props.getState(MetaballsProps.GO_TO_BLACK));
+
+        Rectangle gridCanvas = props.getBoundary(MetaballsProps.GRID_ON_CANVAS);
         boolean isGridAffectingBalls  = props.getState(MetaballsProps.ENABLE_GRID);
 
         // -------- move balls ----------
@@ -105,7 +107,7 @@ public class Metaballs4 extends GothamPApplet {
         	gridHistory.remove();
         }
         gridHistory.add(repellingPoints);
-        
+
         int presenceCount = repellingPoints.size() == 0 ? 1 : repellingPoints.size();
         float presenceImpact = props.getValue(MetaballsProps.MAX_VELOCITY) * presenceCount * props.getValue(MetaballsProps.REPELL_VELOCITY_MULT);
 

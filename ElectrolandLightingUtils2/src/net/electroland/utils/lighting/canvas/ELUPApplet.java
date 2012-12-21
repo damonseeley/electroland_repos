@@ -21,6 +21,7 @@ abstract public class ELUPApplet extends PApplet {
     private ProcessingCanvas canvas;
     private boolean showDetectors = true;
     private boolean showRendering = true;
+    private boolean goToBlack = true;
     private DetectionModel showOnly;
     private float scale = 1.0f;
     protected ParameterMap properties;
@@ -37,6 +38,12 @@ abstract public class ELUPApplet extends PApplet {
 
         translate(0,0);
         rectMode(CORNER);
+
+        if (goToBlack){
+            noStroke();
+            fill(0);
+            this.rect(- 1, - 1, dim.width + 2, dim.height + 2);
+        }
 
         // sync content to lights
         if (canvas != null){
@@ -116,6 +123,10 @@ abstract public class ELUPApplet extends PApplet {
 
     public void setShowRendering(boolean showRendering){
         this.showRendering = showRendering;
+    }
+
+    public void setGoToBlack(boolean goToBlack){
+        this.goToBlack = goToBlack;
     }
 
     public void showOnly(DetectionModel detectionModel){
