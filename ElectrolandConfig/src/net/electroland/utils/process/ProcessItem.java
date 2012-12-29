@@ -5,6 +5,4 @@ public interface ProcessItem {
     public int getPID();
 
     public String getName();
-
-    public boolean equals(ProcessItem another);
 }
