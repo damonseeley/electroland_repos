@@ -1,5 +1,7 @@
 package net.electroland.utils;
 
+import java.util.StringTokenizer;
+
 public class Util {
 
     public static byte getHiByte(short s)
@@ -48,5 +50,18 @@ public class Util {
     public static int unsignedByteToInt(byte b) 
     {
         return (int) b & 0xFF;
+    }
+
+    public static String consolidateWhiteSpace(String raw, char finalWhiteSpace){
+        StringTokenizer st = new StringTokenizer(raw, " \t", false);
+        StringBuffer buffer = new StringBuffer();
+        while (st.hasMoreElements()){
+            buffer.append(st.nextToken());
+            buffer.append(finalWhiteSpace);
+        }
+        if (buffer.length() > 0){
+            buffer.setLength(buffer.length() - 1);
+        }
+        return buffer.toString();
     }
 }
