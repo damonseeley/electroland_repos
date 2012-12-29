@@ -1,14 +1,12 @@
 package net.electroland.utils.process;
 
-
 public class WindowsProcessItem implements ProcessItem {
 
     private String name, sessionName, memoryUsage;
     private int PID, sessionNumber;
 
     public WindowsProcessItem(String unparsedItem){
-        // this is a down and dirty parse. proper implementation would probably
-        // read the headers (for column order) and the header bars (for length)
+        // doh. didn't realize until after the fact that tasklist.exe can export TSV (tasklist.exe \fo csv)
         //           1         2         3         4         5         6         7
         // 01234567890123456789012345678901234567890123456789012345678901234567890123456 
         // ========================= ======== ================ =========== ============
@@ -21,10 +19,10 @@ public class WindowsProcessItem implements ProcessItem {
     }
 
     @Override
-    public boolean equals(ProcessItem another) {
+    public boolean equals(Object another) {
         if (another instanceof WindowsProcessItem){
-            return this.name.equals(another.getName()) &&
-                    this.PID == another.getPID() &&
+            return this.name.equals(((WindowsProcessItem)another).getName()) &&
+                    this.PID == ((WindowsProcessItem)another).getPID() &&
                     this.sessionName.equals(((WindowsProcessItem)another).getSessionName()) &&
                     this.sessionNumber == ((WindowsProcessItem)another).getSessionNumber();
         }else{

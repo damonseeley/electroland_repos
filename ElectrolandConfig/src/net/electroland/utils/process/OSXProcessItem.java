@@ -7,7 +7,7 @@ public class OSXProcessItem implements ProcessItem {
     }
 
     @Override
-    public boolean equals(ProcessItem another) {
+    public boolean equals(Object another) {
         // TODO Auto-generated method stub
         return false;
     }
