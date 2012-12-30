@@ -30,8 +30,8 @@ public class ProcessUtil implements ProcessExitedListener{
         
         // in practice, read this from a .bat file.
         File runDir = new File("C:\\Users\\Electroland\\Desktop\\Elvis");
-        
-        System.out.println(run("c:\\Users\\Electroland\\Desktop\\ElVis\\run.bat", runDir, new ProcessUtil(), 1000)); // this process should stay alive until you kill the notepad instance.
+
+        System.out.println(run(command, runDir, new ProcessUtil(), 1000)); // this process should stay alive until you kill the notepad instance.
     }
 
     /**
@@ -167,5 +167,17 @@ public class ProcessUtil implements ProcessExitedListener{
     @Override
     public void exited(ProcessItem ded) {
         System.out.println("EXIT: " + ded);
+        String command = "java -classpath ./depends;./libraries/javacpp.jar;" +
+                "./libraries/javacv-windows-x86_64.jar;" +
+                "./libraries/javacv-windows-x86.jar;" +
+                "./libraries/javacv.jar;./libraries/JMyron.jar;" +
+                "./libraries/log4j-1.2.9.jar;" +
+                "./libraries/miglayout15-swing.jar;" +
+                "ELVIS.jar; net.electroland.elvis.blobktracking.core.ElVisServer";
+        
+        // in practice, read this from a .bat file.
+        File runDir = new File("C:\\Users\\Electroland\\Desktop\\Elvis");
+        
+        System.out.println(run(command, runDir, new ProcessUtil(), 1000)); // this process should stay alive until you kill the notepad instance.
     }
 }
