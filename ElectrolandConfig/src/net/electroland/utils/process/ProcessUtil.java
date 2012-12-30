@@ -1,6 +1,7 @@
 package net.electroland.utils.process;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -18,10 +19,21 @@ public class ProcessUtil {
      */
     public static void main(String[] args) {
         // basic unit tests
-        System.out.println(getRunning());
+
+        String command = "java -classpath ./depends;./libraries/javacpp.jar;" +
+        		"./libraries/javacv-windows-x86_64.jar;" +
+        		"./libraries/javacv-windows-x86.jar;" +
+        		"./libraries/javacv.jar;./libraries/JMyron.jar;" +
+        		"./libraries/log4j-1.2.9.jar;" +
+        		"./libraries/miglayout15-swing.jar;" +
+        		"ELVIS.jar; net.electroland.elvis.blobktracking.core.ElVisServer";
+        
         System.out.println(run("c:\\Users\\Electroland\\Desktop\\ElVis\\run.bat", null, 1000)); // this process should stay alive until you kill the notepad instance.
     }
 
+    /**
+     * windows version: we're only detecting java.exe.
+     */
     public static ProcessItem run(String command, ProcessExitedListener listener, long pollPeriod){
         
         // OS check
@@ -33,7 +45,7 @@ public class ProcessUtil {
         case(WINDOWS):
             List<ProcessItem> before = ProcessUtil.getRunning();
             try {
-                Runtime.getRuntime().exec(command).getInputStream().close();
+                Runtime.getRuntime().exec(command, null, new File("C:\\Users\\Electroland\\Desktop\\Elvis")).getInputStream().close();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -53,13 +65,17 @@ public class ProcessUtil {
     }
 
     private static ProcessItem getLatestWindowsJavaPID(List<ProcessItem> older, List<ProcessItem> newer){
+        ArrayList<ProcessItem> newItems = new ArrayList<ProcessItem>();
         // pretty imperfect algorithm.
         for (ProcessItem item : newer){
-            if (!older.contains(item) && item.getName().equals("java.exe")){
-                return item;
+            if (!older.contains(item) 
+             && !item.getName().equals("tasklist.exe")  // launched to get this list
+             && !item.getName().equals("conhost.exe")   // launched for security
+             && !item.getName().equals("cmd.exe")){     // launched to support this process
+                newItems.add(item);
             }
         }
-        return null;
+        return newItems.get(0);
     }
     
     public static List<ProcessItem> getRunning() {
