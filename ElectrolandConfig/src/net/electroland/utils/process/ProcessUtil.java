@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ProcessUtil {
+public class ProcessUtil implements ProcessExitedListener{
 
     private static int OS = 0;
     public static final int WINDOWS = 2;
@@ -28,13 +28,16 @@ public class ProcessUtil {
         		"./libraries/miglayout15-swing.jar;" +
         		"ELVIS.jar; net.electroland.elvis.blobktracking.core.ElVisServer";
         
-        System.out.println(run("c:\\Users\\Electroland\\Desktop\\ElVis\\run.bat", null, 1000)); // this process should stay alive until you kill the notepad instance.
+        // in practice, read this from a .bat file.
+        File runDir = new File("C:\\Users\\Electroland\\Desktop\\Elvis");
+        
+        System.out.println(run("c:\\Users\\Electroland\\Desktop\\ElVis\\run.bat", runDir, new ProcessUtil(), 1000)); // this process should stay alive until you kill the notepad instance.
     }
 
     /**
      * windows version: we're only detecting java.exe.
      */
-    public static ProcessItem run(String command, ProcessExitedListener listener, long pollPeriod){
+    public static ProcessItem run(String command, File runDirectory, ProcessExitedListener listener, long pollPeriod){
         
         // OS check
         detectOS();
@@ -45,7 +48,7 @@ public class ProcessUtil {
         case(WINDOWS):
             List<ProcessItem> before = ProcessUtil.getRunning();
             try {
-                Runtime.getRuntime().exec(command, null, new File("C:\\Users\\Electroland\\Desktop\\Elvis")).getInputStream().close();
+                Runtime.getRuntime().exec(command, null, runDirectory).getInputStream().close();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -159,5 +162,10 @@ public class ProcessUtil {
         }
 
         return list;
+    }
+
+    @Override
+    public void exited(ProcessItem ded) {
+        System.out.println("EXIT: " + ded);
     }
 }
