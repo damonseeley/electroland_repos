@@ -3,7 +3,6 @@ package net.electroland.gotham.core;
 import java.awt.BorderLayout;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.SocketException;
@@ -13,6 +12,7 @@ import javax.swing.JFrame;
 import net.electroland.gotham.core.ui.DisplayControlBar;
 import net.electroland.gotham.processing.GothamPApplet;
 import net.electroland.utils.ElectrolandProperties;
+import net.electroland.utils.OptionException;
 import net.electroland.utils.lighting.ELUCanvas;
 import net.electroland.utils.lighting.ELUManager;
 import net.electroland.utils.lighting.canvas.ProcessingCanvas;
@@ -84,12 +84,20 @@ public class GothamConductor extends JFrame implements ProcessExitedListener {
         props = new ElectrolandProperties("Gotham-global.properties");
     }
 
+    private ProcessItem elvis;
+
     public void startElVis(){
-        String batFileName = props.getOptional("elvis", "run", "bat_file");
+        String batFileName;
+        // catch OptionException here.
+        try{
+             batFileName = props.getOptional("elvis", "run", "bat_file");            
+        }catch(OptionException e){
+            return;
+        }
         if (batFileName != null){
             String rootDir = props.getRequired("elvis", "run", "run_dir");
             int pollRate = props.getRequiredInt("elvis", "run", "poll_rate");
-            ProcessUtil.run(readBat(batFileName, rootDir), new File(rootDir), this, pollRate);
+            elvis = ProcessUtil.run(readBat(batFileName, rootDir), new File(rootDir), this, pollRate);
         }
     }
 
