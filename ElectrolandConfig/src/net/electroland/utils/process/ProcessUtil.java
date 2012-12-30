@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ProcessUtil implements ProcessExitedListener{
+public class ProcessUtil implements ProcessExitedListener{ // implemented listener is just for unit test
 
     private static int OS = 0;
     public static final int WINDOWS = 2;
@@ -18,20 +18,8 @@ public class ProcessUtil implements ProcessExitedListener{
      * @param args
      */
     public static void main(String[] args) {
-        // basic unit tests
-
-        String command = "java -classpath ./depends;./libraries/javacpp.jar;" +
-        		"./libraries/javacv-windows-x86_64.jar;" +
-        		"./libraries/javacv-windows-x86.jar;" +
-        		"./libraries/javacv.jar;./libraries/JMyron.jar;" +
-        		"./libraries/log4j-1.2.9.jar;" +
-        		"./libraries/miglayout15-swing.jar;" +
-        		"ELVIS.jar; net.electroland.elvis.blobktracking.core.ElVisServer";
-        
-        // in practice, read this from a .bat file.
-        File runDir = new File("C:\\Users\\Electroland\\Desktop\\Elvis");
-
-        System.out.println(run(command, runDir, new ProcessUtil(), 1000)); // this process should stay alive until you kill the notepad instance.
+        // basic unit test (windows only)
+        ProcessUtil.startElVisWindows();
     }
 
     /**
@@ -67,6 +55,34 @@ public class ProcessUtil implements ProcessExitedListener{
         }
     }
 
+    public static void kill(ProcessItem item){
+        // OS check
+        detectOS();
+
+        // if windows, get the process list
+        switch (OS){
+
+        case(WINDOWS):
+            try {
+                Runtime.getRuntime().exec("taskkill.exe /PID " + item.getPID()).getInputStream().close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            break;
+
+        case(OSX):
+            try {
+                Runtime.getRuntime().exec("kill -9 " + item.getPID()).getInputStream().close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            break;
+
+        default:
+            System.err.println("unsupported OS.");
+        }        
+    }
+    
     private static ProcessItem getLatestWindowsJavaPID(List<ProcessItem> older, List<ProcessItem> newer){
         ArrayList<ProcessItem> newItems = new ArrayList<ProcessItem>();
         // pretty imperfect algorithm.
@@ -80,7 +96,7 @@ public class ProcessUtil implements ProcessExitedListener{
         }
         return newItems.get(0);
     }
-    
+
     public static List<ProcessItem> getRunning() {
 
         detectOS();
@@ -164,9 +180,8 @@ public class ProcessUtil implements ProcessExitedListener{
         return list;
     }
 
-    @Override
-    public void exited(ProcessItem ded) {
-        System.out.println("EXIT: " + ded);
+    // this is only a unit test.
+    private static void startElVisWindows(){
         String command = "java -classpath ./depends;./libraries/javacpp.jar;" +
                 "./libraries/javacv-windows-x86_64.jar;" +
                 "./libraries/javacv-windows-x86.jar;" +
@@ -174,10 +189,18 @@ public class ProcessUtil implements ProcessExitedListener{
                 "./libraries/log4j-1.2.9.jar;" +
                 "./libraries/miglayout15-swing.jar;" +
                 "ELVIS.jar; net.electroland.elvis.blobktracking.core.ElVisServer";
-        
+
         // in practice, read this from a .bat file.
         File runDir = new File("C:\\Users\\Electroland\\Desktop\\Elvis");
-        
-        System.out.println(run(command, runDir, new ProcessUtil(), 1000)); // this process should stay alive until you kill the notepad instance.
+
+        System.out.println(run(command, runDir, new ProcessUtil(), 1000));
+    }
+
+    @Override
+    public void exited(ProcessItem ded) {
+        if (ded != null){
+            System.out.println("EXIT: " + ded);
+        }
+        startElVisWindows();
     }
 }

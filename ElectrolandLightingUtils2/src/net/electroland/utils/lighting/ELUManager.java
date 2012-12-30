@@ -419,18 +419,22 @@ public class ELUManager implements Runnable, TestSuiteCompletionListener {
         }
     }
     
+    public ELUManager load(String  propFileName) throws IOException, OptionException
+    {
+        ElectrolandProperties ep = new ElectrolandProperties(propFileName);
+        return load(ep);
+    }
+    
     /** Configure the system using "lights.properties"
      * 
      * Currently a gross way of doing this.
      * 
      */
-    public ELUManager load(String propFileName) throws IOException, OptionException
+    public ELUManager load(ElectrolandProperties ep) throws IOException, OptionException
     {
+        logger.info("ELUManager loading...");
         if (isRunning || isRunningTest)
             throw new OptionException("Cannot load while threads are running.");
-
-        logger.info("ELUManager loading " + propFileName);
-        ElectrolandProperties ep = new ElectrolandProperties(propFileName);
 
         recipients = new HashMap<String, Recipient>();
         canvases = new HashMap<String, ELUCanvas>();
