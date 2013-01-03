@@ -2,7 +2,6 @@ package net.electroland.eio.devices.modbus;
 
 import java.util.Map;
 
-import net.electroland.eio.Value;
 import net.electroland.eio.devices.Channel;
 import net.electroland.eio.devices.Device;
 import net.electroland.utils.ParameterMap;
@@ -15,14 +14,13 @@ public class ModBusTcpDevice extends Device {
     }
 
     @Override
-    public Map<Channel, Value> read() {
+    public Map<Channel, Object> read() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public void write(Map<Channel, Value> values) {
+    public void write(Map<Channel, Object> values) {
         // TODO Auto-generated method stub
-        
     }
 }
