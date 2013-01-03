@@ -22,11 +22,11 @@ public class IOManager {
         return null;
     }
 
-    public Map<Channel, Value> read(){
+    public Map<Channel, Object> read(){
         return null;
     }
 
-    public void write(Map<Channel, Value> values){
+    public void write(Map<Channel, Object> values){
 
     }
 
@@ -46,9 +46,6 @@ public class IOManager {
         
     }
 
-    /**
-     * @param args
-     */
     public static void main(String[] args) {
         // TODO Auto-generated method stub
     }
