@@ -20,7 +20,7 @@ public class ModBusTCPSlaveDevice extends IODevice {
     protected Collection <ModBusTCPSlaveDeviceRegister> registers;
     protected HashMap <String, Integer> portToRegisterBit = new HashMap<String, Integer>();
     protected HashMap <Integer, IOState> registerBitToState = new HashMap <Integer, IOState>();
- 
+
     ModbusTCPMaster connection;
 
     @Override
@@ -53,20 +53,20 @@ public class ModBusTCPSlaveDevice extends IODevice {
                 byte[] b = data[0].toBytes();
 
                 BitVector bv = BitVector.createBitVector(b);
-                StringBuffer sb = new StringBuffer(address).append(':');
+                StringBuffer sb = new StringBuffer(address).append(':');    // for debug
                 for (int i=0; i < bv.size(); i++)
                 {
-                    sb.append(bv.getBit(i)? "1" : "0");
-                    if ((i+1) % 8 == 0){
-                        sb.append(' ');
-                    }
+                    sb.append(bv.getBit(i) ? "1" : "0");                    // for debug
+                    if ((i+1) % 8 == 0){                                    // for debug
+                        sb.append(' ');                                     // for debug
+                    }                                                       // for debug
                     IState state =  (IState)(registerBitToState.get(i + r.startRef));
                     if (state != null)
                     {
                         state.setState(bv.getBit(i));
                     }
                 }
-                logger.debug(sb);
+                logger.debug(sb);                                           // for debug
 
             } catch (ModbusException e) {
                 e.printStackTrace();
