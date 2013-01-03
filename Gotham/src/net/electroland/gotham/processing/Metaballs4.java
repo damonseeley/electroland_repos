@@ -108,13 +108,13 @@ public class Metaballs4 extends GothamPApplet {
         }
         gridHistory.add(repellingPoints);
 
-        int presenceCount = repellingPoints.size() == 0 ? 1 : repellingPoints.size();
+        int presenceCount = repellingPoints.size() == 0 ? 100 : repellingPoints.size();
         float presenceImpact = props.getValue(MetaballsProps.MAX_VELOCITY) * presenceCount * props.getValue(MetaballsProps.REPELL_VELOCITY_MULT);
 
         float cellWidth = 0, cellHeight = 0;
         if (gridData != null){
             cellWidth  = gridCanvas.width / (float)gridData.width;
-            cellHeight = gridCanvas.height / (float)gridData.height;        	
+            cellHeight = gridCanvas.height / (float)gridData.height;	
         }
 
         for (MetaballGroup group : groups){
@@ -131,10 +131,12 @@ public class Metaballs4 extends GothamPApplet {
                     }
             	}
 
-                center.add(ball.position);
+                //**
+                center.add(ball.position); // this.
+                //*/
                 ball.velocity.mult(props.getValue(MetaballsProps.FRICTION));
+            	// this prevents everything from moving very fast
                 ball.velocity.limit(presenceImpact);
-                
                 if (ball.velocity.mag() < props.getValue(MetaballsProps.MIN_VELOCITY)){
                     ball.velocity.setMag(props.getValue(MetaballsProps.MIN_VELOCITY));
                 }
@@ -143,17 +145,29 @@ public class Metaballs4 extends GothamPApplet {
             center.div(group.balls.size());
 
             for (Metaball ball : group.balls){
+                //** disabled as a test case for keeping balls disperse.
                 PVector c = PVector.sub(center, ball.position);
                 c.normalize();
                 c.mult(props.getValue(MetaballsProps.COHESIVENESS));
-                //                ball.velocity.add(c);  // disabled as a test case for keeping balls disperse.
+                ball.velocity.add(c);  
+                 //*/
                 ball.position.add(ball.velocity);
+            }
+
+            // centering
+            float cx = gridCanvas.width * .5f;
+            float cy = gridCanvas.height * .5f;
+            for (Metaball ball : group.balls){
+
+                PVector c = PVector.sub(new PVector(cx, cy, 0), ball.position);
+                c.normalize();
+                c.mult(.001f);
+                ball.velocity.add(c);
             }
 
             group.checkBounds();
         }
 
-        
         // -------- render balls ----------
         boolean showGrid     = props.getState(MetaballsProps.SHOW_GRID);
         
