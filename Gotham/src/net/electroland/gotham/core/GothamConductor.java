@@ -1,9 +1,6 @@
 package net.electroland.gotham.core;
 
 import java.awt.BorderLayout;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.SocketException;
 
@@ -12,18 +9,14 @@ import javax.swing.JFrame;
 import net.electroland.gotham.core.ui.DisplayControlBar;
 import net.electroland.gotham.processing.GothamPApplet;
 import net.electroland.utils.ElectrolandProperties;
-import net.electroland.utils.OptionException;
 import net.electroland.utils.lighting.ELUCanvas;
 import net.electroland.utils.lighting.ELUManager;
 import net.electroland.utils.lighting.canvas.ProcessingCanvas;
 import net.electroland.utils.lighting.ui.ELUControls;
-import net.electroland.utils.process.ProcessExitedListener;
-import net.electroland.utils.process.ProcessItem;
-import net.electroland.utils.process.ProcessUtil;
 
 import org.apache.log4j.Logger;
 
-public class GothamConductor extends JFrame implements ProcessExitedListener {
+public class GothamConductor extends JFrame {
 
     private static final long serialVersionUID = 6608878881526717236L;
     static Logger logger = Logger.getLogger(GothamConductor.class);
@@ -48,8 +41,6 @@ public class GothamConductor extends JFrame implements ProcessExitedListener {
         conductor.setVisible(true);
 
         conductor.configureUDPClients(conductor.lightingManager);
-
-        conductor.startElVis();
     }
 
     public void configureUDPClients(ELUManager lightingManager) throws SocketException{
@@ -84,40 +75,6 @@ public class GothamConductor extends JFrame implements ProcessExitedListener {
         props = new ElectrolandProperties("Gotham-global.properties");
     }
 
-    private ProcessItem elvis;
-
-    public void startElVis(){
-        String batFileName;
-        // catch OptionException here.
-        try{
-             batFileName = props.getOptional("elvis", "run", "bat_file");            
-        }catch(OptionException e){
-            return;
-        }
-        if (batFileName != null){
-            String rootDir = props.getRequired("elvis", "run", "run_dir");
-            int pollRate = props.getRequiredInt("elvis", "run", "poll_rate");
-            elvis = ProcessUtil.run(readBat(batFileName, rootDir), new File(rootDir), this, pollRate);
-        }
-    }
-
-    public String readBat(String filename, String rootDir){
-        if (filename == null){
-            return null;
-        }else{
-            File bat = new File(rootDir, filename);
-            BufferedReader br;
-            try {
-                br = new BufferedReader(new FileReader(bat));
-                String command = br.readLine();
-                br.close();
-                return command;
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
     public void configureRenderPanel(ELUManager lightingManager){
         ELUControls eluControls = new ELUControls(lightingManager);
         DisplayControlBar displayControls = new DisplayControlBar();
@@ -130,10 +87,5 @@ public class GothamConductor extends JFrame implements ProcessExitedListener {
         this.setLayout(new BorderLayout());
         this.add(eluControls, BorderLayout.SOUTH);
         this.add(displayControls, BorderLayout.NORTH);
-    }
-
-    @Override
-    public void exited(ProcessItem arg0) {
-        startElVis();
     }
 }

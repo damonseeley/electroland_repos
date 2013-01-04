@@ -275,18 +275,19 @@ public class Metaballs4 extends GothamPApplet {
             srcData.buildString(sb);
             srcData = new GridData(sb.toString());
 
-            // TODO: startup null pointer points to here.
-            srcData = subset(srcData, props.getBoundary(MetaballsProps.GRID));
+            if (props != null){
+                srcData = subset(srcData, props.getBoundary(MetaballsProps.GRID));
 
-            srcData = counterClockwise(srcData);
+                srcData = counterClockwise(srcData);
 
-            if (props.getState(MetaballsProps.MIRROR_HORIZONTAL)){
-                srcData = flipHorizontal(srcData);
+                if (props.getState(MetaballsProps.MIRROR_HORIZONTAL)){
+                    srcData = flipHorizontal(srcData);
+                }
+                if (props.getState(MetaballsProps.MIRROR_VERTICAL)){
+                    srcData = flipVertical(srcData);
+                }
+                gridData = srcData;
             }
-            if (props.getState(MetaballsProps.MIRROR_VERTICAL)){
-                srcData = flipVertical(srcData);
-            }
-            gridData = srcData;
         }
     }
 
