@@ -161,7 +161,7 @@ public class Metaballs4 extends GothamPApplet {
 
                 PVector c = PVector.sub(new PVector(cx, cy, 0), ball.position);
                 c.normalize();
-                c.mult(.001f);
+                c.mult(props.getValue(MetaballsProps.CENTER_FORCE));
                 ball.velocity.add(c);
             }
 
