@@ -35,6 +35,7 @@ public class RestartDaemon extends JFrame implements ProcessExitedListener, Wind
 
             daemon.setTitle(daemon.rootDir + " " + daemon.batFileName);
             daemon.state = new JCheckBox("Restart if process dies?");
+            daemon.state.setSelected(true);
             daemon.setLayout(new BorderLayout());
             daemon.getContentPane().add(daemon.state, BorderLayout.CENTER);
             daemon.setSize(250,100);
