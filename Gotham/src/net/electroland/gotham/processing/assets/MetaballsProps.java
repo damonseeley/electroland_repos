@@ -43,6 +43,7 @@ public class MetaballsProps implements ControlListener {
     final static public String MIRROR_VERTICAL         = "mirrorVertical";
     final static public String HOUR                    = "hour";
     final static public String GO_TO_BLACK             = "goToBlack";
+    final static public String CENTER_FORCE            = "centerForce";
 
     private String wallName;
     private ControlP5 p5;
@@ -79,7 +80,7 @@ public class MetaballsProps implements ControlListener {
         }
 
         window = p5
-                 .addControlWindow(wallName + " controller", 100, 100, 600, 500)
+                 .addControlWindow(wallName + " controller", 100, 100, 600, 600)
                  .hideCoordinates().setBackground(0);
 
         addSlider(COHESIVENESS,            props);
@@ -94,6 +95,7 @@ public class MetaballsProps implements ControlListener {
         addSlider(PRESENCE_OPACITY,        props);
         addSlider(BLUR,                    props);
         addSlider(HOUR,                    props);
+        addSlider(CENTER_FORCE,            props);
 
         nextColumn();
 
