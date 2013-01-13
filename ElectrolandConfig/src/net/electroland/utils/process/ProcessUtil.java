@@ -64,7 +64,8 @@ public class ProcessUtil implements ProcessExitedListener{ // implemented listen
 
         case(WINDOWS):
             try {
-                Runtime.getRuntime().exec("taskkill.exe /PID " + item.getPID()).getInputStream().close();
+                System.out.println("taskkill.exe /f /PID " + item.getPID());
+                Runtime.getRuntime().exec("taskkill.exe /f /PID " + item.getPID()).getInputStream().close();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
