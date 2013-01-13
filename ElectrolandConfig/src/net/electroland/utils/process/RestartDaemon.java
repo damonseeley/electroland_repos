@@ -78,7 +78,9 @@ public class RestartDaemon extends JFrame implements ProcessExitedListener, Wind
     @Override
     public void windowClosing(WindowEvent arg0) {
         state.setSelected(false);
+        System.out.println("killing the process.");
         ProcessUtil.kill(running);
+        System.out.println("process ded.");
     }
 
     @Override
