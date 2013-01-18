@@ -33,6 +33,7 @@ public class MetaballsProps implements ControlListener {
     final static public String BALL_OPACITY            = "ballOpacity";
     final static public String PRESENCE_RADIUS         = "presenceRadius";
     final static public String PRESENCE_OPACITY        = "presenceOpacity";
+    final static public String GRID_HISTORY            = "gridHistory";
     final static public String BLUR                    = "blur";
     final static public String GRID                    = "grid";
     final static public String GRID_ON_CANVAS          = "gridOnCanvas";
@@ -93,6 +94,7 @@ public class MetaballsProps implements ControlListener {
         addSlider(BALL_OPACITY,            props);
         addSlider(PRESENCE_RADIUS,         props);
         addSlider(PRESENCE_OPACITY,        props);
+        addSlider(GRID_HISTORY,            props);
         addSlider(BLUR,                    props);
         addSlider(HOUR,                    props);
         addSlider(CENTER_FORCE,            props);

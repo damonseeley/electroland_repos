@@ -29,12 +29,11 @@ public class Metaballs4 extends GothamPApplet {
 
         String name = this.getProperties().getRequired("name");
         ElectrolandProperties globalProps = new ElectrolandProperties("Gotham-global.properties");
-        int historyLength = globalProps.getRequiredInt("lava", "gridHistory", "frameLength");
         showFPS = globalProps.getOptionalBoolean("lava", "global", "showFPS");
         props = new MetaballsProps(this, name, new ElectrolandProperties("Gotham-global.properties"));
         // groups of balls
         groups = new ArrayList<MetaballGroup>();
-        gridHistory = new BoundedFifoBuffer<List<PVector>>(historyLength);
+        gridHistory = new BoundedFifoBuffer<List<PVector>>((int)props.getValue(MetaballsProps.GRID_HISTORY));
 
         // this should really be driven by an iterator.  borrowed from old code
         int redRoam =  globalProps.getDefaultInt(name, "balls.1", "roam", 0);
@@ -103,6 +102,11 @@ public class Metaballs4 extends GothamPApplet {
 
         // -------- move balls ----------
         List<PVector> repellingPoints = this.getObjects(gridData, gridCanvas); // needs to be synchronized against gridData
+        int latestHistoryLength = (int)props.getValue(MetaballsProps.GRID_HISTORY);
+        if (latestHistoryLength != gridHistory.maxSize()){
+            gridHistory = new BoundedFifoBuffer<List<PVector>>(latestHistoryLength);
+            logger.info("resized gridHistory to " + gridHistory.maxSize());
+        }
         if (gridHistory.isFull()){
         	gridHistory.remove();
         }
