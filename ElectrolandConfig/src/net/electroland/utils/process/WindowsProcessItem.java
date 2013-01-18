@@ -1,6 +1,6 @@
 package net.electroland.utils.process;
 
-public class WindowsProcessItem implements ProcessItem {
+public class WindowsProcessItem extends ProcessItem {
 
     private String name, sessionName, memoryUsage;
     private int PID, sessionNumber;

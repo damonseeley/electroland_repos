@@ -1,8 +1,20 @@
 package net.electroland.utils.process;
 
-public interface ProcessItem {
+import java.io.InputStream;
 
-    public int getPID();
+abstract public class ProcessItem {
 
-    public String getName();
+    private InputStream is;
+
+    public InputStream getInputStream(){
+        return is;
+    }
+
+    protected void setInputStream(InputStream is){
+        this.is = is;
+    }
+
+    abstract public int getPID();
+
+    abstract String getName();
 }

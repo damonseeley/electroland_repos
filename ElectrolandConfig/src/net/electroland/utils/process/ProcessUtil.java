@@ -3,6 +3,7 @@ package net.electroland.utils.process;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,14 +36,18 @@ public class ProcessUtil implements ProcessExitedListener{ // implemented listen
 
         case(WINDOWS):
             List<ProcessItem> before = ProcessUtil.getRunning();
+            InputStream is;
             try {
-                Runtime.getRuntime().exec(command, null, runDirectory).getInputStream().close();
+                is = Runtime.getRuntime().exec(command, null, runDirectory).getInputStream();
+                //is.close();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
             List<ProcessItem> after = ProcessUtil.getRunning();
             ProcessItem newItem = getLatestWindowsJavaPID(before, after);
+            newItem.setInputStream(is);
             new WindowsProcessPollThread(newItem, listener, pollPeriod).start();
+
             return newItem;
 
         case(OSX):
@@ -63,9 +68,17 @@ public class ProcessUtil implements ProcessExitedListener{ // implemented listen
         switch (OS){
 
         case(WINDOWS):
+            try{
+                System.out.println("killing InputStream");
+                item.getInputStream().close();
+            } catch (IOException e) {
+                System.out.println("and something went wrong: " + e);
+            }
+
             try {
                 System.out.println("taskkill.exe /f /PID " + item.getPID());
                 Runtime.getRuntime().exec("taskkill.exe /f /PID " + item.getPID()).getInputStream().close();
+
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

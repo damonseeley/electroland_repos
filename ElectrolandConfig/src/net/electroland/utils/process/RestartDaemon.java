@@ -7,17 +7,19 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 
 @SuppressWarnings("serial")
-public class RestartDaemon extends JFrame implements ProcessExitedListener, WindowListener {
+public class RestartDaemon extends JFrame implements ProcessExitedListener, WindowListener, Runnable {
 
     private ProcessItem running;
     private JCheckBox state;
     private String rootDir, batFileName;
     private long pollRate;
+    private Thread thread;
 
     /**
      * @param args
@@ -42,13 +44,37 @@ public class RestartDaemon extends JFrame implements ProcessExitedListener, Wind
             daemon.setVisible(true);
             daemon.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             daemon.addWindowListener(daemon);
-            daemon.run();
+
+            daemon.start();
         }
     }
 
+    public void start() {
+        thread = new Thread(this);
+        thread.start();
+    }
+
     public void run(){
+
         running = ProcessUtil.run(readBat(batFileName, 
                                   rootDir), new File(rootDir), this, pollRate);
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(running.getInputStream()));
+
+        while (thread != null){
+            try {
+                if (br.ready()){
+                    System.out.println(br.readLine());
+                }
+            } catch (IOException e) {
+                e.printStackTrace(System.err);
+            }
+        }
+        try{
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace(System.err);
+        }
     }
 
     public static String readBat(String filename, String rootDir){
@@ -71,12 +97,13 @@ public class RestartDaemon extends JFrame implements ProcessExitedListener, Wind
     @Override
     public void exited(ProcessItem ded) {
         if (state.isSelected()){
-            run();
+            start();
         }
     }
 
     @Override
     public void windowClosing(WindowEvent arg0) {
+        thread = null;
         state.setSelected(false);
         System.out.println("killing the process.");
         ProcessUtil.kill(running);
