@@ -1,6 +1,6 @@
 package net.electroland.utils.process;
 
-public class OSXProcessItem implements ProcessItem {
+public class OSXProcessItem extends ProcessItem {
 
     public OSXProcessItem(String unparsedItem){
         System.out.println("osx: " + unparsedItem);
