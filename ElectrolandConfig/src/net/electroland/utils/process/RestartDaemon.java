@@ -8,24 +8,27 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Timer;
 
-import javax.swing.JCheckBox;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 
 @SuppressWarnings("serial")
 public class RestartDaemon extends JFrame implements ProcessExitedListener, WindowListener, Runnable {
 
     private ProcessItem running;
-    private JCheckBox state;
+    private JButton restartButton;
     private String rootDir, batFileName;
     private long pollRate;
     private Thread thread;
+    private Timer timer;
 
     /**
      * @param args
      */
     public static void main(String[] args) {
 
+        // TODO: replace with properties file
         if (args.length != 3){
             System.out.println("Usage: RestartDaemon [rootDir] [batFileName] [pollRate]");
         }else{
@@ -36,16 +39,17 @@ public class RestartDaemon extends JFrame implements ProcessExitedListener, Wind
             daemon.pollRate    = Long.parseLong(args[2]);
 
             daemon.setTitle(daemon.rootDir + " " + daemon.batFileName);
-            daemon.state = new JCheckBox("Restart if process dies?");
-            daemon.state.setSelected(true);
+            daemon.restartButton = new JButton("Restart");
             daemon.setLayout(new BorderLayout());
-            daemon.getContentPane().add(daemon.state, BorderLayout.CENTER);
-            daemon.setSize(250,100);
+            daemon.getContentPane().add(daemon.restartButton, BorderLayout.CENTER);
+            daemon.pack();
             daemon.setVisible(true);
             daemon.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             daemon.addWindowListener(daemon);
 
             daemon.start();
+            daemon.timer = new Timer();
+            // TODO: schdeule first restart here
         }
     }
 
@@ -77,6 +81,16 @@ public class RestartDaemon extends JFrame implements ProcessExitedListener, Wind
         }
     }
 
+    public void restart() {
+        synchronized(timer){
+            ProcessUtil.kill(running);
+        }
+    }
+
+    public Timer getTimer(){
+        return timer;
+    }
+
     public static String readBat(String filename, String rootDir){
         if (filename == null){
             return null;
@@ -96,15 +110,15 @@ public class RestartDaemon extends JFrame implements ProcessExitedListener, Wind
 
     @Override
     public void exited(ProcessItem ded) {
-        if (state.isSelected()){
+        if (thread != null){
             start();
         }
     }
 
     @Override
     public void windowClosing(WindowEvent arg0) {
+        timer.cancel();
         thread = null;
-        state.setSelected(false);
         System.out.println("killing the process.");
         ProcessUtil.kill(running);
         System.out.println("process ded.");
