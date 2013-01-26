@@ -8,10 +8,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Map;
 import java.util.Timer;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+
+import net.electroland.utils.ElectrolandProperties;
+import net.electroland.utils.ParameterMap;
 
 @SuppressWarnings("serial")
 public class RestartDaemon extends JFrame implements ProcessExitedListener, WindowListener, Runnable {
@@ -28,29 +32,38 @@ public class RestartDaemon extends JFrame implements ProcessExitedListener, Wind
      */
     public static void main(String[] args) {
 
-        // TODO: replace with properties file
-        if (args.length != 3){
-            System.out.println("Usage: RestartDaemon [rootDir] [batFileName] [pollRate]");
-        }else{
-            RestartDaemon daemon = new RestartDaemon();
+        ElectrolandProperties ep = new ElectrolandProperties(args.length == 1 ? args[0] : "restart.properties");
 
-            daemon.rootDir     = args[0];
-            daemon.batFileName = args[1];
-            daemon.pollRate    = Long.parseLong(args[2]);
+        RestartDaemon daemon = new RestartDaemon();
 
-            daemon.setTitle(daemon.rootDir + " " + daemon.batFileName);
-            daemon.restartButton = new JButton("Restart");
-            daemon.setLayout(new BorderLayout());
-            daemon.getContentPane().add(daemon.restartButton, BorderLayout.CENTER);
-            daemon.pack();
-            daemon.setVisible(true);
-            daemon.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            daemon.addWindowListener(daemon);
+        daemon.rootDir     = ep.getRequired("settings", "global", "rootDir");
+        daemon.batFileName = ep.getRequired("settings", "global", "startScript");
+        daemon.pollRate    = ep.getRequiredInt("settings", "global", "pollRate");
 
-            daemon.start();
-            daemon.timer = new Timer();
-            // TODO: schdeule first restart here
+        daemon.setTitle(daemon.rootDir + " " + daemon.batFileName);
+        daemon.restartButton = new JButton("Restart");
+        daemon.setLayout(new BorderLayout());
+        daemon.getContentPane().add(daemon.restartButton, BorderLayout.CENTER);
+        daemon.pack();
+        daemon.setVisible(true);
+        daemon.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        daemon.addWindowListener(daemon);
+
+        daemon.start();
+        daemon.timer = new Timer();
+
+        daemon.startRestartTimers(ep);
+    }
+
+    public void startRestartTimers(ElectrolandProperties ep){
+        Map <String, ParameterMap> restarts = ep.getObjects("restart");
+        for (ParameterMap params : restarts.values()){
+            startRestartTimer(params.getRequired("restartRate"), params.getRequired("repeatDayTime"));
         }
+    }
+
+    public void startRestartTimer(String repeatRate, String dateParams){
+        new RestartTimerTask(repeatRate, dateParams, this);
     }
 
     public void start() {
