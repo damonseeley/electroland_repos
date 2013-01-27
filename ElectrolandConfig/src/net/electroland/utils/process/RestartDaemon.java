@@ -56,10 +56,14 @@ public class RestartDaemon extends JFrame implements ProcessExitedListener, Wind
             daemon.pack();
             daemon.setVisible(true);
             daemon.addWindowListener(daemon);
+            daemon.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
             // scheduled restarts
             daemon.timer = new Timer();
             daemon.startRestartTimers(ep);
+
+            // shutdown hook for the unintended
+            Runtime.getRuntime().addShutdownHook(new ShutDownThread(daemon));
 
             // start the restart daemon
             daemon.start();
@@ -156,8 +160,7 @@ public class RestartDaemon extends JFrame implements ProcessExitedListener, Wind
         }
     }
 
-    @Override
-    public void windowClosing(WindowEvent arg0) {
+    public void shutdown(){
         timer.cancel();
         thread = null;
         System.out.println("killing the process.");
@@ -166,8 +169,14 @@ public class RestartDaemon extends JFrame implements ProcessExitedListener, Wind
         System.exit(1);
     }
 
+    
     @Override
-    public void windowClosed(WindowEvent arg0) {}
+    public void windowClosing(WindowEvent arg0) {}
+
+    @Override
+    public void windowClosed(WindowEvent arg0) {
+        shutdown();
+    }
 
     @Override
     public void windowActivated(WindowEvent arg0) {}
@@ -183,4 +192,15 @@ public class RestartDaemon extends JFrame implements ProcessExitedListener, Wind
 
     @Override
     public void windowOpened(WindowEvent arg0) {}
+}
+
+class ShutDownThread extends Thread {
+    private RestartDaemon daemon;
+    public ShutDownThread(RestartDaemon daemon){
+        this.daemon = daemon;
+    }
+    public void run(){
+        System.out.println("shutting down");
+        daemon.shutdown();
+    }
 }
