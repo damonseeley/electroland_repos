@@ -48,9 +48,9 @@ public class RestartDateTime {
         assert rdt0.isHourly();
         assert rdt0.getMinutes() == 4;
 
-        RestartDateTime rdt1 = new RestartDateTime(RestartDateTime.DAILY, "11:08 PM");
+        RestartDateTime rdt1 = new RestartDateTime(RestartDateTime.DAILY, "12:08 PM");
         assert rdt1.isDaily();
-        assert rdt1.getHour() == 23;
+        assert rdt1.getHour() == 0;
         assert rdt1.getMinutes() == 8;
         assert rdt1.getAmPm() == Calendar.PM;
 
@@ -68,7 +68,7 @@ public class RestartDateTime {
     }
 
     public int getHour(){
-        return reference.get(Calendar.HOUR) + getAmPm() * 12;
+        return reference.get(Calendar.HOUR);
     }
 
     public int getAmPm(){

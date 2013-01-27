@@ -22,7 +22,9 @@ public class RestartTimerTask extends TimerTask {
     }
 
     public static void main(String[] args){
-        System.out.println(getNextStartDateTime(new RestartDateTime(RestartDateTime.WEEKLY, "Mon, 12:00 AM")).getTime());
+        System.out.println(getNextStartDateTime(new RestartDateTime(RestartDateTime.DAILY, "8:08 PM")).getTime());
+        System.out.println(getNextStartDateTime(new RestartDateTime(RestartDateTime.WEEKLY, "Mon, 11:08 PM")).getTime());
+        System.out.println(getNextStartDateTime(new RestartDateTime(RestartDateTime.HOURLY, "07")).getTime());
     }
 
     public static Calendar getNextStartDateTime(RestartDateTime referenceStartTime){
@@ -44,11 +46,22 @@ public class RestartTimerTask extends TimerTask {
                 nextRun.add(Calendar.HOUR, 1);
             }
         } else if (referenceStartTime.isDaily()){
+            int hour = referenceStartTime.getHour();
+            nextRun.set(Calendar.HOUR, hour);
+            if (hour > 11){
+                nextRun.set(Calendar.AM_PM, Calendar.PM);
+            }
             if (nextRun.before(now) || nextRun.equals(now)){
                 nextRun.add(Calendar.DATE, 1);
             }
+            System.out.println(nextRun.getTime());
         } else if (referenceStartTime.isWeekly()){
-            nextRun.set(Calendar.HOUR, referenceStartTime.getHour());
+
+            int hour = referenceStartTime.getHour();
+            nextRun.set(Calendar.HOUR, hour);
+            if (hour > 11){
+                nextRun.set(Calendar.AM_PM, Calendar.PM);
+            }
 
             while (nextRun.get(Calendar.DAY_OF_WEEK) != referenceStartTime.getDay() ||
                    nextRun.get(Calendar.DATE) == now.get(Calendar.DATE)){
