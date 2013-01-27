@@ -54,11 +54,12 @@ public class RestartDateTime {
         assert rdt1.getMinutes() == 8;
         assert rdt1.getAmPm() == Calendar.PM;
 
-        RestartDateTime rdt2 = new RestartDateTime(RestartDateTime.WEEKLY, "Mon, 12:59 AM");
+        RestartDateTime rdt2 = new RestartDateTime(RestartDateTime.WEEKLY, "Mon, 12:00 AM");
+
         assert rdt2.isWeekly();
         assert rdt2.getDay() == Calendar.MONDAY;
         assert rdt2.getHour() == 0;
-        assert rdt2.getMinutes() == 59;
+        assert rdt2.getMinutes() == 00;
         assert rdt2.getAmPm() == Calendar.AM;
     }
 
