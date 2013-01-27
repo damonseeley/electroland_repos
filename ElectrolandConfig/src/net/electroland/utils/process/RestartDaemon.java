@@ -1,6 +1,8 @@
 package net.electroland.utils.process;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.BufferedReader;
@@ -8,6 +10,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collections;
+import java.util.Date;
 import java.util.Map;
 import java.util.Timer;
 
@@ -15,10 +19,11 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 
 import net.electroland.utils.ElectrolandProperties;
+import net.electroland.utils.OptionException;
 import net.electroland.utils.ParameterMap;
 
 @SuppressWarnings("serial")
-public class RestartDaemon extends JFrame implements ProcessExitedListener, WindowListener, Runnable {
+public class RestartDaemon extends JFrame implements ProcessExitedListener, WindowListener, ActionListener, Runnable {
 
     private ProcessItem running;
     private JButton restartButton;
@@ -36,29 +41,43 @@ public class RestartDaemon extends JFrame implements ProcessExitedListener, Wind
 
         RestartDaemon daemon = new RestartDaemon();
 
-        daemon.rootDir     = ep.getRequired("settings", "global", "rootDir");
-        daemon.batFileName = ep.getRequired("settings", "global", "startScript");
-        daemon.pollRate    = ep.getRequiredInt("settings", "global", "pollRate");
+        try{
+            // params for the process we are monitoring
+            daemon.rootDir     = ep.getRequired("settings", "global", "rootDir");
+            daemon.batFileName = ep.getRequired("settings", "global", "startScript");
+            daemon.pollRate    = ep.getRequiredInt("settings", "global", "pollRate");
 
-        daemon.setTitle(daemon.rootDir + " " + daemon.batFileName);
-        daemon.restartButton = new JButton("Restart");
-        daemon.setLayout(new BorderLayout());
-        daemon.getContentPane().add(daemon.restartButton, BorderLayout.CENTER);
-        daemon.pack();
-        daemon.setVisible(true);
-        daemon.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        daemon.addWindowListener(daemon);
+            // window
+            daemon.setTitle(daemon.rootDir + " " + daemon.batFileName);
+            daemon.restartButton = new JButton("Restart");
+            daemon.restartButton.addActionListener(daemon);
+            daemon.setLayout(new BorderLayout());
+            daemon.getContentPane().add(daemon.restartButton, BorderLayout.CENTER);
+            daemon.pack();
+            daemon.setVisible(true);
+            daemon.addWindowListener(daemon);
 
-        daemon.start();
-        daemon.timer = new Timer();
+            // scheduled restarts
+            daemon.timer = new Timer();
+            daemon.startRestartTimers(ep);
 
-        daemon.startRestartTimers(ep);
+            // start the restart daemon
+            daemon.start();
+        }catch(OptionException e){
+            e.printStackTrace(System.err);
+            System.exit(-1);
+        }
     }
 
     public void startRestartTimers(ElectrolandProperties ep){
-        Map <String, ParameterMap> restarts = ep.getObjects("restart");
+        Map <String, ParameterMap> restarts;
+        try{
+            restarts = ep.getObjects("restart");
+        }catch(OptionException e){
+            restarts = Collections.emptyMap();
+        }
         for (ParameterMap params : restarts.values()){
-            startRestartTimer(params.getRequired("restartRate"), params.getRequired("repeatDayTime"));
+            startRestartTimer(params.getRequired("repeat"), params.getRequired("repeatDayTime"));
         }
     }
 
@@ -96,12 +115,14 @@ public class RestartDaemon extends JFrame implements ProcessExitedListener, Wind
 
     public void restart() {
         synchronized(timer){
+            System.out.println("restart called");
             ProcessUtil.kill(running);
         }
     }
 
-    public Timer getTimer(){
-        return timer;
+    public void scheduleRestart(RestartTimerTask task, Date when){
+        System.out.println("restart scheduled for " + when);
+        timer.schedule(task, when);
     }
 
     public static String readBat(String filename, String rootDir){
@@ -129,12 +150,20 @@ public class RestartDaemon extends JFrame implements ProcessExitedListener, Wind
     }
 
     @Override
+    public void actionPerformed(ActionEvent evt) {
+        if (evt.getSource() == restartButton){
+            this.restart();
+        }
+    }
+
+    @Override
     public void windowClosing(WindowEvent arg0) {
         timer.cancel();
         thread = null;
         System.out.println("killing the process.");
         ProcessUtil.kill(running);
         System.out.println("process ded.");
+        System.exit(1);
     }
 
     @Override
