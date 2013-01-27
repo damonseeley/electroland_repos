@@ -17,20 +17,36 @@ public class RestartTimerTask extends TimerTask {
         this.scheduleRestart();
     }
 
+    public static void main(String[] args){
+        System.out.println(getNextStartDateTime(new RestartDateTime(RestartDateTime.WEEKLY, "Mon, 5:19 PM")).getTime());
+    }
+
     public void scheduleRestart() {
         synchronized(daemon.getTimer()){
-            daemon.getTimer().schedule(this, getNextStartDateTime().getTime());
+            Calendar nextStart = getNextStartDateTime(referenceStartTime);
+            System.out.println("restart scheduled for " + nextStart);
+            daemon.getTimer().schedule(this, nextStart.getTimeInMillis());
         }
     }
 
-    public Calendar getNextStartDateTime(){
+    public static Calendar getNextStartDateTime(RestartDateTime referenceStartTime){
 
+        Calendar now     = Calendar.getInstance();
         Calendar nextRun = Calendar.getInstance();
 
+        // make sure comparisons during the same minute don't botch up.
+        now.set(Calendar.SECOND, 0);
+        now.set(Calendar.MILLISECOND, 0);
+        nextRun.set(Calendar.SECOND, 0);
+        nextRun.set(Calendar.MILLISECOND, 0);
+
+        // all restarts happen on a specified minute.
         nextRun.set(Calendar.MINUTE, referenceStartTime.getMinutes());
 
         if (referenceStartTime.isHourly()){
-            nextRun.add(Calendar.HOUR, 1);
+            if (nextRun.before(now) || nextRun.equals(now)){
+                nextRun.add(Calendar.HOUR, 1);
+            }
         } else if (referenceStartTime.isDaily()){
             nextRun.add(Calendar.DATE, 1);
         } else if (referenceStartTime.isWeekly()){
