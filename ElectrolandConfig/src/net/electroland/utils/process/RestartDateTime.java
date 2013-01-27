@@ -12,9 +12,12 @@ public class RestartDateTime {
     public final static String DAILY  = "daily";
     public final static String WEEKLY = "weekly";
     
-    public final static String HOURLY_FORMAT = "mm";
-    public final static String DAILY_FORMAT  = "h:mm a";
-    public final static String WEEKLY_FORMAT = "EEE, h:mm a";
+    public final static String HOURLY_FORMAT  = "mm";
+    public final static String HOURLY_EXAMPLE = "05";
+    public final static String DAILY_FORMAT   = "h:mm a";
+    public final static String DAILY_EXAMPLE  = "12:05 PM";
+    public final static String WEEKLY_FORMAT  = "EEE, h:mm a";
+    public final static String WEEKLY_EXAMPLE = "Wed, 12:59 AM";
 
     private String repeatRate;
     private Calendar reference;
@@ -25,63 +28,67 @@ public class RestartDateTime {
         Date referenceDate = null;
 
         if (isHourly()){
-            referenceDate = parseHourly(repeatDayTime);
+            referenceDate = parse(HOURLY_FORMAT, repeatDayTime);
         } else if (isDaily()){
-            referenceDate = parseDaily(repeatDayTime);
+            referenceDate = parse(DAILY_FORMAT, repeatDayTime);
         } else if (isWeekly()){
-            referenceDate = parseWeekly(repeatDayTime);
+            referenceDate = parse(WEEKLY_FORMAT, repeatDayTime);
         } else {
             throw new RuntimeException("Unknown type: " + repeatRate);
         }
 
-        Calendar reference = Calendar.getInstance();
+        reference = Calendar.getInstance();
         reference.setTime(referenceDate);
     }
 
-    /**
-     * set minutes for all date types
-     * @return
-     */
+    // unit tests (remember -ea as a VM param)
+    public static void main(String[] args){
+
+        RestartDateTime rdt0 = new RestartDateTime(RestartDateTime.HOURLY, "04");
+        assert rdt0.isHourly();
+        assert rdt0.getMinutes() == 4;
+
+        RestartDateTime rdt1 = new RestartDateTime(RestartDateTime.DAILY, "11:08 PM");
+        assert rdt1.isDaily();
+        assert rdt1.getHour() == 23;
+        assert rdt1.getMinutes() == 8;
+        assert rdt1.getAmPm() == Calendar.PM;
+
+        RestartDateTime rdt2 = new RestartDateTime(RestartDateTime.WEEKLY, "Mon, 12:59 AM");
+        assert rdt2.isWeekly();
+        assert rdt2.getDay() == Calendar.MONDAY;
+        assert rdt2.getHour() == 0;
+        assert rdt2.getMinutes() == 59;
+        assert rdt2.getAmPm() == Calendar.AM;
+    }
+
     public int getMinutes(){
         return reference.get(Calendar.MINUTE);
     }
 
-    /**
-     * set hours for daily, weekly but not hourly
-     * @return
-     */
     public int getHour(){
-        return reference.get(Calendar.HOUR);
+        return reference.get(Calendar.HOUR) + getAmPm() * 12;
     }
 
-    /**
-     * set day for weekly, but not hourly or daily
-     * @return
-     */
+    public int getAmPm(){
+        return reference.get(Calendar.AM_PM);
+    }
+
     public int getDay(){
         return reference.get(Calendar.DAY_OF_WEEK);
     }
 
-    public static Date parseHourly(String dateParam){
+    public static Date parse(String format, String dateParam){
         try{
-            return new SimpleDateFormat(HOURLY_FORMAT, Locale.ENGLISH).parse(dateParam);
+            SimpleDateFormat sdt = new SimpleDateFormat(format, Locale.ENGLISH);
+            sdt.setLenient(false);
+            return sdt.parse(dateParam);
         }catch(ParseException e){
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static Date parseDaily(String dateParam){
-        try{
-            return new SimpleDateFormat(DAILY_FORMAT, Locale.ENGLISH).parse(dateParam);
-        }catch(ParseException e){
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static Date parseWeekly(String dateParam){
-        try{
-            return new SimpleDateFormat(WEEKLY_FORMAT, Locale.ENGLISH).parse(dateParam);
-        }catch(ParseException e){
+            System.err.println("The following date formats are supported:");
+            System.err.println("  " + HOURLY + ":\t" + HOURLY_FORMAT + "\tExample: " + HOURLY_EXAMPLE);
+            System.err.println("  " + DAILY  + ":\t" + DAILY_FORMAT  + "\tExample: " + DAILY_EXAMPLE);
+            System.err.println("  " + WEEKLY + ":\t" + WEEKLY_FORMAT + "\tExample: " + WEEKLY_EXAMPLE);
+            System.err.println();
             throw new RuntimeException(e);
         }
     }
@@ -97,5 +104,4 @@ public class RestartDateTime {
     public boolean isWeekly(){
         return WEEKLY.equals(repeatRate);
     }
-
 }
