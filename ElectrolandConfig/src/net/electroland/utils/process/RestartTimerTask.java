@@ -11,22 +11,18 @@ public class RestartTimerTask extends TimerTask {
     public RestartTimerTask(String repeatRate, String repeatDayTime, RestartDaemon daemon) {
 
         this.daemon = daemon;
-
         this.referenceStartTime = new RestartDateTime(repeatRate, repeatDayTime);
-
-        this.scheduleRestart();
+        Calendar nextStart = getNextStartDateTime(referenceStartTime);
+        daemon.scheduleRestart(this, nextStart.getTime());
+    }
+    
+    public RestartTimerTask(RestartTimerTask original){
+        this.daemon             = original.daemon;
+        this.referenceStartTime = original.referenceStartTime;
     }
 
     public static void main(String[] args){
         System.out.println(getNextStartDateTime(new RestartDateTime(RestartDateTime.DAILY, "5:29 PM")).getTime());
-    }
-
-    public void scheduleRestart() {
-        synchronized(daemon.getTimer()){
-            Calendar nextStart = getNextStartDateTime(referenceStartTime);
-            System.out.println("restart scheduled for " + nextStart);
-            daemon.getTimer().schedule(this, nextStart.getTimeInMillis());
-        }
     }
 
     public static Calendar getNextStartDateTime(RestartDateTime referenceStartTime){
@@ -65,6 +61,6 @@ public class RestartTimerTask extends TimerTask {
     @Override
     public void run() {
         daemon.restart();
-        this.scheduleRestart();
+        daemon.scheduleRestart(new RestartTimerTask(this), getNextStartDateTime(referenceStartTime).getTime());
     }
 }

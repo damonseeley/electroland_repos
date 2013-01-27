@@ -94,14 +94,14 @@ public class RestartDateTime {
     }
 
     public boolean isHourly(){
-        return HOURLY.equals(repeatRate);
+        return HOURLY.equalsIgnoreCase(repeatRate);
     }
 
     public boolean isDaily(){
-        return DAILY.equals(repeatRate);
+        return DAILY.equalsIgnoreCase(repeatRate);
     }
 
     public boolean isWeekly(){
-        return WEEKLY.equals(repeatRate);
+        return WEEKLY.equalsIgnoreCase(repeatRate);
     }
 }
