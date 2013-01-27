@@ -18,7 +18,7 @@ public class RestartTimerTask extends TimerTask {
     }
 
     public static void main(String[] args){
-        System.out.println(getNextStartDateTime(new RestartDateTime(RestartDateTime.WEEKLY, "Mon, 5:19 PM")).getTime());
+        System.out.println(getNextStartDateTime(new RestartDateTime(RestartDateTime.DAILY, "5:29 PM")).getTime());
     }
 
     public void scheduleRestart() {
@@ -48,11 +48,13 @@ public class RestartTimerTask extends TimerTask {
                 nextRun.add(Calendar.HOUR, 1);
             }
         } else if (referenceStartTime.isDaily()){
-            nextRun.add(Calendar.DATE, 1);
+            if (nextRun.before(now) || nextRun.equals(now)){
+                nextRun.add(Calendar.DATE, 1);
+            }
         } else if (referenceStartTime.isWeekly()){
             nextRun.set(Calendar.HOUR, referenceStartTime.getHour());
-            while (nextRun.get(Calendar.DAY_OF_WEEK) != referenceStartTime.getDay()
-                   && nextRun.before(Calendar.getInstance())){
+            while (nextRun.get(Calendar.DAY_OF_WEEK) != referenceStartTime.getDay() &&
+                   nextRun.get(Calendar.DATE) != now.get(Calendar.DATE)){
                 nextRun.add(Calendar.DATE, 1);
             }
         }
