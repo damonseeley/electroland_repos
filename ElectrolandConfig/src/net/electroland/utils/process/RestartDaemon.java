@@ -21,6 +21,25 @@ public class RestartDaemon extends Thread{
     private Timer scheduler;
 
     /**
+     * This class will manage external processes. It will start them, restart
+     * them if they die, or periodically restart them.
+     * 
+     * A couple things:
+     * 
+     * 1.) If double click on a .bat file, you'll get a terminal window.  If
+     *     you close that window, no terminate command goes to this app, and
+     *     (therefore) spawned processes will not die.
+     *     
+     * 2.) If you select restartOnTermination = false, and you kill the process,
+     *     this app has no idea how many processes are left, so it will stay
+     *     alive (doing nothing).
+     *     
+     * 3.) There's no check to see if you've done something dumb, like called
+     *     DAILY and HOURLY restarts of the same process that would coincide.
+     *     
+     * 4.) There is no UI. There's no obvious way to list what processes are
+     *     currently live.  Yadda, yadda.
+     * 
      * @param args
      */
     public static void main(String[] args) {
@@ -103,6 +122,7 @@ public class RestartDaemon extends Thread{
 
     public void shutdown() {
         synchronized(getScheduler()){
+            logger.info("cancelling all restart timers.");
             scheduler.cancel();
         }
         for (MonitoredProcess proc : processes.values()){
