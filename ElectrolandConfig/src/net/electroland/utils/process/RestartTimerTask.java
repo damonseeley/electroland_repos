@@ -50,6 +50,7 @@ public class RestartTimerTask extends TimerTask {
         // all restarts happen on a specified minute.
         nextRun.set(Calendar.MINUTE, referenceStartTime.getMinutes());
 
+        // TODO: put these into separate methods for sanity
         if (referenceStartTime.isHourly()){
 
             if (nextRun.before(now) || nextRun.equals(now)){
