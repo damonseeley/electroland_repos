@@ -1,206 +1,124 @@
 package net.electroland.utils.process;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
 
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.ParameterMap;
 
-@SuppressWarnings("serial")
-public class RestartDaemon extends JFrame implements ProcessExitedListener, WindowListener, ActionListener, Runnable {
+import org.apache.log4j.Logger;
 
-    private ProcessItem running;
-    private JButton restartButton;
-    private String rootDir, batFileName;
-    private long pollRate;
-    private Thread thread;
-    private Timer timer;
+public class RestartDaemon extends Thread{
+
+    static Logger logger = Logger.getLogger(RestartDaemon.class);
+
+    private Map <String, MonitoredProcess> processes;
+    private Timer scheduler;
 
     /**
      * @param args
      */
     public static void main(String[] args) {
 
-        ElectrolandProperties ep = new ElectrolandProperties(args.length == 1 ? args[0] : "restart.properties");
-
         RestartDaemon daemon = new RestartDaemon();
+        ElectrolandProperties ep = new ElectrolandProperties(args.length == 1 ? args[0] : "restart.properties");
+        daemon.processes = new HashMap<String, MonitoredProcess>();
+        daemon.processes.putAll(daemon.startProcesses(ep));
+        daemon.startRestartTimers(ep, daemon.processes);
+        Runtime.getRuntime().addShutdownHook(daemon);
+    }
 
+    public Map <String, MonitoredProcess> startProcesses(ElectrolandProperties ep) {
+
+        logger.debug("starting processes:");
+        HashMap <String, MonitoredProcess>newProcs = new HashMap<String, MonitoredProcess>();
+        Map <String, ParameterMap> allProcParams;
         try{
-            // params for the process we are monitoring
-            daemon.rootDir     = ep.getRequired("settings", "global", "rootDir");
-            daemon.batFileName = ep.getRequired("settings", "global", "startScript");
-            daemon.pollRate    = ep.getRequiredInt("settings", "global", "pollRate");
-
-            // window
-            daemon.setTitle(daemon.rootDir + " " + daemon.batFileName);
-            daemon.restartButton = new JButton("Restart");
-            daemon.restartButton.addActionListener(daemon);
-            daemon.setLayout(new BorderLayout());
-            daemon.getContentPane().add(daemon.restartButton, BorderLayout.CENTER);
-            daemon.pack();
-            daemon.setVisible(true);
-            daemon.addWindowListener(daemon);
-            daemon.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
-            // scheduled restarts
-            daemon.timer = new Timer();
-            daemon.startRestartTimers(ep);
-
-            // shutdown hook for the unintended
-            Runtime.getRuntime().addShutdownHook(new ShutDownThread(daemon));
-
-            // start the restart daemon
-            daemon.start();
-        }catch(OptionException e){
-            e.printStackTrace(System.err);
-            System.exit(-1);
+            allProcParams = ep.getObjects("process");
+        } catch(OptionException e) {
+            allProcParams = Collections.emptyMap();
         }
+        for (String name : allProcParams.keySet()){
+            logger.debug(" starting process." + name);
+            ParameterMap params = allProcParams.get(name);
+            MonitoredProcess mp = startProcess(name, params);
+            newProcs.put(name, mp);
+            mp.startProcess();
+        }
+        return newProcs;
     }
 
-    public void startRestartTimers(ElectrolandProperties ep){
-        Map <String, ParameterMap> restarts;
+    public static MonitoredProcess startProcess(String name, ParameterMap params){
+
+        String command               = params.getRequired("startScript");
+        String runDirFilename        = params.getRequired("rootDir");
+        int startDelayMillis         = params.getRequiredInt("startDelayMillis");
+        boolean restartOnTermination = params.getRequiredBoolean("restartOnTermination");
+
+        return new MonitoredProcess(name, command, new File(runDirFilename), startDelayMillis, restartOnTermination);
+    }
+
+    public void startRestartTimers(ElectrolandProperties ep, Map <String, MonitoredProcess> processes) {
+
+        logger.debug("starting restartTimers:");
+        Map <String, ParameterMap> allRestartParams;
         try{
-            restarts = ep.getObjects("restart");
-        }catch(OptionException e){
-            restarts = Collections.emptyMap();
+            allRestartParams = ep.getObjects("restart");
+        } catch(OptionException e) {
+            allRestartParams = Collections.emptyMap();
         }
-        for (ParameterMap params : restarts.values()){
-            startRestartTimer(params.getRequired("repeat"), params.getRequired("repeatDayTime"));
-        }
-    }
-
-    public void startRestartTimer(String repeatRate, String dateParams){
-        new RestartTimerTask(repeatRate, dateParams, this);
-    }
-
-    public void start() {
-        thread = new Thread(this);
-        thread.start();
-    }
-
-    public void run(){
-
-        running = ProcessUtil.run(readBat(batFileName, 
-                                  rootDir), new File(rootDir), this, pollRate);
-
-        BufferedReader br = new BufferedReader(new InputStreamReader(running.getInputStream()));
-
-        while (thread != null){
-            try {
-                if (br.ready()){
-                    System.out.println(br.readLine());
-                }
-            } catch (IOException e) {
-                e.printStackTrace(System.err);
-            }
-        }
-        try{
-            br.close();
-        } catch (IOException e) {
-            e.printStackTrace(System.err);
+        for (String name : allRestartParams.keySet()){
+            logger.debug("  starting restart." + name);
+            ParameterMap params = allRestartParams.get(name);
+            startRestartTimer(params, processes);
         }
     }
 
-    public void restart() {
-        synchronized(timer){
-            System.out.println("restart called");
-            ProcessUtil.kill(running);
-        }
+    public RestartTimerTask startRestartTimer(ParameterMap params, Map <String, MonitoredProcess> processes) {
+        String repeat            = params.getRequired("repeat");
+        String repeatDayTime     = params.getRequired("repeatDayTime");
+        String processName       = params.getRequired("process");
+        MonitoredProcess process = processes.get(processName);
+        return new RestartTimerTask(repeat, repeatDayTime, process, getScheduler());
     }
 
     public void scheduleRestart(RestartTimerTask task, Date when){
-        System.out.println("restart scheduled for " + when);
-        timer.schedule(task, when);
-    }
-
-    public static String readBat(String filename, String rootDir){
-        if (filename == null){
-            return null;
-        }else{
-            File bat = new File(rootDir, filename);
-            BufferedReader br;
-            try {
-                br = new BufferedReader(new FileReader(bat));
-                String command = br.readLine();
-                br.close();
-                return command;
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+        synchronized(getScheduler()){
+            logger.info(task.getReferenceStartDateTime().getType() + " restart scheduled for " + when);
+            getScheduler().schedule(task, when);
         }
     }
 
-    @Override
-    public void exited(ProcessItem ded) {
-        if (thread != null){
-            start();
+    public Timer getScheduler(){
+        if (scheduler == null){
+            scheduler = new Timer();
+        }
+        return scheduler;
+    }
+
+    public void shutdown() {
+        synchronized(getScheduler()){
+            scheduler.cancel();
+        }
+        for (MonitoredProcess proc : processes.values()){
+            proc.kill(false);
         }
     }
 
-    @Override
-    public void actionPerformed(ActionEvent evt) {
-        if (evt.getSource() == restartButton){
-            this.restart();
-        }
+    public void restart(String name) {
+        processes.get(name).kill(true);
     }
 
-    public void shutdown(){
-        timer.cancel();
-        thread = null;
-        System.out.println("killing the process.");
-        ProcessUtil.kill(running);
-        System.out.println("process ded.");
-        System.exit(1);
-    }
-
-    
-    @Override
-    public void windowClosing(WindowEvent arg0) {}
-
-    @Override
-    public void windowClosed(WindowEvent arg0) {
-        shutdown();
-    }
-
-    @Override
-    public void windowActivated(WindowEvent arg0) {}
-
-    @Override
-    public void windowDeactivated(WindowEvent arg0) {}
-
-    @Override
-    public void windowDeiconified(WindowEvent arg0) {}
-
-    @Override
-    public void windowIconified(WindowEvent arg0) {}
-
-    @Override
-    public void windowOpened(WindowEvent arg0) {}
-}
-
-class ShutDownThread extends Thread {
-    private RestartDaemon daemon;
-    public ShutDownThread(RestartDaemon daemon){
-        this.daemon = daemon;
-    }
+    /**
+     * executed by shutdownHook
+     */
     public void run(){
-        System.out.println("shutting down");
-        daemon.shutdown();
+        logger.info("system shutdown called...");
+        shutdown();
     }
 }
