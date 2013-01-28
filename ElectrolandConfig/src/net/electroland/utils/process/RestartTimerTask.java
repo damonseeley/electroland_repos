@@ -1,30 +1,39 @@
 package net.electroland.utils.process;
 
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Timer;
 import java.util.TimerTask;
+
+import org.apache.log4j.Logger;
 
 public class RestartTimerTask extends TimerTask {
 
-    private RestartDaemon daemon;
+    static Logger logger = Logger.getLogger(RestartTimerTask.class);
+
+    private MonitoredProcess process;
     private RestartDateTime referenceStartTime;
+    private Timer timer;
 
-    public RestartTimerTask(String repeatRate, String repeatDayTime, RestartDaemon daemon) {
+    public RestartTimerTask(String repeatRate, String repeatDayTime, MonitoredProcess process, Timer timer) {
 
-        this.daemon = daemon;
+        this.process = process;
+        this.timer = timer;
         this.referenceStartTime = new RestartDateTime(repeatRate, repeatDayTime);
-        Calendar nextStart = getNextStartDateTime(referenceStartTime);
-        daemon.scheduleRestart(this, nextStart.getTime());
+
+        this.scheduleRestart();
     }
     
     public RestartTimerTask(RestartTimerTask original){
-        this.daemon             = original.daemon;
+        this.process            = original.process;
         this.referenceStartTime = original.referenceStartTime;
+        this.timer              = original.timer;
     }
 
-    public static void main(String[] args){
-        System.out.println(getNextStartDateTime(new RestartDateTime(RestartDateTime.DAILY, "1:08 AM")).getTime());
-        System.out.println(getNextStartDateTime(new RestartDateTime(RestartDateTime.WEEKLY, "Mon, 12:08 PM")).getTime());
-        System.out.println(getNextStartDateTime(new RestartDateTime(RestartDateTime.HOURLY, "07")).getTime());
+    public void scheduleRestart(){
+        Date nextRestart = getNextStartDateTime(referenceStartTime).getTime();
+        logger.info("scheduling restart of " + process.getName() + " at " + nextRestart);
+        timer.schedule(this, nextRestart);
     }
 
     public static Calendar getNextStartDateTime(RestartDateTime referenceStartTime){
@@ -74,9 +83,14 @@ public class RestartTimerTask extends TimerTask {
         return nextRun;
     }
 
+    public RestartDateTime getReferenceStartDateTime(){
+        return referenceStartTime;
+    }
+
     @Override
     public void run() {
-        daemon.restart();
-        daemon.scheduleRestart(new RestartTimerTask(this), getNextStartDateTime(referenceStartTime).getTime());
+        process.kill(true);
+        RestartTimerTask nextTask = new RestartTimerTask(this);
+        nextTask.scheduleRestart();
     }
 }

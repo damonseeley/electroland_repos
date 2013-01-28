@@ -6,12 +6,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import org.apache.log4j.Logger;
+
 public class RestartDateTime {
+
+    static Logger logger = Logger.getLogger(RestartDateTime.class);
 
     public final static String HOURLY = "hourly";
     public final static String DAILY  = "daily";
     public final static String WEEKLY = "weekly";
-    
+
     public final static String HOURLY_FORMAT  = "mm";
     public final static String HOURLY_EXAMPLE = "05";
     public final static String DAILY_FORMAT   = "h:mm a";
@@ -79,17 +83,27 @@ public class RestartDateTime {
         return reference.get(Calendar.DAY_OF_WEEK);
     }
 
+    public String getType(){
+        if (isDaily()) {
+            return DAILY;
+        } else if (isHourly()) {
+            return HOURLY;
+        } else if (isWeekly()) {
+            return WEEKLY;
+        } else return null;
+    }
+
     public static Date parse(String format, String dateParam){
         try{
             SimpleDateFormat sdt = new SimpleDateFormat(format, Locale.ENGLISH);
             sdt.setLenient(false);
             return sdt.parse(dateParam);
         }catch(ParseException e){
-            System.err.println("The following date formats are supported:");
-            System.err.println("  " + HOURLY + ":\t" + HOURLY_FORMAT + "\tExample: " + HOURLY_EXAMPLE);
-            System.err.println("  " + DAILY  + ":\t" + DAILY_FORMAT  + "\tExample: " + DAILY_EXAMPLE);
-            System.err.println("  " + WEEKLY + ":\t" + WEEKLY_FORMAT + "\tExample: " + WEEKLY_EXAMPLE);
-            System.err.println();
+            logger.error("The following date formats are supported:");
+            logger.error("  " + HOURLY + ":\t" + HOURLY_FORMAT + "\tExample: " + HOURLY_EXAMPLE);
+            logger.error("  " + DAILY  + ":\t" + DAILY_FORMAT  + "\tExample: " + DAILY_EXAMPLE);
+            logger.error("  " + WEEKLY + ":\t" + WEEKLY_FORMAT + "\tExample: " + WEEKLY_EXAMPLE);
+
             throw new RuntimeException(e);
         }
     }
