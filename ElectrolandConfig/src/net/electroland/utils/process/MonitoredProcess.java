@@ -42,15 +42,19 @@ public class MonitoredProcess implements Runnable {
 
                 logger.info(" starting " + name + " now.");
                 logger.info(" exec " + runDir + "\\" + command);
+                // TODO: corner case: if kill(false) gets called while the previous sleep is underway,
+                //       the wrong running process (old one) will be killed.
+                //       there should probable be a second check to see if the
+                //       restart is still valid here.  Or maybe just sync running?
                 running = Runtime.getRuntime().exec(command, null, runDir);
 
                 firstRun = false;
 
                 pOut = new InputToOutputThread(running.getInputStream(), Logger.getLogger(command));
-                pOut.startReader();
+                pOut.startPiping();
 
                 pErr = new InputToOutputThread(running.getErrorStream(), Logger.getLogger(command));
-                pErr.startReader();
+                pErr.startPiping();
 
                 logger.info("monitoring " + name);
                 running.waitFor();

@@ -58,11 +58,11 @@ public class InputToOutputThread implements Runnable {
         }
     }
 
-    public void startReader() {
+    public void startPiping() {
         new Thread(this).start();
     }
 
-    public void stopReading() {
+    public void stopPiping() {
         isRunning = false;
     }
 
