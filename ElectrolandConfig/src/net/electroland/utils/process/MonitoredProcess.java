@@ -67,7 +67,6 @@ public class MonitoredProcess implements Runnable {
                 e.printStackTrace();
                 System.exit(-1);
             } catch (InterruptedException e) {
-                // This should be expected if an outside caller calls kill(...)
                 e.printStackTrace();
             }
         }
