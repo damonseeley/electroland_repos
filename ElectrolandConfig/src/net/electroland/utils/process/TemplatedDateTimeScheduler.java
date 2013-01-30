@@ -1,6 +1,7 @@
 package net.electroland.utils.process;
 
 import java.util.Date;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -26,14 +27,21 @@ public class TemplatedDateTimeScheduler {
         scheduler = new ScheduledThreadPoolExecutor(maxSimultaneousTasks);
     }
 
-    // would be nice if this supported things beyond killing.
     public void schedule(TemplatedDateTimeTask task){
         Date nextRestart = task.getRepeatDateTimeTemplate().getNextDateTime().getTime();
-        logger.info("scheduling restart of " + task + " at " + nextRestart);
+        logger.info("scheduling " + task + " at " + nextRestart);
         scheduler.schedule(task, nextRestart.getTime() - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
     }
     
     public void shutdownNow() {
         scheduler.shutdownNow();
+    }
+
+    public long getTaskCount(){
+        return scheduler.getTaskCount();
+    }
+
+    public BlockingQueue<Runnable> getActive(){
+        return scheduler.getQueue();
     }
 }
