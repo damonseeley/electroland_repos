@@ -8,13 +8,22 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+/**
+ * Reads from an InputStream and pipes to either an output stream or a Log4j
+ * channel.
+ * 
+ * @author bradley
+ *
+ */
 public class InputToOutputThread implements Runnable {
 
     private BufferedReader in;
     private PrintWriter pw;
     private Logger logger;
+    private Level level;
     private boolean isRunning = false;
 
     public InputToOutputThread(InputStream is, OutputStream os){
@@ -22,15 +31,17 @@ public class InputToOutputThread implements Runnable {
         this.pw = new PrintWriter(new OutputStreamWriter(os));
     }
 
-    public InputToOutputThread(InputStream is, Logger logger){
-        this.in = new BufferedReader(new InputStreamReader(is));
-        this.logger = logger;
+    public InputToOutputThread(InputStream is, Logger logger, Level level){
+        this.in       = new BufferedReader(new InputStreamReader(is));
+        this.logger   = logger;
+        this.level    = level;
     }
 
-    public InputToOutputThread(InputStream is, OutputStream os, Logger logger){
-        this.in = new BufferedReader(new InputStreamReader(is));
-        this.pw = new PrintWriter(new OutputStreamWriter(os));
-        this.logger = logger;
+    public InputToOutputThread(InputStream is, OutputStream os, Logger logger, Level level){
+        this.in       = new BufferedReader(new InputStreamReader(is));
+        this.pw       = new PrintWriter(new OutputStreamWriter(os));
+        this.logger   = logger;
+        this.level    = level;
     }
 
     @Override
@@ -71,7 +82,7 @@ public class InputToOutputThread implements Runnable {
             pw.println(line);
         }
         if (logger != null){
-            logger.info(line);
+            logger.log(level, line);
         }
     }
 }
