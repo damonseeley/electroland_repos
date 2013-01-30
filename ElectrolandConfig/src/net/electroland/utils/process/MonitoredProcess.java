@@ -3,6 +3,7 @@ package net.electroland.utils.process;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Level;
@@ -19,6 +20,7 @@ public class MonitoredProcess implements Runnable {
     private InputToOutputThread pOut, pErr;
     private Process running;
     private List<MonitoredProcessListener> listeners;
+    private Date startTime;
 
     public MonitoredProcess(String name, String command, File runDir, long startDelayMillis, boolean restartOnTermination){
         this.name                 = name;
@@ -31,6 +33,10 @@ public class MonitoredProcess implements Runnable {
 
     public String getName(){
         return name;
+    }
+
+    public Date getStartTime(){
+        return startTime;
     }
 
     public boolean restartOnTermination(){
@@ -79,8 +85,8 @@ public class MonitoredProcess implements Runnable {
                 logger.info(" exec " + runDir + "\\" + command);
 
                 running = Runtime.getRuntime().exec(command, null, runDir);
+                startTime = new Date();
                 notifyExecuted();
-
                 firstRun = false;
 
                 pOut = new InputToOutputThread(running.getInputStream(), Logger.getLogger(command), Level.INFO);
@@ -91,6 +97,8 @@ public class MonitoredProcess implements Runnable {
 
                 logger.info("monitoring " + name);
                 running.waitFor();
+                startTime = null;
+
                 logger.info("process died. ");
                 if (restartOnTermination){
                     logger.info(" restart requested.");

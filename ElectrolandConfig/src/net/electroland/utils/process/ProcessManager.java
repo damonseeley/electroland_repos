@@ -8,6 +8,7 @@ import java.util.Map;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.ParameterMap;
+import net.electroland.utils.process.io.ProcessList;
 
 import org.apache.log4j.Logger;
 
@@ -51,6 +52,8 @@ public class ProcessManager extends Thread implements MonitoredProcessListener{
         daemon.processes.putAll(daemon.startProcesses(ep));
         daemon.scheduleRestarts(ep, daemon.processes);
         Runtime.getRuntime().addShutdownHook(daemon);
+
+        new ProcessList(daemon.processes, daemon.scheduler);
     }
 
     public void initScheduler(ElectrolandProperties ep){
@@ -74,8 +77,11 @@ public class ProcessManager extends Thread implements MonitoredProcessListener{
             logger.debug(" starting process." + name);
             ParameterMap params = allProcParams.get(name);
             MonitoredProcess mp = startProcess(name, params);
-            newProcs.put(name, mp);
+
+            mp.addListener(this);
             mp.startProcess();
+
+            newProcs.put(name, mp);
         }
         return newProcs;
     }

@@ -25,4 +25,8 @@ public class TemplatedDateTimeKill extends TemplatedDateTimeTask {
     public void run() {
         process.kill(restart, this);
     }
+
+    public String toString() {
+        return "KILL " + process.getName() + (restart ? " (to be restarted)." : ".");
+    }
 }
