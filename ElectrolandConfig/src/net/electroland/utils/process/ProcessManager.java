@@ -2,10 +2,8 @@ package net.electroland.utils.process;
 
 import java.io.File;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
 
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
@@ -13,12 +11,13 @@ import net.electroland.utils.ParameterMap;
 
 import org.apache.log4j.Logger;
 
-public class RestartDaemon extends Thread{
+// kind of hoaky, but this implements thread so it can be it's own shutdown hook.
+public class ProcessManager extends Thread implements MonitoredProcessListener{
 
-    static Logger logger = Logger.getLogger(RestartDaemon.class);
+    static Logger logger = Logger.getLogger(ProcessManager.class);
 
     private Map <String, MonitoredProcess> processes;
-    private Timer scheduler;
+    private TemplatedDateTimeScheduler scheduler;
 
     /**
      * This class will manage external processes. It will start them, restart
@@ -44,12 +43,21 @@ public class RestartDaemon extends Thread{
      */
     public static void main(String[] args) {
 
-        RestartDaemon daemon = new RestartDaemon();
+        ProcessManager daemon = new ProcessManager();
+
         ElectrolandProperties ep = new ElectrolandProperties(args.length == 1 ? args[0] : "restart.properties");
+        daemon.initScheduler(ep);
         daemon.processes = new HashMap<String, MonitoredProcess>();
         daemon.processes.putAll(daemon.startProcesses(ep));
-        daemon.startRestartTimers(ep, daemon.processes);
+        daemon.scheduleRestarts(ep, daemon.processes);
         Runtime.getRuntime().addShutdownHook(daemon);
+    }
+
+    public void initScheduler(ElectrolandProperties ep){
+        int poolSize = ep.getRequiredInt("settings", "global", "maxProcessThreads");
+        if (scheduler == null){
+            scheduler = new TemplatedDateTimeScheduler(poolSize);
+        }
     }
 
     public Map <String, MonitoredProcess> startProcesses(ElectrolandProperties ep) {
@@ -82,7 +90,7 @@ public class RestartDaemon extends Thread{
         return new MonitoredProcess(name, command, new File(runDirFilename), startDelayMillis, restartOnTermination);
     }
 
-    public void startRestartTimers(ElectrolandProperties ep, Map <String, MonitoredProcess> processes) {
+    public void scheduleRestarts(ElectrolandProperties ep, Map <String, MonitoredProcess> processes) {
 
         logger.debug("starting restartTimers:");
         Map <String, ParameterMap> allRestartParams;
@@ -94,44 +102,31 @@ public class RestartDaemon extends Thread{
         for (String name : allRestartParams.keySet()){
             logger.debug("  starting restart." + name);
             ParameterMap params = allRestartParams.get(name);
-            startRestartTimer(params, processes);
+            scheduleRestart(params, processes);
         }
     }
 
-    public RestartTimerTask startRestartTimer(ParameterMap params, Map <String, MonitoredProcess> processes) {
-        String repeat            = params.getRequired("repeat");
-        String repeatDayTime     = params.getRequired("repeatDayTime");
-        String processName       = params.getRequired("process");
-        MonitoredProcess process = processes.get(processName);
-        return new RestartTimerTask(repeat, repeatDayTime, process, getScheduler());
-    }
+    public void scheduleRestart(ParameterMap params, Map <String, MonitoredProcess> processes) {
 
-    public void scheduleRestart(RestartTimerTask task, Date when){
-        synchronized(getScheduler()){
-            logger.info(task.getReferenceStartDateTime().getType() + " restart scheduled for " + when);
-            getScheduler().schedule(task, when);
-        }
-    }
+        String repeat             = params.getRequired("repeat");
+        String repeatDayTime      = params.getRequired("repeatDayTime");
+        String processName        = params.getRequired("process");
 
-    public Timer getScheduler(){
-        if (scheduler == null){
-            scheduler = new Timer();
-        }
-        return scheduler;
+        MonitoredProcess process  = processes.get(processName);
+        TemplatedDateTime refDate = new TemplatedDateTime(repeat, repeatDayTime);
+
+        scheduler.schedule(new TemplatedDateTimeKill(refDate, process, true));
     }
 
     public void shutdown() {
-        synchronized(getScheduler()){
-            logger.info("cancelling all restart timers.");
-            scheduler.cancel();
-        }
-        for (MonitoredProcess proc : processes.values()){
-            proc.kill(false);
-        }
-    }
 
-    public void restart(String name) {
-        processes.get(name).kill(true);
+        logger.info("cancelling all restart timers.");
+        scheduler.shutdownNow();
+
+        logger.info("killing all processes.");
+        for (MonitoredProcess proc : processes.values()){
+            proc.kill(false, null);
+        }
     }
 
     /**
@@ -140,5 +135,23 @@ public class RestartDaemon extends Thread{
     public void run(){
         logger.info("system shutdown called...");
         shutdown();
+    }
+
+    @Override
+    public void executed(MonitoredProcess process) {
+        // do nothing for now.
+    }
+
+    @Override
+    public void completed(MonitoredProcess process) {
+        // do nothing for now.
+    }
+
+    @Override
+    public void killed(MonitoredProcess process, TemplatedDateTimeKill killer) {
+        TemplatedDateTimeKill nextKill = new TemplatedDateTimeKill(killer);
+        if (process.restartOnTermination()){
+            scheduler.schedule(nextKill);
+        }
     }
 }

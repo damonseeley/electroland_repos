@@ -2,7 +2,10 @@ package net.electroland.utils.process;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 public class MonitoredProcess implements Runnable {
@@ -15,6 +18,7 @@ public class MonitoredProcess implements Runnable {
     private boolean restartOnTermination, firstRun = true;
     private InputToOutputThread pOut, pErr;
     private Process running;
+    private List<MonitoredProcessListener> listeners;
 
     public MonitoredProcess(String name, String command, File runDir, long startDelayMillis, boolean restartOnTermination){
         this.name                 = name;
@@ -22,10 +26,41 @@ public class MonitoredProcess implements Runnable {
         this.runDir               = runDir;
         this.startDelayMillis     = startDelayMillis;
         this.restartOnTermination = restartOnTermination;
+        this.listeners            = new ArrayList<MonitoredProcessListener>();
     }
 
     public String getName(){
         return name;
+    }
+
+    public boolean restartOnTermination(){
+        return restartOnTermination;
+    }
+
+    public void addListener(MonitoredProcessListener listener){
+        listeners.add(listener);
+    }
+
+    public void removeListener(MonitoredProcessListener listener){
+        listeners.remove(listener);
+    }
+
+    public void notifyComplete(){
+        for (MonitoredProcessListener l : listeners){
+            l.completed(this);
+        }
+    }
+
+    public void notifyKilled(TemplatedDateTimeKill killer){
+        for (MonitoredProcessListener l : listeners){
+            l.killed(this, killer);
+        }
+    }
+
+    public void notifyExecuted(){
+        for (MonitoredProcessListener l : listeners){
+            l.executed(this);
+        }
     }
 
     @Override
@@ -42,18 +77,16 @@ public class MonitoredProcess implements Runnable {
 
                 logger.info(" starting " + name + " now.");
                 logger.info(" exec " + runDir + "\\" + command);
-                // TODO: corner case: if kill(false) gets called while the previous sleep is underway,
-                //       the wrong running process (old one) will be killed.
-                //       there should probable be a second check to see if the
-                //       restart is still valid here.  Or maybe just sync running?
+
                 running = Runtime.getRuntime().exec(command, null, runDir);
+                notifyExecuted();
 
                 firstRun = false;
 
-                pOut = new InputToOutputThread(running.getInputStream(), Logger.getLogger(command));
+                pOut = new InputToOutputThread(running.getInputStream(), Logger.getLogger(command), Level.INFO);
                 pOut.startPiping();
 
-                pErr = new InputToOutputThread(running.getErrorStream(), Logger.getLogger(command));
+                pErr = new InputToOutputThread(running.getErrorStream(), Logger.getLogger(command), Level.ERROR);
                 pErr.startPiping();
 
                 logger.info("monitoring " + name);
@@ -80,7 +113,7 @@ public class MonitoredProcess implements Runnable {
         new Thread(this).start();
     }
 
-    public void kill(boolean restartOnTermination) {
+    public void kill(boolean restartOnTermination, TemplatedDateTimeKill killer) {
         logger.info("kill called.");
         this.restartOnTermination = restartOnTermination;
         if (restartOnTermination){
@@ -89,6 +122,11 @@ public class MonitoredProcess implements Runnable {
 
         if (running != null){
             running.destroy();
+            if (killer == null){
+                notifyComplete();
+            } else {
+                notifyKilled(killer);
+            }
         }
     }
 }
