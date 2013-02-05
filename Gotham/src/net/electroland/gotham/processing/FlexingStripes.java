@@ -4,18 +4,28 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import net.electroland.gotham.core.GothamConductor;
-//import net.electroland.gotham.core.GothamConductor;
-import net.electroland.gotham.processing.assets.*;
+import net.electroland.gotham.processing.assets.ColorPalette;
+import net.electroland.gotham.processing.assets.Controller;
+import net.electroland.gotham.processing.assets.FastBlur;
+import net.electroland.gotham.processing.assets.MoveBehavior;
+import net.electroland.gotham.processing.assets.MoveLeft;
+import net.electroland.gotham.processing.assets.MoveRight;
+import net.electroland.gotham.processing.assets.PersonMouseSimulator;
+import net.electroland.gotham.processing.assets.Stripe;
+import net.electroland.gotham.processing.assets.StripeFlexer;
+import net.electroland.gotham.processing.assets.StripeGUIManager;
+import net.electroland.gotham.processing.assets.Timer;
 import net.electroland.utils.ElectrolandProperties;
+
 import org.apache.log4j.Logger;
+
 import controlP5.ControlEvent;
 
 public class FlexingStripes extends GothamPApplet {
 	private static final long serialVersionUID = 1L;
 	static Logger logger = Logger.getLogger(GothamPApplet.class);
 	private Dimension syncArea;
-	private ElectrolandProperties props = GothamConductor.props;
+	private ElectrolandProperties props = new ElectrolandProperties("Gotham-global.properties");;
 
 	public static float spawnScaler; //GUI fields
 	public float blurAmt;
