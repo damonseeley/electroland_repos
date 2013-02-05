@@ -8,13 +8,18 @@ import processing.core.PVector;
 public class Metaball {
 
     private PVector center;
-    private float radius;
+    private float diameter;
     private PVector velocity;
     private float dHue;
     private MetaballGroup group;
+    private float scale;
+
+    public void setScale(float scale) {
+        this.scale = scale;
+    }
 
     public Metaball(float radius){
-        this.radius = radius;
+        this.diameter = radius;
     }
 
     /**
@@ -43,7 +48,7 @@ public class Metaball {
     }
 
     /**
-     * repell applies a force using a normalized version of a vector going 
+     * repel applies a force using a normalized version of a vector going 
      * through one point and through the center of this ball. repell forces
      * degrade by square of the distance.
      * 
@@ -51,7 +56,7 @@ public class Metaball {
      * @param force
      * @param distancePower - 2 = force degrades by distance square, 3 = distance cubed, etc.
      */
-    public void repell(PVector point, float force, int distancePower){
+    public void repel(PVector point, float force, int distancePower){
 
         float distance = PVector.dist(center, point);
         PVector adjustedForce = PVector.sub(center, point);
@@ -59,10 +64,11 @@ public class Metaball {
         if (distance > 0){ // check for div-by-zero
             adjustedForce.mult(force / (float)(Math.pow(distance, distancePower)));
         } else {
-            adjustedForce.mult(force);
+            adjustedForce.mult(Float.MAX_VALUE);
         }
         velocity.add(adjustedForce);
     }
+
 
     /**
      * In this case, the forceVector is not derived from the source.  E.g.,
@@ -73,14 +79,14 @@ public class Metaball {
      * @param force
      * @param distancePower - 2 = force degrades by distance square, 3 = distance cubed, etc.
      */
-    public void repell(PVector origin, PVector forceVector, float force, int distancePower){
+    public void repel(PVector origin, PVector forceVector, float force, int distancePower){
         float distance = PVector.dist(center, origin);
         PVector adjustedForce = PVector.sub(center, forceVector);
         adjustedForce.normalize();
         if (distance > 0){ // check for div-by-zero
             adjustedForce.mult(-force / (float)(Math.pow(distance, distancePower)));
         } else {
-            adjustedForce.mult(-force);
+            adjustedForce.mult(Float.MAX_VALUE);
         }
         velocity.add(adjustedForce);
     }
@@ -93,7 +99,7 @@ public class Metaball {
      */
     public boolean overlaps(Metaball ball){
         float distance = ball.center.dist(this.center);
-        return distance < ball.radius || distance < this.radius;
+        return distance < ball.diameter * scale || distance < this.diameter  * scale;
     }
 
     public Color getColor(){
@@ -115,10 +121,10 @@ public class Metaball {
     }
     
     public float width(){
-        return radius;
+        return diameter * scale;
     }
     public float height(){
-        return radius;
+        return diameter * scale;
     }
 
     public MetaballGroup getGroup() {
@@ -170,11 +176,10 @@ public class Metaball {
     public String toString(){
         StringBuffer br = new StringBuffer("Metaball[");
         br.append("group=").append(group.id).append(", ");
-        br.append("radius=").append(radius).append(", ");
+        br.append("radius=").append(diameter).append(", ");
         br.append("position=").append(center).append(", ");
         br.append("velocity=").append(velocity).append(", ");
         br.append(']');
         return br.toString();
     }
-
 }

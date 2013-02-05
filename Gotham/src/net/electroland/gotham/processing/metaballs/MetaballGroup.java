@@ -15,7 +15,6 @@ public class MetaballGroup {
     private Color baseColor;
     private float hueVariance;
     private int opacity;
-    private float scale;
 
     public MetaballGroup(int id, float hueVariance){
         this.id = id;
@@ -43,13 +42,13 @@ public class MetaballGroup {
 
     public void applyPointForce(PVector source, float force){
         for (Metaball ball : balls) {
-            ball.repell(source, -force, 2);
+            ball.repel(source, -force, 2);
         }
     }
 
     public void applyGroupCohesion(float cohesiveness){
         for (Metaball ball : balls){
-            ball.repell(centroid(), -cohesiveness, 1);
+            ball.repel(centroid(), -cohesiveness, 1);
         }
     }
 
@@ -65,7 +64,7 @@ public class MetaballGroup {
     public void applyPresenceImpactForces(List<PVector> presences, float magnitude){
         for (PVector point : presences){
             for (Metaball ball : balls){
-                ball.repell(point, magnitude, 2);
+                ball.repel(point, magnitude, 2);
             }
         }
     }
@@ -81,7 +80,7 @@ public class MetaballGroup {
                 for (Metaball other : group.balls){
                     for (Metaball ball : balls){
                         if (other != ball){
-                            ball.repell(other.getCenter(), magnitude, 2);
+                            ball.repel(other.getCenter(), magnitude, 2);
                         }
                     }
                 }
@@ -95,7 +94,7 @@ public class MetaballGroup {
                     PVector force = this.centroid();
                     force.sub(other.getCenter());
                     force.normalize();
-                    other.repell(force, magnitude, 2);
+                    other.repel(force, magnitude, 2);
                 }
             }
         }
@@ -107,7 +106,7 @@ public class MetaballGroup {
                 PVector origin = jet.getOrigin();
                 PVector forceVector   = jet.getForceVector();
                 forceVector.add(ball.getCenter());
-                ball.repell(origin, forceVector, jet.getStrength() * forceScale, 2);
+                ball.repel(origin, forceVector, jet.getStrength() * forceScale, 2);
             }
         }
     }
@@ -116,7 +115,7 @@ public class MetaballGroup {
         for (Metaball ball : balls){
             PVector source = wind.getSource();
             source.add(ball.getCenter());
-            ball.repell(source, wind.getStrength() * forceScale, 0);
+            ball.repel(source, wind.getStrength() * forceScale, 0);
         }
     }
 
@@ -136,11 +135,10 @@ public class MetaballGroup {
         }
     }
 
-    public float getScale() {
-        return scale;
-    }
     public void setScale(float scale) {
-        this.scale = scale;
+        for (Metaball ball : balls){
+            ball.setScale(scale);
+        }
     }
     public int getOpacity() {
         return opacity;
