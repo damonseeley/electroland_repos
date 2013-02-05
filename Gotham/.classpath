@@ -36,10 +36,10 @@
 	<classpathentry kind="lib" path="libraries/vecmath.jar"/>
 	<classpathentry kind="lib" path="libraries/j3dcore.jar"/>
 	<classpathentry kind="lib" path="libraries/j3dutils.jar"/>
-	<classpathentry kind="lib" path="libraries/EL-Config.jar"/>
 	<classpathentry kind="lib" path="libraries/EA2.jar"/>
 	<classpathentry kind="lib" path="libraries/ELU2.jar"/>
 	<classpathentry kind="lib" path="libraries/collections-generic-4.01.jar"/>
+	<classpathentry kind="lib" path="libraries/EL-Config.jar"/>
 	<classpathentry kind="lib" path="libraries/ELVIS.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
