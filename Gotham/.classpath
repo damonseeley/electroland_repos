@@ -32,7 +32,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="libraries/jna.jar"/>
 	<classpathentry kind="lib" path="libraries/controlP5.jar"/>
-	<classpathentry kind="lib" path="libraries/ELVIS.jar"/>
 	<classpathentry kind="lib" path="libraries/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="libraries/vecmath.jar"/>
 	<classpathentry kind="lib" path="libraries/j3dcore.jar"/>
@@ -41,5 +40,6 @@
 	<classpathentry kind="lib" path="libraries/EA2.jar"/>
 	<classpathentry kind="lib" path="libraries/ELU2.jar"/>
 	<classpathentry kind="lib" path="libraries/collections-generic-4.01.jar"/>
+	<classpathentry kind="lib" path="libraries/ELVIS.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

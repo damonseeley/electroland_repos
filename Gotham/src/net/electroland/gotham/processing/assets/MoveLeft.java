@@ -4,12 +4,11 @@ import java.awt.Dimension;
 
 import net.electroland.ea.EasingFunction;
 import net.electroland.ea.easing.Linear;
-import net.electroland.gotham.core.GothamConductor;
 import net.electroland.utils.ElectrolandProperties;
 import processing.core.PApplet;
 
 public class MoveLeft implements MoveBehavior {
-	private ElectrolandProperties props = GothamConductor.props;
+	private ElectrolandProperties props = new ElectrolandProperties("Gotham-global.properties");;
 
 	PApplet p;
  	Dimension d;

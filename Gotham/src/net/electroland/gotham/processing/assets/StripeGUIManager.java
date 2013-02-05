@@ -1,16 +1,15 @@
 package net.electroland.gotham.processing.assets;
 
+import net.electroland.utils.ElectrolandProperties;
+import processing.core.PApplet;
 import controlP5.ControlGroup;
 import controlP5.ControlP5;
 import controlP5.ControlWindow;
 import controlP5.Controller;
 import controlP5.Knob;
-import controlP5.Toggle;
 import controlP5.ListBox;
 import controlP5.ListBoxItem;
-import processing.core.PApplet;
-import net.electroland.gotham.core.GothamConductor;
-import net.electroland.utils.ElectrolandProperties;
+import controlP5.Toggle;
 
 public class StripeGUIManager{
 	
@@ -39,7 +38,7 @@ public class StripeGUIManager{
 	
 	private ControlGroup<ListBox> swatchList;
 	
-	private ElectrolandProperties props = GothamConductor.props;
+	private ElectrolandProperties props = new ElectrolandProperties("Gotham-global.properties");;
 
 	public StripeGUIManager(PApplet p) {
 		control = new ControlP5(p);
