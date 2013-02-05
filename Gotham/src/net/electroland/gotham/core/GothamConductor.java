@@ -8,39 +8,28 @@ import javax.swing.JFrame;
 
 import net.electroland.gotham.core.ui.DisplayControlBar;
 import net.electroland.gotham.processing.GothamPApplet;
-import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.lighting.ELUCanvas;
 import net.electroland.utils.lighting.ELUManager;
 import net.electroland.utils.lighting.canvas.ProcessingCanvas;
 import net.electroland.utils.lighting.ui.ELUControls;
 
-import org.apache.log4j.Logger;
-
+@SuppressWarnings("serial")
 public class GothamConductor extends JFrame {
-
-    private static final long serialVersionUID = 6608878881526717236L;
-    static Logger logger = Logger.getLogger(GothamConductor.class);
-    private ELUManager lightingManager;
-    
-    public static ElectrolandProperties props;
-    
 
     public static void main(String[] args) throws IOException {
 
         GothamConductor conductor = new GothamConductor();
 
-        conductor.initProps();
+        ELUManager lightingManager = new ELUManager();
+        lightingManager.load(args.length > 0 ? args[0] : "Gotham-ELU2.properties");
 
-        conductor.lightingManager = new ELUManager();
-        conductor.lightingManager.load(args.length > 0 ? args[0] : "Gotham-ELU2.properties");
-
-        conductor.configureRenderPanel(conductor.lightingManager);
+        conductor.configureRenderPanel(lightingManager);
         conductor.setSize(800, 100);
         conductor.setTitle("Gotham Electroland Lighting Controls");
         conductor.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         conductor.setVisible(true);
 
-        conductor.configureUDPClients(conductor.lightingManager);
+        conductor.configureUDPClients(lightingManager);
     }
 
     public void configureUDPClients(ELUManager lightingManager) throws SocketException{
@@ -51,28 +40,8 @@ public class GothamConductor extends JFrame {
                 gridClient.addListener(g);
             }
         }
-/**        
-        GothamRegionUDPClient regionClient = new GothamRegionUDPClient(3457);
-        //add listeners!!!
-        
-        
-        GothamTrackUDPClient trackClient = new GothamTrackUDPClient(3456);
-        for (ELUCanvas c : lightingManager.getCanvases().values()){
-            if (((ProcessingCanvas)c).getApplet() instanceof GothamPApplet){
-                GothamPApplet g = (GothamPApplet)((ProcessingCanvas)c).getApplet();
-                trackClient.addListener(g);
-            }
-        }
- */
-        
-        //Start the clients up
-        //trackClient.start();
+
         gridClient.start();
-        //regionClient.start();
-    }
-    
-    public void initProps() {
-        props = new ElectrolandProperties("Gotham-global.properties");
     }
 
     public void configureRenderPanel(ELUManager lightingManager){
