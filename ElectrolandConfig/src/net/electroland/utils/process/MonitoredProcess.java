@@ -15,18 +15,19 @@ public class MonitoredProcess implements Runnable {
 
     private String command, name;
     private File runDir;
-    private long startDelayMillis;
+    private long startDelayMillis, restartDelayMillis;
     private boolean restartOnTermination, firstRun = true;
     private InputToOutputThread pOut, pErr;
     private Process running;
     private List<MonitoredProcessListener> listeners;
     private Date startTime;
 
-    public MonitoredProcess(String name, String command, File runDir, long startDelayMillis, boolean restartOnTermination){
+    public MonitoredProcess(String name, String command, File runDir, long startDelayMillis, long restartDelayMillis, boolean restartOnTermination){
         this.name                 = name;
         this.command              = command;
         this.runDir               = runDir;
         this.startDelayMillis     = startDelayMillis;
+        this.restartDelayMillis   = restartDelayMillis;
         this.restartOnTermination = restartOnTermination;
         this.listeners            = new ArrayList<MonitoredProcessListener>();
     }
@@ -76,9 +77,12 @@ public class MonitoredProcess implements Runnable {
 
             try {
 
-                if (!firstRun) {
+                if (firstRun) {
                     logger.info("starting " + name + " in " + startDelayMillis + " millis.");
                     Thread.sleep(startDelayMillis);
+                } else {
+                    logger.info("restarting " + name + " in " + restartDelayMillis + " millis.");
+                    Thread.sleep(restartDelayMillis);
                 }
 
                 logger.info(" starting " + name + " now.");
