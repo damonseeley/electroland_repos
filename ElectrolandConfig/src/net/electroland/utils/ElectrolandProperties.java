@@ -2,6 +2,7 @@ package net.electroland.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
@@ -169,7 +170,7 @@ public class ElectrolandProperties {
     {
         Map<String,ParameterMap> type = objects.get(objectType);
         if (type == null){
-            throw new OptionException("no object of type '" + objectType + "' was found.");
+            return Collections.emptyMap();
         }else{
             return type;
         }
