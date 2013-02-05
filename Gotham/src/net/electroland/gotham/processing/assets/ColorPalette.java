@@ -1,14 +1,14 @@
 package net.electroland.gotham.processing.assets;
 
 import java.util.List;
-import net.electroland.gotham.core.GothamConductor;
+
 import net.electroland.utils.ElectrolandProperties;
-import processing.core.PImage;
 import processing.core.PApplet;
+import processing.core.PImage;
 
 
 public class ColorPalette {
-	private static ElectrolandProperties props = GothamConductor.props;
+	private static ElectrolandProperties props = new ElectrolandProperties("Gotham-global.properties");;
 	PApplet p;
 	
 	private static int[] colors;
