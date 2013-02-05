@@ -35,6 +35,13 @@ public class ElVisServer implements TimeOutListener {
 		if(props.getProperty("showConsole", false)) {
 			console  = new Console("");
 			console.setVisible(true);
+            console.addWindowListener(new java.awt.event.WindowAdapter() {
+                public void windowClosing(WindowEvent winEvt) {
+                    blobTracker.stopRunning();
+                    System.exit(0); //calling the method is a must
+                }
+            });
+			
 		} else {
 			logger.info("not showing console, showConsole is false");
 		}
