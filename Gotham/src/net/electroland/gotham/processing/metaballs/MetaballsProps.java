@@ -89,7 +89,7 @@ public class MetaballsProps implements ControlListener {
         }
 
         window = p5
-                 .addControlWindow(wallName + " controller", 100, 100, 600, 400)
+                 .addControlWindow(wallName + " controller", 100, 100, 600, 500)
                  .hideCoordinates().setBackground(0);
 
         // physics/forces

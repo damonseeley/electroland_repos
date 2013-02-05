@@ -209,8 +209,8 @@ public class Metaballs extends GothamPApplet {
                         ballColor.getBlue(), group.getOpacity());
             this.noStroke();
             this.ellipse(ball.getCenter().x, ball.getCenter().y,
-                         ball.width() * group.getScale(),
-                         ball.height() * group.getScale());
+                         ball.width(),
+                         ball.height());
         }
     }
 
