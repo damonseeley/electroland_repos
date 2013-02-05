@@ -90,10 +90,11 @@ public class ProcessManager extends Thread implements MonitoredProcessListener{
 
         String command               = params.getRequired("startScript");
         String runDirFilename        = params.getRequired("rootDir");
-        int startDelayMillis         = params.getRequiredInt("startDelayMillis");
+        int startDelayMillis         = params.getDefaultInt("startDelayMillis", 0);
+        int restartDelayMillis       = params.getDefaultInt("restartDelayMillis", 0);
         boolean restartOnTermination = params.getRequiredBoolean("restartOnTermination");
 
-        return new MonitoredProcess(name, command, new File(runDirFilename), startDelayMillis, restartOnTermination);
+        return new MonitoredProcess(name, command, new File(runDirFilename), startDelayMillis, restartDelayMillis, restartOnTermination);
     }
 
     public void scheduleRestarts(ElectrolandProperties ep, Map <String, MonitoredProcess> processes) {
