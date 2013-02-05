@@ -89,44 +89,49 @@ public class MetaballsProps implements ControlListener {
         }
 
         window = p5
-                 .addControlWindow(wallName + " controller", 100, 100, 600, 800)
+                 .addControlWindow(wallName + " controller", 100, 100, 600, 400)
                  .hideCoordinates().setBackground(0);
 
-        addSlider(COHESIVENESS,            props);
-        addSlider(BALL_TO_BALL_REPELL,     props);
-        addSlider(REPELL_FORCE,            props);
-        addSlider(REPELL_VELOCITY_MULT,    props);
-        addSlider(JET_FORCE_SCALE,         props);
-        addSlider(WIND_FORCE_SCALE,        props);
-        addSlider(FRICTION,                props);
-        addSlider(MIN_VELOCITY,            props);
-        addSlider(MAX_VELOCITY,            props);
-        addSlider(MARGIN,                  props);
-        addSlider(HUE_VARIANCE,                  props);
-        addSlider(BALL_SCALE,              props);
-        addSlider(BALL_OPACITY,            props);
-        addSlider(PRESENCE_RADIUS,         props);
-        addSlider(PRESENCE_OPACITY,        props);
-        addSlider(GRID_HISTORY,            props);
-        addSlider(BLUR,                    props);
-        addSlider(HOUR,                    props);
-        addSlider(CENTER_FORCE,            props);
+        // physics/forces
+        addSlider(COHESIVENESS,            props);  nextRow();
+        addSlider(BALL_TO_BALL_REPELL,     props);  nextRow();
+        addSlider(REPELL_FORCE,            props);  nextRow();
+        addSlider(REPELL_VELOCITY_MULT,    props);  nextRow();
+        addSlider(CENTER_FORCE,            props);  nextRow();
+        addSlider(JET_FORCE_SCALE,         props);  nextRow();
+        addSlider(WIND_FORCE_SCALE,        props);  nextRow();
+        addSlider(FRICTION,                props);  nextRow();
+        addSlider(MIN_VELOCITY,            props);  nextRow();
+        addSlider(MAX_VELOCITY,            props);  nextRow();  nextRow();
+
+        // ball vars
+        addSlider(HUE_VARIANCE,            props);  nextRow();
+        addSlider(BALL_SCALE,              props);  nextRow();
+        addSlider(BALL_OPACITY,            props);  nextRow();  nextRow();
+
+        // presence vars
+        addSlider(PRESENCE_RADIUS,         props);  nextRow();
+        addSlider(PRESENCE_OPACITY,        props);  nextRow();
+        addSlider(GRID_HISTORY,            props);  nextRow();  nextRow();
+
+        // big picture
+        addSlider(MARGIN,                  props);  nextRow();
+        addSlider(BLUR,                    props);  nextRow();
+        addSlider(HOUR,                    props);  nextRow();
 
         nextColumn();
 
-        addBoundary(GRID,                  props);
-        addBoundary(GRID_ON_CANVAS,        props);
+        addBoundary(GRID,                  props);  nextRow(); nextRow(); nextRow();
+        addBoundary(GRID_ON_CANVAS,        props);  nextRow(); nextRow(); nextRow();
 
-        addSwitch(ENABLE_GRID,             props);
-        addSwitch(SHOW_GRID,               props);
-        addSwitch(SHOW_WIND,               props);
-        addSwitch(MIRROR_VERTICAL,         props);
-        addSwitch(MIRROR_HORIZONTAL,       props);
-        addSwitch(USE_TIME_SLIDER,         props);
+        addSwitch(ENABLE_GRID,             props);  addHalfColumn();
+        addSwitch(USE_TIME_SLIDER,         props);  nextRow(); nextRow();  subHalfColumn();
+        addSwitch(SHOW_GRID,               props);  addHalfColumn();
+        addSwitch(SHOW_WIND,               props);  nextRow(); nextRow();  subHalfColumn();
+        addSwitch(MIRROR_VERTICAL,         props);  addHalfColumn();
+        addSwitch(MIRROR_HORIZONTAL,       props);  nextRow(); nextRow();  subHalfColumn();  nextRow();
 
-        nextRow();
-
-        addSwitch(GO_TO_BLACK,            props);
+        addSwitch(GO_TO_BLACK,             props);  addHalfColumn();
 
         addConsoleOutputButton();
     }
@@ -143,8 +148,6 @@ public class MetaballsProps implements ControlListener {
                                       .setPosition(placement.x, placement.y)
                                       .setWidth(window.component().getWidth() / 2 - 50);
         control.moveTo(window);
-
-        nextRow();
     }
     public void addBoundary(String name, ElectrolandProperties props){
 
@@ -162,7 +165,7 @@ public class MetaballsProps implements ControlListener {
                                      .setText("" + y)
                                      .setPosition(placement.x + 175, placement.y)
                                      .setWidth(90);
-        nextRow();
+        nextRow(); nextRow();
 
         // DO NOT change the label names, because we use them as hash keys.
         Controller<Textfield> wc = p5.addTextfield(name + " x2")
@@ -173,7 +176,6 @@ public class MetaballsProps implements ControlListener {
                                      .setText("" + h)
                                      .setPosition(placement.x + 175, placement.y)
                                      .setWidth(90);
-        nextRow();
 
         xc.moveTo(window);  yc.moveTo(window);
         wc.moveTo(window);  hc.moveTo(window);
@@ -187,8 +189,6 @@ public class MetaballsProps implements ControlListener {
                                  .setState(initState)
                                  .setPosition(placement.x + 75, placement.y);
         t.moveTo(window);
-
-        nextRow();
     }
 
     public Color getColor(int ballId){
@@ -237,11 +237,17 @@ public class MetaballsProps implements ControlListener {
     }
 
     private void nextRow(){
-        placement.y += 40;
+        placement.y += 20;
+    }
+    private void addHalfColumn(){
+        placement.x += window.component().getWidth() / 8 + 5;
+    }
+    private void subHalfColumn(){
+        placement.x -= window.component().getWidth() / 8 + 5;
     }
     private void nextColumn(){
         placement.y = 20;
-        placement.x = window.component().getWidth() / 2 + 10;
+        placement.x += window.component().getWidth() / 2 + 10;
     }
 
     private void addConsoleOutputButton(){
@@ -249,11 +255,6 @@ public class MetaballsProps implements ControlListener {
                 .setPosition(placement.x + 75, placement.y);
         dump.addListener(this);
         dump.moveTo(window);
-        Controller<Button> reload = p5.addButton("reload")
-                .setPosition(placement.x + 150, placement.y);
-        reload.addListener(this);
-        reload.moveTo(window);
-        nextRow();
     }
 
     @Override
