@@ -41,9 +41,9 @@ public class MetaballGroup {
         }
     }
 
-    public void applyCenterForce(PVector sceneCenter, float centerForce){
+    public void applyPointForce(PVector source, float force){
         for (Metaball ball : balls) {
-            ball.repell(sceneCenter, -centerForce, 2);
+            ball.repell(source, -force, 2);
         }
     }
 

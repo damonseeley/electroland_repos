@@ -109,7 +109,7 @@ public class Metaballs extends GothamPApplet {
 
             group.advanceIndividualBalls();
             group.applyFriction(props.getValue(MetaballsProps.FRICTION));
-            group.applyCenterForce(getCenter(), props.getValue(MetaballsProps.CENTER_FORCE));
+            group.applyPointForce(getCanvasCenter(), props.getValue(MetaballsProps.CENTER_FORCE));
             group.applyGroupCohesion(props.getValue(MetaballsProps.COHESIVENESS));
             group.applyBallToBallRepellForces(groups, props.getValue(MetaballsProps.BALL_TO_BALL_REPELL));
             //group.applyGroupToGroupRepellForces(groups, props.getValue(MetaballsProps.BALL_TO_BALL_REPELL));
@@ -161,12 +161,12 @@ public class Metaballs extends GothamPApplet {
     private Rectangle getBoundary(){
         int margin = (int)props.getValue(MetaballsProps.MARGIN);
         return new Rectangle(margin, margin, 
-                             this.getSyncArea().width - (2 * margin), // TODO: offset missing here
+                             this.getSyncArea().width - (2 * margin),
                              this.getSyncArea().height - (2 * margin));
     }
 
-    private PVector getCenter(){
-        return new PVector(this.getWidth() / 2, this.getHeight() / 2);
+    private PVector getCanvasCenter(){
+        return new PVector(this.getSyncArea().width / 2, this.getSyncArea().height / 2);
     }
 
     private void renderJets(List<Jet> jets){
@@ -180,13 +180,15 @@ public class Metaballs extends GothamPApplet {
 
     private void renderWind(Wind wind){
         PVector angle = wind.getSource();
+        PVector widgetLocation = new PVector (this.getSyncArea().width + 5, 
+                                                this.getSyncArea().height + 5);
         angle.mult(wind.getStrength());
         angle.mult(100);
-        angle.add(getCenter());
+        angle.add(widgetLocation);
         this.noFill();
         this.stroke(Color.WHITE.getRGB());
-        this.translate(angle, getCenter());
-        this.line(angle.x, angle.y, getCenter().x, getCenter().y);
+        this.translate(angle, widgetLocation);
+        this.line(angle.x, angle.y, widgetLocation.x, widgetLocation.y);
     }
 
     private void translate(PVector moving, PVector around){
