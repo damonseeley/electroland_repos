@@ -1,0 +1,47 @@
+
+
+Review for meory leaks.  (review all contructors, destructors, and call to new).
+
+Pay close attention to deletion of arrays.  VS seems to have trouble with them;  Look at PersonStats::~PersonStats() 
+
+
+
+
+got through all couts,cerrs, and clogs.  Decide which shoudl go where (and which should be removed).  Remove endls so things can be buffered
+
+
+redirect cout to something else
+
+
+
+news 
+	avatar create
+		 IGeneric (does not maintain pointer)
+		    // onese that run out of time self delete
+
+		 OffsetPixel (gets stored in arra and passed into igeneric)
+			// deleted when avatar is deleted
+			// now deletes IGenerics when deleted (major mem leak)
+	ambient create
+		Interpolators
+		ambient pixel (which usually gets passed into igeneric)
+
+	dummies create
+		PersonStats (passed into avatar)
+	MCs create
+		ambients
+		mcs
+		patterns (passed into 		peopleStats)
+		iterpGen (staic should only be once)
+	offsetPixel creates
+		InterpGen
+	pattern creates
+		avatar (added to person stats)
+	person stats
+		PersonStats
+	tracker
+		new PersonStats
+
+
+
+isInitBlank called more than once?
