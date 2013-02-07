@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>Rocklights</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+	</buildSpec>
+	<natures>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>src</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/Dropbox/DEV%202012%20Shared/rocklights%20src%20and%20release%20FINAL%202006/rocklights%20src</locationURI>
+		</link>
+	</linkedResources>
+</projectDescription>
