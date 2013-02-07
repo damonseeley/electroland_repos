@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="rocklights">
+</Property><Property Name="Solution File" Value="C:\Users\Electroland\Dropbox_eitan\Dropbox\DEV 2012 Shared\rocklights src and release FINAL 2006\rocklights src\rocklights.sln">
+</Property><Property Name="Date" Value="Tuesday, October 23, 2012">
+</Property><Property Name="Time" Value="17:03:35 PM">
+</Property><Property Name="Log Number" Value="5">
+</Property></Properties><Event ErrorLevel="0" Project="rocklights" Source="rocklights.vcproj" Description="Converting project file 'C:\Users\Electroland\Dropbox_eitan\Dropbox\DEV 2012 Shared\rocklights src and release FINAL 2006\rocklights src\rocklights.vcproj'.">
+</Event><Event ErrorLevel="1" Project="rocklights" Source="rocklights.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="1" Project="rocklights" Source="rocklights.vcproj" Description="MSB8012: $(TargetPath) ('C:\Users\Electroland\Dropbox_eitan\Dropbox\DEV 2012 Shared\rocklights src and release FINAL 2006\rocklights src\.\Release\rocklights.exe') does not match the Linker's OutputFile property value '.\Release/rocklights.exe' ('C:\Users\Electroland\Dropbox_eitan\Dropbox\DEV 2012 Shared\rocklights src and release FINAL 2006\rocklights src\Release/rocklights.exe') in project configuration 'Release|Win32'. This may cause your project to build incorrectly. To correct this, please make sure that $(TargetPath) property value matches the value specified in %(Link.OutputFile).">
+</Event><Event ErrorLevel="1" Project="rocklights" Source="rocklights.vcproj" Description="MSB8012: $(TargetPath) ('C:\Users\Electroland\Dropbox_eitan\Dropbox\DEV 2012 Shared\rocklights src and release FINAL 2006\rocklights src\.\Debug\rocklights.exe') does not match the Linker's OutputFile property value '.\Debug/rocklights.exe' ('C:\Users\Electroland\Dropbox_eitan\Dropbox\DEV 2012 Shared\rocklights src and release FINAL 2006\rocklights src\Debug/rocklights.exe') in project configuration 'Debug|Win32'. This may cause your project to build incorrectly. To correct this, please make sure that $(TargetPath) property value matches the value specified in %(Link.OutputFile).">
+</Event><Event ErrorLevel="0" Project="rocklights" Source="rocklights.vcproj" Description="Done converting to new project file 'C:\Users\Electroland\Dropbox_eitan\Dropbox\DEV 2012 Shared\rocklights src and release FINAL 2006\rocklights src\rocklights.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="rocklights" Source="rocklights.vcproj" Description="Converted">
+</Event></UpgradeLog>

@@ -1,0 +1,98 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: rocklights - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\ELECTR~1\LOCALS~1\Temp\RSP18.tmp" with contents
+[
+/nologo /MLd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FR"Debug/" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\eitan\rocklights\SubPixel.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\ELECTR~1\LOCALS~1\Temp\RSP18.tmp" 
+Creating temporary file "C:\DOCUME~1\ELECTR~1\LOCALS~1\Temp\RSP19.tmp" with contents
+[
+Traxess.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib KiNETLibSimple.lib /nologo /subsystem:console /incremental:yes /pdb:"Debug/rocklights.pdb" /debug /machine:I386 /out:"Debug/rocklights.exe" /pdbtype:sept 
+.\Debug\Ambient.obj
+.\Debug\AmbientA.obj
+.\Debug\AmbientPixel.obj
+.\Debug\AmbRedStick.obj
+.\Debug\AmbTargetFlash.obj
+.\Debug\AmbTron.obj
+.\Debug\AV1Square.obj
+.\Debug\AV1SquareBUS.obj
+.\Debug\AV1SquareKit.obj
+.\Debug\AV1SquarePulse.obj
+.\Debug\AV4Square.obj
+.\Debug\AV9Square.obj
+.\Debug\Avatar.obj
+.\Debug\AVHuge.obj
+.\Debug\AVPlusSign.obj
+.\Debug\AVSinglePixelDance.obj
+.\Debug\AVSmall.obj
+.\Debug\BasePixel.obj
+.\Debug\ColorChannel.obj
+.\Debug\ColorElement.obj
+.\Debug\ColorElementR.obj
+.\Debug\ColorElementRGB.obj
+.\Debug\DataEnabler.obj
+.\Debug\DataEnablerFile.obj
+.\Debug\DataEnablers.obj
+.\Debug\Dummies.obj
+.\Debug\globals.obj
+.\Debug\ICycle.obj
+.\Debug\IGeneric.obj
+.\Debug\IHoldAndFade.obj
+.\Debug\InterpGen.obj
+.\Debug\Interpolator.obj
+.\Debug\Interpolators.obj
+.\Debug\LECoveStick.obj
+.\Debug\LETargetCircle.obj
+.\Debug\LightElement.obj
+.\Debug\LightFile.obj
+.\Debug\MasterController.obj
+.\Debug\MCA.obj
+.\Debug\MCB.obj
+.\Debug\MCCrowded.obj
+.\Debug\MCEmpty.obj
+.\Debug\MCH.obj
+.\Debug\MCMobbed.obj
+.\Debug\MCPopulated.obj
+.\Debug\MCSinglePixelDance.obj
+.\Debug\MCSparce.obj
+.\Debug\MCTargetFlash.obj
+.\Debug\OffsetPixel.obj
+.\Debug\Panel.obj
+.\Debug\Panels.obj
+.\Debug\Pattern.obj
+.\Debug\Pattern1Square.obj
+.\Debug\Pattern9Square.obj
+.\Debug\PatternA.obj
+.\Debug\PatternB.obj
+.\Debug\PatternPixelDance.obj
+.\Debug\PatternPlusSign.obj
+.\Debug\PeopleStats.obj
+.\Debug\PersonStats.obj
+.\Debug\Pixel.obj
+.\Debug\profile.obj
+.\Debug\rocklights.obj
+.\Debug\SubPixel.obj
+.\Debug\TargetPixel.obj
+.\Debug\Tracker.obj
+.\Debug\WorldStats.obj
+]
+Creating command line "link.exe @C:\DOCUME~1\ELECTR~1\LOCALS~1\Temp\RSP19.tmp"
+<h3>Output Window</h3>
+Compiling...
+SubPixel.cpp
+Linking...
+
+
+
+<h3>Results</h3>
+rocklights.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>
