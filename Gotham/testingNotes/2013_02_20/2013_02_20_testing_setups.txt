@@ -1,0 +1,153 @@
+2013_02_20 testing
+
+SETUP A
+
+Dump at Wed Feb 20 23:17:09 EST 2013
+====================================
+ballOpacity=150.0
+ballScale=3.005
+ballToBallRepell=15.0
+blur=14.0
+centerForce=0.0
+cohesiveness=0.0
+friction=0.98800004
+grid x1=70
+grid x2=136
+grid y1=20
+grid y2=95
+gridHistory=12.0
+gridOnCanvas x1=0
+gridOnCanvas x2=700
+gridOnCanvas y1=0
+gridOnCanvas y2=504
+hour=0.0
+hueVariance=10.0
+jetForceScale=1.0
+margin=56.0
+maxVelocity=0.97120005
+minVelocity=0.25
+presenceOpacity=120.0
+presenceRadius=20.0
+repellForce=15.0
+repellVelocityCoefficient=0.018800002
+windForceScale=0.5
+
+Metaball[group=3, radius=30.0, position=[ 144.01466, 105.49126, 0.0 ], velocity=[ 0.22933047, -0.22754179, 0.0 ], ]
+Metaball[group=3, radius=40.0, position=[ 123.39223, 249.58641, 0.0 ], velocity=[ 0.12229627, -0.21804501, 0.0 ], ]
+Metaball[group=3, radius=50.0, position=[ 152.9091, 188.1798, 0.0 ], velocity=[ 0.13198106, 0.44011194, 0.0 ], ]
+Metaball[group=3, radius=50.0, position=[ 137.92413, 150.89574, 0.0 ], velocity=[ 0.18221489, 0.17116582, 0.0 ], ]
+Metaball[group=3, radius=60.0, position=[ 342.06036, 278.13635, 0.0 ], velocity=[ 0.1846339, 0.5362274, 0.0 ], ]
+Metaball[group=2, radius=70.0, position=[ 164.63159, 283.30655, 0.0 ], velocity=[ -0.13287729, 0.66090554, 0.0 ], ]
+Metaball[group=2, radius=80.0, position=[ 411.47992, 183.51378, 0.0 ], velocity=[ 0.35221618, 0.050276387, 0.0 ], ]
+Metaball[group=2, radius=90.0, position=[ 252.25926, 260.5497, 0.0 ], velocity=[ 0.03571492, 0.31303805, 0.0 ], ]
+Metaball[group=2, radius=70.0, position=[ 219.87384, 161.73615, 0.0 ], velocity=[ 0.2944109, 0.2639757, 0.0 ], ]
+Metaball[group=2, radius=80.0, position=[ 209.85652, 241.5303, 0.0 ], velocity=[ 0.22433779, 0.11032933, 0.0 ], ]
+Metaball[group=1, radius=75.0, position=[ 524.6694, 200.91101, 0.0 ], velocity=[ 0.6192414, 0.033475235, 0.0 ], ]
+Metaball[group=1, radius=80.0, position=[ 280.63522, 184.29199, 0.0 ], velocity=[ 0.27552313, 0.009309711, 0.0 ], ]
+Metaball[group=1, radius=100.0, position=[ 378.07657, 207.77371, 0.0 ], velocity=[ 0.2368646, -0.0799698, 0.0 ], ]
+Metaball[group=1, radius=75.0, position=[ 279.6451, 314.59912, 0.0 ], velocity=[ 0.18514921, 0.94927907, 0.0 ], ]
+Metaball[group=1, radius=80.0, position=[ 473.99054, 237.1866, 0.0 ], velocity=[ 0.20517181, 0.2911498, 0.0 ], ]
+Metaball[group=1, radius=100.0, position=[ 321.294, 216.60713, 0.0 ], velocity=[ 0.40936738, 0.099732414, 0.0 ], ]
+
+
+
+SETUP B
+
+Dump at Wed Feb 20 23:26:38 EST 2013
+====================================
+ballOpacity=150.0
+ballScale=2.0360003
+ballToBallRepell=15.0
+blur=14.0
+centerForce=0.0
+cohesiveness=0.0
+friction=0.9976
+grid x1=70
+grid x2=136
+grid y1=20
+grid y2=95
+gridHistory=12.0
+gridOnCanvas x1=0
+gridOnCanvas x2=700
+gridOnCanvas y1=0
+gridOnCanvas y2=504
+hour=0.0
+hueVariance=10.0
+jetForceScale=1.0
+margin=64.000015
+maxVelocity=1.0108
+minVelocity=0.25
+presenceOpacity=120.0
+presenceRadius=20.0
+repellForce=24.400002
+repellVelocityCoefficient=0.018800002
+windForceScale=0.16000001
+
+Metaball[group=3, radius=30.0, position=[ 96.986664, 401.57312, 0.0 ], velocity=[ 0.10902359, -0.38752496, 0.0 ], ]
+Metaball[group=3, radius=40.0, position=[ 107.26088, 270.25146, 0.0 ], velocity=[ -0.112866566, 0.34216562, 0.0 ], ]
+Metaball[group=3, radius=50.0, position=[ 121.73816, 123.34993, 0.0 ], velocity=[ 0.053754766, 0.24415247, 0.0 ], ]
+Metaball[group=3, radius=50.0, position=[ 116.6071, 365.22, 0.0 ], velocity=[ 0.029669125, 0.29626563, 0.0 ], ]
+Metaball[group=3, radius=60.0, position=[ 413.23557, 364.633, 0.0 ], velocity=[ 0.47964367, -0.027133131, 0.0 ], ]
+Metaball[group=2, radius=70.0, position=[ 136.10825, 152.50096, 0.0 ], velocity=[ 0.039924487, 0.58972836, 0.0 ], ]
+Metaball[group=2, radius=80.0, position=[ 183.95418, 147.11916, 0.0 ], velocity=[ 1.0088866, -0.062165238, 0.0 ], ]
+Metaball[group=2, radius=90.0, position=[ 394.64325, 225.61499, 0.0 ], velocity=[ 0.56933665, 0.117721215, 0.0 ], ]
+Metaball[group=2, radius=70.0, position=[ 282.00906, 354.72766, 0.0 ], velocity=[ 0.54141617, -0.12574382, 0.0 ], ]
+Metaball[group=2, radius=80.0, position=[ 241.76434, 201.29283, 0.0 ], velocity=[ 0.9669679, 0.07060716, 0.0 ], ]
+Metaball[group=1, radius=75.0, position=[ 221.61787, 361.03186, 0.0 ], velocity=[ 0.27240953, -0.41706643, 0.0 ], ]
+Metaball[group=1, radius=80.0, position=[ 165.51483, 337.61093, 0.0 ], velocity=[ 0.07210864, -0.40385115, 0.0 ], ]
+Metaball[group=1, radius=100.0, position=[ 190.25705, 210.49998, 0.0 ], velocity=[ -0.09985965, 0.33598766, 0.0 ], ]
+Metaball[group=1, radius=75.0, position=[ 375.96606, 142.07686, 0.0 ], velocity=[ 0.5365141, -0.06460491, 0.0 ], ]
+Metaball[group=1, radius=80.0, position=[ 274.1941, 146.22758, 0.0 ], velocity=[ 0.60554385, -0.05586428, 0.0 ], ]
+Metaball[group=1, radius=100.0, position=[ 291.43103, 261.09525, 0.0 ], velocity=[ 0.52033263, 0.23493496, 0.0 ], ]
+
+
+SETUP C
+
+Dump at Wed Feb 20 23:33:30 EST 2013
+====================================
+ballOpacity=150.0
+ballScale=2.302
+ballToBallRepell=37.600006
+blur=14.0
+centerForce=0.0
+cohesiveness=0.0
+friction=0.9976
+grid x1=70
+grid x2=136
+grid y1=20
+grid y2=95
+gridHistory=12.0
+gridOnCanvas x1=0
+gridOnCanvas x2=700
+gridOnCanvas y1=0
+gridOnCanvas y2=504
+hour=0.0
+hueVariance=10.0
+jetForceScale=0.32000002
+margin=64.000015
+maxVelocity=1.0108
+minVelocity=0.25
+presenceOpacity=120.0
+presenceRadius=20.0
+repellForce=50.0
+repellVelocityCoefficient=0.018800002
+windForceScale=0.120000005
+
+Metaball[group=3, radius=30.0, position=[ 111.17771, 398.87823, 0.0 ], velocity=[ 0.19281171, 0.8936058, 0.0 ], ]
+Metaball[group=3, radius=40.0, position=[ 114.37251, 226.68217, 0.0 ], velocity=[ -0.19479874, 0.30984268, 0.0 ], ]
+Metaball[group=3, radius=50.0, position=[ 142.63521, 138.57751, 0.0 ], velocity=[ 0.44179842, -0.029399604, 0.0 ], ]
+Metaball[group=3, radius=50.0, position=[ 471.58154, 353.58453, 0.0 ], velocity=[ 1.0071673, -0.08561974, 0.0 ], ]
+Metaball[group=3, radius=60.0, position=[ 559.3173, 144.14697, 0.0 ], velocity=[ -0.016326014, 0.42117992, 0.0 ], ]
+Metaball[group=2, radius=70.0, position=[ 228.01947, 162.2155, 0.0 ], velocity=[ 1.0096401, -0.048411384, 0.0 ], ]
+Metaball[group=2, radius=80.0, position=[ 427.26498, 301.64273, 0.0 ], velocity=[ 0.79348415, 0.6261784, 0.0 ], ]
+Metaball[group=2, radius=90.0, position=[ 388.85004, 214.59851, 0.0 ], velocity=[ 0.7968479, 0.4544189, 0.0 ], ]
+Metaball[group=2, radius=70.0, position=[ 546.6713, 246.67642, 0.0 ], velocity=[ 0.9697084, 0.2852757, 0.0 ], ]
+Metaball[group=2, radius=80.0, position=[ 187.82881, 213.36197, 0.0 ], velocity=[ 0.38726017, -0.35750014, 0.0 ], ]
+Metaball[group=1, radius=75.0, position=[ 331.9699, 158.49762, 0.0 ], velocity=[ 0.81240004, 0.601434, 0.0 ], ]
+Metaball[group=1, radius=80.0, position=[ 173.85968, 305.96033, 0.0 ], velocity=[ 0.31959948, 0.63478017, 0.0 ], ]
+Metaball[group=1, radius=100.0, position=[ 208.11507, 297.0332, 0.0 ], velocity=[ 1.0044074, -0.11350098, 0.0 ], ]
+Metaball[group=1, radius=75.0, position=[ 465.2668, 161.81027, 0.0 ], velocity=[ 0.9326481, 0.38202652, 0.0 ], ]
+Metaball[group=1, radius=80.0, position=[ 319.43195, 323.4213, 0.0 ], velocity=[ 0.85385233, 0.11234638, 0.0 ], ]
+Metaball[group=1, radius=100.0, position=[ 291.50668, 211.27097, 0.0 ], velocity=[ 0.8582111, 0.1385298, 0.0 ], ]
+
+
