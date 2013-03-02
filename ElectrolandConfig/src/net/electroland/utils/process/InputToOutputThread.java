@@ -54,7 +54,7 @@ public class InputToOutputThread implements Runnable {
                 if (in.ready()){
                     println(in.readLine());
                 }
-                Thread.sleep(100);
+                Thread.sleep(10);
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
