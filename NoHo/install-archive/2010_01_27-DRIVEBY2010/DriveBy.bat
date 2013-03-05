@@ -1,0 +1,1 @@
+java -classpath ./depends;./libraries;./libraries/ELVIS.jar;./libraries/JMyron.jar;./libraries/miglayout15-swing.jar;DriveBy.jar net.electroland.noho.core.DriveBy2010
