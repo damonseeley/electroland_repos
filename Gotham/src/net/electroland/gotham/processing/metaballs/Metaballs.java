@@ -108,23 +108,23 @@ public class Metaballs extends GothamPApplet {
         for (MetaballGroup group : groups){
 
             group.advanceIndividualBalls();
-            group.applyFriction(props.getValue(MetaballsProps.FRICTION));
-            group.applyPointForce(getCanvasCenter(), props.getValue(MetaballsProps.CENTER_FORCE));
-            group.applyGroupCohesion(props.getValue(MetaballsProps.COHESIVENESS));
-            group.applyBallToBallRepellForces(groups, props.getValue(MetaballsProps.BALL_TO_BALL_REPELL));
+            group.applyFriction(props.getValue(MetaballsProps.FRICTION, group.id));
+            group.applyPointForce(getCanvasCenter(), props.getValue(MetaballsProps.CENTER_FORCE, group.id));
+            group.applyGroupCohesion(props.getValue(MetaballsProps.COHESIVENESS, group.id));
+            group.applyBallToBallRepellForces(groups, props.getValue(MetaballsProps.BALL_TO_BALL_REPELL, group.id));
             //group.applyGroupToGroupRepellForces(groups, props.getValue(MetaballsProps.BALL_TO_BALL_REPELL));
-            group.applyJetForces(jets, props.getValue(MetaballsProps.JET_FORCE_SCALE));
+            group.applyJetForces(jets, props.getValue(MetaballsProps.JET_FORCE_SCALE, group.id));
             if (wind != null){
-                group.applyWindForces(wind, props.getValue(MetaballsProps.WIND_FORCE_SCALE));
+                group.applyWindForces(wind, props.getValue(MetaballsProps.WIND_FORCE_SCALE, group.id));
             }
-            group.constrainVelocity(props.getValue(MetaballsProps.MIN_VELOCITY),  // first max/min check is so wind, other balls, etc. don't cause
-                                    props.getValue(MetaballsProps.MAX_VELOCITY)); // crazy energy
+            group.constrainVelocity(props.getValue(MetaballsProps.MIN_VELOCITY, group.id),  // first max/min check is so wind, other balls, etc. don't cause
+                                    props.getValue(MetaballsProps.MAX_VELOCITY, group.id)); // crazy energy
 
             if (gridIsAffectingBalls){
-                group.applyPresenceImpactForces(gridHistory.latest(), props.getValue(MetaballsProps.REPELL_FORCE));
+                group.applyPresenceImpactForces(gridHistory.latest(), props.getValue(MetaballsProps.REPELL_FORCE, group.id));
             }
             // however, presence can really cause things to move
-            group.constrainVelocity(props.getValue(MetaballsProps.MIN_VELOCITY),    // THIS IS A SOURCE OF TROUBLE (jittering, when presenceImpact is too high)
+            group.constrainVelocity(props.getValue(MetaballsProps.MIN_VELOCITY, group.id),    // THIS IS A SOURCE OF TROUBLE (jittering, when presenceImpact is too high)
                                     calculatePresenceImpact());
 
             group.keepBallsWithinBoundary(this.getBoundary());

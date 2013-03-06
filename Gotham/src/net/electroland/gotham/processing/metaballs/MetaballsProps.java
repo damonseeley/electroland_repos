@@ -9,6 +9,7 @@ import net.electroland.ea.EasingFunction;
 import net.electroland.gotham.processing.assets.TimeEffect;
 import net.electroland.gotham.processing.assets.TimeEffectSet;
 import net.electroland.utils.ElectrolandProperties;
+import net.electroland.utils.ParameterMap;
 import processing.core.PApplet;
 import controlP5.Button;
 import controlP5.ControlEvent;
@@ -60,11 +61,13 @@ public class MetaballsProps implements ControlListener {
     private Point placement = new Point(10, 20);
     private PApplet parent;
     private TimeEffectSet timeEffects;
+    private MultiplierMap multipliers;
 
     public MetaballsProps(PApplet parent, String wallName, ElectrolandProperties props){
 
         this.parent = parent;
         this.wallName = wallName;
+        multipliers = parseMultipliers(wallName, props);
 
         // load the time effects
         timeEffects = new TimeEffectSet((EasingFunction)(props.getRequiredClass(wallName, "easingFunction","class")));
@@ -93,14 +96,14 @@ public class MetaballsProps implements ControlListener {
                  .hideCoordinates().setBackground(0);
 
         // physics/forces
-        addSlider(COHESIVENESS,            props);  nextRow();
-        addSlider(BALL_TO_BALL_REPELL,     props);  nextRow();
-        addSlider(REPELL_FORCE,            props);  nextRow();
+        addSlider(FRICTION,                props);  nextRow(); // togglable
+        addSlider(CENTER_FORCE,            props);  nextRow(); // togglable
+        addSlider(COHESIVENESS,            props);  nextRow(); // togglable
+        addSlider(BALL_TO_BALL_REPELL,     props);  nextRow(); // togglable
+        addSlider(JET_FORCE_SCALE,         props);  nextRow(); // togglable
+        addSlider(WIND_FORCE_SCALE,        props);  nextRow(); // togglable
+        addSlider(REPELL_FORCE,            props);  nextRow(); // togglable
         addSlider(REPELL_VELOCITY_MULT,    props);  nextRow();
-        addSlider(CENTER_FORCE,            props);  nextRow();
-        addSlider(JET_FORCE_SCALE,         props);  nextRow();
-        addSlider(WIND_FORCE_SCALE,        props);  nextRow();
-        addSlider(FRICTION,                props);  nextRow();
         addSlider(MIN_VELOCITY,            props);  nextRow();
         addSlider(MAX_VELOCITY,            props);  nextRow();  nextRow();
 
@@ -117,7 +120,7 @@ public class MetaballsProps implements ControlListener {
         // big picture
         addSlider(MARGIN,                  props);  nextRow();
         addSlider(BLUR,                    props);  nextRow();
-        addSlider(HOUR,                    props);  nextRow();
+        addSlider(HOUR,                    props);  nextRow(); // toggled using the "USE_TIME_SLIDER"
 
         nextColumn();
 
@@ -136,6 +139,23 @@ public class MetaballsProps implements ControlListener {
         addConsoleOutputButton();
     }
 
+    private static MultiplierMap parseMultipliers(String wallName, ElectrolandProperties props){
+
+        MultiplierMap multipliers = new MultiplierMap();
+
+        for (String name : props.getObjects(wallName).keySet()){
+
+            if (name.startsWith("multiplier")){
+                ParameterMap map    = props.getParams(wallName, name);
+                int ballGroupId     = map.getRequiredInt("ballGroupId");
+                String paramName    = map.getRequired("param");
+                float paramValue    = map.getRequiredDouble("value").floatValue();
+                multipliers.addMultiplier(ballGroupId, paramName, paramValue);
+            }
+        }
+
+        return multipliers;
+    }
     private void addSlider(String sliderName, ElectrolandProperties props){
 
         float left  = props.getRequiredDouble("lava",   sliderName, "min").floatValue();
@@ -215,8 +235,13 @@ public class MetaballsProps implements ControlListener {
         }
     }
 
-    public float getValue(String name){
-        return ((Slider)p5.getController(name)).getValue();
+    public float getValue(String paramName){
+        return ((Slider)p5.getController(paramName)).getValue();
+    }
+
+    public float getValue(String paramName, int ballGroupId){
+        float m = multipliers.getMultiplier(ballGroupId, paramName);
+        return ((Slider)p5.getController(paramName)).getValue() * m;
     }
 
     public boolean getState(String name){
@@ -240,14 +265,14 @@ public class MetaballsProps implements ControlListener {
         placement.y += 20;
     }
     private void addHalfColumn(){
-        placement.x += window.component().getWidth() / 8 + 5;
+        placement.x += window.component().getWidth() / 8 + 6;
     }
     private void subHalfColumn(){
-        placement.x -= window.component().getWidth() / 8 + 5;
+        placement.x -= window.component().getWidth() / 8 + 6;
     }
     private void nextColumn(){
         placement.y = 20;
-        placement.x += window.component().getWidth() / 2 + 10;
+        placement.x += window.component().getWidth() / 2 + 12;
     }
 
     private void addConsoleOutputButton(){
