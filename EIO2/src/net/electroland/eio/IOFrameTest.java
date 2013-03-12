@@ -71,9 +71,10 @@ public class IOFrameTest extends JFrame {
             if (val instanceof Short){
 
                 int barHeight = scale((Short)val, MAX_HEIGHT);
-                g.fillRect(BASELINE - barHeight, (int)channel.getLocation().getX(), BAR_WIDTH, barHeight);
+                g.fillRect((int)channel.getLocation().getX(), BASELINE - barHeight, BAR_WIDTH, barHeight);
             }
-            // TODO: val and channel ID on screen
+            // TODO: show actual values and channel ID on screen as text
+            // pause button (screen lock)
         }
     }
 
