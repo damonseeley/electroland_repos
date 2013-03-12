@@ -84,6 +84,9 @@ public class ModBusTcpDevice extends Device {
 
     public Eval evalChannel(ByteBuffer bytes, int registerIdx, int byteIdx){
         ModBusTcpInputChannel channel = channels[registerIdx][byteIdx];
+        if (channel == null){
+            return null;
+        }
         switch(channel.type){
             case(ModBusTcpInputChannel.BYTE):
                 return new Eval(channel, bytes.get(byteIdx));
