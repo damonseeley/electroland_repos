@@ -190,6 +190,7 @@ public class ElectrolandProperties {
             ParameterMap params = type.get(objectName);
             if (params == null)
             {
+                // TODO: ParameterMap.emptyMap
                 throw new OptionException("no object named '" + objectName + "' of type '" + objectType + "' was found.");
             }else
             {
@@ -267,7 +268,8 @@ public class ElectrolandProperties {
 
     public List<String> getOptionalList(String objectType, String objectName, String paramName)
     {
-        return getParams(objectType, objectName).getOptionalList(paramName);
+        List<String> list = getParams(objectType, objectName).getOptionalList(paramName);
+        return list == null ? Collections.<String>emptyList() : list;
     }
 
     public List<String> getRequiredList(String objectType, String objectName, String paramName)
