@@ -2,11 +2,9 @@ package net.electroland.eio.devices.modbus;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.electroland.eio.IOManager;
 import net.electroland.eio.devices.Device;
 import net.electroland.eio.devices.InputChannel;
 import net.electroland.eio.devices.OutputChannel;
@@ -22,41 +20,6 @@ public class ModBusTcpDevice extends Device {
     private int startRef, totalRegisters;
     private ByteOrder endianness;
     private ModbusTCPMaster connection;
-
-    public static void main(String args[]){
-
-        // example:
-
-        // create an IO manager
-        IOManager ioMgr = new IOManager();
-        ioMgr.load("io.properties");
-
-        // get all our input channels
-        Collection<InputChannel> channels = ioMgr.getInputChannels();
-
-        // iterate
-        while(true){
-
-            // important part: read a "frame" of data.
-            Map<InputChannel, Object> readVals = ioMgr.read();
-
-            // now animate or something here (we're just going to print to stdio)
-            for (InputChannel i : channels){
-                System.out.print(i.getId());         // InputChannel Id
-                System.out.print(' ');
-                System.out.print(i.getLocation());   // InputChannel location
-                System.out.print(' ');
-                System.out.println(readVals.get(i)); // InputChannel latest val
-            }
-
-            // and sleep
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     public ModBusTcpDevice(ParameterMap params) {
         super(params);

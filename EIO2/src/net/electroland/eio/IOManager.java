@@ -19,6 +19,41 @@ public class IOManager {
     private Collection<Device> devices;
     private Collection<InputChannel> inputChannels;
 
+    public static void main(String args[]){
+
+        // example:
+
+        // create an IO manager
+        IOManager ioMgr = new IOManager();
+        ioMgr.load("io.properties");
+
+        // get all our input channels
+        Collection<InputChannel> channels = ioMgr.getInputChannels();
+
+        // iterate
+        while(true){
+
+            // important part: read a "frame" of data.
+            Map<InputChannel, Object> readVals = ioMgr.read();
+
+            // now animate or something here (we're just going to print to stdio)
+            for (InputChannel i : channels){
+                System.out.print(i.getId());         // InputChannel Id
+                System.out.print(' ');
+                System.out.print(i.getLocation());   // InputChannel location
+                System.out.print(' ');
+                System.out.println(readVals.get(i)); // InputChannel latest val
+            }
+
+            // and sleep
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public Map<InputChannel, Object> read(){
 
         Map<InputChannel, Object> filteredData = new HashMap<InputChannel, Object>();
