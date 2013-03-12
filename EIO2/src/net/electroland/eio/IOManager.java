@@ -109,9 +109,9 @@ public class IOManager {
                                                 Map<String, Filter>filters){
 
         ArrayList<InputChannel>channels = new ArrayList<InputChannel>();
-        for (String name : props.getObjectNames("iochannel")){
+        for (String name : props.getObjectNames("ichannel")){
 
-            ParameterMap params = props.getParams("iochannel", name);
+            ParameterMap params = props.getParams("ichannel", name);
 
             String deviceId = params.getRequired("device");
             Device device   = devices.get(deviceId);
@@ -120,17 +120,20 @@ public class IOManager {
 
             // location
             int x           = params.getDefaultInt("x", 0);
-            int y           = params.getDefaultInt("x", 0);
-            int z           = params.getDefaultInt("x", 0);
+            int y           = params.getDefaultInt("y", 0);
+            int z           = params.getDefaultInt("z", 0);
             String units    = params.getOptional("units");
 
             ic.setLocation(new Coordinate(x, y, z, units));
 
             // filters
-            for (String filterId : params.getOptionalList("filters")){
-                ic.addFilter(filters.get(filterId));
+            params.getOptionalList("filters");
+            List<String> list = params.getOptionalList("filters");
+            if (list != null){
+                for (String filterId : params.getOptionalList("filters")){
+                    ic.addFilter(filters.get(filterId));
+                }
             }
-
             channels.add(ic);
         }
         return channels;

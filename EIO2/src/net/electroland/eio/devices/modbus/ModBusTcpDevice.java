@@ -88,9 +88,9 @@ public class ModBusTcpDevice extends Device {
             case(ModBusTcpInputChannel.BYTE):
                 return new Eval(channel, bytes.get(byteIdx));
             case(ModBusTcpInputChannel.SHORT):
-                return new Eval(channel, bytes.getShort());
+                return new Eval(channel, bytes.getShort(0));
             case(ModBusTcpInputChannel.UNINT):
-                return new Eval(channel, (int)bytes.getShort());
+                return new Eval(channel, (int)bytes.getShort(0));
             default:
                 return null;
         }
@@ -103,6 +103,8 @@ public class ModBusTcpDevice extends Device {
 
     @Override
     public InputChannel addInputChannel(ParameterMap channelParams) {
+
+        System.out.println("adding channel " + channelParams);
 
         // ichannel.ic2 = $device phoenix1 $register 1 $datatype SHORT
         ModBusTcpInputChannel newChannel = new ModBusTcpInputChannel();
@@ -125,7 +127,7 @@ public class ModBusTcpDevice extends Device {
         }
 
         channels[register][whichByte] = newChannel;
-        return null;
+        return newChannel;
     }
 
     class Eval {
