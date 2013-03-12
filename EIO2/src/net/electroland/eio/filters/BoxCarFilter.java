@@ -15,5 +15,4 @@ public class BoxCarFilter implements Filter {
         // TODO Auto-generated method stub
         return null;
     }
-
 }

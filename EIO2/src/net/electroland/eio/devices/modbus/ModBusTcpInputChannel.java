@@ -1,19 +1,12 @@
 package net.electroland.eio.devices.modbus;
 
 import net.electroland.eio.devices.InputChannel;
-import net.electroland.utils.ParameterMap;
 
 public class ModBusTcpInputChannel extends InputChannel {
 
-    public ModBusTcpInputChannel(ParameterMap p) {
-        super(p);
-        // TODO Auto-generated constructor stub
-    }
+    final static int BYTE  = 0;
+    final static int SHORT = 1;
+    final static int UNINT = 2;
 
-    @Override
-    public Object read(byte[] b) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
+    protected int type;
 }

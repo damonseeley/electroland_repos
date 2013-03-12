@@ -8,7 +8,9 @@ public abstract class Device {
 
     public Device(ParameterMap params){}
 
-    abstract public Map<Channel, Object> read();
+    abstract public Map<InputChannel, Object> read();
 
-    abstract public void write(Map<Channel, Object> values);
+    abstract public void write(Map<OutputChannel, Object> values);
+
+    abstract public InputChannel addInputChannel(ParameterMap channelParams);
 }

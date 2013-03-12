@@ -1,5 +1,7 @@
 package net.electroland.eio.devices;
 
-public abstract class DeviceFactory {
+import net.electroland.utils.ParameterMap;
 
+public abstract class DeviceFactory {
+    abstract public Device create(ParameterMap deviceParams);
 }
