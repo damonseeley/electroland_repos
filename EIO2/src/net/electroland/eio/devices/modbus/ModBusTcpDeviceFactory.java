@@ -1,7 +1,7 @@
 package net.electroland.eio.devices.modbus;
 
-import net.electroland.eio.devices.Device;
-import net.electroland.eio.devices.DeviceFactory;
+import net.electroland.eio.Device;
+import net.electroland.eio.DeviceFactory;
 import net.electroland.utils.ParameterMap;
 
 

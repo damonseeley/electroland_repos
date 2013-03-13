@@ -2,22 +2,16 @@ package net.electroland.eio;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.Map;
 
 import javax.swing.JFrame;
 
-import net.electroland.eio.devices.InputChannel;
 
 @SuppressWarnings("serial")
 public class IOFrameTest extends JFrame {
 
-    final static int HEIGHT     = 400;
-    final static int WIDTH      = 800;
-    final static int BAR_WIDTH  = 30;
-    final static int BASELINE   = HEIGHT - 50;
-    final static int MAX_HEIGHT = HEIGHT - 100;
-
-    IOManager manager;
+    private IOManager manager;
 
     public IOFrameTest(IOManager manager){
         this.manager = manager;
@@ -41,7 +35,7 @@ public class IOFrameTest extends JFrame {
         ioMgr.load(propsFilename);
 
         IOFrameTest t = new IOFrameTest(ioMgr);
-        t.setSize(HEIGHT, WIDTH);
+        t.setSize(800, 600);
         t.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         t.setVisible(true);
 
@@ -58,23 +52,49 @@ public class IOFrameTest extends JFrame {
     @Override
     public void paint(Graphics g){
 
+        Graphics2D g2d = (Graphics2D)g;
+
+        int height      = this.getHeight();
+        int width       = this.getWidth();
+        int barWidth       = 30;
+        int baseline    = height / 2;
+        int margin      = 50;
+        int maxBarHite  = baseline - margin;
+        Color barColor = new Color(255,255,255,150);
+
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
-        g.setColor(Color.WHITE);
 
         // read input
         Map<InputChannel, Object> readVals = manager.read();
 
+        // draw graph baseline
+        g.setColor(Color.WHITE);
+        g.drawLine(0, baseline, width, baseline);
+
         // plot inputs
         for (InputChannel channel : manager.getInputChannels()){
             Object val = readVals.get(channel);
-            if (val instanceof Short){
+            if (val instanceof Short){ // sanity check: should ALWAYS be true if configured properly
+                int barHeight   = scale((Short)val, maxBarHite);
+                int left        = (int)channel.getLocation().getX();
+                int top = baseline;
+                if (barHeight > 0){
+                    top -= barHeight;
+                }
 
-                int barHeight = scale((Short)val, MAX_HEIGHT);
-                g.fillRect((int)channel.getLocation().getX(), BASELINE - barHeight, BAR_WIDTH, barHeight);
+                // bar
+                g2d.setColor(barColor);
+                g2d.fillRect(left, top, barWidth, barHeight);
+
+                // value
+                g2d.setColor(Color.WHITE);
+                g2d.drawString(val.toString(), left, top);
+
+                // id
+                g2d.setColor(Color.WHITE);
+                g2d.drawString(channel.getId(), left, baseline);
             }
-            // TODO: show actual values and channel ID on screen as text
-            // pause button (screen lock)
         }
     }
 

@@ -1,4 +1,4 @@
-package net.electroland.eio.devices;
+package net.electroland.eio;
 
 import net.electroland.utils.ParameterMap;
 
