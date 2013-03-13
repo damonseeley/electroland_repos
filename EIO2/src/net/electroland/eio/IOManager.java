@@ -6,10 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.electroland.eio.devices.Coordinate;
-import net.electroland.eio.devices.Device;
-import net.electroland.eio.devices.DeviceFactory;
-import net.electroland.eio.devices.InputChannel;
 import net.electroland.eio.filters.Filter;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.ParameterMap;
@@ -117,6 +113,7 @@ public class IOManager {
             Device device   = devices.get(deviceId);
 
             InputChannel ic = device.addInputChannel(params);
+            ic.id           = name;
 
             // location
             int x           = params.getDefaultInt("x", 0);

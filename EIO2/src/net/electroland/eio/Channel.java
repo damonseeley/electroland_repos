@@ -1,9 +1,9 @@
-package net.electroland.eio.devices;
+package net.electroland.eio;
 
 
 public abstract class Channel {
 
-    private String id;
+    protected String id;
 
     public String getId(){
         return id;

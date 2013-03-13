@@ -1,6 +1,6 @@
 package net.electroland.eio.devices.modbus;
 
-import net.electroland.eio.devices.InputChannel;
+import net.electroland.eio.InputChannel;
 
 public class ModBusTcpInputChannel extends InputChannel {
 

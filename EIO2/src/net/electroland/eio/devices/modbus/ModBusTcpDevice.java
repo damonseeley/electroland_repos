@@ -5,9 +5,9 @@ import java.nio.ByteOrder;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.electroland.eio.devices.Device;
-import net.electroland.eio.devices.InputChannel;
-import net.electroland.eio.devices.OutputChannel;
+import net.electroland.eio.Device;
+import net.electroland.eio.InputChannel;
+import net.electroland.eio.OutputChannel;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.ParameterMap;
 import net.wimpi.modbus.facade.ModbusTCPMaster;

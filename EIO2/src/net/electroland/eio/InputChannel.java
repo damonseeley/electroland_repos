@@ -1,4 +1,4 @@
-package net.electroland.eio.devices;
+package net.electroland.eio;
 
 import java.util.ArrayList;
 import java.util.List;

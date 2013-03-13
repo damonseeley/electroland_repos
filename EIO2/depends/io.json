@@ -1,0 +1,28 @@
+{
+  "iodevice":{
+    "phoenix1":{
+      "factory":"net.electroland.eio.devices.modbus.ModBusTcpDeviceFactory",
+      "address":"192.168.247.21",
+      "startRef":192,
+      "totalRegisters":2,
+      "totalChannels":1,
+      "endianness":"BIG"
+    }
+  },
+
+  "ichannel":{
+    "0":{
+      "device":"phoenix1",
+      "register":0,
+      "datatype":"SHORT",
+      "x":50,"y":0,"z":0,"units":"meterPixels"
+    }
+  },
+
+  "iofilter":{
+    "boxcar":{
+      "class":"net.electroland.eio.filters.BoxCarFilter",
+      "samples":15
+    }
+  }
+}
