@@ -117,15 +117,12 @@ public class Metaballs extends GothamPApplet {
             if (wind != null){
                 group.applyWindForces(wind, props.getValue(MetaballsProps.WIND_FORCE_SCALE, group.id));
             }
-            group.constrainVelocity(props.getValue(MetaballsProps.MIN_VELOCITY, group.id),  // first max/min check is so wind, other balls, etc. don't cause
-                                    props.getValue(MetaballsProps.MAX_VELOCITY, group.id)); // crazy energy
 
             if (gridIsAffectingBalls){
                 group.applyPresenceImpactForces(gridHistory.latest(), props.getValue(MetaballsProps.REPELL_FORCE, group.id));
             }
-            // however, presence can really cause things to move
-            group.constrainVelocity(props.getValue(MetaballsProps.MIN_VELOCITY, group.id),    // THIS IS A SOURCE OF TROUBLE (jittering, when presenceImpact is too high)
-                                    calculatePresenceImpact(group.id));
+            group.constrainVelocity(props.getValue(MetaballsProps.MIN_VELOCITY, group.id),  // first max/min check is so wind, other balls, etc. don't cause
+                    props.getValue(MetaballsProps.MAX_VELOCITY, group.id)); // crazy energy
 
             group.keepBallsWithinBoundary(this.getBoundary());
 
@@ -251,6 +248,7 @@ public class Metaballs extends GothamPApplet {
         }
     }
 
+    //this code not being run now because 
     private float calculatePresenceImpact(int groupId){
         int presenceCount = gridHistory.latest().size() == 0 ? 100 : gridHistory.latest().size(); 
         return props.getValue(MetaballsProps.MAX_VELOCITY, groupId) * 
