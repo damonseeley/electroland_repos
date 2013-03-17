@@ -125,7 +125,7 @@ public class Metaballs extends GothamPApplet {
             }
             // however, presence can really cause things to move
             group.constrainVelocity(props.getValue(MetaballsProps.MIN_VELOCITY, group.id),    // THIS IS A SOURCE OF TROUBLE (jittering, when presenceImpact is too high)
-                                    calculatePresenceImpact());
+                                    calculatePresenceImpact(group.id));
 
             group.keepBallsWithinBoundary(this.getBoundary());
 
@@ -251,9 +251,9 @@ public class Metaballs extends GothamPApplet {
         }
     }
 
-    private float calculatePresenceImpact(){
+    private float calculatePresenceImpact(int groupId){
         int presenceCount = gridHistory.latest().size() == 0 ? 100 : gridHistory.latest().size(); 
-        return props.getValue(MetaballsProps.MAX_VELOCITY) * 
+        return props.getValue(MetaballsProps.MAX_VELOCITY, groupId) * 
                 presenceCount * props.getValue(MetaballsProps.REPELL_VELOCITY_MULT);
     }
 
