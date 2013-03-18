@@ -1,6 +1,7 @@
 package net.electroland.eio;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.Map;
@@ -35,7 +36,7 @@ public class IOFrameTest extends JFrame {
         ioMgr.load(propsFilename);
 
         IOFrameTest t = new IOFrameTest(ioMgr);
-        t.setSize(800, 600);
+        t.setSize(1200, 600);
         t.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         t.setVisible(true);
 
@@ -56,7 +57,7 @@ public class IOFrameTest extends JFrame {
 
         int height      = this.getHeight();
         int width       = this.getWidth();
-        int barWidth       = 30;
+        int barWidth       = 10;
         int baseline    = height / 2;
         int margin      = 50;
         int maxBarHite  = baseline - margin;
@@ -87,13 +88,16 @@ public class IOFrameTest extends JFrame {
                 g2d.setColor(barColor);
                 g2d.fillRect(left, top, barWidth, barHeight);
 
+                Font font = new Font("Arial", Font.PLAIN, 9);
+                g2d.setFont(font);
+                
                 // value
                 g2d.setColor(Color.WHITE);
                 g2d.drawString(val.toString(), left, top);
 
                 // id
                 g2d.setColor(Color.WHITE);
-                g2d.drawString(channel.getId(), left, baseline);
+                g2d.drawString(channel.getId(), left, baseline+10);
             }
         }
     }
