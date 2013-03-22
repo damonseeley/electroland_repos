@@ -30,7 +30,7 @@ public class IOManager {
         while(true){
 
             // important part: read a "frame" of data.
-            Map<InputChannel, Object> readVals = ioMgr.read();
+            Map<InputChannel, Value> readVals = ioMgr.read();
 
             // now animate or something here (we're just going to print to stdio)
             for (InputChannel i : channels){
@@ -50,11 +50,11 @@ public class IOManager {
         }
     }
 
-    public Map<InputChannel, Object> read(){
+    public Map<InputChannel, Value> read(){
 
-        Map<InputChannel, Object> filteredData = new HashMap<InputChannel, Object>();
+        Map<InputChannel, Value> filteredData = new HashMap<InputChannel, Value>();
         for (Device device : devices){
-            Map<InputChannel, Object> rawData = device.read();
+            Map<InputChannel, Value> rawData = device.read();
             for (InputChannel channel : rawData.keySet()){
                 filteredData.put(channel, channel.filter(rawData.get(channel)));
             }
