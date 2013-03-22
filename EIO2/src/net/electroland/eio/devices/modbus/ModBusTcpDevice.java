@@ -8,8 +8,10 @@ import java.util.Map;
 import net.electroland.eio.Device;
 import net.electroland.eio.InputChannel;
 import net.electroland.eio.OutputChannel;
+import net.electroland.eio.Value;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.ParameterMap;
+import net.wimpi.modbus.ModbusException;
 import net.wimpi.modbus.facade.ModbusTCPMaster;
 import net.wimpi.modbus.procimg.InputRegister;
 
@@ -40,20 +42,26 @@ public class ModBusTcpDevice extends Device {
     }
 
     @Override
-    public Map<InputChannel, Object> read() {
+    public Map<InputChannel, Value> read() {
 
-        try{
-            HashMap<InputChannel, Object> map = new HashMap<InputChannel, Object>();
-            // lazy connet
-            if (connection == null){
-                connection = new ModbusTCPMaster(address);
-                connection.setReconnecting(false);
+        HashMap<InputChannel, Value> map = new HashMap<InputChannel, Value>();
+
+        // lazy init connection
+        if (connection == null){
+            connection = new ModbusTCPMaster(address);
+            connection.setReconnecting(false); // hold persistent connection.
+            try {
                 connection.connect();
+                // ModbusTCPMaster.connect() throws generic Exception. Fuck you Jamod.
+            } catch (Exception e) {
+                throw new ModBusTcpReadException(e);
             }
+        }
 
-            InputRegister[] data;
+        InputRegister[] data;
+
+        try {
             data = connection.readInputRegisters(startRef, totalRegisters);
-
             int registerIdx = 0;
 
             for (InputRegister register : data){
@@ -76,10 +84,13 @@ public class ModBusTcpDevice extends Device {
 
                 registerIdx++;
             }
-            return map;
-        } catch(Exception e){ // seriously, ModbusTCPMaster.connect() throws Exception? Fuck you Jamod.
-            throw new ModBusTcpReadException(e);
+
+        } catch (ModbusException e) {
+            // TODO: what's appropriate here? return a map of all suspect? all zeros?
+            // retry?
         }
+
+        return map;
     }
 
     public Eval evalChannel(ByteBuffer bytes, int registerIdx, int byteIdx){
@@ -89,18 +100,18 @@ public class ModBusTcpDevice extends Device {
         }
         switch(channel.type){
             case(ModBusTcpInputChannel.BYTE):
-                return new Eval(channel, bytes.get(byteIdx));
+                return new Eval(channel, new Value(bytes.get(byteIdx)));
             case(ModBusTcpInputChannel.SHORT):
-                return new Eval(channel, bytes.getShort(0));
+                return new Eval(channel, new Value(bytes.getShort(0)));
             case(ModBusTcpInputChannel.UNINT):
-                return new Eval(channel, (int)bytes.getShort(0));
+                return new Eval(channel, new Value((int)bytes.getShort(0)));
             default:
                 return null;
         }
     }
 
     @Override
-    public void write(Map<OutputChannel, Object> values) {
+    public void write(Map<OutputChannel, Value> values) {
         // TODO Auto-generated method stub
     }
 
@@ -135,10 +146,15 @@ public class ModBusTcpDevice extends Device {
 
     class Eval {
         InputChannel channel;
-        Object value;
-        public Eval(InputChannel channel, Object value){
+        Value value;
+        public Eval(InputChannel channel, Value value){
             this.channel = channel;
             this.value   = value;
         }
+    }
+
+    @Override
+    public void close() {
+        connection.disconnect();
     }
 }

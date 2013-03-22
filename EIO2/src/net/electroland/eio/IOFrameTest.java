@@ -67,7 +67,7 @@ public class IOFrameTest extends JFrame {
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
         // read input
-        Map<InputChannel, Object> readVals = manager.read();
+        Map<InputChannel, Value> readVals = manager.read();
 
         // draw graph baseline
         g.setColor(Color.WHITE);
@@ -75,34 +75,34 @@ public class IOFrameTest extends JFrame {
 
         // plot inputs
         for (InputChannel channel : manager.getInputChannels()){
-            Object val = readVals.get(channel);
-            if (val instanceof Short){ // sanity check: should ALWAYS be true if configured properly
-                int barHeight   = scale((Short)val, maxBarHite);
-                int left        = (int)channel.getLocation().getX();
-                int top = baseline;
-                if (barHeight > 0){
-                    top -= barHeight;
-                }
+            Value val = readVals.get(channel);
 
-                // bar
-                g2d.setColor(barColor);
-                g2d.fillRect(left, top, barWidth, barHeight);
-
-                Font font = new Font("Arial", Font.PLAIN, 9);
-                g2d.setFont(font);
-                
-                // value
-                g2d.setColor(Color.WHITE);
-                g2d.drawString(val.toString(), left, top);
-
-                // id
-                g2d.setColor(Color.WHITE);
-                g2d.drawString(channel.getId(), left, baseline+10);
+            // cast based on val.
+            int barHeight   = scale(val.getValue(), maxBarHite);
+            int left        = (int)channel.getLocation().getX();
+            int top = baseline;
+            if (barHeight > 0){
+                top -= barHeight;
             }
+
+            // bar
+            g2d.setColor(barColor);
+            g2d.fillRect(left, top, barWidth, barHeight);
+
+            Font font = new Font("Arial", Font.PLAIN, 9);
+            g2d.setFont(font);
+
+            // value
+            g2d.setColor(Color.WHITE);
+            g2d.drawString("" + val.getValue(), left, top);
+
+            // id
+            g2d.setColor(Color.WHITE);
+            g2d.drawString(channel.getId(), left, baseline+10);
         }
     }
 
-    public int scale(short value, int dim){
+    public int scale(int value, int dim){
         float percent = value / (float)Short.MAX_VALUE;
         return (int)(percent * dim);
     }

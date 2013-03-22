@@ -25,10 +25,10 @@ abstract public class InputChannel extends Channel {
         filters.add(filter);
     }
 
-    public Object filter(Object value){
+    public Value filter(Value value){
         if (filters != null){
             for (Filter f : filters){
-                value = f.filter(f);
+                value = f.filter(value);
             }
         }
         return value;
