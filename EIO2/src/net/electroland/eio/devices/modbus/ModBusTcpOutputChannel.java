@@ -9,9 +9,4 @@ public class ModBusTcpOutputChannel extends OutputChannel {
     public void write(Value value) {
         // TODO Auto-generated method stub
     }
-
-    @Override
-    public void setValue(Object value) {
-        // TODO Auto-generated method stub
-    }
 }
