@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
 
@@ -26,6 +27,7 @@ public class IOFrameTest extends JFrame implements IOListener, ActionListener {
     private IOManager manager;
     private ValueSet lastRead = new ValueSet();
     private Collection<ValueSet> recording;
+    final JFileChooser fc = new JFileChooser();
 
     public IOFrameTest(IOManager manager){
         this.manager = manager;
@@ -152,23 +154,29 @@ public class IOFrameTest extends JFrame implements IOListener, ActionListener {
     }
 
     public void save(Collection<ValueSet> recording){
-        this.recording = null; // stops recording
-        // TODO: show file browser
-        File f = null;
 
-        PrintWriter pw;
-        StringBuffer sb = new StringBuffer();
-        try {
-            pw = new PrintWriter(f);
-            for (ValueSet v : recording){
-                v.serialize(sb);
-                pw.println(sb.toString());
-                sb.setLength(0);
+        this.recording = null; // stops recording
+
+        if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+
+            try {
+
+                File file       = fc.getSelectedFile();
+                PrintWriter pw  = new PrintWriter(file);
+                StringBuffer sb = new StringBuffer();
+
+                for (ValueSet v : recording){
+                    v.serialize(sb);
+                    pw.println(sb.toString());
+                    sb.setLength(0);
+                }
+
+                pw.flush();
+                pw.close();
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
             }
-            pw.flush();
-            pw.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         }
     }
 }

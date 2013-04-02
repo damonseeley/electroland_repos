@@ -26,7 +26,7 @@ public class ValueSet {// TODO: implements Map ?? {
     public void serialize(StringBuffer sb){ // NOT related to io.Serializable
         sb.append(readTime).append(',');
         for (String channelId : values.keySet()){
-            sb.append(channelId).append(',');
+            sb.append(channelId);
             values.get(channelId).serialize(sb);
         }
     }
