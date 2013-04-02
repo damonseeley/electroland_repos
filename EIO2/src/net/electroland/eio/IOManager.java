@@ -9,61 +9,39 @@ import java.util.Map;
 import net.electroland.eio.filters.Filter;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.ParameterMap;
+import net.electroland.utils.ShutdownThread;
+import net.electroland.utils.Shutdownable;
 
-public class IOManager {
+import org.apache.log4j.Logger;
 
-    private Collection<Device> devices;
-    private Collection<InputChannel> inputChannels;
+public class IOManager implements Shutdownable, Runnable {
 
-    public static void main(String args[]){
+    static Logger logger = Logger.getLogger(IOManager.class);
 
-        // example:
+    private Collection<Device>          devices;
+    private Collection<InputChannel>    inputChannels;
+    private Collection<OutputChannel>   outputChannels;
+    private Thread                      readThread;
+    private int                         delay = 33; // TODO: get from props file
+    private Collection<IOListener>      listeners;
 
-        // create an IO manager
-        IOManager ioMgr = new IOManager();
-        ioMgr.load("io.properties");
-
-        // get all our input channels
-        Collection<InputChannel> channels = ioMgr.getInputChannels();
-
-        // iterate
-        while(true){
-
-            // important part: read a "frame" of data.
-            Map<InputChannel, Value> readVals = ioMgr.read();
-
-            // now animate or something here (we're just going to print to stdio)
-            for (InputChannel i : channels){
-                System.out.print(i.getId());         // InputChannel Id
-                System.out.print(' ');
-                System.out.print(i.getLocation());   // InputChannel location
-                System.out.print(' ');
-                System.out.println(readVals.get(i)); // InputChannel latest val
-            }
-
-            // and sleep
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+    public IOManager(){
+        Runtime.getRuntime().addShutdownHook(new ShutdownThread(this));
     }
 
-    public Map<InputChannel, Value> read(){
-
-        Map<InputChannel, Value> filteredData = new HashMap<InputChannel, Value>();
-        for (Device device : devices){
-            Map<InputChannel, Value> rawData = device.read();
-            for (InputChannel channel : rawData.keySet()){
-                filteredData.put(channel, channel.filter(rawData.get(channel)));
-            }
+    public void addListener(IOListener listener){
+        if (listeners == null){
+            listeners = new ArrayList<IOListener>();
         }
-        return filteredData;
+        listeners.add(listener);
     }
 
     public Collection<InputChannel> getInputChannels() {
         return inputChannels;
+    }
+
+    public Collection<OutputChannel> getOutputChannels() {
+        return outputChannels;
     }
 
     public void load(String filename) {
@@ -87,7 +65,7 @@ public class IOManager {
             devices.put(name, device);
         }
         return devices;
-    }    
+    }
 
     private Map<String, Filter> loadFilters(ElectrolandProperties props){
         HashMap<String, Filter> filters = new HashMap<String, Filter>();
@@ -112,7 +90,8 @@ public class IOManager {
             String deviceId = params.getRequired("device");
             Device device   = devices.get(deviceId);
 
-            InputChannel ic = device.addInputChannel(params);
+            InputChannel ic = device.patch(params);
+            System.out.println(ic);
             ic.id           = name;
 
             // location
@@ -134,5 +113,50 @@ public class IOManager {
             channels.add(ic);
         }
         return channels;
+    }
+
+    public void start() {
+        if (readThread == null){
+            readThread = new Thread(this);
+            readThread.start();
+        }
+    }
+
+    @Override
+    public void run() {
+
+        while (readThread != null){
+            ValueSet unionValues = new ValueSet();
+
+            for (Device device : devices){
+                ValueSet deviceValues = device.read();
+
+                for (InputChannel c : inputChannels){
+                    Value v = deviceValues.get(c);
+                    c.filter(v);
+                    unionValues.put(c, v);
+                }
+
+            }
+
+            for (IOListener listener : listeners){
+                listener.dataReceived(unionValues);
+            }
+
+            try {
+                Thread.sleep(delay);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void shutdown() {
+        readThread = null;
+        logger.fatal("EIO2 shutdown hook invoked.");
+        for (Device d : devices){
+            d.close();
+        }
     }
 }

@@ -25,12 +25,15 @@ abstract public class InputChannel extends Channel {
         filters.add(filter);
     }
 
-    public Value filter(Value value){
+    public void filter(Value value){
         if (filters != null){
             for (Filter f : filters){
-                value = f.filter(value);
+                f.filter(value);
             }
         }
-        return value;
+    }
+
+    public String toString(){
+        return this.getClass() + "InputChannel." + id + "[location=" + location + "]";
     }
 }

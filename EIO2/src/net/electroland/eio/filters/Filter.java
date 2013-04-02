@@ -5,5 +5,5 @@ import net.electroland.utils.ParameterMap;
 
 public interface Filter {
     public void configure(ParameterMap map);
-    public Value filter(Value in);
+    public void filter(Value in);
 }
