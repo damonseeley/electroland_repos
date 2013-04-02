@@ -4,9 +4,13 @@ import net.electroland.eio.InputChannel;
 
 public class ModBusTcpInputChannel extends InputChannel {
 
-    final static int BYTE  = 0;
-    final static int SHORT = 1;
-    final static int UNINT = 2;
+    public enum Type {
+        BYTE, SHORT, UNINT
+    }
 
-    protected int type;
+    protected Type type;
+
+    public String toString(){
+        return super.toString() + " of type " + type;
+    }
 }

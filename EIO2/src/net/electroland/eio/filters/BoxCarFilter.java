@@ -9,9 +9,9 @@ public class BoxCarFilter implements Filter {
 
     private static Logger logger = Logger.getLogger(BoxCarFilter.class);
 
-    private int data[];
-    private int index = 0;
-    private double total = 0;
+    private int     data[];
+    private int     index = 0;
+    private double  total = 0;
 
     // unit test
     public static void main(String args[]){
@@ -27,10 +27,9 @@ public class BoxCarFilter implements Filter {
     }
 
     @Override
-    public Value filter(Value in) {
-        add(in.getValue());
+    public void filter(Value in) {
+        add(in.getFilteredValue());
         in.setValue(getAverage());
-        return in;
     }
 
     private int getAverage(){

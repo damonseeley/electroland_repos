@@ -1,5 +1,6 @@
 package net.electroland.eio;
 
+
 public class Coordinate {
 
     private float x,y,z;
