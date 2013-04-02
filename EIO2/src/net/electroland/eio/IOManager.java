@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 public class IOManager implements Shutdownable, Runnable {
 
     static Logger logger = Logger.getLogger(IOManager.class);
-
+    
     private Collection<Device>          devices;
     private Collection<InputChannel>    inputChannels;
     private Collection<OutputChannel>   outputChannels;
