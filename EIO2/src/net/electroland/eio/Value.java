@@ -9,12 +9,15 @@ public class Value {
 
     public Value(byte b){
         setValue(b);
+        raw = filtered;
     }
     public Value(short s){
         setValue(s);
+        raw = filtered;
     }
     public Value(int i){
         setValue(i);
+        raw = filtered;
     }
     public Value(String serialData){ // expects [192,122,0]
         String[] tokens = serialData.split(",[]");
