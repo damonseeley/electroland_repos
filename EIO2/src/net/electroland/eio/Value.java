@@ -16,8 +16,11 @@ public class Value {
     public Value(int i){
         setValue(i);
     }
-    public Value(String serialData){
-        // TODO: deserialize
+    public Value(String serialData){ // expects [192,122,0]
+        String[] tokens = serialData.split(",[]");
+        raw = new Integer(tokens[0]);
+        filtered = new Integer(tokens[1]);
+        isSuspect = new Integer(tokens[2]) == 1;
     }
     // [192,331,0]
     public void serialize(StringBuffer sb){

@@ -74,6 +74,7 @@ public class ModBusTcpDevice extends Device {
         if (connection != null){ // if connection (above) fails, it will be null
             try {
 
+                // can still end up with null pointer exceptions here.
                 InputRegister[] data = connection.readInputRegisters(startRef, totalRegisters);
                 int registerIdx = 0;
 
