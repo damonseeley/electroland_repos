@@ -20,13 +20,20 @@ public class ValueSet {// TODO: implements Map ?? {
     
     public ValueSet(String serializedData){
         values = new HashMap<String, Value>();
-        // TODO: deserialize
+        String[] tokens = serializedData.split(" :");
+        // get the readTime
+        readTime = Long.parseLong(tokens[0]);
+        // parse each remaining token
+        for (int i = 1; i < tokens.length; i+=2){
+            values.put(tokens[i], new Value(tokens[i+1]));
+        }
     }
 
     public void serialize(StringBuffer sb){ // NOT related to io.Serializable
-        sb.append(readTime).append(',');
+        //1828233 c0:[0,0,0] c1:[0,0,0]...
+        sb.append(readTime).append(' ');
         for (String channelId : values.keySet()){
-            sb.append(channelId);
+            sb.append(channelId).append(':');
             values.get(channelId).serialize(sb);
         }
     }
