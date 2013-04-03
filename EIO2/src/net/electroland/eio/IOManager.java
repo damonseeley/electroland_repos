@@ -22,7 +22,7 @@ public class IOManager implements Shutdownable, Runnable {
     private Collection<InputChannel>    inputChannels;
     private Collection<OutputChannel>   outputChannels;
     private Thread                      readThread;
-    private int                         delay = 33; // TODO: get from props file
+    private int                         delay;
     private Collection<IOListener>      listeners;
 
     public IOManager(){
@@ -49,6 +49,8 @@ public class IOManager implements Shutdownable, Runnable {
     }
 
     public void load(ElectrolandProperties props) {
+
+        this.delay = props.getDefaultInt("settings", "global", "fps", 33);
         Map<String, Device>deviceMap = loadDevices(props);
         Map<String, Filter>filterMap = loadFilters(props);
 
