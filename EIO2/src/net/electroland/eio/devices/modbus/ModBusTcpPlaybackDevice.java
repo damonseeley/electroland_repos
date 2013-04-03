@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
 
 import net.electroland.eio.InputChannel;
 import net.electroland.eio.ValueSet;
@@ -18,7 +17,6 @@ public class ModBusTcpPlaybackDevice extends ModBusTcpDevice {
     Logger logger = Logger.getLogger(ModBusTcpDevice.class);
     private String filename;
     private BufferedReader input;
-    private HashMap<String, InputChannel> channels;
 
     public ModBusTcpPlaybackDevice(ParameterMap params) {
         super(params);
@@ -60,8 +58,7 @@ public class ModBusTcpPlaybackDevice extends ModBusTcpDevice {
 
     @Override
     public InputChannel patch(ParameterMap channelParams) {
-        InputChannel channel = super.patch(channelParams);
-        return channels.get(channel.getId());
+        return super.patch(channelParams);
     }
 
     @Override

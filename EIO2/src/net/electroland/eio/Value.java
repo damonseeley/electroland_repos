@@ -20,10 +20,10 @@ public class Value {
         raw = filtered;
     }
     public Value(String serialData){ // expects [192,122,0]
-        String[] tokens = serialData.split(",[]");
-        raw = new Integer(tokens[0]);
-        filtered = new Integer(tokens[1]);
-        isSuspect = new Integer(tokens[2]) == 1;
+        String[] tokens = serialData.split(",|\\[|\\]");
+        raw = new Integer(tokens[1]);
+        filtered = new Integer(tokens[2]);
+        isSuspect = new Integer(tokens[3]) == 1;
     }
     // [192,331,0]
     public void serialize(StringBuffer sb){

@@ -20,11 +20,14 @@ public class ValueSet {// TODO: implements Map ?? {
     
     public ValueSet(String serializedData){
         values = new HashMap<String, Value>();
-        String[] tokens = serializedData.split(" :");
+        String[] tokens = serializedData.split(" |:");
         // get the readTime
         readTime = Long.parseLong(tokens[0]);
+        System.out.println("readTime:" + tokens[0]);
         // parse each remaining token
         for (int i = 1; i < tokens.length; i+=2){
+
+            System.out.println("first value token:" + tokens[i]);
             values.put(tokens[i], new Value(tokens[i+1]));
         }
     }
