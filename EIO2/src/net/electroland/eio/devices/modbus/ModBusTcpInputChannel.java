@@ -10,7 +10,7 @@ public class ModBusTcpInputChannel extends InputChannel {
 
     protected Type type;
     protected int byteIndex;
-    protected int registerIndex;
+    protected int registerIndex;    
 
     public String toString(){
         return super.toString() + " of type " + type;

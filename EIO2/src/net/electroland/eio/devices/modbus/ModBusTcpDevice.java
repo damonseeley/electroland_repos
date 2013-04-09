@@ -47,6 +47,7 @@ public class ModBusTcpDevice extends Device {
                                 ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN;
     }
 
+    long retryTimeout = 500;
     @Override
     public ValueSet read() {
 
@@ -59,6 +60,7 @@ public class ModBusTcpDevice extends Device {
                 connection = new ModbusTCPMaster(address, port);
                 connection.setReconnecting(true); // hold persistent connection.
                 connection.connect();
+                retryTimeout = 500;
             }
 
             // read all registers & convert to bytes
@@ -74,15 +76,20 @@ public class ModBusTcpDevice extends Device {
                 Value value = eval(channel, registerBytes);
                 values.put(channel, value);
             }
+            return values;
 
         } catch (Exception e) { // ModbusTCPMaster.connect() throws generic Exception. Fuck you Jamod.
 
-            if (e instanceof java.net.ConnectException){
-                logger.error("connection was refused."); // will retry on next read call.
-            }else if (e instanceof java.lang.NullPointerException && connection == null){
-                logger.error("connection is null."); // will retry on next read call.
-            }else {
-                e.printStackTrace();
+            logger.error(e);
+            connection = null;
+
+            try {
+                logger.error("retry in " + retryTimeout + " millis.");
+                Thread.sleep(retryTimeout);
+                retryTimeout *= 2;
+
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
             }
         }
 
