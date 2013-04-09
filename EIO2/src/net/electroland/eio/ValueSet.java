@@ -57,4 +57,8 @@ public class ValueSet {// TODO: implements Map ?? {
     public Set<String> keySet(){
         return values.keySet();
     }
+
+    public String toString(){
+        return "ValueSet[readTime=" + readTime + ", " + values + "]";
+    }
 }

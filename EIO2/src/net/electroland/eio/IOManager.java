@@ -74,7 +74,6 @@ public class IOManager implements Shutdownable, Runnable {
         for (String name : props.getObjectNames("iofilter")){
             ParameterMap params = props.getParams("iofilter", name);
             Filter filter = (Filter)params.getRequiredClass("class");
-            filter.setId(name);
             filter.configure(params);
             filters.put(name, filter);
         }
@@ -132,6 +131,7 @@ public class IOManager implements Shutdownable, Runnable {
             ValueSet unionValues = new ValueSet();
 
             for (Device device : devices){
+
                 ValueSet deviceValues = device.read();
 
                 for (InputChannel c : inputChannels){
