@@ -7,6 +7,11 @@ public class Value {
     private int     filtered, raw;
     private boolean isSuspect;
 
+    public Value(){
+        setValue(-1);
+        raw = filtered;
+        isSuspect = true;
+    }
     public Value(byte b){
         setValue(b);
         raw = filtered;
@@ -55,6 +60,9 @@ public class Value {
     }
     public void setValue(int i){
         filtered = i;
+    }
+    public static Value nullValue(){
+        return new Value();
     }
 
     public String toString(){

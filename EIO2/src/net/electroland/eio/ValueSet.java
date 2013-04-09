@@ -43,11 +43,12 @@ public class ValueSet {// TODO: implements Map ?? {
     }
 
     public Value get(Channel channel){
-        return values.get(channel.id);
+        return get(channel.id);
     }
 
     public Value get(String id){
-        return values.get(id);
+        Value value = values.get(id);
+        return value == null ? Value.nullValue() : value;
     }
 
     public Collection<Value> values(){
