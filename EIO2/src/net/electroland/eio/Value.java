@@ -1,17 +1,12 @@
 package net.electroland.eio;
 
-import java.util.HashMap;
-
-import net.electroland.eio.filters.Filter;
-
 
 
 public class Value {
 
     private int     filtered, raw;
     private boolean isSuspect;
-    private HashMap<String, Integer>filteredValues = new HashMap<String, Integer>();
-    
+
     public Value(byte b){
         setValue(b);
         raw = filtered;
@@ -39,9 +34,6 @@ public class Value {
         sb.append(']');
     }
 
-    public int getFilteredValue(String filterId){
-        return filteredValues.get(filterId);
-    }
     public int getFilteredValue() {
         return filtered;
     }
@@ -63,11 +55,6 @@ public class Value {
     }
     public void setValue(int i){
         filtered = i;
-    }
-    public void setValue(Filter filter, int value){
-        synchronized(filteredValues){
-            filteredValues.put(filter.getId(), value);
-        }
     }
 
     public String toString(){
