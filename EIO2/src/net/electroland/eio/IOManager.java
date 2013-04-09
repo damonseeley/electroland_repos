@@ -74,6 +74,7 @@ public class IOManager implements Shutdownable, Runnable {
         for (String name : props.getObjectNames("iofilter")){
             ParameterMap params = props.getParams("iofilter", name);
             Filter filter = (Filter)params.getRequiredClass("class");
+            filter.setId(name);
             filter.configure(params);
             filters.put(name, filter);
         }

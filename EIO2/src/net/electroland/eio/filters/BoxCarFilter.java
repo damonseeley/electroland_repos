@@ -5,7 +5,7 @@ import net.electroland.utils.ParameterMap;
 
 import org.apache.log4j.Logger;
 
-public class BoxCarFilter implements Filter {
+public class BoxCarFilter extends Filter {
 
     private static Logger logger = Logger.getLogger(BoxCarFilter.class);
 
