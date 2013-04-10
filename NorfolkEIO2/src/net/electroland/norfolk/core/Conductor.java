@@ -60,17 +60,17 @@ public class Conductor implements PeopleListener, Runnable, AnimationListener{
     public void init() throws OptionException, IOException{
 
         ssm = new SimpleSoundManager();
-        ssm.load(new ElectrolandProperties("nofrolk.properties"));
+        ssm.load(new ElectrolandProperties("norfolk.properties"));
 
         elu = new ELUManager();
-        elu.load(new ElectrolandProperties("elu.properties"));
+        elu.load(new ElectrolandProperties("norfolk-ELU2.properties"));
         // TODO: set local fps
 
         eio = new EIOManager();
-        eio.load(new ElectrolandProperties("eio.properties"));
+        eio.load(new ElectrolandProperties("norfolk-eio.properties"));
 
         eam = new Animation();
-        eam.load(new ElectrolandProperties("nofrolk.properties"));
+        eam.load(new ElectrolandProperties("norfolk.properties"));
     }
 
     public void start(){
