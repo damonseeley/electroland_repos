@@ -14,9 +14,9 @@ import net.electroland.utils.Shutdownable;
 
 import org.apache.log4j.Logger;
 
-public class IOManager implements Shutdownable, Runnable {
+public class EIOManager implements Shutdownable, Runnable {
 
-    static Logger logger = Logger.getLogger(IOManager.class);
+    static Logger logger = Logger.getLogger(EIOManager.class);
     
     private Collection<Device>          devices;
     private Collection<InputChannel>    inputChannels;
@@ -25,7 +25,7 @@ public class IOManager implements Shutdownable, Runnable {
     private int                         delay;
     private Collection<IOListener>      listeners;
 
-    public IOManager(){
+    public EIOManager(){
         Runtime.getRuntime().addShutdownHook(new ShutdownThread(this));
     }
 
@@ -52,7 +52,7 @@ public class IOManager implements Shutdownable, Runnable {
 
         this.delay = props.getDefaultInt("settings", "global", "fps", 33);
         Map<String, Device>deviceMap = loadDevices(props);
-        Map<String, Filter>filterMap = loadFilters(props);
+        Map<String, ParameterMap>filterMap = loadFilterConfig(props);
 
         inputChannels = loadInputChannels(props, deviceMap, filterMap);
         this.devices = deviceMap.values();
@@ -69,20 +69,18 @@ public class IOManager implements Shutdownable, Runnable {
         return devices;
     }
 
-    private Map<String, Filter> loadFilters(ElectrolandProperties props){
-        HashMap<String, Filter> filters = new HashMap<String, Filter>();
+    private Map<String, ParameterMap> loadFilterConfig(ElectrolandProperties props){
+        HashMap<String, ParameterMap> filterMap = new HashMap<String, ParameterMap>();
         for (String name : props.getObjectNames("iofilter")){
             ParameterMap params = props.getParams("iofilter", name);
-            Filter filter = (Filter)params.getRequiredClass("class");
-            filter.configure(params);
-            filters.put(name, filter);
+            filterMap.put(name, params);
         }
-        return filters;
+        return filterMap;
     }
 
     private List<InputChannel>loadInputChannels(ElectrolandProperties props, 
                                                 Map<String, Device>devices, 
-                                                Map<String, Filter>filters){
+                                                Map<String, ParameterMap>filters){
 
         ArrayList<InputChannel>channels = new ArrayList<InputChannel>();
         for (String name : props.getObjectNames("ichannel")){
@@ -109,7 +107,13 @@ public class IOManager implements Shutdownable, Runnable {
             List<String> list = params.getOptionalList("filters");
             if (list != null){
                 for (String filterId : params.getOptionalList("filters")){
-                    ic.addFilter(filters.get(filterId));
+
+                    ParameterMap filterParams = filters.get(filterId);
+
+                    Filter filter = (Filter)filterParams.getRequiredClass("class");
+                    filter.configure(filterParams);
+
+                    ic.addFilter(filter);
                 }
             }
             channels.add(ic);

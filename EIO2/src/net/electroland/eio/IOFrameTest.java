@@ -24,12 +24,12 @@ public class IOFrameTest extends JFrame implements IOListener, ActionListener {
 
     public static final String RECORD = "Start recording";
     public static final String STOP   = "Stop and save";
-    private IOManager manager;
+    private EIOManager manager;
     private ValueSet lastRead = new ValueSet();
     private Collection<ValueSet> recording;
     final JFileChooser fc = new JFileChooser();
 
-    public IOFrameTest(IOManager manager){
+    public IOFrameTest(EIOManager manager){
         this.manager = manager;
     }
 
@@ -48,7 +48,7 @@ public class IOFrameTest extends JFrame implements IOListener, ActionListener {
         }
 
         System.out.println("running " + propsFilename + " at " + fps + " fps.");
-        IOManager ioMgr = new IOManager();
+        EIOManager ioMgr = new EIOManager();
         ioMgr.load(propsFilename);
 
         IOFrameTest t = new IOFrameTest(ioMgr);
