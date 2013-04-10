@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Vector;
 
 import net.electroland.ea.content.SolidColorContent;
-import net.electroland.ea.easing.Linear;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.ParameterMap;
@@ -40,28 +39,33 @@ public class Animation {
     private Map<String, Content>contentPrototypes;
     private Vector<AnimationListener>listeners;
 
+    public Animation()
+    {
+        listeners = new Vector<AnimationListener>();
+    }
+
     public Animation(String propsName)
     {
         listeners = new Vector<AnimationListener>();
         config(propsName);
     }
 
-    public void config(String propsName)
-    {
-        logger.info("loading " + propsName);
-        ElectrolandProperties p = new ElectrolandProperties(propsName);
+    public void load(ElectrolandProperties p){
 
+        logger.info("loading...");
         frameDimemsions = new Dimension(p.getRequiredInt("settings", "global", "width"),
-                                p.getRequiredInt("settings", "global", "height"));
+                                        p.getRequiredInt("settings", "global", "height"));
         rootClip = new Clip(new SolidColorContent(null), 0, 0, frameDimemsions.width, frameDimemsions.height, 1.0f);
         rootClip.animationManager = this;
+
         // clip
         contentPrototypes = new Hashtable<String,Content>();
         Map<String, ParameterMap> contentParams = p.getObjects("content");
+
         for (String s : contentParams.keySet()){
             logger.info("loading content '" + s + "'");
             ParameterMap universalParams = contentParams.get(s);
-
+            
             Map<String, ParameterMap> extendedParams = null;
             try{
                 extendedParams = p.getObjects(s);
@@ -74,6 +78,13 @@ public class Animation {
             content.config(universalParams, extendedParams);
             contentPrototypes.put(s, content);
         }
+    }
+
+    public void config(String propsName)
+    {
+        logger.info("loading " + propsName);
+        ElectrolandProperties p = new ElectrolandProperties(propsName);
+        load(p);
     }
 
     public void setBackground(Color color)
