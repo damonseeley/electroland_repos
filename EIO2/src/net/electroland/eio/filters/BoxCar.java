@@ -5,9 +5,9 @@ import net.electroland.utils.ParameterMap;
 
 import org.apache.log4j.Logger;
 
-public class BoxCarFilter implements Filter {
+public class BoxCar implements Filter {
 
-    private static Logger logger = Logger.getLogger(BoxCarFilter.class);
+    private static Logger logger = Logger.getLogger(BoxCar.class);
 
     private int     data[];
     private int     index = 0;
