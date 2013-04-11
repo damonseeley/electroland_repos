@@ -8,18 +8,21 @@ import net.electroland.eio.ValueSet;
 
 public class PeopleIOWatcher implements IOListener {
 
-    Collection<PeopleListener>listeners;
+    private Collection<PeopleListener>listeners = new ArrayList<PeopleListener>();
 
     @Override
     public void dataReceived(ValueSet values) {
-        // TODO Interpret data from MatchFilters to determine if a new person
-        // has entered.
+        for (String id : values.keySet()){
+            if (id.endsWith("tr")){
+                int value = values.get(id).getFilteredValue();
+                if (value != 0){
+                    notifyListenersEntered(id, PersonEvent.Direction.UNKNOWN, PersonEvent.Behavior.ENTER);
+                }
+            }
+        }
     }
 
     public void addListener(PeopleListener pl){
-        if (listeners == null){
-            listeners = new ArrayList<PeopleListener>();
-        }
         listeners.add(pl);
     }
 
