@@ -3,6 +3,7 @@ package net.electroland.norfolk.core;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -23,6 +24,9 @@ import net.electroland.utils.Util;
 import net.electroland.utils.lighting.CanvasDetector;
 import net.electroland.utils.lighting.ELUCanvas;
 import net.electroland.utils.lighting.ELUManager;
+import net.electroland.utils.lighting.detection.BlueDetectionModel;
+import net.electroland.utils.lighting.detection.GreenDetectionModel;
+import net.electroland.utils.lighting.detection.RedDetectionModel;
 import net.electroland.utils.lighting.ui.ELUControls;
 
 import org.apache.log4j.Logger;
@@ -113,35 +117,50 @@ public class Conductor implements PeopleListener, Runnable{
                 Dimension d = eam.getFrameDimensions();
                 BufferedImage frame = eam.getFrame();
 
-                // render on screen
-                if (!isHeadless){
-
-                    // render animation
-                    if (renderArea != null && renderArea.getGraphics() != null && d != null){
-                        renderArea.getGraphics().drawImage(frame, 0, 0, (int)d.getWidth(), (int)d.getHeight(), null);
-                    }
-                    // TODO: set lights on 3d Viz
-                }
-
-                // render on lights
+                // sync with ELU
                 int pixels[] = new int[d.width * d.height];
                 frame.getRGB(0, 0, d.width, d.height, pixels, 0, d.width);
                 CanvasDetector[] detectors = canvas.sync(pixels);
 
-                if (!isHeadless){
+                // on screen (if !headless)
+                Graphics2D graphics = null;
+                if (!isHeadless && 
+                    renderArea != null && 
+                    renderArea.getGraphics() != null){
+
+                    graphics = (Graphics2D)renderArea.getGraphics();
+
+                    // animation
+                    graphics.drawImage(frame, 0, 0, (int)d.getWidth(), (int)d.getHeight(), null);
+
+                    // detectors
                     for (CanvasDetector cd : detectors){
+
                         Rectangle r = (Rectangle)(cd.getBoundary());
                         int i = Util.unsignedByteToInt(cd.getLatestState());
-                        Color c = new Color(i,i,i);
+                        Color c = null;
+
+                        if (i != 0){
+                            if (cd.getDetectorModel() instanceof RedDetectionModel){
+                                c = new Color(i,0,0);
+                            } else if (cd.getDetectorModel() instanceof GreenDetectionModel) {
+                                c = new Color(0,i,0);
+                            } else if (cd.getDetectorModel() instanceof BlueDetectionModel) {
+                                c = new Color(0,0,1);
+                            }
+                        }
+
+
                         if (renderArea != null && renderArea.getGraphics() != null){
-                            renderArea.getGraphics().setColor(c);
-                            renderArea.getGraphics().fillRect(r.x, r.y, r.width, r.height);
-                            renderArea.getGraphics().setColor(Color.WHITE);
-                            renderArea.getGraphics().drawRect(r.x, r.y, r.width, r.height);
+                            if (c != null){
+                                graphics.setColor(c);
+                                graphics.fillRect(r.x - 1, r.y - 1, r.width + 3, r.height + 3);
+                            }
+                            graphics.setColor(Color.GRAY);
+                            graphics.drawRect(r.x - 1, r.y - 1, r.width + 3, r.height + 3);
                         }
                     }
                 }
-
             }
             try{
                 Thread.sleep((long)(1000.0 / fps));
