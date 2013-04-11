@@ -1,8 +1,8 @@
 package net.electroland.eio;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -17,10 +17,11 @@ import java.util.Collection;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 
 @SuppressWarnings("serial")
-public class IOFrameTest extends JFrame implements IOListener, ActionListener {
+public class IOFrameTest extends JPanel implements IOListener, ActionListener {
 
     public static final String RECORD = "Start recording";
     public static final String STOP   = "Stop and save";
@@ -28,9 +29,25 @@ public class IOFrameTest extends JFrame implements IOListener, ActionListener {
     private ValueSet lastRead = new ValueSet();
     private Collection<ValueSet> recording;
     final JFileChooser fc = new JFileChooser();
+    private JFrame frame;
 
     public IOFrameTest(EIOManager manager){
+        frame = new JFrame();
         this.manager = manager;
+        frame.setSize(1200, 600);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JButton record = new JButton(RECORD);
+        record.addActionListener(this);
+        record.setPreferredSize(new Dimension(100,20));
+        frame.setLayout(new BorderLayout());
+        frame.getContentPane().add(record, BorderLayout.PAGE_END);
+        frame.getContentPane().add(this, BorderLayout.CENTER);
+
+        frame.setVisible(true);
+
+        manager.addListener(this);
+        manager.start();
     }
 
     public static void main(String[] args) {
@@ -51,21 +68,7 @@ public class IOFrameTest extends JFrame implements IOListener, ActionListener {
         EIOManager ioMgr = new EIOManager();
         ioMgr.load(propsFilename);
 
-        IOFrameTest t = new IOFrameTest(ioMgr);
-        t.setSize(1200, 600);
-        t.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        JButton record = new JButton(RECORD);
-        record.addActionListener(t);
-        record.setPreferredSize(new Dimension(100,20));
-        t.setLayout(new FlowLayout(FlowLayout.RIGHT));
-        t.getContentPane().add(record);
-
-        t.setVisible(true);
-
-
-        ioMgr.addListener(t);
-        ioMgr.start();
+        new IOFrameTest(ioMgr);
      }
 
     @Override
@@ -75,14 +78,14 @@ public class IOFrameTest extends JFrame implements IOListener, ActionListener {
 
         int height      = this.getHeight();
         int width       = this.getWidth();
-        int barWidth       = 10;
+        int barWidth    = 10;
         int baseline    = height / 2;
         int margin      = 50;
         int maxBarHite  = baseline - margin;
         Color barColor = new Color(255,255,255,150);
 
         g.setColor(Color.BLACK);
-        g.fillRect(0, 50, this.getWidth(), this.getHeight());
+        g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
         // draw graph baseline
         g.setColor(Color.WHITE);
@@ -117,6 +120,10 @@ public class IOFrameTest extends JFrame implements IOListener, ActionListener {
             g2d.setColor(Color.WHITE);
             g2d.drawString(channel.getId(), left, baseline+10);
         }
+    }
+
+    public void resizeWindow(int w, int h){
+        frame.setSize(w,h);
     }
 
     public int scale(int value, int dim){
