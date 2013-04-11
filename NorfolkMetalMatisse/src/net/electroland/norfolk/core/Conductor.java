@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 
 import net.electroland.ea.Animation;
 import net.electroland.eio.EIOManager;
+import net.electroland.eio.IOFrameTest;
 import net.electroland.eio.InputChannel;
 import net.electroland.norfolk.eio.filters.PeopleIOWatcher;
 import net.electroland.norfolk.eio.filters.PeopleListener;
@@ -58,6 +59,10 @@ public class Conductor implements PeopleListener, Runnable{
             c.renderArea.setPreferredSize(c.eam.getFrameDimensions());
             c.mainControls.add(c.renderArea, BorderLayout.CENTER); 
             c.mainControls.setVisible(true);
+
+            // sensors
+            IOFrameTest sensors = new IOFrameTest(c.eio);
+            sensors.resizeWindow(400, 400);
 
             // TODO: window for 3d rendering
         }
