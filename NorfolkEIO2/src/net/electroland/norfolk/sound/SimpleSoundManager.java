@@ -1,14 +1,17 @@
 package net.electroland.norfolk.sound;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.electroland.utils.ElectrolandProperties;
+import net.electroland.utils.ParameterMap;
 import processing.core.PApplet;
 import ddf.minim.Minim;
 
 public class SimpleSoundManager {
 
-    private Collection<String>playList;
+    private Map<String, String>playList;
     private Minim minim;
 
     public SimpleSoundManager(){
@@ -26,14 +29,18 @@ public class SimpleSoundManager {
     }
 
     public Collection<String> getPlayList(){
-        return playList;
+        return playList.keySet();
     }
 
     public void load(ElectrolandProperties props){
-        // TODO: load the song playlist here.
+        Map<String,ParameterMap> soundProps = props.getObjects("sound");
+        playList = new HashMap<String,String>();
+        for (String id : soundProps.keySet()){
+            playList.put(id, soundProps.get(id).get("filename"));
+        }
     }
 
     public void playSound(String soundName){
-        minim.loadFile(soundName).play();
+        minim.loadFile(playList.get(soundName)).play();
     }
 }
