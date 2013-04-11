@@ -3,13 +3,10 @@ package net.electroland.norfolk.core;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 import net.electroland.ea.Animation;
 import net.electroland.eio.EIOManager;
@@ -20,13 +17,9 @@ import net.electroland.norfolk.eio.filters.PersonEvent;
 import net.electroland.norfolk.sound.SimpleSoundManager;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
-import net.electroland.utils.Util;
 import net.electroland.utils.lighting.CanvasDetector;
 import net.electroland.utils.lighting.ELUCanvas;
 import net.electroland.utils.lighting.ELUManager;
-import net.electroland.utils.lighting.detection.BlueDetectionModel;
-import net.electroland.utils.lighting.detection.GreenDetectionModel;
-import net.electroland.utils.lighting.detection.RedDetectionModel;
 import net.electroland.utils.lighting.ui.ELUControls;
 
 import org.apache.log4j.Logger;
@@ -41,7 +34,7 @@ public class Conductor implements PeopleListener, Runnable{
     private Thread              thread;
     private int                 fps = 30;
     private JFrame              mainControls;
-    private JPanel              renderArea;
+    private Raster2dViz         renderArea;
     private boolean             isHeadless = false;
 
     public static void main(String args[]) throws OptionException, IOException{
@@ -51,8 +44,9 @@ public class Conductor implements PeopleListener, Runnable{
 
         if (!c.isHeadless){
             c.mainControls = new JFrame();
-            c.mainControls.setSize(c.eam.getFrameDimensions().width + 50, 
-                                    c.eam.getFrameDimensions().width + 50);
+            c.mainControls.setBackground(Color.DARK_GRAY);
+            c.mainControls.setSize(c.eam.getFrameDimensions().width + 100, 
+                                    c.eam.getFrameDimensions().width + 100);
             c.mainControls.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
             // controls
@@ -60,10 +54,9 @@ public class Conductor implements PeopleListener, Runnable{
             c.mainControls.setLayout(new BorderLayout());
             c.mainControls.add(eluControls, BorderLayout.PAGE_END);
 
-            c.renderArea = new JPanel();
+            c.renderArea = new Raster2dViz();
             c.renderArea.setPreferredSize(c.eam.getFrameDimensions());
             c.mainControls.add(c.renderArea, BorderLayout.CENTER); 
-
             c.mainControls.setVisible(true);
 
             // TODO: window for 3d rendering
@@ -112,6 +105,9 @@ public class Conductor implements PeopleListener, Runnable{
     @Override
     public void run() {
         while (thread != null){
+
+            // Practically speaking, there's only one canvas, so we don't need
+            // to do this iterator. Could just get it by name.
             for (ELUCanvas canvas : elu.getCanvases().values()){
 
                 Dimension d = eam.getFrameDimensions();
@@ -122,46 +118,12 @@ public class Conductor implements PeopleListener, Runnable{
                 frame.getRGB(0, 0, d.width, d.height, pixels, 0, d.width);
                 CanvasDetector[] detectors = canvas.sync(pixels);
 
-                // on screen (if !headless)
-                Graphics2D graphics = null;
-                if (!isHeadless && 
-                    renderArea != null && 
-                    renderArea.getGraphics() != null){
-
-                    graphics = (Graphics2D)renderArea.getGraphics();
-
-                    // animation
-                    graphics.drawImage(frame, 0, 0, (int)d.getWidth(), (int)d.getHeight(), null);
-
-                    // detectors
-                    for (CanvasDetector cd : detectors){
-
-                        Rectangle r = (Rectangle)(cd.getBoundary());
-                        int i = Util.unsignedByteToInt(cd.getLatestState());
-                        Color c = null;
-
-                        if (i != 0){
-                            if (cd.getDetectorModel() instanceof RedDetectionModel){
-                                c = new Color(i,0,0);
-                            } else if (cd.getDetectorModel() instanceof GreenDetectionModel) {
-                                c = new Color(0,i,0);
-                            } else if (cd.getDetectorModel() instanceof BlueDetectionModel) {
-                                c = new Color(0,0,1);
-                            }
-                        }
-
-
-                        if (renderArea != null && renderArea.getGraphics() != null){
-                            if (c != null){
-                                graphics.setColor(c);
-                                graphics.fillRect(r.x - 1, r.y - 1, r.width + 3, r.height + 3);
-                            }
-                            graphics.setColor(Color.GRAY);
-                            graphics.drawRect(r.x - 1, r.y - 1, r.width + 3, r.height + 3);
-                        }
-                    }
+                if (renderArea != null){
+                    renderArea.update(frame, detectors);
+                    renderArea.repaint();
                 }
             }
+
             try{
                 Thread.sleep((long)(1000.0 / fps));
             }catch(InterruptedException e){
