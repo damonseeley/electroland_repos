@@ -104,7 +104,7 @@ public class ClipPlayer implements AnimationListener {
         ssm.playSound("002");
 
         int height = 50;
-        Clip c = eam.addClip(eam.getContent("white"), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
+        Clip c = eam.addClip(eam.getContent("whitegradient"), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
 
         Sequence sweep = new Sequence();
         sweep.yTo(eam.getFrameDimensions().height).duration(15000);
