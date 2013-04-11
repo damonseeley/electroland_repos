@@ -28,7 +28,7 @@ import net.electroland.utils.lighting.ui.ELUControls;
 
 import org.apache.log4j.Logger;
 
-public class Conductor implements PeopleListener, Runnable, AnimationListener{
+public class Conductor implements PeopleListener, Runnable{
 
     private static Logger       logger = Logger.getLogger(Conductor.class);
     private Animation           eam;
@@ -161,6 +161,11 @@ public class Conductor implements PeopleListener, Runnable, AnimationListener{
         }
     }
 
+    @Override
+    public void personExited(PersonEvent evt) {
+        // TODO whatever behavior matches a person exiting here.
+    }
+
     private InputChannel getChannel(String id){
         for (InputChannel channel : eio.getInputChannels()){
             if (channel.getId().equals(id)){
@@ -170,14 +175,4 @@ public class Conductor implements PeopleListener, Runnable, AnimationListener{
         return null;
     }
 
-    @Override
-    public void personExited(PersonEvent evt) {
-        // whatever behavior matches a person exiting here.
-    }
-
-    @Override
-    public void messageReceived(Object message) {
-        // TODO Auto-generated method stub
-        // animation manager
-    }
 }
