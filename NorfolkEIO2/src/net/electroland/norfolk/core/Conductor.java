@@ -1,7 +1,9 @@
 package net.electroland.norfolk.core;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -9,14 +11,22 @@ import javax.swing.JFrame;
 
 import net.electroland.ea.Animation;
 import net.electroland.ea.AnimationListener;
+import net.electroland.ea.Clip;
+import net.electroland.ea.Sequence;
+import net.electroland.ea.easing.CubicOut;
+import net.electroland.ea.easing.Linear;
+import net.electroland.ea.easing.QuinticIn;
 import net.electroland.eio.Coordinate;
 import net.electroland.eio.EIOManager;
 import net.electroland.eio.InputChannel;
+import net.electroland.norfolk.eio.filters.PeopleIOWatcher;
 import net.electroland.norfolk.eio.filters.PeopleListener;
 import net.electroland.norfolk.eio.filters.PersonEvent;
 import net.electroland.norfolk.sound.SimpleSoundManager;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
+import net.electroland.utils.Util;
+import net.electroland.utils.lighting.CanvasDetector;
 import net.electroland.utils.lighting.ELUCanvas;
 import net.electroland.utils.lighting.ELUManager;
 import net.electroland.utils.lighting.ui.ELUControls;
@@ -67,13 +77,22 @@ public class Conductor implements PeopleListener, Runnable, AnimationListener{
         // TODO: set local fps
 
         eio = new EIOManager();
-        eio.load(new ElectrolandProperties("norfolk-eio.properties"));
+        eio.load(new ElectrolandProperties("io-local.properties"));
+        PeopleIOWatcher pw = new PeopleIOWatcher();
+        eio.addListener(pw);
+        pw.addListener(this);
 
         eam = new Animation();
         eam.load(new ElectrolandProperties("norfolk.properties"));
+        eam.setBackground(Color.BLACK);
+
+        start();
     }
 
     public void start(){
+
+        eio.start();
+
         if (thread == null){
             thread = new Thread(this);
             thread.start();
@@ -94,7 +113,11 @@ public class Conductor implements PeopleListener, Runnable, AnimationListener{
 
                 // render on screen
                 if (!isHeadless){
-                    mainControls.getGraphics().drawImage(frame, 0, 0, (int)d.getWidth(), (int)d.getHeight(), null);
+
+                    // render animation
+                    if (mainControls != null && mainControls.getGraphics() != null && d != null){
+                        mainControls.getGraphics().drawImage(frame, 0, 0, (int)d.getWidth(), (int)d.getHeight(), null);
+                    }
                     // TODO: render FPS here
                     // TODO: set lets on 3d Viz
                 }
@@ -102,7 +125,22 @@ public class Conductor implements PeopleListener, Runnable, AnimationListener{
                 // render on lights
                 int pixels[] = new int[d.width * d.height];
                 frame.getRGB(0, 0, d.width, d.height, pixels, 0, d.width);
-                canvas.sync(pixels);
+                CanvasDetector[] detectors = canvas.sync(pixels);
+                
+                if (!isHeadless){
+                    for (CanvasDetector cd : detectors){
+                        Rectangle r = (Rectangle)(cd.getBoundary());
+                        int i = Util.unsignedByteToInt(cd.getLatestState());
+                        Color c = new Color(i,i,i);
+                        if (mainControls != null && mainControls.getGraphics() != null){
+                            mainControls.getGraphics().setColor(c);
+                            mainControls.getGraphics().fillRect(r.x, r.y, r.width, r.height);
+                            mainControls.getGraphics().setColor(Color.WHITE);
+                            mainControls.getGraphics().drawRect(r.x, r.y, r.width, r.height);
+                        }
+                    }
+                }
+
             }
             try{
                 Thread.sleep((long)(1000.0 / fps));
@@ -115,7 +153,7 @@ public class Conductor implements PeopleListener, Runnable, AnimationListener{
     @Override
     public void personEntered(PersonEvent evt) {
 
-        totalOccupants++;
+//        totalOccupants++; // we can't tell enter versus exit now.
 
         if (totalOccupants > 3){
             ssm.playSound("quack");
@@ -129,8 +167,27 @@ public class Conductor implements PeopleListener, Runnable, AnimationListener{
                 // TODO: should switch case based on channel ID here (e.g., behavior per 
                 // id that invokes a different method).
 
-                ssm.playSound("boink");
+                ssm.playSound("001");
+
                 Coordinate location = channel.getLocation();
+
+                Clip one = eam.addClip(eam.getContent("slowImage"), (int)location.getX(), (int)location.getY(), 100, 100, 1.0f);
+
+                Sequence bounce = new Sequence(); 
+
+                bounce.yTo(150).yUsing(new QuinticIn()) // would be nice to make easing functions static.
+                      .xBy(100).xUsing(new Linear())
+                      .scaleWidth(2.0f)
+                      .duration(1000)
+               .newState()
+                      .yTo(75).yUsing(new CubicOut())
+                      .xBy(100).xUsing(new Linear())
+                      .scaleWidth(.5f)
+                      .duration(1000);
+
+               // three bouncing clips:
+               one.queue(bounce).queue(bounce).queue(bounce).fadeOut(500).deleteWhenDone();
+
                 // TODO: render something location appropriate on the panel. 
             }
         }
