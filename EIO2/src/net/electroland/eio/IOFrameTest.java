@@ -55,13 +55,15 @@ public class IOFrameTest extends JPanel implements IOListener, ActionListener {
         String propsFilename = "io.properties";
         int fps = 33;
 
-        if (args.length > 0){
-            fps = Integer.parseInt(args[0]);
-        } else if (args.length == 2) {
-            propsFilename = args[1];
-        } else if (args.length > 3){
+        if (args.length > 3 || args.length < 1){
             System.out.println("Usage: IOFrameTest [fps] [propsfilename]");
             System.exit(-1);
+        }
+
+        fps = Integer.parseInt(args[0]);
+
+        if (args.length == 2) {
+            propsFilename = args[1];
         }
 
         System.out.println("running " + propsFilename + " at " + fps + " fps.");
