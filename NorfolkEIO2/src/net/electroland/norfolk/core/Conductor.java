@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import net.electroland.ea.Animation;
 import net.electroland.ea.AnimationListener;
@@ -36,7 +37,6 @@ import org.apache.log4j.Logger;
 public class Conductor implements PeopleListener, Runnable, AnimationListener{
 
     private static Logger       logger = Logger.getLogger(Conductor.class);
-    private int                 totalOccupants = 0;
     private Animation           eam;
     private ELUManager          elu;
     private EIOManager          eio;
@@ -44,6 +44,7 @@ public class Conductor implements PeopleListener, Runnable, AnimationListener{
     private Thread              thread;
     private int                 fps = 30;
     private JFrame              mainControls;
+    private JPanel              renderArea;
     private boolean             isHeadless = false;
 
     public static void main(String args[]) throws OptionException, IOException{
@@ -57,9 +58,16 @@ public class Conductor implements PeopleListener, Runnable, AnimationListener{
             c.mainControls.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
             // controls
+            // TODO: need to make the render frame a separate JPanel
+
             ELUControls eluControls = new ELUControls(c.elu);
             c.mainControls.setLayout(new BorderLayout());
-            c.mainControls.add(eluControls, BorderLayout.SOUTH);
+            c.mainControls.add(eluControls, BorderLayout.PAGE_END);
+
+            c.renderArea = new JPanel();
+            c.renderArea.setPreferredSize(new Dimension(500, 400));
+            c.mainControls.add(c.renderArea, BorderLayout.CENTER); 
+
             c.mainControls.setVisible(true);
 
             // TODO: window for 3d rendering            
@@ -115,8 +123,8 @@ public class Conductor implements PeopleListener, Runnable, AnimationListener{
                 if (!isHeadless){
 
                     // render animation
-                    if (mainControls != null && mainControls.getGraphics() != null && d != null){
-                        mainControls.getGraphics().drawImage(frame, 0, 0, (int)d.getWidth(), (int)d.getHeight(), null);
+                    if (renderArea != null && renderArea.getGraphics() != null && d != null){
+                        renderArea.getGraphics().drawImage(frame, 0, 0, (int)d.getWidth(), (int)d.getHeight(), null);
                     }
                     // TODO: render FPS here
                     // TODO: set lets on 3d Viz
@@ -132,11 +140,11 @@ public class Conductor implements PeopleListener, Runnable, AnimationListener{
                         Rectangle r = (Rectangle)(cd.getBoundary());
                         int i = Util.unsignedByteToInt(cd.getLatestState());
                         Color c = new Color(i,i,i);
-                        if (mainControls != null && mainControls.getGraphics() != null){
-                            mainControls.getGraphics().setColor(c);
-                            mainControls.getGraphics().fillRect(r.x, r.y, r.width, r.height);
-                            mainControls.getGraphics().setColor(Color.WHITE);
-                            mainControls.getGraphics().drawRect(r.x, r.y, r.width, r.height);
+                        if (renderArea != null && renderArea.getGraphics() != null){
+                            renderArea.getGraphics().setColor(c);
+                            renderArea.getGraphics().fillRect(r.x, r.y, r.width, r.height);
+                            renderArea.getGraphics().setColor(Color.WHITE);
+                            renderArea.getGraphics().drawRect(r.x, r.y, r.width, r.height);
                         }
                     }
                 }
@@ -153,43 +161,34 @@ public class Conductor implements PeopleListener, Runnable, AnimationListener{
     @Override
     public void personEntered(PersonEvent evt) {
 
-//        totalOccupants++; // we can't tell enter versus exit now.
+        InputChannel channel = getChannel(evt.getChannelId());
+        if (channel != null){
 
-        if (totalOccupants > 3){
-            ssm.playSound("quack");
-            // TODO: somekind of wave like effect
+            // TODO: should switch case based on channel ID here (e.g., behavior per 
+            // id that invokes a different method).
 
-        }else{
+            ssm.playSound("001");
 
-            InputChannel channel = getChannel(evt.getChannelId());
-            if (channel != null){
+            Coordinate location = channel.getLocation();
 
-                // TODO: should switch case based on channel ID here (e.g., behavior per 
-                // id that invokes a different method).
+            Clip one = eam.addClip(eam.getContent("slowImage"), (int)location.getX(), (int)location.getY(), 100, 100, 1.0f);
 
-                ssm.playSound("001");
+            Sequence bounce = new Sequence(); 
 
-                Coordinate location = channel.getLocation();
+            bounce.yTo(150).yUsing(new QuinticIn()) // would be nice to make easing functions static.
+                  .xBy(100).xUsing(new Linear())
+                  .scaleWidth(2.0f)
+                  .duration(1000)
+           .newState()
+                  .yTo(75).yUsing(new CubicOut())
+                  .xBy(100).xUsing(new Linear())
+                  .scaleWidth(.5f)
+                  .duration(1000);
 
-                Clip one = eam.addClip(eam.getContent("slowImage"), (int)location.getX(), (int)location.getY(), 100, 100, 1.0f);
+           // three bouncing clips:
+           one.queue(bounce).queue(bounce).queue(bounce).fadeOut(500).deleteWhenDone();
 
-                Sequence bounce = new Sequence(); 
-
-                bounce.yTo(150).yUsing(new QuinticIn()) // would be nice to make easing functions static.
-                      .xBy(100).xUsing(new Linear())
-                      .scaleWidth(2.0f)
-                      .duration(1000)
-               .newState()
-                      .yTo(75).yUsing(new CubicOut())
-                      .xBy(100).xUsing(new Linear())
-                      .scaleWidth(.5f)
-                      .duration(1000);
-
-               // three bouncing clips:
-               one.queue(bounce).queue(bounce).queue(bounce).fadeOut(500).deleteWhenDone();
-
-                // TODO: render something location appropriate on the panel. 
-            }
+            // TODO: render something location appropriate on the panel. 
         }
     }
 
@@ -201,10 +200,9 @@ public class Conductor implements PeopleListener, Runnable, AnimationListener{
         }
         return null;
     }
-    
+
     @Override
     public void personExited(PersonEvent evt) {
-        totalOccupants--;
         // whatever behavior matches a person exiting here.
     }
 
