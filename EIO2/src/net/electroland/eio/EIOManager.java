@@ -23,16 +23,13 @@ public class EIOManager implements Shutdownable, Runnable {
     private Collection<OutputChannel>   outputChannels;
     private Thread                      readThread;
     private int                         delay;
-    private Collection<IOListener>      listeners;
+    private Collection<IOListener>      listeners = new ArrayList<IOListener>();
 
     public EIOManager(){
         Runtime.getRuntime().addShutdownHook(new ShutdownThread(this));
     }
 
     public void addListener(IOListener listener){
-        if (listeners == null){
-            listeners = new ArrayList<IOListener>();
-        }
         listeners.add(listener);
     }
 
