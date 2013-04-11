@@ -13,11 +13,9 @@ public class PeopleIOWatcher implements IOListener {
     @Override
     public void dataReceived(ValueSet values) {
         for (String id : values.keySet()){
-            if (id.endsWith("tr")){
-                int value = values.get(id).getFilteredValue();
-                if (value != 0){
-                    notifyListenersEntered(id, PersonEvent.Direction.UNKNOWN, PersonEvent.Behavior.ENTER);
-                }
+            int value = values.get(id).getFilteredValue();
+            if (value != 0){
+                notifyListenersEntered(id, PersonEvent.Direction.UNKNOWN, PersonEvent.Behavior.ENTER);
             }
         }
     }

@@ -12,12 +12,6 @@ import javax.swing.JPanel;
 
 import net.electroland.ea.Animation;
 import net.electroland.ea.AnimationListener;
-import net.electroland.ea.Clip;
-import net.electroland.ea.Sequence;
-import net.electroland.ea.easing.CubicOut;
-import net.electroland.ea.easing.Linear;
-import net.electroland.ea.easing.QuinticIn;
-import net.electroland.eio.Coordinate;
 import net.electroland.eio.EIOManager;
 import net.electroland.eio.InputChannel;
 import net.electroland.norfolk.eio.filters.PeopleIOWatcher;
@@ -40,7 +34,7 @@ public class Conductor implements PeopleListener, Runnable, AnimationListener{
     private Animation           eam;
     private ELUManager          elu;
     private EIOManager          eio;
-    private SimpleSoundManager  ssm;
+    private ClipPlayer          clipPlayer;
     private Thread              thread;
     private int                 fps = 30;
     private JFrame              mainControls;
@@ -54,45 +48,46 @@ public class Conductor implements PeopleListener, Runnable, AnimationListener{
 
         if (!c.isHeadless){
             c.mainControls = new JFrame();
-            c.mainControls.setSize(c.eam.getFrameDimensions());
+            c.mainControls.setSize(c.eam.getFrameDimensions().width + 50, 
+                                    c.eam.getFrameDimensions().width + 50);
             c.mainControls.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
             // controls
-            // TODO: need to make the render frame a separate JPanel
-
             ELUControls eluControls = new ELUControls(c.elu);
             c.mainControls.setLayout(new BorderLayout());
             c.mainControls.add(eluControls, BorderLayout.PAGE_END);
 
             c.renderArea = new JPanel();
-            c.renderArea.setPreferredSize(new Dimension(500, 400));
+            c.renderArea.setPreferredSize(c.eam.getFrameDimensions());
             c.mainControls.add(c.renderArea, BorderLayout.CENTER); 
 
             c.mainControls.setVisible(true);
 
-            // TODO: window for 3d rendering            
+            // TODO: window for 3d rendering
         }
 
     }
 
     public void init() throws OptionException, IOException{
 
-        ssm = new SimpleSoundManager();
-        ssm.load(new ElectrolandProperties("norfolk.properties"));
-
         elu = new ELUManager();
         elu.load(new ElectrolandProperties("norfolk-ELU2.properties"));
-        // TODO: set local fps
 
         eio = new EIOManager();
         eio.load(new ElectrolandProperties("io-local.properties"));
+
         PeopleIOWatcher pw = new PeopleIOWatcher();
         eio.addListener(pw);
         pw.addListener(this);
 
+        ElectrolandProperties mainProps = new ElectrolandProperties("norfolk.properties");
+
         eam = new Animation();
-        eam.load(new ElectrolandProperties("norfolk.properties"));
+        eam.load(mainProps);
         eam.setBackground(Color.BLACK);
+        fps = mainProps.getDefaultInt("settings", "global", "fps", 30);
+
+        clipPlayer = new ClipPlayer(eam, new SimpleSoundManager(), mainProps);
 
         start();
     }
@@ -115,8 +110,8 @@ public class Conductor implements PeopleListener, Runnable, AnimationListener{
     public void run() {
         while (thread != null){
             for (ELUCanvas canvas : elu.getCanvases().values()){
-                Dimension d = eam.getFrameDimensions();
 
+                Dimension d = eam.getFrameDimensions();
                 BufferedImage frame = eam.getFrame();
 
                 // render on screen
@@ -126,7 +121,6 @@ public class Conductor implements PeopleListener, Runnable, AnimationListener{
                     if (renderArea != null && renderArea.getGraphics() != null && d != null){
                         renderArea.getGraphics().drawImage(frame, 0, 0, (int)d.getWidth(), (int)d.getHeight(), null);
                     }
-                    // TODO: render FPS here
                     // TODO: set lets on 3d Viz
                 }
 
@@ -134,7 +128,7 @@ public class Conductor implements PeopleListener, Runnable, AnimationListener{
                 int pixels[] = new int[d.width * d.height];
                 frame.getRGB(0, 0, d.width, d.height, pixels, 0, d.width);
                 CanvasDetector[] detectors = canvas.sync(pixels);
-                
+
                 if (!isHeadless){
                     for (CanvasDetector cd : detectors){
                         Rectangle r = (Rectangle)(cd.getBoundary());
@@ -163,32 +157,7 @@ public class Conductor implements PeopleListener, Runnable, AnimationListener{
 
         InputChannel channel = getChannel(evt.getChannelId());
         if (channel != null){
-
-            // TODO: should switch case based on channel ID here (e.g., behavior per 
-            // id that invokes a different method).
-
-            ssm.playSound("001");
-
-            Coordinate location = channel.getLocation();
-
-            Clip one = eam.addClip(eam.getContent("slowImage"), (int)location.getX(), (int)location.getY(), 100, 100, 1.0f);
-
-            Sequence bounce = new Sequence(); 
-
-            bounce.yTo(150).yUsing(new QuinticIn()) // would be nice to make easing functions static.
-                  .xBy(100).xUsing(new Linear())
-                  .scaleWidth(2.0f)
-                  .duration(1000)
-           .newState()
-                  .yTo(75).yUsing(new CubicOut())
-                  .xBy(100).xUsing(new Linear())
-                  .scaleWidth(.5f)
-                  .duration(1000);
-
-           // three bouncing clips:
-           one.queue(bounce).queue(bounce).queue(bounce).fadeOut(500).deleteWhenDone();
-
-            // TODO: render something location appropriate on the panel. 
+            clipPlayer.play(channel);
         }
     }
 
