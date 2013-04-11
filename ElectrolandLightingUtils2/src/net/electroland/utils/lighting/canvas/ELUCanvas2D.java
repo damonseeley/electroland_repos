@@ -16,7 +16,7 @@ public class ELUCanvas2D extends ELUCanvas {
     @Override
     public void configure(ParameterMap p)
             throws OptionException {
-        
+
         try{
             // get dimensions from config file
             int width = Integer.parseInt(p.get("width"));
@@ -24,8 +24,7 @@ public class ELUCanvas2D extends ELUCanvas {
 
             // set dimensions
             d = new Dimension(width,height);
-            
-            
+
         }catch(NumberFormatException e){
             throw new OptionException("cannot parse canvas dimensions " + e);
         }
@@ -38,13 +37,13 @@ public class ELUCanvas2D extends ELUCanvas {
         // and store them in the CanvasDetector.
 
         Rectangle boundary = (Rectangle)d.getBoundary();
-        
+
         int x1 = boundary.x;
         int y1 = boundary.y;
         int x2 = x1 + boundary.width - 1;
         int y2 = y1 + boundary.height - 1;
         int pixels = this.d.width * this.d.height;
-        
+
         for (int y = y1; y <= y2; y++)
         {
             for (int x = x1; x <= x2; x++){
@@ -59,7 +58,7 @@ public class ELUCanvas2D extends ELUCanvas {
 
     @Override
     public CanvasDetector[] sync(int[] pixels) {
-        
+
         synchronized(detectors){
             for (CanvasDetector d : detectors)
             {
