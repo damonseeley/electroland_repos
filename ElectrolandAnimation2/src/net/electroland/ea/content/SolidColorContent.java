@@ -18,6 +18,8 @@ public class SolidColorContent extends Content {
     public void setColor(Color color) {
         this.color = color;
     }
+    public SolidColorContent(){}
+
     public SolidColorContent(Color c){
         this.color = c;
     }
