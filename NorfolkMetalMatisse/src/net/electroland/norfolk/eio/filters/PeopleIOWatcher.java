@@ -13,7 +13,7 @@ public class PeopleIOWatcher implements IOListener {
     @Override
     public void dataReceived(ValueSet values) {
         for (String id : values.keySet()){
-            int value = values.get(id).getFilteredValue();
+            int value = values.get(id).getValue();
             if (value != 0){
                 notifyListenersEntered(id, PersonEvent.Direction.UNKNOWN, PersonEvent.Behavior.ENTER);
             }

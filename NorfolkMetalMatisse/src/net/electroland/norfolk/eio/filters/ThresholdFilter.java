@@ -30,6 +30,6 @@ public class ThresholdFilter implements Filter {
 
     @Override
     public void filter(Value in) {
-        in.setValue(in.getFilteredValue()  >= threshold ? aboveInclusiveValue : belowExclusiveValue);
+        in.setValue(in.getValue()  >= threshold ? aboveInclusiveValue : belowExclusiveValue);
     }
 }
