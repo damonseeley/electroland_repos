@@ -19,7 +19,7 @@ public class ValueDetectedFilter implements Filter {
     @Override
     public void filter(Value in) {
         if (System.currentTimeMillis() - last > timeout){
-            if (in.getFilteredValue() == value){
+            if (in.getValue() == value){
                 last = System.currentTimeMillis();
                 in.setValue(Short.MAX_VALUE);
                 System.out.println("PERSON ENTERED AT " + last);
