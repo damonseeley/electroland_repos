@@ -24,10 +24,10 @@ public class Value {
         setValue(i);
         raw = filtered;
     }
-    public Value(String serialData){ // expects [192,122,0]
+    public Value(String serialData, boolean useRecordedFilteredValues){ // expects [192,122,0]
         String[] tokens = serialData.split(",|\\[|\\]");
         raw = new Integer(tokens[1]);
-        filtered = new Integer(tokens[2]);
+        filtered = useRecordedFilteredValues ? new Integer(tokens[1]) : new Integer(tokens[2]);
         isSuspect = new Integer(tokens[3]) == 1;
     }
     // [192,331,0]
@@ -39,7 +39,7 @@ public class Value {
         sb.append(']');
     }
 
-    public int getFilteredValue() {
+    public int getValue() {
         return filtered;
     }
     public int getRawValue() {

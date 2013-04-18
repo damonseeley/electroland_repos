@@ -102,7 +102,7 @@ public class IOFrameTest extends JPanel implements IOListener, ActionListener {
 
             if (val != null && isRecent(lastRead.getReadTime())){
                 // cast based on val.
-                int barHeight   = scale(val.getFilteredValue(), maxBarHite);
+                int barHeight   = scale(val.getValue(), maxBarHite);
                 if (barHeight > 0){
                     top -= barHeight;
                 }
@@ -116,7 +116,7 @@ public class IOFrameTest extends JPanel implements IOListener, ActionListener {
 
                 // value
                 g2d.setColor(Color.WHITE);
-                g2d.drawString("" + val.getFilteredValue(), left, top);
+                g2d.drawString("" + val.getValue(), left, top);
             }
             // id
             g2d.setColor(Color.WHITE);

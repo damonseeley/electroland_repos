@@ -18,6 +18,6 @@ public class Scale implements Filter {
 
     @Override
     public void filter(Value in) {
-        in.setValue((int)(scaleFactor * in.getFilteredValue()));
+        in.setValue((int)(scaleFactor * in.getValue()));
     }
 }

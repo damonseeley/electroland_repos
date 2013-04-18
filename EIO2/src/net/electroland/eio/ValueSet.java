@@ -17,8 +17,8 @@ public class ValueSet {// TODO: implements Map ?? {
     public long getReadTime(){
         return readTime;
     }
-    
-    public ValueSet(String serializedData){
+
+    public ValueSet(String serializedData, boolean useRecordedFilteredValues){
         values = new HashMap<String, Value>();
         String[] tokens = serializedData.split(" |:");
         // get the readTime
@@ -30,7 +30,7 @@ public class ValueSet {// TODO: implements Map ?? {
         }
         System.out.println();
         for (int i = 1; i < tokens.length; i+=2){
-            values.put(tokens[i], new Value(tokens[i+1]));
+            values.put(tokens[i], new Value(tokens[i+1], useRecordedFilteredValues));
         }
     }
 
