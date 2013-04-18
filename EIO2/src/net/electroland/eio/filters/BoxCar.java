@@ -28,7 +28,7 @@ public class BoxCar implements Filter {
 
     @Override
     public void filter(Value in) {
-        add(in.getFilteredValue());
+        add(in.getValue());
         in.setValue(getAverage());
     }
 
