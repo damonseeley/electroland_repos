@@ -17,10 +17,12 @@ public class ModBusTcpPlaybackDevice extends ModBusTcpDevice {
     Logger logger = Logger.getLogger(ModBusTcpDevice.class);
     private String filename;
     private BufferedReader input;
+    private boolean useRecordedFilteredValues;
 
     public ModBusTcpPlaybackDevice(ParameterMap params) {
         super(params);
-        filename = params.getRequired("filename");
+        filename                  = params.getRequired("filename");
+        useRecordedFilteredValues = params.getRequiredBoolean("useRecordedFilteredValues");
         restartPlayback();
     }
 
@@ -48,7 +50,7 @@ public class ModBusTcpPlaybackDevice extends ModBusTcpDevice {
                 this.restartPlayback();
             }
 
-            return new ValueSet(input.readLine());
+            return new ValueSet(input.readLine(), useRecordedFilteredValues);
 
         } catch (IOException e) {
             e.printStackTrace();
