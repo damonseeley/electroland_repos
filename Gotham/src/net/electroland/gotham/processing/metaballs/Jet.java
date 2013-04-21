@@ -7,11 +7,14 @@ public class Jet {
     private PVector source;
     private float degrees, baseForce, currentForce, maxDurationSeconds;
     private long resetTime = 0;
+    private boolean allowReverse = true;
 
-    public Jet(PVector source, float degreesFromNorthClockwise, float baseForce, float maxDurationSeconds){
-        this.source = source;
-        this.degrees = degreesFromNorthClockwise;
-        this.baseForce = baseForce;
+    public Jet(PVector source, float degreesFromNorthClockwise, float baseForce, float maxDurationSeconds, boolean allowReverse){
+        this.source       = source;
+        this.degrees      = degreesFromNorthClockwise;
+        this.baseForce    = baseForce;
+        this.maxDurationSeconds = maxDurationSeconds;
+        this.allowReverse = allowReverse;
     }
 
     public PVector getOrigin(){
@@ -25,7 +28,12 @@ public class Jet {
     public float getStrength(){
         if (System.currentTimeMillis() > resetTime){
             currentForce = (float)(Math.random() * baseForce);
-            resetTime    = (int)((Math.random() * maxDurationSeconds) + System.currentTimeMillis()); 
+            if (allowReverse){
+                System.out.println("reverse allowed here");
+                currentForce *= (Math.random() > .5 ? 1.0f : -1.0f);
+            }
+            float seconds = (float)(Math.random() * maxDurationSeconds * 1000);
+            resetTime    = (long)seconds + System.currentTimeMillis(); 
         }
         return currentForce;
     }
