@@ -66,7 +66,8 @@ public class Metaballs extends GothamPApplet {
                     float y             = globalProps.getRequiredDouble(name, objectName, "y").floatValue();
                     float angle         = globalProps.getRequiredDouble(name, objectName, "degreesFromNorthClockwise").floatValue();
                     float baseForce     = globalProps.getRequiredDouble(name, objectName, "baseForce").floatValue();
-                    Jet jet             = new Jet(new PVector(x, y), angle, baseForce);
+                    float seconds       = globalProps.getRequiredDouble(name, objectName, "maxDurationSeconds").floatValue();
+                    Jet jet             = new Jet(new PVector(x, y), angle, baseForce, seconds);
                     logger.info("loaded: " + jet);
                     jets.add(jet);
 
@@ -246,13 +247,6 @@ public class Metaballs extends GothamPApplet {
                 this.rect(point.x, point.y, radius, radius);
             }
         }
-    }
-
-    //this code not being run now because 
-    private float calculatePresenceImpact(int groupId){
-        int presenceCount = gridHistory.latest().size() == 0 ? 100 : gridHistory.latest().size(); 
-        return props.getValue(MetaballsProps.MAX_VELOCITY, groupId) * 
-                presenceCount * props.getValue(MetaballsProps.REPELL_VELOCITY_MULT);
     }
 
     private void blurRendering(){
