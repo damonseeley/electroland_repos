@@ -1,9 +1,12 @@
 package net.electroland.gotham.processing.metaballs;
 
+import org.apache.log4j.Logger;
+
 import processing.core.PVector;
 
 public class Jet {
 
+    public static Logger logger = Logger.getLogger(Jet.class);
     private PVector source;
     private float degrees, baseForce, currentForce, maxDurationSeconds;
     private long resetTime = 0;
@@ -29,11 +32,11 @@ public class Jet {
         if (System.currentTimeMillis() > resetTime){
             currentForce = (float)(Math.random() * baseForce);
             if (allowReverse){
-                System.out.println("reverse allowed here");
                 currentForce *= (Math.random() > .5 ? 1.0f : -1.0f);
             }
             float seconds = (float)(Math.random() * maxDurationSeconds * 1000);
             resetTime    = (long)seconds + System.currentTimeMillis(); 
+            logger.debug("new force " + currentForce + " for " + (resetTime - System.currentTimeMillis()) + " millis.");
         }
         return currentForce;
     }
