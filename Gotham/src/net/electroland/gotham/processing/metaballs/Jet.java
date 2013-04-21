@@ -5,9 +5,10 @@ import processing.core.PVector;
 public class Jet {
 
     private PVector source;
-    private float degrees, baseForce;
+    private float degrees, baseForce, currentForce, maxDurationSeconds;
+    private long resetTime = 0;
 
-    public Jet(PVector source, float degreesFromNorthClockwise, float baseForce){
+    public Jet(PVector source, float degreesFromNorthClockwise, float baseForce, float maxDurationSeconds){
         this.source = source;
         this.degrees = degreesFromNorthClockwise;
         this.baseForce = baseForce;
@@ -22,7 +23,11 @@ public class Jet {
     }
 
     public float getStrength(){
-        return baseForce;
+        if (System.currentTimeMillis() > resetTime){
+            currentForce = (float)(Math.random() * baseForce);
+            resetTime    = (int)((Math.random() * maxDurationSeconds) + System.currentTimeMillis()); 
+        }
+        return currentForce;
     }
 
     public String toString(){
