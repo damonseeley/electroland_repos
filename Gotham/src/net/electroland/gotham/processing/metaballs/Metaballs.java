@@ -67,7 +67,8 @@ public class Metaballs extends GothamPApplet {
                     float angle         = globalProps.getRequiredDouble(name, objectName, "degreesFromNorthClockwise").floatValue();
                     float baseForce     = globalProps.getRequiredDouble(name, objectName, "baseForce").floatValue();
                     float seconds       = globalProps.getRequiredDouble(name, objectName, "maxDurationSeconds").floatValue();
-                    Jet jet             = new Jet(new PVector(x, y), angle, baseForce, seconds);
+                    boolean allowReverse= globalProps.getDefaultBoolean(name, objectName, "allowReverse", false);
+                    Jet jet             = new Jet(new PVector(x, y), angle, baseForce, seconds, allowReverse);
                     logger.info("loaded: " + jet);
                     jets.add(jet);
 
