@@ -20,7 +20,7 @@ public class objTest extends PApplet {
 	public void setup() {
 	  size(640, 360, P3D);
 	    
-	  rocket = loadShape("sculpture.obj");
+	  rocket = loadShape("../depends/models/sculpture.obj");
 	}
 
 	public void draw() {
