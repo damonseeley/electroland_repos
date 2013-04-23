@@ -1,11 +1,13 @@
 package net.electroland.ea;
 
+import java.awt.Color;
+
 import net.electroland.ea.easing.Linear;
 
 public class Tween {
 
-    protected Change reqXchange, reqYchange, reqWchange, reqHchange, reqAchange;
-    protected EasingFunction FofX, FofY, FofW, FofH, FofA;
+    protected Change reqXchange, reqYchange, reqWchange, reqHchange, reqAchange, reqHueChange, reqSatChange, reqBrightChange;
+    protected EasingFunction FofX, FofY, FofW, FofH, FofA, FofHue, FofSat, FofBright;
     protected int durationMillis;
 
     /**
@@ -19,6 +21,9 @@ public class Tween {
         FofW = ef;
         FofH = ef;
         FofA = ef;
+        FofHue = ef;
+        FofSat = ef;
+        FofBright = ef;
     }
 
     /**
@@ -32,6 +37,9 @@ public class Tween {
         FofW = easingFunction;
         FofH = easingFunction;
         FofA = easingFunction;
+        FofHue = easingFunction;
+        FofSat = easingFunction;
+        FofBright = easingFunction;
     }
 
     protected ClipState nextFrame(ClipState init, float percentComplete){
@@ -39,12 +47,24 @@ public class Tween {
         // targetValue gets calculated on every frame. a little inefficient, but
         // remember that this tween is applied to multiple Clips potentially.
         // can't store Clip state here.
-        int   x = (int)FofX.valueAt(percentComplete, init.geometry.x,      calculateTargetValue(init.geometry.x,      reqXchange));
-        int   y = (int)FofY.valueAt(percentComplete, init.geometry.y,      calculateTargetValue(init.geometry.y,      reqYchange));
-        int   w = (int)FofW.valueAt(percentComplete, init.geometry.width,  calculateTargetValue(init.geometry.width,  reqWchange));
-        int   h = (int)FofH.valueAt(percentComplete, init.geometry.height, calculateTargetValue(init.geometry.height, reqHchange));
-        float a =      FofA.valueAt(percentComplete, init.alpha,           calculateTargetValue(init.alpha,           reqAchange));
-        return new ClipState(x,y,w,h,a);
+        int   x  = (int)FofX.valueAt(percentComplete, init.geometry.x,      calculateTargetValue(init.geometry.x,      reqXchange));
+        int   y  = (int)FofY.valueAt(percentComplete, init.geometry.y,      calculateTargetValue(init.geometry.y,      reqYchange));
+        int   w  = (int)FofW.valueAt(percentComplete, init.geometry.width,  calculateTargetValue(init.geometry.width,  reqWchange));
+        int   h  = (int)FofH.valueAt(percentComplete, init.geometry.height, calculateTargetValue(init.geometry.height, reqHchange));
+        float a  =      FofA.valueAt(percentComplete, init.alpha,           calculateTargetValue(init.alpha,           reqAchange));
+
+        Color bg = null;
+        if (init.bgcolor != null){
+            float hsbVals[] = Color.RGBtoHSB(init.bgcolor.getRed(),
+                    init.bgcolor.getGreen(),
+                    init.bgcolor.getBlue(), null);
+
+            float hue =     FofHue.valueAt(percentComplete, hsbVals[0],         calculateTargetValue(hsbVals[0],           reqHueChange));
+            float sat =     FofHue.valueAt(percentComplete, hsbVals[1],         calculateTargetValue(hsbVals[1],           reqSatChange));
+            float bright =  FofHue.valueAt(percentComplete, hsbVals[2],         calculateTargetValue(hsbVals[2],           reqBrightChange));
+            bg =      Color.getHSBColor(hue, sat, bright);
+        }
+        return new ClipState(x,y,w,h,a,bg);
     }
 
     private float calculateTargetValue(float current, Change change){
@@ -75,6 +95,18 @@ public class Tween {
         FofA = ef;
         return this;
     }
+    public Tween hueUsing(EasingFunction ef){
+        FofHue = ef;
+        return this;
+    }
+    public Tween saturationUsing(EasingFunction ef){
+        FofSat = ef;
+        return this;
+    }
+    public Tween brightnessUsing(EasingFunction ef){
+        FofBright = ef;
+        return this;
+    }
 
     // absolute pixel changes
     public Tween xTo(float x){
@@ -95,6 +127,18 @@ public class Tween {
     }
     public Tween alphaTo(float alpha){
         reqAchange = new ChangeTo(alpha);
+        return this;
+    }
+    public Tween hueTo(float h){
+        reqHueChange = new ChangeTo(h);
+        return this;
+    }
+    public Tween saturationTo(float s){
+        reqSatChange = new ChangeTo(s);
+        return this;
+    }
+    public Tween brightnessTo(float b){
+        reqBrightChange = new ChangeTo(b);
         return this;
     }
 
@@ -119,6 +163,18 @@ public class Tween {
         reqAchange = new ChangeBy(dAlpha);
         return this;
     }
+    public Tween hueBy(float h){
+        reqHueChange = new ChangeBy(h);
+        return this;
+    }
+    public Tween saturationBy(float s){
+        reqSatChange = new ChangeBy(s);
+        return this;
+    }
+    public Tween brightnessBy(float b){
+        reqBrightChange = new ChangeBy(b);
+        return this;
+    }
 
     // percent changes (dimensions only: do not correct for centering)
     public Tween scaleWidth(float percent)
@@ -134,6 +190,18 @@ public class Tween {
     public Tween scaleAlpha(float percent)
     {
         reqAchange = new ScaleBy(percent);
+        return this;
+    }
+    public Tween scaleHue(float percent){
+        reqHueChange = new ScaleBy(percent);
+        return this;
+    }
+    public Tween scaleSaturation(float percent){
+        reqSatChange = new ScaleBy(percent);
+        return this;
+    }
+    public Tween scaleBrightness(float percent){
+        reqBrightChange = new ScaleBy(percent);
         return this;
     }
 }

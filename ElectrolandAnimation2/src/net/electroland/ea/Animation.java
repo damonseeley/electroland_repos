@@ -55,7 +55,7 @@ public class Animation {
         logger.info("loading...");
         frameDimemsions = new Dimension(p.getRequiredInt("settings", "global", "width"),
                                         p.getRequiredInt("settings", "global", "height"));
-        rootClip = new Clip(new SolidColorContent(null), 0, 0, frameDimemsions.width, frameDimemsions.height, 1.0f);
+        rootClip = new Clip(null, null, 0, 0, frameDimemsions.width, frameDimemsions.height, 1.0f);
         rootClip.animationManager = this;
 
         // clip
@@ -89,6 +89,7 @@ public class Animation {
 
     public void setBackground(Color color)
     {
+        // TODO: make this set bgcolor
         this.rootClip.content = new SolidColorContent(color);
     }
     public Dimension getFrameDimensions() {
@@ -106,11 +107,19 @@ public class Animation {
 
     public Clip addClip(int x, int y, int width, int height, float alpha)
     {
-        return rootClip.addClip(x,y,width,height,alpha);
+        return rootClip.addClip(x, y, width, height, alpha);
     }
     public Clip addClip(Content c, int x, int y, int width, int height, float alpha)
     {
-        return rootClip.addClip(c,x,y,width,height,alpha);
+        return rootClip.addClip(c, x, y, width, height, alpha);
+    }
+    public Clip addClip(Content c, Color bgcolor, int x, int y, int width, int height, float alpha)
+    {
+        return rootClip.addClip(c, bgcolor, x , y, width, height, alpha);
+    }
+    public Clip addClip(Color bgcolor, int x, int y, int width, int height, float alpha)
+    {
+        return rootClip.addClip(bgcolor, x, y, width, height, alpha);
     }
     public Content getContent(String contentId)
     {

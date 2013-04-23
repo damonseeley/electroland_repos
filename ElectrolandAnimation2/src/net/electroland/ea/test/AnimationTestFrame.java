@@ -43,17 +43,22 @@ public class AnimationTestFrame extends JFrame implements AnimationListener{
         // create a couple clips
         Clip one = anim.addClip(anim.getContent("stillImage"),  50, 50, 100, 100, 1.0f);
         Clip two = anim.addClip(anim.getContent("slowImage"),  150, 50, 100, 100, 1.0f);
-        Clip thr = anim.addClip(anim.getContent("fastImage"),  250, 50, 100, 100, 1.0f);
+        Clip thr = anim.addClip(anim.getContent("fastImage"), new Color(0,255,0), 250, 50, 100, 100, 1.0f);
+        Clip fur = anim.addClip(Color.getHSBColor(0.9f,0.8f,1.0f), 350, 50, 100, 100, 1.0f);
 
         Sequence bounce = new Sequence(); 
 
                  bounce.yTo(150).yUsing(new QuinticIn()) // would be nice to make easing functions static.
                        .xBy(100).xUsing(new Linear())
                        .scaleWidth(2.0f)
+                       .hueBy(0.3f).hueUsing(new Linear())
+                       .saturationBy(0.2f).saturationUsing(new CubicOut())
                        .duration(1000)
                 .newState()
                        .yTo(75).yUsing(new CubicOut())
                        .xBy(100).xUsing(new Linear())
+                       .hueBy(-0.3f).hueUsing(new Linear())
+                       .saturationBy(-0.2f).saturationUsing(new CubicOut())
                        .scaleWidth(.5f)
                        .duration(1000);
 
@@ -63,6 +68,8 @@ public class AnimationTestFrame extends JFrame implements AnimationListener{
         two.pause(1000).queue(bounce).queue(bounce).queue(bounce).fadeOut(500).deleteWhenDone();
 
         thr.queue(bounce).queue(bounce).queue(bounce).fadeOut(500).deleteWhenDone();
+
+        fur.queue(bounce).queue(bounce).queue(bounce).fadeOut(500).deleteWhenDone();
 
         // render forever at 33 fps
         while (true){
