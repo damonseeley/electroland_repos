@@ -1,5 +1,6 @@
 package net.electroland.ea;
 
+import java.awt.Color;
 import java.awt.Rectangle;
 
 /**
@@ -12,11 +13,19 @@ public class ClipState {
 
     public Rectangle geometry;
     public float alpha;
+    public Color bgcolor;
 
     public ClipState(int left, int top, int width, int height, float alpha)
     {
         this.geometry = new Rectangle(left, top, width, height);
         this.alpha = alpha;
+    }
+
+    public ClipState(int left, int top, int width, int height, float alpha, Color bgcolor)
+    {
+        this.geometry = new Rectangle(left, top, width, height);
+        this.alpha = alpha;
+        this.bgcolor = bgcolor;
     }
 
     public String toString()

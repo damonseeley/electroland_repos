@@ -91,6 +91,18 @@ public class Sequence {
         current.FofA = easing;
         return this;
     }
+    public Sequence hueUsing(EasingFunction easing){
+        current.FofHue = easing;
+        return this;
+    }
+    public Sequence saturationUsing(EasingFunction easing){
+        current.FofSat = easing;
+        return this;
+    }
+    public Sequence brightnessUsing(EasingFunction easing){
+        current.FofBright = easing;
+        return this;
+    }
 
     // absolute changes
     public Sequence xTo(float value){
@@ -111,6 +123,18 @@ public class Sequence {
     }
     public Sequence alphaTo(float value){
         current.alphaTo(value);
+        return this;
+    }
+    public Sequence hueTo(float value){
+        current.hueTo(value);
+        return this;
+    }
+    public Sequence saturationTo(float value){
+        current.saturationTo(value);
+        return this;
+    }
+    public Sequence brightnessTo(float value){
+        current.brightnessTo(value);
         return this;
     }
 
@@ -135,6 +159,18 @@ public class Sequence {
         current.alphaBy(value);
         return this;
     }
+    public Sequence hueBy(float value){
+        current.hueBy(value);
+        return this;
+    }
+    public Sequence saturationBy(float value){
+        current.saturationBy(value);
+        return this;
+    }
+    public Sequence brightnessBy(float value){
+        current.brightnessBy(value);
+        return this;
+    }
     // scaled changes
     public Sequence scaleWidth(float value){
         current.scaleWidth(value);
@@ -148,4 +184,17 @@ public class Sequence {
         current.scaleAlpha(value);
         return this;
     }
+    public Sequence scaleHue(float value){
+        current.scaleHue(value);
+        return this;
+    }
+    public Sequence scaleSaturation(float value){
+        current.scaleSaturation(value);
+        return this;
+    }
+    public Sequence scaleBrightness(float value){
+        current.scaleBrightness(value);
+        return this;
+    }
+
 }

@@ -1,6 +1,8 @@
 package net.electroland.ea;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -42,12 +44,21 @@ public class Clip implements Comparable<Clip>{
     public int                  zIndex = 0;
     public long                 createTime;
 
-    public Clip(Content content, int top, int left, int width, int height, float alpha)
+//    public Clip(Content content, int top, int left, int width, int height, float alpha)
+//    {
+//        this.children       = Collections.synchronizedList(new ArrayList<Clip>());
+//        this.content        = content;
+//        this.initialState   = new ClipState(top, left, width, height, alpha);
+//        this.currentState   = new ClipState(top, left, width, height, alpha);
+//        queuedTweens        = new ConcurrentLinkedQueue<QueuedActionState>();
+//        createTime          = System.currentTimeMillis();
+//    }
+    public Clip(Content content, Color bgcolor, int top, int left, int width, int height, float alpha)
     {
         this.children       = Collections.synchronizedList(new ArrayList<Clip>());
         this.content        = content;
-        this.initialState   = new ClipState(top, left, width, height, alpha);
-        this.currentState   = new ClipState(top, left, width, height, alpha);
+        this.initialState   = new ClipState(top, left, width, height, alpha, bgcolor);
+        this.currentState   = new ClipState(top, left, width, height, alpha, bgcolor);
         queuedTweens        = new ConcurrentLinkedQueue<QueuedActionState>();
         createTime          = System.currentTimeMillis();
     }
@@ -61,7 +72,23 @@ public class Clip implements Comparable<Clip>{
      * @return
      */
     public Clip addClip(int top, int left, int width, int height, float alpha){
-        Clip newClip = new Clip(null, top, left, width, height, alpha);
+        Clip newClip = new Clip(null, null, top, left, width, height, alpha);
+        newClip.animationManager = this.animationManager;
+        children.add(newClip);
+        return newClip;
+    }
+    /**
+     * Add a clip with Content
+     * @param content
+     * @param top
+     * @param left
+     * @param width
+     * @param height
+     * @param alpha
+     * @return
+     */
+    public Clip addClip(Color bgcolor, int top, int left, int width, int height, float alpha){
+        Clip newClip = new Clip(null, bgcolor, top, left, width, height, alpha);
         newClip.animationManager = this.animationManager;
         children.add(newClip);
         return newClip;
@@ -77,7 +104,23 @@ public class Clip implements Comparable<Clip>{
      * @return
      */
     public Clip addClip(Content content, int top, int left, int width, int height, float alpha){
-        Clip newClip = new Clip(content, top, left, width, height, alpha);
+        Clip newClip = new Clip(content, null, top, left, width, height, alpha);
+        newClip.animationManager = this.animationManager;
+        children.add(newClip);
+        return newClip;
+    }
+    /**
+     * Add a clip with Content
+     * @param content
+     * @param top
+     * @param left
+     * @param width
+     * @param height
+     * @param alpha
+     * @return
+     */
+    public Clip addClip(Content content, Color bgcolor, int top, int left, int width, int height, float alpha){
+        Clip newClip = new Clip(content, bgcolor, top, left, width, height, alpha);
         newClip.animationManager = this.animationManager;
         children.add(newClip);
         return newClip;
@@ -253,7 +296,14 @@ public class Clip implements Comparable<Clip>{
                                                     currentState.geometry.height,
                                                     BufferedImage.TRANSLUCENT);
 
-        // render out content. our content ALWAYS has a lower z-index than our children
+        // render background. our content ALWAYS has a lower z-index than our children
+        if (currentState.bgcolor != null){
+            Graphics g = clipImage.getGraphics();
+            g.setColor(currentState.bgcolor);
+            g.fillRect(0, 0, clipImage.getWidth(), clipImage.getHeight());
+            g.dispose();
+        }
+        // render our content. our content ALWAYS has a lower z-index than our children
         if (content != null){
             content.renderContent(clipImage);
         }
