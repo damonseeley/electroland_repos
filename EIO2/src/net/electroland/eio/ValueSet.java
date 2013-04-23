@@ -24,11 +24,6 @@ public class ValueSet {// TODO: implements Map ?? {
         // get the readTime
         readTime = Long.parseLong(tokens[0]);
         // parse each remaining token
-        for (int i = 1; i < tokens.length; i++){
-            System.out.print(tokens[i]);
-            System.out.print("--");
-        }
-        System.out.println();
         for (int i = 1; i < tokens.length; i+=2){
             values.put(tokens[i], new Value(tokens[i+1], useRecordedFilteredValues));
         }
