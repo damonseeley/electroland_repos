@@ -117,7 +117,8 @@ public class ClipPlayer implements AnimationListener {
         System.out.println("f01 is at: " + loc + " of dimensions " + rd);
 
         int height = 50;
-        Clip c = eam.addClip(eam.getContent("whitegradient"), Color.getHSBColor(.9f, .8f, .7f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
+        Clip c = eam.addClip(Color.getHSBColor(.9f, .8f, .7f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
+//        Clip c = eam.addClip(eam.getContent("whitegradient"), Color.getHSBColor(.9f, .8f, .7f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
 
         Sequence sweep = new Sequence();
         sweep.yTo(eam.getFrameDimensions().height).duration(15000);
