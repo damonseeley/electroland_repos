@@ -75,7 +75,7 @@ public class Conductor implements PeopleListener, Runnable{
         elu.load(new ElectrolandProperties("norfolk-ELU2.properties"));
 
         eio = new EIOManager();
-        eio.load(new ElectrolandProperties("io-local.properties"));
+        eio.load(new ElectrolandProperties("io.properties"));
 
         PeopleIOWatcher pw = new PeopleIOWatcher();
         eio.addListener(pw);
