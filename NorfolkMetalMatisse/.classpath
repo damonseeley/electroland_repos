@@ -15,5 +15,6 @@
 	<classpathentry kind="lib" path="libraries/mp3spi1.9.4.jar"/>
 	<classpathentry kind="lib" path="libraries/tritonus_aos.jar"/>
 	<classpathentry kind="lib" path="libraries/tritonus_share.jar"/>
+	<classpathentry kind="lib" path="libraries/vecmath.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
