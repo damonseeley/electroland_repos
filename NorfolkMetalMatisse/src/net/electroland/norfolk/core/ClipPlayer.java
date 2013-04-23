@@ -1,5 +1,6 @@
 package net.electroland.norfolk.core;
 
+import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -116,10 +117,12 @@ public class ClipPlayer implements AnimationListener {
         System.out.println("f01 is at: " + loc + " of dimensions " + rd);
 
         int height = 50;
-        Clip c = eam.addClip(eam.getContent("whitegradient"), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
+        Clip c = eam.addClip(eam.getContent("whitegradient"), Color.getHSBColor(.9f, .8f, .7f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
 
         Sequence sweep = new Sequence();
         sweep.yTo(eam.getFrameDimensions().height).duration(15000);
+        sweep.hueBy(1.0f);
+        sweep.brightnessTo(0.0f);
 
         c.queue(sweep).fadeOut(500).deleteWhenDone();
     }
