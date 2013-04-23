@@ -1,7 +1,5 @@
 package net.electroland.norfolk.vizapp;
 import processing.core.*;
-import remixlab.proscene.*;
-//import saito.objloader.*;
 
 
 public class objTest extends PApplet {
@@ -22,7 +20,7 @@ public class objTest extends PApplet {
 	public void setup() {
 	  size(640, 360, P3D);
 	    
-	  rocket = loadShape("/depends/models/sculpture.obj");
+	  rocket = loadShape("sculpture.obj");
 	}
 
 	public void draw() {
