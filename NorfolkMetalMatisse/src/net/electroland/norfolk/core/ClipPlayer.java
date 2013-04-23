@@ -5,6 +5,8 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.vecmath.Point3d;
+
 import net.electroland.ea.Animation;
 import net.electroland.ea.AnimationListener;
 import net.electroland.ea.Clip;
@@ -17,6 +19,9 @@ import net.electroland.eio.InputChannel;
 import net.electroland.norfolk.sound.SimpleSoundManager;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.ParameterMap;
+import net.electroland.utils.ReferenceDimension;
+import net.electroland.utils.lighting.ELUManager;
+import net.electroland.utils.lighting.Fixture;
 
 import org.apache.log4j.Logger;
 
@@ -25,13 +30,15 @@ public class ClipPlayer implements AnimationListener {
     private static Logger logger = Logger.getLogger(ClipPlayer.class);
     private Animation eam;
     private SimpleSoundManager ssm;
+    private ELUManager elu;
     private Map<String, Method> sensorToClips;
 
-    public ClipPlayer(Animation eam, SimpleSoundManager ssm, ElectrolandProperties props){
+    public ClipPlayer(Animation eam, SimpleSoundManager ssm, ELUManager elu, ElectrolandProperties props){
 
         this.eam = eam;
         this.eam.addListener(this);
         this.ssm = ssm;
+        this.elu = elu;
         this.ssm.load(props);
         this.configure(props);
     }
@@ -103,6 +110,11 @@ public class ClipPlayer implements AnimationListener {
     public void sweepWhiteDown(Coordinate location){
         ssm.playSound("002");
 
+        // get location of fixture f01.
+        Point3d loc           = this.getFixture("f01").getLocation();
+        ReferenceDimension rd = this.getFixture("f01").getRealDimensions();
+        System.out.println("f01 is at: " + loc + " of dimensions " + rd);
+
         int height = 50;
         Clip c = eam.addClip(eam.getContent("whitegradient"), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
 
@@ -138,5 +150,14 @@ public class ClipPlayer implements AnimationListener {
     public void messageReceived(Object message) {
         // TODO Auto-generated method stub
         // animation manager
+    }
+
+    private Fixture getFixture(String id){
+        for (Fixture f : elu.getFixtures()){
+            if (f.getName().equals(id)){
+                return f;
+            }
+        }
+        return null;
     }
 }
