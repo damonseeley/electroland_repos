@@ -3,6 +3,8 @@ package net.electroland.norfolk.core;
 import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +34,7 @@ public class ClipPlayer implements AnimationListener {
     private SimpleSoundManager ssm;
     private ELUManager elu;
     private Map<String, Target> sensorToClips;
+    private Collection<Method> globalClips;
 
     public ClipPlayer(Animation eam, SimpleSoundManager ssm, ELUManager elu, ElectrolandProperties props){
 
@@ -58,7 +61,43 @@ public class ClipPlayer implements AnimationListener {
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
             }
+        }
 
+        globalClips = getGlobalClips(true);
+        new ClipPlayerGUI(this);
+    }
+
+    /**
+     * The boolean is irrelevent. Just trying to get it not to show up on the
+     * list of methods with no args.
+     * @param foo
+     * @return
+     */
+    public Collection<Method> getGlobalClips(boolean foo){
+        Method[] methods = this.getClass().getDeclaredMethods();
+        ArrayList<Method> globalClips = new ArrayList<Method>();
+        for (Method method:methods)
+        {
+            if (method.getParameterTypes().length == 0){
+                globalClips.add(method);
+            }
+        }
+        return globalClips;
+    }
+
+    public void play(String globalClipName){
+        for (Method method  : globalClips){
+            if (method.getName().equals(globalClipName)){
+                try {
+                    method.invoke(this);
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -109,7 +148,7 @@ public class ClipPlayer implements AnimationListener {
        c.queue(bounce).queue(bounce).queue(bounce).fadeOut(500).deleteWhenDone();
     }
 
-    public void sweepWhiteDown(Fixture fixture){
+    public void sweepWhiteDown(){
         ssm.playSound("002");
 
         // get location of fixture f01.
