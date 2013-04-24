@@ -15,7 +15,6 @@ import net.electroland.ea.Sequence;
 import net.electroland.ea.easing.CubicOut;
 import net.electroland.ea.easing.Linear;
 import net.electroland.ea.easing.QuinticIn;
-import net.electroland.eio.Coordinate;
 import net.electroland.eio.InputChannel;
 import net.electroland.norfolk.sound.SimpleSoundManager;
 import net.electroland.utils.ElectrolandProperties;
@@ -32,7 +31,7 @@ public class ClipPlayer implements AnimationListener {
     private Animation eam;
     private SimpleSoundManager ssm;
     private ELUManager elu;
-    private Map<String, Method> sensorToClips;
+    private Map<String, Target> sensorToClips;
 
     public ClipPlayer(Animation eam, SimpleSoundManager ssm, ELUManager elu, ElectrolandProperties props){
 
@@ -46,14 +45,16 @@ public class ClipPlayer implements AnimationListener {
 
     public void configure(ElectrolandProperties props){
 
-        sensorToClips = new HashMap<String, Method>();
+        sensorToClips = new HashMap<String, Target>();
 
         for (ParameterMap mappings : props.getObjects("channelClip").values()){
             String channelId = mappings.get("channel");
             try {
-                Method method = this.getClass().getMethod(mappings.get("clipPlayerMethod"), Coordinate.class);
-                sensorToClips.put(channelId, method);
-                logger.info("mapped channel " + channelId + " to " + method.getName());
+                Method method = this.getClass().getMethod(mappings.get("clipPlayerMethod"), Fixture.class);
+                String fixtureId = mappings.get("fixture");
+                Fixture fixture = this.getFixture(fixtureId); // can be null
+                sensorToClips.put(channelId, new Target(fixture, method));
+                logger.info("mapped channel " + channelId + " to " + method.getName() + " on fixture " + fixture);
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
             }
@@ -65,13 +66,13 @@ public class ClipPlayer implements AnimationListener {
 
         try {
 
-            Method m = sensorToClips.get(channel.getId());
+            Target t = sensorToClips.get(channel.getId());
 
-            if (m != null){
-                logger.debug("clipPlayer.play " + m.getName() + " at " + channel.getLocation());
-                m.invoke(this, channel.getLocation());
+            if (t.method != null){
+                logger.info("clipPlayer.play " + t.method.getName() + " at " + t.fixture);
+                t.method.invoke(this, t.fixture);
             }else{
-                logger.debug("no method defined for channel " + channel.getId());
+                logger.error("no method defined for channel " + channel.getId());
             }
 
         } catch (SecurityException e) {
@@ -85,13 +86,13 @@ public class ClipPlayer implements AnimationListener {
         }
     }
 
-    public void bounceSlowWave(Coordinate location){
+    public void bounceSlowWave(Fixture fixture){
 
         ssm.playSound("001");
 
         Clip c = eam.addClip(eam.getContent("slowWave"),
-                                (int)location.getX(),
-                                (int)location.getY(), 100, 100, 1.0f);
+                                (int)fixture.getLocation().x,
+                                (int)fixture.getLocation().y, 100, 100, 1.0f);
 
         Sequence bounce = new Sequence();
 
@@ -108,7 +109,7 @@ public class ClipPlayer implements AnimationListener {
        c.queue(bounce).queue(bounce).queue(bounce).fadeOut(500).deleteWhenDone();
     }
 
-    public void sweepWhiteDown(Coordinate location){
+    public void sweepWhiteDown(Fixture fixture){
         ssm.playSound("002");
 
         // get location of fixture f01.
@@ -128,26 +129,15 @@ public class ClipPlayer implements AnimationListener {
         c.queue(sweep).fadeOut(500).deleteWhenDone();
     }
 
-    public void red(Coordinate location){
+    public void red(Fixture fixture){
 
         ssm.playSound("002");
 
         Clip c = eam.addClip(eam.getContent("red"),
-                                (int)location.getX(),
-                                (int)location.getY(), 100, 100, 1.0f);
-        Sequence bounce = new Sequence();
+                                (int)fixture.getLocation().x - 10,
+                                (int)fixture.getLocation().y - 10, 20, 20, 1.0f);
 
-        bounce.yTo(150).yUsing(new QuinticIn())
-              .xBy(100).xUsing(new Linear())
-              .scaleWidth(2.0f)
-              .duration(1000)
-       .newState()
-              .yTo(75).yUsing(new CubicOut())
-              .xBy(100).xUsing(new Linear())
-              .scaleWidth(.5f)
-              .duration(1000);
-
-        c.queue(bounce).queue(bounce).queue(bounce).fadeOut(500).deleteWhenDone();
+        c.fadeOut(1000).deleteWhenDone();
     }
 
     @Override
@@ -163,5 +153,16 @@ public class ClipPlayer implements AnimationListener {
             }
         }
         return null;
+    }
+
+    class Target {
+
+        public Fixture fixture;
+        public Method method;
+
+        public Target(Fixture fixture, Method method){
+            this.fixture = fixture;
+            this.method = method;
+        }
     }
 }
