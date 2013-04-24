@@ -3263,7 +3263,7 @@ vt 0.481324 0.575501 1.000000
 # 1392 texture coords
 
 g pF08
-usemtl 05___Default
+#usemtl 05___Default
 s 1
 f 1/1/1 2/2/2 3/3/3 
 f 4/4/4 1/5/1 5/6/5 

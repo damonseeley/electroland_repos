@@ -1,5 +1,6 @@
 package net.electroland.norfolk.vizapp;
 import processing.core.*;
+import saito.objloader.*;
 
 
 public class objTest extends PApplet {
@@ -13,14 +14,18 @@ public class objTest extends PApplet {
 	 */
 
 
-	PShape rocket;
+	OBJModel rocket;
 
 	float ry;
 	  
 	public void setup() {
 	  size(640, 360, P3D);
 	    
-	  rocket = loadShape("../depends/models/sculpture.obj");
+	  rocket = new OBJModel(this, "../depends/models/environment.obj", "absolute", TRIANGLES);
+	  rocket.enableTexture();
+	  //Set stroke color to white, then hide strokes  
+	  stroke(255);
+	  noStroke();
 	}
 
 	public void draw() {
@@ -30,7 +35,7 @@ public class objTest extends PApplet {
 	  translate(width/2, height/2 + 100, -200);
 	  rotateZ(PI);
 	  rotateY(ry);
-	  shape(rocket);
+	  rocket.draw();
 	  
 	  ry += 0.02;
 	}

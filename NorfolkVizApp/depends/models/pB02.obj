@@ -5504,7 +5504,7 @@ vt 0.772461 0.393555 0.000000
 # 2085 texture coords
 
 g pB02
-usemtl 05___Default
+#usemtl 05___Default
 s 1
 f 1/1/1 2/2/2 3/3/3 
 f 1/1/1 3/3/3 4/4/4 

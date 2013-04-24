@@ -5333,7 +5333,7 @@ vt 0.858524 0.078654 0.000000
 # 1915 texture coords
 
 g pF12
-usemtl 05___Default
+#usemtl 05___Default
 s 1
 f 1/1/1 2/2/2 3/3/3 
 f 4/4/4 1/5/4 3/6/4 

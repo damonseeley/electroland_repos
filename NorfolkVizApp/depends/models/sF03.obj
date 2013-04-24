@@ -82,7 +82,7 @@ vn -0.481885 0.726166 0.490377
 # 46 vertex normals
 
 g sF03
-usemtl 05___Default
+#usemtl 05___Default
 s 1
 f 1//1 2//1 3//2 
 f 3//2 4//3 1//1 
