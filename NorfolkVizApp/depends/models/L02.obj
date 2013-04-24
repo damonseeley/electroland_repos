@@ -156,7 +156,7 @@ vt 0.136443 0.887350 0.665835
 # 40 texture coords
 
 g L02
-usemtl 17___Default
+#usemtl 17___Default
 s 2
 f 1/1/1 2/2/1 3/3/1 
 f 3/3/1 4/4/1 1/1/1 

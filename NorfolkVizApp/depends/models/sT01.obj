@@ -73,7 +73,7 @@ vn -0.771158 -0.009154 -0.636578
 # 37 vertex normals
 
 g sT01
-usemtl 05___Default
+#usemtl 05___Default
 s 1
 f 1//1 2//2 3//3 
 f 3//3 4//4 1//1 

@@ -5472,7 +5472,7 @@ vt 0.911521 0.349456 0.000000
 # 2362 texture coords
 
 g pF01
-usemtl 05___Default
+#usemtl 05___Default
 s 1
 f 1/1/1 2/2/2 3/3/3 
 f 3/3/3 4/4/4 1/1/1 

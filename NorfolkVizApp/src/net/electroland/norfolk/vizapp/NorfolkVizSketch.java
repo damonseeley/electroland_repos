@@ -1,18 +1,18 @@
 package net.electroland.norfolk.vizapp;
 import processing.core.*;
 import remixlab.proscene.*;
-//import saito.objloader.*;
+import saito.objloader.*;
 
 
-public class norfolkVizSketch extends PApplet {
+public class NorfolkVizSketch extends PApplet {
 	Scene scene;
 
 	//define a new class for lightObjects
 	class lightObject {
-	  PShape lightModel, participantModel, sensorBeamModel;
+	  OBJModel lightModel, participantModel, sensorBeamModel;
 	  int intensity;
 	  int lightColor, prevLightColor;
-	  lightObject(PShape tempLightModel, PShape tempParticipantModel, PShape tempSensorBeamModel, int tempIntensity, int tempLightColor, int tempPrevLightColor) {
+	  lightObject(OBJModel tempLightModel, OBJModel tempParticipantModel, OBJModel tempSensorBeamModel, int tempIntensity, int tempLightColor, int tempPrevLightColor) {
 	    lightModel = tempLightModel;
 	    participantModel = tempParticipantModel;
 	    sensorBeamModel = tempSensorBeamModel;
@@ -27,11 +27,11 @@ public class norfolkVizSketch extends PApplet {
 	boolean showSensorBeams = true;
 	boolean showEnvironment = true;
 
-	//decalre all PShapes globally
-	PShape sculpture, environment, modelB01, modelB02, modelB03, modelC01A, modelC01B, modelC02A, modelC02B, modelC03A, modelC03B, modelF01, modelF02, modelF03, modelF05, modelF06, modelF08, modelF09, modelF10, modelF11, modelF12, modelL01, modelL02, modelpB01, modelpB02, modelpB03, modelpF01, modelpF02, modelpF03, modelpF05, modelpF06, modelpF08, modelpF09, modelpF10, modelpF11, modelpF12, modelsB01, modelsB02, modelsB03, modelsF01, modelsF02, modelsF03, modelsF05, modelsF06, modelsF08, modelsF09, modelsF10, modelsF11, modelsF12, modelsT01, modelV01, modelV02, modelV03, modelV04;
+	//declare all OBJModels globally
+	OBJModel sculpture, environment, modelB01, modelB02, modelB03, modelC01A, modelC01B, modelC02A, modelC02B, modelC03A, modelC03B, modelF01, modelF02, modelF03, modelF05, modelF06, modelF08, modelF09, modelF10, modelF11, modelF12, modelL01, modelL02, modelpB01, modelpB02, modelpB03, modelpF01, modelpF02, modelpF03, modelpF05, modelpF06, modelpF08, modelpF09, modelpF10, modelpF11, modelpF12, modelsB01, modelsB02, modelsB03, modelsF01, modelsF02, modelsF03, modelsF05, modelsF06, modelsF08, modelsF09, modelsF10, modelsF11, modelsF12, modelsT01, modelV01, modelV02, modelV03, modelV04;
 
 	//Testing - let's try to build an array and draw with it
-	PShape[] allModels = new PShape[51];
+	OBJModel[] allModels = new OBJModel[51];
 
 	//Declare an array to hold all the lightObjects
 	lightObject[] allLightObjects = new lightObject[25];
@@ -60,59 +60,59 @@ public class norfolkVizSketch extends PApplet {
 	  scene.camera().frame().setTossingFriction(1);
 	  
 	  //Define all objects and their geo  
-	  sculpture = loadShape("../depends/models/sculpture.obj");
-	  environment = loadShape("../depends/models/environment.obj");
-	  modelB01 = loadShape("../depends/models/B01.obj");
-	  modelB02 = loadShape("../depends/models/B02.obj");
-	  modelB03 = loadShape("../depends/models/B03.obj");
-	  modelC01A = loadShape("../depends/models/C01A.obj");
-	  modelC01B = loadShape("../depends/models/C01B.obj");
-	  modelC02A = loadShape("../depends/models/C02A.obj");
-	  modelC02B = loadShape("../depends/models/C02B.obj");
-	  modelC03A = loadShape("../depends/models/C03A.obj");
-	  modelC03B = loadShape("../depends/models/C03B.obj");
-	  modelF01 = loadShape("../depends/models/F01.obj");
-	  modelF02 = loadShape("../depends/models/F02.obj");
-	  modelF03 = loadShape("../depends/models/F03.obj");
-	  modelF05 = loadShape("../depends/models/F05.obj");
-	  modelF06 = loadShape("../depends/models/F06.obj");
-	  modelF08 = loadShape("../depends/models/F08.obj");
-	  modelF09 = loadShape("../depends/models/F09.obj");
-	  modelF10 = loadShape("../depends/models/F10.obj");
-	  modelF11 = loadShape("../depends/models/F11.obj");
-	  modelF12 = loadShape("../depends/models/F12.obj");
-	  modelL01 = loadShape("../depends/models/L01.obj");
-	  modelL02 = loadShape("../depends/models/L02.obj");
-	  modelpB01 = loadShape("../depends/models/pB01.obj");
-	  modelpB02 = loadShape("../depends/models/pB02.obj");
-	  modelpB03 = loadShape("../depends/models/pB03.obj");
-	  modelpF01 = loadShape("../depends/models/pF01.obj");
-	  modelpF02 = loadShape("../depends/models/pF02.obj");
-	  modelpF03 = loadShape("../depends/models/pF03.obj");
-	  modelpF05 = loadShape("../depends/models/pF05.obj");
-	  modelpF06 = loadShape("../depends/models/pF06.obj");
-	  modelpF08 = loadShape("../depends/models/pF08.obj");
-	  modelpF09 = loadShape("../depends/models/pF09.obj");
-	  modelpF10 = loadShape("../depends/models/pF10.obj");
-	  modelpF11 = loadShape("../depends/models/pF11.obj");
-	  modelpF12 = loadShape("../depends/models/pF12.obj");
-	  modelsB01 = loadShape("../depends/models/sB01.obj");
-	  modelsB02 = loadShape("../depends/models/sB02.obj");
-	  modelsB03 = loadShape("../depends/models/sB03.obj");
-	  modelsF01 = loadShape("../depends/models/sF01.obj");
-	  modelsF02 = loadShape("../depends/models/sF02.obj");
-	  modelsF03 = loadShape("../depends/models/sF03.obj");
-	  modelsF05 = loadShape("../depends/models/sF05.obj");
-	  modelsF06 = loadShape("../depends/models/sF06.obj");
-	  modelsF08 = loadShape("../depends/models/sF08.obj");
-	  modelsF09 = loadShape("../depends/models/sF09.obj");
-	  modelsF10 = loadShape("../depends/models/sF10.obj");
-	  modelsF11 = loadShape("../depends/models/sF11.obj");
-	  modelsF12 = loadShape("../depends/models/sF12.obj");
-	  modelV01 = loadShape("../depends/models/V01.obj");
-	  modelV02 = loadShape("../depends/models/V02.obj");
-	  modelV03 = loadShape("../depends/models/V03.obj");
-	  modelV04 = loadShape("../depends/models/V04.obj");
+	  sculpture = new OBJModel(this, "../depends/models/sculpture.obj", "absolute", TRIANGLES);
+	  environment = new OBJModel(this, "../depends/models/environment.obj", "absolute", TRIANGLES);
+	  modelB01 = new OBJModel(this, "../depends/models/B01.obj", "absolute", TRIANGLES);
+	  modelB02 = new OBJModel(this, "../depends/models/B02.obj", "absolute", TRIANGLES);
+	  modelB03 = new OBJModel(this, "../depends/models/B03.obj", "absolute", TRIANGLES);
+	  modelC01A = new OBJModel(this, "../depends/models/C01A.obj", "absolute", TRIANGLES);
+	  modelC01B = new OBJModel(this, "../depends/models/C01B.obj", "absolute", TRIANGLES);
+	  modelC02A = new OBJModel(this, "../depends/models/C02A.obj", "absolute", TRIANGLES);
+	  modelC02B = new OBJModel(this, "../depends/models/C02B.obj", "absolute", TRIANGLES);
+	  modelC03A = new OBJModel(this, "../depends/models/C03A.obj", "absolute", TRIANGLES);
+	  modelC03B = new OBJModel(this, "../depends/models/C03B.obj", "absolute", TRIANGLES);
+	  modelF01 = new OBJModel(this, "../depends/models/F01.obj", "absolute", TRIANGLES);
+	  modelF02 = new OBJModel(this, "../depends/models/F02.obj", "absolute", TRIANGLES);
+	  modelF03 = new OBJModel(this, "../depends/models/F03.obj", "absolute", TRIANGLES);
+	  modelF05 = new OBJModel(this, "../depends/models/F05.obj", "absolute", TRIANGLES);
+	  modelF06 = new OBJModel(this, "../depends/models/F06.obj", "absolute", TRIANGLES);
+	  modelF08 = new OBJModel(this, "../depends/models/F08.obj", "absolute", TRIANGLES);
+	  modelF09 = new OBJModel(this, "../depends/models/F09.obj", "absolute", TRIANGLES);
+	  modelF10 = new OBJModel(this, "../depends/models/F10.obj", "absolute", TRIANGLES);
+	  modelF11 = new OBJModel(this, "../depends/models/F11.obj", "absolute", TRIANGLES);
+	  modelF12 = new OBJModel(this, "../depends/models/F12.obj", "absolute", TRIANGLES);
+	  modelL01 = new OBJModel(this, "../depends/models/L01.obj", "absolute", TRIANGLES);
+	  modelL02 = new OBJModel(this, "../depends/models/L02.obj", "absolute", TRIANGLES);
+	  modelpB01 = new OBJModel(this, "../depends/models/pB01.obj", "absolute", TRIANGLES);
+	  modelpB02 = new OBJModel(this, "../depends/models/pB02.obj", "absolute", TRIANGLES);
+	  modelpB03 = new OBJModel(this, "../depends/models/pB03.obj", "absolute", TRIANGLES);
+	  modelpF01 = new OBJModel(this, "../depends/models/pF01.obj", "absolute", TRIANGLES);
+	  modelpF02 = new OBJModel(this, "../depends/models/pF02.obj", "absolute", TRIANGLES);
+	  modelpF03 = new OBJModel(this, "../depends/models/pF03.obj", "absolute", TRIANGLES);
+	  modelpF05 = new OBJModel(this, "../depends/models/pF05.obj", "absolute", TRIANGLES);
+	  modelpF06 = new OBJModel(this, "../depends/models/pF06.obj", "absolute", TRIANGLES);
+	  modelpF08 = new OBJModel(this, "../depends/models/pF08.obj", "absolute", TRIANGLES);
+	  modelpF09 = new OBJModel(this, "../depends/models/pF09.obj", "absolute", TRIANGLES);
+	  modelpF10 = new OBJModel(this, "../depends/models/pF10.obj", "absolute", TRIANGLES);
+	  modelpF11 = new OBJModel(this, "../depends/models/pF11.obj", "absolute", TRIANGLES);
+	  modelpF12 = new OBJModel(this, "../depends/models/pF12.obj", "absolute", TRIANGLES);
+	  modelsB01 = new OBJModel(this, "../depends/models/sB01.obj", "absolute", TRIANGLES);
+	  modelsB02 = new OBJModel(this, "../depends/models/sB02.obj", "absolute", TRIANGLES);
+	  modelsB03 = new OBJModel(this, "../depends/models/sB03.obj", "absolute", TRIANGLES);
+	  modelsF01 = new OBJModel(this, "../depends/models/sF01.obj", "absolute", TRIANGLES);
+	  modelsF02 = new OBJModel(this, "../depends/models/sF02.obj", "absolute", TRIANGLES);
+	  modelsF03 = new OBJModel(this, "../depends/models/sF03.obj", "absolute", TRIANGLES);
+	  modelsF05 = new OBJModel(this, "../depends/models/sF05.obj", "absolute", TRIANGLES);
+	  modelsF06 = new OBJModel(this, "../depends/models/sF06.obj", "absolute", TRIANGLES);
+	  modelsF08 = new OBJModel(this, "../depends/models/sF08.obj", "absolute", TRIANGLES);
+	  modelsF09 = new OBJModel(this, "../depends/models/sF09.obj", "absolute", TRIANGLES);
+	  modelsF10 = new OBJModel(this, "../depends/models/sF10.obj", "absolute", TRIANGLES);
+	  modelsF11 = new OBJModel(this, "../depends/models/sF11.obj", "absolute", TRIANGLES);
+	  modelsF12 = new OBJModel(this, "../depends/models/sF12.obj", "absolute", TRIANGLES);
+	  modelV01 = new OBJModel(this, "../depends/models/V01.obj", "absolute", TRIANGLES);
+	  modelV02 = new OBJModel(this, "../depends/models/V02.obj", "absolute", TRIANGLES);
+	  modelV03 = new OBJModel(this, "../depends/models/V03.obj", "absolute", TRIANGLES);
+	  modelV04 = new OBJModel(this, "../depends/models/V04.obj", "absolute", TRIANGLES);
 
 	  //initialize lightObjects
 	  lightObject B01 = new lightObject(modelB01, modelpB01, modelsB01, 255, color(255, 255, 255), color(255, 255, 255));
@@ -186,22 +186,22 @@ public class norfolkVizSketch extends PApplet {
 	    lights();
 	    //allModels[0].draw();
 	    
-	    shape(sculpture);
+	    sculpture.draw();
 	    
-	    if (showEnvironment == true) shape(environment);
+	    if (showEnvironment == true) environment.draw();
 	    
-	    /*//iterate through allLightObjects and draw
+	    //iterate through allLightObjects and draw
 	    for (int i = 0; i < allLightObjects.length; i = i+1) {
 	      if (showParticipants == true) allLightObjects[i].participantModel.draw();
 	      if (showSensorBeams == true) allLightObjects[i].sensorBeamModel.draw();
 	      if (allLightObjects[i].intensity > 0) {
 	        allLightObjects[i].lightModel.draw();
-	      }*/
+	      }
 	      
 	    }
 	    
 
-	//}
+	}
 
 	boolean bTexture = true;
 	boolean bStroke = false;
