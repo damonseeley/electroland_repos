@@ -160,7 +160,7 @@ public class ElectrolandProperties {
     {
         Map<String,ParameterMap> type = objects.get(objectType);
         if (type == null){
-            throw new OptionException("no object of type '" + objectType + "' was found.");
+            return Collections.<String>emptySet();
         }else{
             return type.keySet();
         }
