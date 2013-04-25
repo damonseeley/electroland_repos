@@ -27,7 +27,7 @@ public class Value {
     public Value(String serialData, boolean useRecordedFilteredValues){ // expects [192,122,0]
         String[] tokens = serialData.split(",|\\[|\\]");
         raw = new Integer(tokens[1]);
-        filtered = useRecordedFilteredValues ? new Integer(tokens[1]) : new Integer(tokens[2]);
+        filtered = useRecordedFilteredValues ? new Integer(tokens[2]) : new Integer(tokens[1]);
         isSuspect = new Integer(tokens[3]) == 1;
     }
     // [192,331,0]
