@@ -2,7 +2,6 @@ package net.electroland.eio;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +58,7 @@ public class EIOManager implements Shutdownable, Runnable {
         allInputChannels = new ArrayList<InputChannel>();
         allInputChannels.addAll(realChannels);
         allInputChannels.addAll(virtualChannels);
+        System.out.println(allInputChannels);
         this.devices = deviceMap.values();
     }
 
@@ -85,12 +85,50 @@ public class EIOManager implements Shutdownable, Runnable {
     private Collection<VirtualChannel>loadVirtualChannels(ElectrolandProperties props,
                                                 Collection<InputChannel> realChannels,
                                                 Map<String, ParameterMap>filters){
-        // TODO: implement
-        // get all vchannels
-        // add appropriate vchannels
-        // add appropriate filters
-        // call config
-        return Collections.<VirtualChannel>emptyList();
+
+        ArrayList<VirtualChannel>channels = new ArrayList<VirtualChannel>();
+        for (String name : props.getObjectNames("vchannel")){
+
+            ParameterMap params = props.getParams("vchannel", name);
+
+            VirtualChannel vc = (VirtualChannel)params.getRequiredClass("class");
+            vc.id = name;
+
+            // get all vchannels
+            for (String channelId : params.getRequiredList("ichannels")){
+                for (InputChannel rc : realChannels){
+                    if (rc.id.equals(channelId)){
+                        vc.addChannel(rc);
+                    }
+                }
+            }
+
+            // location
+            int x           = params.getDefaultInt("x", 0);
+            int y           = params.getDefaultInt("y", 0);
+            int z           = params.getDefaultInt("z", 0);
+            String units    = params.getOptional("units");
+
+            vc.setLocation(new Coordinate(x, y, z, units));
+
+            // filters
+            List<String> list = params.getOptionalList("filters");
+            if (list != null){
+                for (String filterId : params.getOptionalList("filters")){
+
+                    ParameterMap filterParams = filters.get(filterId);
+
+                    Filter filter = (Filter)filterParams.getRequiredClass("class");
+                    filter.configure(filterParams);
+
+                    vc.addFilter(filter);
+                }
+            }
+
+            vc.configure(params);
+            channels.add(vc);
+        }
+        return channels;
     }
 
     private Collection<InputChannel>loadInputChannels(ElectrolandProperties props, 
@@ -118,7 +156,6 @@ public class EIOManager implements Shutdownable, Runnable {
             ic.setLocation(new Coordinate(x, y, z, units));
 
             // filters
-            params.getOptionalList("filters");
             List<String> list = params.getOptionalList("filters");
             if (list != null){
                 for (String filterId : params.getOptionalList("filters")){
@@ -164,7 +201,9 @@ public class EIOManager implements Shutdownable, Runnable {
                     for (InputChannel ic : vc.inputChannels){
                         inputs.put(ic, unionValues.get(ic));
                     }
-                    vc.filter(vc.read(inputs));
+                    Value v = vc.read(inputs);
+                    vc.filter(v);
+                    unionValues.put(vc, v);
                 }
             }
 
