@@ -41,8 +41,9 @@ public class objTest extends PApplet {
 	    rotateX(rotY);
 	    rotateY(rotX);
 	    
-	    //blendMode(SCREEN);
-	    model.draw();
+	    blendMode(ADD);
+	    //model.draw();
+	    image(fibers, -200, -200);
 
 	    popMatrix();
 	}
@@ -78,7 +79,7 @@ public class objTest extends PApplet {
 	    
 	    if(key == 'm') {
 	        if(!bMask) {
-	            fibers.mask(maskImage);
+	        	fibers.mask(maskImage);
 	            bMask = true;
 	        } 
 	        else {
