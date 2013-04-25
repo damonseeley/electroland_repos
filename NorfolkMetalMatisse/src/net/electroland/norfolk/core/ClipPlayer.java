@@ -64,7 +64,6 @@ public class ClipPlayer implements AnimationListener {
         }
 
         globalClips = getGlobalClips(true);
-        new ClipPlayerGUI(this);
     }
 
     /**
