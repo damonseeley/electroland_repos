@@ -84,7 +84,8 @@ public class IOFrameTest extends JPanel implements IOListener, ActionListener {
         int baseline    = height / 2;
         int margin      = 50;
         int maxBarHite  = baseline - margin;
-        Color barColor = new Color(255,255,255,150);
+        Color realColor = new Color(100,100,255,150);
+        Color virtualColor = new Color(255,100,100,150);
 
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
@@ -108,7 +109,11 @@ public class IOFrameTest extends JPanel implements IOListener, ActionListener {
                 }
 
                 // bar
-                g2d.setColor(barColor);
+                if (channel instanceof VirtualChannel){
+                    g2d.setColor(virtualColor);
+                }else{
+                    g2d.setColor(realColor);
+                }
                 g2d.fillRect(left, top, barWidth, barHeight);
 
                 Font font = new Font("Arial", Font.PLAIN, 9);
