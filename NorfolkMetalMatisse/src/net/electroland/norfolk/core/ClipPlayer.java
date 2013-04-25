@@ -105,9 +105,10 @@ public class ClipPlayer implements AnimationListener {
 
         try {
 
+            logger.info("play for channel " + channel);
             Target t = sensorToClips.get(channel.getId());
 
-            if (t.method != null){
+            if (t != null && t.method != null){
                 logger.info("clipPlayer.play " + t.method.getName() + " at " + t.fixture);
                 t.method.invoke(this, t.fixture);
             }else{
