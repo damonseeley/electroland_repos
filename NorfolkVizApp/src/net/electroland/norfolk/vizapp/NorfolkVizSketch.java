@@ -2,39 +2,47 @@ package net.electroland.norfolk.vizapp;
 import processing.core.*;
 import remixlab.proscene.*;
 import saito.objloader.*;
+import shapes3d.*;
 
 
 public class NorfolkVizSketch extends PApplet {
 	Scene scene;
 
-	//define a new class for lightObjects
-	class lightObject {
+	//define a new class for LightObjects
+	class LightObject {
 	  OBJModel lightModel, participantModel, sensorBeamModel;
-	  int intensity;
-	  int lightColor, prevLightColor;
-	  lightObject(OBJModel tempLightModel, OBJModel tempParticipantModel, OBJModel tempSensorBeamModel, int tempIntensity, int tempLightColor, int tempPrevLightColor) {
-	    lightModel = tempLightModel;
-	    participantModel = tempParticipantModel;
-	    sensorBeamModel = tempSensorBeamModel;
-	    intensity = tempIntensity;
-	    lightColor = tempLightColor;
-	    prevLightColor = tempPrevLightColor;
+	  boolean triggerState;
+	  PImage lightTexture;
+	  int intensity, lightColor, prevLightColor, fadeOnTime, fadeOffTime;
+	  LightObject(boolean passedTriggerState, OBJModel passedLightModel, PImage passedLightTexture, OBJModel passedParticipantModel, OBJModel passedSensorBeamModel, int passedIntensity, int passedLightColor, int passedFadeOnTime, int passedFadeOffTime) {
+		triggerState = passedTriggerState;
+		lightModel = passedLightModel;
+		lightTexture = passedLightTexture;
+	    participantModel = passedParticipantModel;
+	    sensorBeamModel = passedSensorBeamModel;
+	    intensity = passedIntensity;
+	    lightColor = passedLightColor;
+	    fadeOnTime = passedFadeOnTime;
+	    fadeOffTime = passedFadeOffTime;
 	  }
 	}
 
-	//declare display flags globally
+	//declare display flags
 	boolean showParticipants = true;
 	boolean showSensorBeams = true;
 	boolean showEnvironment = true;
 
-	//declare all OBJModels globally
-	OBJModel sculpture, environment, modelB01, modelB02, modelB03, modelC01A, modelC01B, modelC02A, modelC02B, modelC03A, modelC03B, modelF01, modelF02, modelF03, modelF05, modelF06, modelF08, modelF09, modelF10, modelF11, modelF12, modelL01, modelL02, modelpB01, modelpB02, modelpB03, modelpF01, modelpF02, modelpF03, modelpF05, modelpF06, modelpF08, modelpF09, modelpF10, modelpF11, modelpF12, modelsB01, modelsB02, modelsB03, modelsF01, modelsF02, modelsF03, modelsF05, modelsF06, modelsF08, modelsF09, modelsF10, modelsF11, modelsF12, modelsT01, modelV01, modelV02, modelV03, modelV04;
+	//declare all OBJModels
+	OBJModel sculpture, environment, modelpB01, modelpB02, modelpB03, modelpF01, modelpF02, modelpF03, modelpF05, modelpF06, modelpF08, modelpF09, modelpF10, modelpF11, modelpF12, modelsB01, modelsB02, modelsB03, modelsF01, modelsF02, modelsF03, modelsF05, modelsF06, modelsF08, modelsF09, modelsF10, modelsF11, modelsF12, modelsT01;
 
-	//Testing - let's try to build an array and draw with it
-	OBJModel[] allModels = new OBJModel[51];
-
-	//Declare an array to hold all the lightObjects
-	lightObject[] allLightObjects = new lightObject[25];
+	//declare all lightVolumes
+	OBJModel volumeB01, volumeB02, volumeB03, volumeC01A, volumeC01B, volumeC02A, volumeC02B, volumeC03A, volumeC03B, volumeF01, volumeF02, volumeF03, volumeF05, volumeF06, volumeF08, volumeF09, volumeF10, volumeF11, volumeF12, volumeL01, volumeL02, volumeV01, volumeV02, volumeV03, volumeV04;
+	
+	//declare all texture PImages
+	PImage texB01, texB02, texB03, texC01A, texC01B, texC02A, texC02B, texC03A, texC03B, texF01, texF02, texF03, texF05, texF06, texF08, texF09, texF10, texF11, texF12, texL01, texL02, texV01, texV02, texV03, texV04;
+	
+	//Declare an array to hold all the LightObjects
+	LightObject[] allLightObjects = new LightObject[25];
 
 	public void setup()
 	{
@@ -59,30 +67,34 @@ public class NorfolkVizSketch extends PApplet {
 	  scene.camera().frame().setSpinningFriction(1);
 	  scene.camera().frame().setTossingFriction(1);
 	  
-	  //Define all objects and their geo  
+	  //Define all OBJModels and their geo  
 	  sculpture = new OBJModel(this, "../depends/models/sculpture.obj", "absolute", TRIANGLES);
 	  environment = new OBJModel(this, "../depends/models/environment.obj", "absolute", TRIANGLES);
-	  modelB01 = new OBJModel(this, "../depends/models/B01.obj", "absolute", TRIANGLES);
-	  modelB02 = new OBJModel(this, "../depends/models/B02.obj", "absolute", TRIANGLES);
-	  modelB03 = new OBJModel(this, "../depends/models/B03.obj", "absolute", TRIANGLES);
-	  modelC01A = new OBJModel(this, "../depends/models/C01A.obj", "absolute", TRIANGLES);
-	  modelC01B = new OBJModel(this, "../depends/models/C01B.obj", "absolute", TRIANGLES);
-	  modelC02A = new OBJModel(this, "../depends/models/C02A.obj", "absolute", TRIANGLES);
-	  modelC02B = new OBJModel(this, "../depends/models/C02B.obj", "absolute", TRIANGLES);
-	  modelC03A = new OBJModel(this, "../depends/models/C03A.obj", "absolute", TRIANGLES);
-	  modelC03B = new OBJModel(this, "../depends/models/C03B.obj", "absolute", TRIANGLES);
-	  modelF01 = new OBJModel(this, "../depends/models/F01.obj", "absolute", TRIANGLES);
-	  modelF02 = new OBJModel(this, "../depends/models/F02.obj", "absolute", TRIANGLES);
-	  modelF03 = new OBJModel(this, "../depends/models/F03.obj", "absolute", TRIANGLES);
-	  modelF05 = new OBJModel(this, "../depends/models/F05.obj", "absolute", TRIANGLES);
-	  modelF06 = new OBJModel(this, "../depends/models/F06.obj", "absolute", TRIANGLES);
-	  modelF08 = new OBJModel(this, "../depends/models/F08.obj", "absolute", TRIANGLES);
-	  modelF09 = new OBJModel(this, "../depends/models/F09.obj", "absolute", TRIANGLES);
-	  modelF10 = new OBJModel(this, "../depends/models/F10.obj", "absolute", TRIANGLES);
-	  modelF11 = new OBJModel(this, "../depends/models/F11.obj", "absolute", TRIANGLES);
-	  modelF12 = new OBJModel(this, "../depends/models/F12.obj", "absolute", TRIANGLES);
-	  modelL01 = new OBJModel(this, "../depends/models/L01.obj", "absolute", TRIANGLES);
-	  modelL02 = new OBJModel(this, "../depends/models/L02.obj", "absolute", TRIANGLES);
+	  volumeB01 = new OBJModel(this, "../depends/models/B01.obj", "absolute", TRIANGLES);
+	  volumeB02 = new OBJModel(this, "../depends/models/B02.obj", "absolute", TRIANGLES);
+	  volumeB03 = new OBJModel(this, "../depends/models/B03.obj", "absolute", TRIANGLES);
+	  volumeC01A = new OBJModel(this, "../depends/models/C01A.obj", "absolute", TRIANGLES);
+	  volumeC01B = new OBJModel(this, "../depends/models/C01B.obj", "absolute", TRIANGLES);
+	  volumeC02A = new OBJModel(this, "../depends/models/C02A.obj", "absolute", TRIANGLES);
+	  volumeC02B = new OBJModel(this, "../depends/models/C02B.obj", "absolute", TRIANGLES);
+	  volumeC03A = new OBJModel(this, "../depends/models/C03A.obj", "absolute", TRIANGLES);
+	  volumeC03B = new OBJModel(this, "../depends/models/C03B.obj", "absolute", TRIANGLES);
+	  volumeF01 = new OBJModel(this, "../depends/models/F01.obj", "absolute", TRIANGLES);
+	  volumeF02 = new OBJModel(this, "../depends/models/F02.obj", "absolute", TRIANGLES);
+	  volumeF03 = new OBJModel(this, "../depends/models/F03.obj", "absolute", TRIANGLES);
+	  volumeF05 = new OBJModel(this, "../depends/models/F05.obj", "absolute", TRIANGLES);
+	  volumeF06 = new OBJModel(this, "../depends/models/F06.obj", "absolute", TRIANGLES);
+	  volumeF08 = new OBJModel(this, "../depends/models/F08.obj", "absolute", TRIANGLES);
+	  volumeF09 = new OBJModel(this, "../depends/models/F09.obj", "absolute", TRIANGLES);
+	  volumeF10 = new OBJModel(this, "../depends/models/F10.obj", "absolute", TRIANGLES);
+	  volumeF11 = new OBJModel(this, "../depends/models/F11.obj", "absolute", TRIANGLES);
+	  volumeF12 = new OBJModel(this, "../depends/models/F12.obj", "absolute", TRIANGLES);
+	  volumeL01 = new OBJModel(this, "../depends/models/L01.obj", "absolute", TRIANGLES);
+	  volumeL02 = new OBJModel(this, "../depends/models/L02.obj", "absolute", TRIANGLES);
+	  volumeV01 = new OBJModel(this, "../depends/models/V01.obj", "absolute", TRIANGLES);
+	  volumeV02 = new OBJModel(this, "../depends/models/V02.obj", "absolute", TRIANGLES);
+	  volumeV03 = new OBJModel(this, "../depends/models/V03.obj", "absolute", TRIANGLES);
+	  volumeV04 = new OBJModel(this, "../depends/models/V04.obj", "absolute", TRIANGLES);
 	  modelpB01 = new OBJModel(this, "../depends/models/pB01.obj", "absolute", TRIANGLES);
 	  modelpB02 = new OBJModel(this, "../depends/models/pB02.obj", "absolute", TRIANGLES);
 	  modelpB03 = new OBJModel(this, "../depends/models/pB03.obj", "absolute", TRIANGLES);
@@ -109,41 +121,62 @@ public class NorfolkVizSketch extends PApplet {
 	  modelsF10 = new OBJModel(this, "../depends/models/sF10.obj", "absolute", TRIANGLES);
 	  modelsF11 = new OBJModel(this, "../depends/models/sF11.obj", "absolute", TRIANGLES);
 	  modelsF12 = new OBJModel(this, "../depends/models/sF12.obj", "absolute", TRIANGLES);
-	  modelV01 = new OBJModel(this, "../depends/models/V01.obj", "absolute", TRIANGLES);
-	  modelV02 = new OBJModel(this, "../depends/models/V02.obj", "absolute", TRIANGLES);
-	  modelV03 = new OBJModel(this, "../depends/models/V03.obj", "absolute", TRIANGLES);
-	  modelV04 = new OBJModel(this, "../depends/models/V04.obj", "absolute", TRIANGLES);
-
-	  //initialize lightObjects
-	  lightObject B01 = new lightObject(modelB01, modelpB01, modelsB01, 255, color(255, 255, 255), color(255, 255, 255));
-	  lightObject B02 = new lightObject(modelB02, modelpB02, modelsB02, 255, color(255, 255, 255), color(255, 255, 255));
-	  lightObject B03 = new lightObject(modelB03, modelpB03, modelsB03, 255, color(255, 255, 255), color(255, 255, 255));
-	  lightObject C01A = new lightObject(modelC01A, modelpB01, modelsB01, 255, color(255, 255, 255), color(255, 255, 255));
-	  lightObject C01B = new lightObject(modelC01B, modelpB01, modelsB01, 255, color(255, 255, 255), color(255, 255, 255));
-	  lightObject C02A = new lightObject(modelC02A, modelpB01, modelsB01, 255, color(255, 255, 255), color(255, 255, 255));
-	  lightObject C02B = new lightObject(modelC02B, modelpB01, modelsB01, 255, color(255, 255, 255), color(255, 255, 255));
-	  lightObject C03A = new lightObject(modelC03A, modelpB01, modelsB01, 255, color(255, 255, 255), color(255, 255, 255));
-	  lightObject C03B = new lightObject(modelC03B, modelpB01, modelsB01, 255, color(255, 255, 255), color(255, 255, 255));
-	  lightObject F01 = new lightObject(modelF01, modelpF01, modelsF01, 255, color(255, 255, 255), color(255, 255, 255));
-	  lightObject F02 = new lightObject(modelF02, modelpF02, modelsF02, 255, color(255, 255, 255), color(255, 255, 255));
-	  lightObject F03 = new lightObject(modelF03, modelpF03, modelsF03, 255, color(255, 255, 255), color(255, 255, 255));
-	  lightObject F05 = new lightObject(modelF05, modelpF05, modelsF05, 255, color(255, 255, 255), color(255, 255, 255));
-	  lightObject F06 = new lightObject(modelF06, modelpF06, modelsF06, 255, color(255, 255, 255), color(255, 255, 255));
-	  lightObject F08 = new lightObject(modelF08, modelpF08, modelsF08, 255, color(255, 255, 255), color(255, 255, 255));
-	  lightObject F09 = new lightObject(modelF09, modelpF09, modelsF09, 255, color(255, 255, 255), color(255, 255, 255));
-	  lightObject F10 = new lightObject(modelF10, modelpF10, modelsF10, 255, color(255, 255, 255), color(255, 255, 255));
-	  lightObject F11 = new lightObject(modelF11, modelpF11, modelsF11, 255, color(255, 255, 255), color(255, 255, 255));
-	  lightObject F12 = new lightObject(modelF12, modelpF12, modelsF12, 255, color(255, 255, 255), color(255, 255, 255));
-	  lightObject L01 = new lightObject(modelL01, modelpB01, modelsB01, 255, color(255, 255, 255), color(255, 255, 255));
-	  lightObject L02 = new lightObject(modelL02, modelpB01, modelsB01, 255, color(255, 255, 255), color(255, 255, 255));
-	  lightObject V01 = new lightObject(modelV01, modelpB01, modelsB01, 255, color(255, 255, 255), color(255, 255, 255));
-	  lightObject V02 = new lightObject(modelV02, modelpB01, modelsB01, 255, color(255, 255, 255), color(255, 255, 255));
-	  lightObject V03 = new lightObject(modelV03, modelpB01, modelsB01, 255, color(255, 255, 255), color(255, 255, 255));
-	  lightObject V04 = new lightObject(modelV04, modelpB01, modelsB01, 255, color(255, 255, 255), color(255, 255, 255));
 	  
-	  //fill that test array
-	  allModels[0] = sculpture;
-	  allModels[1] = environment;
+	  //Define textures
+	  texB01 = loadImage("../depends/models/lightGrad.jpg");
+	  texB02 = loadImage("../depends/models/lightGrad.jpg");
+	  texB03 = loadImage("../depends/models/lightGrad.jpg");
+	  texC01A = loadImage("../depends/models/lightGrad.jpg");
+	  texC01B = loadImage("../depends/models/lightGrad.jpg");
+	  texC02A = loadImage("../depends/models/lightGrad.jpg");
+	  texC02B = loadImage("../depends/models/lightGrad.jpg");
+	  texC03A = loadImage("../depends/models/lightGrad.jpg");
+	  texC03B = loadImage("../depends/models/lightGrad.jpg");
+	  texF01 = loadImage("../depends/models/lightGrad.jpg");
+	  texF02 = loadImage("../depends/models/lightGrad.jpg");
+	  texF03 = loadImage("../depends/models/lightGrad.jpg");
+	  texF05 = loadImage("../depends/models/lightGrad.jpg");
+	  texF06 = loadImage("../depends/models/lightGrad.jpg");
+	  texF08 = loadImage("../depends/models/lightGrad.jpg");
+	  texF09 = loadImage("../depends/models/lightGrad.jpg");
+	  texF10 = loadImage("../depends/models/lightGrad.jpg");
+	  texF11 = loadImage("../depends/models/lightGrad.jpg");
+	  texF12 = loadImage("../depends/models/lightGrad.jpg");
+	  texL01 = loadImage("../depends/models/lightGrad.jpg");
+	  texL02 = loadImage("../depends/models/lightGrad.jpg");
+	  texV01 = loadImage("../depends/models/lightGrad.jpg");
+	  texV02 = loadImage("../depends/models/lightGrad.jpg");
+	  texV03 = loadImage("../depends/models/lightGrad.jpg");
+	  texV04 = loadImage("../depends/models/lightGrad.jpg");
+	  
+	  
+	  //initialize LightObjects
+	  LightObject B01 = new LightObject(false, volumeB01, texB01, modelpB01, modelsB01, 255, color(255, 255, 255), 2000, 2000);
+	  LightObject B02 = new LightObject(false, volumeB02, texB02, modelpB02, modelsB02, 255, color(255, 255, 255), 2000, 2000);
+	  LightObject B03 = new LightObject(false, volumeB03, texB03, modelpB03, modelsB03, 255, color(255, 255, 255), 2000, 2000);
+	  LightObject C01A = new LightObject(false, volumeC01A, texC01A, modelpB01, modelsB01, 255, color(255, 255, 255), 2000, 2000);
+	  LightObject C01B = new LightObject(false, volumeC01B, texC01B, modelpB01, modelsB01, 255, color(255, 255, 255), 2000, 2000);
+	  LightObject C02A = new LightObject(false, volumeC02A, texC02A, modelpB01, modelsB01, 255, color(255, 255, 255), 2000, 2000);
+	  LightObject C02B = new LightObject(false, volumeC02B, texC02B, modelpB01, modelsB01, 255, color(255, 255, 255), 2000, 2000);
+	  LightObject C03A = new LightObject(false, volumeC03A, texC03A, modelpB01, modelsB01, 255, color(255, 255, 255), 2000, 2000);
+	  LightObject C03B = new LightObject(false, volumeC03B, texC03B, modelpB01, modelsB01, 255, color(255, 255, 255), 2000, 2000);
+	  LightObject F01 = new LightObject(false, volumeF01, texF01, modelpF01, modelsF01, 255, color(255, 255, 255), 2000, 2000);
+	  LightObject F02 = new LightObject(false, volumeF02, texF02, modelpF02, modelsF02, 255, color(255, 255, 255), 2000, 2000);
+	  LightObject F03 = new LightObject(false, volumeF03, texF03, modelpF03, modelsF03, 255, color(255, 255, 255), 2000, 2000);
+	  LightObject F05 = new LightObject(false, volumeF05, texF05, modelpF05, modelsF05, 255, color(255, 255, 255), 2000, 2000);
+	  LightObject F06 = new LightObject(false, volumeF06, texF06, modelpF06, modelsF06, 255, color(255, 255, 255), 2000, 2000);
+	  LightObject F08 = new LightObject(false, volumeF08, texF08, modelpF08, modelsF08, 255, color(255, 255, 255), 2000, 2000);
+	  LightObject F09 = new LightObject(false, volumeF09, texF09, modelpF09, modelsF09, 255, color(255, 255, 255), 2000, 2000);
+	  LightObject F10 = new LightObject(false, volumeF10, texF10, modelpF10, modelsF10, 255, color(255, 255, 255), 2000, 2000);
+	  LightObject F11 = new LightObject(false, volumeF11, texF11, modelpF11, modelsF11, 255, color(255, 255, 255), 2000, 2000);
+	  LightObject F12 = new LightObject(false, volumeF12, texF12, modelpF12, modelsF12, 255, color(255, 255, 255), 2000, 2000);
+	  LightObject L01 = new LightObject(false, volumeL01, texL01, modelpB01, modelsB01, 255, color(255, 255, 255), 2000, 2000);
+	  LightObject L02 = new LightObject(false, volumeL02, texL02, modelpB01, modelsB01, 255, color(255, 255, 255), 2000, 2000);
+	  LightObject V01 = new LightObject(false, volumeV01, texV01, modelpB01, modelsB01, 255, color(255, 255, 255), 2000, 2000);
+	  LightObject V02 = new LightObject(false, volumeV02, texV02, modelpB01, modelsB01, 255, color(255, 255, 255), 2000, 2000);
+	  LightObject V03 = new LightObject(false, volumeV03, texV03, modelpB01, modelsB01, 255, color(255, 255, 255), 2000, 2000);
+	  LightObject V04 = new LightObject(false, volumeV04, texV04, modelpB01, modelsB01, 255, color(255, 255, 255), 2000, 2000);
+	  
 
 	  //build the array of all light objects, and initialize them
 	  allLightObjects[0] = B01;
@@ -173,7 +206,7 @@ public class NorfolkVizSketch extends PApplet {
 	  allLightObjects[24] = V04;
 	  
 
-	  //Set stroke color to white, then hide strokes  
+	  //Set stroke color to white, then hide strokes
 	  stroke(255);
 	  noStroke();
 	}
@@ -184,18 +217,22 @@ public class NorfolkVizSketch extends PApplet {
 	{
 	    background(129);
 	    lights();
-	    //allModels[0].draw();
 	    
+	    blendMode(NORMAL);
 	    sculpture.draw();
 	    
 	    if (showEnvironment == true) environment.draw();
-	    
 	    //iterate through allLightObjects and draw
 	    for (int i = 0; i < allLightObjects.length; i = i+1) {
-	      if (showParticipants == true) allLightObjects[i].participantModel.draw();
-	      if (showSensorBeams == true) allLightObjects[i].sensorBeamModel.draw();
-	      if (allLightObjects[i].intensity > 0) {
-	        allLightObjects[i].lightModel.draw();
+	    	blendMode(NORMAL);
+	    	if (showParticipants == true) allLightObjects[i].participantModel.draw();
+	    	if (showSensorBeams == true) allLightObjects[i].sensorBeamModel.draw();
+	    	//blendMode(SCREEN);
+	        if (allLightObjects[i].intensity > 0) {
+	        	allLightObjects[i].lightModel.setTexture(texV04);
+	        	allLightObjects[i].lightModel.enableMaterial();
+	        	allLightObjects[i].lightModel.enableTexture();
+	        	allLightObjects[i].lightModel.draw();
 	      }
 	      
 	    }

@@ -36,7 +36,7 @@ newmtl Trunk
 	Kd 0.274510 0.149020 0.011765
 	Ks 0.000000 0.000000 0.000000
 	Ke 0.000000 0.000000 0.000000
-	map_bump -bm 0.750000 Map__2_Noise.tga
+	map_bump -bm 0.750000 ../depends/models/Map__2_Noise.tga
 
 newmtl Canopy
 	Ns 25.000000
@@ -83,4 +83,4 @@ newmtl Material__37
 	Kd 0.756863 0.713726 0.592157
 	Ks 0.000000 0.000000 0.000000
 	Ke 0.000000 0.000000 0.000000
-	map_bump -bm 0.100000 Map__34726_Speckle.tga
+	map_bump -bm 0.100000 ../depends/models/Map__34726_Speckle.tga

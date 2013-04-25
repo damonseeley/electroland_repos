@@ -24,4 +24,4 @@ newmtl Vase
 	Kd 0.588235 0.588235 0.588235
 	Ks 0.000000 0.000000 0.000000
 	Ke 0.000000 0.000000 0.000000
-	map_d E:\Projects\Norfolk\Sources\textures\dot.jpg
+	../depends/models/dot.jpg

@@ -1,7 +1,7 @@
 # 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
 # File Created: 01.04.2013 01:41:00
 
-#mtllib sF10.mtl
+mtllib ../depends/models/sF10.mtl
 
 #
 # object sF10
@@ -82,7 +82,7 @@ vn 0.233546 0.647401 -0.725485
 # 46 vertex normals
 
 g sF10
-#usemtl 05___Default
+usemtl 05___Default
 s 1
 f 1//1 2//2 3//3 
 f 3//3 4//3 1//1 

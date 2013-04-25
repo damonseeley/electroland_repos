@@ -5,38 +5,111 @@ import saito.objloader.*;
 
 public class objTest extends PApplet {
 	
-	/**
-	 * Load and Display an OBJ Shape. 
-	 * 
-	 * The loadShape() command is used to read simple SVG (Scalable Vector Graphics)
-	 * files and OBJ (Object) files into a Processing sketch. This example loads an
-	 * OBJ file of a rocket and displays it to the screen. 
-	 */
 
 
-	OBJModel rocket;
+	OBJModel model;
+	PImage fibers;
+	PImage maskImage;
 
-	float ry;
-	  
-	public void setup() {
-	  size(640, 360, P3D);
+	float rotX, rotY;
+
+	public void setup()
+	{
+	    size(800, 600, P3D);
+	    frameRate(30);
+	    fibers = loadImage("../depends/models/fibers.jpg");
+	    maskImage = loadImage("../depends/models/mask.jpg");
+	       
+	    model = new OBJModel(this, "../depends/models/B01.obj", "absolute", TRIANGLES);
+	    model.enableDebug();
+
+	    model.scale(1);
+	    model.translateToCenter();
+
+	    stroke(255);
+	    noStroke();
+	}
+
+
+
+	public void draw()
+	{
+	    background(129);
+	    lights();
+	    pushMatrix();
+	    translate(width/2, height/2, 0);
+	    rotateX(rotY);
+	    rotateY(rotX);
 	    
-	  rocket = new OBJModel(this, "../depends/models/environment.obj", "absolute", TRIANGLES);
-	  rocket.enableTexture();
-	  //Set stroke color to white, then hide strokes  
-	  stroke(255);
-	  noStroke();
+	    //blendMode(SCREEN);
+	    model.draw();
+
+	    popMatrix();
 	}
 
-	public void draw() {
-	  background(0);
-	  lights();
-	  
-	  translate(width/2, height/2 + 100, -200);
-	  rotateZ(PI);
-	  rotateY(ry);
-	  rocket.draw();
-	  
-	  ry += 0.02;
+	boolean bTexture = true;
+	boolean altTexture = false;
+	boolean bStroke = false;
+	boolean bMask = true;
+
+	public void keyPressed()
+	{
+	    if(key == 't') {
+	        if(!bTexture) {
+	            model.enableTexture();
+	            bTexture = true;
+	        } 
+	        else {
+	            model.disableTexture();
+	            bTexture = false;
+	        }
+	    }
+	    
+	    if(key == 'a') {
+	        if(!altTexture) {
+	            model.setTexture(fibers);
+	            altTexture = true;
+	        } 
+	        else {
+	            model.originalTexture();
+	            altTexture = false;
+	        }
+	    }
+	    
+	    if(key == 'm') {
+	        if(!bMask) {
+	            fibers.mask(maskImage);
+	            bMask = true;
+	        } 
+	        else {
+	            fibers = loadImage("../depends/models/fibers.jpg");
+	            bMask = false;
+	        }
+	    }
+
+	    if(key == 's') {
+	        if(!bStroke) {
+	            stroke(255);
+	            bStroke = true;
+	        } 
+	        else {
+	            noStroke();
+	            bStroke = false;
+	        }
+	    }
+
+	    else if(key=='1')
+	        model.shapeMode(POINTS);
+	    else if(key=='2')
+	        model.shapeMode(LINES);
+	    else if(key=='3')
+	        model.shapeMode(TRIANGLES);
 	}
+
+	public void mouseDragged()
+	{
+	    rotX += (mouseX - pmouseX) * 0.01;
+	    rotY -= (mouseY - pmouseY) * 0.01;
+	}
+
 }
