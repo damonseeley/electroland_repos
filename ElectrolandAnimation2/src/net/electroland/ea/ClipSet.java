@@ -35,10 +35,19 @@ public class ClipSet implements Set<Clip>{
         }
         return this;
     }
+
+    @Deprecated
     public ClipSet queueChange(Tween change, int duration)
     {
         for (Clip clip : group){
             clip.queue(change, duration);
+        }
+        return this;
+    }
+    public ClipSet queueChange(Sequence sequence)
+    {
+        for (Clip clip : group){
+            clip.queue(sequence);
         }
         return this;
     }
@@ -53,6 +62,7 @@ public class ClipSet implements Set<Clip>{
     public boolean add(Clip arg0) {
         return group.add(arg0);
     }
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public boolean addAll(Collection arg0) {
         return group.addAll(arg0);
@@ -97,6 +107,7 @@ public class ClipSet implements Set<Clip>{
     public Object[] toArray() {
         return group.toArray();
     }
+    @SuppressWarnings({ "unchecked" })
     @Override
     public Object[] toArray(Object[] arg0) {
         return group.toArray(arg0);

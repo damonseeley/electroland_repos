@@ -34,8 +34,8 @@ public class Clip implements Comparable<Clip>{
 
     private boolean             isRequestedForKill = false;
     private List<Clip>          children;
-    private ClipState           initialState;
-    private ClipState           currentState;
+    protected ClipState           initialState;
+    protected ClipState           currentState;
     private Queue<QueuedActionState>  queuedTweens;
     private QueuedActionState         tweenInProgress;
     private Object              message;
