@@ -2,6 +2,7 @@ package net.electroland.eio;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,9 +18,11 @@ import org.apache.log4j.Logger;
 public class EIOManager implements Shutdownable, Runnable {
 
     static Logger logger = Logger.getLogger(EIOManager.class);
-    
+
     private Collection<Device>          devices;
-    private Collection<InputChannel>    inputChannels;
+    private Collection<InputChannel>    allInputChannels;
+    private Collection<InputChannel>    realChannels;
+    private Collection<VirtualChannel>  virtualChannels;
     private Collection<OutputChannel>   outputChannels;
     private Thread                      readThread;
     private int                         delay;
@@ -34,7 +37,7 @@ public class EIOManager implements Shutdownable, Runnable {
     }
 
     public Collection<InputChannel> getInputChannels() {
-        return inputChannels;
+        return allInputChannels;
     }
 
     public Collection<OutputChannel> getOutputChannels() {
@@ -51,7 +54,11 @@ public class EIOManager implements Shutdownable, Runnable {
         Map<String, Device>deviceMap = loadDevices(props);
         Map<String, ParameterMap>filterMap = loadFilterConfig(props);
 
-        inputChannels = loadInputChannels(props, deviceMap, filterMap);
+        realChannels = loadInputChannels(props, deviceMap, filterMap);
+        virtualChannels = this.loadVirtualChannels(props, realChannels, filterMap);
+        allInputChannels = new ArrayList<InputChannel>();
+        allInputChannels.addAll(realChannels);
+        allInputChannels.addAll(virtualChannels);
         this.devices = deviceMap.values();
     }
 
@@ -75,7 +82,14 @@ public class EIOManager implements Shutdownable, Runnable {
         return filterMap;
     }
 
-    private List<InputChannel>loadInputChannels(ElectrolandProperties props, 
+    private Collection<VirtualChannel>loadVirtualChannels(ElectrolandProperties props,
+                                                Collection<InputChannel> realChannels,
+                                                Map<String, ParameterMap>filters){
+        // TODO: implement
+        return Collections.<VirtualChannel>emptyList();
+    }
+
+    private Collection<InputChannel>loadInputChannels(ElectrolandProperties props, 
                                                 Map<String, Device>devices, 
                                                 Map<String, ParameterMap>filters){
 
@@ -135,12 +149,19 @@ public class EIOManager implements Shutdownable, Runnable {
 
                 ValueSet deviceValues = device.read();
 
-                for (InputChannel c : inputChannels){
-                    Value v = deviceValues.get(c);
-                    c.filter(v);
-                    unionValues.put(c, v);
+                for (InputChannel ic : realChannels){
+                    Value v = deviceValues.get(ic);
+                    ic.filter(v);
+                    unionValues.put(ic, v);
                 }
 
+                for (VirtualChannel vc : virtualChannels){
+                    ValueSet inputs = new ValueSet();
+                    for (InputChannel ic : vc.inputChannels){
+                        inputs.put(ic, unionValues.get(ic));
+                    }
+                    vc.filter(vc.read(inputs));
+                }
             }
 
             for (IOListener listener : listeners){
