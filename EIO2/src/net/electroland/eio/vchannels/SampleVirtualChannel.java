@@ -9,12 +9,21 @@ public class SampleVirtualChannel extends VirtualChannel {
 
     @Override
     public void configure(ParameterMap params) {
-        // TODO Auto-generated method stub
+        // nothing require for this one.
     }
 
+    /**
+     * Just returns the average of all connected channels.
+     */
     @Override
     public Value read(ValueSet inputValues) {
-        // TODO Auto-generated method stub
-        return new Value();
+
+        int total = 0;
+
+        for (Value v : inputValues.values()){
+            total += v.getValue();
+        }
+
+        return new Value((int)(total / (float)inputValues.values().size()));
     }
 }
