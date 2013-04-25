@@ -32,7 +32,9 @@ public class EIOManager implements Shutdownable, Runnable {
     }
 
     public void addListener(IOListener listener){
-        listeners.add(listener);
+        synchronized(listeners){
+            listeners.add(listener);
+        }
     }
 
     public Collection<InputChannel> getInputChannels() {
@@ -207,8 +209,10 @@ public class EIOManager implements Shutdownable, Runnable {
                 }
             }
 
-            for (IOListener listener : listeners){
-                listener.dataReceived(unionValues);
+            synchronized(listeners){
+                for (IOListener listener : listeners){
+                    listener.dataReceived(unionValues);
+                }
             }
 
             try {
