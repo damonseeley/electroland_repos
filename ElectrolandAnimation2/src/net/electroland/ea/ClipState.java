@@ -11,9 +11,9 @@ import java.awt.Rectangle;
  */
 public class ClipState {
 
-    public Rectangle geometry;
-    public float alpha;
-    public Color bgcolor;
+    protected Rectangle geometry;
+    protected float alpha;
+    protected Color bgcolor;
 
     public ClipState(int left, int top, int width, int height, float alpha)
     {

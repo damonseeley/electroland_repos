@@ -53,6 +53,7 @@ public class Tween {
         int   h  = (int)FofH.valueAt(percentComplete, init.geometry.height, calculateTargetValue(init.geometry.height, reqHchange));
         float a  =      FofA.valueAt(percentComplete, init.alpha,           calculateTargetValue(init.alpha,           reqAchange));
 
+        // background color tweening
         Color bg = null;
         if (init.bgcolor != null){
             float hsbVals[] = Color.RGBtoHSB(init.bgcolor.getRed(),
@@ -62,6 +63,7 @@ public class Tween {
             float hue =     FofHue.valueAt(percentComplete, hsbVals[0],         calculateTargetValue(hsbVals[0],           reqHueChange));
             float sat =     FofHue.valueAt(percentComplete, hsbVals[1],         calculateTargetValue(hsbVals[1],           reqSatChange));
             float bright =  FofHue.valueAt(percentComplete, hsbVals[2],         calculateTargetValue(hsbVals[2],           reqBrightChange));
+
             bg =      Color.getHSBColor(hue, sat, bright);
         }
         return new ClipState(x,y,w,h,a,bg);

@@ -7,7 +7,6 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
-import net.electroland.ea.content.SolidColorContent;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
 import net.electroland.utils.ParameterMap;
@@ -55,7 +54,7 @@ public class Animation {
         logger.info("loading...");
         frameDimemsions = new Dimension(p.getRequiredInt("settings", "global", "width"),
                                         p.getRequiredInt("settings", "global", "height"));
-        rootClip = new Clip(null, null, 0, 0, frameDimemsions.width, frameDimemsions.height, 1.0f);
+        rootClip = new Clip(null, Color.GRAY, 0, 0, frameDimemsions.width, frameDimemsions.height, 1.0f);
         rootClip.animationManager = this;
 
         // clip
@@ -87,10 +86,9 @@ public class Animation {
         load(p);
     }
 
-    public void setBackground(Color color)
+    public void setBackground(Color bg)
     {
-        // TODO: make this set bgcolor
-        this.rootClip.content = new SolidColorContent(color);
+        this.rootClip.currentState.bgcolor = bg;
     }
     public Dimension getFrameDimensions() {
         return frameDimemsions;
