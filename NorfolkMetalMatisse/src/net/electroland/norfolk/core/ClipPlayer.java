@@ -105,14 +105,11 @@ public class ClipPlayer implements AnimationListener {
 
         try {
 
-            logger.info("play for channel " + channel);
             Target t = sensorToClips.get(channel.getId());
 
-            if (t != null && t.method != null){
-                logger.info("clipPlayer.play " + t.method.getName() + " at " + t.fixture);
+            if (t != null && t.method != null && t.fixture != null){
+                logger.debug("clipPlayer.play " + t.method.getName() + " at " + t.fixture + " for " + channel);
                 t.method.invoke(this, t.fixture);
-            }else{
-                logger.error("no method defined for channel " + channel.getId());
             }
 
         } catch (SecurityException e) {
