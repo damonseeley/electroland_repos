@@ -12,7 +12,6 @@ import net.electroland.ea.Animation;
 import net.electroland.eio.EIOManager;
 import net.electroland.eio.IOFrameTest;
 import net.electroland.eio.InputChannel;
-import net.electroland.norfolk.eio.IOFrameTestNorfolk;
 import net.electroland.norfolk.eio.filters.PeopleIOWatcher;
 import net.electroland.norfolk.eio.filters.PeopleListener;
 import net.electroland.norfolk.eio.filters.PersonEvent;
@@ -62,7 +61,7 @@ public class Conductor implements PeopleListener, Runnable{
             c.mainControls.setVisible(true);
 
             // sensors
-            IOFrameTestNorfolk sensors = new IOFrameTestNorfolk(c.eio);
+            IOFrameTest sensors = new IOFrameTest(c.eio);
             sensors.resizeWindow(600, 400);
 
             // TODO: window for 3d rendering
