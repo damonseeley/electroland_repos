@@ -89,6 +89,7 @@ public class Conductor implements PeopleListener, Runnable{
         fps = mainProps.getDefaultInt("settings", "global", "fps", 30);
 
         clipPlayer = new ClipPlayer(eam, new SimpleSoundManager(), elu, mainProps);
+        new ClipPlayerGUI(clipPlayer);
 
         start();
     }
