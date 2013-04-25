@@ -1,7 +1,7 @@
 # 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
 # File Created: 01.04.2013 01:35:25
 
-#mtllib pF11.mtl
+mtllib ../depends/models/pF11.mtl
 
 #
 # object pF11
@@ -3190,7 +3190,7 @@ vt 0.691070 0.337622 1.000000
 # 1467 texture coords
 
 g pF11
-#usemtl 05___Default
+usemtl 05___Default
 s 1
 f 1/1/1 2/2/2 3/3/3 
 f 1/1/1 3/3/3 4/4/4 
