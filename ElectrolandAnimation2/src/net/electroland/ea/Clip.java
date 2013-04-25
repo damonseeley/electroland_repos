@@ -44,15 +44,6 @@ public class Clip implements Comparable<Clip>{
     public int                  zIndex = 0;
     public long                 createTime;
 
-//    public Clip(Content content, int top, int left, int width, int height, float alpha)
-//    {
-//        this.children       = Collections.synchronizedList(new ArrayList<Clip>());
-//        this.content        = content;
-//        this.initialState   = new ClipState(top, left, width, height, alpha);
-//        this.currentState   = new ClipState(top, left, width, height, alpha);
-//        queuedTweens        = new ConcurrentLinkedQueue<QueuedActionState>();
-//        createTime          = System.currentTimeMillis();
-//    }
     public Clip(Content content, Color bgcolor, int top, int left, int width, int height, float alpha)
     {
         this.children       = Collections.synchronizedList(new ArrayList<Clip>());
@@ -126,13 +117,21 @@ public class Clip implements Comparable<Clip>{
         return newClip;
     }
 
+    /**
+     * this doesn't work.
+     * @param bgcolor
+    public void setBackground(Color bgcolor){
+        this.initialState.bgcolor = bgcolor;
+    }
+     */
+
     public Clip queue(Sequence sequence){
         for (Tween tween : sequence.sequence){
             queue(tween, tween.durationMillis);
         }
         return this;
     }
-    
+
     /**
      * Request that a tweening directive be queued up.  The Tween will take
      * place over the specified duration.
