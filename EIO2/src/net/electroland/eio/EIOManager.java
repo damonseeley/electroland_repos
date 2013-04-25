@@ -86,6 +86,10 @@ public class EIOManager implements Shutdownable, Runnable {
                                                 Collection<InputChannel> realChannels,
                                                 Map<String, ParameterMap>filters){
         // TODO: implement
+        // get all vchannels
+        // add appropriate vchannels
+        // add appropriate filters
+        // call config
         return Collections.<VirtualChannel>emptyList();
     }
 
