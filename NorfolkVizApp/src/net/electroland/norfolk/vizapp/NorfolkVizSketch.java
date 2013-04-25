@@ -22,6 +22,8 @@ public class NorfolkVizSketch extends PApplet {
 			lightModel = passedLightModel;
 			participantModel = passedParticipantModel;
 			sensorBeamModel = passedSensorBeamModel;
+			sensorBeamModel.setTexture(beamTexture);
+			sensorBeamModel.enableTexture();
 			lightTexture = createImage(128, 128, RGB);
 			lightMask = loadImage("../depends/models/lightGrad.jpg");
 			lightIntensity = 0.5;
@@ -69,6 +71,8 @@ public class NorfolkVizSketch extends PApplet {
 	//declare all OBJModels
 	OBJModel sculpture, environment, volumeB01, volumeB02, volumeB03, volumeC01A, volumeC01B, volumeC02A, volumeC02B, volumeC03A, volumeC03B, volumeF01, volumeF02, volumeF03, volumeF05, volumeF06, volumeF08, volumeF09, volumeF10, volumeF11, volumeF12, volumeL01, volumeL02, volumeV01, volumeV02, volumeV03, volumeV04, modelpB01, modelpB02, modelpB03, modelpF01, modelpF02, modelpF03, modelpF05, modelpF06, modelpF08, modelpF09, modelpF10, modelpF11, modelpF12, modelsB01, modelsB02, modelsB03, modelsF01, modelsF02, modelsF03, modelsF05, modelsF06, modelsF08, modelsF09, modelsF10, modelsF11, modelsF12, modelsT01;
 
+	//declare and build a texture for sensorBeams
+	PImage beamTexture;
 	
 	//Declare an array to hold all the LightObjects
 	//This will be a hashmap soon
@@ -84,7 +88,6 @@ public class NorfolkVizSketch extends PApplet {
 	  scene.setRadius(2000);
 	  scene.camera().setPosition(new PVector(0, 50, zoomLevel));
 	  scene.disableKeyboardHandling();
-	  
 	  
 	  //Register a CAD Camera profile and name it "CAD_CAM"
 	  scene.registerCameraProfile(new CameraProfile(scene, "CAD_CAM", CameraProfile.Mode.CAD));
@@ -154,6 +157,14 @@ public class NorfolkVizSketch extends PApplet {
 	  modelsF11 = new OBJModel(this, "../depends/models/sF11.obj", "absolute", TRIANGLES);
 	  modelsF12 = new OBJModel(this, "../depends/models/sF12.obj", "absolute", TRIANGLES);
 	  
+	  //Build sensorBeam's texture
+	  beamTexture = createImage(32,32, RGB);
+	  beamTexture.loadPixels();
+	  for (int i = 0; i < beamTexture.pixels.length; i++) {
+		  beamTexture.pixels[i] = color(255, 0, 0); 
+	  }
+	  beamTexture.updatePixels();
+	  
 	  //initialize LightObjects
 	  LightObject B01 = new LightObject(volumeB01, modelpB01, modelsB01);
 	  LightObject B02 = new LightObject(volumeB02, modelpB02, modelsB02);
@@ -218,8 +229,13 @@ public class NorfolkVizSketch extends PApplet {
 
 	public void draw()
 	{
-		background(129);
-		lights();
+		background(17, 24, 34);
+		//lights();
+		//Add some lighting
+		pointLight(128, 128, 128, 0, 50, 2000);
+		pointLight(128, 128, 128, 0, 50, -2000);
+		pointLight(128, 128, 128, 2000, 50, 0);
+		pointLight(128, 128, 128, -2000, 50, 0);
 
 		blendMode(BLEND);
 		sculpture.draw();
@@ -230,12 +246,14 @@ public class NorfolkVizSketch extends PApplet {
 			if (showParticipants == true) {
 				if (allLightObjects[i].triggerState == true) allLightObjects[i].participantModel.draw();
 			}
+			
+		}
+		blendMode(ADD);
+		
+		for (int i = 0; i < allLightObjects.length; i = i+1) {
 			if (showSensorBeams == true) {
 				if (allLightObjects[i].triggerState == true) allLightObjects[i].sensorBeamModel.draw();
 			}
-		}
-		blendMode(ADD);
-		for (int i = 0; i < allLightObjects.length; i = i+1) {
 			allLightObjects[i].lightModel.draw();
 		}
 
