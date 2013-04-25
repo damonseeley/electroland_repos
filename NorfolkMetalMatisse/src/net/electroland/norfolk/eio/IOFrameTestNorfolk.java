@@ -23,7 +23,7 @@ import net.electroland.eio.*;
 
 
 @SuppressWarnings("serial")
-public class IOFrameTest extends JPanel implements IOListener, ActionListener {
+public class IOFrameTestNorfolk extends JPanel implements IOListener, ActionListener {
 
     public static final String RECORD = "Start recording";
     public static final String STOP   = "Stop and save";
@@ -33,7 +33,7 @@ public class IOFrameTest extends JPanel implements IOListener, ActionListener {
     final JFileChooser fc = new JFileChooser();
     private JFrame frame;
 
-    public IOFrameTest(EIOManager manager){
+    public IOFrameTestNorfolk(EIOManager manager){
         frame = new JFrame();
         this.manager = manager;
         frame.setSize(1200, 600);
@@ -72,7 +72,7 @@ public class IOFrameTest extends JPanel implements IOListener, ActionListener {
         EIOManager ioMgr = new EIOManager();
         ioMgr.load(propsFilename);
 
-        new IOFrameTest(ioMgr);
+        new IOFrameTestNorfolk(ioMgr);
      }
 
     @Override
@@ -104,7 +104,7 @@ public class IOFrameTest extends JPanel implements IOListener, ActionListener {
 
             if (val != null && isRecent(lastRead.getReadTime())){
                 // cast based on val.
-                int barHeight   = scale(val.getValue(), maxBarHite);
+                int barHeight   = scale(val.getRawValue(), maxBarHite);
                 if (barHeight > 0){
                     top -= barHeight;
                 }
@@ -118,7 +118,7 @@ public class IOFrameTest extends JPanel implements IOListener, ActionListener {
 
                 // value
                 g2d.setColor(Color.WHITE);
-                g2d.drawString("" + val.getValue(), left, top);
+                g2d.drawString("" + val.getRawValue(), left, top);
             }
             // id
             g2d.setColor(Color.WHITE);
