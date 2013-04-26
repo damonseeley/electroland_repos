@@ -64,7 +64,7 @@ public class Conductor implements PeopleListener, Runnable{
 
             // sensors
             IOFrameTest sensors = new IOFrameTest(c.eio);
-            sensors.resizeWindow(1000, 500);
+            sensors.resizeWindow(1000, 200);
 
             // TODO: window for 3d rendering
         }
