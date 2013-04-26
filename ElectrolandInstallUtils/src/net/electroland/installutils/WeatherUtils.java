@@ -9,7 +9,6 @@ import uk.me.jstott.sun.Sun;
 import uk.me.jstott.sun.Time;
 import uk.me.jstott.util.JulianDateConverter;
 
-import com.sun.syndication.feed.module.yahooweather.YWeatherFeedModule;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.SyndFeedInput;
@@ -53,7 +52,6 @@ public class WeatherUtils {
 	    try{
 	    	url = new URL(YAHOO_WEATHER_URL);
 	    	SyndFeed feed = input.build(new XmlReader(url));
-	    	YWeatherFeedModule yfeed = (YWeatherFeedModule) feed.getModule(YWeatherFeedModule.URI);
 	    	SyndEntry entry = (SyndEntry) feed.getEntries().get(0);
 	    	System.out.println(entry);
 	    } catch(Exception e){
