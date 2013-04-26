@@ -3,6 +3,8 @@ import java.awt.Color;
 import processing.core.*;
 import remixlab.proscene.*;
 import saito.objloader.*;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Random;
 
 
@@ -74,9 +76,10 @@ public class NorfolkVizSketch extends PApplet {
 	//declare and build a texture for sensorBeams
 	PImage beamTexture;
 	
-	//Declare an array to hold all the LightObjects
-	//This will be a hashmap soon
-	LightObject[] allLightObjects = new LightObject[25];
+	
+	//Declare the lights hashmap
+	HashMap<String,LightObject> lights = new HashMap<String,LightObject>();
+	  
 
 	public void setup()
 	{
@@ -158,7 +161,7 @@ public class NorfolkVizSketch extends PApplet {
 	  modelsF12 = new OBJModel(this, "../depends/models/sF12.obj", "absolute", TRIANGLES);
 	  
 	  //Build sensorBeam's texture
-	  beamTexture = createImage(32,32, RGB);
+	  beamTexture = createImage(128,128, RGB);
 	  beamTexture.loadPixels();
 	  for (int i = 0; i < beamTexture.pixels.length; i++) {
 		  beamTexture.pixels[i] = color(255, 0, 0); 
@@ -192,33 +195,32 @@ public class NorfolkVizSketch extends PApplet {
 	  LightObject V03 = new LightObject(volumeV03, modelpB01, modelsB01);
 	  LightObject V04 = new LightObject(volumeV04, modelpB01, modelsB01);
 	  
-
-	  //build the array of all light objects, and initialize them
-	  allLightObjects[0] = B01;
-	  allLightObjects[1] = B02;
-	  allLightObjects[2] = B03;
-	  allLightObjects[3] = C01A;
-	  allLightObjects[4] = C01B;
-	  allLightObjects[5] = C02A;
-	  allLightObjects[6] = C02B;
-	  allLightObjects[7] = C03A;
-	  allLightObjects[8] = C03B;
-	  allLightObjects[9] = F01;
-	  allLightObjects[10] = F02;
-	  allLightObjects[11] = F03;
-	  allLightObjects[12] = F05;
-	  allLightObjects[13] = F06;
-	  allLightObjects[14] = F08;
-	  allLightObjects[15] = F09;
-	  allLightObjects[16] = F10;
-	  allLightObjects[17] = F11;
-	  allLightObjects[18] = F12;
-	  allLightObjects[19] = L01;
-	  allLightObjects[20] = L02;
-	  allLightObjects[21] = V01;
-	  allLightObjects[22] = V02;
-	  allLightObjects[23] = V03;
-	  allLightObjects[24] = V04;
+	  //fill the lights hashmap
+	  lights.put("B01", B01);
+	  lights.put("B02", B02);
+	  lights.put("B03", B03);
+	  lights.put("C01A", C01A);
+	  lights.put("C01B", C01B);
+	  lights.put("C02A", C02A);
+	  lights.put("C02B", C02B);
+	  lights.put("C03A", C03A);
+	  lights.put("C03B", C03B);
+	  lights.put("F01", F01);
+	  lights.put("F02", F02);
+	  lights.put("F03", F03);
+	  lights.put("F05", F05);
+	  lights.put("F06", F06);
+	  lights.put("F08", F08);
+	  lights.put("F09", F09);
+	  lights.put("F10", F10);
+	  lights.put("F11", F11);
+	  lights.put("F12", F12);
+	  lights.put("L01", L01);
+	  lights.put("L02", L02);
+	  lights.put("V01", V01);
+	  lights.put("V02", V02);
+	  lights.put("V03", V03);
+	  lights.put("V04", V04);
 	  
 
 	  //Set stroke color to white, then hide strokes
@@ -241,20 +243,21 @@ public class NorfolkVizSketch extends PApplet {
 		sculpture.draw();
 
 		if (showEnvironment == true) environment.draw();
-		//iterate through allLightObjects and draw
-		for (int i = 0; i < allLightObjects.length; i = i+1) {
-			if (showParticipants == true) {
-				if (allLightObjects[i].triggerState == true) allLightObjects[i].participantModel.draw();
-			}
-			
-		}
-		blendMode(ADD);
-		
-		for (int i = 0; i < allLightObjects.length; i = i+1) {
+
+		//iterate through allLightObjects and draw solid stuff
+		for (LightObject light : lights.values()) {
 			if (showSensorBeams == true) {
-				if (allLightObjects[i].triggerState == true) allLightObjects[i].sensorBeamModel.draw();
+				if (light.triggerState == true) light.sensorBeamModel.draw();
 			}
-			allLightObjects[i].lightModel.draw();
+			if (showParticipants == true) {
+				if (light.triggerState == true) light.participantModel.draw();
+			}
+		}
+
+		//iterate through allLightObjects and draw light cones in ADD mode
+		blendMode(ADD);
+		for (LightObject light : lights.values()) {
+			light.lightModel.draw();
 		}
 
 	}
@@ -273,16 +276,16 @@ public class NorfolkVizSketch extends PApplet {
 		
 		if(key == 'r') {
 			Random rand = new Random();
-			for (int i = 0; i < allLightObjects.length; i = i+1) {
+			for (LightObject light : lights.values()) {
 				float rRand = rand.nextInt(255);
 				float gRand = rand.nextInt(255);
 				float bRand = rand.nextInt(255);
-				allLightObjects[i].lightTexture.loadPixels();
-				for (int ii = 0; ii < allLightObjects[i].lightTexture.pixels.length; ii++) {
-					allLightObjects[i].lightTexture.pixels[ii] = color(rRand,gRand,bRand); 
+				light.lightTexture.loadPixels();
+				for (int ii = 0; ii < light.lightTexture.pixels.length; ii++) {
+					light.lightTexture.pixels[ii] = color(rRand,gRand,bRand); 
 				}
-				allLightObjects[i].lightTexture.mask(allLightObjects[i].lightMask);
-				allLightObjects[i].lightTexture.updatePixels();
+				light.lightTexture.mask(light.lightMask);
+				light.lightTexture.updatePixels();
 			}
 		}
 			
@@ -317,50 +320,50 @@ public class NorfolkVizSketch extends PApplet {
 		}
 			
 		if(key == '1') {
-			if(!allLightObjects[1].triggerState) {
-				allLightObjects[1].triggerState = true;
+			if(!lights.get("B01").triggerState) {
+				lights.get("B01").triggerState = true;
 	        } 
 	        else {
-	        	allLightObjects[1].triggerState = false;
+	        	lights.get("B01").triggerState = false;
 	        }
 
 		}
 		if(key == '2') {
-			if(!allLightObjects[2].triggerState) {
-				allLightObjects[2].triggerState = true;
+			if(!lights.get("B02").triggerState) {
+				lights.get("B02").triggerState = true;
 	        } 
 	        else {
-	        	allLightObjects[2].triggerState = false;
+	        	lights.get("B02").triggerState = false;
 	        }
 
 		}
 			
 		if(key == '3') {
-			if(!allLightObjects[9].triggerState) {
-				allLightObjects[9].triggerState = true;
+			if(!lights.get("F01").triggerState) {
+				lights.get("F01").triggerState = true;
 	        } 
 	        else {
-	        	allLightObjects[9].triggerState = false;
+	        	lights.get("F01").triggerState = false;
 	        }
 
 		}
 			
 		if(key == '4') {
-			if(!allLightObjects[10].triggerState) {
-				allLightObjects[10].triggerState = true;
+			if(!lights.get("F02").triggerState) {
+				lights.get("F02").triggerState = true;
 	        } 
 	        else {
-	        	allLightObjects[10].triggerState = false;
+	        	lights.get("F02").triggerState = false;
 	        }
 
 		}
 		
 		if(key == '5') {
-			if(!allLightObjects[11].triggerState) {
-				allLightObjects[11].triggerState = true;
+			if(!lights.get("F03").triggerState) {
+				lights.get("F03").triggerState = true;
 	        } 
 	        else {
-	        	allLightObjects[11].triggerState = false;
+	        	lights.get("F03").triggerState = false;
 	        }
 
 		}
