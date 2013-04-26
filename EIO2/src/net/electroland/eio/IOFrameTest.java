@@ -93,6 +93,11 @@ public class IOFrameTest extends JPanel implements IOListener, ActionListener {
         // draw graph baseline
         g.setColor(Color.WHITE);
         g.drawLine(0, baseline, width, baseline);
+        
+        // draw the min and max values
+        g.setColor(Color.GRAY);
+        g.drawLine(0, baseline+maxBarHite, width, baseline+maxBarHite);
+        g.drawLine(0, baseline-maxBarHite, width, baseline-maxBarHite);
 
         // plot inputs
         for (InputChannel channel : manager.getInputChannels()){
@@ -103,9 +108,12 @@ public class IOFrameTest extends JPanel implements IOListener, ActionListener {
 
             if (val != null && isRecent(lastRead.getReadTime())){
                 // cast based on val.
-                int barHeight   = scale(val.getValue(), maxBarHite);
+                int barHeight   = scale(val.getValue(), 2*maxBarHite);
                 if (barHeight > 0){
                     top -= barHeight;
+                }
+                else{
+                    barHeight = -barHeight;
                 }
 
                 // bar
@@ -127,6 +135,9 @@ public class IOFrameTest extends JPanel implements IOListener, ActionListener {
             g2d.setColor(Color.WHITE);
             g2d.drawString(channel.getId(), left, baseline+10);
         }
+        
+        
+        
     }
 
     public void resizeWindow(int w, int h){
