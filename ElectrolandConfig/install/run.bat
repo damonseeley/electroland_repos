@@ -1,1 +1,1 @@
-java -classpath EL-Config.jar; net.electroland.utils.process.RestartDaemon C:\\Users\\Electroland\\Desktop\\ElVis run.bat 1000
+java -classpath EL-Config.jar; net.electroland.utils.process.ProcessManager
