@@ -72,10 +72,10 @@ public class NorfolkVizSketch extends PApplet {
 	int zoomLevel = 1200;
 
 	//declare all OBJModels
-	OBJModel sculpture, environment, volumeB01, volumeB02, volumeB03, volumeC01A, volumeC01B, volumeC02A, volumeC02B, volumeC03A, volumeC03B, volumeF01, volumeF02, volumeF03, volumeF05, volumeF06, volumeF08, volumeF09, volumeF10, volumeF11, volumeF12, volumeL01, volumeL02, volumeV01, volumeV02, volumeV03, volumeV04, modelpB01, modelpB02, modelpB03, modelpF01, modelpF02, modelpF03, modelpF05, modelpF06, modelpF08, modelpF09, modelpF10, modelpF11, modelpF12, modelsB01, modelsB02, modelsB03, modelsF01, modelsF02, modelsF03, modelsF05, modelsF06, modelsF08, modelsF09, modelsF10, modelsF11, modelsF12, modelsT01;
+	OBJModel sculptureVase, sculptureSolid, sculptureScreen, environment, volumeB01, volumeB02, volumeB03, volumeC01A, volumeC01B, volumeC02A, volumeC02B, volumeC03A, volumeC03B, volumeF01, volumeF02, volumeF03, volumeF05, volumeF06, volumeF08, volumeF09, volumeF10, volumeF11, volumeF12, volumeL01, volumeL02, volumeV01, volumeV02, volumeV03, volumeV04, modelpB01, modelpB02, modelpB03, modelpF01, modelpF02, modelpF03, modelpF05, modelpF06, modelpF08, modelpF09, modelpF10, modelpF11, modelpF12, modelsB01, modelsB02, modelsB03, modelsF01, modelsF02, modelsF03, modelsF05, modelsF06, modelsF08, modelsF09, modelsF10, modelsF11, modelsF12, modelsT01;
 
-	//declare and build a texture for sensorBeams
-	PImage beamTexture;
+	//declare and build a couple textures
+	PImage beamTexture, vaseTexture, vaseMask;
 	
 	
 	//Declare the lights hashmap
@@ -107,7 +107,9 @@ public class NorfolkVizSketch extends PApplet {
 	  scene.camera().frame().setTossingFriction(1);
 	  
 	  //Define all OBJModels and their geo  
-	  sculpture = new OBJModel(this, "../depends/models/sculpture.obj", "absolute", TRIANGLES);
+	  sculptureVase = new OBJModel(this, "../depends/models/sculptureVase.obj", "absolute", TRIANGLES);
+	  sculptureSolid = new OBJModel(this, "../depends/models/sculptureSolid.obj", "absolute", TRIANGLES);
+	  sculptureScreen = new OBJModel(this, "../depends/models/sculptureScreen.obj", "absolute", TRIANGLES);
 	  environment = new OBJModel(this, "../depends/models/environment.obj", "absolute", TRIANGLES);
 	  volumeB01 = new OBJModel(this, "../depends/models/B01.obj", "absolute", TRIANGLES);
 	  volumeB02 = new OBJModel(this, "../depends/models/B02.obj", "absolute", TRIANGLES);
@@ -160,6 +162,18 @@ public class NorfolkVizSketch extends PApplet {
 	  modelsF10 = new OBJModel(this, "../depends/models/sF10.obj", "absolute", TRIANGLES);
 	  modelsF11 = new OBJModel(this, "../depends/models/sF11.obj", "absolute", TRIANGLES);
 	  modelsF12 = new OBJModel(this, "../depends/models/sF12.obj", "absolute", TRIANGLES);
+	  
+	  //Build Vase's hole texture
+	  vaseTexture = createImage(512, 512, RGB);
+	  vaseTexture.loadPixels();
+	  for (int i = 0; i < vaseTexture.pixels.length; i++) {
+		  vaseTexture.pixels[i] = color(230, 230, 240); 
+	  }
+	  vaseMask = loadImage("../depends/models/holes.jpg");
+	  vaseTexture.mask(vaseMask);
+	  vaseTexture.updatePixels();
+	  sculptureVase.setTexture(vaseTexture);
+	  sculptureVase.enableTexture();
 	  
 	  //Build sensorBeam's texture
 	  beamTexture = createImage(128,128, RGB);
@@ -240,8 +254,8 @@ public class NorfolkVizSketch extends PApplet {
 		pointLight(128, 128, 128, 2000, 50, 0);
 		pointLight(128, 128, 128, -2000, 50, 0);
 
-		blendMode(BLEND);
-		sculpture.draw();
+		sculptureSolid.draw();
+		sculptureScreen.draw();
 
 		if (showEnvironment == true) environment.draw();
 
@@ -260,6 +274,8 @@ public class NorfolkVizSketch extends PApplet {
 		for (LightObject light : lights.values()) {
 			light.lightModel.draw();
 		}
+		blendMode(BLEND);
+		sculptureVase.draw();
 
 	}
 	
