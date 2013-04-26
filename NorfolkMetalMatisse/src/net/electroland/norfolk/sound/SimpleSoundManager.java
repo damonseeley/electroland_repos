@@ -7,6 +7,7 @@ import java.util.Map;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.ParameterMap;
 import processing.core.PApplet;
+import ddf.minim.AudioPlayer;
 import ddf.minim.Minim;
 
 public class SimpleSoundManager {
@@ -41,6 +42,29 @@ public class SimpleSoundManager {
     }
 
     public void playSound(String soundName){
-        minim.loadFile(playList.get(soundName)).play();
+        AudioPlayer ap = minim.loadFile(playList.get(soundName));
+        new PlayThread(ap, ap.length() * 2).start();
     }
+}
+
+class PlayThread extends Thread{
+   
+   private AudioPlayer ap;
+   private int millis;
+
+   public PlayThread(AudioPlayer ap, int millis){
+       this.ap = ap;
+       this.millis = millis;
+   }
+
+   @Override
+   public void run(){
+       ap.play();
+       try {
+        Thread.sleep(millis);
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+       ap.close();
+   }
 }
