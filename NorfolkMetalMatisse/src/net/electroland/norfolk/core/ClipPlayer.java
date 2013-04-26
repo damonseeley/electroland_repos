@@ -154,6 +154,7 @@ public class ClipPlayer implements AnimationListener {
         System.out.println("f01 is at: " + loc + " of dimensions " + rd);
 
         int height = 90;
+        height = (int)(Math.random() * 100 + 70);
         //Clip c = eam.addClip(Color.getHSBColor(.9f, .8f, .7f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
         Clip c = eam.addClip(eam.getContent("gradientinvert"), Color.getHSBColor(.9f, .8f, .7f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
 
