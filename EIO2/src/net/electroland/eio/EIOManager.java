@@ -205,7 +205,9 @@ public class EIOManager implements Shutdownable, Runnable {
                     }
                     Value v = vc.read(inputs);
                     vc.filter(v);
-                    unionValues.put(vc, v);
+                    unionValues.put(vc, v); // this put overwrites any recorded virtual channel data.
+                                            // if we want to support playback of virtual channels, it
+                                            // has to somehow happen here.
                 }
             }
 
