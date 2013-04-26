@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.electroland.installutils.weather2.WeatherChecker;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.ParameterMap;
 import processing.core.PApplet;
@@ -14,9 +15,15 @@ public class SimpleSoundManager {
 
     private Map<String, String>playList;
     private Minim minim;
+    private WeatherChecker weather;
 
     public SimpleSoundManager(){
         minim = new Minim(new PApplet());
+    }
+
+    public SimpleSoundManager(WeatherChecker weather){
+        minim = new Minim(new PApplet());
+        this.weather = weather;
     }
 
     public SimpleSoundManager(ElectrolandProperties props){
@@ -42,8 +49,10 @@ public class SimpleSoundManager {
     }
 
     public void playSound(String soundName){
-        AudioPlayer ap = minim.loadFile(playList.get(soundName));
-        new PlayThread(ap, ap.length() * 2).start();
+        if (!weather.isDuringDaylightHours()){
+            AudioPlayer ap = minim.loadFile(playList.get(soundName));
+            new PlayThread(ap, ap.length() * 2).start();
+        }
     }
 }
 
