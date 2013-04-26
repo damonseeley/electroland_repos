@@ -62,15 +62,8 @@ public class WeatherChecker implements Runnable {
         Calendar sunrise = calculator.getOfficialSunriseCalendarForDate(gc);
         Calendar sunset  = calculator.getOfficialSunsetCalendarForDate(gc);
 
-        System.out.println("now:        " + now);
-        System.out.println("sunrise:    " + sunrise.getTime());
-        System.out.println("sunset:     " + sunset.getTime());
-
         sunrise.add(Calendar.MINUTE, sunrisePaddingMinutes);
         sunset.add(Calendar.MINUTE, sunsetPaddingMinutes);
-
-        System.out.println("adj sunrise:" + sunrise.getTime());
-        System.out.println("adj sunset: " + sunset.getTime());
 
         return now.after(sunrise.getTime()) && now.before(sunset.getTime());
     }
