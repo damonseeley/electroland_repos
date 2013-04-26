@@ -2,10 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/EIO2"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ElectrolandAnimation2"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ElectrolandConfig"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ElectrolandLightingUtils2"/>
 	<classpathentry kind="lib" path="libraries/core.jar"/>
 	<classpathentry kind="lib" path="libraries/jl1.0.jar"/>
 	<classpathentry kind="lib" path="libraries/jsminim.jar"/>
@@ -16,5 +12,9 @@
 	<classpathentry kind="lib" path="libraries/tritonus_aos.jar"/>
 	<classpathentry kind="lib" path="libraries/tritonus_share.jar"/>
 	<classpathentry kind="lib" path="libraries/vecmath.jar"/>
+	<classpathentry kind="lib" path="libraries/EIO2.jar"/>
+	<classpathentry kind="lib" path="libraries/EL-Config.jar"/>
+	<classpathentry kind="lib" path="libraries/EA2.jar"/>
+	<classpathentry kind="lib" path="libraries/ELU2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
