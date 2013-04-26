@@ -4,7 +4,6 @@ import processing.core.*;
 import remixlab.proscene.*;
 import saito.objloader.*;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Random;
 
 
