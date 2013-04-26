@@ -39,28 +39,30 @@ public class NorfolkVizSketch extends PApplet {
 			lightModel.enableTexture();
 		}
 	  
-	  //setLightColor makes a new PImage texture for each light
-	  //Intensity will usually be 1.0, but exists in case we want that functionality later 
-		public void setLightColor(String nameOfLight, Color lightColor) {
-			int r = Math.min(255, (int) (lightColor.getRed() * lightIntensity));
-			int g = Math.min(255, (int) (lightColor.getGreen() * lightIntensity));
-			int b = Math.min(255, (int) (lightColor.getBlue() * lightIntensity));
-			lightTexture.loadPixels();
-			for (int i = 0; i < lightTexture.pixels.length; i++) {
-				lightTexture.pixels[i] = color(r,g,b); 
-			}
-			lightTexture.mask(lightMask);
-			lightTexture.updatePixels();		  
-		}
-	  
-		public void setSensorState(String sensorName, Boolean isOn) {
-			triggerState = isOn;
-			System.err.println("Trigger " + sensorName + "is tripped high: " + triggerState);
-
-		}
-
 	}
 
+	//setLightColor rebuilds the PImage texture for a given light
+	//Intensity will eventually be 1.0, is currently a band-aid to help the ADD blendMode look better 
+	public void setLightColor(String nameOfLight, Color lightColor) {
+		int r = Math.min(255, (int) (lightColor.getRed() * lights.get(nameOfLight).lightIntensity));
+		int g = Math.min(255, (int) (lightColor.getGreen() * lights.get(nameOfLight).lightIntensity));
+		int b = Math.min(255, (int) (lightColor.getBlue() * lights.get(nameOfLight).lightIntensity));
+		//targetLight = lights.get(nameOfLight);
+		lights.get(nameOfLight).lightTexture.loadPixels();
+		for (int i = 0; i < lights.get(nameOfLight).lightTexture.pixels.length; i++) {
+			lights.get(nameOfLight).lightTexture.pixels[i] = color(r,g,b); 
+		}
+		lights.get(nameOfLight).lightTexture.mask(lights.get(nameOfLight).lightMask);
+		lights.get(nameOfLight).lightTexture.updatePixels();		  
+	}
+
+	//setSensorState does what it says on the tin
+	public void setSensorState(String sensorName, Boolean isOn) {
+		lights.get(sensorName).triggerState = isOn;
+		System.err.println("Trigger " + sensorName + "is tripped high: " + lights.get(sensorName).triggerState);
+
+	}
+	
 	//declare and set some display flags
 	boolean showParticipants = true;
 	boolean showSensorBeams = true;
@@ -318,51 +320,67 @@ public class NorfolkVizSketch extends PApplet {
 
 		}
 			
+		//if(key == 'q') {
+			
+			//setLightColor("B01", color(255,255,255));
+
+		//}
+		
 		if(key == '1') {
 			if(!lights.get("B01").triggerState) {
-				lights.get("B01").triggerState = true;
+				setSensorState("B01", true);
 	        } 
 	        else {
-	        	lights.get("B01").triggerState = false;
+	        	setSensorState("B01", false);
 	        }
 
 		}
 		if(key == '2') {
 			if(!lights.get("B02").triggerState) {
-				lights.get("B02").triggerState = true;
+				setSensorState("B02", true);
 	        } 
 	        else {
-	        	lights.get("B02").triggerState = false;
+	        	setSensorState("B02", false);
 	        }
 
 		}
 			
 		if(key == '3') {
 			if(!lights.get("F01").triggerState) {
-				lights.get("F01").triggerState = true;
+				setSensorState("F01", true);
 	        } 
 	        else {
-	        	lights.get("F01").triggerState = false;
+	        	setSensorState("F01", false);
 	        }
 
 		}
 			
 		if(key == '4') {
 			if(!lights.get("F02").triggerState) {
-				lights.get("F02").triggerState = true;
+				setSensorState("F02", true);
 	        } 
 	        else {
-	        	lights.get("F02").triggerState = false;
+	        	setSensorState("F02", false);
 	        }
 
 		}
 		
 		if(key == '5') {
 			if(!lights.get("F03").triggerState) {
-				lights.get("F03").triggerState = true;
+				setSensorState("F03", true);
 	        } 
 	        else {
-	        	lights.get("F03").triggerState = false;
+	        	setSensorState("F03", false);
+	        }
+
+		}
+		
+		if(key == '6') {
+			if(!lights.get("F05").triggerState) {
+				setSensorState("F05", true);
+	        } 
+	        else {
+	        	setSensorState("F05", false);
 	        }
 
 		}
