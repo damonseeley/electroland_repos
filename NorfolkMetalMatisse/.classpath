@@ -16,5 +16,11 @@
 	<classpathentry kind="lib" path="libraries/EL-Config.jar"/>
 	<classpathentry kind="lib" path="libraries/EA2.jar"/>
 	<classpathentry kind="lib" path="libraries/ELU2.jar"/>
+	<classpathentry kind="lib" path="libraries/EIU.jar"/>
+	<classpathentry kind="lib" path="libraries/jdom.jar"/>
+	<classpathentry kind="lib" path="libraries/jsuntimes-0.3.jar"/>
+	<classpathentry kind="lib" path="libraries/modules-0.3.2.jar"/>
+	<classpathentry kind="lib" path="libraries/rome-1.0.jar"/>
+	<classpathentry kind="lib" path="libraries/SunriseSunsetLib-bin.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
