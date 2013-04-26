@@ -12,6 +12,7 @@ import net.electroland.ea.Animation;
 import net.electroland.eio.EIOManager;
 import net.electroland.eio.IOFrameTest;
 import net.electroland.eio.InputChannel;
+import net.electroland.installutils.weather2.WeatherChecker;
 import net.electroland.norfolk.eio.filters.PeopleIOWatcher;
 import net.electroland.norfolk.eio.filters.PeopleListener;
 import net.electroland.norfolk.eio.filters.PersonEvent;
@@ -31,6 +32,7 @@ public class Conductor implements PeopleListener, Runnable{
     private Animation           eam;
     private ELUManager          elu;
     private EIOManager          eio;
+    private WeatherChecker      weather;
     private ClipPlayer          clipPlayer;
     private Thread              thread;
     private int                 fps = 30;
@@ -88,8 +90,11 @@ public class Conductor implements PeopleListener, Runnable{
         eam.setBackground(Color.BLACK);
         fps = mainProps.getDefaultInt("settings", "global", "fps", 30);
 
-        clipPlayer = new ClipPlayer(eam, new SimpleSoundManager(), elu, mainProps);
+        weather = new WeatherChecker(new ElectrolandProperties("weather.properties"));
+
+        clipPlayer = new ClipPlayer(eam, new SimpleSoundManager(weather), elu, mainProps);
         new ClipPlayerGUI(clipPlayer);
+
 
         start();
     }
@@ -122,11 +127,16 @@ public class Conductor implements PeopleListener, Runnable{
                 // sync with ELU
                 int pixels[] = new int[d.width * d.height];
                 frame.getRGB(0, 0, d.width, d.height, pixels, 0, d.width);
-                CanvasDetector[] detectors = canvas.sync(pixels);
 
-                if (renderArea != null){
-                    renderArea.update(frame, detectors);
-                    renderArea.repaint();
+                if (!weather.isDuringDaylightHours()){
+                    CanvasDetector[] detectors = canvas.sync(pixels);
+
+                    if (renderArea != null){
+                        renderArea.update(frame, detectors);
+                        renderArea.repaint();
+                    }
+                }else{
+                    elu.allOff();
                 }
             }
 
