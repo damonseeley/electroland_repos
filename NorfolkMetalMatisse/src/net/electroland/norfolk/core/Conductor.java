@@ -12,13 +12,13 @@ import net.electroland.ea.Animation;
 import net.electroland.eio.EIOManager;
 import net.electroland.eio.IOFrameTest;
 import net.electroland.eio.InputChannel;
-import net.electroland.installutils.weather2.WeatherChecker;
 import net.electroland.norfolk.eio.filters.PeopleIOWatcher;
 import net.electroland.norfolk.eio.filters.PeopleListener;
 import net.electroland.norfolk.eio.filters.PersonEvent;
 import net.electroland.norfolk.sound.SimpleSoundManager;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
+import net.electroland.utils.hours.OperatingHours;
 import net.electroland.utils.lighting.CanvasDetector;
 import net.electroland.utils.lighting.ELUCanvas;
 import net.electroland.utils.lighting.ELUManager;
@@ -32,7 +32,7 @@ public class Conductor implements PeopleListener, Runnable{
     private Animation           eam;
     private ELUManager          elu;
     private EIOManager          eio;
-    private WeatherChecker      weather;
+    private OperatingHours      hours;
     private ClipPlayer          clipPlayer;
     private GlobalShow          globalShow;
     private Thread              thread;
@@ -91,9 +91,10 @@ public class Conductor implements PeopleListener, Runnable{
         eam.setBackground(Color.BLACK);
         fps = mainProps.getDefaultInt("settings", "global", "fps", 30);
 
-        weather = new WeatherChecker(new ElectrolandProperties("weather.properties"));
+        hours = new OperatingHours();
+        hours.load(new ElectrolandProperties("hours.properties"));
 
-        clipPlayer = new ClipPlayer(eam, new SimpleSoundManager(weather), elu, mainProps);
+        clipPlayer = new ClipPlayer(eam, new SimpleSoundManager(hours), elu, mainProps);
         new ClipPlayerGUI(clipPlayer);
 
         globalShow = new GlobalShow(clipPlayer);
@@ -136,7 +137,7 @@ public class Conductor implements PeopleListener, Runnable{
                 int pixels[] = new int[d.width * d.height];
                 frame.getRGB(0, 0, d.width, d.height, pixels, 0, d.width);
 
-                if (!weather.isDuringDaylightHours()){
+                if (hours.shouldBeOpenNow("lights")){
                     CanvasDetector[] detectors = canvas.sync(pixels);
 
                     if (renderArea != null){
