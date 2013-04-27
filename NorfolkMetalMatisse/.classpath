@@ -12,6 +12,7 @@
 	<classpathentry kind="lib" path="libraries/tritonus_aos.jar"/>
 	<classpathentry kind="lib" path="libraries/tritonus_share.jar"/>
 	<classpathentry kind="lib" path="libraries/vecmath.jar"/>
+	<classpathentry kind="lib" path="libraries/EIO2.jar"/>
 	<classpathentry kind="lib" path="libraries/EL-Config.jar"/>
 	<classpathentry kind="lib" path="libraries/EA2.jar"/>
 	<classpathentry kind="lib" path="libraries/ELU2.jar"/>
@@ -21,6 +22,6 @@
 	<classpathentry kind="lib" path="libraries/modules-0.3.2.jar"/>
 	<classpathentry kind="lib" path="libraries/rome-1.0.jar"/>
 	<classpathentry kind="lib" path="libraries/SunriseSunsetLib-bin.jar"/>
-	<classpathentry kind="lib" path="libraries/EIO2.jar"/>
+	<classpathentry kind="lib" path="libraries/jamod.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
