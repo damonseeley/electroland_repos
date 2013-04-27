@@ -20,7 +20,7 @@ public class GlobalShow implements Runnable {
                 /***  play whateve you want here!  Pick from a random list, ***/
                 /***  or whatever.                                          ***/
                 logger.info("playing 60 seconds show...");
-                player.play("trainSweeps");
+                player.play("timedShow");
 
                 /**************************************************************/
                 nextPlayTime = System.currentTimeMillis() + 60 * 1000; // 60 seconds

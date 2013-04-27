@@ -168,7 +168,7 @@ public class ClipPlayer implements AnimationListener {
         c.queue(sweep).fadeOut(500).deleteWhenDone();
     }
     
-    public void trainSweeps(){
+    public void vertSweeps(){
         //ssm.playSound("002");
         
         // get location of fixture f01.
@@ -198,31 +198,151 @@ public class ClipPlayer implements AnimationListener {
                
     }
     
-    public void bigRadialSweep(){
-        ssm.playSound("002");
+    public void vertWavesRedMag(){
+        //ssm.playSound("002");
         
         // get location of fixture f01.
         Point3d loc           = this.getFixture("f01").getLocation();
         ReferenceDimension rd = this.getFixture("f01").getRealDimensions();
         System.out.println("f01 is at: " + loc + " of dimensions " + rd);
         
-        int duration = 3000;
+        int duration = 5000;
 
-        int width = 300;
+        int height = 1200;
         //Clip c = eam.addClip(Color.getHSBColor(.9f, .8f, .7f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
-        Clip c1 = eam.addClip(eam.getContent("gradientinvertghoriz"), Color.getHSBColor(.4f, .99f, .99f), -width, 0, 180, eam.getFrameDimensions().height, 1.0f);
-      
+        Clip c1 = eam.addClip(eam.getContent("grad1200_vert_three_red_mag"), Color.getHSBColor(.4f, .99f, .99f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
+        Clip c2 = eam.addClip(eam.getContent("grad1200_vert_three_red_mag"), Color.getHSBColor(.5f, .99f, .99f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
+        //Clip c3 = eam.addClip(eam.getContent("gradientinvert"), Color.getHSBColor(.6f, .99f, .99f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
+        //Clip c4 = eam.addClip(eam.getContent("gradientinvert"), Color.getHSBColor(.7f, .99f, .99f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
+
+        Sequence sweep = new Sequence();
+        sweep.yTo(eam.getFrameDimensions().height).duration(duration);
+        sweep.hueBy(0.2f);
+        //sweep.brightnessTo(0.5f);
+        
+
+        c1.queue(sweep).fadeOut(500).deleteWhenDone();
+        c2.pause(duration-duration/4).queue(sweep).fadeOut(500).deleteWhenDone();
+        //c3.pause(1400).queue(sweep).fadeOut(500).deleteWhenDone();
+        //c4.pause(2100).queue(sweep).fadeOut(500).deleteWhenDone();
+               
+    }
+    
+    
+    public void timedShow() {
+    	// conditional here to randomize showing
+    	radialBlueGreen3();
+    }
+    
+    public void radialOrange(){
+        //ssm.playSound("002");
+        // get location of fixture f01.
+        Point3d loc           = this.getFixture("f01").getLocation();
+        ReferenceDimension rd = this.getFixture("f01").getRealDimensions();
+        System.out.println("f01 is at: " + loc + " of dimensions " + rd);
+        
+        int duration = 3000;
+        int width = 1200;
+        Clip c1 = eam.addClip(eam.getContent("grad1200_one_org"), Color.getHSBColor(.4f, .99f, .99f), -width, 0, width, eam.getFrameDimensions().height, 1.0f);
 
         Sequence sweep = new Sequence();
         sweep.xTo(eam.getFrameDimensions().width + width).duration(duration);
         sweep.hueBy(0.2f);
         //sweep.brightnessTo(0.5f);
         
-
-        c1.queue(sweep).fadeOut(500).deleteWhenDone();
-               
+        c1.queue(sweep).fadeOut(500).deleteWhenDone();    
     }
+    
+    public void radialBlueGreen(){
+        //ssm.playSound("002");
+        // get location of fixture f01.
+        Point3d loc           = this.getFixture("f01").getLocation();
+        ReferenceDimension rd = this.getFixture("f01").getRealDimensions();
+        System.out.println("f01 is at: " + loc + " of dimensions " + rd);
+        
+        int duration = 3000;
+        int width = 1200;
+        Clip c1 = eam.addClip(eam.getContent("grad1200_one_blue_green"), Color.getHSBColor(.4f, .99f, .99f), -width, 0, width, eam.getFrameDimensions().height, 1.0f);
 
+        Sequence sweep = new Sequence();
+        sweep.xTo(eam.getFrameDimensions().width + width).duration(duration);
+        sweep.hueBy(0.2f);
+        //sweep.brightnessTo(0.5f);
+        
+        c1.queue(sweep).fadeOut(500).deleteWhenDone();    
+    }
+    
+    public void radialRedMag(){
+        //ssm.playSound("002");
+        // get location of fixture f01.
+        Point3d loc           = this.getFixture("f01").getLocation();
+        ReferenceDimension rd = this.getFixture("f01").getRealDimensions();
+        System.out.println("f01 is at: " + loc + " of dimensions " + rd);
+        
+        int duration = 3000;
+        int width = 1200;
+        Clip c1 = eam.addClip(eam.getContent("grad1200_one_red_mag"), Color.getHSBColor(.4f, .99f, .99f), -width, 0, width, eam.getFrameDimensions().height, 1.0f);
+
+        Sequence sweep = new Sequence();
+        sweep.xTo(eam.getFrameDimensions().width + width).duration(duration);
+        sweep.hueBy(0.2f);
+        //sweep.brightnessTo(0.5f);
+        
+        c1.queue(sweep).fadeOut(500).deleteWhenDone();    
+    }
+    
+    public void radialRedMagSlow(){
+        //ssm.playSound("002");
+        // get location of fixture f01.
+        Point3d loc           = this.getFixture("f01").getLocation();
+        ReferenceDimension rd = this.getFixture("f01").getRealDimensions();
+        System.out.println("f01 is at: " + loc + " of dimensions " + rd);
+        
+        int duration = 24000;
+        int width = 1200;
+        Clip c1 = eam.addClip(eam.getContent("grad1200_one_red_mag"), Color.getHSBColor(.4f, .99f, .99f), -width/2, 0, width, eam.getFrameDimensions().height, 1.0f);
+
+        Sequence sweep = new Sequence();
+        sweep.xTo(eam.getFrameDimensions().width + width).duration(duration);
+        sweep.hueBy(0.2f);
+        //sweep.brightnessTo(0.5f);
+        
+        c1.queue(sweep).fadeOut(500).deleteWhenDone();    
+    }
+    
+    public void radialBlueGreen3(){
+        //ssm.playSound("002");
+        // get location of fixture f01.
+        Point3d loc           = this.getFixture("f01").getLocation();
+        ReferenceDimension rd = this.getFixture("f01").getRealDimensions();
+        System.out.println("f01 is at: " + loc + " of dimensions " + rd);
+        
+        int duration = 5000;
+        int width = 1200;
+        Clip c1 = eam.addClip(eam.getContent("grad1200_three_blue_green"), Color.getHSBColor(.4f, .99f, .99f), -width, 0, width, eam.getFrameDimensions().height, 1.0f);
+        Clip c2 = eam.addClip(eam.getContent("grad1200_three_blue_green"), Color.getHSBColor(.4f, .99f, .99f), -width, 0, width, eam.getFrameDimensions().height, 1.0f);
+
+        Sequence sweep = new Sequence();
+        sweep.xTo(eam.getFrameDimensions().width + width).duration(duration);
+        sweep.hueBy(0.2f);
+        //sweep.brightnessTo(0.5f);
+        
+        c1.queue(sweep).fadeOut(500).deleteWhenDone();    
+        c2.pause(duration/2).queue(sweep).fadeOut(500).deleteWhenDone();    
+    }
+   
+    
+    
+    /** LOCAL FIXTURE-SPECIFIC ANIMATIONS **/
+
+    public void randColor(Fixture fixture){
+    	red(fixture);
+    }
+    
+    public void train(Fixture fixture) { 
+    	vertWavesRedMag();
+    }
+    
     public void red(Fixture fixture){
 
         ssm.playSound("002");
@@ -231,19 +351,23 @@ public class ClipPlayer implements AnimationListener {
                                 (int)fixture.getLocation().x - 10,
                                 (int)fixture.getLocation().y - 10, 20, 20, 1.0f);
 
-        c.fadeOut(1000).deleteWhenDone();
+        c.pause(800).fadeOut(1000).deleteWhenDone();
     }
     
-    public void magenta(Fixture fixture){
+    public void green(Fixture fixture){
 
         ssm.playSound("002");
 
-        Clip c = eam.addClip(eam.getContent("red"),
+        Clip c = eam.addClip(eam.getContent("green"),
                                 (int)fixture.getLocation().x - 10,
                                 (int)fixture.getLocation().y - 10, 20, 20, 1.0f);
 
-        c.fadeOut(1000).deleteWhenDone();
+        c.pause(800).fadeOut(1000).deleteWhenDone();
     }
+    
+    
+    
+    
 
     @Override
     public void messageReceived(Object message) {
