@@ -12,6 +12,7 @@ import javax.vecmath.Point3d;
 
 import net.electroland.ea.Animation;
 import net.electroland.ea.AnimationListener;
+import net.electroland.ea.Change;
 import net.electroland.ea.Clip;
 import net.electroland.ea.Sequence;
 import net.electroland.ea.easing.CubicOut;
@@ -121,6 +122,8 @@ public class ClipPlayer implements AnimationListener {
             e.getTargetException().printStackTrace();
         }
     }
+    
+    /** ANIMATIONS ****************************/
 
     public void bounceSlowWave(Fixture fixture){
 
@@ -165,8 +168,74 @@ public class ClipPlayer implements AnimationListener {
 
         c.queue(sweep).fadeOut(500).deleteWhenDone();
     }
+    
+    public void trainSweeps(){
+        ssm.playSound("002");
+        
+        // get location of fixture f01.
+        Point3d loc           = this.getFixture("f01").getLocation();
+        ReferenceDimension rd = this.getFixture("f01").getRealDimensions();
+        System.out.println("f01 is at: " + loc + " of dimensions " + rd);
+        
+        int duration = 3000;
+
+        int height = 180;
+        //Clip c = eam.addClip(Color.getHSBColor(.9f, .8f, .7f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
+        Clip c1 = eam.addClip(eam.getContent("gradientinvert"), Color.getHSBColor(.4f, .99f, .99f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
+        Clip c2 = eam.addClip(eam.getContent("gradientinvert"), Color.getHSBColor(.5f, .99f, .99f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
+        Clip c3 = eam.addClip(eam.getContent("gradientinvert"), Color.getHSBColor(.6f, .99f, .99f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
+        Clip c4 = eam.addClip(eam.getContent("gradientinvert"), Color.getHSBColor(.7f, .99f, .99f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
+
+        Sequence sweep = new Sequence();
+        sweep.yTo(eam.getFrameDimensions().height).duration(duration);
+        sweep.hueBy(0.2f);
+        //sweep.brightnessTo(0.5f);
+        
+
+        c1.queue(sweep).fadeOut(500).deleteWhenDone();
+        c2.pause(700).queue(sweep).fadeOut(500).deleteWhenDone();
+        c3.pause(1400).queue(sweep).fadeOut(500).deleteWhenDone();
+        c4.pause(2100).queue(sweep).fadeOut(500).deleteWhenDone();
+               
+    }
+    
+    public void bigRadialSweep(){
+        ssm.playSound("002");
+        
+        // get location of fixture f01.
+        Point3d loc           = this.getFixture("f01").getLocation();
+        ReferenceDimension rd = this.getFixture("f01").getRealDimensions();
+        System.out.println("f01 is at: " + loc + " of dimensions " + rd);
+        
+        int duration = 3000;
+
+        int width = 300;
+        //Clip c = eam.addClip(Color.getHSBColor(.9f, .8f, .7f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
+        Clip c1 = eam.addClip(eam.getContent("gradientinvertghoriz"), Color.getHSBColor(.4f, .99f, .99f), -width, 0, 180, eam.getFrameDimensions().height, 1.0f);
+      
+
+        Sequence sweep = new Sequence();
+        sweep.xTo(eam.getFrameDimensions().width + width).duration(duration);
+        sweep.hueBy(0.2f);
+        //sweep.brightnessTo(0.5f);
+        
+
+        c1.queue(sweep).fadeOut(500).deleteWhenDone();
+               
+    }
 
     public void red(Fixture fixture){
+
+        ssm.playSound("002");
+
+        Clip c = eam.addClip(eam.getContent("red"),
+                                (int)fixture.getLocation().x - 10,
+                                (int)fixture.getLocation().y - 10, 20, 20, 1.0f);
+
+        c.fadeOut(1000).deleteWhenDone();
+    }
+    
+    public void magenta(Fixture fixture){
 
         ssm.playSound("002");
 
