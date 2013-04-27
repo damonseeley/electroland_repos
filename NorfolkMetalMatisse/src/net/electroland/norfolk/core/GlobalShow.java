@@ -20,10 +20,10 @@ public class GlobalShow implements Runnable {
                 /***  play whateve you want here!  Pick from a random list, ***/
                 /***  or whatever.                                          ***/
                 logger.info("playing 60 seconds show...");
-                player.play("sweepWhiteDown");
+                player.play("trainSweeps");
 
                 /**************************************************************/
-                nextPlayTime = System.currentTimeMillis() + 60 * 60 * 1000; // an hour from now.
+                nextPlayTime = System.currentTimeMillis() + 60 * 1000; // an hour from now.
             }
             try {
                 Thread.sleep(1000); // poll every second instead of sleeping for 60,
