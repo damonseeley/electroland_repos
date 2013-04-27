@@ -23,5 +23,6 @@
 	<classpathentry kind="lib" path="libraries/rome-1.0.jar"/>
 	<classpathentry kind="lib" path="libraries/SunriseSunsetLib-bin.jar"/>
 	<classpathentry kind="lib" path="libraries/jamod.jar"/>
+	<classpathentry kind="lib" path="libraries/javaosc-core-0.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
