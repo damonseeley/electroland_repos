@@ -169,7 +169,7 @@ public class ClipPlayer implements AnimationListener {
     }
     
     public void trainSweeps(){
-        ssm.playSound("002");
+        //ssm.playSound("002");
         
         // get location of fixture f01.
         Point3d loc           = this.getFixture("f01").getLocation();
