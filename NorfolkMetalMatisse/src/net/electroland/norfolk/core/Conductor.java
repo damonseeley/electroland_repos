@@ -34,6 +34,7 @@ public class Conductor implements PeopleListener, Runnable{
     private EIOManager          eio;
     private WeatherChecker      weather;
     private ClipPlayer          clipPlayer;
+    private GlobalShow          globalShow;
     private Thread              thread;
     private int                 fps = 30;
     private JFrame              mainControls;
@@ -95,6 +96,8 @@ public class Conductor implements PeopleListener, Runnable{
         clipPlayer = new ClipPlayer(eam, new SimpleSoundManager(weather), elu, mainProps);
         new ClipPlayerGUI(clipPlayer);
 
+        globalShow = new GlobalShow(clipPlayer);
+        globalShow.start();
 
         start();
     }
@@ -109,7 +112,12 @@ public class Conductor implements PeopleListener, Runnable{
         }
     }
 
+    // TODO: shutdown thread should call this!!
     public void stop(){
+        globalShow.stop();
+        elu.allOff();
+        elu.stop();
+        eio.shutdown();
         thread = null;
     }
 
