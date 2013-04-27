@@ -13,47 +13,70 @@ public class NorfolkVizSketch extends PApplet {
 	//define a new class for LightObjects
 	//
 	class LightObject {
-		OBJModel lightModel, participantModel, sensorBeamModel;
+		OBJModel lightModel, participantModel, sensorBeamModel, lightPoolModel;
 		boolean triggerState;
 		int lightColor;
-		PImage lightTexture, lightMask;
+		PImage lightTexture, lightMask, lightPoolTexture, lightPoolMask;
 		double lightIntensity;
-		LightObject(OBJModel passedLightModel, OBJModel passedParticipantModel, OBJModel passedSensorBeamModel) {
+		LightObject(OBJModel passedLightModel, OBJModel passedParticipantModel, OBJModel passedSensorBeamModel, OBJModel passedLightPoolModel, double passedLightIntensity) {
 			triggerState = false;
 			lightModel = passedLightModel;
+			lightPoolModel = passedLightPoolModel;
 			participantModel = passedParticipantModel;
 			sensorBeamModel = passedSensorBeamModel;
 			sensorBeamModel.setTexture(beamTexture);
 			sensorBeamModel.enableTexture();
 			lightTexture = createImage(128, 128, RGB);
+			lightPoolTexture = createImage(128, 128, RGB);
 			lightMask = loadImage("../depends/models/lightGrad.jpg");
-			lightIntensity = 0.5;
+			lightPoolMask = loadImage("../depends/models/lightPoolMask.jpg");
+			lightIntensity = passedLightIntensity;
 			lightColor = color(255,255,0);
+			
+			//fill the light texture with color
 			lightTexture.loadPixels();
 			for (int i = 0; i < lightTexture.pixels.length; i++) {
 				lightTexture.pixels[i] = lightColor; 
 			}
 			lightTexture.mask(lightMask);
 			lightTexture.updatePixels();
+			
+			//fill the lightPoolTexture with color
+			lightPoolTexture.loadPixels();
+			for (int i = 0; i < lightPoolTexture.pixels.length; i++) {
+				lightPoolTexture.pixels[i] = lightColor; 
+			}
+			lightPoolTexture.mask(lightPoolMask);
+			lightPoolTexture.updatePixels();
+			
 			lightModel.setTexture(lightTexture);
 			lightModel.enableTexture();
+			lightPoolModel.setTexture(lightPoolTexture);
+			lightPoolModel.enableTexture();
 		}
 	  
 	}
 
 	//setLightColor rebuilds the PImage texture for a given light
-	//Intensity will eventually be 1.0, is currently a band-aid to help the ADD blendMode look better 
+	//Intensity helps adjust things visually, not part of the real MetalMatisse functions 
 	public void setLightColor(String nameOfLight, Color lightColor) {
 		int r = Math.min(255, (int) (lightColor.getRed() * lights.get(nameOfLight).lightIntensity));
 		int g = Math.min(255, (int) (lightColor.getGreen() * lights.get(nameOfLight).lightIntensity));
 		int b = Math.min(255, (int) (lightColor.getBlue() * lights.get(nameOfLight).lightIntensity));
-		//targetLight = lights.get(nameOfLight);
+		lights.get(nameOfLight).lightPoolTexture.loadPixels();
+		for (int i = 0; i < lights.get(nameOfLight).lightPoolTexture.pixels.length; i++) {
+			lights.get(nameOfLight).lightPoolTexture.pixels[i] = color(lightColor.getRed(),lightColor.getGreen(),lightColor.getBlue()); 
+		}
+		lights.get(nameOfLight).lightPoolTexture.mask(lights.get(nameOfLight).lightPoolMask);
+		lights.get(nameOfLight).lightPoolTexture.updatePixels();
+		
 		lights.get(nameOfLight).lightTexture.loadPixels();
 		for (int i = 0; i < lights.get(nameOfLight).lightTexture.pixels.length; i++) {
 			lights.get(nameOfLight).lightTexture.pixels[i] = color(r,g,b); 
 		}
 		lights.get(nameOfLight).lightTexture.mask(lights.get(nameOfLight).lightMask);
-		lights.get(nameOfLight).lightTexture.updatePixels();		  
+		lights.get(nameOfLight).lightTexture.updatePixels();
+
 	}
 
 	//setSensorState does what it says on the tin
@@ -72,9 +95,9 @@ public class NorfolkVizSketch extends PApplet {
 	int zoomLevel = 1200;
 
 	//declare all OBJModels
-	OBJModel sculptureVase, sculptureSolid, sculptureScreen, environment, volumeB01, volumeB02, volumeB03, volumeC01A, volumeC01B, volumeC02A, volumeC02B, volumeC03A, volumeC03B, volumeF01, volumeF02, volumeF03, volumeF05, volumeF06, volumeF08, volumeF09, volumeF10, volumeF11, volumeF12, volumeL01, volumeL02, volumeV01, volumeV02, volumeV03, volumeV04, modelpB01, modelpB02, modelpB03, modelpF01, modelpF02, modelpF03, modelpF05, modelpF06, modelpF08, modelpF09, modelpF10, modelpF11, modelpF12, modelsB01, modelsB02, modelsB03, modelsF01, modelsF02, modelsF03, modelsF05, modelsF06, modelsF08, modelsF09, modelsF10, modelsF11, modelsF12, modelsT01;
+	OBJModel sculptureVase, sculptureSolid, sculptureScreen, environment, blankOBJ, volumeB01, volumeB02, volumeB03, volumeC01A, volumeC01B, volumeC02A, volumeC02B, volumeC03A, volumeC03B, volumeF01, volumeF02, volumeF03, volumeF05, volumeF06, volumeF08, volumeF09, volumeF10, volumeF11, volumeF12, volumeL01, volumeL02, volumeV01, volumeV02, volumeV03, volumeV04, modelpB01, modelpB02, modelpB03, modelpF01, modelpF02, modelpF03, modelpF05, modelpF06, modelpF08, modelpF09, modelpF10, modelpF11, modelpF12, modelsB01, modelsB02, modelsB03, modelsF01, modelsF02, modelsF03, modelsF05, modelsF06, modelsF08, modelsF09, modelsF10, modelsF11, modelsF12, modelsT01, modeldC01, modeldC02, modeldC03, modeldF01, modeldF02, modeldF03, modeldF05, modeldF06, modeldF08, modeldF09, modeldF10, modeldF11, modeldF12;
 
-	//declare and build a couple textures
+	//declare some textures
 	PImage beamTexture, vaseTexture, vaseMask;
 	
 	
@@ -111,9 +134,10 @@ public class NorfolkVizSketch extends PApplet {
 	  sculptureSolid = new OBJModel(this, "../depends/models/sculptureSolid.obj", "absolute", TRIANGLES);
 	  sculptureScreen = new OBJModel(this, "../depends/models/sculptureScreen.obj", "absolute", TRIANGLES);
 	  environment = new OBJModel(this, "../depends/models/environment.obj", "absolute", TRIANGLES);
-	  volumeB01 = new OBJModel(this, "../depends/models/B01.obj", "absolute", TRIANGLES);
-	  volumeB02 = new OBJModel(this, "../depends/models/B02.obj", "absolute", TRIANGLES);
-	  volumeB03 = new OBJModel(this, "../depends/models/B03.obj", "absolute", TRIANGLES);
+	  blankOBJ = new OBJModel(this, "../depends/models/blankOBJ.obj", "absolute", TRIANGLES);
+	  volumeB01 = new OBJModel(this, "../depends/models/B01.obj", "absolute", POLYGON);
+	  volumeB02 = new OBJModel(this, "../depends/models/B02.obj", "absolute", POLYGON);
+	  volumeB03 = new OBJModel(this, "../depends/models/B03.obj", "absolute", POLYGON);
 	  volumeC01A = new OBJModel(this, "../depends/models/C01A.obj", "absolute", TRIANGLES);
 	  volumeC01B = new OBJModel(this, "../depends/models/C01B.obj", "absolute", TRIANGLES);
 	  volumeC02A = new OBJModel(this, "../depends/models/C02A.obj", "absolute", TRIANGLES);
@@ -162,6 +186,20 @@ public class NorfolkVizSketch extends PApplet {
 	  modelsF10 = new OBJModel(this, "../depends/models/sF10.obj", "absolute", TRIANGLES);
 	  modelsF11 = new OBJModel(this, "../depends/models/sF11.obj", "absolute", TRIANGLES);
 	  modelsF12 = new OBJModel(this, "../depends/models/sF12.obj", "absolute", TRIANGLES);
+	  modelsT01 = new OBJModel(this, "../depends/models/sT01.obj", "absolute", TRIANGLES);
+	  modeldC01 = new OBJModel(this, "../depends/models/dC01.obj", "absolute", TRIANGLES);
+	  modeldC02 = new OBJModel(this, "../depends/models/dC02.obj", "absolute", TRIANGLES);
+	  modeldC03 = new OBJModel(this, "../depends/models/dC03.obj", "absolute", TRIANGLES);
+	  modeldF01 = new OBJModel(this, "../depends/models/dF01.obj", "absolute", TRIANGLES);
+	  modeldF02 = new OBJModel(this, "../depends/models/dF02.obj", "absolute", TRIANGLES);
+	  modeldF03 = new OBJModel(this, "../depends/models/dF03.obj", "absolute", TRIANGLES);
+	  modeldF05 = new OBJModel(this, "../depends/models/dF05.obj", "absolute", TRIANGLES);
+	  modeldF06 = new OBJModel(this, "../depends/models/dF06.obj", "absolute", TRIANGLES);
+	  modeldF08 = new OBJModel(this, "../depends/models/dF08.obj", "absolute", TRIANGLES);
+	  modeldF09 = new OBJModel(this, "../depends/models/dF09.obj", "absolute", TRIANGLES);
+	  modeldF10 = new OBJModel(this, "../depends/models/dF10.obj", "absolute", TRIANGLES);
+	  modeldF11 = new OBJModel(this, "../depends/models/dF11.obj", "absolute", TRIANGLES);
+	  modeldF12 = new OBJModel(this, "../depends/models/dF12.obj", "absolute", TRIANGLES);
 	  
 	  //Build Vase's hole texture
 	  vaseTexture = createImage(512, 512, RGB);
@@ -182,33 +220,35 @@ public class NorfolkVizSketch extends PApplet {
 		  beamTexture.pixels[i] = color(255, 0, 0); 
 	  }
 	  beamTexture.updatePixels();
+
 	  
 	  //initialize LightObjects
-	  LightObject B01 = new LightObject(volumeB01, modelpB01, modelsB01);
-	  LightObject B02 = new LightObject(volumeB02, modelpB02, modelsB02);
-	  LightObject B03 = new LightObject(volumeB03, modelpB03, modelsB03);
-	  LightObject C01A = new LightObject(volumeC01A, modelpB01, modelsB01);
-	  LightObject C01B = new LightObject(volumeC01B, modelpB01, modelsB01);
-	  LightObject C02A = new LightObject(volumeC02A, modelpB01, modelsB01);
-	  LightObject C02B = new LightObject(volumeC02B, modelpB01, modelsB01);
-	  LightObject C03A = new LightObject(volumeC03A, modelpB01, modelsB01);
-	  LightObject C03B = new LightObject(volumeC03B, modelpB01, modelsB01);
-	  LightObject F01 = new LightObject(volumeF01, modelpF01, modelsF01);
-	  LightObject F02 = new LightObject(volumeF02, modelpF02, modelsF02);
-	  LightObject F03 = new LightObject(volumeF03, modelpF03, modelsF03);
-	  LightObject F05 = new LightObject(volumeF05, modelpF05, modelsF05);
-	  LightObject F06 = new LightObject(volumeF06, modelpF06, modelsF06);
-	  LightObject F08 = new LightObject(volumeF08, modelpF08, modelsF08);
-	  LightObject F09 = new LightObject(volumeF09, modelpF09, modelsF09);
-	  LightObject F10 = new LightObject(volumeF10, modelpF10, modelsF10);
-	  LightObject F11 = new LightObject(volumeF11, modelpF11, modelsF11);
-	  LightObject F12 = new LightObject(volumeF12, modelpF12, modelsF12);
-	  LightObject L01 = new LightObject(volumeL01, modelpB01, modelsB01);
-	  LightObject L02 = new LightObject(volumeL02, modelpB01, modelsB01);
-	  LightObject V01 = new LightObject(volumeV01, modelpB01, modelsB01);
-	  LightObject V02 = new LightObject(volumeV02, modelpB01, modelsB01);
-	  LightObject V03 = new LightObject(volumeV03, modelpB01, modelsB01);
-	  LightObject V04 = new LightObject(volumeV04, modelpB01, modelsB01);
+	  LightObject B01 = new LightObject(volumeB01, modelpB01, modelsB01, blankOBJ, 0.4);
+	  LightObject B02 = new LightObject(volumeB02, modelpB02, modelsB02, blankOBJ, 0.4);
+	  LightObject B03 = new LightObject(volumeB03, modelpB03, modelsB03, blankOBJ, 0.4);
+	  LightObject C01A = new LightObject(volumeC01A, blankOBJ, blankOBJ, modeldC01, 0.25);
+	  LightObject C01B = new LightObject(volumeC01B, blankOBJ, blankOBJ, blankOBJ, 0.25);
+	  LightObject C02A = new LightObject(volumeC02A, blankOBJ, blankOBJ, modeldC02, 0.25);
+	  LightObject C02B = new LightObject(volumeC02B, blankOBJ, blankOBJ, blankOBJ, 0.25);
+	  LightObject C03A = new LightObject(volumeC03A, blankOBJ, blankOBJ, modeldC03, 0.25);
+	  LightObject C03B = new LightObject(volumeC03B, blankOBJ, blankOBJ, blankOBJ, 0.25);
+	  LightObject F01 = new LightObject(volumeF01, modelpF01, modelsF01, modeldF01, 1.0);
+	  LightObject F02 = new LightObject(volumeF02, modelpF02, modelsF02, modeldF02, 1.0);
+	  LightObject F03 = new LightObject(volumeF03, modelpF03, modelsF03, modeldF03, 1.0);
+	  LightObject F05 = new LightObject(volumeF05, modelpF05, modelsF05, modeldF05, 1.0);
+	  LightObject F06 = new LightObject(volumeF06, modelpF06, modelsF06, modeldF06, 1.0);
+	  LightObject F08 = new LightObject(volumeF08, modelpF08, modelsF08, modeldF08, 1.0);
+	  LightObject F09 = new LightObject(volumeF09, modelpF09, modelsF09, modeldF09, 1.0);
+	  LightObject F10 = new LightObject(volumeF10, modelpF10, modelsF10, modeldF10, 1.0);
+	  LightObject F11 = new LightObject(volumeF11, modelpF11, modelsF11, modeldF11, 1.0);
+	  LightObject F12 = new LightObject(volumeF12, modelpF12, modelsF12, modeldF12, 1.0);
+	  LightObject L01 = new LightObject(volumeL01, blankOBJ, blankOBJ, blankOBJ, 1.0);
+	  LightObject L02 = new LightObject(volumeL02, blankOBJ, blankOBJ, blankOBJ, 1.0);
+	  LightObject V01 = new LightObject(volumeV01, blankOBJ, blankOBJ, blankOBJ, 1.0);
+	  LightObject V02 = new LightObject(volumeV02, blankOBJ, blankOBJ, blankOBJ, 1.0);
+	  LightObject V03 = new LightObject(volumeV03, blankOBJ, blankOBJ, blankOBJ, 1.0);
+	  LightObject V04 = new LightObject(volumeV04, blankOBJ, blankOBJ, blankOBJ, 1.0);
+	  LightObject T01 = new LightObject(blankOBJ, blankOBJ, modelsT01, blankOBJ, 1.0);
 	  
 	  //fill the lights hashmap
 	  lights.put("B01", B01);
@@ -236,6 +276,7 @@ public class NorfolkVizSketch extends PApplet {
 	  lights.put("V02", V02);
 	  lights.put("V03", V03);
 	  lights.put("V04", V04);
+	  lights.put("T01", T01);
 	  
 
 	  //Set stroke color to white, then hide strokes
@@ -254,8 +295,10 @@ public class NorfolkVizSketch extends PApplet {
 		pointLight(128, 128, 128, 2000, 50, 0);
 		pointLight(128, 128, 128, -2000, 50, 0);
 
+		shininess(1);
 		sculptureSolid.draw();
 		sculptureScreen.draw();
+		shininess(0);
 
 		if (showEnvironment == true) environment.draw();
 
@@ -272,6 +315,7 @@ public class NorfolkVizSketch extends PApplet {
 		//iterate through allLightObjects and draw light cones in ADD mode
 		blendMode(ADD);
 		for (LightObject light : lights.values()) {
+			light.lightPoolModel.draw();
 			light.lightModel.draw();
 		}
 		blendMode(BLEND);
@@ -293,16 +337,13 @@ public class NorfolkVizSketch extends PApplet {
 		
 		if(key == 'r') {
 			Random rand = new Random();
-			for (LightObject light : lights.values()) {
-				float rRand = rand.nextInt(255);
-				float gRand = rand.nextInt(255);
-				float bRand = rand.nextInt(255);
-				light.lightTexture.loadPixels();
-				for (int ii = 0; ii < light.lightTexture.pixels.length; ii++) {
-					light.lightTexture.pixels[ii] = color(rRand,gRand,bRand); 
-				}
-				light.lightTexture.mask(light.lightMask);
-				light.lightTexture.updatePixels();
+			for (String light : lights.keySet()) {
+				int rRand = rand.nextInt(255);
+				int gRand = rand.nextInt(255);
+				int bRand = rand.nextInt(255);
+				Color color = new Color(rRand, gRand, bRand);
+				setLightColor(light, color);
+				
 			}
 		}
 			
@@ -336,12 +377,6 @@ public class NorfolkVizSketch extends PApplet {
 
 		}
 			
-		//if(key == 'q') {
-			
-			//setLightColor("B01", color(255,255,255));
-
-		//}
-		
 		if(key == '1') {
 			if(!lights.get("B01").triggerState) {
 				setSensorState("B01", true);
