@@ -12,7 +12,6 @@ import javax.vecmath.Point3d;
 
 import net.electroland.ea.Animation;
 import net.electroland.ea.AnimationListener;
-import net.electroland.ea.Change;
 import net.electroland.ea.Clip;
 import net.electroland.ea.Sequence;
 import net.electroland.ea.easing.CubicOut;

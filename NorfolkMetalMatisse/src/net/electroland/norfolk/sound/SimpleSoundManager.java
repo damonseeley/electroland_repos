@@ -4,9 +4,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.electroland.installutils.weather2.WeatherChecker;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.ParameterMap;
+import net.electroland.utils.hours.OperatingHours;
 import processing.core.PApplet;
 import ddf.minim.AudioPlayer;
 import ddf.minim.Minim;
@@ -15,15 +15,15 @@ public class SimpleSoundManager {
 
     private Map<String, String>playList;
     private Minim minim;
-    private WeatherChecker weather;
+    private OperatingHours hours;
 
     public SimpleSoundManager(){
         minim = new Minim(new PApplet());
     }
 
-    public SimpleSoundManager(WeatherChecker weather){
+    public SimpleSoundManager(OperatingHours hours){
         minim = new Minim(new PApplet());
-        this.weather = weather;
+        this.hours = hours;
     }
 
     public SimpleSoundManager(ElectrolandProperties props){
@@ -49,7 +49,7 @@ public class SimpleSoundManager {
     }
 
     public void playSound(String soundName){
-        if (!weather.isDuringDaylightHours()){
+        if (hours.shouldBeOpenNow("sound")){
             AudioPlayer ap = minim.loadFile(playList.get(soundName));
             new PlayThread(ap, ap.length() * 2).start();
         }
