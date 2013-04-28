@@ -231,7 +231,24 @@ public class ClipPlayer implements AnimationListener {
     
     public void timedShow() {
     	// conditional here to randomize showing
-    	radialBlueGreen3();
+    	int rand = (int)(Math.random() * 100);
+    	logger.info(rand);
+    	if (rand < 20) {
+    		radialOrange();
+    	} else if (rand < 40) {
+    		radialBlueGreen3();
+    	} else if (rand < 60) {
+    		radialRedMag();
+    	} else if (rand < 80){
+    		fadeOrangeSlow();
+    	} else {
+    		vertWavesRedMag();
+    	}
+    	
+    	
+    
+    	
+    	
     }
     
     public void radialOrange(){
@@ -241,9 +258,10 @@ public class ClipPlayer implements AnimationListener {
         ReferenceDimension rd = this.getFixture("f01").getRealDimensions();
         System.out.println("f01 is at: " + loc + " of dimensions " + rd);
         
-        int duration = 3000;
+        int duration = 5000;
         int width = 1200;
         Clip c1 = eam.addClip(eam.getContent("grad1200_one_org"), Color.getHSBColor(.4f, .99f, .99f), -width, 0, width, eam.getFrameDimensions().height, 1.0f);
+        Clip c2 = eam.addClip(eam.getContent("grad1200_one_org"), Color.getHSBColor(.4f, .99f, .99f), -width, 0, width, eam.getFrameDimensions().height, 1.0f);
 
         Sequence sweep = new Sequence();
         sweep.xTo(eam.getFrameDimensions().width + width).duration(duration);
@@ -251,6 +269,8 @@ public class ClipPlayer implements AnimationListener {
         //sweep.brightnessTo(0.5f);
         
         c1.queue(sweep).fadeOut(500).deleteWhenDone();    
+        c2.pause(duration/2).queue(sweep).fadeOut(500).deleteWhenDone();    
+
     }
     
     public void radialBlueGreen(){
@@ -310,6 +330,25 @@ public class ClipPlayer implements AnimationListener {
         c1.queue(sweep).fadeOut(500).deleteWhenDone();    
     }
     
+    public void fadeOrangeSlow(){
+        //ssm.playSound("002");
+        // get location of fixture f01.
+        Point3d loc           = this.getFixture("f01").getLocation();
+        ReferenceDimension rd = this.getFixture("f01").getRealDimensions();
+        System.out.println("f01 is at: " + loc + " of dimensions " + rd);
+        
+        int duration = 8000;
+        int width = 1200;
+        Clip c1 = eam.addClip(eam.getContent("orange"), Color.getHSBColor(.4f, .99f, .99f), -width/2, 0, width, eam.getFrameDimensions().height, 1.0f);
+
+        Sequence sweep = new Sequence();
+        //sweep.xTo(eam.getFrameDimensions().width + width).duration(duration);
+        //sweep.hueBy(0.2f);
+        //sweep.brightnessTo(0.5f);
+        
+        c1.queue(sweep).pause(2500).fadeOut(duration-2500).deleteWhenDone();    
+    }
+    
     public void radialBlueGreen3(){
         //ssm.playSound("002");
         // get location of fixture f01.
@@ -351,7 +390,25 @@ public class ClipPlayer implements AnimationListener {
                                 (int)fixture.getLocation().x - 10,
                                 (int)fixture.getLocation().y - 10, 20, 20, 1.0f);
 
-        c.pause(800).fadeOut(1000).deleteWhenDone();
+        Sequence huechange = new Sequence();
+        huechange.hueBy(0.3f);
+        //sweep.brightnessTo(0.5f);
+        
+        c.queue(huechange).pause(800).fadeOut(1000).deleteWhenDone();
+    }
+    
+    public void bigred(){
+
+        ssm.playSound("002");
+
+        Clip c = eam.addClip(eam.getContent("red"),0,0,300,300,1.0f);
+
+        Sequence huechange = new Sequence();
+        huechange.hueBy(0.8f);
+        huechange.duration(2000);
+        //sweep.brightnessTo(0.5f);
+        
+        c.queue(huechange).pause(800).fadeOut(1000).deleteWhenDone();
     }
     
     public void green(Fixture fixture){
