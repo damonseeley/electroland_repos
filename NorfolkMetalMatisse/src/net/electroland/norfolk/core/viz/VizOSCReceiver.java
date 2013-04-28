@@ -26,18 +26,22 @@ public class VizOSCReceiver implements OSCListener {
     }
     
     public void addListener(VizOSCListener l){
+        logger.debug("addListener(" + l +");");
         listeners.add(l);
     }
 
     public void start(){
 
+        logger.info("start();");
         if (client != null){
             stop();
         }
 
         try {
+            logger.info(" listening on port " + port);
             client = new OSCPortIn(port);
-            client.addListener("/sayhello", this);
+            client.addListener("/lights", this);
+            client.addListener("/sound", this);
             client.startListening();
         } catch (SocketException e) {
             logger.fatal(e);
@@ -46,13 +50,22 @@ public class VizOSCReceiver implements OSCListener {
     }
 
     public void stop(){
+        logger.info("stop();");
         client.stopListening();
         client = null;
     }
 
     @Override
-    public void acceptMessage(Date arrivateTime, OSCMessage message) {
+    public void acceptMessage(Date arriveTime, OSCMessage message) {
 
+        logger.debug("acceptMessage(" + message.getAddress() + ");");
+        StringBuffer sb = new StringBuffer(" message.args:[");
+        for (Object o : message.getArguments()){
+            sb.append(o).append(',');
+        }
+        sb.setLength(sb.length()-1);
+        sb.append(']');
+        logger.debug(sb.toString());
         for (VizOSCListener l : listeners){
 
             Object[] args = message.getArguments();
