@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.HashMap;
 
 import javax.swing.JFrame;
 
@@ -12,21 +13,27 @@ import net.electroland.ea.Animation;
 import net.electroland.eio.EIOManager;
 import net.electroland.eio.IOFrameTest;
 import net.electroland.eio.InputChannel;
+import net.electroland.norfolk.core.viz.Raster2dViz;
+import net.electroland.norfolk.core.viz.VizOSCSender;
 import net.electroland.norfolk.eio.filters.PeopleIOWatcher;
 import net.electroland.norfolk.eio.filters.PeopleListener;
 import net.electroland.norfolk.eio.filters.PersonEvent;
 import net.electroland.norfolk.sound.SimpleSoundManager;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
+import net.electroland.utils.ShutdownThread;
+import net.electroland.utils.Shutdownable;
+import net.electroland.utils.Util;
 import net.electroland.utils.hours.OperatingHours;
 import net.electroland.utils.lighting.CanvasDetector;
 import net.electroland.utils.lighting.ELUCanvas;
 import net.electroland.utils.lighting.ELUManager;
+import net.electroland.utils.lighting.Fixture;
 import net.electroland.utils.lighting.ui.ELUControls;
 
 import org.apache.log4j.Logger;
 
-public class Conductor implements PeopleListener, Runnable{
+public class Conductor implements PeopleListener, Runnable, Shutdownable{
 
     private static Logger       logger = Logger.getLogger(Conductor.class);
     private Animation           eam;
@@ -35,6 +42,7 @@ public class Conductor implements PeopleListener, Runnable{
     private OperatingHours      hours;
     private ClipPlayer          clipPlayer;
     private GlobalShow          globalShow;
+    private VizOSCSender        viz;
     private Thread              thread;
     private int                 fps = 30;
     private JFrame              mainControls;
@@ -66,8 +74,6 @@ public class Conductor implements PeopleListener, Runnable{
             // sensors
             IOFrameTest sensors = new IOFrameTest(c.eio);
             sensors.resizeWindow(1000, 200);
-
-            // TODO: window for 3d rendering
         }
 
     }
@@ -100,6 +106,9 @@ public class Conductor implements PeopleListener, Runnable{
         globalShow = new GlobalShow(clipPlayer);
         globalShow.start();
 
+        viz = new VizOSCSender();
+        viz.load(mainProps);
+
         start();
     }
 
@@ -111,9 +120,10 @@ public class Conductor implements PeopleListener, Runnable{
             thread = new Thread(this);
             thread.start();
         }
+
+        Runtime.getRuntime().addShutdownHook(new ShutdownThread(this));
     }
 
-    // TODO: shutdown thread should call this!!
     public void stop(){
         globalShow.stop();
         elu.allOff();
@@ -144,9 +154,16 @@ public class Conductor implements PeopleListener, Runnable{
                         renderArea.update(frame, detectors);
                         renderArea.repaint();
                     }
+
+                    // sync with viz
+                    if (viz.isEnabled()){
+                        syncViz(detectors);
+                    }
+
                 }else{
                     elu.allOff();
                 }
+
             }
 
             try{
@@ -155,6 +172,75 @@ public class Conductor implements PeopleListener, Runnable{
                 logger.error(e);
             }
         }
+    }
+
+    // YUCK! (ELU actually has this already, and should allow getting it.
+    private HashMap<String, Fixture> fixtures;
+    private HashMap<String, Fixture> fixtureMap(){
+        if (fixtures == null){
+            fixtures = new HashMap<String, Fixture>();
+            for (Fixture f : elu.getFixtures()){
+                fixtures.put(f.getName(), f);
+            }
+        }
+        return fixtures;
+    }
+
+    // very inefficient. would be nice if ELU merged RGB values smartly when
+    // it has them all together.
+    public void syncViz(CanvasDetector[] detectors){
+
+        HashMap<String, RGB> fixtureColors = new HashMap<String, RGB>();
+
+        for (CanvasDetector cd : detectors){
+
+            String fixtureId = null;
+            Integer r = null,g = null,b = null;
+            for (String tag : cd.getTags()){
+                if (tag.equals("red")){
+                    r = Util.unsignedByteToInt(cd.getLatestState());
+                } else if (tag.equals("green")){
+                    g = Util.unsignedByteToInt(cd.getLatestState());
+                } else if (tag.equals("blue")){
+                    b = Util.unsignedByteToInt(cd.getLatestState());
+                } else if (fixtureMap().containsKey(tag)){ // if this tag is a Fixture name
+                    fixtureId = tag;
+                }
+            }
+            // at this point we should have a fixture name, and a single color. need to put
+            // it into fixtureColors, awaiting the other two colors.
+            if (fixtureId != null){
+                RGB rgb = fixtureColors.get(fixtureId);
+                if (rgb == null){
+                    rgb = new RGB();
+                    fixtureColors.put(fixtureId, rgb);
+                }
+                if (r != null){
+                    rgb.r = r;
+                }
+                if (g != null){
+                    rgb.g = g;
+                }
+                if (b != null){
+                    rgb.b = b;
+                }
+            }
+        }
+
+        // at this point fixtureColors should contain a color per fixture.
+        for (String fixtureId : fixtureColors.keySet()){
+            RGB rgb = fixtureColors.get(fixtureId);
+            if (rgb != null){
+                viz.setLightColor(fixtureId, new Color(rgb.r, rgb.g, rgb.b));
+            }
+        }
+
+        // TODO: no way to see sensors currently.
+    }
+
+    // used by syncViz only.
+    class RGB{
+        int r,g,b;
     }
 
     @Override
@@ -180,4 +266,8 @@ public class Conductor implements PeopleListener, Runnable{
         return null;
     }
 
+    @Override
+    public void shutdown() {
+        stop();
+    }
 }
