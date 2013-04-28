@@ -397,18 +397,20 @@ public class ClipPlayer implements AnimationListener {
         c.queue(huechange).pause(800).fadeOut(1000).deleteWhenDone();
     }
     
-    public void bigred(){
+    public void redRand(Fixture fixture){
 
         ssm.playSound("002");
 
-        Clip c = eam.addClip(null,new Color(255,0,0),0,0,300,300,1.0f);
+        Clip c = eam.addClip(null,new Color(255,0,0),(int)fixture.getLocation().x - 10,(int)fixture.getLocation().y - 10,20, 20, 1.0f);
 
         Sequence huechange = new Sequence();
-        huechange.hueBy(0.8f);
+        float huernd = 0.1f - (float)(Math.random() *0.2f);
+        logger.info("Random hue change is " + huernd);
+        huechange.hueBy(huernd);
         huechange.duration(2000);
-        //sweep.brightnessTo(0.5f);
+        huechange.brightnessTo(0.5f);
         
-        c.queue(huechange).pause(800).fadeOut(1000).deleteWhenDone();
+        c.queue(huechange).fadeOut(1000).deleteWhenDone();
     }
     
     public void green(Fixture fixture){
