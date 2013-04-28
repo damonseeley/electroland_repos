@@ -74,23 +74,33 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 	//Intensity helps adjust things visually, not part of the real MetalMatisse functions 
     @Override
 	public void setLightColor(String nameOfLight, Color lightColor) {
-		int r = Math.min(255, (int) (lightColor.getRed() * lights.get(nameOfLight).lightIntensity));
-		int g = Math.min(255, (int) (lightColor.getGreen() * lights.get(nameOfLight).lightIntensity));
-		int b = Math.min(255, (int) (lightColor.getBlue() * lights.get(nameOfLight).lightIntensity));
-		lights.get(nameOfLight).lightPoolTexture.loadPixels();
-		for (int i = 0; i < lights.get(nameOfLight).lightPoolTexture.pixels.length; i++) {
-			lights.get(nameOfLight).lightPoolTexture.pixels[i] = color(lightColor.getRed(),lightColor.getGreen(),lightColor.getBlue()); 
-		}
-		lights.get(nameOfLight).lightPoolTexture.mask(lights.get(nameOfLight).lightPoolMask);
-		lights.get(nameOfLight).lightPoolTexture.updatePixels();
-		
-		lights.get(nameOfLight).lightTexture.loadPixels();
-		for (int i = 0; i < lights.get(nameOfLight).lightTexture.pixels.length; i++) {
-			lights.get(nameOfLight).lightTexture.pixels[i] = color(r,g,b); 
-		}
-		lights.get(nameOfLight).lightTexture.mask(lights.get(nameOfLight).lightMask);
-		lights.get(nameOfLight).lightTexture.updatePixels();
 
+        LightObject light = lights.get(nameOfLight);
+
+        if (light != null){
+
+            int r = Math.min(255, (int) (lightColor.getRed() * light.lightIntensity));
+            int g = Math.min(255, (int) (lightColor.getGreen() * light.lightIntensity));
+            int b = Math.min(255, (int) (lightColor.getBlue() * light.lightIntensity));
+
+            light.lightPoolTexture.loadPixels();
+            for (int i = 0; i < light.lightPoolTexture.pixels.length; i++) {
+                light.lightPoolTexture.pixels[i] = color(lightColor.getRed(),
+                                                         lightColor.getGreen(),
+                                                         lightColor.getBlue()); 
+            }
+
+            light.lightPoolTexture.mask(light.lightPoolMask);
+            light.lightPoolTexture.updatePixels();
+
+            light.lightTexture.loadPixels();
+            for (int i = 0; i < light.lightTexture.pixels.length; i++) {
+                light.lightTexture.pixels[i] = color(r,g,b); 
+            }
+
+            light.lightTexture.mask(light.lightMask);
+            light.lightTexture.updatePixels();
+        }
 	}
 
 	//setSensorState does what it says on the tin
@@ -267,32 +277,32 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 	  LightObject T01 = new LightObject(blankOBJ, blankOBJ, modelsT01, blankOBJ, 1.0);
 	  
 	  //fill the lights hashmap
-	  lights.put("B01", B01);
-	  lights.put("B02", B02);
-	  lights.put("B03", B03);
-	  lights.put("C01A", C01A);
-	  lights.put("C01B", C01B);
-	  lights.put("C02A", C02A);
-	  lights.put("C02B", C02B);
-	  lights.put("C03A", C03A);
-	  lights.put("C03B", C03B);
-	  lights.put("F01", F01);
-	  lights.put("F02", F02);
-	  lights.put("F03", F03);
-	  lights.put("F05", F05);
-	  lights.put("F06", F06);
-	  lights.put("F08", F08);
-	  lights.put("F09", F09);
-	  lights.put("F10", F10);
-	  lights.put("F11", F11);
-	  lights.put("F12", F12);
-	  lights.put("L01", L01);
-	  lights.put("L02", L02);
-	  lights.put("V01", V01);
-	  lights.put("V02", V02);
-	  lights.put("V03", V03);
-	  lights.put("V04", V04);
-	  lights.put("T01", T01);
+	  lights.put("b01", B01);
+	  lights.put("b02", B02);
+	  lights.put("b03", B03);
+	  lights.put("c01A", C01A);
+	  lights.put("c01B", C01B);
+	  lights.put("c02A", C02A);
+	  lights.put("c02B", C02B);
+	  lights.put("c03A", C03A);
+	  lights.put("c03B", C03B);
+	  lights.put("f01", F01);
+	  lights.put("f02", F02);
+	  lights.put("f03", F03);
+	  lights.put("f05", F05);
+	  lights.put("f06", F06);
+	  lights.put("f08", F08);
+	  lights.put("f09", F09);
+	  lights.put("f10", F10);
+	  lights.put("f11", F11);
+	  lights.put("f12", F12);
+	  lights.put("l01", L01);
+	  lights.put("l02", L02);
+	  lights.put("v01", V01);
+	  lights.put("v02", V02);
+	  lights.put("v03", V03);
+	  lights.put("v04", V04);
+	  lights.put("t01", T01);
 	  
 
 	  //Set stroke color to white, then hide strokes
