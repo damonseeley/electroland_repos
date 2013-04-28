@@ -1,14 +1,27 @@
 package net.electroland.norfolk.vizapp;
 import java.awt.Color;
-import processing.core.*;
-import remixlab.proscene.*;
-import saito.objloader.*;
 import java.util.HashMap;
 import java.util.Random;
 
+import net.electroland.norfolk.core.viz.VizOSCListener;
+import net.electroland.norfolk.core.viz.VizOSCReceiver;
+import net.electroland.utils.ElectrolandProperties;
+import net.electroland.utils.ShutdownThread;
+import net.electroland.utils.Shutdownable;
+import processing.core.PApplet;
+import processing.core.PImage;
+import processing.core.PVector;
+import remixlab.proscene.CameraProfile;
+import remixlab.proscene.Scene;
+import saito.objloader.OBJModel;
 
-public class NorfolkVizSketch extends PApplet {
-	Scene scene;
+
+public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdownable {
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 399552159162053681L;
+    Scene scene;
 
 	//define a new class for LightObjects
 	//
@@ -59,6 +72,7 @@ public class NorfolkVizSketch extends PApplet {
 
 	//setLightColor rebuilds the PImage texture for a given light
 	//Intensity helps adjust things visually, not part of the real MetalMatisse functions 
+    @Override
 	public void setLightColor(String nameOfLight, Color lightColor) {
 		int r = Math.min(255, (int) (lightColor.getRed() * lights.get(nameOfLight).lightIntensity));
 		int g = Math.min(255, (int) (lightColor.getGreen() * lights.get(nameOfLight).lightIntensity));
@@ -80,7 +94,8 @@ public class NorfolkVizSketch extends PApplet {
 	}
 
 	//setSensorState does what it says on the tin
-	public void setSensorState(String sensorName, Boolean isOn) {
+	@Override
+	public void setSensorState(String sensorName, boolean isOn) {
 		lights.get(sensorName).triggerState = isOn;
 		System.err.println("Trigger " + sensorName + "is tripped high: " + lights.get(sensorName).triggerState);
 
@@ -103,7 +118,8 @@ public class NorfolkVizSketch extends PApplet {
 	
 	//Declare the lights hashmap
 	HashMap<String,LightObject> lights = new HashMap<String,LightObject>();
-	  
+
+	VizOSCReceiver client;
 
 	public void setup()
 	{
@@ -282,6 +298,13 @@ public class NorfolkVizSketch extends PApplet {
 	  //Set stroke color to white, then hide strokes
 	  stroke(255);
 	  noStroke();
+
+	  // listener for Norfolk
+	  client = new VizOSCReceiver();
+	  client.load(new ElectrolandProperties("osc.properties"));
+	  client.addListener(this);
+	  client.start();
+	  Runtime.getRuntime().addShutdownHook(new ShutdownThread(this));
 	}
 
 
@@ -439,4 +462,9 @@ public class NorfolkVizSketch extends PApplet {
 
 			
 	}
+
+    @Override
+    public void shutdown() {
+        client.stop();
+    }
 }
