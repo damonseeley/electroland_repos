@@ -1,4 +1,4 @@
-package net.electroland.norfolk.core;
+package net.electroland.norfolk.core.viz;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -75,7 +75,7 @@ public class Raster2dViz extends JPanel {
         }
     }
 
-    protected void update(BufferedImage frame, CanvasDetector[] detectors){
+    public void update(BufferedImage frame, CanvasDetector[] detectors){
         if (frame == null){
             this.frame = frame;
             this.detectors = detectors;
