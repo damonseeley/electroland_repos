@@ -401,7 +401,7 @@ public class ClipPlayer implements AnimationListener {
 
         ssm.playSound("002");
 
-        Clip c = eam.addClip(eam.getContent("red"),0,0,300,300,1.0f);
+        Clip c = eam.addClip(null,new Color(255,0,0),0,0,300,300,1.0f);
 
         Sequence huechange = new Sequence();
         huechange.hueBy(0.8f);
