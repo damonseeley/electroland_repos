@@ -19,4 +19,4 @@ Ka 1.000000 1.000000 1.000000
 Kd 1.000000 1.000000 1.000000
 Ks 0.000000 0.000000 0.000000
 Ke 1.000000 1.000000 1.000000
-map_Kd ../depends/models/lightGrad2.jpg
+#map_Kd ../depends/models/lightGrad2.jpg
