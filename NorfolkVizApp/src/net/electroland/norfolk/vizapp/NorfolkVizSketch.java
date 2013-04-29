@@ -106,8 +106,9 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 	//setSensorState does what it says on the tin
 	@Override
 	public void setSensorState(String sensorName, boolean isOn) {
-		lights.get(sensorName).triggerState = isOn;
-		System.err.println("Trigger " + sensorName + "is tripped high: " + lights.get(sensorName).triggerState);
+		LightObject sensor = lights.get(sensorName);
+		sensor.triggerState = isOn;
+		System.err.println("Trigger " + sensorName + "is tripped high: " + sensor.triggerState);
 
 	}
 	
@@ -120,7 +121,7 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 	int zoomLevel = 1200;
 
 	//declare all OBJModels
-	OBJModel sculptureVase, sculptureSolid, sculptureScreen, environment, blankOBJ, volumeB01, volumeB02, volumeB03, volumeC01A, volumeC01B, volumeC02A, volumeC02B, volumeC03A, volumeC03B, volumeF01, volumeF02, volumeF03, volumeF05, volumeF06, volumeF08, volumeF09, volumeF10, volumeF11, volumeF12, volumeL01, volumeL02, volumeV01, volumeV02, volumeV03, volumeV04, modelpB01, modelpB02, modelpB03, modelpF01, modelpF02, modelpF03, modelpF05, modelpF06, modelpF08, modelpF09, modelpF10, modelpF11, modelpF12, modelsB01, modelsB02, modelsB03, modelsF01, modelsF02, modelsF03, modelsF05, modelsF06, modelsF08, modelsF09, modelsF10, modelsF11, modelsF12, modelsT01, modeldC01, modeldC02, modeldC03, modeldF01, modeldF02, modeldF03, modeldF05, modeldF06, modeldF08, modeldF09, modeldF10, modeldF11, modeldF12;
+	OBJModel sculptureVase, sculptureSolid, sculptureScreen, environment, plane, blankOBJ, volumeB01, volumeB02, volumeB03, volumeC01A, volumeC01B, volumeC02A, volumeC02B, volumeC03A, volumeC03B, volumeF01, volumeF02, volumeF03, volumeF05, volumeF06, volumeF08, volumeF09, volumeF10, volumeF11, volumeF12, volumeL01, volumeL02, volumeV01, volumeV02, volumeV03, volumeV04, modelpB01, modelpB02, modelpB03, modelpF01, modelpF02, modelpF03, modelpF05, modelpF06, modelpF08, modelpF09, modelpF10, modelpF11, modelpF12, modelsB01, modelsB02, modelsB03, modelsF01, modelsF02, modelsF03, modelsF05, modelsF06, modelsF08, modelsF09, modelsF10, modelsF11, modelsF12, modelsT01, modeldC01, modeldC02, modeldC03, modeldF01, modeldF02, modeldF03, modeldF05, modeldF06, modeldF08, modeldF09, modeldF10, modeldF11, modeldF12;
 
 	//declare some textures
 	PImage beamTexture, vaseTexture, vaseMask;
@@ -160,6 +161,7 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 	  sculptureSolid = new OBJModel(this, "../depends/models/sculptureSolid.obj", "absolute", TRIANGLES);
 	  sculptureScreen = new OBJModel(this, "../depends/models/sculptureScreen.obj", "absolute", TRIANGLES);
 	  environment = new OBJModel(this, "../depends/models/environment.obj", "absolute", TRIANGLES);
+	  plane = new OBJModel(this, "../depends/models/plane.obj", "absolute", TRIANGLES);
 	  blankOBJ = new OBJModel(this, "../depends/models/blankOBJ.obj", "absolute", TRIANGLES);
 	  volumeB01 = new OBJModel(this, "../depends/models/B01.obj", "absolute", POLYGON);
 	  volumeB02 = new OBJModel(this, "../depends/models/B02.obj", "absolute", POLYGON);
@@ -333,7 +335,12 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 		sculptureScreen.draw();
 		shininess(0);
 
-		if (showEnvironment == true) environment.draw();
+		if (showEnvironment == true) {
+			environment.draw();
+		}
+		else {
+			plane.draw();
+		}
 
 		//iterate through allLightObjects and draw solid stuff
 		for (LightObject light : lights.values()) {
