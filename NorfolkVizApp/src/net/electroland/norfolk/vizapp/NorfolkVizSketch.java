@@ -126,8 +126,7 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 	//declare some textures
 	PImage beamTexture, vaseTexture, vaseMask;
 	
-	
-	//Declare the lights hashmap
+		//Declare the lights hashmap
 	HashMap<String,LightObject> lights = new HashMap<String,LightObject>();
 
 	VizOSCReceiver client;
@@ -136,6 +135,9 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 	{
 	  //Scene/proscene instantiation
 	  size(800, 600, P3D);
+	  if (frame != null) {
+		    frame.setResizable(true);
+		  }
 	  scene = new Scene(this);
 	  scene.setGridIsDrawn(false);
 	  scene.setAxisIsDrawn(false);
@@ -334,6 +336,7 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 		sculptureSolid.draw();
 		sculptureScreen.draw();
 		shininess(0);
+		
 
 		if (showEnvironment == true) {
 			environment.draw();
@@ -368,14 +371,28 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 	
 	public void keyPressed()
 	{
+
+		
 		if(key == ',') {
 			zoomLevel += 100;
-			scene.camera().setPosition(new PVector(0, 50, zoomLevel));
+			double x = scene.camera().position().x;
+			double y = scene.camera().position().y;
+			double z = scene.camera().position().z;
+			x *= 1.1;
+			y *= 1.1;
+			z *= 1.1;
+			scene.camera().setPosition(new PVector((int) x, (int) y, (int) z));
 		}
 		
 		if(key == '.') {
 			zoomLevel -= 100;
-			scene.camera().setPosition(new PVector(0, 50, zoomLevel));
+			double x = scene.camera().position().x;
+			double y = scene.camera().position().y;
+			double z = scene.camera().position().z;
+			x *= 0.9;
+			y *= 0.9;
+			z *= 0.9;
+			scene.camera().setPosition(new PVector((int) x, (int) y, (int) z));
 		}
 		
 		if(key == 'r') {
