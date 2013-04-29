@@ -350,15 +350,18 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 			if (showParticipants == true) {
 				if (light.triggerState == true) light.participantModel.draw();
 			}
+
 		}
 
 		//iterate through allLightObjects and draw light cones in ADD mode
 		blendMode(ADD);
+		hint(DISABLE_DEPTH_TEST);
 		for (LightObject light : lights.values()) {
 			light.lightPoolModel.draw();
 			light.lightModel.draw();
 		}
 		blendMode(BLEND);
+		hint(ENABLE_DEPTH_TEST);
 		sculptureVase.draw();
 
 	}
