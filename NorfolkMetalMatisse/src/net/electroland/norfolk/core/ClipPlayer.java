@@ -148,7 +148,7 @@ public class ClipPlayer implements AnimationListener {
     }
 
     public void sweepWhiteDown(){
-        ssm.playSound("002");
+        //ssm.playSound("002");
 
         // get location of fixture f01.
         Point3d loc           = this.getFixture("f01").getLocation();
@@ -397,9 +397,34 @@ public class ClipPlayer implements AnimationListener {
         c.queue(huechange).pause(800).fadeOut(1000).deleteWhenDone();
     }
     
+    public String getRandVibra() {
+    	
+    	int rand = (int)(Math.random() * 100);
+    	String snd = "";
+    	//logger.info(rand);
+    	if (rand < 25) {
+    		snd = "vibra_C1";
+    	} else if (rand < 50) {
+    		snd = "vibra_E1";
+    	} else if (rand < 75) {
+    		snd = "vibra_G1";
+    	} else {
+    		snd = "vibra_C2";
+    	}
+    	
+    	return snd;
+    	
+    }
+    
+    public void redRandTest(){
+
+        ssm.playSound(getRandVibra());
+    }
+    
     public void redRand(Fixture fixture){
 
-        ssm.playSound("002");
+        ssm.playSound(getRandVibra());
+
 
         Clip c = eam.addClip(null,new Color(255,0,0),(int)fixture.getLocation().x - 10,(int)fixture.getLocation().y - 10,20, 20, 1.0f);
 
