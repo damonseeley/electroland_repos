@@ -16,7 +16,7 @@ public class SampleVirtualChannel extends VirtualChannel {
      * Just returns the average of all connected channels.
      */
     @Override
-    public Value read(ValueSet inputValues) {
+    public Value processInputs(ValueSet inputValues) {
 
         int total = 0;
 

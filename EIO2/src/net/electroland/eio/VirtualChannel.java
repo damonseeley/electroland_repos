@@ -10,8 +10,8 @@ public abstract class VirtualChannel extends InputChannel {
     protected Collection<InputChannel> inputChannels;
 
     abstract public void configure(ParameterMap params);
-    
-    abstract public Value read(ValueSet inputValues);
+
+    abstract public Value processInputs(ValueSet inputValues);
 
     public void addChannel(InputChannel ic){
         if (inputChannels == null){

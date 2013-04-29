@@ -12,7 +12,7 @@ public class DifferenceOfInputsVirtualChannel extends VirtualChannel {
     }
 
     @Override
-    public Value read(ValueSet inputValues) {
+    public Value processInputs(ValueSet inputValues) {
         // Is there a better way to do this? Will this even work?
         Value[] inputVals = (Value[]) inputValues.values().toArray();
         Value output = new Value( inputVals[0].getValue() );
