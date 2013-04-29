@@ -440,7 +440,7 @@ public class ClipPlayer implements AnimationListener {
     
     public void green(Fixture fixture){
 
-        ssm.playSound("002");
+    	ssm.playSound(getRandVibra());
 
         Clip c = eam.addClip(eam.getContent("green"),
                                 (int)fixture.getLocation().x - 10,
