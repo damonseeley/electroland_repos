@@ -121,7 +121,7 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 	int zoomLevel = 1200;
 
 	//declare all OBJModels
-	OBJModel sculptureVase, sculptureSolid, sculptureScreen, environment, plane, blankOBJ, volumeB01, volumeB02, volumeB03, volumeC01A, volumeC01B, volumeC02A, volumeC02B, volumeC03A, volumeC03B, volumeF01, volumeF02, volumeF03, volumeF05, volumeF06, volumeF08, volumeF09, volumeF10, volumeF11, volumeF12, volumeL01, volumeL02, volumeV01, volumeV02, volumeV03, volumeV04, modelpB01, modelpB02, modelpB03, modelpF01, modelpF02, modelpF03, modelpF05, modelpF06, modelpF08, modelpF09, modelpF10, modelpF11, modelpF12, modelsB01, modelsB02, modelsB03, modelsF01, modelsF02, modelsF03, modelsF05, modelsF06, modelsF08, modelsF09, modelsF10, modelsF11, modelsF12, modelsT01, modeldC01, modeldC02, modeldC03, modeldF01, modeldF02, modeldF03, modeldF05, modeldF06, modeldF08, modeldF09, modeldF10, modeldF11, modeldF12;
+	OBJModel sculptureVase, sculptureSolid, sculptureScreen, environment, plane, blankOBJ, volumeB01, volumeB02, volumeB03, volumeC01A, volumeC01B, volumeC02A, volumeC02B, volumeC03A, volumeC03B, volumeF01, volumeF02, volumeF03, volumeF05, volumeF06, volumeF08, volumeF09, volumeF10, volumeF11, volumeF12, volumeL01, volumeL02, volumeV01, volumeV02, volumeV03, volumeV04, modelpB01, modelpB02, modelpB03, modelpF01, modelpF02, modelpF03, modelpF05, modelpF06, modelpF08, modelpF09, modelpF10, modelpF11, modelpF12, modelsB01, modelsB02, modelsB03, modelsF01, modelsF02, modelsF03, modelsF05, modelsF06, modelsF08, modelsF09, modelsF10, modelsF11, modelsF12, modelsT01, modeldC01A, modeldC02A, modeldC03A, modeldC01B, modeldC02B, modeldC03B, modeldF01, modeldF02, modeldF03, modeldF05, modeldF06, modeldF08, modeldF09, modeldF10, modeldF11, modeldF12;
 
 	//declare some textures
 	PImage beamTexture, vaseTexture, vaseMask;
@@ -217,9 +217,12 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 	  modelsF11 = new OBJModel(this, "../depends/models/sF11.obj", "absolute", TRIANGLES);
 	  modelsF12 = new OBJModel(this, "../depends/models/sF12.obj", "absolute", TRIANGLES);
 	  modelsT01 = new OBJModel(this, "../depends/models/sT01.obj", "absolute", TRIANGLES);
-	  modeldC01 = new OBJModel(this, "../depends/models/dC01.obj", "absolute", TRIANGLES);
-	  modeldC02 = new OBJModel(this, "../depends/models/dC02.obj", "absolute", TRIANGLES);
-	  modeldC03 = new OBJModel(this, "../depends/models/dC03.obj", "absolute", TRIANGLES);
+	  modeldC01A = new OBJModel(this, "../depends/models/dC01A.obj", "absolute", TRIANGLES);
+	  modeldC02A = new OBJModel(this, "../depends/models/dC02A.obj", "absolute", TRIANGLES);
+	  modeldC03A = new OBJModel(this, "../depends/models/dC03A.obj", "absolute", TRIANGLES);
+	  modeldC01B = new OBJModel(this, "../depends/models/dC01B.obj", "absolute", TRIANGLES);
+	  modeldC02B = new OBJModel(this, "../depends/models/dC02B.obj", "absolute", TRIANGLES);
+	  modeldC03B = new OBJModel(this, "../depends/models/dC03B.obj", "absolute", TRIANGLES);
 	  modeldF01 = new OBJModel(this, "../depends/models/dF01.obj", "absolute", TRIANGLES);
 	  modeldF02 = new OBJModel(this, "../depends/models/dF02.obj", "absolute", TRIANGLES);
 	  modeldF03 = new OBJModel(this, "../depends/models/dF03.obj", "absolute", TRIANGLES);
@@ -253,15 +256,15 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 
 	  
 	  //initialize LightObjects
-	  LightObject B01 = new LightObject(volumeB01, modelpB01, modelsB01, blankOBJ, 0.4);
-	  LightObject B02 = new LightObject(volumeB02, modelpB02, modelsB02, blankOBJ, 0.4);
-	  LightObject B03 = new LightObject(volumeB03, modelpB03, modelsB03, blankOBJ, 0.4);
-	  LightObject C01A = new LightObject(volumeC01A, blankOBJ, blankOBJ, modeldC01, 0.25);
-	  LightObject C01B = new LightObject(volumeC01B, blankOBJ, blankOBJ, blankOBJ, 0.25);
-	  LightObject C02A = new LightObject(volumeC02A, blankOBJ, blankOBJ, modeldC02, 0.25);
-	  LightObject C02B = new LightObject(volumeC02B, blankOBJ, blankOBJ, blankOBJ, 0.25);
-	  LightObject C03A = new LightObject(volumeC03A, blankOBJ, blankOBJ, modeldC03, 0.25);
-	  LightObject C03B = new LightObject(volumeC03B, blankOBJ, blankOBJ, blankOBJ, 0.25);
+	  LightObject B01 = new LightObject(volumeB01, modelpB01, modelsB01, blankOBJ, 0.3);
+	  LightObject B02 = new LightObject(volumeB02, modelpB02, modelsB02, blankOBJ, 0.3);
+	  LightObject B03 = new LightObject(volumeB03, modelpB03, modelsB03, blankOBJ, 0.3);
+	  LightObject C01A = new LightObject(volumeC01A, blankOBJ, blankOBJ, modeldC01A, 0.25);
+	  LightObject C01B = new LightObject(volumeC01B, blankOBJ, blankOBJ, modeldC01B, 0.25);
+	  LightObject C02A = new LightObject(volumeC02A, blankOBJ, blankOBJ, modeldC02A, 0.25);
+	  LightObject C02B = new LightObject(volumeC02B, blankOBJ, blankOBJ, modeldC02B, 0.25);
+	  LightObject C03A = new LightObject(volumeC03A, blankOBJ, blankOBJ, modeldC03A, 0.25);
+	  LightObject C03B = new LightObject(volumeC03B, blankOBJ, blankOBJ, modeldC03B, 0.25);
 	  LightObject F01 = new LightObject(volumeF01, modelpF01, modelsF01, modeldF01, 1.0);
 	  LightObject F02 = new LightObject(volumeF02, modelpF02, modelsF02, modeldF02, 1.0);
 	  LightObject F03 = new LightObject(volumeF03, modelpF03, modelsF03, modeldF03, 1.0);
