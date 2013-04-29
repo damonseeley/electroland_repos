@@ -351,7 +351,11 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 		//iterate through allLightObjects and draw solid stuff
 		for (LightObject light : lights.values()) {
 			if (showSensorBeams == true) {
-				if (light.triggerState == true) light.sensorBeamModel.draw();
+				if (light.triggerState == true) {
+					blendMode(ADD);
+					light.sensorBeamModel.draw();
+					blendMode(BLEND);
+				}
 			}
 			if (showParticipants == true) {
 				if (light.triggerState == true) light.participantModel.draw();
@@ -441,37 +445,37 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 		}
 			
 		if(key == '1') {
-			if(!lights.get("B01").triggerState) {
-				setSensorState("B01", true);
+			if(!lights.get("b01").triggerState) {
+				setSensorState("b01", true);
 	        } 
 	        else {
-	        	setSensorState("B01", false);
+	        	setSensorState("b01", false);
 	        }
 
 		}
 		if(key == '2') {
-			if(!lights.get("B02").triggerState) {
-				setSensorState("B02", true);
+			if(!lights.get("b02").triggerState) {
+				setSensorState("b02", true);
 	        } 
 	        else {
-	        	setSensorState("B02", false);
+	        	setSensorState("b02", false);
 	        }
 
 		}
 			
 		if(key == '3') {
-			if(!lights.get("F01").triggerState) {
-				setSensorState("F01", true);
+			if(!lights.get("f01").triggerState) {
+				setSensorState("f01", true);
 	        } 
 	        else {
-	        	setSensorState("F01", false);
+	        	setSensorState("f01", false);
 	        }
 
 		}
 			
 		if(key == '4') {
-			if(!lights.get("F02").triggerState) {
-				setSensorState("F02", true);
+			if(!lights.get("f02").triggerState) {
+				setSensorState("f02", true);
 	        } 
 	        else {
 	        	setSensorState("F02", false);
@@ -480,21 +484,21 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 		}
 		
 		if(key == '5') {
-			if(!lights.get("F03").triggerState) {
-				setSensorState("F03", true);
+			if(!lights.get("f03").triggerState) {
+				setSensorState("f03", true);
 	        } 
 	        else {
-	        	setSensorState("F03", false);
+	        	setSensorState("f03", false);
 	        }
 
 		}
 		
 		if(key == '6') {
-			if(!lights.get("F05").triggerState) {
-				setSensorState("F05", true);
+			if(!lights.get("f05").triggerState) {
+				setSensorState("f05", true);
 	        } 
 	        else {
-	        	setSensorState("F05", false);
+	        	setSensorState("f05", false);
 	        }
 
 		}
