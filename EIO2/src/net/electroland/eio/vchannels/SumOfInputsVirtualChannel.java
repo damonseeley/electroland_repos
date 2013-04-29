@@ -12,7 +12,7 @@ public class SumOfInputsVirtualChannel extends VirtualChannel {
     }
 
     @Override
-    public Value read(ValueSet inputValues) {
+    public Value processInputs(ValueSet inputValues) {
         Value output = new Value(0);
         for(Value currVal : inputValues.values())
             output.setValue(output.getValue() + currVal.getValue());
