@@ -13,10 +13,13 @@ public class DifferenceOfInputsVirtualChannel extends VirtualChannel {
 
     @Override
     public Value processInputs(ValueSet inputValues) {
-        // Is there a better way to do this? Will this even work?
-        Value[] inputVals = (Value[]) inputValues.values().toArray();
-        Value output = new Value( inputVals[0].getValue() );
-        output.setValue( output.getValue() - inputVals[1].getValue() );
-        return output;
+        if (inputValues.values().size() != 2){
+            throw new RuntimeException("DifferenceOfInputsVirtualChannel requires exactly 2 inputValues.");
+        }else{
+            Value[] inputVals = (Value[]) inputValues.values().toArray();
+            Value output = new Value( inputVals[0].getValue() );
+            output.setValue( output.getValue() - inputVals[1].getValue() );
+            return output;
+        }
     }
 }
