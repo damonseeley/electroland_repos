@@ -308,15 +308,15 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 
 	public void draw()
 	{
-		background(17, 24, 34);
+		background(12, 19, 29);
 		//lights();
 		//Add some lighting
-		pointLight(128, 128, 128, 0, 50, 2000);
-		pointLight(128, 128, 128, 0, 50, -2000);
-		pointLight(128, 128, 128, 2000, 50, 0);
-		pointLight(128, 128, 128, -2000, 50, 0);
+		pointLight(35, 35, 35, 0, 50, 500);
+		pointLight(35, 35, 35, 0, 50, -500);
+		pointLight(50, 50, 50, 500, 50, 0);
+		pointLight(35, 35, 35, -500, 50, 0);
 
-		shininess(1);
+		shininess(50);
 		sculptureSolid.draw();
 		sculptureScreen.draw();
 		shininess(0);
@@ -404,18 +404,6 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 			scene.camera().setPosition(new PVector((int) x, (int) y, (int) z));
 		}
 
-		if(key == 'r') {
-			Random rand = new Random();
-			for (String light : lights.keySet()) {
-				int rRand = rand.nextInt(255);
-				int gRand = rand.nextInt(255);
-				int bRand = rand.nextInt(255);
-				Color color = new Color(rRand, gRand, bRand);
-				setLightColor(light, color);
-
-			}
-		}
-
 		if(key == 'p') {
 			if(!showParticipants) {
 				showParticipants = true;
@@ -447,64 +435,45 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 		}
 
 		if(key == '1') {
-			if(!lights.get("b01").triggerState) {
-				setSensorState("b01", true);
-			} 
-			else {
-				setSensorState("b01", false);
-			}
-
+			System.err.println("Camera Preset 1: " + scene.camera().position());
 		}
+
 		if(key == '2') {
-			if(!lights.get("b02").triggerState) {
-				setSensorState("b02", true);
-			} 
-			else {
-				setSensorState("b02", false);
-			}
-
+			System.err.println("Camera Preset 2: " + scene.camera().position());
 		}
-
+		
 		if(key == '3') {
-			if(!lights.get("f01").triggerState) {
-				setSensorState("f01", true);
-			} 
-			else {
-				setSensorState("f01", false);
-			}
-
+			System.err.println("Camera Preset 3: " + scene.camera().position());
 		}
 
 		if(key == '4') {
-			if(!lights.get("f02").triggerState) {
-				setSensorState("f02", true);
-			} 
-			else {
-				setSensorState("F02", false);
-			}
-
+			System.err.println("Camera Preset 4: " + scene.camera().position());
 		}
 
 		if(key == '5') {
-			if(!lights.get("f03").triggerState) {
-				setSensorState("f03", true);
-			} 
-			else {
-				setSensorState("f03", false);
-			}
-
+			System.err.println("Camera Preset 5: " + scene.camera().position());
 		}
 
 		if(key == '6') {
-			if(!lights.get("f05").triggerState) {
-				setSensorState("f05", true);
-			} 
-			else {
-				setSensorState("f05", false);
-			}
-
+			scene.camera().setPosition(new PVector(564, -162, -1169));
+			//scene.camera().set
 		}
 
+		if(key == '7') {
+			System.err.println("Camera Preset 7: " + scene.camera().position());
+			System.err.println("Camera Orientation w: " + scene.camera().orientation().w);
+			System.err.println("Camera Orientation x: " + scene.camera().orientation().x);
+			System.err.println("Camera Orientation y: " + scene.camera().orientation().y);
+			System.err.println("Camera Orientation z: " + scene.camera().orientation().z);
+		}
+
+		if(key == '8') {
+			System.err.println("Camera Preset 8: " + scene.camera().position());
+		}
+
+		if(key == '9') {
+			System.err.println("Camera Preset 9: " + scene.camera().position());
+		}
 
 
 	}
