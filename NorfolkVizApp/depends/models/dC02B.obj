@@ -7,7 +7,7 @@
 #  http://skinprops.com
 #  
 #  ==========================================================================
-mtllib ../depends.models/dC02B.mtl
+mtllib ../depends/models/dC02B.mtl
 o dC02B
 v -90.7995 251.797 -307.258
 v -281.611 251.797 -307.258
