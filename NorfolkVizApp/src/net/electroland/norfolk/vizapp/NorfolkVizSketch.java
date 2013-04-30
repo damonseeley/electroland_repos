@@ -28,7 +28,7 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 	class LightObject {
 		OBJModel lightModel, participantModel, sensorBeamModel, lightPoolModel;
 		boolean triggerState;
-		int lightColor;
+		Color lightColor;
 		PImage lightTexture, lightMask, lightPoolTexture, lightPoolMask;
 		double lightIntensity;
 		LightObject(OBJModel passedLightModel, OBJModel passedParticipantModel, OBJModel passedSensorBeamModel, OBJModel passedLightPoolModel, double passedLightIntensity) {
@@ -44,12 +44,12 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 			lightMask = loadImage("../depends/models/lightGrad.jpg");
 			lightPoolMask = loadImage("../depends/models/lightPoolMask.jpg");
 			lightIntensity = passedLightIntensity;
-			lightColor = color(255,255,0);
+			lightColor = new Color(255,255,0);
 			
 			//fill the light texture with color
 			lightTexture.loadPixels();
 			for (int i = 0; i < lightTexture.pixels.length; i++) {
-				lightTexture.pixels[i] = lightColor; 
+				lightTexture.pixels[i] = color(lightColor.getRed(), lightColor.getGreen(), lightColor.getBlue()); 
 			}
 			lightTexture.mask(lightMask);
 			lightTexture.updatePixels();
@@ -57,7 +57,7 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 			//fill the lightPoolTexture with color
 			lightPoolTexture.loadPixels();
 			for (int i = 0; i < lightPoolTexture.pixels.length; i++) {
-				lightPoolTexture.pixels[i] = lightColor; 
+				lightPoolTexture.pixels[i] = color(lightColor.getRed(), lightColor.getGreen(), lightColor.getBlue()); 
 			}
 			lightPoolTexture.mask(lightPoolMask);
 			lightPoolTexture.updatePixels();
@@ -73,33 +73,13 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 	//setLightColor rebuilds the PImage texture for a given light
 	//Intensity helps adjust things visually, not part of the real MetalMatisse functions 
     @Override
-	public void setLightColor(String nameOfLight, Color lightColor) {
+	public void setLightColor(String nameOfLight, Color newLightColor) {
 
         LightObject light = lights.get(nameOfLight);
 
         if (light != null){
 
-            int r = Math.min(255, (int) (lightColor.getRed() * light.lightIntensity));
-            int g = Math.min(255, (int) (lightColor.getGreen() * light.lightIntensity));
-            int b = Math.min(255, (int) (lightColor.getBlue() * light.lightIntensity));
-
-            light.lightPoolTexture.loadPixels();
-            for (int i = 0; i < light.lightPoolTexture.pixels.length; i++) {
-                light.lightPoolTexture.pixels[i] = color(lightColor.getRed(),
-                                                         lightColor.getGreen(),
-                                                         lightColor.getBlue()); 
-            }
-
-            light.lightPoolTexture.mask(light.lightPoolMask);
-            light.lightPoolTexture.updatePixels();
-
-            light.lightTexture.loadPixels();
-            for (int i = 0; i < light.lightTexture.pixels.length; i++) {
-                light.lightTexture.pixels[i] = color(r,g,b); 
-            }
-
-            light.lightTexture.mask(light.lightMask);
-            light.lightTexture.updatePixels();
+            light.lightColor = newLightColor;
         }
 	}
 
@@ -367,6 +347,27 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 		blendMode(ADD);
 		hint(DISABLE_DEPTH_TEST);
 		for (LightObject light : lights.values()) {
+        	int r = Math.min(255, (int) (light.lightColor.getRed() * light.lightIntensity));
+            int g = Math.min(255, (int) (light.lightColor.getGreen() * light.lightIntensity));
+            int b = Math.min(255, (int) (light.lightColor.getBlue() * light.lightIntensity));
+
+            light.lightPoolTexture.loadPixels();
+            for (int i = 0; i < light.lightPoolTexture.pixels.length; i++) {
+            	light.lightPoolTexture.pixels[i] = color(light.lightColor.getRed(),
+            											 light.lightColor.getGreen(),
+            											 light.lightColor.getBlue()); 
+            }
+
+            light.lightPoolTexture.mask(light.lightPoolMask);
+            light.lightPoolTexture.updatePixels();
+
+            light.lightTexture.loadPixels();
+            for (int i = 0; i < light.lightTexture.pixels.length; i++) {
+                light.lightTexture.pixels[i] = color(r,g,b); 
+            }
+
+            light.lightTexture.mask(light.lightMask);
+            light.lightTexture.updatePixels();
 			light.lightPoolModel.draw();
 			light.lightModel.draw();
 		}
