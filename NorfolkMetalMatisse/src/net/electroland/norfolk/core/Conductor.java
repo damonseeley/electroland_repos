@@ -207,6 +207,7 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
                     fixtureId = tag;
                 }
             }
+
             // at this point we should have a fixture name, and a single color. need to put
             // it into fixtureColors, awaiting the other two colors.
             if (fixtureId != null){
@@ -228,14 +229,16 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
         }
 
         // at this point fixtureColors should contain a color per fixture.
+        HashMap<String, Color> dataToSend = new HashMap<String, Color>();
+
         for (String fixtureId : fixtureColors.keySet()){
             RGB rgb = fixtureColors.get(fixtureId);
             if (rgb != null){
-                viz.setLightColor(fixtureId, new Color(rgb.r, rgb.g, rgb.b));
+                dataToSend.put(fixtureId, new Color(rgb.r, rgb.g, rgb.b));
             }
         }
 
-        // TODO: no way to see sensors currently.
+        viz.setLights(dataToSend);
     }
 
     // used by syncViz only.
