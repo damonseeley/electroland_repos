@@ -85,7 +85,7 @@ public class VizOSCReceiver implements OSCListener {
 
                 StringBuffer sb = new StringBuffer();
 
-                for (int i = 0; i < message.getArguments().length - 2; i += 2){
+                for (int i = 0; i < message.getArguments().length - 1; i += 2){
 
                     String id = (String)message.getArguments()[i];
                     int c     = (Integer)message.getArguments()[i+1];
