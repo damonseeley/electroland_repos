@@ -6,6 +6,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 import net.electroland.utils.ElectrolandProperties;
 
@@ -20,8 +21,10 @@ public class VizOSCSender {
     private InetAddress inetAddress;
     private int port;
     private boolean isEnabled = false;
-    public static String LIGHTS = "/lights";
+    public static String ALL_LIGHTS = "/all";
+    public static String LIGHT = "/light";
     public static String SENSORS = "/sensors";
+
 
     public void load(ElectrolandProperties props){
 
@@ -38,6 +41,15 @@ public class VizOSCSender {
         }
     }
 
+    public void setLights(HashMap<String, Color> colors){
+        ArrayList<Object> args = new ArrayList<Object>();
+        for (String key : colors.keySet()){
+            args.add(key);
+            args.add(colors.get(key).getRGB());
+        }
+        send(ALL_LIGHTS, args);
+    }
+
     public void setLightColor(String id, Color color){
 
         ArrayList<Object> args = new ArrayList<Object>();
@@ -46,7 +58,7 @@ public class VizOSCSender {
         args.add(new Integer(color.getBlue()));
         args.add(new Integer(color.getGreen()));
 
-        send(LIGHTS, args);
+        send(LIGHT, args);
     }
 
     public void setSensorState(String id, boolean isOn){

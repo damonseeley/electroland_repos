@@ -40,8 +40,9 @@ public class VizOSCReceiver implements OSCListener {
         try {
             logger.info(" listening on port " + port);
             client = new OSCPortIn(port);
-            client.addListener("/lights", this);
-            client.addListener("/sound", this);
+            client.addListener(VizOSCSender.ALL_LIGHTS, this);
+            client.addListener(VizOSCSender.LIGHT, this);
+            client.addListener(VizOSCSender.SENSORS, this);
             client.startListening();
         } catch (SocketException e) {
             logger.fatal(e);
@@ -58,19 +59,19 @@ public class VizOSCReceiver implements OSCListener {
     @Override
     public void acceptMessage(Date arriveTime, OSCMessage message) {
 
-        logger.debug("acceptMessage(" + message.getAddress() + ");");
-        StringBuffer sb = new StringBuffer(" message.args:[");
-        for (Object o : message.getArguments()){
-            sb.append(o).append(',');
-        }
-        sb.setLength(sb.length()-1);
-        sb.append(']');
-        logger.debug(sb.toString());
+//        logger.debug("acceptMessage(" + message.getAddress() + ");");
+//        StringBuffer sb = new StringBuffer(" message.args:[");
+//        for (Object o : message.getArguments()){
+//            sb.append(o).append(',');
+//        }
+//        sb.setLength(sb.length()-1);
+//        sb.append(']');
+//        logger.debug(sb.toString());
         for (VizOSCListener l : listeners){
 
             Object[] args = message.getArguments();
 
-            if (message.getAddress().equals(VizOSCSender.LIGHTS)){
+            if (message.getAddress().equals(VizOSCSender.LIGHT)){
 
                 l.setLightColor((String)args[0], new Color((Integer)args[1], 
                                                            (Integer)args[2], 
@@ -80,6 +81,24 @@ public class VizOSCReceiver implements OSCListener {
 
                 l.setSensorState((String)args[0], (Integer)args[1] == 0 ? false : true);
 
+            } else if (message.getAddress().equals(VizOSCSender.ALL_LIGHTS)){
+
+                StringBuffer sb = new StringBuffer();
+
+                for (int i = 0; i < message.getArguments().length - 2; i += 2){
+
+                    String id = (String)message.getArguments()[i];
+                    int c     = (Integer)message.getArguments()[i+1];
+                    Color color = new Color(c);
+
+                    sb.append(id).append('[').append(color.getRed())
+                      .append(',').append(color.getGreen())
+                      .append(',').append(color.getBlue()).append(']').append(',');
+
+                    l.setLightColor(id, color);
+                }
+
+                logger.debug(sb.toString());
             }
         }
     }
