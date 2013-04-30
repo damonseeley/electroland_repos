@@ -21,6 +21,7 @@
         <pathelement location="libraries/EL-Config.jar"/>
         <pathelement location="libraries/EA2.jar"/>
         <pathelement location="libraries/ELU2.jar"/>
+    	<pathelement location="libraries/javaosc-core-0.2.jar"/>
     </path>
     <path id="run.Conductor.classpath">
         <path refid="NorfolkMetalMatisse.classpath"/>
