@@ -1,7 +1,6 @@
 package net.electroland.norfolk.vizapp;
 import java.awt.Color;
 import java.util.HashMap;
-import java.util.Random;
 
 import net.electroland.norfolk.core.viz.VizOSCListener;
 import net.electroland.norfolk.core.viz.VizOSCReceiver;
@@ -12,6 +11,7 @@ import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
 import remixlab.proscene.CameraProfile;
+import remixlab.proscene.Quaternion;
 import remixlab.proscene.Scene;
 import saito.objloader.OBJModel;
 
@@ -100,6 +100,7 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 	boolean bTexture = true;
 	boolean bStroke = false;
 	int zoomLevel = 1200;
+	int pitch = 50;
 
 	//declare all OBJModels
 	OBJModel sculptureVase, sculptureSolid, sculptureScreen, environment, plane, blankOBJ, volumeB01, volumeB02, volumeB03, volumeC01A, volumeC01B, volumeC02A, volumeC02B, volumeC03A, volumeC03B, volumeF01, volumeF02, volumeF03, volumeF05, volumeF06, volumeF08, volumeF09, volumeF10, volumeF11, volumeF12, volumeL01, volumeL02, volumeV01, volumeV02, volumeV03, volumeV04, modelpB01, modelpB02, modelpB03, modelpF01, modelpF02, modelpF03, modelpF05, modelpF06, modelpF08, modelpF09, modelpF10, modelpF11, modelpF12, modelsB01, modelsB02, modelsB03, modelsF01, modelsF02, modelsF03, modelsF05, modelsF06, modelsF08, modelsF09, modelsF10, modelsF11, modelsF12, modelsT01, modeldC01A, modeldC02A, modeldC03A, modeldC01B, modeldC02B, modeldC03B, modeldF01, modeldF02, modeldF03, modeldF05, modeldF06, modeldF08, modeldF09, modeldF10, modeldF11, modeldF12;
@@ -403,7 +404,16 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 			z *= 0.9;
 			scene.camera().setPosition(new PVector((int) x, (int) y, (int) z));
 		}
+		
+		if(key == 'k') {
+			pitch -= 10;
+			scene.camera().lookAt(new PVector(0, pitch, 0));
+		}
 
+		if(key == 'l') {
+			pitch += 10;
+			scene.camera().lookAt(new PVector(0, pitch, 0));
+		}
 		if(key == 'p') {
 			if(!showParticipants) {
 				showParticipants = true;
@@ -435,44 +445,43 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 		}
 
 		if(key == '1') {
-			System.err.println("Camera Preset 1: " + scene.camera().position());
+			scene.camera().setPosition(new PVector(-564, -162, -1169));
+			scene.camera().lookAt(new PVector(0, 50, 0));
+			scene.camera().setUpVector(new PVector(0,1,0));
+			scene.camera().lookAt(new PVector(0, 50, 0));
+			
 		}
 
 		if(key == '2') {
-			System.err.println("Camera Preset 2: " + scene.camera().position());
+			scene.camera().setPosition(new PVector(1143, -167, 1272));
+			scene.camera().lookAt(new PVector(0, 50, 0));
+			scene.camera().setUpVector(new PVector(0,1,0));
+			scene.camera().lookAt(new PVector(0, 50, 0));
+			
 		}
 		
 		if(key == '3') {
-			System.err.println("Camera Preset 3: " + scene.camera().position());
+			scene.camera().setPosition(new PVector(1086, -187, 1150));
+			scene.camera().lookAt(new PVector(0, 50, 0));
+			scene.camera().setUpVector(new PVector(0,1,0));
+			scene.camera().lookAt(new PVector(0, 50, 0));
+			
 		}
 
 		if(key == '4') {
-			System.err.println("Camera Preset 4: " + scene.camera().position());
+			scene.camera().setPosition(new PVector(-1188, -184, -751));
+			scene.camera().lookAt(new PVector(0, 50, 0));
+			scene.camera().setUpVector(new PVector(0,1,0));
+			scene.camera().lookAt(new PVector(0, 50, 0));
+			
 		}
 
 		if(key == '5') {
-			System.err.println("Camera Preset 5: " + scene.camera().position());
-		}
-
-		if(key == '6') {
-			scene.camera().setPosition(new PVector(564, -162, -1169));
-			//scene.camera().set
-		}
-
-		if(key == '7') {
-			System.err.println("Camera Preset 7: " + scene.camera().position());
-			System.err.println("Camera Orientation w: " + scene.camera().orientation().w);
-			System.err.println("Camera Orientation x: " + scene.camera().orientation().x);
-			System.err.println("Camera Orientation y: " + scene.camera().orientation().y);
-			System.err.println("Camera Orientation z: " + scene.camera().orientation().z);
-		}
-
-		if(key == '8') {
-			System.err.println("Camera Preset 8: " + scene.camera().position());
-		}
-
-		if(key == '9') {
-			System.err.println("Camera Preset 9: " + scene.camera().position());
+			scene.camera().setPosition(new PVector(381, -229, -1195));
+			scene.camera().lookAt(new PVector(0, 50, 0));
+			scene.camera().setUpVector(new PVector(0,1,0));
+			scene.camera().lookAt(new PVector(0, 50, 0));
+			
 		}
 
 
