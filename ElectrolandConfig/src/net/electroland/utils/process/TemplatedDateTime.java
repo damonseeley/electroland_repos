@@ -67,11 +67,12 @@ public class TemplatedDateTime {
         assert rdt0.isHourly();
         assert rdt0.getMinutes() == 4;
 
-        TemplatedDateTime rdt1 = new TemplatedDateTime(TemplatedDateTime.DAILY, "12:08 PM");
+        TemplatedDateTime rdt1 = new TemplatedDateTime(TemplatedDateTime.DAILY, "9:30 AM");
         assert rdt1.isDaily();
-        assert rdt1.getHour() == 0;
-        assert rdt1.getMinutes() == 8;
+        assert rdt1.getHour() == 9;
+        assert rdt1.getMinutes() == 30;
         assert rdt1.getAmPm() == Calendar.PM;
+        System.out.println(rdt1.getHour() + ":" + rdt1.getMinutes());
 
         TemplatedDateTime rdt2 = new TemplatedDateTime(TemplatedDateTime.WEEKLY, "Mon, 12:00 AM");
 
