@@ -20,8 +20,8 @@
 	<classpathentry kind="lib" path="libraries/OBJLoader.jar"/>
 	<classpathentry kind="lib" path="libraries/Shapes3d.jar"/>
 	<classpathentry kind="lib" path="libraries/javaosc-core-0.2.jar"/>
+	<classpathentry kind="lib" path="libraries/EL-Config.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/NorfolkMetalMatisse"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ElectrolandConfig"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
