@@ -55,6 +55,7 @@ public class OperatingProcess {
             // after hours
             openingTime = set(openingStr);
             closingTime = set(closingStr);
+
             if (openingTime > closingTime){
                 openingTime -= 24 * 60 * 60 * 1000;
             }
@@ -76,7 +77,8 @@ public class OperatingProcess {
             SunriseSunsetCalculator calculator = new SunriseSunsetCalculator(location, timeZone);
             Calendar sunrise = calculator.getOfficialSunriseCalendarForDate(gc);
 
-            return sunrise.getTimeInMillis() + getOffsetMinutes(time);
+            long millis = sunrise.getTimeInMillis() + getOffsetMinutes(time);
+            return millis;
 
         }else if (time.toLowerCase().startsWith("sunset")){
 
@@ -84,11 +86,14 @@ public class OperatingProcess {
             SunriseSunsetCalculator calculator = new SunriseSunsetCalculator(location, timeZone);
             Calendar sunset  = calculator.getOfficialSunsetCalendarForDate(gc);
 
-            return sunset.getTimeInMillis() + getOffsetMinutes(time);
+            long millis = sunset.getTimeInMillis() + getOffsetMinutes(time);
+            return millis;
 
         }else{
-            TemplatedDateTime t = new TemplatedDateTime(TemplatedDateTime.HOURLY, time);
-            return t.getNextDateTime().getTimeInMillis();
+            TemplatedDateTime t = new TemplatedDateTime(TemplatedDateTime.DAILY, time);
+
+            long millis = t.getNextDateTime().getTimeInMillis();
+            return millis;
         }
     }
 
