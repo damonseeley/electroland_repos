@@ -15,4 +15,4 @@ illum 2
 Ns 50.781250
 d 0.300000
 Ni 1.000000
-map_Kd ../depends/models/holes.jpg
+map_Kd holes.jpg
