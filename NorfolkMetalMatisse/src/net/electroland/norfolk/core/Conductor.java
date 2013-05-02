@@ -96,7 +96,6 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
         	isHeadless = true;
         }
 
-
         eam = new Animation();
         eam.load(mainProps);
         eam.setBackground(Color.BLACK);
