@@ -53,6 +53,7 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
 
         Conductor c = new Conductor();
         c.init(); // need a way to turn multiple args into multiple props file names- or just put them all in one file?
+        
 
         if (!c.isHeadless){
             c.mainControls = new JFrame();
@@ -91,6 +92,10 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
         pw.addListener(this);
 
         ElectrolandProperties mainProps = new ElectrolandProperties("norfolk.properties");
+        if (mainProps.getRequiredBoolean("settings", "global", "headless")) {
+        	isHeadless = true;
+        }
+
 
         eam = new Animation();
         eam.load(mainProps);
