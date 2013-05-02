@@ -13,7 +13,7 @@ import ddf.minim.Minim;
 
 public class SimpleSoundManager {
 
-    private Map<String, String>playList;
+    private Map<String, SoundElement>playList;
     private Minim minim;
     private OperatingHours hours;
 
@@ -39,21 +39,34 @@ public class SimpleSoundManager {
     public Collection<String> getPlayList(){
         return playList.keySet();
     }
-
+    
     public void load(ElectrolandProperties props){
         Map<String,ParameterMap> soundProps = props.getObjects("sound");
-        playList = new HashMap<String,String>();
+        playList = new HashMap<String,SoundElement>();
         for (String id : soundProps.keySet()){
-            playList.put(id, soundProps.get(id).get("filename"));
+            SoundElement se = new SoundElement(soundProps.get(id).get("filename"),soundProps.get(id).getRequired("groupID"));
+            playList.put(id, se);
         }
     }
-
+    
     public void playSound(String soundName){
         if (hours.shouldBeOpenNow("sound")){
-            AudioPlayer ap = minim.loadFile(playList.get(soundName));
+            AudioPlayer ap = minim.loadFile(playList.get(soundName).filename);
             new PlayThread(ap, ap.length() * 2).start();
         }
     }
+}
+
+class SoundElement {
+	
+	public String filename;
+	public String groupID;
+	
+	public SoundElement(String fname, String gid) {
+		filename = fname;
+		groupID = gid;
+		
+	}
 }
 
 class PlayThread extends Thread{
