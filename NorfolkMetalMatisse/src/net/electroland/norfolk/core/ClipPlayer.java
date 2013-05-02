@@ -35,7 +35,7 @@ public class ClipPlayer implements AnimationListener {
     private ELUManager elu;
     private Map<String, Target> sensorToClips;
     private Collection<Method> globalClips;
-
+    
     public ClipPlayer(Animation eam, SimpleSoundManager ssm, ELUManager elu, ElectrolandProperties props){
 
         this.eam = eam;
@@ -416,9 +416,11 @@ public class ClipPlayer implements AnimationListener {
     	
     }
     
-    public void redRandTest(){
+    public void randSoundTest(){
 
-        ssm.playSound(getRandVibra());
+        //ssm.playSound(getRandVibra());
+        
+        ssm.playGroupRandom("1");
     }
     
     public void redRand(Fixture fixture){
