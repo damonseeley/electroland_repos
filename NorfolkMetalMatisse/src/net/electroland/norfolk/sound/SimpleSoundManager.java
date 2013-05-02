@@ -1,9 +1,13 @@
 package net.electroland.norfolk.sound;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
+import net.electroland.norfolk.core.Conductor;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.ParameterMap;
 import net.electroland.utils.hours.OperatingHours;
@@ -12,6 +16,8 @@ import ddf.minim.AudioPlayer;
 import ddf.minim.Minim;
 
 public class SimpleSoundManager {
+	
+    private static Logger       logger = Logger.getLogger(SimpleSoundManager.class);
 
     private Map<String, SoundElement>playList;
     private Minim minim;
@@ -55,6 +61,27 @@ public class SimpleSoundManager {
             new PlayThread(ap, ap.length() * 2).start();
         }
     }
+    
+    public void playSoundFile(String filename){
+        if (hours.shouldBeOpenNow("sound")){
+            AudioPlayer ap = minim.loadFile(filename);
+            new PlayThread(ap, ap.length() * 2).start();
+        }
+    }
+
+	public void playGroupRandom(String gid) {
+		//logger.info("Play a sound from group '" + gid + "'");
+		ArrayList<SoundElement> sounds = new ArrayList<SoundElement>(); //Generic ArrayList to Store only String objects
+		for (SoundElement se : playList.values()) {
+		    if (se.groupID.equals(gid)) {
+		    	sounds.add(se);
+		    }
+		}
+		int randSoundIndex = (int)(Math.random() * sounds.size());
+		logger.info(randSoundIndex);
+		playSoundFile(sounds.get(randSoundIndex).filename);
+		
+	}
 }
 
 class SoundElement {
