@@ -1,12 +1,15 @@
 package net.electroland.norfolk.core;
 
 import java.awt.Color;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.vecmath.Point3d;
 
@@ -27,6 +30,8 @@ import net.electroland.utils.lighting.Fixture;
 
 import org.apache.log4j.Logger;
 
+
+
 public class ClipPlayer implements AnimationListener {
 
     private static Logger logger = Logger.getLogger(ClipPlayer.class);
@@ -36,6 +41,11 @@ public class ClipPlayer implements AnimationListener {
     private Map<String, Target> sensorToClips;
     private Collection<Method> globalClips;
     
+    private Timer chordTimer;
+    int chordIndex;
+    int chordIndexMax;
+    long chordDur;
+    
     public ClipPlayer(Animation eam, SimpleSoundManager ssm, ELUManager elu, ElectrolandProperties props){
 
         this.eam = eam;
@@ -44,6 +54,24 @@ public class ClipPlayer implements AnimationListener {
         this.elu = elu;
         this.ssm.load(props);
         this.configure(props);
+        
+        chordIndex = 1;
+        chordIndexMax = 3;
+        chordDur = 5000; //4 seconds for each chord
+        chordTimer = new Timer();
+        chordTimer.schedule(new chordTimerTask(), chordDur, chordDur);
+    }
+    
+    class chordTimerTask extends TimerTask{
+    	
+        public void run(){
+        	if (chordIndex < chordIndexMax ) {
+        		chordIndex++;
+        	} else {
+        		chordIndex = 1;
+        	}
+        	logger.info("Changed chordIndex to " + chordIndex);
+        }
     }
 
     public void configure(ElectrolandProperties props){
@@ -408,7 +436,7 @@ public class ClipPlayer implements AnimationListener {
 
         //ssm.playSound(getRandVibra());
         
-        ssm.playGroupRandom("3");
+        ssm.playGroupRandom(chordIndex + "");
     }
     
     public void redRand(Fixture fixture){
