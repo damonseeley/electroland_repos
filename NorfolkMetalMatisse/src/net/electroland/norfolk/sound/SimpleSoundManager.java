@@ -78,7 +78,7 @@ public class SimpleSoundManager {
 		    }
 		}
 		int randSoundIndex = (int)(Math.random() * sounds.size());
-		logger.info(randSoundIndex);
+		//logger.info(randSoundIndex);
 		playSoundFile(sounds.get(randSoundIndex).filename);
 		
 	}
