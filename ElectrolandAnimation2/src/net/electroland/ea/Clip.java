@@ -239,13 +239,11 @@ public class Clip implements Comparable<Clip>{
 
     protected BufferedImage getImage()
     {
-        synchronized(children){
-            Iterator<Clip> clips = children.iterator(); // pare deleted clips
-            while (clips.hasNext()){
-                Clip child = clips.next();
-                if (child.isRequestedForKill)
-                    clips.remove();
-            }
+        Iterator<Clip> clips = children.iterator(); // pare deleted clips
+        while (clips.hasNext()){
+            Clip child = clips.next();
+            if (child.isRequestedForKill)
+                clips.remove();
         }
 
         if (tweenInProgress != null){
@@ -310,27 +308,25 @@ public class Clip implements Comparable<Clip>{
         // draw each of the children on our section of the stage
         Graphics2D g = clipImage.createGraphics();
 
-        synchronized(children){
+        java.util.Collections.sort(children);
+        for (Clip child : children){
 
-            java.util.Collections.sort(children);
-            for (Clip child : children){
+            int childX = child.currentState.geometry.x;
+            int childY = child.currentState.geometry.y;
+            int childW = child.currentState.geometry.width;
+            int childH = child.currentState.geometry.height;
+            float childA = child.currentState.alpha;
+            if (childA > 1)
+                childA = 1.0f;
+            if (childA < 0)
+                childA = 0.0f;
 
-                int childX = child.currentState.geometry.x;
-                int childY = child.currentState.geometry.y;
-                int childW = child.currentState.geometry.width;
-                int childH = child.currentState.geometry.height;
-                float childA = child.currentState.alpha;
-                if (childA > 1)
-                    childA = 1.0f;
-                if (childA < 0)
-                    childA = 0.0f;
+            BufferedImage childImage = child.getImage();
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)childA));
 
-                BufferedImage childImage = child.getImage();
-                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)childA));
-
-                g.drawImage(childImage, childX, childY, childW, childH, null);
-            }
+            g.drawImage(childImage, childX, childY, childW, childH, null);
         }
+
         g.dispose();
 
         return clipImage;
