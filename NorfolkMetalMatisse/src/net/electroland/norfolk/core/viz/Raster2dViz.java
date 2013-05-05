@@ -23,6 +23,7 @@ public class Raster2dViz extends JPanel {
     private CanvasDetector[] detectors;
     private int textLeftOffset = 10;
     private int textRightOffset = 10;
+    private Float measuredFps;
 
     @Override
     public void paint(Graphics g) {
@@ -70,12 +71,18 @@ public class Raster2dViz extends JPanel {
                     // value
                     g2d.setColor(Color.WHITE);
                     g2d.drawString(cd.getTags().toString(), r.x + textRightOffset, r.y + textLeftOffset);
+                    
+                    // fps
+                    g2d.setColor(Color.WHITE);
+                    g2d.drawString(measuredFps.toString(), 10, 10);
+                    
                 }
             }
         }
     }
 
-    public void update(BufferedImage frame, CanvasDetector[] detectors){
+    public void update(BufferedImage frame, CanvasDetector[] detectors, float fps){
+    	this.measuredFps = fps;
         if (frame == null){
             this.frame = frame;
             this.detectors = detectors;

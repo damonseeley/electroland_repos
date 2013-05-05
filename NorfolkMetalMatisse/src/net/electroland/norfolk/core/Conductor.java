@@ -48,6 +48,7 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
     private JFrame              mainControls;
     private Raster2dViz         renderArea;
     private boolean             isHeadless = false;
+    private FpsAverage		    fpsAvg = new FpsAverage(20);
 
     public static void main(String args[]) throws OptionException, IOException{
 
@@ -136,6 +137,7 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
         thread = null;
     }
 
+    long lastRender = System.currentTimeMillis();
     @Override
     public void run() {
         while (thread != null){
@@ -155,7 +157,7 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
                     CanvasDetector[] detectors = canvas.sync(pixels);
 
                     if (renderArea != null){
-                        renderArea.update(frame, detectors);
+                        renderArea.update(frame, detectors, this.getMeasuredFPS());
                         renderArea.repaint();
                     }
 
@@ -171,6 +173,10 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
             }
 
             try{
+                long currentTime = System.currentTimeMillis();
+                fpsAvg.add((int)(currentTime - lastRender));
+                lastRender = currentTime;
+
                 Thread.sleep((long)(1000.0 / fps));
             }catch(InterruptedException e){
                 logger.error(e);
@@ -178,6 +184,11 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
         }
     }
 
+    public float getMeasuredFPS(){
+    	return 1000.0f / fpsAvg.getAverage();
+    }
+    
+    
     // YUCK! (ELU actually has this already, and should allow getting it.
     private HashMap<String, Fixture> fixtures;
     private HashMap<String, Fixture> fixtureMap(){
