@@ -23,7 +23,7 @@ public class Raster2dViz extends JPanel {
     private CanvasDetector[] detectors;
     private int textLeftOffset = 10;
     private int textRightOffset = 10;
-    private Float measuredFps;
+    private Integer measuredFps;
 
     @Override
     public void paint(Graphics g) {
@@ -81,7 +81,7 @@ public class Raster2dViz extends JPanel {
         }
     }
 
-    public void update(BufferedImage frame, CanvasDetector[] detectors, float fps){
+    public void update(BufferedImage frame, CanvasDetector[] detectors, int fps){
     	this.measuredFps = fps;
         if (frame == null){
             this.frame = frame;
