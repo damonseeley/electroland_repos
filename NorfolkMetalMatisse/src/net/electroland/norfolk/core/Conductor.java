@@ -137,11 +137,13 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
         thread = null;
     }
 
-    long lastRender = System.currentTimeMillis();
     @Override
     public void run() {
         while (thread != null){
 
+
+            long startRender = System.currentTimeMillis();
+            
             // Practically speaking, there's only one canvas, so we don't need
             // to do this iterator. Could just get it by name.
             for (ELUCanvas canvas : elu.getCanvases().values()){
@@ -157,7 +159,7 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
                     CanvasDetector[] detectors = canvas.sync(pixels);
 
                     if (renderArea != null){
-                        renderArea.update(frame, detectors, this.getMeasuredFPS());
+                        renderArea.update(frame, detectors, fpsAvg.getAverage());
                         renderArea.repaint();
                     }
 
@@ -174,19 +176,14 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
 
             try{
 
-            	long currentTime = System.currentTimeMillis();
-                int renderTime = (int)(currentTime - lastRender);
+                fpsAvg.touch();
 
-                if (renderTime < 0){
-                	renderTime = 0;
-                }
+                long currentTime = System.currentTimeMillis();
+                int renderTime = (int)(currentTime - startRender);
 
-                fpsAvg.add(renderTime);
-                lastRender = currentTime;
-                long sleepTime = (long)(1000.0 / fps) - renderTime;
-
+                int sleepTime = (int)(1000.0/fps) - renderTime;
                 if (sleepTime < 1){
-                	sleepTime = 1;
+                    sleepTime = 1;
                 }
 
                 Thread.sleep(sleepTime);
@@ -195,10 +192,6 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
                 logger.error(e);
             }
         }
-    }
-
-    public float getMeasuredFPS(){
-    	return 1000.0f / fpsAvg.getAverage();
     }
     
     
