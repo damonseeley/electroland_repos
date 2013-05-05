@@ -25,7 +25,16 @@ public class HalfBiquad implements Filter {
         double output = z1 + b0 * input;
         z1 = b1 * input - a1 * output;
         
-    	in.setValue((short)output);
+//        if (output > Integer.MAX_VALUE)
+//            throw new RuntimeException("Overflow occurred in HalfBiquad.");
+        
+        // Clip output value to avoid overflow
+        if (output > Integer.MAX_VALUE)
+            output = Integer.MAX_VALUE;
+        else if (output < Integer.MIN_VALUE)
+            output = Integer.MIN_VALUE;
+        
+    	in.setValue((int)output);
     }
 
 }

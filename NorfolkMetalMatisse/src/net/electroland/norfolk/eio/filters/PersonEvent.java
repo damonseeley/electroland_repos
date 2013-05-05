@@ -2,7 +2,7 @@ package net.electroland.norfolk.eio.filters;
 
 public class PersonEvent {
 
-    public enum Direction {LEFT, RIGHT, UNKNOWN};
+    public enum Direction {LEFT, RIGHT, CENTER};
     public enum Behavior {ENTER, EXIT}; // this might also be unknowable
 
     private Direction direction;

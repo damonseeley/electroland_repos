@@ -31,7 +31,7 @@ public class Biquad implements Filter {
         z1 = z2 + b1 * input - a1 * output;
         z2 = b2 * input - a2 * output;
         
-    	in.setValue((short)output);
+    	in.setValue((int)output);
     }
 
 }
