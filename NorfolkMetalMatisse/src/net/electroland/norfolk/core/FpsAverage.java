@@ -8,27 +8,33 @@ public class FpsAverage {
     private long lastTouch = 0;
 
 	
-	public FpsAverage(int samples){
-		this.data = new int[1];
-	}
-  
-    public float getAverage(){
-        return (1000.0f)/(total / data.length);
+    public FpsAverage(int samples){
+        this.data = new int[samples];
     }
-  
+
+    public int getAverage(){
+        return (int)((1000.0f) / (total / data.length));
+    }
+
     // ring buffered sum
     public void touch(){
-  
-        long current    = System.currentTimeMillis();
-        int sample      = (int)(current - lastTouch);
-        lastTouch       = current;
 
-        total -= data[index];
-        total += sample;
-        data[index++] = sample;
-  
-        if (index == data.length){
-            index = 0;
+        if (lastTouch == 0){
+            lastTouch = System.currentTimeMillis();
+
+        }else{
+
+            long current      = System.currentTimeMillis();
+            int duration      = (int)(current - lastTouch);
+            lastTouch       = current;
+
+            total -= data[index];
+            total += duration;
+            data[index++] = duration;
+
+            if (index == data.length){
+                index = 0;
+            }
         }
-    }	
+    }
 }
