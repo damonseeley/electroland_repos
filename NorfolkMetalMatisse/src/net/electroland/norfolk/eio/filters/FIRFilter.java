@@ -10,6 +10,26 @@ import net.electroland.eio.Value;
 import net.electroland.eio.filters.Filter;
 import net.electroland.utils.ParameterMap;
 
+/**
+ * This class implements a general FIR filter using brute-force convolution 
+ * calculation in the time domain. Each object loads its impulse response from a
+ * .txt file specified by the "irFileName" parameter during configuration. This
+ * text file must be a series of numbers, one per line, where the first number
+ * is a metadata integer specifying the number of values contained in the 
+ * response text file (not counting itself) and the remaining numbers define the
+ * impulse response from n = 0 onward (positive time).
+ * 
+ * Optionally, an "irLen" parameter may be supplied during configuration in 
+ * order to specify that only the first "irLen" samples of the response
+ * contained in the specified impulse response .txt file should be used by the 
+ * filter. If the supplied irLen is longer than the length of the response 
+ * contained in the specified text file, the full response will be used.
+ * 
+ * 
+ * @author Sean
+ *
+ */
+
 public class FIRFilter implements Filter {
 
     private BufferedReader irDataReader;
@@ -22,7 +42,6 @@ public class FIRFilter implements Filter {
         
         Integer irLenToUse = params.getOptionalInt("irLen");
         
-        // Is it an OK practice in Java to actually load this from a file at runtime?
         String irDataFileName = params.getRequired("irFileName");
         try {
             irDataReader = new BufferedReader(

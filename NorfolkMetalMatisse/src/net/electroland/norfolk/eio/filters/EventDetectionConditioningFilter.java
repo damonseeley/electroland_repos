@@ -15,7 +15,7 @@ public class EventDetectionConditioningFilter implements Filter {
         ParameterMap halfBqParams = new ParameterMap();
         halfBqParams.put("b0", "4.054345541135877084570893202908337116241455078125");
         halfBqParams.put("b1", "-4.054345541135877084570893202908337116241455078125");
-        halfBqParams.put("a1", "-0.15838444032453635745838482762337662279605865478515625 ");
+        halfBqParams.put("a1", "-0.15838444032453635745838482762337662279605865478515625");
         halfBq.configure(halfBqParams);
         
         ParameterMap bqParams = new ParameterMap();
