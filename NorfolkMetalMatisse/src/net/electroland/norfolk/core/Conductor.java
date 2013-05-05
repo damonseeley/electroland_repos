@@ -173,11 +173,24 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
             }
 
             try{
-                long currentTime = System.currentTimeMillis();
-                fpsAvg.add((int)(currentTime - lastRender));
-                lastRender = currentTime;
 
-                Thread.sleep((long)(1000.0 / fps));
+            	long currentTime = System.currentTimeMillis();
+                int renderTime = (int)(currentTime - lastRender);
+
+                if (renderTime < 0){
+                	renderTime = 0;
+                }
+
+                fpsAvg.add(renderTime);
+                lastRender = currentTime;
+                long sleepTime = (long)(1000.0 / fps) - renderTime;
+
+                if (sleepTime < 1){
+                	sleepTime = 1;
+                }
+
+                Thread.sleep(sleepTime);
+
             }catch(InterruptedException e){
                 logger.error(e);
             }
