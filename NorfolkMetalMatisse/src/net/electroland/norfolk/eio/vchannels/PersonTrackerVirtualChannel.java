@@ -177,8 +177,12 @@ public class PersonTrackerVirtualChannel extends VirtualChannel {
             //   continue to assume that a person is present. 
             personPresent = (personPresentVal.getValue() == 0);
             
-//            if (!personPresent)
+            if (!personPresent) {
+                // Make sure the next event is treated as an entrance if it is a clip event
+                prevEventFirstClipSign = 0;
 //                System.out.println("CH " + id + " - PERSON PRESENT TIME-OUT AT " + (((double)System.currentTimeMillis() - startTimeMs)/1000));
+            }
+        
         }
         
         
