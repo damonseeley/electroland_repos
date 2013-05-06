@@ -238,9 +238,9 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 
 
 		//initialize LightObjects
-		LightObject B01 = new LightObject(volumeB01, modelpB01, modelsB01, blankOBJ, 0.3);
-		LightObject B02 = new LightObject(volumeB02, modelpB02, modelsB02, blankOBJ, 0.3);
-		LightObject B03 = new LightObject(volumeB03, modelpB03, modelsB03, blankOBJ, 0.3);
+		LightObject B01 = new LightObject(volumeB01, modelpB01, modelsB01, blankOBJ, 0.5);
+		LightObject B02 = new LightObject(volumeB02, modelpB02, modelsB02, blankOBJ, 0.5);
+		LightObject B03 = new LightObject(volumeB03, modelpB03, modelsB03, blankOBJ, 0.5);
 		LightObject C01A = new LightObject(volumeC01A, blankOBJ, blankOBJ, modeldC01A, 0.25);
 		LightObject C01B = new LightObject(volumeC01B, blankOBJ, blankOBJ, modeldC01B, 0.25);
 		LightObject C02A = new LightObject(volumeC02A, blankOBJ, blankOBJ, modeldC02A, 0.25);
