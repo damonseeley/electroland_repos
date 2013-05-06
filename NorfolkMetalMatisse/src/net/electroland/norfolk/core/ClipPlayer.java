@@ -415,8 +415,8 @@ public class ClipPlayer implements AnimationListener {
         ssm.playSound("002");
 
         Clip c = eam.addClip(eam.getContent("red"),
-                                (int)fixture.getLocation().x - 10,
-                                (int)fixture.getLocation().y - 10, 20, 20, 1.0f);
+                                (int)fixture.getLocation().x - 4,
+                                (int)fixture.getLocation().y - 4, 10, 10, 1.0f);
 
         Sequence huechange = new Sequence();
         huechange.hueBy(0.3f);
@@ -443,7 +443,7 @@ public class ClipPlayer implements AnimationListener {
 
         randomVibra();
 
-        Clip c = eam.addClip(null,new Color(255,0,0),(int)fixture.getLocation().x - 10,(int)fixture.getLocation().y - 10,20, 20, 1.0f);
+        Clip c = eam.addClip(null,new Color(255,0,0),(int)fixture.getLocation().x - 4,(int)fixture.getLocation().y - 4, 10, 10, 1.0f);
 
         Sequence huechange = new Sequence();
         float huernd = 0.1f - (float)(Math.random() *0.2f);
@@ -460,8 +460,8 @@ public class ClipPlayer implements AnimationListener {
     	randomVibra();
 
         Clip c = eam.addClip(eam.getContent("green"),
-                                (int)fixture.getLocation().x - 10,
-                                (int)fixture.getLocation().y - 10, 20, 20, 1.0f);
+                                (int)fixture.getLocation().x - 4,
+                                (int)fixture.getLocation().y - 4, 10, 10, 1.0f);
 
         c.pause(800).fadeOut(1000).deleteWhenDone();
     }
