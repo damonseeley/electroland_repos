@@ -27,7 +27,7 @@ import net.electroland.utils.ParameterMap;
  *                Making this value too high may cause events to go undetected and will
  *                increase the response time of the system.
  *    
- *    "holdoffLenMs" - A value specifying the minimum hold-off time for event detection
+ *    "detectorHoldoffLenMs" - A value specifying the minimum hold-off time for event detection
  *                in milliseconds. The default value is 1200. This value should be 
  *                increased if too many "double-tap" events are occurring. Note that this
  *                is only a minimum reset time - if continue activity is detected the system
@@ -107,8 +107,8 @@ public class PersonTrackerVirtualChannel extends VirtualChannel {
         
         // Configure hold-off filter for PersonEvent detector
         ParameterMap detectionHoldoffFiltParams = new ParameterMap();
-        detectionHoldoffFiltParams.put("holdoffLenMs", params.getDefault("holdoffLenMs", "1200"));
-        detectionHoldoffFiltParams.put("maxHoldoffLenMs", "10000");
+        detectionHoldoffFiltParams.put("holdoffLenMs", Double.toString( params.getDefaultDouble("detectorHoldoffLenMs", 1200.0)) );
+        detectionHoldoffFiltParams.put("maxHoldoffLenMs", Double.toString( params.getDefaultDouble("detectorMaxHoldoffLenMs", 10000.0)) );
         detectionHoldoffFiltParams.put("penaltyThresh", Double.toString(0.1*detectorThresh));
         detectionHoldoffFiltParams.put("resetThresh", Double.toString(0.5*detectorThresh));
         detectionHoldoffFiltParams.put("penaltyMult", "2.0");
