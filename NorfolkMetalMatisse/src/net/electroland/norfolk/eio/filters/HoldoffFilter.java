@@ -33,7 +33,7 @@ import net.electroland.utils.ParameterMap;
 public class HoldoffFilter implements Filter {
 
     private double counter, holdoffLenMs, currHoldoffLenMs;
-    private double maxHoldoffCounter, maxHoldoffLenMs;
+    private double maxHoldoffCounter, maxHoldoffLenMs, currMaxHoldoffLenMs;
     
     private long prevTimeMs;
     
@@ -83,7 +83,7 @@ public class HoldoffFilter implements Filter {
         
         
         // Set output flag indicating if hold-off period has passed
-        if (counter > currHoldoffLenMs || (maxHoldoffCounter > maxHoldoffLenMs))
+        if (counter > currHoldoffLenMs || (maxHoldoffCounter > currMaxHoldoffLenMs))
             in.setValue(1);
         else
             in.setValue(0);
@@ -109,6 +109,11 @@ public class HoldoffFilter implements Filter {
         
         // Possibly adjust the length of the hold-off period, relative to the default
         currHoldoffLenMs = holdoffLenMs + holdoffLenAdjustMs;
+        
+        // If a hold-off time longer than the configured max was specified, temporarily increase 
+        //    the max so that we may hold-off for the specified duration. Here we assume that any
+        //    specified hold-off time takes precendent over the previously configured max.
+        currMaxHoldoffLenMs = Math.max( maxHoldoffLenMs, currHoldoffLenMs );
         
 //        System.out.println("  Holdoff counter started - hold-off time: " + currHoldoffLenMs);
     }
