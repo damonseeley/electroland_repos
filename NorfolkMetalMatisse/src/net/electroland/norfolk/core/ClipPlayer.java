@@ -153,14 +153,8 @@ public class ClipPlayer implements AnimationListener {
     /** ANIMATIONS ****************************/
 
     public void sweepWhiteDown(){
-        //ssm.playSound("002");
 
-        // get location of fixture f01.
-        Point3d loc           = this.getFixture("f01").getLocation();
-        ReferenceDimension rd = this.getFixture("f01").getRealDimensions();
-        System.out.println("f01 is at: " + loc + " of dimensions " + rd);
-
-        int height = 90;
+        int height = 120;
         height = (int)(Math.random() * 100 + 70);
         //Clip c = eam.addClip(Color.getHSBColor(.9f, .8f, .7f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
         Clip c = eam.addClip(eam.getContent("gradientinvert"), Color.getHSBColor(.9f, .8f, .7f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
@@ -174,16 +168,10 @@ public class ClipPlayer implements AnimationListener {
     }
     
     public void vertSweeps(){
-        //ssm.playSound("002");
-        
-        // get location of fixture f01.
-        Point3d loc           = this.getFixture("f01").getLocation();
-        ReferenceDimension rd = this.getFixture("f01").getRealDimensions();
-        System.out.println("f01 is at: " + loc + " of dimensions " + rd);
         
         int duration = 3000;
 
-        int height = 180;
+        int height = 120;
         //Clip c = eam.addClip(Color.getHSBColor(.9f, .8f, .7f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
         Clip c1 = eam.addClip(eam.getContent("gradientinvert"), Color.getHSBColor(.4f, .99f, .99f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
         Clip c2 = eam.addClip(eam.getContent("gradientinvert"), Color.getHSBColor(.5f, .99f, .99f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
@@ -197,12 +185,12 @@ public class ClipPlayer implements AnimationListener {
         
 
         c1.queue(sweep).fadeOut(500).deleteWhenDone();
-        c2.pause(700).queue(sweep).fadeOut(500).deleteWhenDone();
-        c3.pause(1400).queue(sweep).fadeOut(500).deleteWhenDone();
-        c4.pause(2100).queue(sweep).fadeOut(500).deleteWhenDone();
+        c2.pause(900).queue(sweep).fadeOut(500).deleteWhenDone();
+        c3.pause(1800).queue(sweep).fadeOut(500).deleteWhenDone();
+        c4.pause(2700).queue(sweep).fadeOut(500).deleteWhenDone();
                
     }
-    
+        
     public void vertWavesRedMag(){
         //ssm.playSound("002");
         
@@ -213,12 +201,10 @@ public class ClipPlayer implements AnimationListener {
         
         int duration = 5000;
 
-        int height = 1200;
+        int height = 600;
         //Clip c = eam.addClip(Color.getHSBColor(.9f, .8f, .7f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
         Clip c1 = eam.addClip(eam.getContent("grad1200_vert_three_red_mag"), Color.getHSBColor(.4f, .99f, .99f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
-        Clip c2 = eam.addClip(eam.getContent("grad1200_vert_three_red_mag"), Color.getHSBColor(.5f, .99f, .99f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
-        //Clip c3 = eam.addClip(eam.getContent("gradientinvert"), Color.getHSBColor(.6f, .99f, .99f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
-        //Clip c4 = eam.addClip(eam.getContent("gradientinvert"), Color.getHSBColor(.7f, .99f, .99f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
+        Clip c2 = eam.addClip(eam.getContent("grad1200_vert_three_red_mag"), Color.getHSBColor(.5f, .99f, .99f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);        //Clip c4 = eam.addClip(eam.getContent("gradientinvert"), Color.getHSBColor(.7f, .99f, .99f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
 
         Sequence sweep = new Sequence();
         sweep.yTo(eam.getFrameDimensions().height).duration(duration);
@@ -228,8 +214,6 @@ public class ClipPlayer implements AnimationListener {
 
         c1.queue(sweep).fadeOut(500).deleteWhenDone();
         c2.pause(duration-duration/4).queue(sweep).fadeOut(500).deleteWhenDone();
-        //c3.pause(1400).queue(sweep).fadeOut(500).deleteWhenDone();
-        //c4.pause(2100).queue(sweep).fadeOut(500).deleteWhenDone();
                
     }
     
@@ -264,7 +248,7 @@ public class ClipPlayer implements AnimationListener {
         System.out.println("f01 is at: " + loc + " of dimensions " + rd);
         
         int duration = 5000;
-        int width = 1200;
+        int width = 600;
         Clip c1 = eam.addClip(eam.getContent("grad1200_one_org"), Color.getHSBColor(.4f, .99f, .99f), -width, 0, width, eam.getFrameDimensions().height, 1.0f);
         Clip c2 = eam.addClip(eam.getContent("grad1200_one_org"), Color.getHSBColor(.4f, .99f, .99f), -width, 0, width, eam.getFrameDimensions().height, 1.0f);
 
@@ -285,8 +269,8 @@ public class ClipPlayer implements AnimationListener {
         ReferenceDimension rd = this.getFixture("f01").getRealDimensions();
         System.out.println("f01 is at: " + loc + " of dimensions " + rd);
         
-        int duration = 3000;
-        int width = 1200;
+        int duration = 5000;
+        int width = 600;
         Clip c1 = eam.addClip(eam.getContent("grad1200_one_blue_green"), Color.getHSBColor(.4f, .99f, .99f), -width, 0, width, eam.getFrameDimensions().height, 1.0f);
 
         Sequence sweep = new Sequence();
@@ -305,7 +289,7 @@ public class ClipPlayer implements AnimationListener {
         System.out.println("f01 is at: " + loc + " of dimensions " + rd);
         
         int duration = 3000;
-        int width = 1200;
+        int width = 600;
         Clip c1 = eam.addClip(eam.getContent("grad1200_one_red_mag"), Color.getHSBColor(.4f, .99f, .99f), -width, 0, width, eam.getFrameDimensions().height, 1.0f);
 
         Sequence sweep = new Sequence();
@@ -324,7 +308,7 @@ public class ClipPlayer implements AnimationListener {
         System.out.println("f01 is at: " + loc + " of dimensions " + rd);
         
         int duration = 24000;
-        int width = 1200;
+        int width = 600;
         Clip c1 = eam.addClip(eam.getContent("grad1200_one_red_mag"), Color.getHSBColor(.4f, .99f, .99f), -width/2, 0, width, eam.getFrameDimensions().height, 1.0f);
 
         Sequence sweep = new Sequence();
@@ -343,7 +327,7 @@ public class ClipPlayer implements AnimationListener {
         System.out.println("f01 is at: " + loc + " of dimensions " + rd);
         
         int duration = 8000;
-        int width = 1200;
+        int width = 600;
         Clip c1 = eam.addClip(eam.getContent("orange"), Color.getHSBColor(.4f, .99f, .99f), -width/2, 0, width, eam.getFrameDimensions().height, 1.0f);
 
         Sequence sweep = new Sequence();
@@ -361,8 +345,8 @@ public class ClipPlayer implements AnimationListener {
         ReferenceDimension rd = this.getFixture("f01").getRealDimensions();
         System.out.println("f01 is at: " + loc + " of dimensions " + rd);
         
-        int duration = 5000;
-        int width = 1200;
+        int duration = 6000;
+        int width = 600;
         Clip c1 = eam.addClip(eam.getContent("grad1200_three_blue_green"), Color.getHSBColor(.4f, .99f, .99f), -width, 0, width, eam.getFrameDimensions().height, 1.0f);
         Clip c2 = eam.addClip(eam.getContent("grad1200_three_blue_green"), Color.getHSBColor(.4f, .99f, .99f), -width, 0, width, eam.getFrameDimensions().height, 1.0f);
 
@@ -406,7 +390,7 @@ public class ClipPlayer implements AnimationListener {
 
         //ssm.playSound(getRandVibra());
         
-        ssm.playGroupRandom("1");
+        ssm.playGroupRandom(chordIndex + "");
     }
     
     public void randomVibraTest(){
