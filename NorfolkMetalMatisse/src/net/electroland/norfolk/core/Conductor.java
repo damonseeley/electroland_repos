@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 import javax.swing.JFrame;
@@ -157,9 +159,9 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
 
                 if (hours.shouldBeOpenNow("lights")){
                     CanvasDetector[] detectors = canvas.sync(pixels);
-
+                    
                     if (renderArea != null){
-                        renderArea.update(frame, detectors, fpsAvg.getAverage());
+                        renderArea.update(frame, detectors, elu, fpsAvg.getAverage());
                         renderArea.repaint();
                     }
 

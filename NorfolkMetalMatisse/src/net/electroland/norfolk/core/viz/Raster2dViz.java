@@ -7,11 +7,17 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.Collection;
 
 import javax.swing.JPanel;
 
+import org.apache.log4j.Logger;
+
+import net.electroland.norfolk.core.Conductor;
 import net.electroland.utils.Util;
 import net.electroland.utils.lighting.CanvasDetector;
+import net.electroland.utils.lighting.ELUManager;
+import net.electroland.utils.lighting.Fixture;
 import net.electroland.utils.lighting.detection.BlueDetectionModel;
 import net.electroland.utils.lighting.detection.GreenDetectionModel;
 import net.electroland.utils.lighting.detection.RedDetectionModel;
@@ -21,9 +27,13 @@ public class Raster2dViz extends JPanel {
     private static final long serialVersionUID = -2470541288243028641L;
     private BufferedImage frame;
     private CanvasDetector[] detectors;
+    private ELUManager elu;
     private int textLeftOffset = 10;
     private int textRightOffset = 10;
     private Integer measuredFps;
+
+    private static Logger logger = Logger.getLogger(Conductor.class);
+
 
     @Override
     public void paint(Graphics g) {
@@ -65,24 +75,33 @@ public class Raster2dViz extends JPanel {
                     g2d.setColor(Color.GRAY);
                     g2d.drawRect(r.x, r.y, r.width, r.height);
 
-                    Font font = new Font("Arial", Font.PLAIN, 9);
-                    g2d.setFont(font);
-
-                    // value
-                    g2d.setColor(Color.WHITE);
-                    g2d.drawString(cd.getTags().toString(), r.x + textRightOffset, r.y + textLeftOffset);
-                    
-                    // fps
-                    g2d.setColor(Color.WHITE);
-                    g2d.drawString(measuredFps.toString(), 10, 10);
-                    
                 }
+
+                if (elu != null){
+                    for (Fixture f : elu.getFixtures()) {
+                        Font font = new Font("Arial", Font.PLAIN, 9);
+                        g2d.setFont(font);
+
+                        // value
+                        g2d.setColor(Color.WHITE);
+                        g2d.drawString(f.getName(), (int)f.getLocation().x + textRightOffset, (int)f.getLocation().y + textLeftOffset);
+                    }
+                }
+
+                //do this once only
+                // fps
+                Font font = new Font("Arial", Font.PLAIN, 9);
+                g2d.setFont(font);
+                g2d.setColor(Color.WHITE);
+                g2d.drawString(measuredFps.toString(), 10, 10);
+
+
             }
         }
     }
 
     public void update(BufferedImage frame, CanvasDetector[] detectors, int fps){
-    	this.measuredFps = fps;
+        this.measuredFps = fps;
         if (frame == null){
             this.frame = frame;
             this.detectors = detectors;
@@ -90,6 +109,21 @@ public class Raster2dViz extends JPanel {
             synchronized(frame){
                 this.frame = frame;
                 this.detectors = detectors;
+            }
+        }
+    }
+
+    public void update(BufferedImage frame, CanvasDetector[] detectors, ELUManager elu, int fps){
+        this.measuredFps = fps;
+        if (frame == null){
+            this.frame = frame;
+            this.detectors = detectors;
+            this.elu = elu;
+        }else{
+            synchronized(frame){
+                this.frame = frame;
+                this.detectors = detectors;
+                this.elu = elu;
             }
         }
     }
