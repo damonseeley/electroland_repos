@@ -152,29 +152,6 @@ public class ClipPlayer implements AnimationListener {
     
     /** ANIMATIONS ****************************/
 
-    public void bounceSlowWave(Fixture fixture){
-
-        ssm.playSound("001");
-
-        Clip c = eam.addClip(eam.getContent("slowWave"),
-                                (int)fixture.getLocation().x,
-                                (int)fixture.getLocation().y, 100, 100, 1.0f);
-
-        Sequence bounce = new Sequence();
-
-        bounce.yTo(150).yUsing(new QuinticIn())
-              .xBy(100).xUsing(new Linear())
-              .scaleWidth(2.0f)
-              .duration(1000)
-       .newState()
-              .yTo(75).yUsing(new CubicOut())
-              .xBy(100).xUsing(new Linear())
-              .scaleWidth(.5f)
-              .duration(1000);
-
-       c.queue(bounce).queue(bounce).queue(bounce).fadeOut(500).deleteWhenDone();
-    }
-
     public void sweepWhiteDown(){
         //ssm.playSound("002");
 
