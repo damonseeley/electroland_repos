@@ -12,6 +12,7 @@ public class PeopleIOWatcher implements IOListener {
         // Using these values so the virtual channel output shows up in the IOFrameTest display
         //    when an event is triggered.
         // NOTE: We don't currently send "Center" messages, but we could if we wanted to.
+        public final static int NO_EVENT = 0;
         public final static int ENTER_L = 1 * (Short.MAX_VALUE/2) / 3;
         public final static int ENTER_C = 2 * (Short.MAX_VALUE/2) / 3;
         public final static int ENTER_R = 3 * (Short.MAX_VALUE/2) / 3;

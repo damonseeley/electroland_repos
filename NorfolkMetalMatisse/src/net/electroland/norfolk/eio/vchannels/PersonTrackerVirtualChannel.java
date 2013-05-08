@@ -149,7 +149,7 @@ public class PersonTrackerVirtualChannel extends VirtualChannel {
         
         
         // Initialize output value to indicate no event (will be changed before returning if an event is detected)
-        Value output = new Value(0);
+        Value output = new Value(PeopleIOWatcher.PersonEventCodes.NO_EVENT);
         
         
         // Get ordered input channel values so that diffVal will always be ch1 - ch2
