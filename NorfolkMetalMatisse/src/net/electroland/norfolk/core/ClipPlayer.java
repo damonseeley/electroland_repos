@@ -70,7 +70,7 @@ public class ClipPlayer implements AnimationListener {
         	} else {
         		chordIndex = 1;
         	}
-        	logger.info("Changed chordIndex to " + chordIndex);
+        	//logger.info("Changed chordIndex to " + chordIndex);
         }
     }
 
@@ -192,13 +192,7 @@ public class ClipPlayer implements AnimationListener {
     }
         
     public void vertWavesRedMag(){
-        //ssm.playSound("002");
-        
-        // get location of fixture f01.
-        Point3d loc           = this.getFixture("f01").getLocation();
-        ReferenceDimension rd = this.getFixture("f01").getRealDimensions();
-        System.out.println("f01 is at: " + loc + " of dimensions " + rd);
-        
+
         int duration = 5000;
 
         int height = 600;
@@ -214,6 +208,23 @@ public class ClipPlayer implements AnimationListener {
 
         c1.queue(sweep).fadeOut(500).deleteWhenDone();
         c2.pause(duration-duration/4).queue(sweep).fadeOut(500).deleteWhenDone();
+               
+    }
+    
+    public void screensaverBlueClouds(){
+
+        int duration = 25000;
+
+        int height = 800;
+        //Clip c = eam.addClip(Color.getHSBColor(.9f, .8f, .7f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
+        Clip c1 = eam.addClip(eam.getContent("clouds_200x800_blue"), Color.getHSBColor(.0f, .0f, .0f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
+
+        Sequence sweep = new Sequence();
+        sweep.yTo(eam.getFrameDimensions().height).duration(duration);
+        //sweep.hueBy(0.2f);
+        //sweep.brightnessTo(0.5f);
+
+        c1.queue(sweep).deleteWhenDone();
                
     }
     
