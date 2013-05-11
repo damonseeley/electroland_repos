@@ -150,6 +150,26 @@ public class ClipPlayer implements AnimationListener {
         }
     }
     
+    /** SCREENSAVERS ****************************/
+
+    
+    public void screensaverBlueClouds(){
+
+        int duration = 30000;
+
+        int height = 800;
+        //Clip c = eam.addClip(Color.getHSBColor(.9f, .8f, .7f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
+        Clip c1 = eam.addClip(eam.getContent("clouds_200x800_blue"), Color.getHSBColor(.0f, .0f, .0f), 0, -height, eam.getFrameDimensions().width, height, 0.5f);
+
+        Sequence sweep = new Sequence();
+        sweep.yTo(eam.getFrameDimensions().height).duration(duration);
+        //sweep.hueBy(0.2f);
+        //sweep.brightnessTo(0.5f);
+
+        c1.queue(sweep).deleteWhenDone();
+               
+    }
+    
     /** ANIMATIONS ****************************/
 
     public void sweepWhiteDown(){
@@ -211,22 +231,7 @@ public class ClipPlayer implements AnimationListener {
                
     }
     
-    public void screensaverBlueClouds(){
-
-        int duration = 25000;
-
-        int height = 800;
-        //Clip c = eam.addClip(Color.getHSBColor(.9f, .8f, .7f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
-        Clip c1 = eam.addClip(eam.getContent("clouds_200x800_blue"), Color.getHSBColor(.0f, .0f, .0f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
-
-        Sequence sweep = new Sequence();
-        sweep.yTo(eam.getFrameDimensions().height).duration(duration);
-        //sweep.hueBy(0.2f);
-        //sweep.brightnessTo(0.5f);
-
-        c1.queue(sweep).deleteWhenDone();
-               
-    }
+   
     
     
     public void timedShow() {
