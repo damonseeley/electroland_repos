@@ -1,7 +1,6 @@
 package net.electroland.norfolk.core;
 
 import java.awt.Color;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -17,9 +16,6 @@ import net.electroland.ea.Animation;
 import net.electroland.ea.AnimationListener;
 import net.electroland.ea.Clip;
 import net.electroland.ea.Sequence;
-import net.electroland.ea.easing.CubicOut;
-import net.electroland.ea.easing.Linear;
-import net.electroland.ea.easing.QuinticIn;
 import net.electroland.eio.InputChannel;
 import net.electroland.norfolk.sound.SimpleSoundManager;
 import net.electroland.utils.ElectrolandProperties;
