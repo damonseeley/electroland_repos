@@ -42,7 +42,6 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
     private EIOManager          eio;
     private OperatingHours      hours;
     private ClipPlayer          clipPlayer;
-    private GlobalShow          globalShow;
     private VizOSCSender        viz;
     private Thread              thread;
     private int                 fps = 30;
@@ -120,9 +119,6 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
         cues = new CueManager().load(mainProps);
         meta = new EventMetaData(30000); // TODO: load from props
 
-        globalShow = new GlobalShow(clipPlayer);
-        globalShow.start();
-
         viz = new VizOSCSender();
         viz.load(mainProps);
 
@@ -142,7 +138,6 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
     }
 
     public void stop(){
-        globalShow.stop();
         elu.allOff();
         elu.stop();
         eio.shutdown();
@@ -298,6 +293,7 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
             for (Cue c : cues){
                 // singlests and triplets
                 if (c instanceof ChannelDriven && c.ready(meta)){
+                    meta.addEvent(new SensorEvent()); // problem: ready test needs this.
                     ((ChannelDriven) c).fire(meta, clipPlayer, channel);
                 }
             }

@@ -16,6 +16,18 @@ public class CueManager {
         // triplets
         cues.add(new TripletCue(props.getParams("cues", "triplet")));
 
+        // trains
+        cues.add(new TrainCue(props.getParams("cues", "trains")));
+
+        // bigshows
+        cues.add(new BigShowCue(props.getParams("cues", "bigshow")));
+
+        // screensavers
+        cues.add(new ScreenSaverCue(props.getParams("cues", "screensaver")));
+
+        // timedshows
+        cues.add(new TimedCue(props.getParams("cues", "timed")));
+
         return cues;
     }
 }
