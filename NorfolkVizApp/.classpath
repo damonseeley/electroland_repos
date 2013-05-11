@@ -21,7 +21,8 @@
 	<classpathentry kind="lib" path="libraries/Shapes3d.jar"/>
 	<classpathentry kind="lib" path="libraries/javaosc-core-0.2.jar"/>
 	<classpathentry kind="lib" path="libraries/EL-Config.jar"/>
+	<classpathentry kind="lib" path="libraries/norfolk.jar"/>
+	<classpathentry kind="lib" path="libraries/log4j-1.2.15.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/NorfolkMetalMatisse"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
