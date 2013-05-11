@@ -1,10 +1,10 @@
 package net.electroland.norfolk.core;
 
-import net.electroland.utils.ElectrolandProperties;
+import net.electroland.utils.ParameterMap;
 
 public class ScreenSaverCue extends Cue {
 
-    public ScreenSaverCue(ElectrolandProperties p) {
+    public ScreenSaverCue(ParameterMap p) {
         super(p);
         // TODO Auto-generated constructor stub
     }

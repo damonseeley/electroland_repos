@@ -1,10 +1,10 @@
 package net.electroland.norfolk.core;
 
-import net.electroland.utils.ElectrolandProperties;
+import net.electroland.utils.ParameterMap;
 
 public class TimedCue extends Cue {
 
-    public TimedCue(ElectrolandProperties p) {
+    public TimedCue(ParameterMap p) {
         super(p);
         // TODO Auto-generated constructor stub
     }
