@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 import javax.swing.JFrame;
@@ -49,13 +51,17 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
     private Raster2dViz         renderArea;
     private boolean             isHeadless = false;
     private static boolean      showSensors = false;
-    private FpsAverage            fpsAvg = new FpsAverage(20);
+    private FpsAverage          fpsAvg = new FpsAverage(20);
+    private Collection<Cue>     cues;
+    private EventMetaData       meta;
 
     public static void main(String args[]) throws OptionException, IOException{
 
         Conductor c = new Conductor();
         c.init(); // need a way to turn multiple args into multiple props file names- or just put them all in one file?
 
+        c.cues = new ArrayList<Cue>();
+        c.meta = new EventMetaData(30000);
 
         if (!c.isHeadless){
             c.mainControls = new JFrame();
@@ -150,6 +156,7 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
         while (thread != null){
 
 
+            // ELU and visualization rendering
             long startRender = System.currentTimeMillis();
 
             // Practically speaking, there's only one canvas, so we don't need
@@ -182,6 +189,15 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
 
             }
 
+            // Cues
+            for (Cue c : cues){
+                if (c.ready(meta) && !(c instanceof ChannelDriven)){
+                    meta.addEvent(new CueEvent(c));
+                    c.fire(meta, clipPlayer);
+                }
+            }
+
+            // FPS management
             try{
 
                 fpsAvg.touch();
@@ -203,7 +219,7 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
     }
 
 
-    // YUCK! (ELU actually has this already, and should allow getting it.
+    // YUCK! (ELU actually has this already, and should allow getting it).
     private HashMap<String, Fixture> fixtures;
     private HashMap<String, Fixture> fixtureMap(){
         if (fixtures == null){
@@ -280,7 +296,12 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
 
         InputChannel channel = getChannel(evt.getChannelId());
         if (channel != null){
-            clipPlayer.play(channel);
+            for (Cue c : cues){
+                // singlests and triplets
+                if (c instanceof ChannelDriven && c.ready(meta)){
+                    ((ChannelDriven) c).fire(meta, clipPlayer, channel);
+                }
+            }
         }
     }
 
