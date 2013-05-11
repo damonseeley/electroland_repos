@@ -12,8 +12,7 @@ public class TripletCue extends Cue implements ChannelDriven {
 
     @Override
     public void fire(EventMetaData meta, ClipPlayer cp) {
-        // TODO Auto-generated method stub
-
+        // DO NOTHING.
     }
 
     @Override

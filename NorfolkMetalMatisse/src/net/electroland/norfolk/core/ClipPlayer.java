@@ -124,7 +124,7 @@ public class ClipPlayer implements AnimationListener {
         }
     }
 
-    public void play(InputChannel channel){
+    public void play(String clipName, InputChannel channel){
 
         try {
 
