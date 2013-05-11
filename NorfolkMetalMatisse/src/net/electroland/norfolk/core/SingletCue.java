@@ -1,6 +1,14 @@
 package net.electroland.norfolk.core;
 
-public class SingletCue extends Cue {
+import net.electroland.eio.InputChannel;
+import net.electroland.utils.ElectrolandProperties;
+
+public class SingletCue extends Cue implements ChannelDriven {
+
+    public SingletCue(ElectrolandProperties p) {
+        super(p);
+        // TODO Auto-generated constructor stub
+    }
 
     @Override
     public void fire(EventMetaData meta, ClipPlayer cp) {
@@ -8,4 +16,13 @@ public class SingletCue extends Cue {
 
     }
 
+    @Override
+    public void fire(EventMetaData meta, ClipPlayer cp, InputChannel channel) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public boolean ready(EventMetaData meta) {
+        return true;
+    }
 }
