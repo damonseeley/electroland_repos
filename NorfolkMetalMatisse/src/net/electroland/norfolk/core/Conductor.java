@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -59,9 +58,6 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
 
         Conductor c = new Conductor();
         c.init(); // need a way to turn multiple args into multiple props file names- or just put them all in one file?
-
-        c.cues = new ArrayList<Cue>();
-        c.meta = new EventMetaData(30000);
 
         if (!c.isHeadless){
             c.mainControls = new JFrame();
@@ -122,7 +118,8 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
         new ClipPlayerGUI(clipPlayer);
 
         cues = new CueManager().load(mainProps);
-        
+        meta = new EventMetaData(30000); // TODO: load from props
+
         globalShow = new GlobalShow(clipPlayer);
         globalShow.start();
 
@@ -296,6 +293,7 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
     public void personEntered(PersonEvent evt) {
 
         InputChannel channel = getChannel(evt.getChannelId());
+
         if (channel != null){
             for (Cue c : cues){
                 // singlests and triplets

@@ -22,6 +22,6 @@ public class TripletCue extends Cue implements ChannelDriven {
 
     @Override
     public boolean ready(EventMetaData meta) {
-        return true;
+        return false;
     }
 }

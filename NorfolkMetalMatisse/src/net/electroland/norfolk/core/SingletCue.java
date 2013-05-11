@@ -7,7 +7,6 @@ public class SingletCue extends Cue implements ChannelDriven {
 
     public SingletCue(ParameterMap p) {
         super(p);
-        // TODO Auto-generated constructor stub
     }
 
     @Override
@@ -17,7 +16,7 @@ public class SingletCue extends Cue implements ChannelDriven {
 
     @Override
     public void fire(EventMetaData meta, ClipPlayer cp, InputChannel channel) {
-        // TODO Auto-generated method stub
+        cp.play("redRand", channel);
     }
 
     @Override

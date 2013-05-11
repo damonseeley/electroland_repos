@@ -120,22 +120,22 @@ public class ClipPlayer implements AnimationListener {
 
         Fixture f = channelToFixture.get(channel.getId());
 
-        for (Method method  : globalClips){
-            if (method.getName().equals(clipName)){
-                try {
-                    if (f == null){
-                        method.invoke(this);
-                    }else{
-                        method.invoke(this, f);
-                    }
-                } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                }
+        try {
+
+            Method method = this.getClass().getMethod(clipName, Fixture.class);
+            if (f == null){
+                method.invoke(this);
+            }else{
+                method.invoke(this, f);
             }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e){
+            e.printStackTrace();
         }
     }
 
