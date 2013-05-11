@@ -14,6 +14,7 @@ import javax.vecmath.Point3d;
 
 import net.electroland.ea.Animation;
 import net.electroland.ea.AnimationListener;
+import net.electroland.ea.Change;
 import net.electroland.ea.Clip;
 import net.electroland.ea.Sequence;
 import net.electroland.eio.InputChannel;
@@ -160,6 +161,24 @@ public class ClipPlayer implements AnimationListener {
     }
     
     /** ANIMATIONS ****************************/
+    
+    public void radialCobrasOrange(){
+
+        int duration = 3000;
+        int width = 600;
+        int vLoc = 176; // start of cobras
+        int vHeight = 22; // cover all cobras
+       
+        Clip parent = eam.addClip(null, null, -width*2, vLoc, width*2, vHeight, 1.0f);
+        parent.addClip(eam.getContent("bar1200_one_org"), Color.getHSBColor(.4f, .99f, .99f), 0, 0, width, vHeight, 1.0f);
+        parent.addClip(eam.getContent("bar1200_one_org"), Color.getHSBColor(.4f, .99f, .99f), width, 0, width, vHeight, 1.0f);
+        
+        Sequence sweep = new Sequence();
+        sweep.xTo(eam.getFrameDimensions().width).duration(duration);
+
+        parent.queue(sweep).deleteWhenDone(); 
+        
+    }
 
     public void sweepWhiteDown(){
 
@@ -233,6 +252,8 @@ public class ClipPlayer implements AnimationListener {
             vertWavesRedMag();
         }
     }
+    
+    
 
     public void radialOrange(){
         //ssm.playSound("002");
