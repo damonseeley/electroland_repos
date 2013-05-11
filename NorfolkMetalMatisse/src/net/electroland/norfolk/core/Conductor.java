@@ -110,7 +110,6 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
             showSensors = true;
         }
 
-
         eam = new Animation();
         eam.load(mainProps);
         eam.setBackground(Color.BLACK);
@@ -122,6 +121,8 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
         clipPlayer = new ClipPlayer(eam, new SimpleSoundManager(hours), elu, mainProps);
         new ClipPlayerGUI(clipPlayer);
 
+        cues = new CueManager().load(mainProps);
+        
         globalShow = new GlobalShow(clipPlayer);
         globalShow.start();
 

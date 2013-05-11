@@ -1,11 +1,11 @@
 package net.electroland.norfolk.core;
 
 import net.electroland.eio.InputChannel;
-import net.electroland.utils.ElectrolandProperties;
+import net.electroland.utils.ParameterMap;
 
 public class TripletCue extends Cue implements ChannelDriven {
 
-    public TripletCue(ElectrolandProperties p) {
+    public TripletCue(ParameterMap p) {
         super(p);
         // TODO Auto-generated constructor stub
     }

@@ -1,11 +1,11 @@
 package net.electroland.norfolk.core;
 
 import net.electroland.eio.InputChannel;
-import net.electroland.utils.ElectrolandProperties;
+import net.electroland.utils.ParameterMap;
 
 public class SingletCue extends Cue implements ChannelDriven {
 
-    public SingletCue(ElectrolandProperties p) {
+    public SingletCue(ParameterMap p) {
         super(p);
         // TODO Auto-generated constructor stub
     }

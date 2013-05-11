@@ -1,12 +1,13 @@
 package net.electroland.norfolk.core;
 
-import net.electroland.utils.ElectrolandProperties;
+import net.electroland.utils.ParameterMap;
+
 
 abstract public class Cue {
 
     public String id;
 
-    public Cue(ElectrolandProperties p){}
+    public Cue(ParameterMap p){}
 
     abstract public boolean ready(EventMetaData meta);
 

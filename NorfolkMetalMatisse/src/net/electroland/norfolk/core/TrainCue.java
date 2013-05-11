@@ -1,10 +1,10 @@
 package net.electroland.norfolk.core;
 
-import net.electroland.utils.ElectrolandProperties;
+import net.electroland.utils.ParameterMap;
 
 public class TrainCue extends Cue {
 
-    public TrainCue(ElectrolandProperties p) {
+    public TrainCue(ParameterMap p) {
         super(p);
         // TODO Auto-generated constructor stub
     }

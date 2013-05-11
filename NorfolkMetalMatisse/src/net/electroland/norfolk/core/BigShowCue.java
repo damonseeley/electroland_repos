@@ -1,10 +1,10 @@
 package net.electroland.norfolk.core;
 
-import net.electroland.utils.ElectrolandProperties;
+import net.electroland.utils.ParameterMap;
 
 public class BigShowCue extends Cue {
 
-    public BigShowCue(ElectrolandProperties p) {
+    public BigShowCue(ParameterMap p) {
         super(p);
         // TODO Auto-generated constructor stub
     }
