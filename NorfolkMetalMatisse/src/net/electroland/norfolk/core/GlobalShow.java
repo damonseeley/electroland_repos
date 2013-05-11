@@ -23,7 +23,7 @@ public class GlobalShow implements Runnable {
                 player.play("timedShow");
 
                 /**************************************************************/
-                nextPlayTime = System.currentTimeMillis() + 120 * 1000; // 60 seconds
+                nextPlayTime = System.currentTimeMillis() + 60 * 1000; // 60 seconds
             }
             try {
                 Thread.sleep(1000); // poll every second instead of sleeping for 60,
