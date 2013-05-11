@@ -76,11 +76,6 @@ public class PersonTrackerVirtualChannel extends VirtualChannel {
     private PersonPresenceFilter personPresentFilt;
     private HoldoffFilter personPresentHoldoffFilt;
 
-
-    // For debug
-    private final static long startTimeMs = System.currentTimeMillis();
-
-
     @Override
     public void configure(ParameterMap params) {
         
