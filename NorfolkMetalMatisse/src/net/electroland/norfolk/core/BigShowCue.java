@@ -1,23 +1,28 @@
 package net.electroland.norfolk.core;
 
+import java.util.List;
+import java.util.Random;
+
 import net.electroland.utils.ParameterMap;
 
 public class BigShowCue extends Cue {
 
+    private int waitMillis;
+    private List<String>cues;
+
     public BigShowCue(ParameterMap p) {
         super(p);
-        // TODO Auto-generated constructor stub
+        waitMillis = p.getRequiredInt("waitMillis");
+        cues = p.getRequiredList("cues");
     }
 
     @Override
     public void fire(EventMetaData meta, ClipPlayer cp) {
-        // TODO Auto-generated method stub
-
+        cp.play(cues.get(new Random().nextInt(cues.size())));
     }
 
     @Override
     public boolean ready(EventMetaData meta) {
-        // TODO Auto-generated method stub
-        return false;
+        return System.currentTimeMillis() - meta.getTimeOfLastNonScreenSaverCue() > waitMillis;
     }
 }

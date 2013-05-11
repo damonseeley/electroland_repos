@@ -1,5 +1,6 @@
 package net.electroland.norfolk.core;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -7,7 +8,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class EventMetaData {
 
     public Queue<NorfolkEvent> history;
-    public Map<String, Long>lastCues;
+    public Map<String, Long>lastCues =  new HashMap<String, Long>();
     private long historyMaxLengthMillis;
 
     public EventMetaData(int historyMaxLengthMillis){
@@ -56,17 +57,28 @@ public class EventMetaData {
     }
 
     public long getTimeOfLastCue(Class<NorfolkEvent> cue){
-        Long time = lastCues.get(cue.toString());
+        Long time = lastCues.get(cue.getName());
         return time == null ? -1 : time;
+    }
+
+    public long getTimeOfLastNonScreenSaverCue(){
+        long overallLast = 0;
+        for (String cueName : lastCues.keySet()){
+            if (!cueName.equals(ScreenSaverCue.class.getName())){
+                long cueLast = lastCues.get(cueName);
+                if (cueLast > overallLast){
+                    overallLast = cueLast;
+                }
+            }
+        }
+        return overallLast;
     }
 
     public void addEvent(NorfolkEvent evt){
 
-        history.add(evt);
+        lastCues.put(evt.getClass().getName(), evt.eventTime);
 
-        if (evt instanceof CueEvent){
-            lastCues.put(evt.getClass().toString(), evt.eventTime);
-        }
+        history.add(evt);
 
         if (headIsTooldestEventIsTooOld(history, historyMaxLengthMillis)){
             history.remove();
