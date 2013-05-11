@@ -34,7 +34,7 @@ public class ClipPlayer implements AnimationListener {
     private Animation eam;
     private SimpleSoundManager ssm;
     private ELUManager elu;
-    private Map<String, Target> sensorToClips;
+    private Map<String, Fixture> channelToFixture;
     private Collection<Method> globalClips;
     
     private Timer chordTimer;
@@ -72,19 +72,13 @@ public class ClipPlayer implements AnimationListener {
 
     public void configure(ElectrolandProperties props){
 
-        sensorToClips = new HashMap<String, Target>();
+        channelToFixture = new HashMap<String, Fixture>();
 
-        for (ParameterMap mappings : props.getObjects("channelClip").values()){
+        for (ParameterMap mappings : props.getObjects("channelFixture").values()){
             String channelId = mappings.get("channel");
-            try {
-                Method method = this.getClass().getMethod(mappings.get("clipPlayerMethod"), Fixture.class);
-                String fixtureId = mappings.get("fixture");
-                Fixture fixture = this.getFixture(fixtureId); // can be null
-                sensorToClips.put(channelId, new Target(fixture, method));
-                logger.info("mapped channel " + channelId + " to " + method.getName() + " on fixture " + fixture);
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            }
+            String fixtureId = mappings.get("fixture");
+            Fixture fixture = this.getFixture(fixtureId); // can be null
+            channelToFixture.put(channelId, fixture);
         }
 
         globalClips = getGlobalClips(true);
@@ -126,26 +120,27 @@ public class ClipPlayer implements AnimationListener {
 
     public void play(String clipName, InputChannel channel){
 
-        try {
+        Fixture f = channelToFixture.get(channel.getId());
 
-            Target t = sensorToClips.get(channel.getId());
-
-            if (t != null && t.method != null && t.fixture != null){
-                logger.debug("clipPlayer.play " + t.method.getName() + " at " + t.fixture + " for " + channel);
-                t.method.invoke(this, t.fixture);
+        for (Method method  : globalClips){
+            if (method.getName().equals(clipName)){
+                try {
+                    if (f == null){
+                        method.invoke(this);
+                    }else{
+                        method.invoke(this, f);
+                    }
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
             }
-
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.getTargetException().printStackTrace();
         }
     }
-    
+
     /** SCREENSAVERS ****************************/
 
     
@@ -438,10 +433,6 @@ public class ClipPlayer implements AnimationListener {
 
         c.pause(800).fadeOut(1000).deleteWhenDone();
     }
-    
-    
-    
-    
 
     @Override
     public void messageReceived(Object message) {
@@ -456,16 +447,5 @@ public class ClipPlayer implements AnimationListener {
             }
         }
         return null;
-    }
-
-    class Target {
-
-        public Fixture fixture;
-        public Method method;
-
-        public Target(Fixture fixture, Method method){
-            this.fixture = fixture;
-            this.method = method;
-        }
     }
 }
