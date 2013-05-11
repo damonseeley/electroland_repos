@@ -1,14 +1,12 @@
 package net.electroland.norfolk.eio.vchannels;
 
-import net.electroland.norfolk.eio.filters.PersonEvent;
-import net.electroland.norfolk.eio.filters.PersonEventDetectionFilter;
-import net.electroland.norfolk.eio.filters.PersonPresenceFilter;
-import net.electroland.norfolk.eio.filters.HoldoffFilter;
-import net.electroland.norfolk.eio.filters.HoldoffFilter_Debug;
 import net.electroland.eio.Value;
 import net.electroland.eio.ValueSet;
 import net.electroland.eio.VirtualChannel;
-import net.electroland.eio.InputChannel;
+import net.electroland.norfolk.eio.filters.HoldoffFilter;
+import net.electroland.norfolk.eio.filters.HoldoffFilter_Debug;
+import net.electroland.norfolk.eio.filters.PersonEventDetectionFilter;
+import net.electroland.norfolk.eio.filters.PersonPresenceFilter;
 import net.electroland.utils.ParameterMap;
 
 public class PersonPresentHoldoffVirtualChannel_Debug extends VirtualChannel {
@@ -37,11 +35,6 @@ public class PersonPresentHoldoffVirtualChannel_Debug extends VirtualChannel {
     
     private PersonPresenceFilter personPresentFilt;
     private HoldoffFilter_Debug personPresentHoldoffFilt;
-
-
-    // For debug
-    private final static long startTimeMs = System.currentTimeMillis();
-
 
     @Override
     public void configure(ParameterMap params) {

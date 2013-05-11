@@ -5,18 +5,18 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
-import net.electroland.norfolk.core.Conductor;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.ParameterMap;
 import net.electroland.utils.hours.OperatingHours;
+
+import org.apache.log4j.Logger;
+
 import processing.core.PApplet;
 import ddf.minim.AudioPlayer;
 import ddf.minim.Minim;
 
 public class SimpleSoundManager {
-	
+
     private static Logger       logger = Logger.getLogger(SimpleSoundManager.class);
 
     private Map<String, SoundElement>playList;
@@ -70,7 +70,7 @@ public class SimpleSoundManager {
     }
 
 	public void playGroupRandom(String gid) {
-		//logger.info("Play a sound from group '" + gid + "'");
+		logger.debug("Play a sound from group '" + gid + "'");
 		ArrayList<SoundElement> sounds = new ArrayList<SoundElement>(); //Generic ArrayList to Store only String objects
 		for (SoundElement se : playList.values()) {
 		    if (se.groupID.equals(gid)) {
@@ -78,22 +78,21 @@ public class SimpleSoundManager {
 		    }
 		}
 		int randSoundIndex = (int)(Math.random() * sounds.size());
-		//logger.info(randSoundIndex);
+		logger.debug(randSoundIndex);
 		playSoundFile(sounds.get(randSoundIndex).filename);
 		
 	}
 }
 
 class SoundElement {
-	
-	public String filename;
-	public String groupID;
-	
-	public SoundElement(String fname, String gid) {
-		filename = fname;
-		groupID = gid;
-		
-	}
+
+    public String filename;
+    public String groupID;
+
+    public SoundElement(String fname, String gid) {
+        filename = fname;
+        groupID = gid;
+    }
 }
 
 class PlayThread extends Thread{

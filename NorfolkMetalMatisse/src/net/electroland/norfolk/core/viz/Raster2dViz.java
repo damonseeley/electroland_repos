@@ -7,13 +7,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.util.Collection;
 
 import javax.swing.JPanel;
 
-import org.apache.log4j.Logger;
-
-import net.electroland.norfolk.core.Conductor;
 import net.electroland.utils.Util;
 import net.electroland.utils.lighting.CanvasDetector;
 import net.electroland.utils.lighting.ELUManager;
@@ -31,8 +27,6 @@ public class Raster2dViz extends JPanel {
     private int textLeftOffset = 10;
     private int textRightOffset = 10;
     private Integer measuredFps;
-
-    private static Logger logger = Logger.getLogger(Conductor.class);
 
 
     @Override
