@@ -14,7 +14,6 @@ import javax.vecmath.Point3d;
 
 import net.electroland.ea.Animation;
 import net.electroland.ea.AnimationListener;
-import net.electroland.ea.Change;
 import net.electroland.ea.Clip;
 import net.electroland.ea.Sequence;
 import net.electroland.eio.InputChannel;
@@ -142,23 +141,28 @@ public class ClipPlayer implements AnimationListener {
 
     /** SCREENSAVERS ****************************/
 
+    private Clip screensaver;
     
     public void screensaverBlueClouds(){
 
-        int duration = 30000;
+        int duration = 3000;
 
         int height = 800;
         //Clip c = eam.addClip(Color.getHSBColor(.9f, .8f, .7f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
-        Clip c1 = eam.addClip(eam.getContent("clouds_200x800_blue"), Color.getHSBColor(.0f, .0f, .0f), 0, -height, eam.getFrameDimensions().width, height, 0.5f);
+        if (screensaver == null){
+            screensaver = eam.addClip(null, null, 0, 0, eam.getFrameDimensions().width, eam.getFrameDimensions().height, 1.0f);
+        }
+        
+        Clip clouds = screensaver.addClip(eam.getContent("clouds_200x800_blue"), Color.getHSBColor(.0f, .0f, .0f), 0, -height, eam.getFrameDimensions().width, height, 0.5f);
+        //eam.addClip(screensaver, Color.getHSBColor(.0f, .0f, .0f), 0, -height, eam.getFrameDimensions().width, height, 0.5f);
 
         Sequence sweep = new Sequence();
         sweep.yTo(eam.getFrameDimensions().height).duration(duration);
-        //sweep.hueBy(0.2f);
-        //sweep.brightnessTo(0.5f);
 
-        c1.queue(sweep).deleteWhenDone();
+        clouds.queue(sweep).announce("screensaver").deleteWhenDone();
                
     }
+
     
     /** ANIMATIONS ****************************/
     
@@ -423,8 +427,8 @@ public class ClipPlayer implements AnimationListener {
         huechange.hueBy(huernd);
         huechange.duration(2000);
         huechange.brightnessTo(0.5f);
-        
         c.queue(huechange).fadeOut(1000).deleteWhenDone();
+        
     }
     
     public void green(Fixture fixture){
@@ -440,6 +444,10 @@ public class ClipPlayer implements AnimationListener {
 
     @Override
     public void messageReceived(Object message) {
+        if ("screensaver".equals(message)){
+            logger.info("screensaver reported back");
+            screensaverBlueClouds();
+        }
         // TODO Auto-generated method stub
         // animation manager
     }
