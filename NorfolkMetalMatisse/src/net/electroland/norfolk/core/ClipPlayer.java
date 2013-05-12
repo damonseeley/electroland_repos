@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.vecmath.Point3d;
-
 import net.electroland.ea.Animation;
 import net.electroland.ea.AnimationListener;
 import net.electroland.ea.Clip;
@@ -20,7 +18,6 @@ import net.electroland.eio.InputChannel;
 import net.electroland.norfolk.sound.SimpleSoundManager;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.ParameterMap;
-import net.electroland.utils.ReferenceDimension;
 import net.electroland.utils.lighting.ELUManager;
 import net.electroland.utils.lighting.Fixture;
 
@@ -256,9 +253,8 @@ public class ClipPlayer implements AnimationListener {
     public void radialOrange(){
         //ssm.playSound("002");
         // get location of fixture f01.
-        Point3d loc           = this.getFixture("f01").getLocation();
-        ReferenceDimension rd = this.getFixture("f01").getRealDimensions();
-        System.out.println("f01 is at: " + loc + " of dimensions " + rd);
+        // Point3d loc           = this.getFixture("f01").getLocation();
+        // ReferenceDimension rd = this.getFixture("f01").getRealDimensions();
 
         int duration = 5000;
         int width = 600;
@@ -276,12 +272,7 @@ public class ClipPlayer implements AnimationListener {
     }
 
     public void radialBlueGreen(){
-        //ssm.playSound("002");
-        // get location of fixture f01.
-        Point3d loc           = this.getFixture("f01").getLocation();
-        ReferenceDimension rd = this.getFixture("f01").getRealDimensions();
-        System.out.println("f01 is at: " + loc + " of dimensions " + rd);
-        
+
         int duration = 5000;
         int width = 600;
         Clip c1 = eam.addClip(eam.getContent("grad1200_one_blue_green"), Color.getHSBColor(.4f, .99f, .99f), -width, 0, width, eam.getFrameDimensions().height, 1.0f);
@@ -295,11 +286,6 @@ public class ClipPlayer implements AnimationListener {
     }
 
     public void radialRedMag(){
-        //ssm.playSound("002");
-        // get location of fixture f01.
-        Point3d loc           = this.getFixture("f01").getLocation();
-        ReferenceDimension rd = this.getFixture("f01").getRealDimensions();
-        System.out.println("f01 is at: " + loc + " of dimensions " + rd);
 
         int duration = 3000;
         int width = 600;
@@ -314,11 +300,6 @@ public class ClipPlayer implements AnimationListener {
     }
 
     public void radialRedMagSlow(){
-        //ssm.playSound("002");
-        // get location of fixture f01.
-        Point3d loc           = this.getFixture("f01").getLocation();
-        ReferenceDimension rd = this.getFixture("f01").getRealDimensions();
-        System.out.println("f01 is at: " + loc + " of dimensions " + rd);
 
         int duration = 24000;
         int width = 600;
@@ -333,12 +314,7 @@ public class ClipPlayer implements AnimationListener {
     }
 
     public void fadeOrangeSlow(){
-        //ssm.playSound("002");
-        // get location of fixture f01.
-        Point3d loc           = this.getFixture("f01").getLocation();
-        ReferenceDimension rd = this.getFixture("f01").getRealDimensions();
-        System.out.println("f01 is at: " + loc + " of dimensions " + rd);
-        
+
         int duration = 8000;
         int width = 600;
         Clip c1 = eam.addClip(eam.getContent("orange"), Color.getHSBColor(.4f, .99f, .99f), -width/2, 0, width, eam.getFrameDimensions().height, 1.0f);
@@ -352,11 +328,6 @@ public class ClipPlayer implements AnimationListener {
     }
 
     public void radialBlueGreen3(){
-        //ssm.playSound("002");
-        // get location of fixture f01.
-        Point3d loc           = this.getFixture("f01").getLocation();
-        ReferenceDimension rd = this.getFixture("f01").getRealDimensions();
-        System.out.println("f01 is at: " + loc + " of dimensions " + rd);
 
         int duration = 6000;
         int width = 600;
