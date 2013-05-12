@@ -34,6 +34,7 @@ public class ClipPlayer implements AnimationListener {
     private ELUManager elu;
     private Map<String, Fixture> channelToFixture;
     private Collection<Method> globalClips;
+    private Clip screensaver;
 
     private Timer chordTimer;
     int chordIndex;
@@ -78,7 +79,7 @@ public class ClipPlayer implements AnimationListener {
             Fixture fixture = this.getFixture(fixtureId); // can be null
             channelToFixture.put(channelId, fixture);
         }
-
+        screensaver = eam.addClip(null, null, 0, 0, eam.getFrameDimensions().width, eam.getFrameDimensions().height, 1.0f);
         globalClips = getGlobalClips(true);
     }
 
@@ -140,32 +141,25 @@ public class ClipPlayer implements AnimationListener {
     }
 
     /** SCREENSAVERS ****************************/
-
-    private Clip screensaver;
-    
     public void screensaverBlueClouds(){
 
-        int duration = 3000;
+        int duration   = 3000;
+        int height     = 800;
 
-        int height = 800;
-        //Clip c = eam.addClip(Color.getHSBColor(.9f, .8f, .7f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
-        if (screensaver == null){
-            screensaver = eam.addClip(null, null, 0, 0, eam.getFrameDimensions().width, eam.getFrameDimensions().height, 1.0f);
-        }
-        
-        Clip clouds = screensaver.addClip(eam.getContent("clouds_200x800_blue"), Color.getHSBColor(.0f, .0f, .0f), 0, -height, eam.getFrameDimensions().width, height, 0.5f);
-        //eam.addClip(screensaver, Color.getHSBColor(.0f, .0f, .0f), 0, -height, eam.getFrameDimensions().width, height, 0.5f);
+        Clip clouds    = screensaver.addClip(eam.getContent("clouds_200x800_blue"), 
+                                             Color.getHSBColor(.0f, .0f, .0f), 
+                                             0, -height, 
+                                             eam.getFrameDimensions().width, height, 
+                                             0.5f);
 
         Sequence sweep = new Sequence();
         sweep.yTo(eam.getFrameDimensions().height).duration(duration);
 
-        clouds.queue(sweep).announce("screensaver").deleteWhenDone();
-               
+        clouds.queue(sweep).announce(screensaver).deleteWhenDone();
     }
 
-    
+
     /** ANIMATIONS ****************************/
-    
     public void radialCobrasOrange(){
 
         int duration = 3000;
@@ -444,7 +438,7 @@ public class ClipPlayer implements AnimationListener {
 
     @Override
     public void messageReceived(Object message) {
-        if ("screensaver".equals(message)){
+        if (message == screensaver){
             logger.info("screensaver reported back");
             screensaverBlueClouds();
         }
