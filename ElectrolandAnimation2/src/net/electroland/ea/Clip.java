@@ -32,17 +32,17 @@ import net.electroland.ea.easing.Linear;
  */
 public class Clip implements Comparable<Clip>{
 
-    private boolean             isRequestedForKill = false;
-    private List<Clip>          children;
-    protected ClipState           initialState;
-    protected ClipState           currentState;
-    private Queue<QueuedActionState>  queuedTweens;
-    private QueuedActionState         tweenInProgress;
-    private Object              message;
-    protected Animation         animationManager;
-    protected Content           content;
-    public int                  zIndex = 0;
-    public long                 createTime;
+    private boolean                     isRequestedForKill = false;
+    private List<Clip>                  children;
+    protected ClipState                 initialState;
+    protected ClipState                 currentState;
+    private Queue<QueuedActionState>    queuedTweens;
+    private QueuedActionState           tweenInProgress;
+    private Object                      message;
+    protected Animation                 animationManager;
+    protected Content                   content;
+    public int                          zIndex = 0;
+    public long                         createTime;
 
     public Clip(Content content, Color bgcolor, int top, int left, int width, int height, float alpha)
     {
