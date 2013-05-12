@@ -15,9 +15,9 @@
 	<classpathentry kind="lib" path="libraries/SunriseSunsetLib-bin.jar"/>
 	<classpathentry kind="lib" path="libraries/jamod.jar"/>
 	<classpathentry kind="lib" path="libraries/javaosc-core-0.2.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/EIO2"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ElectrolandAnimation2"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ElectrolandConfig"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ElectrolandLightingUtils2"/>
+	<classpathentry kind="lib" path="libraries/EA2.jar"/>
+	<classpathentry kind="lib" path="libraries/EIO2.jar"/>
+	<classpathentry kind="lib" path="libraries/EL-Config.jar"/>
+	<classpathentry kind="lib" path="libraries/ELU2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
