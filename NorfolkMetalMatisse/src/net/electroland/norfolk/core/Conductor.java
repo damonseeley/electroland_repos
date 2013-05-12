@@ -52,6 +52,7 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
     private FpsAverage          fpsAvg = new FpsAverage(20);
     private Collection<Cue>     cues;
     private EventMetaData       meta;
+    private String              trainChannelId;
 
     public static void main(String args[]) throws OptionException, IOException{
 
@@ -117,7 +118,8 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
         new ClipPlayerGUI(clipPlayer);
 
         cues = new CueManager().load(mainProps);
-        meta = new EventMetaData(30000); // TODO: load from props
+        meta = new EventMetaData(mainProps.getRequiredInt("cues", "global", "maxHistoryMillis"));
+        trainChannelId = mainProps.getRequired("cues", "global", "trainChannelId");
 
         viz = new VizOSCSender();
         viz.load(mainProps);
@@ -186,6 +188,7 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
             for (Cue c : cues){
                 if (c.ready(meta) && !(c instanceof ChannelDriven)){
                     meta.addEvent(new CueEvent(c));
+                    meta.addCue(c);
                     c.fire(meta, clipPlayer);
                 }
             }
@@ -293,8 +296,15 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
             for (Cue c : cues){
                 // singlests and triplets
                 if (c instanceof ChannelDriven && c.ready(meta)){
-                    meta.addEvent(new SensorEvent()); // problem: ready test needs this.
-                    ((ChannelDriven) c).fire(meta, clipPlayer, channel);
+
+                    if ( !(c instanceof TrainCue) // not a train
+                        || evt.getChannelId() == trainChannelId){ // or the train channel was triggered
+
+                        meta.addEvent(new SensorEvent());
+                        meta.addCue(c);
+
+                        ((ChannelDriven) c).fire(meta, clipPlayer, channel);
+                    }
                 }
             }
         }
