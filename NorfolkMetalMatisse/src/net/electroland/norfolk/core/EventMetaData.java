@@ -56,8 +56,8 @@ public class EventMetaData {
         return total;
     }
 
-    public long getTimeOfLastCue(Class<NorfolkEvent> cue){
-        Long time = lastCues.get(cue.getName());
+    public long getTimeOfLastCue(Cue cue){
+        Long time = lastCues.get(cue.getClass().getName());
         return time == null ? -1 : time;
     }
 
@@ -74,9 +74,11 @@ public class EventMetaData {
         return overallLast;
     }
 
-    public void addEvent(NorfolkEvent evt){
+    public void addCue(Cue cue){
+        lastCues.put(cue.getClass().getName(), System.currentTimeMillis());
+    }
 
-        lastCues.put(evt.getClass().getName(), evt.eventTime);
+    public void addEvent(NorfolkEvent evt){
 
         history.add(evt);
 
