@@ -5,7 +5,9 @@ import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Vector;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.OptionException;
@@ -37,6 +39,7 @@ public class Animation {
     private Dimension frameDimemsions;
     private Map<String, Content>contentPrototypes;
     private Vector<AnimationListener>listeners;
+    private Queue<Object>messageQueue;
 
     public Animation()
     {
@@ -56,6 +59,8 @@ public class Animation {
                                         p.getRequiredInt("settings", "global", "height"));
         rootClip = new Clip(null, Color.GRAY, 0, 0, frameDimemsions.width, frameDimemsions.height, 1.0f);
         rootClip.animationManager = this;
+
+        messageQueue = new LinkedBlockingQueue<Object>();
 
         // clip
         contentPrototypes = new Hashtable<String,Content>();
@@ -130,7 +135,9 @@ public class Animation {
     }
     public BufferedImage getFrame()
     {
-        return rootClip.getImage();
+        BufferedImage bi = rootClip.getImage();
+        processMessageQueue();
+        return bi;
     }
     public static int[] toPixels(BufferedImage stage, int width, int height)
     {
@@ -140,8 +147,15 @@ public class Animation {
     }
 
     protected void announce(Object message){
-        for (AnimationListener a : listeners){
-            a.messageReceived(message);
+        messageQueue.add(message);
+    }
+
+    protected void processMessageQueue(){
+        if (messageQueue.size() > 0){
+            Object message = messageQueue.poll();
+            for (AnimationListener a : listeners){
+                a.messageReceived(message);
+            }
         }
     }
 }
