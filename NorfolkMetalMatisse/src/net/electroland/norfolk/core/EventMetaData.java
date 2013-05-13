@@ -16,13 +16,21 @@ public class EventMetaData {
         history = new LinkedBlockingQueue<NorfolkEvent>();
     }
 
+    public static void main(String args[]) throws InterruptedException{
+        EventMetaData meta = new EventMetaData(60000);
+        meta.addEvent(new SensorEvent());
+        Thread.sleep(1000);
+        meta.addEvent(new SensorEvent());
+        Thread.sleep(1000);
+        meta.addEvent(new SensorEvent());
+    }
+
     public int totalEventsPast(long millis){
         int total = 0;
+        long current = System.currentTimeMillis();
         for (NorfolkEvent evt : history){
-            if (System.currentTimeMillis() - evt.eventTime < millis){
+            if (current - evt.eventTime < millis){
                 total++;
-            }else{
-                break;
             }
         }
         return total;
@@ -30,29 +38,26 @@ public class EventMetaData {
 
     public int totalSensorsEvents(long millis){
         int total = 0;
+        long current = System.currentTimeMillis();
         for (NorfolkEvent evt : history){
-            if (System.currentTimeMillis() - evt.eventTime < millis){
-                if (evt instanceof SensorEvent){
+            if (current - evt.eventTime < millis &&
+                evt instanceof SensorEvent){
                     total++;
-                }
-            }else{
-                break;
             }
         }
         return total;
     }
 
-    public int totalAnimationEvents(long millis){
+    public int totalCueEvents(long millis){
         int total = 0;
+        long current = System.currentTimeMillis();
         for (NorfolkEvent evt : history){
-            if (System.currentTimeMillis() - evt.eventTime < millis){
-                if (evt instanceof CueEvent){
+            if (current - evt.eventTime < millis &&
+                evt instanceof CueEvent){
                     total++;
-                }
-            }else{
-                break;
             }
         }
+
         return total;
     }
 
