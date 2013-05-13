@@ -11,7 +11,7 @@ public class SingletCue extends Cue implements ChannelDriven {
 
     @Override
     public void fire(EventMetaData meta, ClipPlayer cp) {
-        // DO NOTHING.
+        // this method will never be called, since its sensor driven.
     }
 
     @Override
