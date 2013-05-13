@@ -81,8 +81,8 @@ public class IOFrameTest extends JPanel implements IOListener, ActionListener {
         int height      = this.getHeight();
         int width       = this.getWidth();
         int barWidth    = 10;
-        //int baseline    = height / 2;
-        int baseline    = height - 16;
+        int baseline    = height / 2;
+        //int baseline    = height - 16;
         int margin      = 16;
         int maxBarHite  = baseline - margin;
         Color realColor = new Color(100,100,255,150);
