@@ -297,14 +297,20 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
                 // singlests and triplets
                 if (c instanceof ChannelDriven && c.ready(meta)){
 
-                    // TODO: should the train channel not count towards non TrainCues?
-                    if ( !(c instanceof TrainCue) // not a train
-                        || evt.getChannelId() == trainChannelId){ // or the train channel was triggered
+                    if (c instanceof TrainCue){ // only correlate TrainCues to the train InputChannel
+                        if (evt.getChannelId().equals(trainChannelId)){
+                            meta.addEvent(new SensorEvent());
+                            meta.addCue(c);
 
-                        meta.addEvent(new SensorEvent());
-                        meta.addCue(c);
+                            ((ChannelDriven) c).fire(meta, clipPlayer, channel);
+                        }
+                    }else{
+                        if (!evt.getChannelId().equals(trainChannelId)){ // and vice versa
+                            meta.addEvent(new SensorEvent());
+                            meta.addCue(c);
 
-                        ((ChannelDriven) c).fire(meta, clipPlayer, channel);
+                            ((ChannelDriven) c).fire(meta, clipPlayer, channel);
+                        }
                     }
                 }
             }
