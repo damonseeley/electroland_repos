@@ -297,6 +297,7 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
                 // singlests and triplets
                 if (c instanceof ChannelDriven && c.ready(meta)){
 
+                    // TODO: should the train channel not count towards non TrainCues?
                     if ( !(c instanceof TrainCue) // not a train
                         || evt.getChannelId() == trainChannelId){ // or the train channel was triggered
 
