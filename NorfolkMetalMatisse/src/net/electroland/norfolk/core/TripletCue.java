@@ -19,7 +19,9 @@ public class TripletCue extends Cue implements ChannelDriven {
     }
 
     @Override
-    public void fire(EventMetaData meta, ClipPlayer cp) {}
+    public void fire(EventMetaData meta, ClipPlayer cp) {
+        // this method will never be called, since its sensor driven.
+    }
 
     @Override
     public void fire(EventMetaData meta, ClipPlayer cp, InputChannel channel) {

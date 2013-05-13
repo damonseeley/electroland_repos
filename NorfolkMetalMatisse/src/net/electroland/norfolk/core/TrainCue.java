@@ -19,11 +19,13 @@ public class TrainCue extends Cue implements ChannelDriven {
 
     @Override
     public void fire(EventMetaData meta, ClipPlayer cp) {
-        cp.play(shows.get(new Random().nextInt(shows.size())));
+        // this method will never be called, since its sensor driven.
     }
 
     @Override
-    public void fire(EventMetaData meta, ClipPlayer cp, InputChannel channel) {}
+    public void fire(EventMetaData meta, ClipPlayer cp, InputChannel channel) {
+        cp.play(shows.get(new Random().nextInt(shows.size())));
+    }
 
     @Override
     public boolean ready(EventMetaData meta) {
