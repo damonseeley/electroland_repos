@@ -79,7 +79,7 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
             // sensors
             if (showSensors){
                 IOFrameTest sensors = new IOFrameTest(c.eio);
-                sensors.resizeWindow(1000, 200);
+                sensors.resizeWindow(1000, 400);
             }
         }
 
