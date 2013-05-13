@@ -31,7 +31,8 @@ public class TripletCue extends Cue implements ChannelDriven {
     public boolean ready(EventMetaData meta) {
         boolean isNotReset    = meta.totalSensorsEvents(tripInterval) > 0;
         boolean isTriple      = meta.totalSensorsEvents(tripInterval * 2) > 2;
-        boolean isNotTimedout = System.currentTimeMillis() - meta.getTimeOfLastCue(this) > timeout;
-        return isNotReset && isTriple && isNotTimedout;
+        boolean isNotTimedOut = System.currentTimeMillis() - meta.getTimeOfLastCue(this) > timeout;
+
+        return isNotReset && isTriple && isNotTimedOut;
     }
 }
