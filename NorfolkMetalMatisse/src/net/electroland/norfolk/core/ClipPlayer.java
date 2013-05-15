@@ -214,6 +214,7 @@ public class ClipPlayer implements AnimationListener {
     }
 
     public void vertWavesRedMag(){
+        ssm.playGroupRandom("6");
 
         int duration = 5000;
 
@@ -229,29 +230,12 @@ public class ClipPlayer implements AnimationListener {
 
         c1.queue(sweep).fadeOut(500).deleteWhenDone();
         c2.pause(duration-duration/4).queue(sweep).fadeOut(500).deleteWhenDone();
-    }
-
-    public void timedShow() {
-        // conditional here to randomize showing
-        int rand = (int)(Math.random() * 100);
-        logger.info(rand);
-        if (rand < 20) {
-            radialOrange();
-        } else if (rand < 40) {
-            radialBlueGreen3();
-        } else if (rand < 60) {
-            radialRedMag();
-        } else if (rand < 80){
-            fadeOrangeSlow();
-        } else {
-            vertWavesRedMag();
-        }
-    }
-    
+    }    
     
 
     public void radialOrange(){
         //ssm.playSound("002");
+        ssm.playGroupRandom("6");
         // get location of fixture f01.
         // Point3d loc           = this.getFixture("f01").getLocation();
         // ReferenceDimension rd = this.getFixture("f01").getRealDimensions();
@@ -272,6 +256,7 @@ public class ClipPlayer implements AnimationListener {
     }
 
     public void radialBlueGreen(){
+        ssm.playGroupRandom("6");
 
         int duration = 5000;
         int width = 600;
@@ -286,6 +271,7 @@ public class ClipPlayer implements AnimationListener {
     }
 
     public void radialRedMag(){
+        ssm.playGroupRandom("6");
 
         int duration = 3000;
         int width = 600;
@@ -314,18 +300,25 @@ public class ClipPlayer implements AnimationListener {
     }
 
     public void fadeOrangeSlow(){
+        ssm.playGroupRandom("6");
 
         int duration = 8000;
         int width = 600;
         Clip c1 = eam.addClip(eam.getContent("orange"), Color.getHSBColor(.4f, .99f, .99f), -width/2, 0, width, eam.getFrameDimensions().height, 1.0f);
 
-        Sequence sweep = new Sequence();
-        //sweep.xTo(eam.getFrameDimensions().width + width).duration(duration);
-        //sweep.hueBy(0.2f);
-        //sweep.brightnessTo(0.5f);
-
-        c1.queue(sweep).pause(2500).fadeOut(duration-2500).deleteWhenDone();    
+        c1.pause(2500).fadeOut(duration-2500).deleteWhenDone();    
     }
+    
+    public void fadeBluePurpleSlow(){
+        ssm.playSound("HornCombo_C2");
+
+        int duration = 10000;
+        int width = 200;
+        Clip c1 = eam.addClip(eam.getContent("bluePurple"), Color.getHSBColor(.0f, .99f, .99f), 0, 0, eam.getFrameDimensions().width, eam.getFrameDimensions().height, 1.0f);
+
+        c1.pause(2500).fadeOut(duration-2500).deleteWhenDone();    
+    }
+
 
     public void radialBlueGreen3(){
 
