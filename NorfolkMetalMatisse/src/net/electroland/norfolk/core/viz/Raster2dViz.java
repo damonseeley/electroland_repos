@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import net.electroland.utils.Util;
@@ -27,11 +28,10 @@ public class Raster2dViz extends JPanel {
     private int textLeftOffset = 10;
     private int textRightOffset = 10;
     private Integer measuredFps;
-
-
+    
     @Override
     public void paint(Graphics g) {
-
+    	
         super.paint(g);
 
         Graphics2D g2d = (Graphics2D)g;
@@ -84,11 +84,12 @@ public class Raster2dViz extends JPanel {
 
                 //do this once only
                 // fps
+                /*
                 Font font = new Font("Arial", Font.PLAIN, 9);
                 g2d.setFont(font);
-                g2d.setColor(Color.WHITE);
-                g2d.drawString(measuredFps.toString(), 10, 10);
-
+                g2d.setColor(Color.BLACK);
+                g2d.drawString(measuredFps.toString(), 210, 10);
+				*/
 
             }
         }
