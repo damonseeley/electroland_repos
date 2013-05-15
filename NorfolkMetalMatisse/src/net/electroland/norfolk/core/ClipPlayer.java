@@ -170,11 +170,10 @@ public class ClipPlayer implements AnimationListener {
     @Override
     public void messageReceived(Object message) {
         if (message == screensaver){
-            logger.info("screensaver reported back");
+            // this is where you choose the next screensaver or keep the current
+            // one cycling.
             screensaverBlueClouds();
         }
-        // TODO Auto-generated method stub
-        // animation manager
     }
 
     /** ANIMATIONS ****************************/
