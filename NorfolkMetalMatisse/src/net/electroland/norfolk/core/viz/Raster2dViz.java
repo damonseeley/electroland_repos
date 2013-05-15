@@ -66,7 +66,7 @@ public class Raster2dViz extends JPanel {
                         g2d.fillRect(r.x, r.y, r.width, r.height);
                     }
 
-                    g2d.setColor(Color.GRAY);
+                    g2d.setColor(Color.DARK_GRAY);
                     g2d.drawRect(r.x, r.y, r.width, r.height);
 
                 }
@@ -77,7 +77,7 @@ public class Raster2dViz extends JPanel {
                         g2d.setFont(font);
 
                         // value
-                        g2d.setColor(Color.WHITE);
+                        g2d.setColor(new Color(60,60,180));
                         g2d.drawString(f.getName(), (int)f.getLocation().x + textRightOffset, (int)f.getLocation().y + textLeftOffset);
                     }
                 }
