@@ -3,6 +3,7 @@ package net.electroland.norfolk.core;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Collection;
@@ -61,8 +62,8 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
 
         if (!c.isHeadless){
             c.mainControls = new JFrame();
-            c.mainControls.setBackground(Color.DARK_GRAY);
-            c.mainControls.setSize(c.eam.getFrameDimensions().width + 100, 
+            c.mainControls.setBackground(Color.BLACK);
+            c.mainControls.setSize(c.eam.getFrameDimensions().width + 200, 
                     c.eam.getFrameDimensions().width + 100);
             c.mainControls.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -77,6 +78,9 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
             c.mainControls.setVisible(true);
             
             c.mainControls.setLocation(0, 82);
+            
+            c.mainControls.setBackground(Color.black);
+            
 
             // sensors
             if (showSensors){
@@ -84,8 +88,12 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
                 sensors.resizeWindow(1000, 400);
             }
         }
-
     }
+    
+
+        
+    
+    
 
     public void init() throws OptionException, IOException{
 
