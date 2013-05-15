@@ -176,7 +176,8 @@ public class ClipPlayer implements AnimationListener {
         }
     }
 
-    /** ANIMATIONS ****************************/
+    /** ACCENT SHOWS FOR TRIPLETS AND THE LIKE ****************************/
+    
     public void radialCobrasOrange(){
 
         int duration = 3000;
@@ -194,44 +195,12 @@ public class ClipPlayer implements AnimationListener {
         parent.queue(sweep).deleteWhenDone(); 
         
     }
+    
+    
+    
+    
+    /** BIG SHOWS ****************************/
 
-    public void sweepWhiteDown(){
-
-        int height = 120;
-        height = (int)(Math.random() * 100 + 70);
-        //Clip c = eam.addClip(Color.getHSBColor(.9f, .8f, .7f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
-        Clip c = eam.addClip(eam.getContent("gradientinvert"), Color.getHSBColor(.9f, .8f, .7f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
-
-        Sequence sweep = new Sequence();
-        sweep.yTo(eam.getFrameDimensions().height).duration(3000);
-        sweep.hueBy(1.0f);
-        sweep.brightnessTo(0.5f);
-
-        c.queue(sweep).fadeOut(500).deleteWhenDone();
-    }
-
-    public void vertSweeps(){
-
-        int duration = 3000;
-
-        int height = 120;
-        //Clip c = eam.addClip(Color.getHSBColor(.9f, .8f, .7f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
-        Clip c1 = eam.addClip(eam.getContent("gradientinvert"), Color.getHSBColor(.4f, .99f, .99f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
-        Clip c2 = eam.addClip(eam.getContent("gradientinvert"), Color.getHSBColor(.5f, .99f, .99f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
-        Clip c3 = eam.addClip(eam.getContent("gradientinvert"), Color.getHSBColor(.6f, .99f, .99f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
-        Clip c4 = eam.addClip(eam.getContent("gradientinvert"), Color.getHSBColor(.7f, .99f, .99f), 0, -height, eam.getFrameDimensions().width, height, 1.0f);
-
-        Sequence sweep = new Sequence();
-        sweep.yTo(eam.getFrameDimensions().height).duration(duration);
-        sweep.hueBy(0.2f);
-        //sweep.brightnessTo(0.5f);
-
-        c1.queue(sweep).fadeOut(500).deleteWhenDone();
-        c2.pause(900).queue(sweep).fadeOut(500).deleteWhenDone();
-        c3.pause(1800).queue(sweep).fadeOut(500).deleteWhenDone();
-        c4.pause(2700).queue(sweep).fadeOut(500).deleteWhenDone();
-
-    }
 
     public void vertWavesRedMag(){
         ssm.playGroupRandom("6");
@@ -339,9 +308,9 @@ public class ClipPlayer implements AnimationListener {
         c1.pause(2500).fadeOut(duration-2500).deleteWhenDone();    
     }
 
-
     public void radialBlueGreen3(){
-
+    	ssm.playGroupRandom("6");
+    	
         int duration = 6000;
         int width = 600;
         Clip c1 = eam.addClip(eam.getContent("grad1200_three_blue_green"), Color.getHSBColor(.4f, .99f, .99f), -width, 0, width, eam.getFrameDimensions().height, 1.0f);
@@ -356,7 +325,11 @@ public class ClipPlayer implements AnimationListener {
         c2.pause(duration/2).queue(sweep).fadeOut(500).deleteWhenDone();    
     }
 
-    /** LOCAL FIXTURE-SPECIFIC ANIMATIONS **/
+    
+    
+    /** INTEARACTIVE FEEDBACK CUES  ****************************/    
+    
+    
     public void randColor(Fixture fixture){
         red(fixture);
     }
@@ -419,6 +392,16 @@ public class ClipPlayer implements AnimationListener {
 
         c.pause(800).fadeOut(1000).deleteWhenDone();
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    /*************************/    
+
 
     private Fixture getFixture(String id){
         for (Fixture f : elu.getFixtures()){
