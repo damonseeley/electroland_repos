@@ -211,6 +211,8 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
             }catch(InterruptedException e){
                 logger.error(e);
             }
+            
+            mainControls.setTitle("MetalMatisse: fps = " + fpsAvg.getAverage());
         }
     }
 
