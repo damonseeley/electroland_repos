@@ -16,8 +16,8 @@
 	<classpathentry kind="lib" path="libraries/jamod.jar"/>
 	<classpathentry kind="lib" path="libraries/javaosc-core-0.2.jar"/>
 	<classpathentry kind="lib" path="libraries/EA2.jar"/>
-	<classpathentry kind="lib" path="libraries/EIO2.jar"/>
 	<classpathentry kind="lib" path="libraries/EL-Config.jar"/>
 	<classpathentry kind="lib" path="libraries/ELU2.jar"/>
+	<classpathentry kind="lib" path="libraries/EIO2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
