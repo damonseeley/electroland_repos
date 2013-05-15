@@ -52,6 +52,9 @@ public class ClipPlayer implements AnimationListener {
         chordDur = 5000; //4 seconds for each chord
         chordTimer = new Timer();
         chordTimer.schedule(new chordTimerTask(), chordDur, chordDur);
+        
+        //start the blue vase lights
+        constantBlueVase();
     }
 
     class chordTimerTask extends TimerTask{
@@ -157,6 +160,13 @@ public class ClipPlayer implements AnimationListener {
         sweep.yTo(eam.getFrameDimensions().height).duration(duration);
 
         clouds.queue(sweep).announce(screensaver).deleteWhenDone();
+    }
+    
+    private int vaseVMin = 0;
+    private int vaseVMax = 14;
+    
+    public void constantBlueVase() {
+    	 Clip vaseBlue = eam.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 0.85f);
     }
 
     public void enterScreensaverMode(int millis){
