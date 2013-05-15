@@ -75,6 +75,8 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
             c.renderArea.setPreferredSize(c.eam.getFrameDimensions());
             c.mainControls.add(c.renderArea, BorderLayout.CENTER); 
             c.mainControls.setVisible(true);
+            
+            c.mainControls.setLocation(0, 82);
 
             // sensors
             if (showSensors){
@@ -149,7 +151,6 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
     @Override
     public void run() {
         while (thread != null){
-
 
             // ELU and visualization rendering
             long startRender = System.currentTimeMillis();
