@@ -77,7 +77,7 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
             c.mainControls.add(c.renderArea, BorderLayout.CENTER); 
             c.mainControls.setVisible(true);
             
-            c.mainControls.setLocation(0, 82);
+            c.mainControls.setLocation(0, 80);
             
             c.mainControls.setBackground(Color.black);
             

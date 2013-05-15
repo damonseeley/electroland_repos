@@ -37,7 +37,9 @@ public class ClipPlayer implements AnimationListener {
     int chordIndex;
     int chordIndexMax;
     long chordDur;
-
+    
+    private int detOffset = 2;
+    
     public ClipPlayer(Animation eam, SimpleSoundManager ssm, ELUManager elu, ElectrolandProperties props){
 
         this.eam = eam;
@@ -140,6 +142,30 @@ public class ClipPlayer implements AnimationListener {
         }
     }
     
+    /** SCREENSAVER LOGIC ****************************/
+
+    public void enterScreensaverMode(int millis){
+        screensaver.fadeIn(millis);
+    }
+
+    public void exitScreensaverMode(int millis){
+        screensaver.fadeOut(millis);
+    }
+
+    /**
+     * When screensavers complete, this gets called. This is the chance
+     * to decide what screensaver to play next.
+     */
+    @Override
+    public void messageReceived(Object message) {
+        if (message == screensaver){
+            // this is where you choose the next screensaver or keep the current
+            // one cycling.
+            screensaverBlueClouds();
+        } else if ("bluevase".equals(message)){
+            constantBlueVase();
+        }
+    }
     
 
     /** SCREENSAVERS ****************************/
@@ -162,43 +188,51 @@ public class ClipPlayer implements AnimationListener {
         clouds.queue(sweep).announce(screensaver).deleteWhenDone();
     }
     
+    
+    /** VASE ****************************/
+
+    
     private int vaseVMin = 0;
     private int vaseVMax = 14;
     
     public void constantBlueVase() {
     	 Clip vaseBlue = eam.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 0.85f);
-    }
-
-    public void enterScreensaverMode(int millis){
-        screensaver.fadeIn(millis);
-    }
-
-    public void exitScreensaverMode(int millis){
-        screensaver.fadeOut(millis);
-    }
-
-    /**
-     * When screensavers complete, this gets called. This is the chance
-     * to decide what screensaver to play next.
-     */
-    @Override
-    public void messageReceived(Object message) {
-        if (message == screensaver){
-            // this is where you choose the next screensaver or keep the current
-            // one cycling.
-            screensaverBlueClouds();
-        }
+    	 
+    	 int dur = 30000;
+    	 Sequence slowPulseOut = new Sequence();
+    	 slowPulseOut.hueBy(0.05f).duration(dur);
+    	 slowPulseOut.brightnessTo(0.6f).duration(dur);
+    	 
+         Sequence slowPulseIn = new Sequence();
+         slowPulseIn.hueBy(-0.05f).duration(dur);
+         slowPulseIn.brightnessTo(0.85f).duration(dur);
+         
+         int holdDur = 300;
+         vaseBlue.pause(holdDur).queue(slowPulseOut).queue(slowPulseIn).announce("bluevase").fadeOut(holdDur).deleteWhenDone();    
     }
     
-    
-    
-    
+    public void pulseVase() {
+        Clip vasePulse = eam.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 0.0f);
+        
+        int dur = 300;
+        Sequence pulseIn = new Sequence();
+        //pulseIn.hueBy(-0.1f).duration(dur);
+        pulseIn.brightnessTo(0.5f).duration(dur);
+        
+        Sequence pulseOut = new Sequence();
+        //pulseOut.hueBy(0.1f).duration(dur*4);
+        pulseOut.brightnessTo(0.0f).duration(dur*4);
+        
+
+        vasePulse.queue(pulseIn).queue(pulseOut).fadeOut(300).deleteWhenDone();    
+    }
     
 
-    /** ACCENT SHOWS FOR TRIPLETS AND THE LIKE ****************************/
+
+    /** ACCENT SHOWS FOR TRIPLETS ETC ****************************/
     
     
-    public void radialCobrasOrange(){
+    public void radialCobrasOrange(Fixture f){
 
         int duration = 3000;
         int width = 600;
@@ -211,8 +245,9 @@ public class ClipPlayer implements AnimationListener {
         
         Sequence sweep = new Sequence();
         sweep.xTo(eam.getFrameDimensions().width).duration(duration);
+        sweep.xTo(0).duration(duration);
 
-        parent.queue(sweep).deleteWhenDone(); 
+        parent.queue(sweep).fadeOut(500).deleteWhenDone(); 
         
     }
     
@@ -323,9 +358,15 @@ public class ClipPlayer implements AnimationListener {
 
         int duration = 10000;
         int width = 200;
-        Clip c1 = eam.addClip(eam.getContent("bluePurple"), Color.getHSBColor(.0f, .99f, .99f), 0, 0, eam.getFrameDimensions().width, eam.getFrameDimensions().height, 1.0f);
+        Clip c1 = eam.addClip(eam.getContent("bluePurple"), Color.getHSBColor(.0f, .99f, .99f), 0, 0, eam.getFrameDimensions().width, eam.getFrameDimensions().height, 0.5f);
+        
+        Sequence pulseIn = new Sequence();
+        pulseIn.brightnessTo(1.0f).duration(duration/3);
+        Sequence pulseOut = new Sequence();
+        pulseOut.brightnessTo(0.0f).duration(duration/3*2);
 
         c1.pause(2500).fadeOut(duration-2500).deleteWhenDone();    
+        //c1.queue(pulseIn).queue(pulseOut).deleteWhenDone();    
     }
 
     public void radialBlueGreen3(){
@@ -402,10 +443,32 @@ public class ClipPlayer implements AnimationListener {
         
     }
     
+    public void redRandBlur(Fixture fixture){
+
+        randomVibra();
+        //pulseVase();
+
+        int dia = 64;
+        Clip c = eam.addClip(eam.getContent("blurDisc_32_red"),null,(int)fixture.getLocation().x - dia/2 + detOffset,(int)fixture.getLocation().y - dia/2 + detOffset, dia, dia, 1.0f);
+
+        Sequence huechange = new Sequence();
+        float huernd = 0.1f - (float)(Math.random() *0.2f);
+        logger.info("Random hue change is " + huernd);
+        huechange.hueBy(huernd);
+        huechange.duration(2000);
+        huechange.brightnessTo(0.5f);
+        c.queue(huechange).fadeOut(1000).deleteWhenDone();
+        
+    }
+    
+    
+    
+    
+    
     public void green(Fixture fixture){
 
         randomVibra();
-
+        
         Clip c = eam.addClip(eam.getContent("green"),
                                 (int)fixture.getLocation().x - 4,
                                 (int)fixture.getLocation().y - 4, 10, 10, 1.0f);
