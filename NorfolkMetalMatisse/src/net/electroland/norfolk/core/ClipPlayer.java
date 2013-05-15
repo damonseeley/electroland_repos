@@ -136,8 +136,12 @@ public class ClipPlayer implements AnimationListener {
             e.printStackTrace();
         }
     }
+    
+    
 
     /** SCREENSAVERS ****************************/
+    
+    
     public void screensaverBlueClouds(){
 
         int duration   = 3000;
@@ -175,8 +179,14 @@ public class ClipPlayer implements AnimationListener {
             screensaverBlueClouds();
         }
     }
+    
+    
+    
+    
+    
 
     /** ACCENT SHOWS FOR TRIPLETS AND THE LIKE ****************************/
+    
     
     public void radialCobrasOrange(){
 
@@ -327,7 +337,7 @@ public class ClipPlayer implements AnimationListener {
 
     
     
-    /** INTEARACTIVE FEEDBACK CUES  ****************************/    
+    /** INTERACTIVE FEEDBACK CUES  ****************************/    
     
     
     public void randColor(Fixture fixture){
