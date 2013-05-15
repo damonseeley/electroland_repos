@@ -46,6 +46,8 @@ public class SimpleSoundManager {
         return playList.keySet();
     }
     
+    private boolean enabled;
+    
     public void load(ElectrolandProperties props){
         Map<String,ParameterMap> soundProps = props.getObjects("sound");
         playList = new HashMap<String,SoundElement>();
@@ -53,17 +55,22 @@ public class SimpleSoundManager {
             SoundElement se = new SoundElement(soundProps.get(id).get("filename"),soundProps.get(id).getRequired("groupID"));
             playList.put(id, se);
         }
+        if (props.getRequiredBoolean("settings", "global", "soundEnabled")){
+            enabled = true;
+        } else {
+            enabled = false;
+        }
     }
     
     public void playSound(String soundName){
-        if (hours.shouldBeOpenNow("sound")){
+        if (hours.shouldBeOpenNow("sound") && enabled){
             AudioPlayer ap = minim.loadFile(playList.get(soundName).filename);
             new PlayThread(ap, ap.length() * 2).start();
         }
     }
     
     public void playSoundFile(String filename){
-        if (hours.shouldBeOpenNow("sound")){
+        if (hours.shouldBeOpenNow("sound") && enabled){
             AudioPlayer ap = minim.loadFile(filename);
             new PlayThread(ap, ap.length() * 2).start();
         }
