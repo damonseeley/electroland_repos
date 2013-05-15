@@ -144,7 +144,7 @@ public class ClipPlayer implements AnimationListener {
     
     public void screensaverBlueClouds(){
 
-        int duration   = 3000;
+        int duration   = 30000;
         int height     = 800;
 
         Clip clouds    = screensaver.addClip(eam.getContent("clouds_200x800_blue"), 
