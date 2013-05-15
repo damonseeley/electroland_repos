@@ -155,6 +155,27 @@ public class ClipPlayer implements AnimationListener {
         clouds.queue(sweep).announce(screensaver).deleteWhenDone();
     }
 
+    public void enterScreensaverMode(int millis){
+        screensaver.fadeIn(millis);
+    }
+
+    public void exitScreensaverMode(int millis){
+        screensaver.fadeOut(millis);
+    }
+
+    /**
+     * When screensavers complete, this gets called. This is the chance
+     * to decide what screensaver to play next.
+     */
+    @Override
+    public void messageReceived(Object message) {
+        if (message == screensaver){
+            logger.info("screensaver reported back");
+            screensaverBlueClouds();
+        }
+        // TODO Auto-generated method stub
+        // animation manager
+    }
 
     /** ANIMATIONS ****************************/
     public void radialCobrasOrange(){
@@ -398,16 +419,6 @@ public class ClipPlayer implements AnimationListener {
                                 (int)fixture.getLocation().y - 4, 10, 10, 1.0f);
 
         c.pause(800).fadeOut(1000).deleteWhenDone();
-    }
-
-    @Override
-    public void messageReceived(Object message) {
-        if (message == screensaver){
-            logger.info("screensaver reported back");
-            screensaverBlueClouds();
-        }
-        // TODO Auto-generated method stub
-        // animation manager
     }
 
     private Fixture getFixture(String id){
