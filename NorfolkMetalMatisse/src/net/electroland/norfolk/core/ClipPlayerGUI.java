@@ -33,6 +33,7 @@ public class ClipPlayerGUI extends JFrame implements ActionListener {
             clipNames[i++] = clip.getName();
         }
         clipMenu = new JComboBox(clipNames);
+        clipMenu.setMaximumRowCount(40);
 
         // play button
         play = new JButton("play");
