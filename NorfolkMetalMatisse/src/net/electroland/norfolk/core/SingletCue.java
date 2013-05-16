@@ -16,7 +16,7 @@ public class SingletCue extends Cue implements ChannelDriven {
 
     @Override
     public void fire(EventMetaData meta, ClipPlayer cp, InputChannel channel) {
-        cp.play("redRandBlur", channel);
+        cp.play("redRandBlurAnimNeg", channel);
     }
 
     @Override
