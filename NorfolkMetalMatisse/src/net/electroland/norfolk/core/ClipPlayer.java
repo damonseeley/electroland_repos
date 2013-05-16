@@ -499,6 +499,44 @@ public class ClipPlayer implements AnimationListener {
         
     }
     
+    public void redRandBlurAnim(Fixture fixture){
+
+        randomVibra();
+        pulseVase();
+
+        int dia = 64;
+        Clip c = eam.addClip(eam.getContent("blurdisc_hue40"),null,(int)fixture.getLocation().x - dia/2 + detOffset,(int)fixture.getLocation().y - dia/2 + detOffset, dia, dia, 1.0f);
+
+        Sequence huechange = new Sequence();
+        //float hueShift = 0.2f;
+        float hueShift = 0.8f;
+        float huernd = hueShift/2 - (float)(Math.random() * hueShift);
+        //logger.info("Random hue change is " + huernd);
+        //huechange.hueBy(huernd).duration(2000);
+        huechange.alphaTo(0.5f).duration(3000);
+        c.queue(huechange).fadeOut(1000).deleteWhenDone();
+        
+    }
+    
+    public void redRandBlurAnimNeg(Fixture fixture){
+
+        randomVibra();
+        pulseVase();
+
+        int dia = 64;
+        Clip c = eam.addClip(eam.getContent("blurdisc_hue-40"),null,(int)fixture.getLocation().x - dia/2 + detOffset,(int)fixture.getLocation().y - dia/2 + detOffset, dia, dia, 1.0f);
+
+        Sequence huechange = new Sequence();
+        //float hueShift = 0.2f;
+        float hueShift = 0.8f;
+        float huernd = hueShift/2 - (float)(Math.random() * hueShift);
+        //logger.info("Random hue change is " + huernd);
+        //huechange.hueBy(huernd).duration(2000);
+        huechange.alphaTo(0.5f).duration(3000);
+        c.queue(huechange).fadeOut(1000).deleteWhenDone();
+        
+    }
+    
     
     
     
