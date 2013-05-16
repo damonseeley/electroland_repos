@@ -180,7 +180,7 @@ public class ClipPlayer implements AnimationListener {
                                              Color.getHSBColor(.0f, .0f, .0f), 
                                              0, -height, 
                                              eam.getFrameDimensions().width, height, 
-                                             0.5f);
+                                             1.0f);
 
         Sequence sweep = new Sequence();
         sweep.yTo(eam.getFrameDimensions().height).duration(duration);
@@ -396,7 +396,7 @@ public class ClipPlayer implements AnimationListener {
 
         int duration = 10000;
         int width = 200;
-        Clip c1 = eam.addClip(eam.getContent("bluePurple"), Color.getHSBColor(.0f, .99f, .99f), 0, 0, eam.getFrameDimensions().width, eam.getFrameDimensions().height, 0.0f);
+        Clip c1 = eam.addClip(eam.getContent("bluePurple"), Color.getHSBColor(.0f, .99f, .99f), 0, 20, eam.getFrameDimensions().width, eam.getFrameDimensions().height, 0.0f);
         
         int pulseDur = 200;
         Sequence pulseIn = new Sequence();
