@@ -23,6 +23,7 @@ public class BigShowCue extends Cue {
 
     @Override
     public boolean ready(EventMetaData meta) {
-        return meta.getTimeSinceLastCue(this) > waitMillis;
+    	boolean isInactive = meta.totalSensorsEventsOverLast(60000) == 0;
+        return isInactive && meta.getTimeSinceLastCue(this) > waitMillis;
     }
 }

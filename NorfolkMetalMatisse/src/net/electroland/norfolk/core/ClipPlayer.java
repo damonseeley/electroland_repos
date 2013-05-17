@@ -176,7 +176,7 @@ public class ClipPlayer implements AnimationListener {
         int duration   = 30000;
         int height     = 800;
 
-        Clip clouds    = screensaver.addClip(eam.getContent("clouds_200x800_blue"), 
+        Clip clouds    = screensaver.addClip(eam.getContent("clouds_200x800_multi"), 
                                              Color.getHSBColor(.0f, .0f, .0f), 
                                              0, -height, 
                                              eam.getFrameDimensions().width, height, 
@@ -196,16 +196,16 @@ public class ClipPlayer implements AnimationListener {
     private int vaseVMax = 17;
     
     public void constantBlueVase() {
-    	 Clip vaseBlue = eam.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 0.85f);
+    	 Clip vaseBlue = eam.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 0.5f);
     	 
     	 int dur = 30000;
     	 Sequence slowPulseOut = new Sequence();
     	 slowPulseOut.hueBy(0.05f).duration(dur);
-    	 slowPulseOut.alphaTo(0.6f).duration(dur);
+    	 slowPulseOut.alphaTo(0.15f).duration(dur);
     	 
          Sequence slowPulseIn = new Sequence();
          slowPulseIn.hueBy(-0.05f).duration(dur);
-         slowPulseIn.alphaTo(0.85f).duration(dur);
+         slowPulseIn.alphaTo(0.5f).duration(dur);
          
          int holdDur = 300;
          vaseBlue.pause(holdDur).queue(slowPulseOut).queue(slowPulseIn).announce("bluevase").fadeOut(holdDur).deleteWhenDone();    
@@ -217,7 +217,7 @@ public class ClipPlayer implements AnimationListener {
         int dur = 200;
         Sequence pulseIn = new Sequence();
         //pulseIn.hueBy(-0.1f).duration(dur);
-        pulseIn.alphaTo(0.6f).duration(dur);
+        pulseIn.alphaTo(0.8f).duration(dur);
         
         Sequence pulseOut = new Sequence();
         //pulseOut.hueBy(0.1f).duration(dur*4);
