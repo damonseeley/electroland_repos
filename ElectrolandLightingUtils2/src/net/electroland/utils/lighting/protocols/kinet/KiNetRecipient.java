@@ -125,7 +125,7 @@ public class KiNetRecipient extends Recipient {
             KiNetData kinet = new KiNetData(universe, portout, false);
             ByteBuffer b = kinet.createPORTOUT(data);
 
-            logger.debug(this.getName() + ", universe " + universe + " and portout " + portout + " at IP " + this.ipStr + " on port " + port + ": "  + Util.bytesToHex(b.array(), b.position()));           
+            logger.trace(this.getName() + ", universe " + universe + " and portout " + portout + " at IP " + this.ipStr + " on port " + port + ": "  + Util.bytesToHex(b.array(), b.position()));           
 
             synchronized (this){
                 if (socket == null || socket.isClosed()){

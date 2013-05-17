@@ -139,7 +139,7 @@ public class ARTNetRecipient extends Recipient {
 
             ByteBuffer b = dmx.getBytes();
 
-            logger.debug(this.getName() + ", universe " + universe + " at IP " + 
+            logger.trace(this.getName() + ", universe " + universe + " at IP " + 
                             this.ipStr + " on port " + port + ": "  + 
                             Util.bytesToHex(b.array(), b.position()));
 
