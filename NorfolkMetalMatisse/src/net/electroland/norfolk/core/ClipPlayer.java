@@ -195,7 +195,7 @@ public class ClipPlayer implements AnimationListener {
                 greenLeaves();
                 break;
             case SPARKLE:
-                // start over the sparkle screensaver
+                sparkle();
                 break;
             case IVASE_THROB:
                 iVaseThrob();
