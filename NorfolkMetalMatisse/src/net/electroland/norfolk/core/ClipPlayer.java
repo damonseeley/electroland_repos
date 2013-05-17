@@ -109,13 +109,14 @@ public class ClipPlayer implements AnimationListener {
         for (Method method  : globalClips){
             if (method.getName().equals(globalClipName)){
                 try {
+                    logger.debug("play '" + globalClipName + "'");
                     method.invoke(this);
                 } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
+                    logger.warn(e);
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    logger.warn(e);
                 } catch (InvocationTargetException e) {
-                    e.printStackTrace();
+                    logger.warn(e);
                 }
             }
         }
@@ -127,6 +128,7 @@ public class ClipPlayer implements AnimationListener {
 
         try {
 
+            logger.debug("play '" + clipName + "' for channel " + channel);
             Method method = this.getClass().getMethod(clipName, Fixture.class);
             if (f == null){
                 method.invoke(this);
@@ -134,25 +136,25 @@ public class ClipPlayer implements AnimationListener {
                 method.invoke(this, f);
             }
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            logger.warn(e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            logger.warn(e);
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            logger.warn(e);
         } catch (NoSuchMethodException e){
-            e.printStackTrace();
+            logger.warn(e);
         }
     }
 
     /** SCREENSAVER LOGIC ****************************/
 
     public void enterScreensaverMode(int millis){
-        logger.info("ENTER SCREENSAVER");
+        logger.debug("enter screensaver");
         screensaver.fadeIn(millis);
     }
 
     public void exitScreensaverMode(int millis){
-        logger.info("EXIT SCREENSAVER");
+        logger.debug("exit screensaver.");
         screensaver.fadeOut(millis);
     }
 

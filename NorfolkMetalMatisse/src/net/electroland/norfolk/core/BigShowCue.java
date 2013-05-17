@@ -23,7 +23,7 @@ public class BigShowCue extends Cue {
 
     @Override
     public void fire(EventMetaData meta, ClipPlayer cp) {
-        logger.info("RUN BIG SHOW");
+        logger.debug("fire big show.");
         cp.play(cues.get(new Random().nextInt(cues.size())));
     }
 

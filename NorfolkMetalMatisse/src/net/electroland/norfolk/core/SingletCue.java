@@ -22,7 +22,7 @@ public class SingletCue extends Cue implements ChannelDriven {
 
     @Override
     public void fire(EventMetaData meta, ClipPlayer cp, InputChannel channel) {
-        logger.info("RUN SINGLET");
+        logger.debug("run single for channel " + channel);
         cp.play(clipName, channel);
     }
 
