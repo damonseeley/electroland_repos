@@ -1,12 +1,18 @@
 package net.electroland.norfolk.core;
 
+import org.apache.log4j.Logger;
+
 import net.electroland.eio.InputChannel;
 import net.electroland.utils.ParameterMap;
 
 public class SingletCue extends Cue implements ChannelDriven {
 
+    private static Logger logger = Logger.getLogger(SingletCue.class); 
+    private String clipName;
+
     public SingletCue(ParameterMap p) {
         super(p);
+        clipName = p.getRequired("clipName");
     }
 
     @Override
@@ -16,7 +22,8 @@ public class SingletCue extends Cue implements ChannelDriven {
 
     @Override
     public void fire(EventMetaData meta, ClipPlayer cp, InputChannel channel) {
-        cp.play("redRandBlurAnimNeg", channel);
+        logger.info("RUN SINGLET");
+        cp.play(clipName, channel);
     }
 
     @Override
