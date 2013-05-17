@@ -29,7 +29,7 @@ public class ComboCue extends Cue implements ChannelDriven {
     @Override
     public void fire(EventMetaData meta, ClipPlayer cp, InputChannel channel) {
         // only the last channel fired is passed in
-        logger.info("RUN COMBO");
+        logger.debug("run combo for channel " + channel);
         cp.play(shows.get(new Random().nextInt(shows.size())));
     }
 
