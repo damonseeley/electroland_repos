@@ -480,12 +480,14 @@ public class ClipPlayer implements AnimationListener {
         int height = eam.getFrameDimensions().height;
 
         // enter
-        Clip bg = eam.addClip(Color.ORANGE, 0, 0, width, height, 0.0f);
+        Clip bgbk = eam.addClip(Color.BLACK, 0, 0, width, height, 0.0f);
+        Clip bgor = eam.addClip(Color.ORANGE, 0, 0, width, height, 0.0f);
 
         Sequence lightUp = new Sequence();
         lightUp.alphaTo(1.0f).duration(enterDuration);
 
-        bg.queue(lightUp).pause(danceDuration).fadeOut(500).deleteWhenDone();
+        bgbk.queue(lightUp).pause(10000).fadeOut(500).deleteWhenDone();
+        bgor.queue(lightUp).pause(danceDuration).fadeOut(500).deleteWhenDone();
 
         // dance
         Clip stage = eam.addClip(-width, 0, width * 2, height, 1.0f);
@@ -506,10 +508,11 @@ public class ClipPlayer implements AnimationListener {
         stage.pause(enterDuration).queue(shiftRight).fadeOut(500).deleteWhenDone();
 
         Sequence flash = new Sequence();
-        flash.alphaTo(1.0f).duration(200).newState();
-        flash.alphaTo(0.0f).duration(200).newState();
-        flash.alphaTo(1.0f).duration(200).newState();
-        flash.alphaTo(0.0f).duration(200).newState();
+        flash.alphaTo(1.0f).duration(150).newState();
+        flash.alphaTo(0.0f).duration(150).newState();
+        flash.alphaTo(1.0f).duration(150).newState();
+        flash.alphaTo(0.0f).duration(250).newState();
+        
 
         // flash evens
         for (Clip c : evenClips){
@@ -536,7 +539,7 @@ public class ClipPlayer implements AnimationListener {
         
         brights.pause(2000).queue(flash).pause(400).queue(flash);
         brights.pause(2000).queue(flash).pause(400).queue(flash);
-        brights.pause(1000).queue(flash);
+        brights.pause(750).queue(flash);
         brights.deleteWhenDone();
     }
 
