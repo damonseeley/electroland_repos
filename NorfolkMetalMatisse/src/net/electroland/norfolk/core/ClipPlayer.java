@@ -469,6 +469,58 @@ public class ClipPlayer implements AnimationListener {
         vasePulse.queue(pulseIn).queue(pulseOut).fadeOut(300).deleteWhenDone();    
     }
 
+    public void freakOut() {
+
+        ssm.playSound("freakout");
+
+        int stripWidth    = 20;
+        int enterDuration = 500;
+        int danceDuration = 2000;
+        int width = eam.getFrameDimensions().width;
+        int height = eam.getFrameDimensions().height;
+
+        // enter
+        Clip bg = eam.addClip(Color.ORANGE, 0, 0, width, height, 0.0f);
+
+        Sequence lightUp = new Sequence();
+        lightUp.alphaTo(1.0f).duration(enterDuration);
+
+        bg.queue(lightUp).pause(danceDuration).fadeOut(500).deleteWhenDone();
+
+        // dance
+        Clip stage = eam.addClip(-width, 0, width * 2, height, 1.0f);
+        ArrayList<Clip>oddClips = new ArrayList<Clip>();
+        ArrayList<Clip>evenClips = new ArrayList<Clip>();
+
+        for (int i = 0; i < ((width * 2) / stripWidth); i ++){
+            if (i % 2 == 0){
+                evenClips.add(stage.addClip(Color.RED, i * stripWidth, 0, stripWidth, height, 1.0f));
+            }else{
+                oddClips.add(stage.addClip(Color.RED, i * stripWidth, 0, stripWidth, height, 0.0f));
+            }
+        }
+
+        // move the whole thing
+        Sequence shiftRight = new Sequence();
+        shiftRight.xTo(0).duration(2 * danceDuration);
+        stage.queue(shiftRight).fadeOut(500).deleteWhenDone();
+
+        Sequence flash = new Sequence();
+        flash.alphaTo(0.0f).duration(200).newState();
+        flash.alphaTo(1.0f).duration(200).newState();
+        flash.alphaTo(0.0f).duration(200).newState();
+        flash.alphaTo(1.0f).duration(200).newState();
+
+        // flash evens
+        for (Clip c : evenClips){
+            c.queue(new Sequence().pause(200)).queue(flash).pause(400).queue(flash).queue(new Sequence().hueBy((float)Math.random()));
+        }
+
+        // flash odds
+        for (Clip c : oddClips){
+            c.queue(flash).pause(400).queue(flash).queue(new Sequence().hueBy((float)Math.random()));
+        }
+    }
 
     /** Vase ****************************/
 
