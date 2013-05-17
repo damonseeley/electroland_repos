@@ -820,7 +820,9 @@ public class ClipPlayer implements AnimationListener {
         huechange.alphaTo(0.5f);
         c.queue(huechange).fadeOut(1000).deleteWhenDone();
     }
-
+    
+    
+/*
     public void redRandBlur(Fixture fixture){
 
         randomVibraSound();
@@ -858,6 +860,7 @@ public class ClipPlayer implements AnimationListener {
         c.queue(huechange).fadeOut(1000).deleteWhenDone();
 
     }
+    
 
     public void redRandBlurAnimNeg(Fixture fixture){
 
@@ -877,6 +880,7 @@ public class ClipPlayer implements AnimationListener {
         c.queue(huechange).fadeOut(1000).deleteWhenDone();
 
     }
+    */
 
 
 
