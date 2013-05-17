@@ -585,6 +585,7 @@ public class ClipPlayer implements AnimationListener {
 
     public void comboCobrasOrange(){
         //ssm.playGroupRandom("7");
+        ssm.playSound("ViolinStaccatoArp01");
 
         int duration = 3000;
         int width = 600;
@@ -611,7 +612,7 @@ public class ClipPlayer implements AnimationListener {
         int vLoc = 30; // start of cobras
         int vHeight = 12; // cover all cobras
 
-        Clip parent = eam.addClip(null, null, -width + 120, vLoc, width, vHeight, 1.0f);
+        Clip parent = eam.addClip(null, null, -width + 200, vLoc, width, vHeight, 1.0f);
         parent.addClip(eam.getContent("gradient_600_greenyellow"), null, 0, 0, width, vHeight, 1.0f);
 
         Sequence sweep = new Sequence();
@@ -624,8 +625,10 @@ public class ClipPlayer implements AnimationListener {
 
     public void comboTulipsBlueCyan(){
         //ssm.playGroupRandom("7");
+        ssm.playSound("ViolinStaccatoArp01");
 
-        int duration = 8000;
+
+        int duration = 4000;
         int width = 600;
         int vLoc = 146; // start of cobras
         int vHeight = 12; // cover all cobras
