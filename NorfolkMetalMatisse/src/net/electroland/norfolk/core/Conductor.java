@@ -221,7 +221,7 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable, VizOSC
                 logger.error(e);
             }
 
-            if (fpsAvg != null){
+            if (mainControls != null){
                 mainControls.setTitle("MetalMatisse: fps = " + fpsAvg.getAverage());
             }
         }
