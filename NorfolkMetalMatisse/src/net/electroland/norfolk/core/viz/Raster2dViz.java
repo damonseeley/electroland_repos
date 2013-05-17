@@ -8,7 +8,6 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import net.electroland.utils.Util;
@@ -27,8 +26,7 @@ public class Raster2dViz extends JPanel {
     private ELUManager elu;
     private int textLeftOffset = 10;
     private int textRightOffset = 10;
-    private Integer measuredFps;
-    
+  
     @Override
     public void paint(Graphics g) {
     	
@@ -96,7 +94,6 @@ public class Raster2dViz extends JPanel {
     }
 
     public void update(BufferedImage frame, CanvasDetector[] detectors, int fps){
-        this.measuredFps = fps;
         if (frame == null){
             this.frame = frame;
             this.detectors = detectors;
@@ -109,7 +106,6 @@ public class Raster2dViz extends JPanel {
     }
 
     public void update(BufferedImage frame, CanvasDetector[] detectors, ELUManager elu, int fps){
-        this.measuredFps = fps;
         if (frame == null){
             this.frame = frame;
             this.detectors = detectors;
