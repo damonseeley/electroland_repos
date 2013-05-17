@@ -217,8 +217,8 @@ public class ClipPlayer implements AnimationListener {
     // locations of stuff
     private int vaseVMin = 0;
     private int vaseVMax = 17;
-    private int elementsVMax = 179;
-    private int cobrasVMin = 180;
+    private int elementsVMax = 175;
+    private int cobrasVMin = 176;
     private int cobrasVMax = 200;
     private int leavesX = 130; //not right
     private int leavesY = 28;
@@ -419,7 +419,7 @@ public class ClipPlayer implements AnimationListener {
 
         int margin = 2;
         int width = 12;
-        int height = 16;
+        int height = 24;
         Clip cobraBlue = ssCobras.addClip(null, Color.getHSBColor(.6f, .99f, .99f),
                 (int)(cobraLocs.get(cobraIndex).x) - margin,
                 (int)(cobraLocs.get(cobraIndex).y) - margin - cobrasVMin,
