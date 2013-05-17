@@ -11,8 +11,11 @@ import javax.imageio.ImageIO;
 import net.electroland.ea.Content;
 import net.electroland.utils.ParameterMap;
 
+import org.apache.log4j.Logger;
+
 public class ImageContent extends Content {
 
+    private static Logger logger = Logger.getLogger(ImageContent.class);
     private Image image;
 
     /**
@@ -41,6 +44,7 @@ public class ImageContent extends Content {
             Map<String, ParameterMap> extendedParams) {
         String filename = primaryParams.getRequired("file");
         try {
+            logger.trace("loading image " + filename);
             image = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(filename));
         } catch (IOException e) {
             e.printStackTrace();

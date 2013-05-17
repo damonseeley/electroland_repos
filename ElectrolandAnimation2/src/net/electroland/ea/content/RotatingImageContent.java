@@ -11,6 +11,8 @@ import java.util.Vector;
 
 import javax.imageio.ImageIO;
 
+import org.apache.log4j.Logger;
+
 import net.electroland.ea.Content;
 import net.electroland.ea.util.AlphanumComparator;
 import net.electroland.utils.OptionException;
@@ -18,6 +20,7 @@ import net.electroland.utils.ParameterMap;
 
 public class RotatingImageContent extends Content {
 
+    private static Logger logger = Logger.getLogger(RotatingImageContent.class);
     private Image[] frames;
     private int pointer = 0;
     int delay;
@@ -67,7 +70,7 @@ public class RotatingImageContent extends Content {
             {
                 try {
                     String filename = extendedParams.get(name).getRequired("file");
-                    System.out.println("loading image " + filename + " from " + base);
+                    logger.trace("loading image " + filename + " from " + base);
                     framesTmp.add(ImageIO.read(new File(base, filename)));
                 } catch (IOException e) {
                     throw new OptionException(e);
