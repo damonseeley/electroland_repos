@@ -220,27 +220,31 @@ public class ClipPlayer implements AnimationListener {
 
     public void screensaverMultiClouds(){
 
-        int duration   = 30000;
+        int duration   = 60000;
         int height     = 800;
 
         Clip clouds    = ssFlora.addClip(eam.getContent("clouds_200x800_multi_angle"), 
                 null, 
                 0, -height, 
                 eam.getFrameDimensions().width, height, 
-                1.0f);
+                0.0f);
 
+        int fadeInTime = 4000;
         Sequence sweep = new Sequence();
-        sweep.yTo(eam.getFrameDimensions().height).duration(duration);
-
-        clouds.queue(sweep).announce(screensaver).deleteWhenDone();
+        //sweep.yTo(eam.getFrameDimensions().height).duration(duration);
+        sweep.yTo(-height + (height * fadeInTime/duration));
+        sweep.alphaTo(1.0f).duration(fadeInTime).newState();
+        sweep.yTo(0).duration(duration-fadeInTime);
+        
+        clouds.queue(sweep).announce(screensaver).fadeOut(fadeInTime*2).deleteWhenDone();
     }
 
+    
 
     private int throbPeriod = 3000;
     private int holdPeriod = 700;
     private float ssThrobAlphaMax = 0.6f;
     private float ssThrobAlphaMin = 0.15f;
-
 
     public void constantBlueVaseThrob() {
         Clip vaseBlue = ssVase.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, ssThrobAlphaMax);
@@ -275,15 +279,15 @@ public class ClipPlayer implements AnimationListener {
             if (f.getName().equals("c01a")) {
                 c1.x = f.getLocation().x;
                 c1.y = f.getLocation().y;
-                logger.info("c1 " + c1);
+                //logger.info("c1 " + c1);
             } else if (f.getName().equals("c02a")) {
                 c2.x = f.getLocation().x;
                 c2.y = f.getLocation().y;
-                logger.info("c2 " + c2);
+                //logger.info("c2 " + c2);
             } else if (f.getName().equals("c03a")) {
                 c3.x = f.getLocation().x;
                 c3.y = f.getLocation().y;
-                logger.info("c3 " + c3);
+                //logger.info("c3 " + c3);
             }
         }
 
