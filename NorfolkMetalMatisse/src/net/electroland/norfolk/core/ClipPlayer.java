@@ -199,6 +199,7 @@ public class ClipPlayer implements AnimationListener {
                 break;
             case IVASE_THROB:
                 iVaseThrob();
+                break;
             }
         }
     }
