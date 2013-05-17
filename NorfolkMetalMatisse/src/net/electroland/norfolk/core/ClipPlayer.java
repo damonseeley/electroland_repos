@@ -502,20 +502,18 @@ public class ClipPlayer implements AnimationListener {
 
         // move the whole thing
         Sequence shiftRight = new Sequence();
-        shiftRight.xTo(0).duration(2 * danceDuration);
+        shiftRight.xTo(0).duration(4 * danceDuration);
         stage.pause(enterDuration).queue(shiftRight).fadeOut(500).deleteWhenDone();
 
         Sequence flash = new Sequence();
-        flash.alphaTo(0.0f).duration(200).newState();
         flash.alphaTo(1.0f).duration(200).newState();
         flash.alphaTo(0.0f).duration(200).newState();
         flash.alphaTo(1.0f).duration(200).newState();
+        flash.alphaTo(0.0f).duration(200).newState();
 
         // flash evens
         for (Clip c : evenClips){
             c.queue(new Sequence().pause(enterDuration + 200));
-            c.queue(flash).pause(400).queue(flash).queue(new Sequence().hueBy((float)Math.random()));
-            c.queue(new Sequence().pause(500));
             c.queue(flash).pause(400).queue(flash).queue(new Sequence().hueBy((float)Math.random()));
             c.queue(new Sequence().pause(500));
             c.queue(flash).pause(400).queue(flash).queue(new Sequence().hueBy((float)Math.random()));
@@ -538,6 +536,7 @@ public class ClipPlayer implements AnimationListener {
         
         brights.pause(2000).queue(flash).pause(400).queue(flash);
         brights.pause(2000).queue(flash).pause(400).queue(flash);
+        brights.pause(1000).queue(flash);
         brights.deleteWhenDone();
     }
 
