@@ -26,15 +26,15 @@ public class TripletCue extends Cue implements ChannelDriven {
     @Override
     public void fire(EventMetaData meta, ClipPlayer cp, InputChannel channel) {
         // only the last channel fired is passed in
-        cp.play(shows.get(new Random().nextInt(shows.size())), channel);
+        cp.play(shows.get(new Random().nextInt(shows.size())));
     }
 
     @Override
     public boolean ready(EventMetaData meta) {
-        boolean isNotReset    = meta.totalSensorsEventsOverLast(tripInterval) > 0;
-        boolean isTriple      = meta.totalSensorsEventsOverLast(tripInterval * 2) > 2;
+
+    	boolean isTriple      = meta.totalSensorsEventsOverLast(tripInterval * 2) > 3;
         boolean isNotTimedOut = meta.getTimeSinceLastCue(this) > timeout;
 
-        return isNotReset && isTriple && isNotTimedOut;
+        return isTriple && isNotTimedOut;
     }
 }
