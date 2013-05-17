@@ -39,7 +39,7 @@ public class ClipPlayer implements AnimationListener {
     int chordIndexMax;
     long chordDur;
 
-    private enum Message {SCREENSAVER, VASE_THROB, COBRA_THROB, LEAVES, SPARKLE}
+    private enum Message {SCREENSAVER, IVASE_THROB, SSVASE_THROB, COBRA_THROB, LEAVES, SPARKLE}
 
     private int detOffset = 2;
 
@@ -58,10 +58,11 @@ public class ClipPlayer implements AnimationListener {
         chordTimer = new Timer();
         chordTimer.schedule(new chordTimerTask(), chordDur, chordDur);
 
+        initMasterClips();
         initScreensaver();
-
-
+        initInteractive();
     }
+
 
     class chordTimerTask extends TimerTask{
 
@@ -88,6 +89,8 @@ public class ClipPlayer implements AnimationListener {
 
         globalClips = getGlobalClips(true);
     }
+
+
 
     /**
      * The boolean is irrelevent. Just trying to get it not to show up on the
@@ -148,6 +151,15 @@ public class ClipPlayer implements AnimationListener {
         }
     }
 
+
+    /** CLIP SETUP ****************************/
+
+    private void initMasterClips(){
+        //add interactive first so screensaver covers it up
+        interactive = eam.addClip(null, null, 0, 0, eam.getFrameDimensions().width, eam.getFrameDimensions().height, 1.0f);
+        screensaver = eam.addClip(null, null, 0, 0, eam.getFrameDimensions().width, eam.getFrameDimensions().height, 1.0f);
+    }
+
     /** SCREENSAVER LOGIC ****************************/
 
     public void enterScreensaverMode(int millis){
@@ -173,7 +185,7 @@ public class ClipPlayer implements AnimationListener {
             case SCREENSAVER:
                 screensaverMultiClouds();
                 break;
-            case VASE_THROB:
+            case SSVASE_THROB:
                 constantBlueVaseThrob();
                 break;
             case COBRA_THROB:
@@ -185,6 +197,8 @@ public class ClipPlayer implements AnimationListener {
             case SPARKLE:
                 // start over the sparkle screensaver
                 break;
+            case IVASE_THROB:
+                iVaseThrob();
             }
         }
     }
@@ -209,18 +223,17 @@ public class ClipPlayer implements AnimationListener {
     private int leavesY = 28;
     private int leavesWidth = 45;
     private int leavesHeight = 20;
-    
+
     // alpha min max
     private float ssVaseThrobMax = 0.7f;
     private float ssVaseThrobMin = 0.15f;
-    
+
     //overall throb timing for ss elements
     private int throbPeriod = 3000;
     private int holdPeriod = 700;
 
 
     private void initScreensaver() {
-        screensaver = eam.addClip(null, null, 0, 0, eam.getFrameDimensions().width, eam.getFrameDimensions().height, 1.0f);
 
         ssVase = screensaver.addClip(null, null, 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 1.0f);
         ssFlora = screensaver.addClip(null, null, 0, vaseVMax, eam.getFrameDimensions().width, elementsVMax-vaseVMax, 1.0f);
@@ -243,7 +256,7 @@ public class ClipPlayer implements AnimationListener {
         greenLeaves();
         sparkle();
     }
-    
+
     public void ssFloraRandomizer() {
         //startup
         //call ssFloraRand(random flower or tulip)
@@ -275,7 +288,7 @@ public class ClipPlayer implements AnimationListener {
     }
 
     public Clip sparklet(Fixture fixture, int pause){
-        
+
         logger.info("start sparkle on " + fixture.getName() + " with pause of " + pause);
         /* ranges
          * 0-0.2
@@ -285,19 +298,19 @@ public class ClipPlayer implements AnimationListener {
         float hueDelta = 0.5f;
         float randHue = hueMin + (float)((Math.random() * hueDelta));
         Clip f = eam.addClip(null, Color.getHSBColor(randHue, .99f, .99f),(int)fixture.getLocation().x - 4,(int)fixture.getLocation().y - 4, 10, 10, 0.0f);
-                
+
         Sequence huechange = new Sequence();
         float hueChangeRange = 0.25f;
         float huernd = hueChangeRange - (float)(Math.random() * hueChangeRange * 2);
         huechange.hueBy(huernd);
         huechange.duration(throbPeriod);
         huechange.alphaTo(0.0f);
-        
+
         f.pause(pause).fadeIn(throbPeriod).pause(holdPeriod).queue(huechange);
 
         return f;
     }
-    
+
     private void greenLeaves() {
         int duration   = 30000;
         int width     = 600;
@@ -311,7 +324,7 @@ public class ClipPlayer implements AnimationListener {
         Sequence sweep = new Sequence();
         //sweep.yTo(eam.getFrameDimensions().height).duration(duration);
         sweep.xTo(leavesWidth).duration(duration);
-        
+
         leafGreen.queue(sweep).announce(Message.LEAVES).fadeOut(2000).deleteWhenDone();
     }
 
@@ -332,7 +345,7 @@ public class ClipPlayer implements AnimationListener {
         sweep.yTo(-height + (height * fadeInTime/duration));
         sweep.alphaTo(1.0f).duration(fadeInTime).newState();
         sweep.yTo(0).duration(duration-fadeInTime);
-        
+
         clouds.queue(sweep).announce(Message.SCREENSAVER).fadeOut(fadeInTime*2).deleteWhenDone();
     }
 
@@ -350,7 +363,7 @@ public class ClipPlayer implements AnimationListener {
         slowPulseIn.hueBy(-0.05f).duration(throbPeriod/2);
         slowPulseIn.alphaTo(ssVaseThrobMax).duration(throbPeriod/2);
 
-        vaseBlue.queue(slowPulseIn).queue(slowPulseOut).announce(Message.VASE_THROB).pause(500).deleteWhenDone();    
+        vaseBlue.queue(slowPulseIn).queue(slowPulseOut).announce(Message.SSVASE_THROB).pause(500).deleteWhenDone();    
     }
 
 
@@ -418,32 +431,70 @@ public class ClipPlayer implements AnimationListener {
             cobraIndex = 0;
         }
     }
-    
+
 
 
 
 
 
     /** BIG SHOWS AND COMBO CUES ****************************/
-    
+
     /** Accents ****************************/
 
     private float sensorPulseMax= 0.8f;
     private float sensorPulseMin= 0.0f;
-    
+
     public void pulseVaseOnSensor() {
+        logger.info("IVASE PULSE");
         Clip vasePulse = eam.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, sensorPulseMin);
 
-        int dur = 200;
+        int dur = 150;
         Sequence pulseIn = new Sequence();
         pulseIn.alphaTo(sensorPulseMax).duration(dur);
         Sequence pulseOut = new Sequence();
-        pulseOut.alphaTo(sensorPulseMin).duration(dur*3);
+        pulseOut.alphaTo(sensorPulseMin).duration(dur*2);
 
         vasePulse.queue(pulseIn).queue(pulseOut).fadeOut(300).deleteWhenDone();    
     }
-    
-    
+
+
+    /** Vase ****************************/
+
+    //nested clips
+    private Clip interactive; 
+    private Clip iVase;
+    private Clip iFlora;
+
+    public void initInteractive(){
+        //add iVase
+        iVase = interactive.addClip(null, null, 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 1.0f);
+        iFlora = interactive.addClip(null, null, 0, vaseVMax, eam.getFrameDimensions().width, elementsVMax, 1.0f);
+
+        //call vase throb
+        iVaseThrob();
+
+    }
+
+    public void iVaseThrob() {
+        logger.info("iVASE THROB STARTED");
+
+        float iVaseMin = 0.2f;
+        float iVaseMax = 0.6f;
+        Clip black = iVase.addClip(null, Color.getHSBColor(.0f, .0f, .0f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 1.0f);
+        Clip vaseBlue = iVase.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, iVaseMin);
+
+        Sequence slowPulseOut = new Sequence();
+        slowPulseOut.hueBy(0.05f).duration(throbPeriod);
+        slowPulseOut.alphaTo(iVaseMin).duration(throbPeriod);
+
+        Sequence slowPulseIn = new Sequence();
+        slowPulseIn.hueBy(-0.05f).duration(throbPeriod);
+        slowPulseIn.alphaTo(iVaseMax).duration(throbPeriod);
+
+        vaseBlue.queue(slowPulseIn).queue(slowPulseOut).announce(Message.IVASE_THROB).pause(500).deleteWhenDone();    
+    }
+
+
     /** Bigger shows ****************************/
 
 
@@ -633,8 +684,8 @@ public class ClipPlayer implements AnimationListener {
     }
 
 
-    
-  
+
+
 
     /** INTERACTIVE FEEDBACK CUES  ****************************/    
 
@@ -677,7 +728,8 @@ public class ClipPlayer implements AnimationListener {
     public void floraRand(Fixture fixture){
 
         randomVibraSound();
-        
+        pulseVaseOnSensor();
+
         /* ranges
          * 0-0.2
          * .77-1.0
