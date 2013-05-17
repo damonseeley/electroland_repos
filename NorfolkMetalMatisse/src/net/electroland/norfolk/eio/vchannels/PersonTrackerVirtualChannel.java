@@ -1,5 +1,7 @@
 package net.electroland.norfolk.eio.vchannels;
 
+import org.apache.log4j.Logger;
+
 import net.electroland.norfolk.eio.filters.PeopleIOWatcher;
 import net.electroland.norfolk.eio.filters.PersonEventDetectionFilter;
 import net.electroland.norfolk.eio.filters.PersonPresenceFilter;
@@ -51,6 +53,7 @@ import net.electroland.utils.ParameterMap;
 
 public class PersonTrackerVirtualChannel extends VirtualChannel {
 
+    private static Logger logger = Logger.getLogger(PersonTrackerVirtualChannel.class);
     // Input data is assumed to be between +- Short.MAX_VALUE / 2, (~= 2^14 == 16384)
     private final static float normFac = Short.MAX_VALUE / 2.0f;
     
@@ -228,11 +231,11 @@ public class PersonTrackerVirtualChannel extends VirtualChannel {
                     // A person has exited the sensor focus
                     if ( Math.abs(inputVals[0]) < Math.abs(inputVals[1]) ) {
                         output.setValue( PeopleIOWatcher.PersonEventCodes.EXIT_L );
-                        System.out.println("CH " + id + " - PERSON EXITED TO LEFT");
+                        logger.debug("CH " + id + " - PERSON EXITED TO LEFT");
                     }
                     else {
                         output.setValue( PeopleIOWatcher.PersonEventCodes.EXIT_R );
-                        System.out.println("CH " + id + " - PERSON EXITED TO RIGHT");
+                        logger.debug("CH " + id + " - PERSON EXITED TO RIGHT");
                     }
                     
                     
@@ -252,11 +255,11 @@ public class PersonTrackerVirtualChannel extends VirtualChannel {
                     // Otherwise, we declare this to be an entrance event
                     if ( Math.abs(inputVals[0]) > Math.abs(inputVals[1]) ) {
                         output.setValue( PeopleIOWatcher.PersonEventCodes.ENTER_L );
-                        System.out.println("CH " + id + " - PERSON ENTERED FROM LEFT" );
+                        logger.debug("CH " + id + " - PERSON ENTERED FROM LEFT" );
                     }
                     else {
                         output.setValue( PeopleIOWatcher.PersonEventCodes.ENTER_R );
-                        System.out.println("CH " + id + " - PERSON ENTERED FROM RIGHT" );
+                        logger.debug("CH " + id + " - PERSON ENTERED FROM RIGHT" );
                     }
                     
                     
@@ -334,11 +337,11 @@ public class PersonTrackerVirtualChannel extends VirtualChannel {
                             //    polarity. Thus we assume that this is an exit event paired with that entrance.
                             if (i == 0) {
                                 output.setValue( PeopleIOWatcher.PersonEventCodes.EXIT_R );
-                                System.out.println("CH " + id + " - PERSON EXITED (BY CLIP) TO RIGHT");
+                                logger.debug("CH " + id + " - PERSON EXITED (BY CLIP) TO RIGHT");
                             }
                             else {
                                 output.setValue( PeopleIOWatcher.PersonEventCodes.EXIT_L );
-                                System.out.println("CH " + id + " - PERSON EXITED (BY CLIP) TO LEFT");
+                                logger.debug("CH " + id + " - PERSON EXITED (BY CLIP) TO LEFT");
                             }
                             
                             // Update state variables
