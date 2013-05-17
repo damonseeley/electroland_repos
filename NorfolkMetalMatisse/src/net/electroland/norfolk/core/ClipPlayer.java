@@ -172,6 +172,8 @@ public class ClipPlayer implements AnimationListener {
             constantBlueVaseThrob();
         } else if ("cobraThrob".equals(message)){
             cobraThrob();
+        } else if ("leaves".equals(message)){
+            greenLeaves();
         }
     }
 
@@ -206,7 +208,7 @@ public class ClipPlayer implements AnimationListener {
         //ssVase.addClip(null, Color.getHSBColor(.0f, 1.0f, 1.0f), 0, 0, eam.getFrameDimensions().width, vaseVMax, 1.0f);
         //ssFlora.addClip(null, Color.getHSBColor(.3f, 1.0f, 1.0f), 0, 0, eam.getFrameDimensions().width, elementsVMax, 1.0f);
         //ssCobras.addClip(null, Color.getHSBColor(.6f, 1.0f, 1.0f), 0, 0, eam.getFrameDimensions().width, cobrasVMax, 1.0f);
-        ssLeaves.addClip(null, Color.getHSBColor(.33f, 1.0f, 1.0f), 0, 0, leavesWidth, leavesHeight, 0.5f);
+        //ssLeaves.addClip(null, Color.getHSBColor(.33f, 1.0f, 1.0f), 0, 0, leavesWidth, leavesHeight, 0.5f);
 
         //init
         setupCobras();
@@ -215,7 +217,25 @@ public class ClipPlayer implements AnimationListener {
         constantBlueVaseThrob();
         screensaverMultiClouds();
         cobraThrob();
+        greenLeaves();
 
+    }
+    
+    private void greenLeaves() {
+        int duration   = 30000;
+        int width     = 600;
+
+        Clip leafGreen    = ssLeaves.addClip(eam.getContent("gradient_600_greenyellow2"), 
+                null, 
+                -width, 0, 
+                width, leavesHeight, 
+                1.0f);
+
+        Sequence sweep = new Sequence();
+        //sweep.yTo(eam.getFrameDimensions().height).duration(duration);
+        sweep.xTo(leavesWidth).duration(duration);
+        
+        leafGreen.queue(sweep).announce("leaves").fadeOut(2000).deleteWhenDone();
     }
 
     public void screensaverMultiClouds(){
@@ -247,7 +267,7 @@ public class ClipPlayer implements AnimationListener {
     private float ssThrobAlphaMin = 0.15f;
 
     public void constantBlueVaseThrob() {
-        logger.info("VASE THROB STARTED");
+        //logger.info("VASE THROB STARTED");
         Clip black = ssVase.addClip(null, Color.getHSBColor(.0f, .0f, .0f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 1.0f);
         Clip vaseBlue = ssVase.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, ssThrobAlphaMin);
 
@@ -327,6 +347,8 @@ public class ClipPlayer implements AnimationListener {
             cobraIndex = 0;
         }
     }
+    
+
 
 
 
@@ -566,7 +588,7 @@ public class ClipPlayer implements AnimationListener {
         c.queue(huechange).pause(800).fadeOut(1000).deleteWhenDone();
     }
 
-    public void randomVibra(){
+    public void randomVibraSound(){
 
         //ssm.playSound(getRandVibra());
         ssm.playGroupRandom(chordIndex + "");
@@ -579,15 +601,24 @@ public class ClipPlayer implements AnimationListener {
         ssm.playGroupRandom(chordIndex + "");
     }
 
-    public void redRand(Fixture fixture){
+    public void floraRand(Fixture fixture){
 
-        randomVibra();
-
-        Clip c = eam.addClip(null,new Color(255,0,0),(int)fixture.getLocation().x - 4,(int)fixture.getLocation().y - 4, 10, 10, 1.0f);
+        randomVibraSound();
+        
+        /* ranges
+         * 0-0.2
+         * .77-1.0
+         */
+        float hueMin = 0.7f;
+        float hueDelta = 0.5f;
+        float randHue = hueMin + (float)((Math.random() * hueDelta));
+        //logger.info("RANDOM HUE = " + randHue);
+        Clip c = eam.addClip(null, Color.getHSBColor(randHue, .99f, .99f),(int)fixture.getLocation().x - 4,(int)fixture.getLocation().y - 4, 10, 10, 1.0f);
 
         Sequence huechange = new Sequence();
-        float huernd = 0.1f - (float)(Math.random() *0.2f);
-        logger.info("Random hue change is " + huernd);
+        float hueChangeRange = 0.25f;
+        float huernd = hueChangeRange - (float)(Math.random() * hueChangeRange * 2);
+        //logger.info("Random hue change is " + huernd);
         huechange.hueBy(huernd);
         huechange.duration(2000);
         huechange.alphaTo(0.5f);
@@ -597,7 +628,7 @@ public class ClipPlayer implements AnimationListener {
 
     public void redRandBlur(Fixture fixture){
 
-        randomVibra();
+        randomVibraSound();
         pulseVaseOnSensor();
 
         int dia = 64;
@@ -616,7 +647,7 @@ public class ClipPlayer implements AnimationListener {
 
     public void redRandBlurAnim(Fixture fixture){
 
-        randomVibra();
+        randomVibraSound();
         pulseVaseOnSensor();
 
         int dia = 64;
@@ -635,7 +666,7 @@ public class ClipPlayer implements AnimationListener {
 
     public void redRandBlurAnimNeg(Fixture fixture){
 
-        randomVibra();
+        randomVibraSound();
         pulseVaseOnSensor();
 
         int dia = 64;
@@ -658,7 +689,7 @@ public class ClipPlayer implements AnimationListener {
 
     public void green(Fixture fixture){
 
-        randomVibra();
+        randomVibraSound();
 
         Clip c = eam.addClip(eam.getContent("green"),
                 (int)fixture.getLocation().x - 4,
