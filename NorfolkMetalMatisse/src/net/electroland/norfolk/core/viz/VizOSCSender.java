@@ -21,9 +21,10 @@ public class VizOSCSender {
     private InetAddress inetAddress;
     private int port;
     private boolean isEnabled = false;
-    public static String ALL_LIGHTS = "/all";
-    public static String LIGHT = "/light";
-    public static String SENSORS = "/sensors";
+    public final static String ALL_LIGHTS   = "/all";       // send all lights at once
+    public final static String LIGHT        = "/light";     // send a single light
+    public final static String SENSORS      = "/sensors";   // send a single sensor
+    public final static String REMOTE       = "/remote";    // send a call from a remote OSC client
 
 
     public void load(ElectrolandProperties props){

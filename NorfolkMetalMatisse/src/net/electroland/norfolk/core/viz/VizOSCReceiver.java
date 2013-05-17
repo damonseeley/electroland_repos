@@ -43,6 +43,7 @@ public class VizOSCReceiver implements OSCListener {
             client.addListener(VizOSCSender.ALL_LIGHTS, this);
             client.addListener(VizOSCSender.LIGHT, this);
             client.addListener(VizOSCSender.SENSORS, this);
+            client.addListener(VizOSCSender.REMOTE, this);
             client.startListening();
         } catch (SocketException e) {
             logger.fatal(e);
@@ -59,14 +60,6 @@ public class VizOSCReceiver implements OSCListener {
     @Override
     public void acceptMessage(Date arriveTime, OSCMessage message) {
 
-//        logger.debug("acceptMessage(" + message.getAddress() + ");");
-//        StringBuffer sb = new StringBuffer(" message.args:[");
-//        for (Object o : message.getArguments()){
-//            sb.append(o).append(',');
-//        }
-//        sb.setLength(sb.length()-1);
-//        sb.append(']');
-//        logger.debug(sb.toString());
         for (VizOSCListener l : listeners){
 
             Object[] args = message.getArguments();
@@ -98,7 +91,10 @@ public class VizOSCReceiver implements OSCListener {
                     l.setLightColor(id, color);
                 }
 
-                logger.debug(sb.toString());
+                logger.trace(sb.toString());
+            } else if (message.getAddress().equals(VizOSCSender.REMOTE)){
+                logger.debug("remote play request received.");
+                l.remoteInvoked();
             }
         }
     }

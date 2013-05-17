@@ -15,6 +15,8 @@ import net.electroland.eio.EIOManager;
 import net.electroland.eio.IOFrameTest;
 import net.electroland.eio.InputChannel;
 import net.electroland.norfolk.core.viz.Raster2dViz;
+import net.electroland.norfolk.core.viz.VizOSCListener;
+import net.electroland.norfolk.core.viz.VizOSCReceiver;
 import net.electroland.norfolk.core.viz.VizOSCSender;
 import net.electroland.norfolk.eio.filters.PeopleIOWatcher;
 import net.electroland.norfolk.eio.filters.PeopleListener;
@@ -34,7 +36,7 @@ import net.electroland.utils.lighting.ui.ELUControls;
 
 import org.apache.log4j.Logger;
 
-public class Conductor implements PeopleListener, Runnable, Shutdownable{
+public class Conductor implements PeopleListener, Runnable, Shutdownable, VizOSCListener{
 
     private static Logger       logger = Logger.getLogger(Conductor.class);
     private Animation           eam;
@@ -53,6 +55,7 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
     private Collection<Cue>     cues;
     private EventMetaData       meta;
     private String              trainChannelId;
+    private String              remoteClip;
 
     public static void main(String args[]) throws OptionException, IOException{
 
@@ -125,6 +128,12 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
 
         viz = new VizOSCSender();
         viz.load(mainProps);
+
+        remoteClip = mainProps.getRequired("cues", "remote", "clipName"); 
+        VizOSCReceiver listener = new VizOSCReceiver();
+        listener.load(mainProps);
+        listener.addListener(this);
+        listener.start();
 
         start();
     }
@@ -332,5 +341,20 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
     @Override
     public void shutdown() {
         stop();
+    }
+
+    @Override
+    public void setSensorState(String id, boolean isOn) {
+        // do nothing (this is from VizOSCListener);
+    }
+
+    @Override
+    public void setLightColor(String id, Color color) {
+        // do nothing (this is from VizOSCListener);
+    }
+
+    @Override
+    public void remoteInvoked() {
+        clipPlayer.play(remoteClip);
     }
 }
