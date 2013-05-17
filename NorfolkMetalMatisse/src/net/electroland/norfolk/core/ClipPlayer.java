@@ -243,11 +243,13 @@ public class ClipPlayer implements AnimationListener {
 
     private int throbPeriod = 3000;
     private int holdPeriod = 700;
-    private float ssThrobAlphaMax = 0.6f;
+    private float ssThrobAlphaMax = 0.7f;
     private float ssThrobAlphaMin = 0.15f;
 
     public void constantBlueVaseThrob() {
-        Clip vaseBlue = ssVase.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, ssThrobAlphaMax);
+        logger.info("VASE THROB STARTED");
+        Clip black = ssVase.addClip(null, Color.getHSBColor(.0f, .0f, .0f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 1.0f);
+        Clip vaseBlue = ssVase.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, ssThrobAlphaMin);
 
         Sequence slowPulseOut = new Sequence();
         slowPulseOut.hueBy(0.05f).duration(throbPeriod/2);
@@ -257,7 +259,7 @@ public class ClipPlayer implements AnimationListener {
         slowPulseIn.hueBy(-0.05f).duration(throbPeriod/2);
         slowPulseIn.alphaTo(ssThrobAlphaMax).duration(throbPeriod/2);
 
-        vaseBlue.queue(slowPulseOut).pause(holdPeriod).queue(slowPulseIn).announce("vaseThrob").fadeOut(holdPeriod).deleteWhenDone();    
+        vaseBlue.queue(slowPulseIn).queue(slowPulseOut).announce("vaseThrob").pause(500).deleteWhenDone();    
     }
 
 
