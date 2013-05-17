@@ -369,7 +369,7 @@ public class ClipPlayer implements AnimationListener {
 
 
     private int cobraIndex = 0;
-    HashMap<Integer,Point2d> cobraLocs = new HashMap();
+    HashMap<Integer,Point2d> cobraLocs = new HashMap<Integer, Point2d>();
 
     public void setupCobras() {
 
@@ -446,7 +446,7 @@ public class ClipPlayer implements AnimationListener {
     private float sensorPulseMin= 0.0f;
 
     public void pulseVaseOnSensor() {
-        logger.info("IVASE PULSE");
+        //logger.info("IVASE PULSE");
         Clip vasePulse = eam.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, sensorPulseMin);
 
         int dur = 150;
@@ -479,7 +479,7 @@ public class ClipPlayer implements AnimationListener {
     public void iVaseThrob() {
         logger.info("iVASE THROB STARTED");
 
-        float iVaseMin = 0.2f;
+        float iVaseMin = 0.4f;
         float iVaseMax = 0.6f;
         Clip black = iVase.addClip(null, Color.getHSBColor(.0f, .0f, .0f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 1.0f);
         Clip vaseBlue = iVase.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, iVaseMin);
