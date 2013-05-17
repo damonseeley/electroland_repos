@@ -638,6 +638,17 @@ public class ClipPlayer implements AnimationListener {
         parent.queue(sweep).fadeOut(500).deleteWhenDone(); 
 
     }
+    
+    public void allElementMulti() {
+        //ssm.playGroupRandom("8");
+        
+        Clip c1 = eam.addClip(eam.getContent("allelements_multi"), Color.getHSBColor(.0f, .99f, .0f), 0, 0, eam.getFrameDimensions().width, eam.getFrameDimensions().height, 1.0f);
+
+        Sequence fade = new Sequence();
+        fade.brightnessTo(0.0f).duration(2000);
+
+        c1.pause(2000).queue(fade).fadeOut(1500).deleteWhenDone();
+    }
 
 
     public void vertWavesRedMag(){
