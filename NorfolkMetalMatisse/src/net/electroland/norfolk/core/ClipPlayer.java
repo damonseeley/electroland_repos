@@ -1,7 +1,6 @@
 package net.electroland.norfolk.core;
 
 import java.awt.Color;
-import java.awt.geom.Point2D;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -148,10 +147,12 @@ public class ClipPlayer implements AnimationListener {
     /** SCREENSAVER LOGIC ****************************/
 
     public void enterScreensaverMode(int millis){
+        logger.info("ENTER SCREENSAVER");
         screensaver.fadeIn(millis);
     }
 
     public void exitScreensaverMode(int millis){
+        logger.info("EXIT SCREENSAVER");
         screensaver.fadeOut(millis);
     }
 

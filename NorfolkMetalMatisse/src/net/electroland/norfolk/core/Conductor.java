@@ -75,11 +75,9 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
             c.renderArea.setPreferredSize(c.eam.getFrameDimensions());
             c.mainControls.add(c.renderArea, BorderLayout.CENTER); 
             c.mainControls.setVisible(true);
-            
+
             c.mainControls.setLocation(0, 80);
-            
             c.mainControls.setBackground(Color.black);
-            
 
             // sensors
             if (showSensors){
@@ -88,11 +86,6 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
             }
         }
     }
-    
-
-        
-    
-    
 
     public void init() throws OptionException, IOException{
 
@@ -126,8 +119,8 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
         clipPlayer = new ClipPlayer(eam, new SimpleSoundManager(hours), elu, mainProps);
         new ClipPlayerGUI(clipPlayer);
 
-        cues = new CueManager().load(mainProps);
         meta = new EventMetaData(mainProps.getRequiredInt("cues", "global", "maxHistoryMillis"));
+        cues = new CueManager().load(meta, mainProps);
         trainChannelId = mainProps.getRequired("cues", "global", "trainChannelId");
 
         viz = new VizOSCSender();
@@ -218,7 +211,7 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
             }catch(InterruptedException e){
                 logger.error(e);
             }
-            
+
             mainControls.setTitle("MetalMatisse: fps = " + fpsAvg.getAverage());
         }
     }

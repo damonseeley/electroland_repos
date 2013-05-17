@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import net.electroland.eio.Channel;
 import net.electroland.utils.ParameterMap;
 
 public class EventMetaData {
@@ -15,7 +16,7 @@ public class EventMetaData {
 
     public EventMetaData(int historyMaxLengthMillis){
         this.historyMaxLengthMillis = historyMaxLengthMillis;
-        history = new LinkedBlockingQueue<NorfolkEvent>();
+        this.history = new LinkedBlockingQueue<NorfolkEvent>();
     }
 
     public static void main(String args[]) throws InterruptedException{
@@ -24,7 +25,7 @@ public class EventMetaData {
         p.put("tripinterval", "3000");
         p.put("timeout", "3000");
         p.put("cues", "a,b");
-        TripletCue t = new TripletCue(p);
+        ComboCue t = new ComboCue(p);
         SingletCue s = new SingletCue(p);
         TimedCue   x = new TimedCue(p);
 
@@ -32,25 +33,26 @@ public class EventMetaData {
         meta.addEvent(new CueEvent(t));
         Thread.sleep(1000);
         meta.addEvent(new CueEvent(s));
-        meta.addEvent(new SensorEvent());
+        meta.addEvent(new SensorEvent(new TestChannel("Train")));
         Thread.sleep(1000);
 
         System.out.println(meta.totalCueEventsOverLast(2500));      // 2
         System.out.println(meta.totalCueEventsOverLast(1500));      // 1
         System.out.println(meta.totalEventsPastOverLast(2500));     // 3
         System.out.println(meta.totalSensorsEventsOverLast(2500));  // 1
+        System.out.println(meta.totalSensorsEventsOverLastExcluding(2500,"Train"));  // 1
 
-        System.out.println(meta.getTimeSinceLastCue(t));            // 2000
-        System.out.println(meta.getTimeSinceLastCue(s));            // 1000
-        System.out.println(meta.getTimeSinceLastCue(x));            // max
-        System.out.println(meta.getTimeSinceLastCue(s, t));         // 1000
-        System.out.println(meta.getTimeSinceLastCue(s, t, x));      // 1000
-        System.out.println(meta.getTimeSinceLastCue(s, x));         // 1000
-        System.out.println(meta.getTimeSinceLastCueExcluding(t));   // 1000
-        System.out.println(meta.getTimeSinceLastCueExcluding(s));   // 2000
-        System.out.println(meta.getTimeSinceLastCueExcluding(x));   // 1000
-        System.out.println(meta.getTimeSinceLastCueExcluding(s,x)); // 2000
-        System.out.println(meta.getTimeSinceLastCueExcluding(s,t)); // max
+        System.out.println(meta.getTimeSinceLastCue(t));            // ~2000
+        System.out.println(meta.getTimeSinceLastCue(s));            // ~1000
+        System.out.println(meta.getTimeSinceLastCue(x));            // max int
+        System.out.println(meta.getTimeSinceLastCue(s, t));         // ~1000
+        System.out.println(meta.getTimeSinceLastCue(s, t, x));      // ~1000
+        System.out.println(meta.getTimeSinceLastCue(s, x));         // ~1000
+        System.out.println(meta.getTimeSinceLastCueExcluding(t));   // ~1000
+        System.out.println(meta.getTimeSinceLastCueExcluding(s));   // ~2000
+        System.out.println(meta.getTimeSinceLastCueExcluding(x));   // ~1000
+        System.out.println(meta.getTimeSinceLastCueExcluding(s,x)); // ~2000
+        System.out.println(meta.getTimeSinceLastCueExcluding(s,t)); // max int
     }
 
     public int totalEventsPastOverLast(long millis){
@@ -70,6 +72,20 @@ public class EventMetaData {
         for (NorfolkEvent evt : history){
             if (current - evt.eventTime < millis &&
                 evt instanceof SensorEvent){
+                    total++;
+            }
+        }
+        return total;
+    }
+
+    public int totalSensorsEventsOverLastExcluding(long millis, String channelName){
+        int total = 0;
+        long current = System.currentTimeMillis();
+        for (NorfolkEvent evt : history){
+            if (current - evt.eventTime < millis &&
+                evt instanceof SensorEvent &&
+                ((SensorEvent)evt).sourceInputChannel != null &&
+                ((SensorEvent)evt).sourceInputChannel.getId().equals(channelName)) { // exclude by channel name
                     total++;
             }
         }
@@ -137,7 +153,7 @@ public class EventMetaData {
         }
     }
 
-    public static boolean headEventIsTooOld(Queue<NorfolkEvent> history, long maxAgeMillis){
+    private static boolean headEventIsTooOld(Queue<NorfolkEvent> history, long maxAgeMillis){
         if (history.size() == 0){
             return false;
         }else{
@@ -147,5 +163,11 @@ public class EventMetaData {
 
     private String getKey(Cue c){
         return c.getClass().getName();
+    }
+}
+
+class TestChannel extends Channel{
+    public TestChannel(String id){
+        this.id = id;
     }
 }
