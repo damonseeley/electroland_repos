@@ -334,7 +334,7 @@ public class ClipPlayer implements AnimationListener {
         Sequence slowPulseIn = new Sequence();
         slowPulseIn.alphaTo(0.99f).duration(throbPeriod);
 
-        leafPulse.queue(slowPulseIn).queue(slowPulseOut).pause(500).queue(slowPulseIn).queue(slowPulseOut).pause(500).queue(slowPulseIn).queue(slowPulseOut).queue(slowPulseIn).pause(500).deleteWhenDone();  
+        leafPulse.queue(slowPulseOut).pause(500).queue(slowPulseIn).queue(slowPulseOut).pause(500).queue(slowPulseIn).queue(slowPulseOut).queue(slowPulseIn).pause(500).deleteWhenDone();  
 
         
     }
@@ -581,13 +581,13 @@ public class ClipPlayer implements AnimationListener {
     /** Bigger shows ****************************/
 
 
-    public void radialCobrasOrange(){
+    public void comboCobrasOrange(){
         //ssm.playGroupRandom("7");
 
         int duration = 3000;
         int width = 600;
-        int vLoc = 176; // start of cobras
-        int vHeight = 22; // cover all cobras
+        int vLoc = 174; // start of cobras
+        int vHeight = 28; // cover all cobras
 
         Clip parent = eam.addClip(null, null, -width*2, vLoc, width*2, vHeight, 1.0f);
         parent.addClip(eam.getContent("bar1200_one_org"), Color.getHSBColor(.4f, .99f, .99f), 0, 0, width, vHeight, 1.0f);
@@ -601,7 +601,7 @@ public class ClipPlayer implements AnimationListener {
     }
 
 
-    public void radialLeavesGreen(){
+    public void comboLeavesGreen(){
         //ssm.playGroupRandom("7");
 
         int duration = 5000;
@@ -620,12 +620,12 @@ public class ClipPlayer implements AnimationListener {
 
     }
 
-    public void radialTulipsBlueCyan(){
+    public void comboTulipsBlueCyan(){
         //ssm.playGroupRandom("7");
 
         int duration = 8000;
         int width = 600;
-        int vLoc = 162; // start of cobras
+        int vLoc = 146; // start of cobras
         int vHeight = 12; // cover all cobras
 
         Clip parent = eam.addClip(null, null, -width*2, vLoc, width*2, vHeight, 1.0f);
