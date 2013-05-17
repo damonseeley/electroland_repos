@@ -186,7 +186,7 @@ public class ClipPlayer implements AnimationListener {
                 screensaverMultiClouds();
                 break;
             case SSVASE_THROB:
-                constantBlueVaseThrob();
+                ssVaseThrob();
                 break;
             case COBRA_THROB:
                 cobraThrob();
@@ -251,20 +251,11 @@ public class ClipPlayer implements AnimationListener {
         setupCobras();
 
         //start the constant clips
-        constantBlueVaseThrob();
+        ssVaseThrob();
         screensaverMultiClouds();
         cobraThrob();
         greenLeaves();
         sparkle();
-    }
-
-    public void ssFloraRandomizer() {
-        //startup
-        //call ssFloraRand(random flower or tulip)
-        //create a dummy clip
-        //create a dummy change, with duration set to throbPeriod
-        //have the dummy change announce "throbFlora" on end
-        //call this method again
     }
 
     public void sparkle(){
@@ -315,8 +306,17 @@ public class ClipPlayer implements AnimationListener {
     private void greenLeaves() {
         int duration   = 30000;
         int width     = 600;
+        
+        Clip black = ssLeaves.addClip(null, Color.getHSBColor(.0f, .0f, .0f), 0, 0, leavesWidth, leavesHeight, 1.0f);
 
-        Clip leafGreen    = ssLeaves.addClip(eam.getContent("gradient_600_greenyellow2"), 
+        Clip leafPulse    = ssLeaves.addClip(null, 
+                null, 
+                0, 0, 
+                leavesWidth, leavesHeight, 
+                1.0f);
+        
+
+        Clip leafGreen    = leafPulse.addClip(eam.getContent("gradient_600_greenyellow2"), 
                 null, 
                 -width, 0, 
                 width, leavesHeight, 
@@ -325,9 +325,20 @@ public class ClipPlayer implements AnimationListener {
         Sequence sweep = new Sequence();
         //sweep.yTo(eam.getFrameDimensions().height).duration(duration);
         sweep.xTo(leavesWidth).duration(duration);
-
+        
         leafGreen.queue(sweep).announce(Message.LEAVES).fadeOut(2000).deleteWhenDone();
+
+        Sequence slowPulseOut = new Sequence();
+        slowPulseOut.alphaTo(0.3f).duration(throbPeriod);
+
+        Sequence slowPulseIn = new Sequence();
+        slowPulseIn.alphaTo(1.0f).duration(throbPeriod);
+
+        leafPulse.queue(slowPulseIn).queue(slowPulseOut).pause(500).queue(slowPulseIn).queue(slowPulseOut).pause(500).queue(slowPulseIn).queue(slowPulseOut).queue(slowPulseIn).pause(500).deleteWhenDone();  
+
+        
     }
+
 
     public void screensaverMultiClouds(){
 
@@ -351,7 +362,7 @@ public class ClipPlayer implements AnimationListener {
     }
 
 
-    public void constantBlueVaseThrob() {
+    public void ssVaseThrob() {
         //logger.info("VASE THROB STARTED");
         Clip black = ssVase.addClip(null, Color.getHSBColor(.0f, .0f, .0f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 1.0f);
         Clip vaseBlue = ssVase.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, ssVaseThrobMin);
