@@ -92,9 +92,13 @@ public class VizOSCReceiver implements OSCListener {
                 }
 
                 logger.trace(sb.toString());
-            } else if (message.getAddress().equals(VizOSCSender.REMOTE)){
-                logger.debug("remote play request received.");
-                l.remoteInvoked();
+            } else if (message.getAddress().startsWith(VizOSCSender.REMOTE)){
+
+                logger.debug("remote play request received:" + message.getAddress());
+                if ((Float)message.getArguments()[0] == 1.0f){
+                    logger.debug(" invoke " + message.getAddress());
+                    l.remoteInvoked();
+                }
             }
         }
     }
