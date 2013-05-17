@@ -164,8 +164,8 @@ public class ClipPlayer implements AnimationListener {
         if (message == screensaver){
             // this is where you choose the next screensaver or keep the current
             // one cycling.
-            screensaverBlueClouds();
-        } else if ("vasethrob".equals(message)){
+            screensaverMultiClouds();
+        } else if ("vaseThrob".equals(message)){
             constantBlueVaseThrob();
         } else if ("cobraThrob".equals(message)){
             cobraThrob();
@@ -208,25 +208,9 @@ public class ClipPlayer implements AnimationListener {
 
         //start the constant clips
         constantBlueVaseThrob();
+        screensaverMultiClouds();
         cobraThrob();
 
-    }
-
-    public void screensaverBlueClouds(){
-
-        int duration   = 30000;
-        int height     = 800;
-
-        Clip clouds    = ssFlora.addClip(eam.getContent("clouds_200x800_blue"), 
-                null, 
-                0, -height, 
-                eam.getFrameDimensions().width, height, 
-                1.0f);
-
-        Sequence sweep = new Sequence();
-        sweep.yTo(eam.getFrameDimensions().height).duration(duration);
-
-        clouds.queue(sweep).announce(screensaver).deleteWhenDone();
     }
 
     public void screensaverMultiClouds(){
@@ -234,7 +218,7 @@ public class ClipPlayer implements AnimationListener {
         int duration   = 30000;
         int height     = 800;
 
-        Clip clouds    = ssFlora.addClip(eam.getContent("clouds_200x800_multi"), 
+        Clip clouds    = ssFlora.addClip(eam.getContent("clouds_200x800_multi_angle"), 
                 null, 
                 0, -height, 
                 eam.getFrameDimensions().width, height, 
@@ -264,7 +248,7 @@ public class ClipPlayer implements AnimationListener {
         slowPulseIn.hueBy(-0.05f).duration(throbPeriod/2);
         slowPulseIn.alphaTo(ssThrobAlphaMax).duration(throbPeriod/2);
 
-        vaseBlue.queue(slowPulseOut).pause(holdPeriod).queue(slowPulseIn).announce("vasethrob").fadeOut(holdPeriod).deleteWhenDone();    
+        vaseBlue.queue(slowPulseOut).pause(holdPeriod).queue(slowPulseIn).announce("vaseThrob").fadeOut(holdPeriod).deleteWhenDone();    
     }
 
 
