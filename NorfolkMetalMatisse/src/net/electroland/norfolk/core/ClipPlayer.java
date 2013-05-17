@@ -469,6 +469,78 @@ public class ClipPlayer implements AnimationListener {
         vasePulse.queue(pulseIn).queue(pulseOut).fadeOut(300).deleteWhenDone();    
     }
 
+    /** Vase ****************************/
+
+    //nested clips
+    private Clip interactive; 
+    private Clip iVase;
+    private Clip iFlora;
+
+    public void initInteractive(){
+        //add iVase
+        iVase = interactive.addClip(null, null, 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 1.0f);
+        iFlora = interactive.addClip(null, null, 0, vaseVMax, eam.getFrameDimensions().width, elementsVMax, 1.0f);
+
+        //call vase throb
+        iVaseThrob();
+
+    }
+
+    public void iVaseThrob() {
+        //logger.info("iVASE THROB STARTED");
+
+        float iVaseMin = 0.4f;
+        float iVaseMax = 0.6f;
+        Clip black = iVase.addClip(null, Color.getHSBColor(.0f, .0f, .0f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 1.0f);
+        Clip vaseBlue = iVase.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, iVaseMin);
+
+        Sequence slowPulseOut = new Sequence();
+        slowPulseOut.hueBy(0.05f).duration(throbPeriod);
+        slowPulseOut.alphaTo(iVaseMin).duration(throbPeriod);
+
+        Sequence slowPulseIn = new Sequence();
+        slowPulseIn.hueBy(-0.05f).duration(throbPeriod);
+        slowPulseIn.alphaTo(iVaseMax).duration(throbPeriod);
+
+        vaseBlue.queue(slowPulseIn).queue(slowPulseOut).announce(Message.IVASE_THROB).pause(500).deleteWhenDone();    
+    }
+
+
+    /** Bigger shows ****************************/
+
+    public void trainComing(){
+
+        int halfWidth = eam.getFrameDimensions().width / 2;
+        int halfHeight = eam.getFrameDimensions().height / 2;
+        float alphaOn = 1.0f;
+        float alphaOff = .5f;
+        int p1 = 100;
+        int p2 = 175;
+
+        // 630ms x 7
+        ssm.playSound("trainbell");
+        Color gold = Color.getHSBColor(1.15f, .96f, .98f);//new Color(249, 235, 11);
+        Clip tl = eam.addClip(gold, 0, 0, halfWidth, halfHeight, alphaOn);
+        Clip tr = eam.addClip(gold, halfWidth, 0, halfWidth, halfHeight, alphaOff);
+        Clip bl = eam.addClip(gold, 0, halfHeight, halfWidth, halfHeight, alphaOff);
+        Clip br = eam.addClip(gold, halfWidth, halfHeight, halfWidth, halfHeight, alphaOn);
+
+        Sequence bing = new Sequence();
+        bing.alphaTo(alphaOff).pause(p1).alphaTo(alphaOn).pause(p2);
+        bing.alphaTo(alphaOff).pause(p1).alphaTo(alphaOn).pause(p2);
+
+        Sequence bong = new Sequence();
+        bong.alphaTo(alphaOn).pause(p1).alphaTo(alphaOff).pause(p2);
+        bong.alphaTo(alphaOn).pause(p1).alphaTo(alphaOff).pause(p2);
+
+        tl.queue(bing).queue(bong).queue(bing).queue(bong).queue(bing).queue(bong).queue(bing).fadeOut(500).deleteWhenDone();
+        br.queue(bing).queue(bong).queue(bing).queue(bong).queue(bing).queue(bong).queue(bing).fadeOut(500).deleteWhenDone();
+        tr.queue(bong).queue(bing).queue(bong).queue(bing).queue(bong).queue(bing).queue(bing).fadeOut(500).deleteWhenDone();
+        bl.queue(bong).queue(bing).queue(bong).queue(bing).queue(bong).queue(bing).queue(bing).fadeOut(500).deleteWhenDone();
+
+        
+    }
+
     public void freakOut() {
 
         ssm.playSound("freakout");
@@ -542,46 +614,6 @@ public class ClipPlayer implements AnimationListener {
         brights.pause(750).queue(flash);
         brights.deleteWhenDone();
     }
-
-    /** Vase ****************************/
-
-    //nested clips
-    private Clip interactive; 
-    private Clip iVase;
-    private Clip iFlora;
-
-    public void initInteractive(){
-        //add iVase
-        iVase = interactive.addClip(null, null, 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 1.0f);
-        iFlora = interactive.addClip(null, null, 0, vaseVMax, eam.getFrameDimensions().width, elementsVMax, 1.0f);
-
-        //call vase throb
-        iVaseThrob();
-
-    }
-
-    public void iVaseThrob() {
-        //logger.info("iVASE THROB STARTED");
-
-        float iVaseMin = 0.4f;
-        float iVaseMax = 0.6f;
-        Clip black = iVase.addClip(null, Color.getHSBColor(.0f, .0f, .0f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 1.0f);
-        Clip vaseBlue = iVase.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, iVaseMin);
-
-        Sequence slowPulseOut = new Sequence();
-        slowPulseOut.hueBy(0.05f).duration(throbPeriod);
-        slowPulseOut.alphaTo(iVaseMin).duration(throbPeriod);
-
-        Sequence slowPulseIn = new Sequence();
-        slowPulseIn.hueBy(-0.05f).duration(throbPeriod);
-        slowPulseIn.alphaTo(iVaseMax).duration(throbPeriod);
-
-        vaseBlue.queue(slowPulseIn).queue(slowPulseOut).announce(Message.IVASE_THROB).pause(500).deleteWhenDone();    
-    }
-
-
-    /** Bigger shows ****************************/
-
 
     public void comboCobrasOrange(){
         //ssm.playGroupRandom("7");
@@ -709,7 +741,10 @@ public class ClipPlayer implements AnimationListener {
         sweep.xTo(eam.getFrameDimensions().width + width).duration(duration);
         sweep.hueBy(0.2f);
 
-        c1.queue(sweep).fadeOut(500).deleteWhenDone();    
+        Sequence reset = new Sequence();
+        reset.xTo(-width).hueBy(-0.2f).duration(0);
+
+        c1.queue(sweep).queue(reset).queue(sweep).fadeOut(500).deleteWhenDone();    
     }
 
     public void fadeOrangeSlow(){
