@@ -60,7 +60,7 @@ public class EIOManager implements Shutdownable, Runnable {
         allInputChannels = new ArrayList<InputChannel>();
         allInputChannels.addAll(realChannels);
         allInputChannels.addAll(virtualChannels);
-        System.out.println(allInputChannels);
+
         this.devices = deviceMap.values();
     }
 
@@ -146,7 +146,6 @@ public class EIOManager implements Shutdownable, Runnable {
             Device device   = devices.get(deviceId);
 
             InputChannel ic = device.patch(params);
-            System.out.println(ic);
             ic.id           = name;
 
             // location
