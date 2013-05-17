@@ -39,6 +39,8 @@ public class ClipPlayer implements AnimationListener {
     int chordIndexMax;
     long chordDur;
 
+    private enum Message {SCREENSAVER, VASE_THROB, COBRA_THROB, LEAVES, SPARKLE}
+
     private int detOffset = 2;
 
     public ClipPlayer(Animation eam, SimpleSoundManager ssm, ELUManager elu, ElectrolandProperties props){
@@ -164,16 +166,26 @@ public class ClipPlayer implements AnimationListener {
      */
     @Override
     public void messageReceived(Object message) {
-        if (message == screensaver){
-            // this is where you choose the next screensaver or keep the current
-            // one cycling.
-            screensaverMultiClouds();
-        } else if ("vaseThrob".equals(message)){
-            constantBlueVaseThrob();
-        } else if ("cobraThrob".equals(message)){
-            cobraThrob();
-        } else if ("leaves".equals(message)){
-            greenLeaves();
+
+        if (message instanceof Message){
+
+            switch((Message)message){
+            case SCREENSAVER:
+                screensaverMultiClouds();
+                break;
+            case VASE_THROB:
+                constantBlueVaseThrob();
+                break;
+            case COBRA_THROB:
+                cobraThrob();
+                break;
+            case LEAVES:
+                greenLeaves();
+                break;
+            case SPARKLE:
+                // start over the sparkle screensaver
+                break;
+            }
         }
     }
 
@@ -229,7 +241,7 @@ public class ClipPlayer implements AnimationListener {
         screensaverMultiClouds();
         cobraThrob();
         greenLeaves();
-
+        sparkle();
     }
     
     public void ssFloraRandomizer() {
@@ -240,8 +252,31 @@ public class ClipPlayer implements AnimationListener {
         //have the dummy change announce "throbFlora" on end
         //call this method again
     }
-    
-    public void ssFloraRand(Fixture fixture, int pause){        
+
+    public void sparkle(){
+
+        int delay = 0;
+        ArrayList<Clip> clips = new ArrayList<Clip>();
+        Clip last = null;
+
+        for (Fixture f : elu.getFixtures()){
+            if (f.getName().toLowerCase().startsWith("f") || f.getName().toLowerCase().startsWith("b")){
+                last = sparklet(f, delay += this.throbPeriod);
+                clips.add(last);
+            }
+        }
+        for (Clip c : clips){
+            if (c == last){
+                c.announce(Message.SPARKLE).deleteWhenDone();
+            }else{
+                c.deleteWhenDone();
+            }
+        }
+    }
+
+    public Clip sparklet(Fixture fixture, int pause){
+        
+        logger.info("start sparkle on " + fixture.getName() + " with pause of " + pause);
         /* ranges
          * 0-0.2
          * .77-1.0
@@ -258,7 +293,9 @@ public class ClipPlayer implements AnimationListener {
         huechange.duration(throbPeriod);
         huechange.alphaTo(0.0f);
         
-        f.pause(pause).fadeIn(throbPeriod).pause(holdPeriod).queue(huechange).announce("floraThrob").deleteWhenDone();
+        f.pause(pause).fadeIn(throbPeriod).pause(holdPeriod).queue(huechange);
+
+        return f;
     }
     
     private void greenLeaves() {
@@ -275,7 +312,7 @@ public class ClipPlayer implements AnimationListener {
         //sweep.yTo(eam.getFrameDimensions().height).duration(duration);
         sweep.xTo(leavesWidth).duration(duration);
         
-        leafGreen.queue(sweep).announce("leaves").fadeOut(2000).deleteWhenDone();
+        leafGreen.queue(sweep).announce(Message.LEAVES).fadeOut(2000).deleteWhenDone();
     }
 
     public void screensaverMultiClouds(){
@@ -296,7 +333,7 @@ public class ClipPlayer implements AnimationListener {
         sweep.alphaTo(1.0f).duration(fadeInTime).newState();
         sweep.yTo(0).duration(duration-fadeInTime);
         
-        clouds.queue(sweep).announce(screensaver).fadeOut(fadeInTime*2).deleteWhenDone();
+        clouds.queue(sweep).announce(Message.SCREENSAVER).fadeOut(fadeInTime*2).deleteWhenDone();
     }
 
 
@@ -313,7 +350,7 @@ public class ClipPlayer implements AnimationListener {
         slowPulseIn.hueBy(-0.05f).duration(throbPeriod/2);
         slowPulseIn.alphaTo(ssVaseThrobMax).duration(throbPeriod/2);
 
-        vaseBlue.queue(slowPulseIn).queue(slowPulseOut).announce("vaseThrob").pause(500).deleteWhenDone();    
+        vaseBlue.queue(slowPulseIn).queue(slowPulseOut).announce(Message.VASE_THROB).pause(500).deleteWhenDone();    
     }
 
 
@@ -373,7 +410,7 @@ public class ClipPlayer implements AnimationListener {
         slowPulseOut.hueBy(0.05f).duration(throbPeriod);
         slowPulseOut.alphaTo(0.0f).duration(throbPeriod);
 
-        cobraBlue.queue(slowPulseIn).pause(holdPeriod).queue(slowPulseOut).announce("cobraThrob").deleteWhenDone();
+        cobraBlue.queue(slowPulseIn).pause(holdPeriod).queue(slowPulseOut).announce(Message.COBRA_THROB).deleteWhenDone();
 
         if (cobraIndex < 2) {
             cobraIndex++;
