@@ -605,7 +605,7 @@ public class ClipPlayer implements AnimationListener {
 
 
     public void comboLeavesGreen(){
-        //ssm.playGroupRandom("7");
+        ssm.playGroupRandom("7");
 
         int duration = 5000;
         int width = 600;
@@ -684,7 +684,7 @@ public class ClipPlayer implements AnimationListener {
         // Point3d loc           = this.getFixture("f01").getLocation();
         // ReferenceDimension rd = this.getFixture("f01").getRealDimensions();
 
-        int duration = 5000;
+        int duration = 6000;
         int width = 600;
         Clip c1 = eam.addClip(eam.getContent("grad1200_one_org"), Color.getHSBColor(.4f, .99f, .99f), -width, 0, width, eam.getFrameDimensions().height, 1.0f);
         Clip c2 = eam.addClip(eam.getContent("grad1200_one_org"), Color.getHSBColor(.4f, .99f, .99f), -width, 0, width, eam.getFrameDimensions().height, 1.0f);
