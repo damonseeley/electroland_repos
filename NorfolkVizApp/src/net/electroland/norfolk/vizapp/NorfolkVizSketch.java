@@ -491,4 +491,9 @@ public class NorfolkVizSketch extends PApplet implements VizOSCListener, Shutdow
 	public void shutdown() {
 		client.stop();
 	}
+
+    @Override
+    public void remoteInvoked() {
+        // unused.
+    }
 }
