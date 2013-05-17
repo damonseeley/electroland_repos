@@ -3,7 +3,6 @@ package net.electroland.norfolk.core;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Collection;
@@ -197,7 +196,6 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
             for (Cue c : cues){
                 if (c.ready(meta) && !(c instanceof ChannelDriven)){
                     meta.addEvent(new CueEvent(c));
-                    meta.addCue(c);
                     c.fire(meta, clipPlayer);
                 }
             }
@@ -304,24 +302,20 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable{
         InputChannel channel = getChannel(evt.getChannelId());
 
         if (channel != null){
+
+            meta.addEvent(new SensorEvent(channel)); // record the event
+
             for (Cue c : cues){
-                // singlests and triplets
+                // singlests, triplets, train are "ChannelDriven". E.g., initiated by an InputChannel
                 if (c instanceof ChannelDriven && c.ready(meta)){
 
-                    if (c instanceof TrainCue){ // only correlate TrainCues to the train InputChannel
-                        if (evt.getChannelId().equals(trainChannelId)){
-                            meta.addEvent(new SensorEvent());
-                            meta.addCue(c);
+                    // only correlate TrainCues to the train InputChannel
+                    if ((c instanceof TrainCue && evt.getChannelId().equals(trainChannelId)) ||
+                        // or vice versa
+                        (!(c instanceof TrainCue)) && !evt.getChannelId().equals(trainChannelId)){
 
-                            ((ChannelDriven) c).fire(meta, clipPlayer, channel);
-                        }
-                    }else{
-                        if (!evt.getChannelId().equals(trainChannelId)){ // and vice versa
-                            meta.addEvent(new SensorEvent());
-                            meta.addCue(c);
-
-                            ((ChannelDriven) c).fire(meta, clipPlayer, channel);
-                        }
+                        meta.addEvent(new CueEvent(c)); // record the cue event
+                        ((ChannelDriven) c).fire(meta, clipPlayer, channel); // and fire it
                     }
                 }
             }

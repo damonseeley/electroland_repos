@@ -29,7 +29,7 @@ public class TrainCue extends Cue implements ChannelDriven {
 
     @Override
     public boolean ready(EventMetaData meta) {
-        boolean isNotTimedOut = System.currentTimeMillis() - meta.getTimeOfLastCue(this) > timeout;
+        boolean isNotTimedOut = meta.getTimeSinceLastCue(this) > timeout;
         return isNotTimedOut;
     }
 }
