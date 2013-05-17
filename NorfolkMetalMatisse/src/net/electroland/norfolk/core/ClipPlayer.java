@@ -187,9 +187,9 @@ public class ClipPlayer implements AnimationListener {
     private int elementsVMax = 179;
     private int cobrasVMin = 180;
     private int cobrasVMax = 200;
-    private int leavesX = 20; //not right
-    private int leavesY = 20;
-    private int leavesWidth = 20;
+    private int leavesX = 130; //not right
+    private int leavesY = 28;
+    private int leavesWidth = 45;
     private int leavesHeight = 20;
 
     private void initScreensaver() {
@@ -198,11 +198,13 @@ public class ClipPlayer implements AnimationListener {
         ssVase = screensaver.addClip(null, null, 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 1.0f);
         ssFlora = screensaver.addClip(null, null, 0, vaseVMax, eam.getFrameDimensions().width, elementsVMax-vaseVMax, 1.0f);
         ssCobras = screensaver.addClip(null, null, 0, elementsVMax, eam.getFrameDimensions().width, cobrasVMax-elementsVMax, 1.0f);
+        ssLeaves = screensaver.addClip(null, null, leavesX, leavesY, leavesWidth, leavesHeight, 1.0f);
 
         //TESTS for regions
         //ssVase.addClip(null, Color.getHSBColor(.0f, 1.0f, 1.0f), 0, 0, eam.getFrameDimensions().width, vaseVMax, 1.0f);
         //ssFlora.addClip(null, Color.getHSBColor(.3f, 1.0f, 1.0f), 0, 0, eam.getFrameDimensions().width, elementsVMax, 1.0f);
         //ssCobras.addClip(null, Color.getHSBColor(.6f, 1.0f, 1.0f), 0, 0, eam.getFrameDimensions().width, cobrasVMax, 1.0f);
+        ssLeaves.addClip(null, Color.getHSBColor(.33f, 1.0f, 1.0f), 0, 0, leavesWidth, leavesHeight, 0.5f);
 
         //init
         setupCobras();
