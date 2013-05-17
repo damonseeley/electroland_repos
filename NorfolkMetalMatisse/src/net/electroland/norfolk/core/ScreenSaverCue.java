@@ -34,7 +34,7 @@ public class ScreenSaverCue extends Cue {
     @Override
     public boolean ready(EventMetaData meta) {
 
-        boolean everythingInactive = System.currentTimeMillis() - meta.getTimeOfLastNonScreenSaverCue() > timeout;
+        boolean everythingInactive = meta.getTimeSinceLastCueExcluding(this) > timeout;
 
         if (everythingInactive && !isSaving){
             isSaving = true;

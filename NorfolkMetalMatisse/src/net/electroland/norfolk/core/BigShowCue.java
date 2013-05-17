@@ -23,6 +23,6 @@ public class BigShowCue extends Cue {
 
     @Override
     public boolean ready(EventMetaData meta) {
-        return System.currentTimeMillis() - meta.getTimeOfLastNonScreenSaverCue() > waitMillis;
+        return meta.getTimeSinceLastCue(this) > waitMillis;
     }
 }
