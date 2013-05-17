@@ -22,7 +22,7 @@ public class VizOSCReceiver implements OSCListener {
     private Collection<VizOSCListener>listeners = new ArrayList<VizOSCListener>();
 
     public void load(ElectrolandProperties props){
-        this.port = props.getRequiredInt("settings", "osc", "port");
+        this.port = props.getRequiredInt("settings", "osc", "receiveport");
     }
     
     public void addListener(VizOSCListener l){

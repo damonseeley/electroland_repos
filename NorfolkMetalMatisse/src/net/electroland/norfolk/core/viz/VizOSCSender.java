@@ -31,7 +31,7 @@ public class VizOSCSender {
 
         this.isEnabled = props.getDefaultBoolean("settings", "osc", "enabled", true);
         if (isEnabled){
-            this.port = props.getRequiredInt("settings", "osc", "port");
+            this.port = props.getRequiredInt("settings", "osc", "sendport");
 
             try {
                 this.inetAddress = InetAddress.getByName(props.getRequired("settings", "osc", "inetAdress"));
