@@ -323,25 +323,19 @@ public class ClipPlayer implements AnimationListener {
 
 
 
-
-
-
-
     /** ACCENT SHOWS FOR TRIPLETS ETC ****************************/
 
-
+    private float sensorPulseMax= 0.8f;
+    private float sensorPulseMin= 0.0f;
+    
     public void pulseVaseOnSensor() {
-        Clip vasePulse = eam.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 0.0f);
+        Clip vasePulse = eam.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, sensorPulseMin);
 
         int dur = 200;
         Sequence pulseIn = new Sequence();
-        //pulseIn.hueBy(-0.1f).duration(dur);
-        pulseIn.alphaTo(0.6f).duration(dur);
-
+        pulseIn.alphaTo(sensorPulseMax).duration(dur);
         Sequence pulseOut = new Sequence();
-        //pulseOut.hueBy(0.1f).duration(dur*4);
-        pulseOut.alphaTo(0.0f).duration(dur*3);
-
+        pulseOut.alphaTo(sensorPulseMin).duration(dur*3);
 
         vasePulse.queue(pulseIn).queue(pulseOut).fadeOut(300).deleteWhenDone();    
     }
@@ -363,7 +357,6 @@ public class ClipPlayer implements AnimationListener {
         sweep.xTo(0).duration(duration);
 
         parent.queue(sweep).fadeOut(500).deleteWhenDone(); 
-
     }
 
 
