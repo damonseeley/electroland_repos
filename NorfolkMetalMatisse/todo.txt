@@ -1,2 +1,37 @@
 periodic cobra stuck
 no sound for all
+
+FRI LATE
+
+Sparkle fix movies
+More multi single graphics big shows
+
+Train show is fixable bradley
+Need 2 more combos
+Need 2 more big shows
+Sound to multi 
+New sounds
+Fix SS to snap off for feedback
+Black behind all big shows and combos
+Mem leak
+
+RadialBlueGreen3 has a dropout in the middle - needs black bg
+
+Ensure all COMBOS render on Flora clip only, not full eam
+Combo leavesGreen is lame.  Replace with pulsing green colors
+
+
+
+SAT AM NOTES CM BRADLEY
+
+pulsing twice as fast
+More light power
+Negative pulse on interaction?
+Or remove
+STATIC VASE IN INTERACTION
+PULSE COBRAS IN PERIODIC WAY
+
+
+Traffic counting 
+
+
