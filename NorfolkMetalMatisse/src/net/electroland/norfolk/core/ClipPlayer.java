@@ -836,9 +836,9 @@ public class ClipPlayer implements AnimationListener {
 
 
     public void radialOrange(){
-        ssm.playGroupRandom("6");
+        ssm.playGroupRandom("55");
 
-        int duration = 6000;
+        int duration = 3000;
         int width = 600;
         Clip c1 = eam.addClip(eam.getContent("grad1200_one_org"), Color.getHSBColor(.4f, .99f, .99f), -width, vaseVMax, width, eam.getFrameDimensions().height, 1.0f);
         Clip c2 = eam.addClip(eam.getContent("grad1200_one_org"), Color.getHSBColor(.4f, .99f, .99f), -width, vaseVMax, width, eam.getFrameDimensions().height, 1.0f);
