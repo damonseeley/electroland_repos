@@ -230,7 +230,7 @@ public class ClipPlayer implements AnimationListener {
     private float ssVaseThrobMin = 0.15f;
 
     //overall throb timing for ss elements
-    private int throbPeriod = 6000;
+    private int throbPeriod = 3000;
     private int holdPeriod = 700;
 
 
@@ -253,9 +253,9 @@ public class ClipPlayer implements AnimationListener {
         //start the constant clips
         ssVaseThrob();
         ssCobraThrob();
-        ssGreenLeaves();
-        //screensaverMultiClouds(); //OR
-        ssSparkle();
+        //ssGreenLeaves();
+        ssMultiClouds(); //OR
+        //ssSparkle();
     }
 
     public void ssSparkle(){
@@ -265,7 +265,9 @@ public class ClipPlayer implements AnimationListener {
         Clip last = null;
 
         for (Fixture f : elu.getFixtures()){
-            if (f.getName().toLowerCase().startsWith("f") || f.getName().toLowerCase().startsWith("b")){
+            if (f.getName().toLowerCase().startsWith("f") 
+                || (f.getName().toLowerCase().startsWith("b") 
+                		&& !f.getName().toLowerCase().startsWith("base"))){
                 last = sparklet(f, delay += this.throbPeriod);
                 clips.add(last);
             }
@@ -368,12 +370,12 @@ public class ClipPlayer implements AnimationListener {
         Clip vaseBlue = ssVase.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, ssVaseThrobMin);
 
         Sequence slowPulseOut = new Sequence();
-        slowPulseOut.hueBy(0.05f).duration(throbPeriod/2);
-        slowPulseOut.alphaTo(ssVaseThrobMin).duration(throbPeriod/2);
+        slowPulseOut.hueBy(0.05f).duration(throbPeriod);
+        slowPulseOut.alphaTo(ssVaseThrobMin).duration(throbPeriod);
 
         Sequence slowPulseIn = new Sequence();
-        slowPulseIn.hueBy(-0.05f).duration(throbPeriod/2);
-        slowPulseIn.alphaTo(ssVaseThrobMax).duration(throbPeriod/2);
+        slowPulseIn.hueBy(-0.05f).duration(throbPeriod);
+        slowPulseIn.alphaTo(ssVaseThrobMax).duration(throbPeriod);
 
         vaseBlue.queue(slowPulseIn).queue(slowPulseOut).announce(Message.SSVASE_THROB).pause(500).deleteWhenDone();    
     }
@@ -513,25 +515,29 @@ public class ClipPlayer implements AnimationListener {
         int halfWidth = eam.getFrameDimensions().width / 2;
         int halfHeight = eam.getFrameDimensions().height / 2;
         float alphaOn = 1.0f;
-        float alphaOff = .5f;
-        int p1 = 100;
-        int p2 = 175;
+        float alphaOff = .0f;
+        int p1 = 100/2;
+        int p2 = 175/2;
 
         // 630ms x 7
         ssm.playSound("trainbell");
         Color gold = Color.getHSBColor(1.15f, .96f, .98f);//new Color(249, 235, 11);
         Clip tl = eam.addClip(gold, 0, 0, halfWidth, halfHeight, alphaOn);
-        Clip tr = eam.addClip(gold, halfWidth, 0, halfWidth, halfHeight, alphaOff);
-        Clip bl = eam.addClip(gold, 0, halfHeight, halfWidth, halfHeight, alphaOff);
+        Clip tr = eam.addClip(gold, halfWidth, 0, halfWidth, halfHeight, alphaOn);
+        Clip bl = eam.addClip(gold, 0, halfHeight, halfWidth, halfHeight, alphaOn);
         Clip br = eam.addClip(gold, halfWidth, halfHeight, halfWidth, halfHeight, alphaOn);
 
         Sequence bing = new Sequence();
-        bing.alphaTo(alphaOff).pause(p1).alphaTo(alphaOn).pause(p2);
-        bing.alphaTo(alphaOff).pause(p1).alphaTo(alphaOn).pause(p2);
+        bing.brightnessTo(alphaOff).pause(p1).brightnessTo(alphaOn).pause(p2);
+        bing.brightnessTo(alphaOff).pause(p1).brightnessTo(alphaOn).pause(p2);
+        bing.brightnessTo(alphaOff).pause(p1).brightnessTo(alphaOn).pause(p2);
+        bing.brightnessTo(alphaOff).pause(p1).brightnessTo(alphaOn).pause(p2);
 
         Sequence bong = new Sequence();
-        bong.alphaTo(alphaOn).pause(p1).alphaTo(alphaOff).pause(p2);
-        bong.alphaTo(alphaOn).pause(p1).alphaTo(alphaOff).pause(p2);
+        bong.brightnessTo(alphaOn).pause(p1).brightnessTo(alphaOff).pause(p2);
+        bong.brightnessTo(alphaOn).pause(p1).brightnessTo(alphaOff).pause(p2);
+        bong.brightnessTo(alphaOn).pause(p1).brightnessTo(alphaOff).pause(p2);
+        bong.brightnessTo(alphaOn).pause(p1).brightnessTo(alphaOff).pause(p2);
 
         tl.queue(bing).queue(bong).queue(bing).queue(bong).queue(bing).queue(bong).queue(bing).fadeOut(500).deleteWhenDone();
         br.queue(bing).queue(bong).queue(bing).queue(bong).queue(bing).queue(bong).queue(bing).fadeOut(500).deleteWhenDone();
