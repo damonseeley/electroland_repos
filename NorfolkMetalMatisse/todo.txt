@@ -1,4 +1,2 @@
-# MatchFilter
-# integrate MatchFilter to PeopleIOWatcher
-# detect exit events
-# real interactions for site
+periodic cobra stuck
+no sound for all
