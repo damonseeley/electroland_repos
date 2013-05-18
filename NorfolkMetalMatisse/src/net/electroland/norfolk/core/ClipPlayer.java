@@ -169,7 +169,7 @@ public class ClipPlayer implements AnimationListener {
 
     public void exitScreensaverMode(int millis){
         logger.debug("exit screensaver.");
-        screensaver.fadeOut(millis);
+        screensaver.fadeOut(10);
     }
 
     /**
@@ -236,7 +236,7 @@ public class ClipPlayer implements AnimationListener {
 
     private void initScreensaver() {
 
-        ssVase = screensaver.addClip(null, null, 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 1.0f);
+        ssVase = screensaver.addClip(null, null, 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 1.0f);       
         ssFlora = screensaver.addClip(null, null, 0, vaseVMax, eam.getFrameDimensions().width, elementsVMax-vaseVMax, 1.0f);
         ssCobras = screensaver.addClip(null, null, 0, elementsVMax, eam.getFrameDimensions().width, cobrasVMax-elementsVMax, 1.0f);
         ssLeaves = screensaver.addClip(null, null, leavesX, leavesY, leavesWidth, leavesHeight, 1.0f);
@@ -253,7 +253,7 @@ public class ClipPlayer implements AnimationListener {
         //start the constant clips
         ssVaseThrob();
         ssCobraThrob();
-        //ssGreenLeaves();
+        ssGreenLeaves();
         ssMultiClouds(); //OR
         //ssSparkle();
     }
@@ -307,16 +307,18 @@ public class ClipPlayer implements AnimationListener {
 
     private void ssGreenLeaves() {
         int duration   = 30000;
+        int fadeoutDuration = 2000;
         int width     = 600;
         
+        //this is culled by change later
         Clip black = ssLeaves.addClip(null, Color.getHSBColor(.0f, .0f, .0f), 0, 0, leavesWidth, leavesHeight, 1.0f);
-
+        black.pause(duration + fadeoutDuration + 500).deleteWhenDone();
+        
         Clip leafPulse    = ssLeaves.addClip(null, 
                 null, 
                 0, 0, 
                 leavesWidth, leavesHeight, 
                 1.0f);
-        
 
         Clip leafGreen    = leafPulse.addClip(eam.getContent("gradient_600_greenyellow2"), 
                 null, 
@@ -328,7 +330,7 @@ public class ClipPlayer implements AnimationListener {
         //sweep.yTo(eam.getFrameDimensions().height).duration(duration);
         sweep.xTo(leavesWidth).duration(duration);
         
-        leafGreen.queue(sweep).announce(Message.LEAVES).fadeOut(2000).deleteWhenDone();
+        leafGreen.queue(sweep).announce(Message.LEAVES).fadeOut(fadeoutDuration).deleteWhenDone();
 
         Sequence slowPulseOut = new Sequence();
         slowPulseOut.alphaTo(0.2f).duration(throbPeriod);
@@ -365,8 +367,7 @@ public class ClipPlayer implements AnimationListener {
 
 
     public void ssVaseThrob() {
-        //logger.info("VASE THROB STARTED");
-        Clip black = ssVase.addClip(null, Color.getHSBColor(.0f, .0f, .0f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 1.0f);
+        Clip vaseBlack = ssVase.addClip(null, Color.getHSBColor(.0f, .0f, .0f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 1.0f);
         Clip vaseBlue = ssVase.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, ssVaseThrobMin);
 
         Sequence slowPulseOut = new Sequence();
@@ -377,6 +378,8 @@ public class ClipPlayer implements AnimationListener {
         slowPulseIn.hueBy(-0.05f).duration(throbPeriod);
         slowPulseIn.alphaTo(ssVaseThrobMax).duration(throbPeriod);
 
+        //delete the black background
+        vaseBlack.pause(throbPeriod*2).pause(1000).deleteWhenDone();
         vaseBlue.queue(slowPulseIn).queue(slowPulseOut).announce(Message.SSVASE_THROB).pause(500).deleteWhenDone();    
     }
 
@@ -481,6 +484,9 @@ public class ClipPlayer implements AnimationListener {
     public void initInteractive(){
         //add iVase
         iVase = interactive.addClip(null, null, 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 1.0f);
+        //this black is never re-created
+        Clip iVaseBlack = iVase.addClip(null, Color.getHSBColor(.0f, .0f, .0f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 1.0f);
+
         iFlora = interactive.addClip(null, null, 0, vaseVMax, eam.getFrameDimensions().width, elementsVMax, 1.0f);
 
         //call vase throb
@@ -489,11 +495,8 @@ public class ClipPlayer implements AnimationListener {
     }
 
     public void iVaseThrob() {
-        //logger.info("iVASE THROB STARTED");
-
         float iVaseMin = 0.4f;
         float iVaseMax = 0.6f;
-        Clip black = iVase.addClip(null, Color.getHSBColor(.0f, .0f, .0f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 1.0f);
         Clip vaseBlue = iVase.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, iVaseMin);
 
         Sequence slowPulseOut = new Sequence();
@@ -592,7 +595,7 @@ public class ClipPlayer implements AnimationListener {
         flash.alphaTo(0.0f).duration(250).newState();
         
 
-        // flash evens
+        // flash events
         for (Clip c : evenClips){
             c.queue(new Sequence().pause(enterDuration + 200));
             c.queue(flash).pause(400).queue(flash).queue(new Sequence().hueBy((float)Math.random()));
