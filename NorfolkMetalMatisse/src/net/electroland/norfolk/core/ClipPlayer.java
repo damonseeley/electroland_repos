@@ -47,7 +47,7 @@ public class ClipPlayer implements AnimationListener {
     float rippleMultiplier, rippleDBrightness, rippleFloor;
     int rippleHold, rippleFadein, rippleFadeout;
 
-    private enum Message {SCREENSAVER, IVASE_THROB, SSVASE_THROB, COBRA_THROB, LEAVES, SPARKLE}
+    private enum Message {SCREENSAVER, IVASE_THROB, SSVASE_THROB, COBRA_THROB, LEAVES, SPARKLE, COBRACLOUDS}
 
     //private int detOffset = 2;
 
@@ -231,6 +231,9 @@ public class ClipPlayer implements AnimationListener {
             case IVASE_THROB:
                 iVaseThrob();
                 break;
+            case COBRACLOUDS:
+                ssCobraClouds();
+                break;
             }
         }
     }
@@ -283,9 +286,10 @@ public class ClipPlayer implements AnimationListener {
 
         //start the constant clips
         ssVaseThrob();
-        ssCobraThrob();
+        //ssCobraThrob();
+        ssCobraClouds();
         ssGreenLeaves();
-        
+
         ssMultiClouds(); //OR
         //ssSparkle();
     }
@@ -413,6 +417,24 @@ public class ClipPlayer implements AnimationListener {
 
     private int cobraIndex = 0;
     HashMap<Integer,Point2d> cobraLocs = new HashMap<Integer, Point2d>();
+
+    public void ssCobraClouds(){
+        logger.info("COBRACLOUDS");
+        int duration   = 50000;
+        int width     = 800;
+
+        Clip clouds    = ssCobras.addClip(eam.getContent("clouds_800x200_blue"), 
+                null, 
+                -width, 0, 
+                width, cobrasVMax, 
+                1.0f);
+
+        Sequence sweep = new Sequence();
+        //sweep.yTo(eam.getFrameDimensions().height).duration(duration);
+        sweep.xTo(0).duration(duration);
+
+        clouds.queue(sweep).announce(Message.COBRACLOUDS).fadeOut(3000).deleteWhenDone();
+    }
 
     public void ssInitCobras() {
 
