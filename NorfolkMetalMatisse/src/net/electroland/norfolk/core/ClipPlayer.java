@@ -38,6 +38,7 @@ public class ClipPlayer implements AnimationListener {
     int chordIndex;
     int chordIndexMax;
     long chordDur;
+    int fadeOutMillis, fadeInMillis;
 
     private enum Message {SCREENSAVER, IVASE_THROB, SSVASE_THROB, COBRA_THROB, LEAVES, SPARKLE}
 
@@ -88,6 +89,9 @@ public class ClipPlayer implements AnimationListener {
         }
 
         globalClips = getGlobalClips(true);
+
+        fadeInMillis = props.getRequiredInt("cues", "screensaver", "fadein");
+        fadeOutMillis = props.getRequiredInt("cues", "screensaver", "fadeout");
     }
 
 
@@ -167,9 +171,19 @@ public class ClipPlayer implements AnimationListener {
         screensaver.fadeIn(millis);
     }
 
+    public void enterScreensaverMode(){
+        logger.debug("force enter screensaver in " + fadeInMillis);
+        screensaver.fadeIn(fadeInMillis);
+    }
+    
     public void exitScreensaverMode(int millis){
         logger.debug("exit screensaver in " + millis);
         screensaver.fadeOut(millis);
+    }
+
+    public void exitScreensaverMode(){
+        logger.debug("exit screensaver in " + fadeOutMillis);
+        screensaver.fadeOut(fadeOutMillis);
     }
 
     /**
