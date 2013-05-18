@@ -39,8 +39,13 @@ public class ClipPlayer implements AnimationListener {
     int chordIndex;
     int chordIndexMax;
     long chordDur;
-    int fadeOutMillis, fadeInMillis;
-    float rippleMultiplier;
+
+    // screensaver
+    int screensaverFadeOutMillis, screensaverFadeInMillis;
+
+    // ripple
+    float rippleMultiplier, rippleDBrightness;
+    int rippleHold, rippleFadein, rippleFadeout;
 
     private enum Message {SCREENSAVER, IVASE_THROB, SSVASE_THROB, COBRA_THROB, LEAVES, SPARKLE}
 
@@ -92,10 +97,16 @@ public class ClipPlayer implements AnimationListener {
 
         globalClips = getGlobalClips(true);
 
-        fadeInMillis = props.getRequiredInt("cues", "screensaver", "fadein");
-        fadeOutMillis = props.getRequiredInt("cues", "screensaver", "fadeout");
+        // screensaver
+        screensaverFadeInMillis        = props.getRequiredInt("cues", "screensaver", "fadein");
+        screensaverFadeOutMillis       = props.getRequiredInt("cues", "screensaver", "fadeout");
 
-        rippleMultiplier = props.getRequiredDouble("cues", "ripple", "rippleMultiplier").floatValue();
+        // ripple
+        rippleMultiplier    = props.getRequiredDouble("cues", "ripple", "rippleMultiplier").floatValue();
+        rippleHold                = props.getRequiredInt("cues", "ripple", "hold");
+        rippleFadein              = props.getRequiredInt("cues", "ripple", "fadein");
+        rippleFadeout             = props.getRequiredInt("cues", "ripple", "fadeout");
+        rippleDBrightness         = props.getRequiredDouble("cues", "ripple", "dbrightness").floatValue();
     }
 
 
@@ -177,8 +188,8 @@ public class ClipPlayer implements AnimationListener {
     }
 
     public void enterScreensaverMode(){
-        logger.debug("force enter screensaver in " + fadeInMillis);
-        screensaver.fadeIn(fadeInMillis);
+        logger.debug("force enter screensaver in " + screensaverFadeInMillis);
+        screensaver.fadeIn(screensaverFadeInMillis);
     }
     
     public void exitScreensaverMode(int millis){
@@ -187,8 +198,8 @@ public class ClipPlayer implements AnimationListener {
     }
 
     public void exitScreensaverMode(){
-        logger.debug("exit screensaver in " + fadeOutMillis);
-        screensaver.fadeOut(fadeOutMillis);
+        logger.debug("exit screensaver in " + screensaverFadeOutMillis);
+        screensaver.fadeOut(screensaverFadeOutMillis);
     }
 
     /**
@@ -905,17 +916,17 @@ public class ClipPlayer implements AnimationListener {
         Point3d center = tripped.getLocation();
         Color color = randomHue(0.7f, 0.5f, 1.0f, 1.0f);
 
-        scheduleRipplet(tripped, color, 0, 100, throbPeriod);
+        scheduleRipplet(tripped, color, 0, 100, rippleHold, rippleFadeout, 1.0f);
 
         for (Fixture fixture : elu.getFixtures()){
             if (isFlora(fixture) && fixture != tripped){
                 double dist = center.distance(fixture.getLocation());
-                scheduleRipplet(fixture, color, (int)(dist * rippleMultiplier), throbPeriod, throbPeriod);
+                scheduleRipplet(fixture, color, (int)(dist * rippleMultiplier), rippleFadein, rippleHold, rippleFadeout, (float)(rippleDBrightness * dist));
             }
         }
     }
 
-    public void scheduleRipplet(Fixture fixture, Color color, int pause, int fadeIn, int fadeOut){
+    public void scheduleRipplet(Fixture fixture, Color color, int pause, int fadeIn, int hold, int fadeOut, float brightness){
 
         logger.debug("start ripple on " + fixture.getName() + " with pause of " + pause);
 
@@ -923,8 +934,10 @@ public class ClipPlayer implements AnimationListener {
                              (int)fixture.getLocation().x - 4,
                              (int)fixture.getLocation().y - 4, 10, 10, 0.0f);
 
-        // TODO: reduce brightness as a function of distance
-        f.pause(pause).fadeIn(fadeIn).pause(holdPeriod).fadeOut(fadeOut).deleteWhenDone();
+        Sequence reduceBrightness = new Sequence();
+        reduceBrightness.brightnessBy(brightness > .2f ? brightness : .2f);
+
+        f.queue(reduceBrightness).pause(pause).fadeIn(fadeIn).pause(hold).fadeOut(fadeOut).deleteWhenDone();
     }
 
     private boolean isFlora(Fixture fixture){
