@@ -1,6 +1,3 @@
-periodic cobra stuck
-no sound for all
-
 FRI LATE
 
 Sparkle fix movies
@@ -14,19 +11,15 @@ Black behind all big shows and combos
 Remove vibraphone arpeggios from bigshows, too confusing
 
 RadialBlueGreen3 has a dropout in the middle - needs black bg
-
 Ensure all COMBOS render on Flora clip only, not full eam
-
 Combo leavesGreen is lame.  Replace with pulsing green colors
 
 
 SAT AM NOTES CM BRADLEY
 
-pulsing twice as fast
-More light power
-Negative pulse on interaction?
-Or remove
-STATIC VASE IN INTERACTION
-PULSE COBRAS IN PERIODIC WAY
+pulsing twice as fast //done
+More light power //
+STATIC VASE IN INTERACTION //done
+PULSE COBRAS IN PERIODIC WAY //
 Ripple effect out from Flora interactive hits
 
