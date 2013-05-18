@@ -25,6 +25,7 @@ public class EventMetaData {
         p.put("tripinterval", "3000");
         p.put("timeout", "3000");
         p.put("cues", "a,b");
+        p.put("clipName", "foo");
         ComboCue t = new ComboCue(p);
         SingletCue s = new SingletCue(p);
         TimedCue   x = new TimedCue(p);
@@ -40,7 +41,7 @@ public class EventMetaData {
         System.out.println(meta.totalCueEventsOverLast(1500));      // 1
         System.out.println(meta.totalEventsPastOverLast(2500));     // 3
         System.out.println(meta.totalSensorsEventsOverLast(2500));  // 1
-        System.out.println(meta.totalSensorsEventsOverLastExcluding(2500,"Train"));  // 1
+        System.out.println(meta.totalSensorsEventsOverLastExcluding(2500,"Train"));  // 0
 
         System.out.println(meta.getTimeSinceLastCue(t));            // ~2000
         System.out.println(meta.getTimeSinceLastCue(s));            // ~1000
@@ -85,7 +86,7 @@ public class EventMetaData {
             if (current - evt.eventTime < millis &&
                 evt instanceof SensorEvent &&
                 ((SensorEvent)evt).sourceInputChannel != null &&
-                ((SensorEvent)evt).sourceInputChannel.getId().equals(channelName)) { // exclude by channel name
+                !((SensorEvent)evt).sourceInputChannel.getId().equals(channelName)) { // exclude by channel name
                     total++;
             }
         }
