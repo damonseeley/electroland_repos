@@ -226,8 +226,8 @@ public class ClipPlayer implements AnimationListener {
     private int leavesHeight = 20;
 
     // alpha min max
-    private float ssVaseThrobMax = 0.9f;
-    private float ssVaseThrobMin = 0.2f;
+    private float ssVaseThrobMax = 1.0f;
+    private float ssVaseThrobMin = 0.25f;
 
     //overall throb timing for ss elements
     private int throbPeriod = 2000;
