@@ -581,8 +581,9 @@ public class ClipPlayer implements AnimationListener {
         int halfHeight = eam.getFrameDimensions().height / 2;
         float on = 1.0f;
         float off = .5f;
-        int p1 = 650/4;
-        int p2 = 650/4;
+        int pause = 500;
+        int p1 = pause/2;
+        int p2 = pause/2;
 
         // 630ms x 7
         ssm.playSound("trainbell");
@@ -599,14 +600,8 @@ public class ClipPlayer implements AnimationListener {
         bing.brightnessTo(on).pause(p1).newState().brightnessTo(off).pause(p2).newState();
         bing.brightnessTo(on).pause(p1).newState().brightnessTo(off).pause(p2).newState();
         bing.brightnessTo(on).pause(p1).newState().brightnessTo(off).pause(p2).newState();
-        bing.brightnessTo(on).pause(p1).newState().brightnessTo(off).pause(p2).newState();
-        bing.brightnessTo(on).pause(p1).newState().brightnessTo(off).pause(p2).newState();
-        bing.brightnessTo(on).pause(p1).newState().brightnessTo(off).pause(p2).newState();
 
         Sequence bong = new Sequence();
-        bong.brightnessTo(off).pause(p1).newState().brightnessTo(on).pause(p2).newState();
-        bong.brightnessTo(off).pause(p1).newState().brightnessTo(on).pause(p2).newState();
-        bong.brightnessTo(off).pause(p1).newState().brightnessTo(on).pause(p2).newState();
         bong.brightnessTo(off).pause(p1).newState().brightnessTo(on).pause(p2).newState();
         bong.brightnessTo(off).pause(p1).newState().brightnessTo(on).pause(p2).newState();
         bong.brightnessTo(off).pause(p1).newState().brightnessTo(on).pause(p2).newState();
@@ -737,8 +732,7 @@ public class ClipPlayer implements AnimationListener {
     }
 
     public void comboTulipsBlueCyan(){
-        //ssm.playGroupRandom("7");
-        ssm.playSound("ViolinStaccatoArp01");
+        ssm.playGroupRandom("9");
 
 
         int duration = 4000;
@@ -759,7 +753,7 @@ public class ClipPlayer implements AnimationListener {
     }
     
     public void allElementMulti() {
-        //ssm.playGroupRandom("9");
+        ssm.playGroupRandom("6");
         
         Clip c1 = eam.addClip(eam.getContent("allelements_multi"), Color.getHSBColor(.0f, .99f, .0f), 0, 0, eam.getFrameDimensions().width, eam.getFrameDimensions().height, 1.0f);
 
@@ -771,8 +765,7 @@ public class ClipPlayer implements AnimationListener {
 
 
     public void vertWavesRedMag(){
-        ssm.playGroupRandom("9");
-        //ssm.playGroupRandom("6");
+        ssm.playGroupRandom("6");
         
         //need black in here
         Clip black = eam.addClip(null, Color.getHSBColor(.0f, .99f, .0f), 0, vaseVMax, eam.getFrameDimensions().width, eam.getFrameDimensions().height-vaseVMax, 1.0f);
@@ -795,11 +788,7 @@ public class ClipPlayer implements AnimationListener {
 
 
     public void radialOrange(){
-        //ssm.playSound("002");
         ssm.playGroupRandom("6");
-        // get location of fixture f01.
-        // Point3d loc           = this.getFixture("f01").getLocation();
-        // ReferenceDimension rd = this.getFixture("f01").getRealDimensions();
 
         int duration = 6000;
         int width = 600;
@@ -816,7 +805,7 @@ public class ClipPlayer implements AnimationListener {
     }
 
     public void radialRedMag(){
-        ssm.playGroupRandom("6");
+        ssm.playGroupRandom("9");
 
         int duration = 3000;
         int width = 600;
