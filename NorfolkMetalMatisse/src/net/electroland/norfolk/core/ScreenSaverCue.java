@@ -4,7 +4,7 @@ import net.electroland.utils.ParameterMap;
 
 public class ScreenSaverCue extends Cue {
 
-    private boolean isSaving = false;
+    private boolean isSaving = false, firstRun = true;
     private int timeout, fadeout, fadein;
     private Cue[] exceptions;
 
@@ -27,17 +27,26 @@ public class ScreenSaverCue extends Cue {
     @Override
     public boolean ready(EventMetaData meta) {
 
-        boolean everythingInactive = meta.getTimeSinceLastCueExcluding(exceptions) > timeout;
+        if (firstRun){
 
-        if (everythingInactive && !isSaving){
+            firstRun = false;
             isSaving = true;
             return true;
-        }else if (!everythingInactive && isSaving){
-            isSaving = false;
-            return true;
+
         }else{
-            return false;
+            boolean everythingInactive = meta.getTimeSinceLastCueExcluding(exceptions) > timeout;
+
+            if (everythingInactive && !isSaving){
+                isSaving = true;
+                return true;
+            }else if (!everythingInactive && isSaving){
+                isSaving = false;
+                return true;
+            }else{
+                return false;
+            }
         }
+
     }
 
     public void setExceptions(Cue... exceptions){
