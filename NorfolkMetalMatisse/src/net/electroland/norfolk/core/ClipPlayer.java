@@ -11,6 +11,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.vecmath.Point2d;
+import javax.vecmath.Point3d;
 
 import net.electroland.ea.Animation;
 import net.electroland.ea.AnimationListener;
@@ -39,6 +40,7 @@ public class ClipPlayer implements AnimationListener {
     int chordIndexMax;
     long chordDur;
     int fadeOutMillis, fadeInMillis;
+    float rippleMultiplier;
 
     private enum Message {SCREENSAVER, IVASE_THROB, SSVASE_THROB, COBRA_THROB, LEAVES, SPARKLE}
 
@@ -92,6 +94,8 @@ public class ClipPlayer implements AnimationListener {
 
         fadeInMillis = props.getRequiredInt("cues", "screensaver", "fadein");
         fadeOutMillis = props.getRequiredInt("cues", "screensaver", "fadeout");
+
+        rippleMultiplier = props.getRequiredDouble("cues", "ripple", "rippleMultiplier").floatValue();
     }
 
 
@@ -125,6 +129,7 @@ public class ClipPlayer implements AnimationListener {
                 } catch (IllegalAccessException e) {
                     logger.warn(e);
                 } catch (InvocationTargetException e) {
+                    e.printStackTrace();
                     logger.warn(e);
                 }
             }
@@ -298,15 +303,9 @@ public class ClipPlayer implements AnimationListener {
 
     public Clip sparklet(Fixture fixture, int pause){
 
-        logger.info("start sparkle on " + fixture.getName() + " with pause of " + pause);
-        /* ranges
-         * 0-0.2
-         * .77-1.0
-         */
-        float hueMin = 0.7f;
-        float hueDelta = 0.5f;
-        float randHue = hueMin + (float)((Math.random() * hueDelta));
-        Clip f = eam.addClip(null, Color.getHSBColor(randHue, .99f, .99f),(int)fixture.getLocation().x - 4,(int)fixture.getLocation().y - 4, 10, 10, 0.0f);
+        logger.trace("start sparkle on " + fixture.getName() + " with pause of " + pause);
+
+        Clip f = eam.addClip(null, randomHue(0.7f, 0.5f, .99f, .99f),(int)fixture.getLocation().x - 4,(int)fixture.getLocation().y - 4, 10, 10, 0.0f);
 
         Sequence huechange = new Sequence();
         float hueChangeRange = 0.25f;
@@ -896,9 +895,51 @@ public class ClipPlayer implements AnimationListener {
         huechange.alphaTo(0.5f);
         c.queue(huechange).fadeOut(1000).deleteWhenDone();
     }
+
+    public void testRipple(){
+        floraRandRipple(this.getFixture("f03"));
+    }
+
+    public void floraRandRipple(Fixture tripped){
+
+        Point3d center = tripped.getLocation();
+        Color color = randomHue(0.7f, 0.5f, 1.0f, 1.0f);
+
+        scheduleRipplet(tripped, color, 0, 100, throbPeriod);
+
+        for (Fixture fixture : elu.getFixtures()){
+            if (isFlora(fixture) && fixture != tripped){
+                double dist = center.distance(fixture.getLocation());
+                scheduleRipplet(fixture, color, (int)(dist * rippleMultiplier), throbPeriod, throbPeriod);
+            }
+        }
+    }
+
+    public void scheduleRipplet(Fixture fixture, Color color, int pause, int fadeIn, int fadeOut){
+
+        logger.debug("start ripple on " + fixture.getName() + " with pause of " + pause);
+
+        Clip f = eam.addClip(null, color,
+                             (int)fixture.getLocation().x - 4,
+                             (int)fixture.getLocation().y - 4, 10, 10, 0.0f);
+
+        // TODO: reduce brightness as a function of distance
+        f.pause(pause).fadeIn(fadeIn).pause(holdPeriod).fadeOut(fadeOut).deleteWhenDone();
+    }
+
+    private boolean isFlora(Fixture fixture){
+        // TODO: real test: spec the flora fixture ID list in norfolk.properties.
+        return fixture.getName().toLowerCase().startsWith("f") ||
+               (fixture.getName().toLowerCase().startsWith("b") &&
+                !fixture.getName().toLowerCase().startsWith("base"));
+    }
+
+    private static Color randomHue(float hueMin, float hueDelta, float brightness, float saturation){
+        float randHue = hueMin + (float)((Math.random() * hueDelta));
+        return Color.getHSBColor(randHue, brightness, brightness);
+    }
     
-    
-/*
+    /*
     public void redRandBlur(Fixture fixture){
 
         randomVibraSound();
