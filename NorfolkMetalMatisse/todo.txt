@@ -23,3 +23,8 @@ STATIC VASE IN INTERACTION //done
 PULSE COBRAS IN PERIODIC WAY //
 Ripple effect out from Flora interactive hits // done
 
+
+
+tweak combos for new sensitive sensor filter
+
+
