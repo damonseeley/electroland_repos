@@ -21,5 +21,5 @@ pulsing twice as fast //done
 More light power //
 STATIC VASE IN INTERACTION //done
 PULSE COBRAS IN PERIODIC WAY //
-Ripple effect out from Flora interactive hits
+Ripple effect out from Flora interactive hits // done
 
