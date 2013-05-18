@@ -5,21 +5,19 @@ FRI LATE
 
 Sparkle fix movies
 More multi single graphics big shows
-
-Train show is fixable bradley
+Train show yellow and white
 Need 2 more combos
 Need 2 more big shows
-Sound to multi 
+Add sound to multi show
 New sounds
-Fix SS to snap off for feedback
 Black behind all big shows and combos
-Mem leak
+Remove vibraphone arpeggios from bigshows, too confusing
 
 RadialBlueGreen3 has a dropout in the middle - needs black bg
 
 Ensure all COMBOS render on Flora clip only, not full eam
-Combo leavesGreen is lame.  Replace with pulsing green colors
 
+Combo leavesGreen is lame.  Replace with pulsing green colors
 
 
 SAT AM NOTES CM BRADLEY
@@ -30,8 +28,5 @@ Negative pulse on interaction?
 Or remove
 STATIC VASE IN INTERACTION
 PULSE COBRAS IN PERIODIC WAY
-
-
-Traffic counting 
-
+Ripple effect out from Flora interactive hits
 
