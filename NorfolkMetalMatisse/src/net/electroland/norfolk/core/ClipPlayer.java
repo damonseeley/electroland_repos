@@ -478,7 +478,7 @@ public class ClipPlayer implements AnimationListener {
     private float sensorPulseMin= 0.0f;
 
     public void iPulseVaseSensor() {
-        Clip vasePulse = eam.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, sensorPulseMin);
+        Clip vasePulse = interactive.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, sensorPulseMin);
 
         int dur = 150;
         Sequence pulseIn = new Sequence();
@@ -492,7 +492,7 @@ public class ClipPlayer implements AnimationListener {
     public void iPulseCobrasSensor() {
         
         //modify to 
-        Clip cobrasPulse = eam.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, cobrasVMin, eam.getFrameDimensions().width, elementsVMax, sensorPulseMin);
+        Clip cobrasPulse = interactive.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, cobrasVMin, eam.getFrameDimensions().width, elementsVMax, sensorPulseMin);
 
         int dur = 150;
         Sequence pulseIn = new Sequence();
