@@ -628,7 +628,7 @@ public class ClipPlayer implements AnimationListener {
         int halfWidth = eam.getFrameDimensions().width / 2;
         int halfHeight = eam.getFrameDimensions().height / 2;
         float on = 1.0f;
-        float off = .5f;
+        float off = .0f;
         int pause = 500;
         int p1 = pause/2;
         int p2 = pause/2;
