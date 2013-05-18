@@ -163,13 +163,13 @@ public class ClipPlayer implements AnimationListener {
     /** SCREENSAVER LOGIC ****************************/
 
     public void enterScreensaverMode(int millis){
-        logger.debug("enter screensaver");
+        logger.debug("enter screensaver in " + millis);
         screensaver.fadeIn(millis);
     }
 
     public void exitScreensaverMode(int millis){
-        logger.debug("exit screensaver.");
-        screensaver.fadeOut(10);
+        logger.debug("exit screensaver in " + millis);
+        screensaver.fadeOut(millis);
     }
 
     /**
