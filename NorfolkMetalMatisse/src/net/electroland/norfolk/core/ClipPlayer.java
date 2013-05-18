@@ -42,7 +42,7 @@ public class ClipPlayer implements AnimationListener {
 
     private enum Message {SCREENSAVER, IVASE_THROB, SSVASE_THROB, COBRA_THROB, LEAVES, SPARKLE}
 
-    private int detOffset = 2;
+    //private int detOffset = 2;
 
     public ClipPlayer(Animation eam, SimpleSoundManager ssm, ELUManager elu, ElectrolandProperties props){
 
