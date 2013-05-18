@@ -870,7 +870,7 @@ public class ClipPlayer implements AnimationListener {
     }
 
     public void fadeOrangeSlow(){
-        ssm.playSound("Timpani_C2");
+        ssm.playGroupRandom("55");
 
         int duration = 8000;
         int width = 600;
@@ -897,7 +897,7 @@ public class ClipPlayer implements AnimationListener {
     }
 
     public void radialBlueGreen3(){
-        ssm.playGroupRandom("6");
+        ssm.playGroupRandom("10");
 
         int duration = 6000;
         int width = 600;
