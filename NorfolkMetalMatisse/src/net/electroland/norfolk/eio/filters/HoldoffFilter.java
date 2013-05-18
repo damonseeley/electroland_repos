@@ -35,6 +35,9 @@ public class HoldoffFilter implements Filter {
     private double counter, holdoffLenMs, currHoldoffLenMs;
     private double maxHoldoffCounter, maxHoldoffLenMs, currMaxHoldoffLenMs;
     
+    private boolean waitForSignalToFallBelowThreshAfterMaxHoldoff, pastMaxHoldoff;
+    private double postMaxHoldoffHoldoffLenMs;
+    
     private long prevTimeMs;
     
     private double penaltyThresh, resetThresh;
@@ -46,10 +49,14 @@ public class HoldoffFilter implements Filter {
         // Extract parameters
         holdoffLenMs = params.getRequiredDouble("holdoffLenMs");
         maxHoldoffLenMs = params.getDefaultDouble("maxHoldoffLenMs", Double.POSITIVE_INFINITY);
+        
         penaltyThresh = params.getDefaultDouble("penaltyThresh", 1.0);
         resetThresh = params.getDefaultDouble("resetThresh", 1.0);
         penaltyMult = params.getDefaultDouble("penaltyMult", 1.0);
         penaltyPow = params.getDefaultDouble("penaltyPow", 1.0);
+        
+        waitForSignalToFallBelowThreshAfterMaxHoldoff = params.getDefaultBoolean("waitToFallBelowThreshAfterMaxHoldoff", false);
+        postMaxHoldoffHoldoffLenMs = params.getDefaultDouble("postMaxHoldoffHoldoffLenMs", 50.0);
         
     }
 
@@ -82,8 +89,30 @@ public class HoldoffFilter implements Filter {
         maxHoldoffCounter += (currTimeMs - prevTimeMs);
         
         
+        // If we have just now been in hold-off for longer than the maximum hold-off length and this hold-off
+        //    filter is set up to wait until the input signal falls below the reset threshold before ending 
+        //    hold-off, even after passing the maximum hold-off threshold
+        if (waitForSignalToFallBelowThreshAfterMaxHoldoff && maxHoldoffCounter > currMaxHoldoffLenMs && !pastMaxHoldoff) {
+            
+            // Set the current max hold-off length to something conservative - we really want to end
+            //   hold-off when the input signal falls below threshold next, but it's safer to make this 
+            //   non-infinite, just in case
+            currMaxHoldoffLenMs = 2.0 * currMaxHoldoffLenMs;
+            
+            // Change the current hold-off length to the post-max-hold-off hold-off length in a way
+            //    that won't extend hold-off if the counter was already close to the currHoldoffLen
+            //    (note that postMaxHoldoffHoldoffLenMs should be very short).
+            counter = Math.max(0.0, postMaxHoldoffHoldoffLenMs - (currHoldoffLenMs - counter));
+            currHoldoffLenMs = postMaxHoldoffHoldoffLenMs;
+            
+            // Mark that we have already passed the max hold-off length once so that we do not extend
+            //   the max hold-off again before another separate hold-off is started by a call to startHoldoff()
+            pastMaxHoldoff = true;
+        }
+        
+        
         // Set output flag indicating if hold-off period has passed
-        if (counter > currHoldoffLenMs || (maxHoldoffCounter > currMaxHoldoffLenMs))
+        if (counter > currHoldoffLenMs || maxHoldoffCounter > currMaxHoldoffLenMs)
             in.setValue(1);
         else
             in.setValue(0);
@@ -114,6 +143,9 @@ public class HoldoffFilter implements Filter {
         //    the max so that we may hold-off for the specified duration. Here we assume that any
         //    specified hold-off time takes precendent over the previously configured max.
         currMaxHoldoffLenMs = Math.max( maxHoldoffLenMs, currHoldoffLenMs );
+        
+        // Record that we have not yet reached the maximum hold-off timeout point
+        pastMaxHoldoff = false;
         
 //        System.out.println("  Holdoff counter started - hold-off time: " + currHoldoffLenMs);
     }
