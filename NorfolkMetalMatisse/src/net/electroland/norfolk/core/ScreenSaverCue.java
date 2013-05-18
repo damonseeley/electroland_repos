@@ -5,19 +5,20 @@ import net.electroland.utils.ParameterMap;
 public class ScreenSaverCue extends Cue {
 
     private boolean isSaving = false;
-    private int timeout, fadeout;
+    private int timeout, fadeout, fadein;
     private Cue[] exceptions;
 
     public ScreenSaverCue(ParameterMap p) {
         super(p);
         timeout = p.getRequiredInt("timeout");
         fadeout = p.getRequiredInt("fadeout");
+        fadein = p.getRequiredInt("fadein");
     }
 
     @Override
     public void fire(EventMetaData meta, ClipPlayer cp) {
         if (isSaving){
-            cp.enterScreensaverMode(fadeout);
+            cp.enterScreensaverMode(fadein);
         }else{
             cp.exitScreensaverMode(fadeout);
         }
