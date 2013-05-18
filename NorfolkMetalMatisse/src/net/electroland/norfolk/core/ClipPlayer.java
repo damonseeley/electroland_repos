@@ -980,6 +980,7 @@ public class ClipPlayer implements AnimationListener {
     }
 
     public void floraRandRipple(Fixture tripped){
+        randomVibraSound();
 
         Point3d center = tripped.getLocation();
         Color color = randomHue(0.7f, 0.5f, 1.0f, 1.0f);
