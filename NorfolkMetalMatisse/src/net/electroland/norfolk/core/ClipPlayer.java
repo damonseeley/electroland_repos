@@ -230,8 +230,8 @@ public class ClipPlayer implements AnimationListener {
     private float ssVaseThrobMin = 0.2f;
 
     //overall throb timing for ss elements
-    private int throbPeriod = 3000;
-    private int holdPeriod = 700;
+    private int throbPeriod = 2000;
+    private int holdPeriod = 500;
 
 
     private void initScreensaver() {
@@ -254,6 +254,7 @@ public class ClipPlayer implements AnimationListener {
         ssVaseThrob();
         ssCobraThrob();
         ssGreenLeaves();
+        
         ssMultiClouds(); //OR
         //ssSparkle();
     }
@@ -332,6 +333,7 @@ public class ClipPlayer implements AnimationListener {
         
         leafGreen.queue(sweep).announce(Message.LEAVES).fadeOut(fadeoutDuration).deleteWhenDone();
 
+        /*
         Sequence slowPulseOut = new Sequence();
         slowPulseOut.alphaTo(0.2f).duration(throbPeriod);
 
@@ -339,7 +341,7 @@ public class ClipPlayer implements AnimationListener {
         slowPulseIn.alphaTo(0.99f).duration(throbPeriod);
 
         leafPulse.queue(slowPulseOut).pause(500).queue(slowPulseIn).queue(slowPulseOut).pause(500).queue(slowPulseIn).queue(slowPulseOut).queue(slowPulseIn).pause(500).deleteWhenDone();  
-
+         */
         
     }
 
@@ -472,6 +474,20 @@ public class ClipPlayer implements AnimationListener {
 
         vasePulse.queue(pulseIn).queue(pulseOut).fadeOut(300).deleteWhenDone();    
     }
+    
+    public void iPulseCobrasSensor() {
+        
+        //modify to 
+        Clip cobrasPulse = eam.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, cobrasVMin, eam.getFrameDimensions().width, cobrasVMax, sensorPulseMin);
+
+        int dur = 150;
+        Sequence pulseIn = new Sequence();
+        pulseIn.alphaTo(sensorPulseMax).duration(dur);
+        Sequence pulseOut = new Sequence();
+        pulseOut.alphaTo(sensorPulseMin).duration(dur*2);
+
+        cobrasPulse.queue(pulseIn).queue(pulseOut).fadeOut(300).deleteWhenDone();    
+    }
 
     /** Vase ****************************/
 
@@ -479,8 +495,8 @@ public class ClipPlayer implements AnimationListener {
     private Clip interactive; 
     private Clip iVase;
     private Clip iFlora;
-    float iVaseMin = 0.3f;
-    float iVaseMax = 0.6f;
+    float iVaseMin = 0.6f;
+    float iVaseMax = 0.7f;
 
     public void initInteractive(){
         //add iVase
@@ -489,7 +505,6 @@ public class ClipPlayer implements AnimationListener {
 
         //call vase throb
         iVaseThrob();
-
     }
 
     public void iVaseThrob() {
@@ -499,12 +514,12 @@ public class ClipPlayer implements AnimationListener {
         Clip vaseBlue = iVase.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, iVaseMin);
 
         Sequence slowPulseOut = new Sequence();
-        slowPulseOut.hueBy(0.05f).duration(throbPeriod);
-        slowPulseOut.alphaTo(iVaseMin).duration(throbPeriod);
+        slowPulseOut.hueBy(0.05f).duration(throbPeriod*2);
+        slowPulseOut.alphaTo(iVaseMin).duration(throbPeriod*2);
 
         Sequence slowPulseIn = new Sequence();
-        slowPulseIn.hueBy(-0.05f).duration(throbPeriod);
-        slowPulseIn.alphaTo(iVaseMax).duration(throbPeriod);
+        slowPulseIn.hueBy(-0.05f).duration(throbPeriod*2);
+        slowPulseIn.alphaTo(iVaseMax).duration(throbPeriod*2);
 
         iVaseBlack.pause(throbPeriod*2 + 1000).deleteWhenDone();
         vaseBlue.queue(slowPulseIn).queue(slowPulseOut).announce(Message.IVASE_THROB).pause(500).deleteWhenDone();    
@@ -845,7 +860,8 @@ public class ClipPlayer implements AnimationListener {
     public void floraRand(Fixture fixture){
 
         randomVibraSound();
-        iPulseVaseSensor();
+        //iPulseVaseSensor();
+        iPulseCobrasSensor();
 
         /* ranges
          * 0-0.2
