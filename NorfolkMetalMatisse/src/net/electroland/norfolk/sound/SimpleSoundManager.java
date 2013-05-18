@@ -77,7 +77,7 @@ public class SimpleSoundManager {
     }
 
 	public void playGroupRandom(String gid) {
-		logger.debug("Play a sound from group '" + gid + "'");
+		//logger.debug("Play a sound from group '" + gid + "'");
 		ArrayList<SoundElement> sounds = new ArrayList<SoundElement>(); //Generic ArrayList to Store only String objects
 		for (SoundElement se : playList.values()) {
 		    if (se.groupID.equals(gid)) {
@@ -85,7 +85,7 @@ public class SimpleSoundManager {
 		    }
 		}
 		int randSoundIndex = (int)(Math.random() * sounds.size());
-		logger.debug(randSoundIndex);
+		//logger.debug(randSoundIndex);
 		playSoundFile(sounds.get(randSoundIndex).filename);
 		
 	}
