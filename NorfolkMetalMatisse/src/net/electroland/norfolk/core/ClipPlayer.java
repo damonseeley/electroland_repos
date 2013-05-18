@@ -953,7 +953,7 @@ public class ClipPlayer implements AnimationListener {
 
         randomVibraSound();
         //iPulseVaseSensor();
-        iPulseCobrasSensor();
+        iPulseCobrasSensor(fixture);
 
         /* ranges
          * 0-0.2
@@ -998,7 +998,7 @@ public class ClipPlayer implements AnimationListener {
 
     public void scheduleRipplet(Fixture fixture, Color color, int pause, int fadeIn, int hold, int fadeOut, float brightness){
 
-        logger.debug("start ripple on " + fixture.getName() + " with pause of " + pause);
+        logger.trace("start ripple on " + fixture.getName() + " with pause of " + pause);
 
         Clip f = interactive.addClip(null, color,
                              (int)fixture.getLocation().x - 4,
