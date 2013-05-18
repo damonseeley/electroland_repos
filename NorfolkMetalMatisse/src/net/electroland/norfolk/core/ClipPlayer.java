@@ -539,10 +539,10 @@ public class ClipPlayer implements AnimationListener {
         bong.brightnessTo(off).pause(p1).newState().brightnessTo(on).pause(p2).newState();
         bong.brightnessTo(off).pause(p1).newState().brightnessTo(on).pause(p2).newState();
 
-        tl.queue(bing).queue(bong).queue(bing).queue(bong).queue(bing).fadeOut(500).deleteWhenDone();
-        br.queue(bing).queue(bong).queue(bing).queue(bong).queue(bing).fadeOut(500).deleteWhenDone();
-        tr.queue(bong).queue(bing).queue(bong).queue(bing).queue(bing).fadeOut(500).deleteWhenDone();
-        bl.queue(bong).queue(bing).queue(bong).queue(bing).queue(bing).fadeOut(500).deleteWhenDone();
+        tl.queue(bong).queue(bing).queue(bong).queue(bing).queue(bong).fadeOut(500).deleteWhenDone();
+        br.queue(bong).queue(bing).queue(bong).queue(bing).queue(bong).fadeOut(500).deleteWhenDone();
+        tr.queue(bing).queue(bong).queue(bing).queue(bong).queue(bong).fadeOut(500).deleteWhenDone();
+        bl.queue(bing).queue(bong).queue(bing).queue(bong).queue(bong).fadeOut(500).deleteWhenDone();
 
         
     }
