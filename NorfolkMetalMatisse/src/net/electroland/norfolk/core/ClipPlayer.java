@@ -536,6 +536,47 @@ public class ClipPlayer implements AnimationListener {
         cobrasPulse.queue(pulseIn).queue(pulseOut).fadeOut(300).deleteWhenDone();    
     }
 
+    public void testCobra(){
+        iPulseCobrasSensor(this.getFixture("f12"));
+    }
+
+    public void iPulseCobrasSensor(Fixture fixture) {
+        
+        Fixture nearestCobra = getNearestCobra(fixture.getLocation());
+
+        int width = 10;
+        int x = (int)(nearestCobra.getLocation().x - (width / 2));
+
+        //modify to 
+        Clip cobrasPulse = interactive.addClip(null, 
+                Color.getHSBColor(.55f, .99f, .99f), x, 
+                cobrasVMin, width, elementsVMax, sensorPulseMin);
+
+        int dur = 150;
+        Sequence pulseIn = new Sequence();
+        pulseIn.alphaTo(sensorPulseMax).duration(dur);
+        Sequence pulseOut = new Sequence();
+        pulseOut.alphaTo(sensorPulseMin).duration(dur*2);
+
+        cobrasPulse.queue(pulseIn).queue(pulseOut).fadeOut(300).deleteWhenDone();    
+    }
+
+    private Fixture getNearestCobra(Point3d point){
+        Fixture nearest = null;
+        for (Fixture fixture : elu.getFixtures()){
+            if (isCobra(fixture)){
+                if (nearest == null || point.distance(nearest.getLocation()) > point.distance(fixture.getLocation())){
+                    nearest = fixture;
+                }
+            }
+        }
+        return nearest;
+    }
+
+    private boolean isCobra(Fixture fixture){
+        return fixture.getName().toLowerCase().startsWith("c");
+    }
+    
     /** Vase ****************************/
 
     //nested clips
@@ -944,6 +985,7 @@ public class ClipPlayer implements AnimationListener {
         Color color = randomHue(0.7f, 0.5f, 1.0f, 1.0f);
 
         scheduleRipplet(tripped, color, 0, 100, rippleHold, rippleFadeout, 1.0f);
+        iPulseCobrasSensor(tripped);
 
         for (Fixture fixture : elu.getFixtures()){
             if (isFlora(fixture) && fixture != tripped){
