@@ -580,30 +580,45 @@ public class ClipPlayer implements AnimationListener {
         int halfWidth = eam.getFrameDimensions().width / 2;
         int halfHeight = eam.getFrameDimensions().height / 2;
         float on = 1.0f;
-        float off = .0f;
-        int p1 = 630/4;
-        int p2 = 630/4;
+        float off = .5f;
+        int p1 = 650/4;
+        int p2 = 650/4;
 
         // 630ms x 7
         ssm.playSound("trainbell");
-        Color c = Color.WHITE;
-        Clip tl = eam.addClip(c, 0, 0, halfWidth, halfHeight, 1.0f);
-        Clip tr = eam.addClip(c, halfWidth, 0, halfWidth, halfHeight, 1.0f);
-        Clip bl = eam.addClip(c, 0, halfHeight, halfWidth, halfHeight, 1.0f);
-        Clip br = eam.addClip(c, halfWidth, halfHeight, halfWidth, halfHeight, 1.0f);
+        Clip tl = eam.addClip(Color.YELLOW, 0, 0, halfWidth, halfHeight, 1.0f);
+        Clip tr = eam.addClip(Color.WHITE, halfWidth, 0, halfWidth, halfHeight, 1.0f);
+        Clip bl = eam.addClip(Color.WHITE, 0, halfHeight, halfWidth, halfHeight, 1.0f);
+        Clip br = eam.addClip(Color.YELLOW, halfWidth, halfHeight, halfWidth, halfHeight, 1.0f);
 
         Sequence bing = new Sequence();
+        bing.brightnessTo(on).pause(p1).newState().brightnessTo(off).pause(p2).newState();
+        bing.brightnessTo(on).pause(p1).newState().brightnessTo(off).pause(p2).newState();
+        bing.brightnessTo(on).pause(p1).newState().brightnessTo(off).pause(p2).newState();
+        bing.brightnessTo(on).pause(p1).newState().brightnessTo(off).pause(p2).newState();
+        bing.brightnessTo(on).pause(p1).newState().brightnessTo(off).pause(p2).newState();
+        bing.brightnessTo(on).pause(p1).newState().brightnessTo(off).pause(p2).newState();
+        bing.brightnessTo(on).pause(p1).newState().brightnessTo(off).pause(p2).newState();
+        bing.brightnessTo(on).pause(p1).newState().brightnessTo(off).pause(p2).newState();
         bing.brightnessTo(on).pause(p1).newState().brightnessTo(off).pause(p2).newState();
         bing.brightnessTo(on).pause(p1).newState().brightnessTo(off).pause(p2).newState();
 
         Sequence bong = new Sequence();
         bong.brightnessTo(off).pause(p1).newState().brightnessTo(on).pause(p2).newState();
         bong.brightnessTo(off).pause(p1).newState().brightnessTo(on).pause(p2).newState();
+        bong.brightnessTo(off).pause(p1).newState().brightnessTo(on).pause(p2).newState();
+        bong.brightnessTo(off).pause(p1).newState().brightnessTo(on).pause(p2).newState();
+        bong.brightnessTo(off).pause(p1).newState().brightnessTo(on).pause(p2).newState();
+        bong.brightnessTo(off).pause(p1).newState().brightnessTo(on).pause(p2).newState();
+        bong.brightnessTo(off).pause(p1).newState().brightnessTo(on).pause(p2).newState();
+        bong.brightnessTo(off).pause(p1).newState().brightnessTo(on).pause(p2).newState();
+        bong.brightnessTo(off).pause(p1).newState().brightnessTo(on).pause(p2).newState();
+        bong.brightnessTo(off).pause(p1).newState().brightnessTo(on).pause(p2).newState();
 
-        tl.queue(bong).queue(bing).queue(bong).queue(bing).queue(bong).fadeOut(500).deleteWhenDone();
-        br.queue(bong).queue(bing).queue(bong).queue(bing).queue(bong).fadeOut(500).deleteWhenDone();
-        tr.queue(bing).queue(bong).queue(bing).queue(bong).queue(bong).fadeOut(500).deleteWhenDone();
-        bl.queue(bing).queue(bong).queue(bing).queue(bong).queue(bong).fadeOut(500).deleteWhenDone();
+        tl.queue(bong).fadeOut(500).deleteWhenDone();
+        br.queue(bong).fadeOut(500).deleteWhenDone();
+        tr.queue(bing).fadeOut(500).deleteWhenDone();
+        bl.queue(bing).fadeOut(500).deleteWhenDone();
 
         
     }
@@ -953,14 +968,14 @@ public class ClipPlayer implements AnimationListener {
 
         logger.debug("start ripple on " + fixture.getName() + " with pause of " + pause);
 
-        Clip f = eam.addClip(null, color,
+        Clip f = interactive.addClip(null, color,
                              (int)fixture.getLocation().x - 4,
                              (int)fixture.getLocation().y - 4, 10, 10, 0.0f);
 
         Sequence reduceBrightness = new Sequence();
-        reduceBrightness.brightnessTo(brightness > rippleFloor ? brightness : rippleFloor);
+        reduceBrightness.alphaTo(brightness > rippleFloor ? brightness : rippleFloor).duration(fadeIn);
 
-        f.queue(reduceBrightness).pause(pause).fadeIn(fadeIn).pause(hold).fadeOut(fadeOut).deleteWhenDone();
+        f.pause(pause).queue(reduceBrightness).pause(hold).fadeOut(fadeOut).deleteWhenDone();
     }
 
     private boolean isFlora(Fixture fixture){
