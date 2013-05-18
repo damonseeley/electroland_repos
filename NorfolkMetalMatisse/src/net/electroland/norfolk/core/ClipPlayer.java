@@ -44,7 +44,7 @@ public class ClipPlayer implements AnimationListener {
     int screensaverFadeOutMillis, screensaverFadeInMillis;
 
     // ripple
-    float rippleMultiplier, rippleDBrightness;
+    float rippleMultiplier, rippleDBrightness, rippleFloor;
     int rippleHold, rippleFadein, rippleFadeout;
 
     private enum Message {SCREENSAVER, IVASE_THROB, SSVASE_THROB, COBRA_THROB, LEAVES, SPARKLE}
@@ -98,15 +98,16 @@ public class ClipPlayer implements AnimationListener {
         globalClips = getGlobalClips(true);
 
         // screensaver
-        screensaverFadeInMillis        = props.getRequiredInt("cues", "screensaver", "fadein");
-        screensaverFadeOutMillis       = props.getRequiredInt("cues", "screensaver", "fadeout");
+        screensaverFadeInMillis     = props.getRequiredInt("cues", "screensaver", "fadein");
+        screensaverFadeOutMillis    = props.getRequiredInt("cues", "screensaver", "fadeout");
 
         // ripple
-        rippleMultiplier    = props.getRequiredDouble("cues", "ripple", "rippleMultiplier").floatValue();
-        rippleHold                = props.getRequiredInt("cues", "ripple", "hold");
-        rippleFadein              = props.getRequiredInt("cues", "ripple", "fadein");
-        rippleFadeout             = props.getRequiredInt("cues", "ripple", "fadeout");
-        rippleDBrightness         = props.getRequiredDouble("cues", "ripple", "dbrightness").floatValue();
+        rippleMultiplier            = props.getRequiredDouble("cues", "ripple", "rippleMultiplier").floatValue();
+        rippleHold                  = props.getRequiredInt("cues", "ripple", "hold");
+        rippleFadein                = props.getRequiredInt("cues", "ripple", "fadein");
+        rippleFadeout               = props.getRequiredInt("cues", "ripple", "fadeout");
+        rippleDBrightness           = props.getRequiredDouble("cues", "ripple", "dbrightness").floatValue();
+        rippleFloor                 = props.getRequiredDouble("cues", "ripple", "floor").floatValue();
     }
 
 
@@ -921,7 +922,7 @@ public class ClipPlayer implements AnimationListener {
         for (Fixture fixture : elu.getFixtures()){
             if (isFlora(fixture) && fixture != tripped){
                 double dist = center.distance(fixture.getLocation());
-                scheduleRipplet(fixture, color, (int)(dist * rippleMultiplier), rippleFadein, rippleHold, rippleFadeout, (float)(rippleDBrightness * dist));
+                scheduleRipplet(fixture, color, (int)(dist * rippleMultiplier), rippleFadein, rippleHold, rippleFadeout, 1.0f - (float)(rippleDBrightness * dist));
             }
         }
     }
@@ -935,7 +936,7 @@ public class ClipPlayer implements AnimationListener {
                              (int)fixture.getLocation().y - 4, 10, 10, 0.0f);
 
         Sequence reduceBrightness = new Sequence();
-        reduceBrightness.brightnessBy(brightness > .2f ? brightness : .2f);
+        reduceBrightness.brightnessTo(brightness > rippleFloor ? brightness : rippleFloor);
 
         f.queue(reduceBrightness).pause(pause).fadeIn(fadeIn).pause(hold).fadeOut(fadeOut).deleteWhenDone();
     }
