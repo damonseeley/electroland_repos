@@ -744,7 +744,7 @@ public class ClipPlayer implements AnimationListener {
     }
     
     public void allElementMulti() {
-        //ssm.playGroupRandom("8");
+        //ssm.playGroupRandom("9");
         
         Clip c1 = eam.addClip(eam.getContent("allelements_multi"), Color.getHSBColor(.0f, .99f, .0f), 0, 0, eam.getFrameDimensions().width, eam.getFrameDimensions().height, 1.0f);
 
@@ -756,7 +756,7 @@ public class ClipPlayer implements AnimationListener {
 
 
     public void vertWavesRedMag(){
-        ssm.playGroupRandom("8");
+        ssm.playGroupRandom("9");
         //ssm.playGroupRandom("6");
         
         //need black in here
@@ -845,7 +845,7 @@ public class ClipPlayer implements AnimationListener {
     }
 
     public void radialBlueGreen3(){
-        ssm.playGroupRandom("8");
+        ssm.playGroupRandom("6");
 
         int duration = 6000;
         int width = 600;
