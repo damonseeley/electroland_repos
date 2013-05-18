@@ -897,7 +897,7 @@ public class ClipPlayer implements AnimationListener {
         //Clip c1 = eam.addClip(eam.getContent("grad1200_three_blue_green"), Color.getHSBColor(.4f, .99f, .99f), -width, 0, width, eam.getFrameDimensions().height, 1.0f);
         //Clip c2 = eam.addClip(eam.getContent("grad1200_three_blue_green"), Color.getHSBColor(.4f, .99f, .99f), -width, 0, width, eam.getFrameDimensions().height, 1.0f);
         Clip c1 = eam.addClip(eam.getContent("grad1200_three_blue_green"), Color.getHSBColor(.4f, .99f, .99f), -width, vaseVMax, width, eam.getFrameDimensions().height, 1.0f);
-        Clip c2 = eam.addClip(eam.getContent("grad1200_three_blue_green"), Color.getHSBColor(.4f, .99f, .99f), -width, 0, vaseVMax, eam.getFrameDimensions().height, 1.0f);
+        Clip c2 = eam.addClip(eam.getContent("grad1200_three_blue_green"), Color.getHSBColor(.4f, .99f, .99f), -width, vaseVMax, width, eam.getFrameDimensions().height, 1.0f);
 
         Sequence sweep = new Sequence();
         sweep.xTo(eam.getFrameDimensions().width + width).duration(duration);
