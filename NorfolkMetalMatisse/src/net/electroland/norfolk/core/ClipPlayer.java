@@ -715,13 +715,13 @@ public class ClipPlayer implements AnimationListener {
     public void comboLeavesGreen(){
         ssm.playGroupRandom("7");
 
-        int duration = 5000;
+        int duration = 3000;
         int width = 600;
         int vLoc = 30; // start of cobras
         int vHeight = 12; // cover all cobras
 
         Clip parent = eam.addClip(null, null, -width + 200, vLoc, width, vHeight, 1.0f);
-        parent.addClip(eam.getContent("gradient_600_greenyellow"), null, 0, 0, width, vHeight, 1.0f);
+        parent.addClip(eam.getContent("gradient_600_greenyellow2"), null, 0, 0, width, vHeight, 1.0f);
 
         Sequence sweep = new Sequence();
         sweep.xTo(eam.getFrameDimensions().width).duration(duration);
