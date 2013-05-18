@@ -226,8 +226,8 @@ public class ClipPlayer implements AnimationListener {
     private int leavesHeight = 20;
 
     // alpha min max
-    private float ssVaseThrobMax = 0.7f;
-    private float ssVaseThrobMin = 0.15f;
+    private float ssVaseThrobMax = 0.9f;
+    private float ssVaseThrobMin = 0.2f;
 
     //overall throb timing for ss elements
     private int throbPeriod = 3000;
@@ -480,13 +480,12 @@ public class ClipPlayer implements AnimationListener {
     private Clip interactive; 
     private Clip iVase;
     private Clip iFlora;
+    float iVaseMin = 0.3f;
+    float iVaseMax = 0.6f;
 
     public void initInteractive(){
         //add iVase
         iVase = interactive.addClip(null, null, 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 1.0f);
-        //this black is never re-created
-        Clip iVaseBlack = iVase.addClip(null, Color.getHSBColor(.0f, .0f, .0f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 1.0f);
-
         iFlora = interactive.addClip(null, null, 0, vaseVMax, eam.getFrameDimensions().width, elementsVMax, 1.0f);
 
         //call vase throb
@@ -495,8 +494,9 @@ public class ClipPlayer implements AnimationListener {
     }
 
     public void iVaseThrob() {
-        float iVaseMin = 0.4f;
-        float iVaseMax = 0.6f;
+
+        Clip iVaseBlack = iVase.addClip(null, Color.getHSBColor(.0f, .0f, .0f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 1.0f);
+
         Clip vaseBlue = iVase.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, iVaseMin);
 
         Sequence slowPulseOut = new Sequence();
@@ -507,6 +507,7 @@ public class ClipPlayer implements AnimationListener {
         slowPulseIn.hueBy(-0.05f).duration(throbPeriod);
         slowPulseIn.alphaTo(iVaseMax).duration(throbPeriod);
 
+        iVaseBlack.pause(throbPeriod*2 + 1000).deleteWhenDone();
         vaseBlue.queue(slowPulseIn).queue(slowPulseOut).announce(Message.IVASE_THROB).pause(500).deleteWhenDone();    
     }
 
