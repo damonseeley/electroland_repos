@@ -120,10 +120,10 @@ public class PersonTrackerVirtualChannel_v3 extends VirtualChannel {
         
         // Configure hold-off filter for personPresentFilt
         ParameterMap personPresentHoldoffFiltParams = new ParameterMap();
-        personPresentHoldoffFiltParams.put("holdoffLenMs",params.getDefault("personPresentHoldoffLenMs", "1500.0"));   // 9000.0 
-        personPresentHoldoffFiltParams.put("maxHoldoffLenMs",params.getDefault("personPresentMaxHoldoffLenMs", "20000.0"));  // 40000.0 
-        personPresentHoldoffFiltParams.put("penaltyThresh", "0.03");  // 0.05
-        personPresentHoldoffFiltParams.put("resetThresh", "0.15");    // 0.3
+        personPresentHoldoffFiltParams.put("holdoffLenMs",params.getDefault("personPresentHoldoffLenMs", "9000.0")); 
+        personPresentHoldoffFiltParams.put("maxHoldoffLenMs",params.getDefault("personPresentMaxHoldoffLenMs", "40000.0")); 
+        personPresentHoldoffFiltParams.put("penaltyThresh", "0.05");
+        personPresentHoldoffFiltParams.put("resetThresh", "0.3");
         personPresentHoldoffFiltParams.put("penaltyMult", "4.0");
         personPresentHoldoffFiltParams.put("penaltyPow", "1.5");
         personPresentHoldoffFilt = new HoldoffFilter();
