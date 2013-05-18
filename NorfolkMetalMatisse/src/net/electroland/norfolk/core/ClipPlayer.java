@@ -518,35 +518,31 @@ public class ClipPlayer implements AnimationListener {
 
         int halfWidth = eam.getFrameDimensions().width / 2;
         int halfHeight = eam.getFrameDimensions().height / 2;
-        float alphaOn = 1.0f;
-        float alphaOff = .0f;
-        int p1 = 100/2;
-        int p2 = 175/2;
+        float on = 1.0f;
+        float off = .0f;
+        int p1 = 630/4;
+        int p2 = 630/4;
 
         // 630ms x 7
         ssm.playSound("trainbell");
-        Color gold = Color.getHSBColor(1.15f, .96f, .98f);//new Color(249, 235, 11);
-        Clip tl = eam.addClip(gold, 0, 0, halfWidth, halfHeight, alphaOn);
-        Clip tr = eam.addClip(gold, halfWidth, 0, halfWidth, halfHeight, alphaOn);
-        Clip bl = eam.addClip(gold, 0, halfHeight, halfWidth, halfHeight, alphaOn);
-        Clip br = eam.addClip(gold, halfWidth, halfHeight, halfWidth, halfHeight, alphaOn);
+        Color c = Color.WHITE;
+        Clip tl = eam.addClip(c, 0, 0, halfWidth, halfHeight, 1.0f);
+        Clip tr = eam.addClip(c, halfWidth, 0, halfWidth, halfHeight, 1.0f);
+        Clip bl = eam.addClip(c, 0, halfHeight, halfWidth, halfHeight, 1.0f);
+        Clip br = eam.addClip(c, halfWidth, halfHeight, halfWidth, halfHeight, 1.0f);
 
         Sequence bing = new Sequence();
-        bing.brightnessTo(alphaOff).pause(p1).brightnessTo(alphaOn).pause(p2);
-        bing.brightnessTo(alphaOff).pause(p1).brightnessTo(alphaOn).pause(p2);
-        bing.brightnessTo(alphaOff).pause(p1).brightnessTo(alphaOn).pause(p2);
-        bing.brightnessTo(alphaOff).pause(p1).brightnessTo(alphaOn).pause(p2);
+        bing.brightnessTo(on).pause(p1).newState().brightnessTo(off).pause(p2).newState();
+        bing.brightnessTo(on).pause(p1).newState().brightnessTo(off).pause(p2).newState();
 
         Sequence bong = new Sequence();
-        bong.brightnessTo(alphaOn).pause(p1).brightnessTo(alphaOff).pause(p2);
-        bong.brightnessTo(alphaOn).pause(p1).brightnessTo(alphaOff).pause(p2);
-        bong.brightnessTo(alphaOn).pause(p1).brightnessTo(alphaOff).pause(p2);
-        bong.brightnessTo(alphaOn).pause(p1).brightnessTo(alphaOff).pause(p2);
+        bong.brightnessTo(off).pause(p1).newState().brightnessTo(on).pause(p2).newState();
+        bong.brightnessTo(off).pause(p1).newState().brightnessTo(on).pause(p2).newState();
 
-        tl.queue(bing).queue(bong).queue(bing).queue(bong).queue(bing).queue(bong).queue(bing).fadeOut(500).deleteWhenDone();
-        br.queue(bing).queue(bong).queue(bing).queue(bong).queue(bing).queue(bong).queue(bing).fadeOut(500).deleteWhenDone();
-        tr.queue(bong).queue(bing).queue(bong).queue(bing).queue(bong).queue(bing).queue(bing).fadeOut(500).deleteWhenDone();
-        bl.queue(bong).queue(bing).queue(bong).queue(bing).queue(bong).queue(bing).queue(bing).fadeOut(500).deleteWhenDone();
+        tl.queue(bing).queue(bong).queue(bing).queue(bong).queue(bing).fadeOut(500).deleteWhenDone();
+        br.queue(bing).queue(bong).queue(bing).queue(bong).queue(bing).fadeOut(500).deleteWhenDone();
+        tr.queue(bong).queue(bing).queue(bong).queue(bing).queue(bing).fadeOut(500).deleteWhenDone();
+        bl.queue(bong).queue(bing).queue(bong).queue(bing).queue(bing).fadeOut(500).deleteWhenDone();
 
         
     }
