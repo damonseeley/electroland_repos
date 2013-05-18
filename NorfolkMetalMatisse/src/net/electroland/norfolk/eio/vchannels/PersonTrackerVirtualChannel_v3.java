@@ -62,6 +62,11 @@ public class PersonTrackerVirtualChannel_v3 extends VirtualChannel {
     private double  detectorHoldoffAdjustAfterExitEventByDetectorMs;
     private double  detectorHoldoffAdjustAfterExitEventByClipMs;
     
+    private double  detectorHoldoffAdjustAfterLongPauseThenExitEventMs;
+    private double  timeToStartIncreasingExitEventDetectorHoldoffMs;
+    private double  timeToReachMaxExitEventDetectorHoldoffMs;
+    private long    prevEntranceEventTimeMs;
+    
     private float clipThresh;
     private float clipReArmFraction;
 
@@ -90,8 +95,12 @@ public class PersonTrackerVirtualChannel_v3 extends VirtualChannel {
         
         // Internal parameters (not publicly set-able)
         clipReArmFraction = 0.9f;
-        detectorHoldoffAdjustAfterExitEventByDetectorMs = params.getDefaultDouble("detHoldoffAdjustAfterDetExitMs", -1200.0);
-        detectorHoldoffAdjustAfterExitEventByClipMs = params.getDefaultDouble("detHoldoffAdjustAfterClipExitMs", -900.0);
+        detectorHoldoffAdjustAfterExitEventByDetectorMs = params.getDefaultDouble("detHoldoffAdjustAfterDetExitMs", -600.0); // -1200.0
+        detectorHoldoffAdjustAfterExitEventByClipMs = params.getDefaultDouble("detHoldoffAdjustAfterClipExitMs", -600.0); // -900.0
+        
+        detectorHoldoffAdjustAfterLongPauseThenExitEventMs = 400;
+        timeToStartIncreasingExitEventDetectorHoldoffMs = 2000;
+        timeToReachMaxExitEventDetectorHoldoffMs = 3000;
         
         
         // Configure detectionFilt (all params are hard-coded in class)
@@ -108,7 +117,7 @@ public class PersonTrackerVirtualChannel_v3 extends VirtualChannel {
         // Configure hold-off filter for PersonEvent detector
         ParameterMap detectionHoldoffFiltParams = new ParameterMap();
         detectionHoldoffFiltParams.put("holdoffLenMs", params.getDefault("detectorHoldoffLenMs", "1500.0"));
-        detectionHoldoffFiltParams.put("maxHoldoffLenMs", params.getDefault("detectorMaxHoldoffLenMs", "2000.0"));
+        detectionHoldoffFiltParams.put("maxHoldoffLenMs", params.getDefault("detectorMaxHoldoffLenMs", "2050.0"));
         detectionHoldoffFiltParams.put("penaltyThresh", Double.toString(0.1*detectorThresh));
         detectionHoldoffFiltParams.put("resetThresh", Double.toString(0.5*detectorThresh));
         detectionHoldoffFiltParams.put("penaltyMult", "2.0");
@@ -252,7 +261,11 @@ public class PersonTrackerVirtualChannel_v3 extends VirtualChannel {
                     //   sign to the most "entrance"-declared event, since their classification logic (entrance/
                     //   exit event decision) assumes this.
                     
-                    detectorHoldoffAdjustMs = detectorHoldoffAdjustAfterExitEventByDetectorMs;
+                    long timeSinceEntranceMs = System.currentTimeMillis() - prevEntranceEventTimeMs;
+                    double fractionOfExtensionTime = Math.min( Math.max( (timeSinceEntranceMs - timeToStartIncreasingExitEventDetectorHoldoffMs) / (timeToReachMaxExitEventDetectorHoldoffMs - timeToStartIncreasingExitEventDetectorHoldoffMs), 0 ), 1);
+                    detectorHoldoffAdjustMs = detectorHoldoffAdjustAfterExitEventByDetectorMs + fractionOfExtensionTime * (detectorHoldoffAdjustAfterLongPauseThenExitEventMs - detectorHoldoffAdjustAfterExitEventByDetectorMs);
+                    
+//                    System.out.println("timeSinceEntranceMs: " + timeSinceEntranceMs + ", fracExt: " + fractionOfExtensionTime + ", holdoffAdjustMs: " + detectorHoldoffAdjustMs);
                 
                 }
                 else {
@@ -260,10 +273,12 @@ public class PersonTrackerVirtualChannel_v3 extends VirtualChannel {
                     // Otherwise, we declare this to be an entrance event
                     if ( Math.abs(inputVals[0]) > Math.abs(inputVals[1]) ) {
                         output.setValue( PeopleIOWatcher.PersonEventCodes.ENTER_L );
+                        prevEntranceEventTimeMs = System.currentTimeMillis();
                         logger.debug("CH " + id + " - PERSON ENTERED FROM LEFT" );
                     }
                     else {
                         output.setValue( PeopleIOWatcher.PersonEventCodes.ENTER_R );
+                        prevEntranceEventTimeMs = System.currentTimeMillis();
                         logger.debug("CH " + id + " - PERSON ENTERED FROM RIGHT" );
                     }
                     
@@ -321,10 +336,12 @@ public class PersonTrackerVirtualChannel_v3 extends VirtualChannel {
                             //    we  will declare it to be an entrance event as well and fire a PersonEvent.
                             if (i == 0) {
                                 output.setValue( PeopleIOWatcher.PersonEventCodes.ENTER_L );
+                                prevEntranceEventTimeMs = System.currentTimeMillis();
                                 System.out.println("CH " + id + " - PERSON ENTERED (BY CLIP) FROM LEFT");
                             }
                             else {
                                 output.setValue( PeopleIOWatcher.PersonEventCodes.ENTER_R );
+                                prevEntranceEventTimeMs = System.currentTimeMillis();
                                 System.out.println("CH " + id + " - PERSON ENTERED (BY CLIP) FROM RIGHT");
                             }
                             
@@ -353,7 +370,10 @@ public class PersonTrackerVirtualChannel_v3 extends VirtualChannel {
                             personPresent = false;
                             // (See note in normal detector exit event about prevEvent* variables)
                             
-                            detectorHoldoffAdjustMs = detectorHoldoffAdjustAfterExitEventByClipMs;
+                            long timeSinceEntranceMs = System.currentTimeMillis() - prevEntranceEventTimeMs;
+                            double fractionOfExtensionTime = Math.min( Math.max( (timeSinceEntranceMs - timeToStartIncreasingExitEventDetectorHoldoffMs) / (timeToReachMaxExitEventDetectorHoldoffMs - timeToStartIncreasingExitEventDetectorHoldoffMs), 0 ), 1);
+                            detectorHoldoffAdjustMs = detectorHoldoffAdjustAfterExitEventByClipMs + fractionOfExtensionTime * (detectorHoldoffAdjustAfterLongPauseThenExitEventMs - detectorHoldoffAdjustAfterExitEventByClipMs);
+//                            System.out.println("timeSinceEntranceMs: " + timeSinceEntranceMs + ", fracExt: " + fractionOfExtensionTime + ", holdoffAdjustMs: " + detectorHoldoffAdjustMs);
                         }
                         
                         // In both cases (entrance / exit event), disarm the detectors to avoid re-triggering on 
