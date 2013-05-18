@@ -565,9 +565,16 @@ public class ClipPlayer implements AnimationListener {
         Fixture nearest = null;
         for (Fixture fixture : elu.getFixtures()){
             if (isCobra(fixture)){
-                if (nearest == null || point.distance(nearest.getLocation()) > point.distance(fixture.getLocation())){
+                
+                if (nearest == null){
                     nearest = fixture;
-                }
+                } else {
+                    double curr = wrappedDistance(point, nearest.getLocation(), eam.getFrameDimensions().width);
+                    double next = wrappedDistance(point, fixture.getLocation(), eam.getFrameDimensions().width);
+                    if (curr > next){
+                        nearest = fixture;
+                    }
+                }                
             }
         }
         return nearest;
@@ -976,7 +983,7 @@ public class ClipPlayer implements AnimationListener {
     }
 
     public void testRipple(){
-        floraRandRipple(this.getFixture("f03"));
+        floraRandRipple(this.getFixture("f12"));
     }
 
     public void floraRandRipple(Fixture tripped){
@@ -990,7 +997,7 @@ public class ClipPlayer implements AnimationListener {
 
         for (Fixture fixture : elu.getFixtures()){
             if (isFlora(fixture) && fixture != tripped){
-                double dist = center.distance(fixture.getLocation());
+                double dist = wrappedDistance(center, fixture.getLocation(), eam.getFrameDimensions().width);
                 scheduleRipplet(fixture, color, (int)(dist * rippleMultiplier), rippleFadein, rippleHold, rippleFadeout, 1.0f - (float)(rippleDBrightness * dist));
             }
         }
@@ -998,7 +1005,7 @@ public class ClipPlayer implements AnimationListener {
 
     public void scheduleRipplet(Fixture fixture, Color color, int pause, int fadeIn, int hold, int fadeOut, float brightness){
 
-        //logger.trace("start ripple on " + fixture.getName() + " with pause of " + pause);
+        logger.trace("start ripple on " + fixture.getName() + " with pause of " + pause);
 
         Clip f = interactive.addClip(null, color,
                              (int)fixture.getLocation().x - 4,
@@ -1015,6 +1022,19 @@ public class ClipPlayer implements AnimationListener {
         return fixture.getName().toLowerCase().startsWith("f") ||
                (fixture.getName().toLowerCase().startsWith("b") &&
                 !fixture.getName().toLowerCase().startsWith("base"));
+    }
+
+    private static double wrappedDistance(Point3d one, Point3d two, int width){
+        Point3d wrap;
+        if (one.x > two.x){
+            wrap = new Point3d(one.x - width, one.y, one.z);
+        }else{
+            wrap = new Point3d(one.x + width, one.y, one.z);
+        }
+        double normalDist = one.distance(two);
+        double wrapDist = wrap.distance(two);
+
+        return (normalDist < wrapDist) ? normalDist : wrapDist;
     }
 
     private static Color randomHue(float hueMin, float hueDelta, float brightness, float saturation){
