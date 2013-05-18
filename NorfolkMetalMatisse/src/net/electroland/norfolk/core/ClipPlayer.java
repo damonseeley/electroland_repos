@@ -462,7 +462,6 @@ public class ClipPlayer implements AnimationListener {
     private float sensorPulseMin= 0.0f;
 
     public void iPulseVaseSensor() {
-        //logger.info("IVASE PULSE");
         Clip vasePulse = eam.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, sensorPulseMin);
 
         int dur = 150;
@@ -622,8 +621,7 @@ public class ClipPlayer implements AnimationListener {
     }
 
     public void comboCobrasOrange(){
-        //ssm.playGroupRandom("7");
-        ssm.playSound("ViolinStaccatoArp01");
+        ssm.playGroupRandom("9"); //violin arpeggios
 
         int duration = 3000;
         int width = 600;
