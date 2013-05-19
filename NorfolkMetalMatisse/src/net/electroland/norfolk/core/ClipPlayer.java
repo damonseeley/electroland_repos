@@ -360,6 +360,7 @@ public class ClipPlayer implements AnimationListener {
         //sweep.yTo(eam.getFrameDimensions().height).duration(duration);
         sweep.xTo(leavesWidth).duration(duration);
         
+        black.pause(duration + fadeoutDuration + 500).deleteWhenDone();
         leafGreen.queue(sweep).announce(Message.LEAVES).fadeOut(fadeoutDuration).deleteWhenDone();
 
         /*
