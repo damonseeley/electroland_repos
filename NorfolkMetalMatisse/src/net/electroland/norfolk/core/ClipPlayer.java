@@ -342,7 +342,6 @@ public class ClipPlayer implements AnimationListener {
         
         //this is culled by change later
         Clip black = ssLeaves.addClip(null, Color.getHSBColor(.0f, .0f, .0f), 0, 0, leavesWidth, leavesHeight, 1.0f);
-        black.pause(duration + fadeoutDuration + 500).deleteWhenDone();
         
         Clip leafPulse    = ssLeaves.addClip(null, 
                 null, 
