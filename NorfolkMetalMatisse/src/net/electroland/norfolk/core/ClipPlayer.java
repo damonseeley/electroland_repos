@@ -343,13 +343,14 @@ public class ClipPlayer implements AnimationListener {
         //this is culled by change later
         Clip black = ssLeaves.addClip(null, Color.getHSBColor(.0f, .0f, .0f), 0, 0, leavesWidth, leavesHeight, 1.0f);
         
-        Clip leafPulse    = ssLeaves.addClip(null, 
+        /*Clip leafPulse    = ssLeaves.addClip(null, 
                 null, 
                 0, 0, 
                 leavesWidth, leavesHeight, 
                 1.0f);
-
-        Clip leafGreen    = leafPulse.addClip(eam.getContent("gradient_600_greenyellow2"), 
+         */
+        
+        Clip leafGreen    = ssLeaves.addClip(eam.getContent("gradient_600_greenyellow2"), 
                 null, 
                 -width, 0, 
                 width, leavesHeight, 
