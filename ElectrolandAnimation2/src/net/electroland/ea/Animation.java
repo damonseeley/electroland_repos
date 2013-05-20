@@ -40,6 +40,7 @@ public class Animation {
     private Map<String, Content>contentPrototypes;
     private Vector<AnimationListener>listeners;
     private Queue<Object>messageQueue;
+    public static int killPauseMillis;
 
     public Animation()
     {
@@ -59,6 +60,9 @@ public class Animation {
                                         p.getRequiredInt("settings", "global", "height"));
         rootClip = new Clip(null, Color.GRAY, 0, 0, frameDimemsions.width, frameDimemsions.height, 1.0f);
         rootClip.animationManager = this;
+        rootClip.keepAlive();
+
+        killPauseMillis = p.getDefaultInt("settings", "global", "killPauseMillis", 5000);
 
         messageQueue = new LinkedBlockingQueue<Object>();
 
@@ -157,5 +161,13 @@ public class Animation {
                 a.messageReceived(message);
             }
         }
+    }
+
+    protected int getKillPauseMillis(){
+        return killPauseMillis;
+    }
+
+    public int countClips(){
+        return rootClip.countChildren();
     }
 }

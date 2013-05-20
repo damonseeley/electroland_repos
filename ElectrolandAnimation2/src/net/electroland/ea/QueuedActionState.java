@@ -10,13 +10,10 @@ package net.electroland.ea;
  *
  */
 public class QueuedActionState {
-    final public static int DELETE_CHILDREN = -2;
-    final public static int DELETE          = -1;
-    final public static int DELAY           = 0;
-    final public static int CHANGE          = 1;
-    final public static int MESSAGE         = 2;
+    
+    enum Type {DELETE_CHILDREN, DELETE, DELAY, CHANGE, MESSAGE}
 
-    protected int     type;
+    protected Type    type;
     protected Tween   change;
     protected long    duration     = 0;
     protected long    delay        = 0;
