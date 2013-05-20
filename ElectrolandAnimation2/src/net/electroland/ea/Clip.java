@@ -44,6 +44,10 @@ public class Clip implements Comparable<Clip>{
     public int                          zIndex = 0;
     public long                         createTime;
 
+    // for garbage collection
+    private long                        lastTouchTime;
+    private boolean                     isKillable = true;
+
     public Clip(Content content, Color bgcolor, int top, int left, int width, int height, float alpha)
     {
         this.children       = Collections.synchronizedList(new ArrayList<Clip>());
@@ -52,6 +56,7 @@ public class Clip implements Comparable<Clip>{
         this.currentState   = new ClipState(top, left, width, height, alpha, bgcolor);
         queuedTweens        = new ConcurrentLinkedQueue<QueuedActionState>();
         createTime          = System.currentTimeMillis();
+        lastTouchTime       = System.currentTimeMillis();
     }
     /**
      * Add a clip with no content
@@ -149,7 +154,7 @@ public class Clip implements Comparable<Clip>{
             throw new RuntimeException("Attempt to queue a null Change.");
         }
         QueuedActionState qc = new QueuedActionState();
-        qc.type = QueuedActionState.CHANGE; 
+        qc.type = QueuedActionState.Type.CHANGE; 
         qc.change = change;
         qc.duration = qc.change.durationMillis;
         queuedTweens.add(qc);
@@ -169,7 +174,7 @@ public class Clip implements Comparable<Clip>{
             throw new RuntimeException("Delay duration must be > 0.");
         }
         QueuedActionState delay = new QueuedActionState();
-        delay.type = QueuedActionState.DELAY; 
+        delay.type = QueuedActionState.Type.DELAY; 
         delay.delay = millis;
         queuedTweens.add(delay);
         return this;
@@ -178,7 +183,7 @@ public class Clip implements Comparable<Clip>{
     {
         this.message = message;
         QueuedActionState state = new QueuedActionState();
-        state.type = QueuedActionState.MESSAGE; 
+        state.type = QueuedActionState.Type.MESSAGE; 
         state.delay = 0;
         queuedTweens.add(state);
         return this;
@@ -195,7 +200,7 @@ public class Clip implements Comparable<Clip>{
         }
         QueuedActionState fade = new QueuedActionState();
         fade.change = new Tween(ef).alphaTo(1.0f);;
-        fade.type = QueuedActionState.CHANGE; 
+        fade.type = QueuedActionState.Type.CHANGE; 
         fade.duration = millis;
         queuedTweens.add(fade);
         return this;
@@ -212,7 +217,7 @@ public class Clip implements Comparable<Clip>{
         }
         QueuedActionState fade = new QueuedActionState();
         fade.change = new Tween(ef).alphaTo(0.0f);;
-        fade.type = QueuedActionState.CHANGE; 
+        fade.type = QueuedActionState.Type.CHANGE; 
         fade.duration = millis;
         queuedTweens.add(fade);
         return this;
@@ -223,7 +228,7 @@ public class Clip implements Comparable<Clip>{
     public void deleteWhenDone()
     {
         QueuedActionState delete = new QueuedActionState();
-        delete.type = QueuedActionState.DELETE;
+        delete.type = QueuedActionState.Type.DELETE;
         queuedTweens.add(delete);
     }
     /**
@@ -233,12 +238,35 @@ public class Clip implements Comparable<Clip>{
     public void deleteChildrenWhenDone()
     {
         QueuedActionState delete = new QueuedActionState();
-        delete.type = QueuedActionState.DELETE_CHILDREN;
+        delete.type = QueuedActionState.Type.DELETE_CHILDREN;
         queuedTweens.add(delete);
     }
+    /**
+     * If true, request that a clip stick around forever, even if it never does 
+     * anything.
+     */
+    public void setKillable(boolean isKillable){
+        this.isKillable = isKillable;
+    }
+    /**
+     * syntactic sugar for setKillable(false)
+;     */
+    public void keepAlive(){
+        this.setKillable(false);
+    }
 
+    @SuppressWarnings("incomplete-switch")
     protected BufferedImage getImage()
     {
+        // renew life lease
+        if (this.isActive()){ // includes activity on any children.
+            lastTouchTime = System.currentTimeMillis();
+        }
+        // garbage collect
+        if (isKillable() && (System.currentTimeMillis() - getLastTouchTime() > Animation.killPauseMillis)){
+            this.kill();
+        }
+
         synchronized(children){
             Iterator<Clip> clips = children.iterator(); // pare deleted clips
             while (clips.hasNext()){
@@ -251,7 +279,7 @@ public class Clip implements Comparable<Clip>{
         if (tweenInProgress != null){
             long now = System.currentTimeMillis();
             if (now > tweenInProgress.startTime && 
-                tweenInProgress.type == QueuedActionState.CHANGE){ // run changes
+                tweenInProgress.type == QueuedActionState.Type.CHANGE){ // run changes
 
                 float percentComplete = 0.0f;
                 if (tweenInProgress.endTime != tweenInProgress.startTime){ // avoid div / 0
@@ -268,13 +296,13 @@ public class Clip implements Comparable<Clip>{
             }
             if (now > tweenInProgress.endTime){ // clean up completions
                 switch(tweenInProgress.type){
-                case(QueuedActionState.DELETE):
+                case DELETE:
                     this.kill();
                     break;
-                case(QueuedActionState.DELETE_CHILDREN):
+                case DELETE_CHILDREN:
                     this.killChildren();
                     break;
-                case(QueuedActionState.MESSAGE):
+                case MESSAGE:
                     animationManager.announce(message);
                     break;
                 }
@@ -361,5 +389,40 @@ public class Clip implements Comparable<Clip>{
     @Override
     public int compareTo(Clip clip) {
         return this.zIndex - clip.zIndex;
+    }
+    private boolean isActive(){
+        return tweenInProgress != null || queuedTweens.size() > 0 || areAnyChildrenInMotion();
+    }
+    private boolean areAnyChildrenInMotion(){
+        boolean anyInMotion = false;
+        synchronized(children){
+            for (Clip child : children){
+                anyInMotion = anyInMotion || child.isActive();
+            }
+        }
+        return anyInMotion;
+    }
+    private boolean isKillable(){
+        return this.isKillable && areAllChildrenKillable();
+    }
+    private boolean areAllChildrenKillable(){
+        synchronized(children){
+            for (Clip child : children){
+                if (!child.isKillable()) return false;
+            }
+        }
+        return true;
+    }
+    private long getLastTouchTime(){
+        long lastTouch = this.lastTouchTime;
+        synchronized(children){
+            for (Clip child : children){
+                long childLast = child.getLastTouchTime();
+                if (childLast > lastTouch){
+                    lastTouch = childLast;
+                }
+            }
+        }
+        return lastTouch;
     }
 }

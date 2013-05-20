@@ -17,7 +17,7 @@ import net.electroland.ea.easing.QuinticIn;
 public class AnimationTestFrame extends JFrame implements AnimationListener{
 
     private static final long serialVersionUID = 1L;
-    Animation anim;
+    static Animation anim;
 
     public static void main(String args[])
     {
@@ -28,7 +28,7 @@ public class AnimationTestFrame extends JFrame implements AnimationListener{
         context.put("random_rectangle", new Rectangle());
 
         // create an Animator
-        Animation anim = new Animation("animation.properties");
+        anim = new Animation("animation.properties");
         anim.setBackground(Color.WHITE);
 
         // configure test app window.
@@ -40,12 +40,21 @@ public class AnimationTestFrame extends JFrame implements AnimationListener{
         // we're listening for messages.
         anim.addListener(f);
 
+        
+        
         // create a couple clips
         Clip one = anim.addClip(anim.getContent("stillImage"),  50, 50, 100, 100, 1.0f);
         Clip two = anim.addClip(anim.getContent("slowImage"),  150, 50, 100, 100, 1.0f);
         Clip thr = anim.addClip(anim.getContent("fastImage"), new Color(0,255,0), 250, 50, 100, 100, 1.0f);
-        Clip fur = anim.addClip(Color.getHSBColor(0.9f,0.8f,1.0f), 350, 50, 100, 100, 1.0f);
+        Clip fur = one.addClip(Color.getHSBColor(0.9f,0.8f,1.0f), 0, 0, 100, 100, 1.0f);
 
+        System.out.println("one: " + one);
+        System.out.println("two: " + two);
+        System.out.println("thr: " + thr);
+        System.out.println("fur: " + fur);
+
+        //fur.keepAlive();
+        
         Sequence bounce = new Sequence(); 
 
                  bounce.yTo(150).yUsing(new QuinticIn()) // would be nice to make easing functions static.
@@ -63,14 +72,16 @@ public class AnimationTestFrame extends JFrame implements AnimationListener{
                        .duration(1000);
 
         // three bouncing clips:
-        one.queue(bounce).queue(bounce).queue(bounce).fadeOut(500).deleteWhenDone();
+        Sequence hue = new Sequence().hueBy(.1f).duration(1000);
 
-        two.pause(1000).queue(bounce).queue(bounce).queue(bounce).fadeOut(500).deleteWhenDone();
+        two.pause(2000).queue(bounce).queue(bounce).queue(bounce).fadeOut(500).announce(two);
 
-        thr.queue(bounce).queue(bounce).queue(bounce).fadeOut(500).deleteWhenDone();
+        thr.queue(bounce).queue(bounce).queue(bounce).fadeOut(500);
 
-        fur.queue(bounce).queue(bounce).queue(bounce).fadeOut(500).deleteWhenDone();
+        fur.queue(hue).queue(hue).queue(hue).fadeOut(500);
 
+        System.out.println(anim.countClips());
+        
         // render forever at 33 fps
         while (true){
             f.getGraphics().drawImage(anim.getFrame(), 0, 0, f.getWidth(), f.getHeight(), null);
@@ -85,5 +96,6 @@ public class AnimationTestFrame extends JFrame implements AnimationListener{
     @Override
     public void messageReceived(Object message) {
         System.out.println(message);
+        System.out.println(anim.countClips());
     }
 }
