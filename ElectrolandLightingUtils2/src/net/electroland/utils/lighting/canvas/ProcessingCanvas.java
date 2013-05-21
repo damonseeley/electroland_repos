@@ -36,7 +36,7 @@ public class ProcessingCanvas extends ELUCanvas2D {
             JFrame f = new JFrame();
             f.setTitle(props.get("applet"));
             f.setLayout(new BorderLayout());
-            f.setSize(this.getDimensions().width + 20, this.getDimensions().height + 40);
+            f.setSize(this.getDimensions().width + 80, this.getDimensions().height + 40);
             f.add(applet, BorderLayout.CENTER);
             f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             f.setVisible(true);

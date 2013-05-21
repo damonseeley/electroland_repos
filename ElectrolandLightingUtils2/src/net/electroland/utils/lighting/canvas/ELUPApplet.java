@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 
+import net.electroland.utils.FrameRateRingBuffer;
 import net.electroland.utils.ParameterMap;
 import net.electroland.utils.lighting.CanvasDetector;
 import net.electroland.utils.lighting.DetectionModel;
@@ -25,6 +26,7 @@ abstract public class ELUPApplet extends PApplet {
     private DetectionModel showOnly;
     private float scale = 1.0f;
     protected ParameterMap properties;
+    private FrameRateRingBuffer fpsBuffer = new FrameRateRingBuffer(45 * 10);
 
     public ParameterMap getProperties(){
         return properties;
@@ -33,6 +35,10 @@ abstract public class ELUPApplet extends PApplet {
     abstract public void drawELUContent();
 
     final public void draw(){
+
+        noStroke();
+        fill(255,255,255,255);
+        this.rect(- 1, - 1, dim.width + 2, dim.height + 2);
 
         drawELUContent();
 
@@ -62,6 +68,11 @@ abstract public class ELUPApplet extends PApplet {
                 logger.error("Cannot sync when Applet is narrower than " + dim.width + " pixels.");
             }
         }
+
+        // fps
+        fpsBuffer.markFrame();
+        textSize(12);
+        text("fps: " + (int)(fpsBuffer.getFPS()), getSyncArea().width + 10, getSyncArea().height + 10);
 
         // draw outline of sync area and...
         stroke(255);
