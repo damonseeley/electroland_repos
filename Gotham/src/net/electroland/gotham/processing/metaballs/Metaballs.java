@@ -197,7 +197,7 @@ public class Metaballs extends GothamPApplet {
     }
 
     private void renderBackground(Color bgColor){
-        fill(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), 127);
+        fill(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), 255);
         rect(0, 0, width, height);
     }
 
