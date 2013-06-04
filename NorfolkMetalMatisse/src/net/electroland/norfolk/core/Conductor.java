@@ -51,7 +51,6 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable, VizOSC
     private Raster2dViz         renderArea;
     private boolean             isHeadless = false;
     private static boolean      showSensors = false;
-    private FpsAverage          fpsAvg = new FpsAverage(20);
     private Collection<Cue>     cues;
     private EventMetaData       meta;
     private String              trainChannelId;
@@ -179,7 +178,7 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable, VizOSC
                     CanvasDetector[] detectors = canvas.sync(pixels);
 
                     if (renderArea != null){
-                        renderArea.update(frame, detectors, elu, fpsAvg.getAverage());
+                        renderArea.update(frame, detectors, elu);
                         renderArea.repaint();
                     }
 
@@ -205,8 +204,6 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable, VizOSC
             // FPS management
             try{
 
-                fpsAvg.touch();
-
                 long currentTime = System.currentTimeMillis();
                 int renderTime = (int)(currentTime - startRender);
 
@@ -222,7 +219,7 @@ public class Conductor implements PeopleListener, Runnable, Shutdownable, VizOSC
             }
 
             if (mainControls != null){
-                mainControls.setTitle("MetalMatisse: fps = " + fpsAvg.getAverage());
+                mainControls.setTitle("MetalMatisse: fps = " + (int)elu.getMeasuredFPS());
             }
         }
     }
