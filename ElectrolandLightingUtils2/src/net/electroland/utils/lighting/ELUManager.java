@@ -49,7 +49,7 @@ public class ELUManager implements Runnable, TestSuiteCompletionListener {
     private int autostart = -1;
 
     // assume a general 45 fps over 10 seconds.
-    private FrameRateRingBuffer fpsBuffer = new FrameRateRingBuffer(45 * 10);
+    private FrameRateRingBuffer fpsBuffer = new FrameRateRingBuffer(45);
 
     // Unit test.  Does sweep continuously.
     public static void main(String args[])
