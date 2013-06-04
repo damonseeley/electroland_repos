@@ -10,11 +10,13 @@ public class TrainCue extends Cue implements ChannelDriven {
 
     private List<String> shows;
     private int timeout;
+    private Random random;
 
     public TrainCue(ParameterMap p) {
         super(p);
-        shows = p.getRequiredList("cues");
+        shows   = p.getRequiredList("cues");
         timeout = p.getRequiredInt("timeout");
+        random  = new Random();
     }
 
     @Override
@@ -24,7 +26,7 @@ public class TrainCue extends Cue implements ChannelDriven {
 
     @Override
     public void fire(EventMetaData meta, ClipPlayer cp, InputChannel channel) {
-        cp.play(shows.get(new Random().nextInt(shows.size())));
+        cp.play(shows.get(random.nextInt(shows.size())));
     }
 
     @Override
