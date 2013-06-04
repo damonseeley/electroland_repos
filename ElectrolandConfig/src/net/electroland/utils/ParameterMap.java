@@ -262,11 +262,11 @@ public class ParameterMap implements Map<String, String>{
     }
 
     @Override
-    // TODO: throw RuntimeException if arg0 or arg1 are null
     public String put(String arg0, String arg1) {
         return params.put(arg0, arg1);
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public void putAll(Map arg0) {
         params.putAll(arg0);
