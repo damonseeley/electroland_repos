@@ -11,7 +11,6 @@ import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
 import remixlab.proscene.CameraProfile;
-import remixlab.proscene.Quaternion;
 import remixlab.proscene.Scene;
 import saito.objloader.OBJModel;
 
