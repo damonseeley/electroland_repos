@@ -13,12 +13,14 @@ public class ComboCue extends Cue implements ChannelDriven {
     private static Logger logger = Logger.getLogger(ComboCue.class);
     private int timeout, tripInterval;
     private List<String>shows;
+    private Random random;
 
     public ComboCue(ParameterMap p) {
         super(p);
         tripInterval = p.getRequiredInt("tripinterval");
         timeout      = p.getRequiredInt("timeout");
         shows        = p.getRequiredList("cues");
+        random       = new Random(); 
     }
 
     @Override
@@ -30,7 +32,7 @@ public class ComboCue extends Cue implements ChannelDriven {
     public void fire(EventMetaData meta, ClipPlayer cp, InputChannel channel) {
         // only the last channel fired is passed in
         logger.debug("run combo for channel " + channel);
-        cp.play(shows.get(new Random().nextInt(shows.size())));
+        cp.play(shows.get(random.nextInt(shows.size())));
     }
 
     @Override
