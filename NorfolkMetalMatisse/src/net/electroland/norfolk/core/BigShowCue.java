@@ -13,18 +13,20 @@ public class BigShowCue extends Cue {
     private int waitMillis;
     private List<String>cues;
     private String trainChannelId;
+    private Random random;
 
     public BigShowCue(ParameterMap p) {
         super(p);
         waitMillis      = p.getRequiredInt("waitMillis");
         cues            = p.getRequiredList("cues");
         trainChannelId  = p.getRequired("trainChannelId");
+        random          = new Random();
     }
 
     @Override
     public void fire(EventMetaData meta, ClipPlayer cp) {
         logger.debug("fire big show.");
-        cp.play(cues.get(new Random().nextInt(cues.size())));
+        cp.play(cues.get(random.nextInt(cues.size())));
     }
 
     @Override
