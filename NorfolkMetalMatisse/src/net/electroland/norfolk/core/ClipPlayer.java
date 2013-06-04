@@ -179,6 +179,9 @@ public class ClipPlayer implements AnimationListener {
         //add interactive first so screensaver covers it up
         interactive = eam.addClip(null, null, 0, 0, eam.getFrameDimensions().width, eam.getFrameDimensions().height, 1.0f);
         screensaver = eam.addClip(null, null, 0, 0, eam.getFrameDimensions().width, eam.getFrameDimensions().height, 1.0f);
+
+        interactive.keepAlive();
+        screensaver.keepAlive();
     }
 
     /** SCREENSAVER LOGIC ****************************/
@@ -275,6 +278,11 @@ public class ClipPlayer implements AnimationListener {
         ssCobras = screensaver.addClip(null, null, 0, elementsVMax, eam.getFrameDimensions().width, cobrasVMax-elementsVMax, 1.0f);
         ssLeaves = screensaver.addClip(null, null, leavesX, leavesY, leavesWidth, leavesHeight, 1.0f);
 
+        ssVase.keepAlive();
+        ssFlora.keepAlive();
+        ssCobras.keepAlive();
+        ssLeaves.keepAlive();
+        
         //TESTS for regions
         //ssVase.addClip(null, Color.getHSBColor(.0f, 1.0f, 1.0f), 0, 0, eam.getFrameDimensions().width, vaseVMax, 1.0f);
         //ssFlora.addClip(null, Color.getHSBColor(.3f, 1.0f, 1.0f), 0, 0, eam.getFrameDimensions().width, elementsVMax, 1.0f);
@@ -310,9 +318,7 @@ public class ClipPlayer implements AnimationListener {
         }
         for (Clip c : clips){
             if (c == last){
-                c.announce(Message.SPARKLE).deleteWhenDone();
-            }else{
-                c.deleteWhenDone();
+                c.announce(Message.SPARKLE);
             }
         }
     }
@@ -360,8 +366,7 @@ public class ClipPlayer implements AnimationListener {
         //sweep.yTo(eam.getFrameDimensions().height).duration(duration);
         sweep.xTo(leavesWidth).duration(duration);
         
-        black.pause(duration + fadeoutDuration + 500).deleteWhenDone();
-        leafGreen.queue(sweep).announce(Message.LEAVES).fadeOut(fadeoutDuration).deleteWhenDone();
+        leafGreen.queue(sweep).announce(Message.LEAVES).fadeOut(fadeoutDuration);
 
         /*
         Sequence slowPulseOut = new Sequence();
@@ -370,7 +375,7 @@ public class ClipPlayer implements AnimationListener {
         Sequence slowPulseIn = new Sequence();
         slowPulseIn.alphaTo(0.99f).duration(throbPeriod);
 
-        leafPulse.queue(slowPulseOut).pause(500).queue(slowPulseIn).queue(slowPulseOut).pause(500).queue(slowPulseIn).queue(slowPulseOut).queue(slowPulseIn).pause(500).deleteWhenDone();  
+        leafPulse.queue(slowPulseOut).pause(500).queue(slowPulseIn).queue(slowPulseOut).pause(500).queue(slowPulseIn).queue(slowPulseOut).queue(slowPulseIn).pause(500);  
          */
         
     }
@@ -394,7 +399,7 @@ public class ClipPlayer implements AnimationListener {
         sweep.alphaTo(1.0f).duration(fadeInTime).newState();
         sweep.yTo(0).duration(duration-fadeInTime);
 
-        clouds.queue(sweep).announce(Message.SCREENSAVER).fadeOut(fadeInTime*2).deleteWhenDone();
+        clouds.queue(sweep).announce(Message.SCREENSAVER).fadeOut(fadeInTime*2);
     }
 
 
@@ -411,8 +416,8 @@ public class ClipPlayer implements AnimationListener {
         slowPulseIn.alphaTo(ssVaseThrobMax).duration(throbPeriod);
 
         //delete the black background
-        vaseBlack.pause(throbPeriod*2).pause(1000).deleteWhenDone();
-        vaseBlue.queue(slowPulseIn).queue(slowPulseOut).announce(Message.SSVASE_THROB).pause(500).deleteWhenDone();    
+        vaseBlack.pause(throbPeriod*2).pause(1000);
+        vaseBlue.queue(slowPulseIn).queue(slowPulseOut).announce(Message.SSVASE_THROB).pause(500);    
     }
 
 
@@ -434,7 +439,7 @@ public class ClipPlayer implements AnimationListener {
         //sweep.yTo(eam.getFrameDimensions().height).duration(duration);
         sweep.xTo(0).duration(duration);
 
-        clouds.queue(sweep).announce(Message.COBRACLOUDS).fadeOut(3000).deleteWhenDone();
+        clouds.queue(sweep).announce(Message.COBRACLOUDS).fadeOut(3000);
     }
 
     public void ssInitCobras() {
@@ -490,7 +495,7 @@ public class ClipPlayer implements AnimationListener {
         slowPulseOut.hueBy(0.05f).duration(throbPeriod);
         slowPulseOut.alphaTo(0.0f).duration(throbPeriod);
 
-        cobraBlue.queue(slowPulseIn).pause(holdPeriod).queue(slowPulseOut).announce(Message.COBRA_THROB).deleteWhenDone();
+        cobraBlue.queue(slowPulseIn).pause(holdPeriod).queue(slowPulseOut).announce(Message.COBRA_THROB);
 
         if (cobraIndex < 2) {
             cobraIndex++;
@@ -520,7 +525,7 @@ public class ClipPlayer implements AnimationListener {
         Sequence pulseOut = new Sequence();
         pulseOut.alphaTo(sensorPulseMin).duration(dur*2);
 
-        vasePulse.queue(pulseIn).queue(pulseOut).fadeOut(300).deleteWhenDone();    
+        vasePulse.queue(pulseIn).queue(pulseOut).fadeOut(300);    
     }
     
     public void iPulseCobrasSensor() {
@@ -534,7 +539,7 @@ public class ClipPlayer implements AnimationListener {
         Sequence pulseOut = new Sequence();
         pulseOut.alphaTo(sensorPulseMin).duration(dur*2);
 
-        cobrasPulse.queue(pulseIn).queue(pulseOut).fadeOut(300).deleteWhenDone();    
+        cobrasPulse.queue(pulseIn).queue(pulseOut).fadeOut(300);    
     }
 
     public void testCobra(){
@@ -559,7 +564,7 @@ public class ClipPlayer implements AnimationListener {
         Sequence pulseOut = new Sequence();
         pulseOut.alphaTo(sensorPulseMin).duration(dur*2);
 
-        cobrasPulse.queue(pulseIn).queue(pulseOut).fadeOut(300).deleteWhenDone();    
+        cobrasPulse.queue(pulseIn).queue(pulseOut).fadeOut(300);    
     }
 
     private Fixture getNearestCobra(Point3d point){
@@ -597,7 +602,10 @@ public class ClipPlayer implements AnimationListener {
     public void initInteractive(){
         //add iVase
         iVase = interactive.addClip(null, null, 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 1.0f);
+        iVase.keepAlive();
+
         //iFlora = interactive.addClip(null, null, 0, vaseVMax, eam.getFrameDimensions().width, elementsVMax, 1.0f);
+        //iFlora.keepAlive();
 
         //call vase throb
         iVaseThrob();
@@ -606,7 +614,6 @@ public class ClipPlayer implements AnimationListener {
     public void iVaseThrob() {
 
         Clip iVaseBlack = iVase.addClip(null, Color.getHSBColor(.0f, .0f, .0f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, 1.0f);
-
         Clip vaseBlue = iVase.addClip(null, Color.getHSBColor(.55f, .99f, .99f), 0, vaseVMin, eam.getFrameDimensions().width, vaseVMax, iVaseMin);
 
         Sequence slowPulseOut = new Sequence();
@@ -617,8 +624,8 @@ public class ClipPlayer implements AnimationListener {
         slowPulseIn.hueBy(-0.05f).duration(throbPeriod*2);
         slowPulseIn.alphaTo(iVaseMax).duration(throbPeriod*2);
 
-        iVaseBlack.pause(throbPeriod*2 + 1000).deleteWhenDone();
-        vaseBlue.queue(slowPulseIn).queue(slowPulseOut).announce(Message.IVASE_THROB).pause(500).deleteWhenDone();    
+        iVaseBlack.pause(throbPeriod*2 + 1000);
+        vaseBlue.queue(slowPulseIn).queue(slowPulseOut).announce(Message.IVASE_THROB).pause(500);    
     }
 
 
@@ -660,12 +667,12 @@ public class ClipPlayer implements AnimationListener {
         bong.alphaTo(off).pause(p1).newState().alphaTo(on).pause(p2).newState();
         bong.alphaTo(off).pause(p1).newState().alphaTo(on).pause(p2).newState();
 
-        tl.queue(bong).fadeOut(500).deleteWhenDone();
-        br.queue(bong).fadeOut(500).deleteWhenDone();
-        tr.queue(bing).fadeOut(500).deleteWhenDone();
-        bl.queue(bing).fadeOut(500).deleteWhenDone();
+        tl.queue(bong).fadeOut(500);
+        br.queue(bong).fadeOut(500);
+        tr.queue(bing).fadeOut(500);
+        bl.queue(bing).fadeOut(500);
 
-        bg.pause(8 * pause).fadeOut(500).deleteWhenDone();
+        bg.pause(8 * pause).fadeOut(500);
     }
 
     public void freakOut() {
@@ -685,8 +692,8 @@ public class ClipPlayer implements AnimationListener {
         Sequence lightUp = new Sequence();
         lightUp.alphaTo(1.0f).duration(enterDuration);
 
-        bgbk.queue(lightUp).pause(10000).fadeOut(500).deleteWhenDone();
-        bgor.queue(lightUp).pause(danceDuration).fadeOut(500).deleteWhenDone();
+        bgbk.queue(lightUp).pause(10000).fadeOut(500);
+        bgor.queue(lightUp).pause(danceDuration).fadeOut(500);
 
         // dance
         Clip stage = eam.addClip(-width, 0, width * 2, height, 1.0f);
@@ -704,7 +711,7 @@ public class ClipPlayer implements AnimationListener {
         // move the whole thing
         Sequence shiftRight = new Sequence();
         shiftRight.xTo(0).duration(4 * danceDuration);
-        stage.pause(enterDuration).queue(shiftRight).fadeOut(500).deleteWhenDone();
+        stage.pause(enterDuration).queue(shiftRight).fadeOut(500);
 
         Sequence flash = new Sequence();
         flash.alphaTo(1.0f).duration(150).newState();
@@ -719,7 +726,6 @@ public class ClipPlayer implements AnimationListener {
             c.queue(flash).pause(400).queue(flash).queue(new Sequence().hueBy((float)Math.random()));
             c.queue(new Sequence().pause(500));
             c.queue(flash).pause(400).queue(flash).queue(new Sequence().hueBy((float)Math.random()));
-            c.deleteWhenDone();
         }
 
         // flash odds
@@ -730,7 +736,6 @@ public class ClipPlayer implements AnimationListener {
             c.queue(flash).pause(400).queue(flash).queue(new Sequence().hueBy((float)Math.random()));
             c.queue(new Sequence().pause(500));
             c.queue(flash).pause(400).queue(flash).queue(new Sequence().hueBy((float)Math.random()));
-            c.deleteWhenDone();
         }
 
         // some brighter lights
@@ -739,7 +744,6 @@ public class ClipPlayer implements AnimationListener {
         brights.pause(2000).queue(flash).pause(400).queue(flash);
         brights.pause(2000).queue(flash).pause(400).queue(flash);
         brights.pause(750).queue(flash);
-        brights.deleteWhenDone();
     }
 
     public void comboCobrasOrange(){
@@ -758,7 +762,7 @@ public class ClipPlayer implements AnimationListener {
         sweep.xTo(eam.getFrameDimensions().width).duration(duration);
         sweep.xTo(0).duration(duration);
 
-        parent.queue(sweep).fadeOut(500).deleteWhenDone(); 
+        parent.queue(sweep).fadeOut(500); 
     }
 
 
@@ -777,7 +781,7 @@ public class ClipPlayer implements AnimationListener {
         sweep.xTo(eam.getFrameDimensions().width).duration(duration);
         //sweep.xTo(0).duration(duration);
 
-        parent.queue(sweep).fadeOut(500).deleteWhenDone(); 
+        parent.queue(sweep).fadeOut(500); 
 
     }
 
@@ -798,7 +802,7 @@ public class ClipPlayer implements AnimationListener {
         sweep.xTo(eam.getFrameDimensions().width).duration(duration);
         //sweep.xTo(0).duration(duration);
 
-        parent.queue(sweep).fadeOut(500).deleteWhenDone(); 
+        parent.queue(sweep).fadeOut(500); 
 
     }
     
@@ -810,7 +814,7 @@ public class ClipPlayer implements AnimationListener {
         Sequence fade = new Sequence();
         fade.brightnessTo(0.0f).duration(2000);
 
-        c1.pause(2000).queue(fade).fadeOut(1500).deleteWhenDone();
+        c1.pause(2000).queue(fade).fadeOut(1500);
     }
 
 
@@ -831,9 +835,9 @@ public class ClipPlayer implements AnimationListener {
         sweep.yTo(eam.getFrameDimensions().height).duration(duration);
         sweep.hueBy(0.2f);
 
-        c1.queue(sweep).fadeOut(500).deleteWhenDone();
-        c2.pause(duration-duration/4).queue(sweep).fadeOut(500).deleteWhenDone();
-        black.pause(duration*2).fadeOut(1500).deleteWhenDone();
+        c1.queue(sweep).fadeOut(500);
+        c2.pause(duration-duration/4).queue(sweep).fadeOut(500);
+        black.pause(duration*2).fadeOut(1500);
     }    
 
 
@@ -849,8 +853,8 @@ public class ClipPlayer implements AnimationListener {
         sweep.xTo(eam.getFrameDimensions().width + width).duration(duration);
         sweep.hueBy(0.2f);
 
-        c1.queue(sweep).fadeOut(500).deleteWhenDone();    
-        c2.pause(duration/2).queue(sweep).fadeOut(500).deleteWhenDone();    
+        c1.queue(sweep).fadeOut(500);    
+        c2.pause(duration/2).queue(sweep).fadeOut(500);    
 
     }
 
@@ -868,7 +872,7 @@ public class ClipPlayer implements AnimationListener {
         Sequence reset = new Sequence();
         reset.xTo(-width).hueBy(-0.2f).duration(0);
 
-        c1.queue(sweep).queue(reset).queue(sweep).fadeOut(500).deleteWhenDone();    
+        c1.queue(sweep).queue(reset).queue(sweep).fadeOut(500);    
     }
 
     public void fadeOrangeSlow(){
@@ -879,7 +883,7 @@ public class ClipPlayer implements AnimationListener {
         //Clip c1 = eam.addClip(eam.getContent("orange"), Color.getHSBColor(.4f, .99f, .99f), -width/2, 0, width, eam.getFrameDimensions().height, 1.0f);
         Clip c1 = eam.addClip(eam.getContent("orange"), Color.getHSBColor(.4f, .99f, .99f), -width/2, vaseVMax, width, eam.getFrameDimensions().height, 1.0f);
 
-        c1.pause(2500).fadeOut(duration-2500).deleteWhenDone();    
+        c1.pause(2500).fadeOut(duration-2500);    
     }
 
     public void fadeBluePurpleSlow(){
@@ -894,8 +898,8 @@ public class ClipPlayer implements AnimationListener {
         Sequence pulseOut = new Sequence();
         pulseOut.alphaTo(0.0f).duration(duration - pulseDur);
 
-        //c1.pause(2500).fadeOut(duration-2500).deleteWhenDone();    
-        c1.queue(pulseIn).queue(pulseOut).deleteWhenDone();    
+        //c1.pause(2500).fadeOut(duration-2500);    
+        c1.queue(pulseIn).queue(pulseOut);    
     }
 
     public void radialBlueGreen3(){
@@ -912,8 +916,8 @@ public class ClipPlayer implements AnimationListener {
         sweep.xTo(eam.getFrameDimensions().width + width).duration(duration);
         sweep.hueBy(0.2f);
 
-        c1.queue(sweep).fadeOut(500).deleteWhenDone();    
-        c2.pause(duration/2).queue(sweep).fadeOut(500).deleteWhenDone();    
+        c1.queue(sweep).fadeOut(500);    
+        c2.pause(duration/2).queue(sweep).fadeOut(500);    
     }
 
 
@@ -942,7 +946,7 @@ public class ClipPlayer implements AnimationListener {
         Sequence huechange = new Sequence();
         huechange.hueBy(0.3f);
 
-        c.queue(huechange).pause(800).fadeOut(1000).deleteWhenDone();
+        c.queue(huechange).pause(800).fadeOut(1000);
     }
 
     public void randomVibraSound(){
@@ -981,7 +985,7 @@ public class ClipPlayer implements AnimationListener {
         huechange.hueBy(huernd);
         huechange.duration(2000);
         huechange.alphaTo(0.5f);
-        c.queue(huechange).fadeOut(1000).deleteWhenDone();
+        c.queue(huechange).fadeOut(1000);
     }
 
     public void testRipple(){
@@ -1016,7 +1020,7 @@ public class ClipPlayer implements AnimationListener {
         Sequence reduceBrightness = new Sequence();
         reduceBrightness.alphaTo(brightness > rippleFloor ? brightness : rippleFloor).duration(fadeIn);
 
-        f.pause(pause).queue(reduceBrightness).pause(hold).fadeOut(fadeOut).deleteWhenDone();
+        f.pause(pause).queue(reduceBrightness).pause(hold).fadeOut(fadeOut);
     }
 
     private boolean isFlora(Fixture fixture){
@@ -1060,7 +1064,7 @@ public class ClipPlayer implements AnimationListener {
         //logger.info("Random hue change is " + huernd);
         huechange.hueBy(huernd).duration(2000);
         huechange.alphaTo(0.5f).duration(2000);
-        c.queue(huechange).fadeOut(1000).deleteWhenDone();
+        c.queue(huechange).fadeOut(1000);
 
     }
 
@@ -1079,7 +1083,7 @@ public class ClipPlayer implements AnimationListener {
         //logger.info("Random hue change is " + huernd);
         //huechange.hueBy(huernd).duration(2000);
         huechange.alphaTo(0.5f).duration(3000);
-        c.queue(huechange).fadeOut(1000).deleteWhenDone();
+        c.queue(huechange).fadeOut(1000);
 
     }
     
@@ -1099,7 +1103,7 @@ public class ClipPlayer implements AnimationListener {
         //logger.info("Random hue change is " + huernd);
         //huechange.hueBy(huernd).duration(2000);
         huechange.alphaTo(0.5f).duration(3000);
-        c.queue(huechange).fadeOut(1000).deleteWhenDone();
+        c.queue(huechange).fadeOut(1000);
 
     }
     */
@@ -1116,13 +1120,15 @@ public class ClipPlayer implements AnimationListener {
                 (int)fixture.getLocation().x - 4,
                 (int)fixture.getLocation().y - 4, 10, 10, 1.0f);
 
-        c.pause(800).fadeOut(1000).deleteWhenDone();
+        c.pause(800).fadeOut(1000);
     }
 
 
 
 
-
+    public void displayClipCount(){
+        logger.error("  total clips in memory: " + eam.countClips());
+    }
 
 
 
