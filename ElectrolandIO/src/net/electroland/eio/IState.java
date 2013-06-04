@@ -2,11 +2,8 @@ package net.electroland.eio;
 
 import net.electroland.eio.filters.IOFilter;
 
-import org.apache.log4j.Logger;
-
 public class IState extends IOState{
 
-    private static Logger logger = Logger.getLogger(IState.class);    
     boolean state;
     boolean lastState = false;
     long lastStateChange = System.currentTimeMillis();
