@@ -79,33 +79,11 @@ public class Raster2dViz extends JPanel {
                         g2d.drawString(f.getName(), (int)f.getLocation().x + textRightOffset, (int)f.getLocation().y + textLeftOffset);
                     }
                 }
-
-                //do this once only
-                // fps
-                /*
-                Font font = new Font("Arial", Font.PLAIN, 9);
-                g2d.setFont(font);
-                g2d.setColor(Color.BLACK);
-                g2d.drawString(measuredFps.toString(), 210, 10);
-				*/
-
             }
         }
     }
 
-    public void update(BufferedImage frame, CanvasDetector[] detectors, int fps){
-        if (frame == null){
-            this.frame = frame;
-            this.detectors = detectors;
-        }else{
-            synchronized(frame){
-                this.frame = frame;
-                this.detectors = detectors;
-            }
-        }
-    }
-
-    public void update(BufferedImage frame, CanvasDetector[] detectors, ELUManager elu, int fps){
+    public void update(BufferedImage frame, CanvasDetector[] detectors, ELUManager elu){
         if (frame == null){
             this.frame = frame;
             this.detectors = detectors;
