@@ -8,16 +8,11 @@ import java.util.Map;
 import net.electroland.utils.ElectrolandProperties;
 import net.electroland.utils.ParameterMap;
 import net.electroland.utils.hours.OperatingHours;
-
-import org.apache.log4j.Logger;
-
 import processing.core.PApplet;
 import ddf.minim.AudioPlayer;
 import ddf.minim.Minim;
 
 public class SimpleSoundManager {
-
-    private static Logger       logger = Logger.getLogger(SimpleSoundManager.class);
 
     private Map<String, SoundElement>playList;
     private Minim minim;
@@ -52,7 +47,8 @@ public class SimpleSoundManager {
         Map<String,ParameterMap> soundProps = props.getObjects("sound");
         playList = new HashMap<String,SoundElement>();
         for (String id : soundProps.keySet()){
-            SoundElement se = new SoundElement(soundProps.get(id).get("filename"),soundProps.get(id).getRequired("groupID"));
+            SoundElement se = new SoundElement(soundProps.get(id).get("filename"),
+                                                soundProps.get(id).getRequired("groupID"));
             playList.put(id, se);
         }
         if (props.getRequiredBoolean("settings", "global", "soundEnabled")){
@@ -76,19 +72,16 @@ public class SimpleSoundManager {
         }
     }
 
-	public void playGroupRandom(String gid) {
-		//logger.debug("Play a sound from group '" + gid + "'");
-		ArrayList<SoundElement> sounds = new ArrayList<SoundElement>(); //Generic ArrayList to Store only String objects
-		for (SoundElement se : playList.values()) {
-		    if (se.groupID.equals(gid)) {
-		    	sounds.add(se);
-		    }
-		}
-		int randSoundIndex = (int)(Math.random() * sounds.size());
-		//logger.debug(randSoundIndex);
-		playSoundFile(sounds.get(randSoundIndex).filename);
-		
-	}
+    public void playGroupRandom(String gid) {
+        ArrayList<SoundElement> sounds = new ArrayList<SoundElement>(); //Generic ArrayList to Store only String objects
+        for (SoundElement se : playList.values()) {
+            if (se.groupID.equals(gid)) {
+                sounds.add(se);
+            }
+        }
+        int randSoundIndex = (int)(Math.random() * sounds.size());
+        playSoundFile(sounds.get(randSoundIndex).filename);
+    }
 }
 
 class SoundElement {
