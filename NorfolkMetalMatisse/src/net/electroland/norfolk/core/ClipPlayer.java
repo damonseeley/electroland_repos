@@ -347,6 +347,11 @@ public class ClipPlayer implements AnimationListener {
         int width     = 600;
         
         //this is culled by change later
+        // From BRADLEY: I don't think this does get culled later. According to
+        // my environment, this object is never referenced after instantiation.
+        // What is it supposed to do? Based on automated garbage collection,
+        // It is simply going to be deleted in about 1 second from being 
+        // created.
         Clip black = ssLeaves.addClip(null, Color.getHSBColor(.0f, .0f, .0f), 0, 0, leavesWidth, leavesHeight, 1.0f);
         
         /*Clip leafPulse    = ssLeaves.addClip(null, 
