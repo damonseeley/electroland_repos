@@ -82,6 +82,7 @@ public class KiNetRecipient extends Recipient {
     @Override
     public void allOn()
     {
+        setAll(ON);
         byte[] bytes = new byte[this.totalChannels];
         for (int i=0; i < bytes.length; i++){
             bytes[i] = ON;
@@ -92,6 +93,7 @@ public class KiNetRecipient extends Recipient {
     @Override
     public void allOff()
     {
+        setAll(OFF);
         byte[] bytes = new byte[this.totalChannels];
         for (int i=0; i < bytes.length; i++){
             bytes[i] = OFF;

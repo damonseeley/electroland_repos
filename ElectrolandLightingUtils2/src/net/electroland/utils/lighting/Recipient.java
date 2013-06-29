@@ -7,7 +7,7 @@ import net.electroland.utils.ParameterMap;
 abstract public class Recipient {
 
     private String name;
-    private CanvasDetector[] channels;
+    protected CanvasDetector[] channels;
 
     public void setName(String name){
         this.name = name;
@@ -33,6 +33,15 @@ abstract public class Recipient {
         }
 
         send(b);
+    }
+
+    protected void setAll(byte b){
+        for (int i = 0; i < channels.length; i++)
+        {
+            if (channels[i] != null){
+                channels[i].setValue(b);
+            }
+        }
     }
 
     public CanvasDetector[] getChannels()
