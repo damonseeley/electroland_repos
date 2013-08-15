@@ -12,6 +12,8 @@ public:
 	 long timeToDeath;
 
 	 std::vector<Track*> tracks;
+	 	std::vector<Track*> enters;
+	std::vector<Track*> exits;
 
 	Tracker(float maxDistSqr, long provisionalTime, long timeToDeath);
  	virtual void updateTracks(std::vector<Blob> &blobs, long curtime) = 0;

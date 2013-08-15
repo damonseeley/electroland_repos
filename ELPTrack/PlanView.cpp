@@ -60,6 +60,7 @@ void PlanView::setBinDims(int width, int height){
 	binWidth = width;
 	binHeight = height;
 	bins = cv::Mat(cv::Size(binWidth, binHeight), CV_32F);
+	displayImage = cv::Mat(cv::Size(binWidth*3, binHeight*3),CV_8UC3) ;
 }
 
 

@@ -10,6 +10,7 @@ public:
 	static float provisionalPenalty;
 	static long provisionalTime;
 
+
 	long id;
 
 	float x;
@@ -20,6 +21,9 @@ public:
 
 	bool isMatched;
 	bool isProvisional;
+
+	float provisionality;
+	float health;
 
 	Track(float x, float z, long time);
 	

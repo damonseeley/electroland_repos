@@ -31,6 +31,14 @@ void GreedyTracker::printTracks() {
 void GreedyTracker::updateTracks(std::vector<Blob> &blobs, long curtime) {
 	matches.clear();
 	oldTracks.clear();
+	enters.clear();
+	
+	for(std::vector<Track *>::iterator it = exits.begin(); it != exits.end(); ++it) {
+		Track* t = *it;
+		delete t;
+	}
+	exits.clear();
+
 
 //	std::cout << "----- start ------" << std::endl;
 //	printTracks();
@@ -82,7 +90,7 @@ void GreedyTracker::updateTracks(std::vector<Blob> &blobs, long curtime) {
 				if(t->lastTrack > provisionalDeathCutoff) {
 					tracks.push_back(t); 
 				} else {
-					delete t;
+					exits.push_back(t);
 				}
 			} else {
 				if(t->lastTrack > deathCutoff) {
@@ -100,7 +108,9 @@ void GreedyTracker::updateTracks(std::vector<Blob> &blobs, long curtime) {
 
 	for(std::vector<Blob>::const_iterator  it = blobs.begin(); it != blobs.end(); ++it) {
 		if(! it->isMatched) { // create a provisional track
-			tracks.push_back(new Track(it->x, it->z, curtime));
+			Track *t = new Track(it->x, it->z, curtime);
+			enters.push_back(t);
+			tracks.push_back(t);
 		}
 	}
 

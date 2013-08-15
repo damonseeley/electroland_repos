@@ -1,9 +1,17 @@
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 project(PersonTrack3D)
+
 set(PCL_DIR "C:/Program Files (x86)/PCL")
+
 set(MESA_PATH "C:/Program Files (x86)/MesaImaging/Swissranger/libMesaSR" CACHE PATH "path to mesa libs")
+
 set(OPENCV_BLD_PATH "C:/opencv/build/x86/vc10" CACHE PATH "path to the open CV build")
-set(OPENCV_INC_PATH "C:/opencv/build/include" CACHE PATH "path to the open CV incluse")
+set(OPENCV_INC_PATH "C:/opencv/build/include" CACHE PATH "path to the open CV include")
+
+set(FLYCAP_INC_PATH "C:/Program Files (x86)/Point Grey Research/FlyCapture2/include CACHE PATH "path to point grey fly capture2 includes")
+set(FLYCAP_LIB_PATH "C:/Program Files (x86)/Point Grey Research/FlyCapture2/lib CACHE PATH "path to point grey fly capture2 libs")
+
+
 find_package(PCL 1.3 REQUIRED COMPONENTS common io visualization sample_consensus)
 #find_package( OpenCV REQUIRED ) doesn't work
 
@@ -13,8 +21,8 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost 1.50.0 COMPONENTS program_options) 
 
 
-include_directories(${PCL_INCLUDE_DIRS}  ${OPENCV_INC_PATH} ${MESA_PATH} ${Boost_INCLUDE_DIRS})
-link_directories(${PCL_LIBRARY_DIRS} "${OPENCV_BLD_PATH}/lib" ${MESA_PATH} )
+include_directories(${PCL_INCLUDE_DIRS}  ${OPENCV_INC_PATH} ${MESA_PATH} ${Boost_INCLUDE_DIRS} ${FLYCAP_INC_PATH})
+link_directories(${PCL_LIBRARY_DIRS} "${OPENCV_BLD_PATH}/lib" ${MESA_PATH} ${FLYCAP_LIB_PATH} )
 add_definitions(${PCL_DEFINITIONS})
 add_executable(person_track_3d main_person_track_3d.cpp)
 set(OPENCV_LIBS_FIX)

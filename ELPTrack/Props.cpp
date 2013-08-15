@@ -1,6 +1,9 @@
 #include "Props.h"
 #include <fstream>
 #include <iostream>
+#include <sstream>
+#include <iomanip>
+
 //#include <locale>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/posix_time/posix_time_io.hpp>
@@ -13,10 +16,22 @@ Props::Props() {
 
 
 
-
+	
 void Props::writeToFile(string filename) {
+
+	int versionNum = 0;
+	string freeFilename = filename + ".ini";
+	while(FILE *testFile = fopen(freeFilename.c_str(), "r")) {
+		std::cout << freeFilename << " is already in use." << std::endl;
+		fclose(testFile);
+		stringstream  ss;
+		ss << filename << "_" <<  versionNum++ << ".ini";
+		freeFilename = ss.str(); 
+
+	}
+	std::cout << " saving properties to " << freeFilename << std::endl;
 	ofstream file;
-	file.open(filename);
+	file.open(freeFilename);
 
   time_t rawtime;
   struct tm * timeinfo;
@@ -24,16 +39,25 @@ void Props::writeToFile(string filename) {
 
   time ( &rawtime );
   timeinfo = localtime ( &rawtime );
-  strftime (buffer,80,"%Y-%m-%d-%H-%M-%S",timeinfo);
+  strftime (buffer,80,"%Y-%m-%d, %H-%M-%S",timeinfo);
 
-	file << "# automatically generated property file" << std::endl;
+	file << "# automatically generated ELPTrack property file" << std::endl;
 	file << "# " << buffer << std::endl;
-	file << std::endl;
 
 	for (std::map<string, boost::any>::iterator it=theProps->map.begin(); it != theProps->map.end(); it++ ) { 
 		   if(typeid(float) == it->second.type()) {
-		   file << it->first << "=" << boost::any_cast<float>(it->second) <<std::endl;
-	   }
+		   file << setw(10) << std::left << it->first << "= " << setw(10) << boost::any_cast<float>(it->second) <<
+			    "# " << (theProps->optionDesc.find(it->first, false)).description() <<std::endl;
+		   } else if (typeid(int) == it->second.type()) {
+		   file << setw(10) << std::left << it->first << "= " << setw(10) << boost::any_cast<int>(it->second) <<
+			    "# " << (theProps->optionDesc.find(it->first, false)).description() <<std::endl;
+		   } else if (typeid(string) == it->second.type()) {
+		   file << setw(10) << std::left << it->first << "= " << setw(10) << boost::any_cast<string>(it->second) <<
+			    "# " << (theProps->optionDesc.find(it->first, false)).description() <<std::endl;
+		   } else if (typeid(bool) == it->second.type()) {
+		   file << setw(10) << std::left << it->first << "= " << setw(10) << boost::any_cast<bool>(it->second) <<
+			    "# " << (theProps->optionDesc.find(it->first, false)).description() <<std::endl;
+		   }
 	} 
 	file.close();
 }
@@ -70,6 +94,30 @@ int Props::getInt (string name) {
 	return boost::any_cast<int>(get(name));
 }
 
+
+//strings
+void Props::inc(string name, string amount, bool shouldNotify) {
+	set(name, getString(name) + amount, shouldNotify); // concat
+}
+
+void Props::set(string name, string value, bool shouldNotify) {
+	set(name, boost::any(value), shouldNotify);
+}
+string Props::getString (string name) {
+	return boost::any_cast<string>(get(name));
+}
+
+//bool 
+void Props::set(string name, bool b, bool shouldNotify) {
+	set(name, boost::any(b), shouldNotify);
+}
+void Props::toggle(string name, bool shouldNotify) {
+	set(name, ! getBool(name), shouldNotify); // concat
+}
+bool Props::getBool(string name) {
+	return boost::any_cast<bool>(get(name));
+}
+
 boost::any Props::get(string name) {
 	return Props::theProps->map[name];
 }
@@ -92,7 +140,7 @@ void Props::init(int argc, char** argv) {
 
 	optionDesc.add_options()
 		("help,h", "displays this help message")
-		("file,f", po::value<string>(&configFileName)->default_value("track.ini"), "optional init file.  If not specified \'track.ini\' is used")
+		("file,f", po::value<string>(&configFileName)->default_value("ELPTrack.ini"), "optional init file.  If not specified \'ELPTrack.ini\' is used")
 		(PROP_FPS,  po::value<float>()->default_value(20.0f), "maximum for tracking")
 		(PROP_MINX, po::value<float>()->default_value(-3.0f), "minimum x value (in m) for tracking")
 		(PROP_MAXX, po::value<float>()->default_value(3.0f),  "maximum x value (in m) for tracking")
@@ -108,7 +156,15 @@ void Props::init(int argc, char** argv) {
 		(PROP_ZOFFSET, po::value<float>()->default_value(0.0f),  "camera z offset")
 		(PROP_TRACK_WIDTH, po::value<int>()->default_value(60),  "width of plan view image (tracking percision is maxX-minX/width)")
 		(PROP_TRACK_HEIGHT, po::value<int>()->default_value(120),  "height of plan view image (tracking percision is maxZ-minZ/height)")
-		(PROP_BG_THRESH, po::value<float>()->default_value(.075),  " background model theshold")
+		(PROP_BG_THRESH, po::value<float>()->default_value(.075),  "background model theshold")
+		(PROP_OSC_ADDRESS, po::value<string>()->default_value(""), "IP address of OSC receiver (an empty string will not send msgs)")
+		(PROP_OSC_PORT, po::value<int>()->default_value(7000), "port of OSC receiver")
+		(PROP_OSC_MINX, po::value<float>()->default_value(0), "min x value for tracks sent over osc")
+		(PROP_OSC_MINZ, po::value<float>()->default_value(0), "min z value for tracks sent over osc")
+		(PROP_OSC_MAXX, po::value<float>()->default_value(1.0f), "max x value for tracks sent over osc")
+		(PROP_OSC_MAXZ, po::value<float>()->default_value(1.0f), "max z value for tracks sent over osc")
+		(PROP_SHOW_POINTS, po::value<bool>()->default_value(true), "show the point cloud for interactive configuration")
+		(PROP_SHOW_TRACKS, po::value<bool>()->default_value(true), "show the tracks")
 		;
 //todo flip x,y,z
 	try {
