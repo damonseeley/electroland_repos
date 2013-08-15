@@ -69,4 +69,6 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr PointCloudConstructor::filterFrame() {
 		this->minZ = minZ;
 		this->maxZ = maxZ;
 
+	//	box
+
 	}
