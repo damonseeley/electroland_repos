@@ -14,7 +14,6 @@ public:
 	std::vector<Track*> oldTracks;
 	std::vector<TrackMatch> matches;
 
-
 	GreedyTracker(float maxDistSqr, long provisionalTime, long timeToDeath);
 	~GreedyTracker(void);
 

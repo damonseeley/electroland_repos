@@ -29,10 +29,17 @@ float Track::matchQuality(float x, float z) {
 
 void Track::update(Blob *b, long curtime) {
 	lastTrack = curtime;
-	isProvisional = (curtime > timeToNotProvisional) ? false : true;
+	if(isProvisional) {
+		provisionality =  ((float) (timeToNotProvisional-curtime))/ (float) provisionalTime;
+		if(provisionality <= 0) {
+			provisionality = 0;
+			isProvisional= false;
+		}
+	}
 	// do I want smoothign here?
 	x = (x + b->x) * .5f;
 	z = (z + b->z) * .5f;
 	isMatched = true;
 	b->isMatched = true;
+	health = 1.0;
 }

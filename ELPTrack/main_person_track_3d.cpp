@@ -1,9 +1,10 @@
-// fix for some sort of max macro naming conflic with windows
+// fix for some sort of max macro naming conflict with windows
 #define NOMINMAX
 #include <Windows.h> // only on a Windows system
 #undef NOMINMAX
 
 #include <string>
+
 #include <libMesaSR.h>
 
 #include <boost/thread/locks.hpp>
@@ -18,16 +19,8 @@
 
 #include <pcl/visualization/cloud_viewer.h>
 #include <pcl/sample_consensus/sac_model_plane.h>
+
 #include <Eigen/Core>
-
-
-
-//#include <pcl/visualization/pcl_visualizer.h>    
-//#include <pcl/io/openni_grabber.h>
-//#include <pcl/common/time.h>
-
-
-#include <libMesaSR.h>
 
 #include "MesaBGSubtractor.h"
 #include "PointCloudConstructor.h"
@@ -35,19 +28,21 @@
 #include "GreedyTracker.h"
 #include "Props.h"
 #include "PropChangeListener.h"
+#include "OSCTrackSender.h"
 
-
-#include <opencv2/core/core.hpp>        // Basic OpenCV structures (cv::Mat)
-#include <opencv2/highgui/highgui.hpp>  // Video write
+#include "SurfDetector.h"
+#include "FlyCap.h"
 
 
 using namespace pcl;
 using namespace boost;
 using namespace std;
 
-boost::mutex clickMutex;
+boost::mutex displayImageMutex;
 
 SRCAM srCam; // SwissRanger
+FlyCap *flyCap;
+SurfDetector *surf;
 pcl::visualization::CloudViewer* viewer;
 
 PointCloudConstructor *cloudConstructor;
@@ -56,29 +51,8 @@ PlanView *planView;
 GreedyTracker *tracker;
 bool removeBgFromPointCloud = false;
 bool cropPointCloud = false;
-
-//pcl::PointCloud<PointT>::Ptr transformedCloud;
-//PointCloudT::Ptr clicked_points_3d;
-
-//cv::VideoWriter outputVideo1("trackingVideoPIM1.avi", CV_FOURCC('M','P','4','2'), 20, cv::Size(60*3, 120*3), true);
-//cv::VideoWriter outputVideo2("trackingVideoMJPG.avi", CV_FOURCC('M','P','4','2'), 20, cv::Size(60*3, 120*3), true);
-//cv::VideoWriter outputVideo3("trackingVideoMP42.avi", CV_FOURCC('M','P','4','2'), 20, cv::Size(60*3, 120*3), true);
-//cv::VideoWriter outputVideo4("trackingVideoDIV3.avi", CV_FOURCC('M','P','4','2'), 20, cv::Size(60*3, 120*3), true);
-//cv::VideoWriter outputVideo5("trackingVideoDIVX.avi", CV_FOURCC('M','P','4','2'), 20, cv::Size(60*3, 120*3), true);
-//cv::VideoWriter outputVideo6("trackingVideoI236.avi", CV_FOURCC('M','P','4','2'), 20, cv::Size(60*3, 120*3), true);
-//cv::VideoWriter outputVideo7("trackingVideoI263.avi", CV_FOURCC('M','P','4','2'), 20, cv::Size(60*3, 120*3), true);
-//cv::VideoWriter outputVideo8("trackingVideoFLV1.avi", CV_FOURCC('M','P','4','2'), 20, cv::Size(60*3, 120*3), true);
-//cv::VideoWriter outputVideo9("trackingVideoUNCOMPRESSED.avi", 0, 30, cv::Size(60*3, 120*3), true);
-
-
-float clickedPointX;
-float clickedPointY;
-float clickedPointZ;
-
-//cv::Mat frame;
-
-//    cv::BackgroundSubtractorMOG2 bg(1, 1, false);
-
+bool showTracks = true;
+cv::Mat displayImage;
 
 struct callback_args{
 	// structure used to pass arguments to the callback function
@@ -92,9 +66,17 @@ cv::Size *imsize;
 
 
 float fps;
+float estimatedFPS;
 double msPerFrame;
+long frameCnt;
+DWORD  lastFPSEpoch;
 DWORD  lasttime;
 DWORD  curtime;
+
+OSCTrackSender *oscTrackSender;
+
+bool isRunning;
+
 
 int print_help()
 {
@@ -132,20 +114,20 @@ void kb_callback(const pcl::visualization::KeyboardEvent& event, void *args) {
 	}
 	}
 	*/
-	switch(event.getKeyCode()) {
-	case 'b':
-		if(event.keyUp()){ 
+	if(event.keyUp()){ 
+		switch(event.getKeyCode()) {
+		case 'b':
 			removeBgFromPointCloud = ! removeBgFromPointCloud;
 			std::cout << "Remove background " << removeBgFromPointCloud << std::endl;
-		}
-		break;
-	case 'B':
-		if(event.keyUp()){ 
+			break;
+		case 'B':
 			cropPointCloud = ! cropPointCloud;
 			std::cout << "Crop Point Cloud " << cropPointCloud << std::endl;
-		}
-		break;
+			break;
+		case 'S':
+			Props::writeToFile("ELPTrack");
 
+		}
 	}
 
 	switch(event.getKeyCode()) {
@@ -191,7 +173,14 @@ void kb_callback(const pcl::visualization::KeyboardEvent& event, void *args) {
 	case 't':
 		Props::inc(PROP_BG_THRESH, -0.0001f);
 		break;
+	case 'q':
+	case 'Q':
+		isRunning = false;
+		break;
 	}
+
+
+
 
 
 	if(event.isShiftPressed()) {
@@ -213,6 +202,7 @@ void kb_callback(const pcl::visualization::KeyboardEvent& event, void *args) {
 		}
 	}
 
+
 	viewer->runOnVisualizationThreadOnce(removeBox);
 	viewer->runOnVisualizationThreadOnce(addBox);
 	cloudConstructor->minX = Props::getFloat(PROP_MINX);
@@ -232,7 +222,11 @@ void kb_callback(const pcl::visualization::KeyboardEvent& event, void *args) {
 	planView->setWorldDims(
 		Props::getFloat(PROP_MINX), Props::getFloat(PROP_MAXX),
 		Props::getFloat(PROP_MINZ), Props::getFloat(PROP_MAXZ));
+	oscTrackSender->setTransform(Props::getFloat(PROP_OSC_MINX), Props::getFloat(PROP_OSC_MAXX), Props::getFloat(PROP_OSC_MINZ), Props::getFloat(PROP_OSC_MAXZ), Props::getFloat(PROP_MINX), Props::getFloat(PROP_MAXX), Props::getFloat(PROP_MINZ), Props::getFloat(PROP_MAXZ)); 
 	bg->thresh = Props::getFloat(PROP_BG_THRESH);
+
+
+	std::cout << "FPS: " << estimatedFPS << std::endl;
 }
 
 
@@ -261,31 +255,30 @@ current_point.z = clickedPointZ;
 
 cb_args.clicked_points_3d->points.push_back(current_point);
 
-std::cout << "    click " << current_point << std::endl;
-
-
-
-}
+std::cout << "    click " << current_point << std::endl; q
 */
-boolean firstFrame = true;
 
 
 
 
 void aquireFrame() {
-
 	//float fps;
 	//double secsPerFrame;
 	//time_t lasttime;
 	//time_t curtime;
+	frameCnt++;
 	curtime = timeGetTime();
+	if(frameCnt % 100 == 0) {
+		estimatedFPS = 100000 / (curtime-lastFPSEpoch); // (100 frames/elapsed ms * 1000 ms / 1s)
+		lastFPSEpoch = curtime;
+	}
 	long elspesMS = (curtime-lasttime);
 	elspesMS = elspesMS < 0 ? 0 : elspesMS; // incase of wrap around?
 	elspesMS = msPerFrame - elspesMS;
 	if(elspesMS > 0)
+		//cv::waitKey(elspesMS);
 		//not sure if we need if sleep my be a no-op with negative value
 		boost::this_thread::sleep( boost::posix_time::milliseconds(elspesMS) );
-
 
 
 	SR_Acquire(srCam); // get new depth image
@@ -298,7 +291,6 @@ void aquireFrame() {
 
 
 	if(bg->useAdaptive) {
-		cv::Mat displayImage;
 		bg->foreground.convertTo(displayImage, CV_8UC1, 256.0);
 		//		imshow(win, displayImage);
 	} else {
@@ -308,43 +300,38 @@ void aquireFrame() {
 	//				mattedImage.setTo(cv::Mat::zeros);
 	if(cropPointCloud) {
 		cloudConstructor->aquireFrame();
-		viewer->showCloud(cloudConstructor->filterFrame());
-		planView->generatePlanView(cloudConstructor->filterFrame());
+		cloudConstructor->filterFrame();
+		if(viewer)
+			viewer->showCloud(cloudConstructor->filteredPtr);
+		planView->generatePlanView(cloudConstructor->filteredPtr);
 		tracker->updateTracks(planView->blobs,curtime);
-
-		for(std::vector<Track*>::iterator trackIt = tracker->tracks.begin(); trackIt != tracker->tracks.end(); ++trackIt) {
-			Track* t = *trackIt;
-			int r = (t->id * 13) % 255;
-			int g = (t->id * 101) % 255;
-			int b = (t->id * 3) % 255;
-			int col;
-			int row;
-			int width = (t->isProvisional) ? 2 : -1;
-			int radius = (t->isMatched) ? 4 : 2;
-			// big if match, solid if not provisional;		
-			planView->worldDimsToBinDims(t->x, t->z, col, row);
-			cv::circle(planView->displayImage, cv::Point(col*3, row*3), radius*2, CV_RGB  (r,g,b),width*2); 
-
+		oscTrackSender->sendTracks(tracker);
+		//view tracks
+		if(showTracks) {
+			for(std::vector<Track*>::iterator trackIt = tracker->tracks.begin(); trackIt != tracker->tracks.end(); ++trackIt) {
+				Track* t = *trackIt;
+				int r = (t->id * 13) % 255;
+				int g = (t->id * 101) % 255;
+				int b = (t->id * 3) % 255;
+				int col;
+				int row;
+				int width = (t->isProvisional) ? 2 : -1;
+				int radius = (t->isMatched) ? 4 : 2;
+				// big if match, solid if not provisional;		
+				planView->worldDimsToBinDims(t->x, t->z, col, row);
+				cv::circle(planView->displayImage, cv::Point(col*3, row*3), radius*2, CV_RGB  (r,g,b),width*2); 
+				stringstream fpsMsg;
+				fpsMsg << "fps: " << estimatedFPS;
+				cv::putText(planView->displayImage, fpsMsg.str(), cvPoint(0, planView->displayImage.rows), cv::FONT_HERSHEY_PLAIN, 1.0, cv::Scalar(255,0,0));
+				displayImage = cv::Mat(planView->displayImage);
+			}
 		}
 
-		imshow(win, planView->displayImage);
-
-		/*
-		outputVideo1 << planView->displayImage;
-		outputVideo2 << planView->displayImage;
-		outputVideo3 << planView->displayImage;
-		outputVideo4 << planView->displayImage;
-		outputVideo5 << planView->displayImage;
-		outputVideo6 << planView->displayImage;
-		outputVideo7 << planView->displayImage;
-		outputVideo8 << planView->displayImage;
-		*/
-		//outputVideo9 << planView->displayImage;
 	} else {
-		viewer->showCloud(cloudConstructor->aquireFrame());
+		if(viewer)
+			viewer->showCloud(cloudConstructor->aquireFrame());
 	}
 
-	cv::waitKey(20);
 
 
 	/*
@@ -354,16 +341,22 @@ void aquireFrame() {
 	}
 	*/
 	lasttime = curtime;
+	if(viewer) 
+		isRunning = ! viewer->wasStopped();
 } 
 
 void loop() {
-	while(!viewer->wasStopped())
+	while(isRunning)
 	{
 		aquireFrame();
 	}
 
 	SR_Close(srCam);
 
+}
+DWORD WINAPI loopThread( LPVOID lpParam ) {
+	loop();
+	return 0;
 }
 
 
@@ -372,20 +365,31 @@ void loop() {
 
 int main(int argc, char** argv)
 {
-
+	isRunning = true;
 	Props::initProps(argc, argv);
+
+	/* fly tests
+	cv::namedWindow(win); // init window
+	flyCap = new FlyCap();
+	surf = new SurfDetector();
+	while(true) {
+//		cv::imshow(win, flyCap->getImage());
+		surf->detect(flyCap->getImage());
+//		cv::waitKey(30);
+	}
+	*/
+
+	showTracks = Props::getBool(PROP_SHOW_TRACKS);
+
 	fps = Props::getFloat(PROP_FPS);
-	Props::writeToFile("testFile1.ini");
-	Props::set(PROP_FPS, boost::any(10.0f));
 
-	Props::writeToFile("testFile2.ini");
-
+	//	FlyCap *fc  = new FlyCap();
 
 	msPerFrame = 1000.0/fps;
+	SR_OpenDlg(&srCam, 2, 0); // 2 -> opens a selection dialog
 	curtime = timeGetTime();
 	lasttime = curtime;
-
-	SR_OpenDlg(&srCam, 2, 0); // 2 -> opens a selection dialog
+	lastFPSEpoch = curtime;
 	bg = new MesaBGSubtractor();
 	cloudConstructor = new PointCloudConstructor(srCam);
 	cloudConstructor->setWorldDims(
@@ -398,8 +402,11 @@ int main(int argc, char** argv)
 		Props::getFloat(PROP_PITCH), Props::getFloat(PROP_YAW), Props::getFloat(PROP_ROLL)) ;
 
 	planView = new PlanView(Props::getFloat(PROP_MINX), Props::getFloat(PROP_MAXX), Props::getFloat(PROP_MINZ), Props::getFloat(PROP_MAXZ), Props::getInt(PROP_TRACK_WIDTH), Props::getInt(PROP_TRACK_HEIGHT));
+	oscTrackSender = new OSCTrackSender(Props::getString(PROP_OSC_ADDRESS), Props::getInt(PROP_OSC_PORT));
+	oscTrackSender->setTransform(Props::getFloat(PROP_OSC_MINX), Props::getFloat(PROP_OSC_MAXX), Props::getFloat(PROP_OSC_MINZ), Props::getFloat(PROP_OSC_MAXZ), Props::getFloat(PROP_MINX), Props::getFloat(PROP_MAXX), Props::getFloat(PROP_MINZ), Props::getFloat(PROP_MAXZ)); 
 
-	cv::namedWindow(win); // init window
+	if(showTracks)
+		cv::namedWindow(win, 	 CV_WINDOW_NORMAL|CV_GUI_NORMAL); // init window
 	// need to make this distance in terms of m?
 	tracker = new GreedyTracker(9.0f, 1000, 1500);
 
@@ -415,19 +422,22 @@ int main(int argc, char** argv)
 	//		 clicked_points_3d = clicked_points_cloud;
 	//		cb_args.clicked_points_3d = clicked_points_3d;
 
+	if(Props::getBool(PROP_SHOW_POINTS)) {
+		viewer = new pcl::visualization::CloudViewer ("Mesa PCL example"); // visualizer
+	} else {
+		//assume pointcloud is already setup
+		removeBgFromPointCloud = true;
+		cropPointCloud = true;
 
-	viewer = new pcl::visualization::CloudViewer ("Mesa PCL example"); // visualizer
-
-	//		cb_args.clicked_points_3d = clicked_points_3d;
-	//  viewer->runOnVisualizationThreadOnce (addGroundPlane);
-	viewer->runOnVisualizationThreadOnce(addBox);
-
+	}
 
 	aquireFrame();
 	//		viewer->registerPointPickingCallback (pp_callback, (void*)&cb_args);
-	viewer->registerKeyboardCallback(kb_callback, (void*)&cb_args);
+	if(viewer) {
+		viewer->runOnVisualizationThreadOnce(addBox);
+		viewer->registerKeyboardCallback(kb_callback, (void*)&cb_args);
+	}
 
-	std::cout << "shift-click on at least three points on the floor plain then press c to continue" << std::endl;
 
 	/*
 	clickMutex.lock();
@@ -448,8 +458,15 @@ int main(int argc, char** argv)
 	Eigen::Vector3f leftInPlane = planeNormal.cross(upVector);
 	floorTransform = pcl::getTransFromUnitVectorsXY(leftInPlane, planeNormal);
 	*/
-
-	loop();	
+	
+	if(showTracks) {
+		displayImage = cv::Mat(cv::Size(10,10), CV_8UC1);
+		CreateThread( NULL, 0, loopThread, NULL, 0, NULL); 
+		cv::imshow(win, displayImage);
+		cv::waitKey(30);
+	} else {
+		loop();
+	}
 
 }
 
