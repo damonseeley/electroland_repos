@@ -33,6 +33,7 @@ public:
 
 	Eigen::Affine3f floorTransform;
 
+//	pcl::CropBox box;
 
 	PointCloudConstructor(SRCAM cam);
 	~PointCloudConstructor(void);

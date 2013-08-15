@@ -102,6 +102,27 @@ void removeBox(pcl::visualization::PCLVisualizer& viewer) {
 	viewer.removeShape("cube");
 }
 
+
+void resetWorldAndCamDims() {
+		cloudConstructor->minX = Props::getFloat(PROP_MINX);
+	cloudConstructor->minY = Props::getFloat(PROP_MINY);
+	cloudConstructor->minZ = Props::getFloat(PROP_MINZ);
+	cloudConstructor->maxX = Props::getFloat(PROP_MAXX);
+	cloudConstructor->maxY = Props::getFloat(PROP_MAXY);
+	cloudConstructor->maxZ = Props::getFloat(PROP_MAXZ);
+
+	cloudConstructor->setWorldDims(
+		Props::getFloat(PROP_MINX), Props::getFloat(PROP_MAXX),
+		Props::getFloat(PROP_MINY), Props::getFloat(PROP_MAXY),
+		Props::getFloat(PROP_MINZ), Props::getFloat(PROP_MAXZ));
+	cloudConstructor->setTransform(
+		Props::getFloat(PROP_XOFFSET), Props::getFloat(PROP_YOFFSET), Props::getFloat(PROP_ZOFFSET), 
+		Props::getFloat(PROP_PITCH), Props::getFloat(PROP_YAW), Props::getFloat(PROP_ROLL)) ;	
+	planView->setWorldDims(
+		Props::getFloat(PROP_MINX), Props::getFloat(PROP_MAXX),
+		Props::getFloat(PROP_MINZ), Props::getFloat(PROP_MAXZ));
+	oscTrackSender->setTransform(Props::getFloat(PROP_OSC_MINX), Props::getFloat(PROP_OSC_MAXX), Props::getFloat(PROP_OSC_MINZ), Props::getFloat(PROP_OSC_MAXZ), Props::getFloat(PROP_MINX), Props::getFloat(PROP_MAXX), Props::getFloat(PROP_MINZ), Props::getFloat(PROP_MAXZ)); 
+}
 void kb_callback(const pcl::visualization::KeyboardEvent& event, void *args) {
 	//std::cout << event.getKeySym() << "  " << event.getKeyCode() << std::endl;
 	/*
@@ -205,24 +226,9 @@ void kb_callback(const pcl::visualization::KeyboardEvent& event, void *args) {
 
 	viewer->runOnVisualizationThreadOnce(removeBox);
 	viewer->runOnVisualizationThreadOnce(addBox);
-	cloudConstructor->minX = Props::getFloat(PROP_MINX);
-	cloudConstructor->minY = Props::getFloat(PROP_MINY);
-	cloudConstructor->minZ = Props::getFloat(PROP_MINZ);
-	cloudConstructor->maxX = Props::getFloat(PROP_MAXX);
-	cloudConstructor->maxY = Props::getFloat(PROP_MAXY);
-	cloudConstructor->maxZ = Props::getFloat(PROP_MAXZ);
 
-	cloudConstructor->setWorldDims(
-		Props::getFloat(PROP_MINX), Props::getFloat(PROP_MAXX),
-		Props::getFloat(PROP_MINY), Props::getFloat(PROP_MAXY),
-		Props::getFloat(PROP_MINZ), Props::getFloat(PROP_MAXZ));
-	cloudConstructor->setTransform(
-		Props::getFloat(PROP_XOFFSET), Props::getFloat(PROP_YOFFSET), Props::getFloat(PROP_ZOFFSET), 
-		Props::getFloat(PROP_PITCH), Props::getFloat(PROP_YAW), Props::getFloat(PROP_ROLL)) ;	
-	planView->setWorldDims(
-		Props::getFloat(PROP_MINX), Props::getFloat(PROP_MAXX),
-		Props::getFloat(PROP_MINZ), Props::getFloat(PROP_MAXZ));
-	oscTrackSender->setTransform(Props::getFloat(PROP_OSC_MINX), Props::getFloat(PROP_OSC_MAXX), Props::getFloat(PROP_OSC_MINZ), Props::getFloat(PROP_OSC_MAXZ), Props::getFloat(PROP_MINX), Props::getFloat(PROP_MAXX), Props::getFloat(PROP_MINZ), Props::getFloat(PROP_MAXZ)); 
+	resetWorldAndCamDims();
+
 	bg->thresh = Props::getFloat(PROP_BG_THRESH);
 
 
@@ -334,7 +340,7 @@ void aquireFrame() {
 
 
 
-	/*
+	/*r
 	pcl::PointCloud<pcl::PointXYZ>::iterator it2 = cloud->points.begin();
 	for(pcl::PointCloud<pcl::PointXYZ>::iterator it = transformedCloud->points.begin(); it != transformedCloud->points.end(); ++it,++it2) {
 	std::cout << *it << "==?" << *it2 << std::endl;
@@ -365,7 +371,7 @@ DWORD WINAPI loopThread( LPVOID lpParam ) {
 
 int main(int argc, char** argv)
 {
-	isRunning = true;
+	isRunning = true;	
 	Props::initProps(argc, argv);
 
 	/* fly tests
@@ -391,20 +397,14 @@ int main(int argc, char** argv)
 	lasttime = curtime;
 	lastFPSEpoch = curtime;
 	bg = new MesaBGSubtractor();
+	
 	cloudConstructor = new PointCloudConstructor(srCam);
-	cloudConstructor->setWorldDims(
-		Props::getFloat(PROP_MINX), Props::getFloat(PROP_MAXX),
-		Props::getFloat(PROP_MINY), Props::getFloat(PROP_MAXY),
-		Props::getFloat(PROP_MINZ), Props::getFloat(PROP_MAXZ));
-
-	cloudConstructor->setTransform(
-		Props::getFloat(PROP_XOFFSET), Props::getFloat(PROP_YOFFSET), Props::getFloat(PROP_ZOFFSET), 
-		Props::getFloat(PROP_PITCH), Props::getFloat(PROP_YAW), Props::getFloat(PROP_ROLL)) ;
-
 	planView = new PlanView(Props::getFloat(PROP_MINX), Props::getFloat(PROP_MAXX), Props::getFloat(PROP_MINZ), Props::getFloat(PROP_MAXZ), Props::getInt(PROP_TRACK_WIDTH), Props::getInt(PROP_TRACK_HEIGHT));
 	oscTrackSender = new OSCTrackSender(Props::getString(PROP_OSC_ADDRESS), Props::getInt(PROP_OSC_PORT));
-	oscTrackSender->setTransform(Props::getFloat(PROP_OSC_MINX), Props::getFloat(PROP_OSC_MAXX), Props::getFloat(PROP_OSC_MINZ), Props::getFloat(PROP_OSC_MAXZ), Props::getFloat(PROP_MINX), Props::getFloat(PROP_MAXX), Props::getFloat(PROP_MINZ), Props::getFloat(PROP_MAXZ)); 
-
+	
+	resetWorldAndCamDims();
+	
+	
 	if(showTracks)
 		cv::namedWindow(win, 	 CV_WINDOW_NORMAL|CV_GUI_NORMAL); // init window
 	// need to make this distance in terms of m?
@@ -431,7 +431,9 @@ int main(int argc, char** argv)
 
 	}
 
-	aquireFrame();
+//	aquireFrame(); // need to 
+//	isRunning = true;
+
 	//		viewer->registerPointPickingCallback (pp_callback, (void*)&cb_args);
 	if(viewer) {
 		viewer->runOnVisualizationThreadOnce(addBox);
@@ -462,8 +464,10 @@ int main(int argc, char** argv)
 	if(showTracks) {
 		displayImage = cv::Mat(cv::Size(10,10), CV_8UC1);
 		CreateThread( NULL, 0, loopThread, NULL, 0, NULL); 
+		while(isRunning) {
 		cv::imshow(win, displayImage);
 		cv::waitKey(30);
+		}
 	} else {
 		loop();
 	}

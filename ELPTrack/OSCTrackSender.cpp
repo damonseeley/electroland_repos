@@ -11,7 +11,7 @@ void OSCTrackSender::setTransform(
 			this->oscMinX = oscMinX;
 			this->oscMaxX = oscMaxX;
 			this->oscMinZ = oscMinX;
-			this->oscMaxX = oscMaxZ;
+			this->oscMaxZ = oscMaxZ;
 			this->worldMinX = worldMinX;
 			this->worldMaxX = worldMaxX;
 			this->worldMinZ = worldMinZ;
@@ -44,6 +44,10 @@ void OSCTrackSender::sendTracks(Tracker *tracker) {
 	if(! transmitSocket) return; // if no socket skip 
 	osc::OutboundPacketStream oscStream(buffer, OUTPUT_BUFFER_SIZE);
 	oscStream << osc::BeginBundleImmediate;
+
+	oscStream << osc::BeginMessage("/metaInfo");
+	oscStream << oscMinX << oscMaxX << oscMinZ << oscMaxZ;
+	oscStream << osc::EndMessage;
 
 	oscStream << osc::BeginMessage("/tracks");
 	for(std::vector<Track*>::iterator it = tracker->tracks.begin(); it != tracker->tracks.end(); it++) {

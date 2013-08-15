@@ -139,7 +139,7 @@ void Props::init(int argc, char** argv) {
 	string configFileName;
 
 	optionDesc.add_options()
-		("help,h", "displays this help message")
+		("help,h", "displays this help message when passed in on the command line")
 		("file,f", po::value<string>(&configFileName)->default_value("ELPTrack.ini"), "optional init file.  If not specified \'ELPTrack.ini\' is used")
 		(PROP_FPS,  po::value<float>()->default_value(20.0f), "maximum for tracking")
 		(PROP_MINX, po::value<float>()->default_value(-3.0f), "minimum x value (in m) for tracking")
@@ -186,12 +186,8 @@ void Props::init(int argc, char** argv) {
 		std::ifstream configFileStream(configFileName);
 		if(configFileStream) {
 			po::store(po::parse_config_file(configFileStream, optionDesc, false), optionVM);
-
-
-			if(optionVM.count("help")) {
-				std::cout << optionDesc << std::endl;
-				exit(0);
-			}
+		} else {
+			std::cout << "Unable to open config file: " << configFileName << " using default values" << std::endl;
 		}
 
 	} catch(po::error& e) {
@@ -199,8 +195,8 @@ void Props::init(int argc, char** argv) {
 		std::cerr << optionDesc << std::endl;
 		exit(1);
 	}
+
 	for (po::variables_map::iterator it=optionVM.begin(); it != optionVM.end(); it++ ) { 
-		//map.insert(std::pair<string, boost::any>(it->first,boost::any(it->second.value()))); 
 		map[it->first] = boost::any(it->second.value());
 
 	}
