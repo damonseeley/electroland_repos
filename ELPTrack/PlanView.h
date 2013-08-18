@@ -6,7 +6,6 @@
 
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-#include <vector>
 #include "Blob.h"
 
 class PlanView
@@ -40,6 +39,9 @@ public:
 
 	float minDetectZ;
 	float maxDetectZ;
+
+	std::vector<cv::KeyPoint> keypoints;
+
 
 	PlanView(float minX, float maxX, float minZ, float maxZ, int width, int height);
 	~PlanView(void);

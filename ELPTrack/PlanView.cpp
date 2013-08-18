@@ -82,8 +82,6 @@ void PlanView::generatePlanView(pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloud) 
 		int col;
 		int row;
 		worldDimsToBinDims(it->x, it->z, col, row);
-//		int col = (int) ( ( it->x- minX) * worldScaleX);
-//		int row = (int) (( it->z- minZ) * worldScaleZ);
 		col = (col < 0) ? 0 : col;
 		col = (col > binWidth - 1) ? binWidth -1: col;
 		row = (row< 0) ? 0 : row;
@@ -93,7 +91,6 @@ void PlanView::generatePlanView(pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloud) 
 
 	// detect!
 	bins.convertTo(blobsImage, CV_8UC1);
-	std::vector<cv::KeyPoint> keypoints;
 
 	// extract the x y coordinates of the keypoints: 
 
@@ -105,6 +102,7 @@ void PlanView::generatePlanView(pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloud) 
 	//		cv::Point maxLoc;
 	//	cv::minMaxLoc(bins, &minVal, &maxVal, &minLoc, &maxLoc);
 	//std::cout << maxVal << " at " << maxLoc << std::endl;
+
 	cv::threshold(bins, bins,2, 255, cv::THRESH_BINARY);
 	bins.convertTo(thesh, CV_8UC1);
 
@@ -124,6 +122,7 @@ void PlanView::generatePlanView(pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloud) 
 //	cv::drawKeypoints(thesh, keypoints, blobsImage, cv::Scalar::all(-1));
 
 	blobs.clear();
+
 	for (int i=0; i<keypoints.size(); i++){
 		float x;
 		float z;

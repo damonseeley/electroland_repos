@@ -6,7 +6,7 @@
 //#include <pcl/console/parse.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-
+#include <pcl/filters/crop_box.h>
 #include <libMesaSR.h>
 
 
@@ -33,7 +33,7 @@ public:
 
 	Eigen::Affine3f floorTransform;
 
-//	pcl::CropBox box;
+//	pcl::CropBox<pcl::PointXYZ> box;
 
 	PointCloudConstructor(SRCAM cam);
 	~PointCloudConstructor(void);

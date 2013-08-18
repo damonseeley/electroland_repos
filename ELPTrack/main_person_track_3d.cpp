@@ -30,19 +30,20 @@
 #include "PropChangeListener.h"
 #include "OSCTrackSender.h"
 
-#include "SurfDetector.h"
 #include "FlyCap.h"
+#include "PulseDetector.h"
 
 
 using namespace pcl;
 using namespace boost;
 using namespace std;
 
+
 boost::mutex displayImageMutex;
 
 SRCAM srCam; // SwissRanger
 FlyCap *flyCap;
-SurfDetector *surf;
+PulseDetector *pulseDetector;
 pcl::visualization::CloudViewer* viewer;
 
 PointCloudConstructor *cloudConstructor;
@@ -103,6 +104,17 @@ void removeBox(pcl::visualization::PCLVisualizer& viewer) {
 }
 
 
+void  updateTrackerMaxMove() {
+	if(! tracker) return;
+	// the scale may be distoted so take the bigger of the twof
+	float scaler = (planView->worldScaleX > planView->worldScaleZ) ? planView->worldScaleX : planView->worldScaleZ;
+	tracker->maxDistSqr = scaler * (Props::getFloat(PROP_TRACK_MAX_MOVE) * Props::getFloat(PROP_TRACK_MAX_MOVE)) / 1000; // convert to planview space
+		
+
+
+
+}
+
 void resetWorldAndCamDims() {
 		cloudConstructor->minX = Props::getFloat(PROP_MINX);
 	cloudConstructor->minY = Props::getFloat(PROP_MINY);
@@ -122,7 +134,9 @@ void resetWorldAndCamDims() {
 		Props::getFloat(PROP_MINX), Props::getFloat(PROP_MAXX),
 		Props::getFloat(PROP_MINZ), Props::getFloat(PROP_MAXZ));
 	oscTrackSender->setTransform(Props::getFloat(PROP_OSC_MINX), Props::getFloat(PROP_OSC_MAXX), Props::getFloat(PROP_OSC_MINZ), Props::getFloat(PROP_OSC_MAXZ), Props::getFloat(PROP_MINX), Props::getFloat(PROP_MAXX), Props::getFloat(PROP_MINZ), Props::getFloat(PROP_MAXZ)); 
+	updateTrackerMaxMove();
 }
+
 void kb_callback(const pcl::visualization::KeyboardEvent& event, void *args) {
 	//std::cout << event.getKeySym() << "  " << event.getKeyCode() << std::endl;
 	/*
@@ -272,6 +286,8 @@ void aquireFrame() {
 	//double secsPerFrame;
 	//time_t lasttime;
 	//time_t curtime;
+
+
 	frameCnt++;
 	curtime = timeGetTime();
 	if(frameCnt % 100 == 0) {
@@ -296,6 +312,7 @@ void aquireFrame() {
 	bg->process(rangeImage, removeBgFromPointCloud);
 
 
+
 	if(bg->useAdaptive) {
 		bg->foreground.convertTo(displayImage, CV_8UC1, 256.0);
 		//		imshow(win, displayImage);
@@ -304,13 +321,19 @@ void aquireFrame() {
 	}
 	//				cv::Mat mattedImage;
 	//				mattedImage.setTo(cv::Mat::zeros);
+
+
+
 	if(cropPointCloud) {
 		cloudConstructor->aquireFrame();
+
 		cloudConstructor->filterFrame();
+
 		if(viewer)
 			viewer->showCloud(cloudConstructor->filteredPtr);
 		planView->generatePlanView(cloudConstructor->filteredPtr);
-		tracker->updateTracks(planView->blobs,curtime);
+		tracker->updateTracks(planView->blobs, curtime, lasttime);
+
 		oscTrackSender->sendTracks(tracker);
 		//view tracks
 		if(showTracks) {
@@ -332,6 +355,7 @@ void aquireFrame() {
 				displayImage = cv::Mat(planView->displayImage);
 			}
 		}
+
 
 	} else {
 		if(viewer)
@@ -366,24 +390,27 @@ DWORD WINAPI loopThread( LPVOID lpParam ) {
 }
 
 
+int mouseX=0;
+int mouseY=0;
 
-
+void mouseEvent(int evt, int x, int y, int flags, void* param) {                    
+	mouseX = x;
+	mouseY = y;
+//    cv::Mat* rgb = (cv::Mat*) param;
+	/*
+	
+		*/
+}
 
 int main(int argc, char** argv)
 {
 	isRunning = true;	
 	Props::initProps(argc, argv);
 
-	/* fly tests
+	/* fly tests */
 	cv::namedWindow(win); // init window
-	flyCap = new FlyCap();
-	surf = new SurfDetector();
-	while(true) {
-//		cv::imshow(win, flyCap->getImage());
-		surf->detect(flyCap->getImage());
-//		cv::waitKey(30);
-	}
-	*/
+
+
 
 	showTracks = Props::getBool(PROP_SHOW_TRACKS);
 
@@ -408,8 +435,17 @@ int main(int argc, char** argv)
 	if(showTracks)
 		cv::namedWindow(win, 	 CV_WINDOW_NORMAL|CV_GUI_NORMAL); // init window
 	// need to make this distance in terms of m?
-	tracker = new GreedyTracker(9.0f, 1000, 1500);
 
+
+
+
+	tracker = new GreedyTracker(0);
+	updateTrackerMaxMove();
+
+	Track::provisionalTime = Props::getInt(PROP_TRACK_PROVISIONAL_TIME);
+	Track::provisionalTimeToDeath = Props::getInt(PROP_TRACK_TIME_TO_DIE_PROV);
+	Track::timeToDeath = Props::getInt(PROP_TRACK_TIME_TO_DIE);
+	Track::setSmoothing(Props::getFloat(PROP_TRACK_SMOOTHING));
 
 
 

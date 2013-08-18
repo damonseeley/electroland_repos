@@ -8,13 +8,13 @@ PointCloudConstructor::PointCloudConstructor(SRCAM cam)
 	srCam = cam;
 	transformedPtr = pcl::PointCloud<PointT>::Ptr(&transformed);
 	floorTransform= Eigen::Affine3f::Identity();
-
 	filteredPtr =  pcl::PointCloud<PointT>::Ptr(&filtered);
 
 	cloud = pcl::PointCloud<PointT>::Ptr(new pcl::PointCloud<PointT>(SR_GetRows(srCam), SR_GetCols(srCam)));      
 	ptrXYZ = (float*)(&cloud->front()); // float pointer for SR_CoordTrfFlt()
 	xyzSize = sizeof(PointT); // size of a single PointXYZ structure for SR_CoordTrfFlt()
 
+//	box.setInputCloud(transformedPtr);
 
 	minX = -2.2;
 	maxX = 2;
@@ -23,7 +23,7 @@ PointCloudConstructor::PointCloudConstructor(SRCAM cam)
 	minZ = 1.5;
 	maxZ = 10;
 
-
+	setWorldDims(minX, maxX, minY, maxY, minZ, maxZ);
 
 
 }
@@ -44,7 +44,7 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr PointCloudConstructor::aquireFrame() {
 	return transformedPtr;
 }
 pcl::PointCloud<pcl::PointXYZ>::Ptr PointCloudConstructor::filterFrame() {
-
+	
 	filtered.clear();
 	for(pcl::PointCloud<pcl::PointXYZ>::iterator it = transformedPtr->points.begin(); it != transformedPtr->points.end(); ++it) {
 		if ( (it->x >= minX) && (it->x <= maxX) &&
@@ -55,7 +55,8 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr PointCloudConstructor::filterFrame() {
 		}
 		//	std::cout << *it << "==?" << *it2 << std::endl;
 	}
-
+	
+//	box.filter(filtered);
 
 	return filteredPtr;
 }
@@ -69,6 +70,17 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr PointCloudConstructor::filterFrame() {
 		this->minZ = minZ;
 		this->maxZ = maxZ;
 
-	//	box
+		/*
+		Eigen::Vector4f minPoint;
+		minPoint[0] = (this->minX < this->maxX) ? this->minX : this->maxX;
+		minPoint[1] = (this->minY < this->maxY) ? this->minY : this->maxY;
+		minPoint[2] = (this->minZ < this->maxZ) ? this->minZ : this->maxZ;
+		box.setMin(minPoint);
 
+		Eigen::Vector4f maxPoint;
+		maxPoint[0] = (this->minX > this->maxX) ? this->minX : this->maxX;
+		maxPoint[1] = (this->minY > this->maxY) ? this->minY : this->maxY;
+		maxPoint[2] = (this->minZ > this->maxZ) ? this->minZ : this->maxZ;
+		box.setMax(maxPoint);
+		*/
 	}

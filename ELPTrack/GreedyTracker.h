@@ -11,14 +11,15 @@ class GreedyTracker :
 	public Tracker
 {
 public:
+
 	std::vector<Track*> oldTracks;
 	std::vector<TrackMatch> matches;
 
-	GreedyTracker(float maxDistSqr, long provisionalTime, long timeToDeath);
+	GreedyTracker(float maxDistSqr);
 	~GreedyTracker(void);
 
 
-	void updateTracks(std::vector<Blob> &blobs, long curtime);
+	void updateTracks(std::vector<Blob> &blobs, long curtime, long lasttime);
 	void GreedyTracker::printTracks();
 };
 
