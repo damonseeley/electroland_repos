@@ -28,14 +28,17 @@
 #define PROP_OSC_MAXZ "oscMaxZ"
 #define PROP_SHOW_POINTS "showPointCloud"
 #define PROP_SHOW_TRACKS "showTracks"
-
+#define PROP_TRACK_PROVISIONAL_TIME "trackProvisionalTime"
+#define PROP_TRACK_TIME_TO_DIE "trackTimeToDie"
+#define PROP_TRACK_TIME_TO_DIE_PROV "trackTimeToDieProvisional"
+#define PROP_TRACK_SMOOTHING "trackSmoothing"
+#define PROP_TRACK_MAX_MOVE "trackMaxMove"
 
 
 #include <string>
 #include <boost/program_options.hpp>
 #include <boost/program_options/options_description.hpp>
 #include <map>
-#include <vector>
 #include "PropChangeListener.h"
 using namespace std;
 namespace po = boost::program_options;

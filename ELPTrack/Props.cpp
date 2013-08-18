@@ -141,7 +141,7 @@ void Props::init(int argc, char** argv) {
 	optionDesc.add_options()
 		("help,h", "displays this help message when passed in on the command line")
 		("file,f", po::value<string>(&configFileName)->default_value("ELPTrack.ini"), "optional init file.  If not specified \'ELPTrack.ini\' is used")
-		(PROP_FPS,  po::value<float>()->default_value(20.0f), "maximum for tracking")
+		(PROP_FPS,  po::value<float>()->default_value(30.0f), "maximum for tracking")
 		(PROP_MINX, po::value<float>()->default_value(-3.0f), "minimum x value (in m) for tracking")
 		(PROP_MAXX, po::value<float>()->default_value(3.0f),  "maximum x value (in m) for tracking")
 		(PROP_MINY, po::value<float>()->default_value(0.0f), "minimum y value (in m) for tracking")
@@ -165,6 +165,12 @@ void Props::init(int argc, char** argv) {
 		(PROP_OSC_MAXZ, po::value<float>()->default_value(1.0f), "max z value for tracks sent over osc")
 		(PROP_SHOW_POINTS, po::value<bool>()->default_value(true), "show the point cloud for interactive configuration")
 		(PROP_SHOW_TRACKS, po::value<bool>()->default_value(true), "show the tracks")
+		(PROP_TRACK_PROVISIONAL_TIME, po::value<int>()->default_value(1000), "ms after a track appears before it is considered established")
+		(PROP_TRACK_TIME_TO_DIE, po::value<int>()->default_value(1000), "ms after a track is lost before it is removed")
+		(PROP_TRACK_TIME_TO_DIE_PROV, po::value<int>()->default_value(500), "ms after a provisional track is lost before it is remmoved")
+		(PROP_TRACK_SMOOTHING, po::value<float>()->default_value(.75f), "smoothing of track movement (range is 0-1)")
+		(PROP_TRACK_MAX_MOVE, po::value<float>()->default_value(2.0f), "the maximum speed a track can move in m/s")
+
 		;
 //todo flip x,y,z
 	try {

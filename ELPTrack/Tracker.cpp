@@ -4,11 +4,8 @@
 //	public long provisionalTime;
 //	public long timeToDeath;
 
-	Tracker::Tracker(float maxDistSqr, long provisionalTime, long timeToDeath) {
+	Tracker::Tracker(float maxDistSqr) {
 		this->maxDistSqr = maxDistSqr;
-		this->provisionalTime = provisionalTime;
-		this->timeToDeath = timeToDeath;
-		Track::provisionalTime = provisionalTime;
 	}
 //void Tracker::updateTracks(std::vector<cv::KeyPoint> *keypoints) {
 //}

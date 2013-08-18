@@ -1,6 +1,6 @@
 #include "GreedyTracker.h"
 
-GreedyTracker::GreedyTracker(float maxDistSqr, long provisionalTime, long timeToDeath) : Tracker( maxDistSqr,  provisionalTime,  timeToDeath)
+GreedyTracker::GreedyTracker(float maxDistSqr) : Tracker( maxDistSqr)
 {
 }
 
@@ -8,8 +8,6 @@ GreedyTracker::GreedyTracker(float maxDistSqr, long provisionalTime, long timeTo
 GreedyTracker::~GreedyTracker(void)
 {
 } 
-
-
 
 
 //	hash_set<Track> unmatchedTracks;
@@ -28,93 +26,75 @@ void GreedyTracker::printTracks() {
 	}
 
 }
-void GreedyTracker::updateTracks(std::vector<Blob> &blobs, long curtime) {
+void GreedyTracker::updateTracks(std::vector<Blob> &blobs, long curtime, long lasttime) {
 	matches.clear();
 	oldTracks.clear();
-	enters.clear();
-	
-	for(std::vector<Track *>::iterator it = exits.begin(); it != exits.end(); ++it) {
-		Track* t = *it;
-		delete t;
-	}
-	exits.clear();
 
 
 //	std::cout << "----- start ------" << std::endl;
 //	printTracks();
 
 
+	// generate list of all potential matches
+	// complexity is blob cnt * track cnt
+	// would be better to do some sorting or binning and dis allow matches that are too far away from eachother
 	for(std::vector<Blob>::iterator  blobIt = blobs.begin(); blobIt != blobs.end(); ++blobIt) {
 		for(std::vector<Track*>::iterator trackIt = tracks.begin(); trackIt != tracks.end(); ++trackIt) {
 			Track* t = *trackIt;
 			t->isMatched = false;
-			matches.push_back(TrackMatch(t,&(*blobIt)));
+			if(t->health > 0) { 
+				// if the health was 0 it needs to be exited
+				matches.push_back(TrackMatch(t,&(*blobIt)));
+			}
 		}
 
 	}
 
+
 	oldTracks.swap(tracks);
 
-//	std::cout << "----- post swap ------" << std::endl;
-//	printTracks();
-
+	// sort so closest possible matches are first
 	std::sort(matches.begin(), matches.end());
+
+	// greedy matching, assume the first/closest match found is best
+	float scaledMaxDistSqr = maxDistSqr * (curtime-lasttime);
+
 	for(std::vector<TrackMatch>::iterator it = matches.begin(); it != matches.end(); ++it) {
-		if(it->matchQaulity > this->maxDistSqr) break;// no more matches
-		if(! (it->track->isMatched || it->blob->isMatched)) {
+		if(it->matchQaulity > scaledMaxDistSqr) break;// path threshold no more matches
+		if(! (it->track->isMatched || it->blob->isMatched)) {  // if both blob and track are free
 			it->track->update(it->blob, curtime);
 			tracks.push_back(it->track);
 		}
 
-		// should I used a set to keep track of unmatched or just iterate over matches (again)
-		// get unmatched blobs (make new tracks)
-		// get unmatched tracks (cull if needed)
 	}
 
 
-//	std::cout << "----- post match ------" << std::endl;
-//	printTracks();
 
 
-	//alive 
-	long deathCutoff = curtime - timeToDeath;
-	long provisionalDeathCutoff = curtime - (timeToDeath * .5);
-
-
-
+	
+	// check unmatched tracks
+	// cull ones who have been unmached for too long
+	// update others and keep around
 
 	for(std::vector<Track *>::iterator it = oldTracks.begin(); it != oldTracks.end(); ++it) {
 		Track* t = *it;
 		if(! t->isMatched) { // if not already matched (else it was already takencare of above)
-			if(t->isProvisional) {
-				if(t->lastTrack > provisionalDeathCutoff) {
-					tracks.push_back(t); 
-				} else {
-					exits.push_back(t);
-				}
+			if(t->health <= 0) {
+				delete t;
 			} else {
-				if(t->lastTrack > deathCutoff) {
-					tracks.push_back(t); 
-				} else {
-					delete t;
-				}
+				t->updateNoMatch(curtime);
+				tracks.push_back(t);
 			}
 		}
 	}
 
-//	std::cout << "----- post exist ------" << std::endl;
-//	printTracks();
 
-
+	// create new tracks for unmatched blobs
 	for(std::vector<Blob>::const_iterator  it = blobs.begin(); it != blobs.end(); ++it) {
 		if(! it->isMatched) { // create a provisional track
 			Track *t = new Track(it->x, it->z, curtime);
-			enters.push_back(t);
 			tracks.push_back(t);
 		}
 	}
-
-//	std::cout << "----- end  ------" << std::endl;
-//	printTracks();
 
 }

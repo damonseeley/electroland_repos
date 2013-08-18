@@ -6,15 +6,37 @@
 
 class PulseDetector {
 public:
+
+		cv::Mat displayImage;
+			
+
+//		cv::Mat diffRGB;
+//		cv::Mat sameRGB;
+		
+
+		cv::Mat scratch1;
+		cv::Mat scratch2;
+
+		cv::Mat inPhase;
+		cv::Mat outOfPhase;
+		
+		
+		
+		cv::Mat combo;
+		bool foundPhone;
+
+
 	struct TimeStampedMat {
 		DWORD time;
-		cv::Mat mat;
+		cv::Mat red;
+		cv::Mat blue;
 	};
 
 	std::list<TimeStampedMat> images;
-	float halfPulseWaveLength;
-	PulseDetector(DWORD pulseWaveLength);
-	cv::Mat addImage(DWORD time, cv::Mat mat);
+	DWORD colorWaveLength; // (time for full oscillation, frequency should never be more than half effective fps)
+	DWORD singleColorTime; // (.5 * colorWaveLength)
+	PulseDetector(DWORD colorWaveLength);
+	void addImage(DWORD time, cv::Mat mat);
 	~PulseDetector();
 };
 

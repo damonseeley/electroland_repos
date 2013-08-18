@@ -1,7 +1,6 @@
 #ifndef __EL_BLOB__
 #define __EL_BLOB__
 
-#include <vector>
 
 class Blob
 {

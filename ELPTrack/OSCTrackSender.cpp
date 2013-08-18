@@ -1,6 +1,6 @@
 #include "OSCTrackSender.h"
 #include "osc/OscOutboundPacketStream.h"
-#include "boost\lexical_cast.hpp"
+#include <boost\lexical_cast.hpp>
 
 
 void OSCTrackSender::setTransform(
@@ -40,13 +40,13 @@ OSCTrackSender::OSCTrackSender(std::string ip, int port) {
 
 }
 
-void OSCTrackSender::sendTracks(Tracker *tracker) {
+void OSCTrackSender::sendTracks(Tracker *tracker) { 
 	if(! transmitSocket) return; // if no socket skip 
 	osc::OutboundPacketStream oscStream(buffer, OUTPUT_BUFFER_SIZE);
 	oscStream << osc::BeginBundleImmediate;
 
 	oscStream << osc::BeginMessage("/metaInfo");
-	oscStream << oscMinX << oscMaxX << oscMinZ << oscMaxZ;
+	oscStream << oscMinX << oscMaxX << oscMinZ << oscMaxZ << 6; // 6 fields in track data
 	oscStream << osc::EndMessage;
 
 	oscStream << osc::BeginMessage("/tracks");
@@ -58,33 +58,10 @@ void OSCTrackSender::sendTracks(Tracker *tracker) {
 		z = (z < oscMinZ) ? oscMinZ : z;
 		x = (x > oscMaxX) ? oscMaxX : x;
 		z = (z > oscMaxZ) ? oscMaxZ : z;
-		oscStream << t->id << x << z  << t->provisionality << t->health;
-	}
-	oscStream << osc::EndMessage;
+		oscStream << t->id << x << z << (t->age * .001f) << t->provisionality << t->health;
+		std::cout << (*t) << std::endl;
 
-	oscStream << osc::BeginMessage("/enters");
-	for(std::vector<Track*>::iterator it = tracker->enters.begin(); it != tracker->enters.end(); it++) {
-		Track *t = *it;
-		float x = (t->x - worldMinX) * scaleX;
-		float z = (t->z - worldMinZ) * scaleZ;
-		x = (x < oscMinX) ? oscMinX : x;
-		z = (z < oscMinZ) ? oscMinZ : z;
-		x = (x > oscMaxX) ? oscMaxX : x;
-		z = (z > oscMaxZ) ? oscMaxZ : z;
-		oscStream << t->id << x << z  << t->provisionality << t->health;
-	}
-	oscStream << osc::EndMessage;
-
-	oscStream << osc::BeginMessage("/exits");
-	for(std::vector<Track*>::iterator it = tracker->exits.begin(); it != tracker->exits.end(); it++) {
-		Track *t = *it;
-		float x = (t->x - worldMinX) * scaleX;
-		float z = (t->z - worldMinZ) * scaleZ;
-		x = (x < oscMinX) ? oscMinX : x;
-		z = (z < oscMinZ) ? oscMinZ : z;
-		x = (x > oscMaxX) ? oscMaxX : x;
-		z = (z > oscMaxZ) ? oscMaxZ : z;
-		oscStream << t->id << x << z  << t->provisionality << t->health;
+		
 	}
 	oscStream << osc::EndMessage;
 

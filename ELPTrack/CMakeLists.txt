@@ -12,7 +12,7 @@ set(FLYCAP_INC_PATH "C:/Program Files (x86)/Point Grey Research/FlyCapture2/incl
 set(FLYCAP_LIB_PATH "C:/Program Files (x86)/Point Grey Research/FlyCapture2/lib CACHE PATH "path to point grey fly capture2 libs")
 
 
-find_package(PCL 1.3 REQUIRED COMPONENTS common io visualization sample_consensus)
+find_package(PCL 1.3 REQUIRED COMPONENTS common io visualization sample_consensus filters)
 #find_package( OpenCV REQUIRED ) doesn't work
 
 set(Boost_USE_STATIC_LIBS OFF) 
