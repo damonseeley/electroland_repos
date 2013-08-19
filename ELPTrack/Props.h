@@ -4,35 +4,64 @@
 //required to get boost program options to link - solution discovered after hours of googling :(
 #define BOOST_ALL_DYN_LINK
 
+
+#define PROP_ERROR_LOG "errorLog"
+#define PROP_FILE "file"
+
 #define PROP_FPS  "fps"
+
 #define PROP_MINX "worldMinX"
 #define PROP_MAXX "worldMaxX"
 #define PROP_MINY "worldMinY"
 #define PROP_MAXY "worldMaxY"
 #define PROP_MINZ "worldMinZ"
 #define PROP_MAXZ "worldMaxZ"
+
 #define PROP_PITCH "camPitch"
 #define PROP_YAW "camYaw"
 #define PROP_ROLL "camRoll"
 #define PROP_XOFFSET "camOffsetX"
 #define PROP_YOFFSET "camOffsetY"
 #define PROP_ZOFFSET "camOffsetZ"
+
 #define PROP_TRACK_WIDTH "trackWidth"
 #define PROP_TRACK_HEIGHT "trackHeight"
+
 #define PROP_BG_THRESH "bgThresh"
+
 #define PROP_OSC_ADDRESS "oscAddress"
 #define PROP_OSC_PORT "oscPort"
 #define PROP_OSC_MINX "oscMinX"
 #define PROP_OSC_MAXX "oscMaxX"
 #define PROP_OSC_MINZ "oscMinZ"
 #define PROP_OSC_MAXZ "oscMaxZ"
+
 #define PROP_SHOW_POINTS "showPointCloud"
 #define PROP_SHOW_TRACKS "showTracks"
+
 #define PROP_TRACK_PROVISIONAL_TIME "trackProvisionalTime"
 #define PROP_TRACK_TIME_TO_DIE "trackTimeToDie"
 #define PROP_TRACK_TIME_TO_DIE_PROV "trackTimeToDieProvisional"
 #define PROP_TRACK_SMOOTHING "trackSmoothing"
 #define PROP_TRACK_MAX_MOVE "trackMaxMove"
+
+#define PROP_MESA_CAM "mesaCam"
+#define PROP_MESA_INT_TIME "mesaIntergrationTime"
+#define PROP_MESA_DUAL_INT_TIME "mesaDualIntergrationTime"
+#define PROP_MESA_AMP_THRESH "mesaAmplitudeThreshold"
+#define PROP_MESA_AUTOEXP "mesaUseAutoExposure"
+#define PROP_MESA_TIMEOUT "mesaTimeout"
+#define PROP_MESA_PAT_NOISE "mesaFixPatternNoise"
+#define PROP_MESA_AM_MEDIAN "mesaUse3x3MedianFilter"
+#define PROP_MESA_CONV_GRAY "mesaConvertAmpImageToGray"
+#define PROP_MESA_GEN_CONF_MAP "mesaGenerateConfidanceMap"
+#define PROP_MESA_DENOISE "mesaUseDenoise"
+#define PROP_MESA_NONAMBIG "mesaUseNonAmbiguityMode"
+#define PROP_MESA_MODFREQ "mesaModulationFrequency"
+
+
+
+
 
 
 #include <string>
@@ -45,7 +74,7 @@ namespace po = boost::program_options;
 
 class Props {
 public:
-
+	
 
 	/*
 	 bool is_empty(const boost::any & operand); 

@@ -1,9 +1,10 @@
 #include "Props.h"
+#include "ErrorLog.h"
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <iomanip>
-
 //#include <locale>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/posix_time/posix_time_io.hpp>
@@ -140,7 +141,8 @@ void Props::init(int argc, char** argv) {
 
 	optionDesc.add_options()
 		("help,h", "displays this help message when passed in on the command line")
-		("file,f", po::value<string>(&configFileName)->default_value("ELPTrack.ini"), "optional init file.  If not specified \'ELPTrack.ini\' is used")
+		(PROP_FILE ",f", po::value<string>(&configFileName)->default_value("ELPTrack.ini"), "Path to config file.  If not specified \'ELPTrack.ini\' is used")
+		(PROP_ERROR_LOG, po::value<string>()->default_value("ELPTrackError.log"), "Path to log file.  If not specified \'ELPTrackError.log\' is used")
 		(PROP_FPS,  po::value<float>()->default_value(30.0f), "maximum for tracking")
 		(PROP_MINX, po::value<float>()->default_value(-3.0f), "minimum x value (in m) for tracking")
 		(PROP_MAXX, po::value<float>()->default_value(3.0f),  "maximum x value (in m) for tracking")
@@ -156,7 +158,7 @@ void Props::init(int argc, char** argv) {
 		(PROP_ZOFFSET, po::value<float>()->default_value(0.0f),  "camera z offset")
 		(PROP_TRACK_WIDTH, po::value<int>()->default_value(60),  "width of plan view image (tracking percision is maxX-minX/width)")
 		(PROP_TRACK_HEIGHT, po::value<int>()->default_value(120),  "height of plan view image (tracking percision is maxZ-minZ/height)")
-		(PROP_BG_THRESH, po::value<float>()->default_value(.075),  "background model theshold")
+		(PROP_BG_THRESH, po::value<float>()->default_value(.075f),  "background model theshold")
 		(PROP_OSC_ADDRESS, po::value<string>()->default_value(""), "IP address of OSC receiver (an empty string will not send msgs)")
 		(PROP_OSC_PORT, po::value<int>()->default_value(7000), "port of OSC receiver")
 		(PROP_OSC_MINX, po::value<float>()->default_value(0), "min x value for tracks sent over osc")
@@ -169,9 +171,24 @@ void Props::init(int argc, char** argv) {
 		(PROP_TRACK_TIME_TO_DIE, po::value<int>()->default_value(1000), "ms after a track is lost before it is removed")
 		(PROP_TRACK_TIME_TO_DIE_PROV, po::value<int>()->default_value(500), "ms after a provisional track is lost before it is remmoved")
 		(PROP_TRACK_SMOOTHING, po::value<float>()->default_value(.75f), "smoothing of track movement (range is 0-1)")
-		(PROP_TRACK_MAX_MOVE, po::value<float>()->default_value(2.0f), "the maximum speed a track can move in m/s")
+		(PROP_TRACK_MAX_MOVE, po::value<float>()->default_value(2.5f), "the maximum speed a track can move in m/s")
+		(PROP_MESA_CAM, po::value<string>()->default_value("dialog"), "Mesa data source (filename, ip address, or \'dialog\').")
+		(PROP_MESA_INT_TIME, po::value<float>()->default_value(3.3f), "Mesa Dual integration time of the camera.The ratio is a value from 0 to 100. -1 leave value unchanged")
+		(PROP_MESA_DUAL_INT_TIME, po::value<int>()->default_value(0), "mesa dual intergration ratio (0 turns it off)")
+		(PROP_MESA_AMP_THRESH, po::value<int>()->default_value(0), "mesa amplitude threshold (range 0-(2^16)-1)")
+		(PROP_MESA_AUTOEXP, po::value<bool>()->default_value(false), "use autoexposure with recomended values to set intergration time instead of " PROP_MESA_INT_TIME)
+		(PROP_MESA_TIMEOUT, po::value<int>()->default_value(-1), "timeout for mesa operations in ms (-1 -> leaves the value unchanged)")
+		(PROP_MESA_PAT_NOISE, po::value<bool>()->default_value(true), "fix pattern noise correction (the mesa docs say it should always be on)")
+		(PROP_MESA_AM_MEDIAN, po::value<bool>()->default_value(false), "turns on a 3x3 median filter")
+		(PROP_MESA_CONV_GRAY, po::value<bool>()->default_value(false), "adjust the amplitude image to look more like a conventional greyscale image")
+		(PROP_MESA_GEN_CONF_MAP, po::value<bool>()->default_value(false), "generate confidence maps")
+		(PROP_MESA_DENOISE, po::value<bool>()->default_value(true), "turns on the 5x5 hardware adaptive neighborhood filter")
+		(PROP_MESA_NONAMBIG, po::value<bool>()->default_value(true), "turns on non ambiguity mode ")
 
-		;
+
+
+
+				;
 //todo flip x,y,z
 	try {
 		po::store(po::parse_command_line(argc, argv, optionDesc), optionVM);
@@ -183,7 +200,7 @@ void Props::init(int argc, char** argv) {
 		}
 		optionVM.notify();
 	} catch(po::error& e) {
-		std::cerr << "ERROR in Command line arguments: " << e.what() << std::endl;
+		*ErrorLog::log << "ERROR in Command line arguments: " << e.what() << std::endl;
 		std::cerr << optionDesc << std::endl;
 		exit(1);
 	}
@@ -193,11 +210,11 @@ void Props::init(int argc, char** argv) {
 		if(configFileStream) {
 			po::store(po::parse_config_file(configFileStream, optionDesc, false), optionVM);
 		} else {
-			std::cout << "Unable to open config file: " << configFileName << " using default values" << std::endl;
+			*ErrorLog::log  << "Unable to open config file: " << configFileName << " using default values" << std::endl;
 		}
 
 	} catch(po::error& e) {
-		std::cerr << "ERROR in config file: " << e.what() << std::endl;
+		*ErrorLog::log << "ERROR in config file: " << e.what() << std::endl;
 		std::cerr << optionDesc << std::endl;
 		exit(1);
 	}

@@ -5,7 +5,6 @@
 
 #include <string>
 
-#include <libMesaSR.h>
 
 #include <boost/thread/locks.hpp>
 #include <boost/thread/mutex.hpp>
@@ -22,6 +21,7 @@
 
 #include <Eigen/Core>
 
+#include "MesaCam.h"
 #include "MesaBGSubtractor.h"
 #include "PointCloudConstructor.h"
 #include "PlanView.h"
@@ -29,23 +29,27 @@
 #include "Props.h"
 #include "PropChangeListener.h"
 #include "OSCTrackSender.h"
+#include "ErrorLog.h"
 
-#include "FlyCap.h"
-#include "PulseDetector.h"
+//#include "FlyCap.h"
+//#include "PulseDetector.h"
 
 
 using namespace pcl;
 using namespace boost;
 using namespace std;
 
+enum exitValues { 
+	SUCCESS = 0, 
+	GENERAL_ERROR = 1,
+	AQUISITION_ERROR = 2
+};
 
 boost::mutex displayImageMutex;
 
-SRCAM srCam; // SwissRanger
-FlyCap *flyCap;
-PulseDetector *pulseDetector;
-pcl::visualization::CloudViewer* viewer;
 
+MesaCam *mesaCam;
+pcl::visualization::CloudViewer* viewer;
 PointCloudConstructor *cloudConstructor;
 MesaBGSubtractor *bg;
 PlanView *planView;
@@ -78,6 +82,7 @@ OSCTrackSender *oscTrackSender;
 
 bool isRunning;
 
+int badFrames = 0;
 
 int print_help()
 {
@@ -88,7 +93,6 @@ int print_help()
 	return 0;
 }
 
-using namespace pcl;
 
 void addBox (pcl::visualization::PCLVisualizer& viewer) {
 	viewer.addCube(
@@ -109,14 +113,14 @@ void  updateTrackerMaxMove() {
 	// the scale may be distoted so take the bigger of the twof
 	float scaler = (planView->worldScaleX > planView->worldScaleZ) ? planView->worldScaleX : planView->worldScaleZ;
 	tracker->maxDistSqr = scaler * (Props::getFloat(PROP_TRACK_MAX_MOVE) * Props::getFloat(PROP_TRACK_MAX_MOVE)) / 1000; // convert to planview space
-		
+
 
 
 
 }
 
 void resetWorldAndCamDims() {
-		cloudConstructor->minX = Props::getFloat(PROP_MINX);
+	cloudConstructor->minX = Props::getFloat(PROP_MINX);
 	cloudConstructor->minY = Props::getFloat(PROP_MINY);
 	cloudConstructor->minZ = Props::getFloat(PROP_MINZ);
 	cloudConstructor->maxX = Props::getFloat(PROP_MAXX);
@@ -303,63 +307,74 @@ void aquireFrame() {
 		boost::this_thread::sleep( boost::posix_time::milliseconds(elspesMS) );
 
 
-	SR_Acquire(srCam); // get new depth image
+	// get new depth image
 
 
-	imsize = new cv::Size(SR_GetCols(srCam), SR_GetRows(srCam)); // SR image size
-	cv::Mat rangeImage(*imsize, CV_16UC1, SR_GetImage(srCam, 0));
-
-	bg->process(rangeImage, removeBgFromPointCloud);
-
-
-
-	if(bg->useAdaptive) {
-		bg->foreground.convertTo(displayImage, CV_8UC1, 256.0);
-		//		imshow(win, displayImage);
-	} else {
-		//	imshow(win, bg->foreground);
-	}
-	//				cv::Mat mattedImage;
-	//				mattedImage.setTo(cv::Mat::zeros);
+	if(mesaCam->aquire()) {
+		badFrames = 0;
+		cv::Mat rangeImage = mesaCam->getRangeImage();
+		//	mesaCam->aquireRange(rangeImage);
+		bg->process(rangeImage, removeBgFromPointCloud);
 
 
 
-	if(cropPointCloud) {
-		cloudConstructor->aquireFrame();
-
-		cloudConstructor->filterFrame();
-
-		if(viewer)
-			viewer->showCloud(cloudConstructor->filteredPtr);
-		planView->generatePlanView(cloudConstructor->filteredPtr);
-		tracker->updateTracks(planView->blobs, curtime, lasttime);
-
-		oscTrackSender->sendTracks(tracker);
-		//view tracks
-		if(showTracks) {
-			for(std::vector<Track*>::iterator trackIt = tracker->tracks.begin(); trackIt != tracker->tracks.end(); ++trackIt) {
-				Track* t = *trackIt;
-				int r = (t->id * 13) % 255;
-				int g = (t->id * 101) % 255;
-				int b = (t->id * 3) % 255;
-				int col;
-				int row;
-				int width = (t->isProvisional) ? 2 : -1;
-				int radius = (t->isMatched) ? 4 : 2;
-				// big if match, solid if not provisional;		
-				planView->worldDimsToBinDims(t->x, t->z, col, row);
-				cv::circle(planView->displayImage, cv::Point(col*3, row*3), radius*2, CV_RGB  (r,g,b),width*2); 
-				stringstream fpsMsg;
-				fpsMsg << "fps: " << estimatedFPS;
-				cv::putText(planView->displayImage, fpsMsg.str(), cvPoint(0, planView->displayImage.rows), cv::FONT_HERSHEY_PLAIN, 1.0, cv::Scalar(255,0,0));
-				displayImage = cv::Mat(planView->displayImage);
-			}
+		if(bg->useAdaptive) {
+			bg->foreground.convertTo(displayImage, CV_8UC1, 256.0);
+			//		imshow(win, displayImage);
+		} else {
+			//	imshow(win, bg->foreground);
 		}
+		//				cv::Mat mattedImage;
+		//				mattedImage.setTo(cv::Mat::zeros);
 
 
-	} else {
-		if(viewer)
-			viewer->showCloud(cloudConstructor->aquireFrame());
+
+		if(cropPointCloud) {
+			cloudConstructor->aquireFrame();
+
+			cloudConstructor->filterFrame();
+
+			if(viewer)
+				viewer->showCloud(cloudConstructor->filteredPtr);
+			planView->generatePlanView(cloudConstructor->filteredPtr);
+			tracker->updateTracks(planView->blobs, curtime, lasttime);
+
+			oscTrackSender->sendTracks(tracker);
+			//view tracks
+			if(showTracks) {
+				for(std::vector<Track*>::iterator trackIt = tracker->tracks.begin(); trackIt != tracker->tracks.end(); ++trackIt) {
+					Track* t = *trackIt;
+					int r = (t->id * 13) % 255;
+					int g = (t->id * 101) % 255;
+					int b = (t->id * 3) % 255;
+					int col;
+					int row;
+					int width = (t->isProvisional) ? 2 : -1;
+					int radius = (t->isMatched) ? 4 : 2;
+					// big if match, solid if not provisional;		
+					planView->worldDimsToBinDims(t->x, t->z, col, row);
+					cv::circle(planView->displayImage, cv::Point(col*3, row*3), radius*2, CV_RGB  (r,g,b),width*2); 
+					stringstream fpsMsg;
+					fpsMsg << "fps: " << estimatedFPS;
+					cv::putText(planView->displayImage, fpsMsg.str(), cvPoint(0, planView->displayImage.rows), cv::FONT_HERSHEY_PLAIN, 1.0, cv::Scalar(255,0,0));
+					displayImage = cv::Mat(planView->displayImage);
+				}
+			}
+
+
+		} else {
+			if(viewer)
+				viewer->showCloud(cloudConstructor->aquireFrame());
+		}
+	} else { // if unable to aquireFrame from mesa
+		badFrames++;
+		if(badFrames % 10 == 0) {
+			*ErrorLog::log << "Unable to aquire " << badFrames << " images in a row from Mesa" << std::endl;
+		}
+		if(badFrames % 50 == 0) {
+			*ErrorLog::log << "EXITING do to inability to aquire images" << std::endl;
+			exit(GENERAL_ERROR);
+		}
 	}
 
 
@@ -381,7 +396,6 @@ void loop() {
 		aquireFrame();
 	}
 
-	SR_Close(srCam);
 
 }
 DWORD WINAPI loopThread( LPVOID lpParam ) {
@@ -396,42 +410,64 @@ int mouseY=0;
 void mouseEvent(int evt, int x, int y, int flags, void* param) {                    
 	mouseX = x;
 	mouseY = y;
-//    cv::Mat* rgb = (cv::Mat*) param;
+	//    cv::Mat* rgb = (cv::Mat*) param;
 	/*
-	
-		*/
+
+	*/
 }
+
+#
+//allows for ports even though I don't think we should have them with mesa
+bool isIP(const char *ipadd) {
+	unsigned b1, b2, b3, b4, port = 0;
+	unsigned char sep, c;
+	int rc;
+	rc = sscanf(ipadd, "%3u.%3u.%3u.%3u%c%u%c",
+		&b1, &b2, &b3, &b4, &sep, &port, &c);
+	if ( ! (rc == 4 || rc == 6)) 
+		return false;
+	if (rc == 6 && sep != ':') 
+		return false;
+	if ((b1 | b2 | b3 | b4) > 255 || port > 65535) 
+		return false;
+	if (strspn(ipadd, "0123456789.:") < strlen(ipadd))  
+		return false;
+	return true;
+
+
+}
+
 
 int main(int argc, char** argv)
 {
 	isRunning = true;	
 	Props::initProps(argc, argv);
+	ErrorLog::setLogFile(Props::getString(PROP_ERROR_LOG));
 
-	/* fly tests */
-	cv::namedWindow(win); // init window
-
-
+	*ErrorLog::log << "------ Starting Up with " << Props::getString(PROP_FILE) << " ------" << std::endl;
 
 	showTracks = Props::getBool(PROP_SHOW_TRACKS);
 
+
 	fps = Props::getFloat(PROP_FPS);
-
-	//	FlyCap *fc  = new FlyCap();
-
 	msPerFrame = 1000.0/fps;
-	SR_OpenDlg(&srCam, 2, 0); // 2 -> opens a selection dialog
+
 	curtime = timeGetTime();
 	lasttime = curtime;
 	lastFPSEpoch = curtime;
+
+	mesaCam = new MesaCam();
+	mesaCam->open(Props::getString(PROP_MESA_CAM).c_str(), isIP(Props::getString(PROP_MESA_CAM).c_str()));
+
 	bg = new MesaBGSubtractor();
-	
-	cloudConstructor = new PointCloudConstructor(srCam);
+
+	cloudConstructor = new PointCloudConstructor(mesaCam->srCam);
 	planView = new PlanView(Props::getFloat(PROP_MINX), Props::getFloat(PROP_MAXX), Props::getFloat(PROP_MINZ), Props::getFloat(PROP_MAXZ), Props::getInt(PROP_TRACK_WIDTH), Props::getInt(PROP_TRACK_HEIGHT));
 	oscTrackSender = new OSCTrackSender(Props::getString(PROP_OSC_ADDRESS), Props::getInt(PROP_OSC_PORT));
-	
+
 	resetWorldAndCamDims();
-	
-	
+
+
 	if(showTracks)
 		cv::namedWindow(win, 	 CV_WINDOW_NORMAL|CV_GUI_NORMAL); // init window
 	// need to make this distance in terms of m?
@@ -467,8 +503,8 @@ int main(int argc, char** argv)
 
 	}
 
-//	aquireFrame(); // need to 
-//	isRunning = true;
+	//	aquireFrame(); // need to 
+	//	isRunning = true;
 
 	//		viewer->registerPointPickingCallback (pp_callback, (void*)&cb_args);
 	if(viewer) {
@@ -496,13 +532,13 @@ int main(int argc, char** argv)
 	Eigen::Vector3f leftInPlane = planeNormal.cross(upVector);
 	floorTransform = pcl::getTransFromUnitVectorsXY(leftInPlane, planeNormal);
 	*/
-	
+
 	if(showTracks) {
 		displayImage = cv::Mat(cv::Size(10,10), CV_8UC1);
 		CreateThread( NULL, 0, loopThread, NULL, 0, NULL); 
 		while(isRunning) {
-		cv::imshow(win, displayImage);
-		cv::waitKey(30);
+			cv::imshow(win, displayImage);
+			cv::waitKey(30);
 		}
 	} else {
 		loop();
