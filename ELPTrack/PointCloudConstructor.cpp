@@ -34,7 +34,7 @@ PointCloudConstructor::~PointCloudConstructor(void)
 }
 
 void PointCloudConstructor::setTransform(float tx, float ty, float tz, float pitch, float yaw, float roll) {
-	pcl::getTransformation (0,ty,0, pitch,yaw,roll, floorTransform);
+	pcl::getTransformation (tx,ty,tz, pitch,yaw,roll, floorTransform);
 }
 
 

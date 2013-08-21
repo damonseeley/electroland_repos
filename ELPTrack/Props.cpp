@@ -8,20 +8,31 @@
 //#include <locale>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/posix_time/posix_time_io.hpp>
+#include "Shlwapi.h"
 
 Props* Props::theProps = NULL;
 
+std::string Props::curDir = "" ;
+std::string Props::version = "";
 
-Props::Props() {
+Props::Props() {	
 }
 
 
 
 	
 void Props::writeToFile(string filename) {
-
+	
 	int versionNum = 0;
+	
+	
+	// prepend dir cached at startup since mesa changes working directory
+	if(PathIsRelative(filename.c_str())) {
+		filename = curDir + "\\" + filename;
+	} 
+
 	string freeFilename = filename + ".ini";
+
 	while(FILE *testFile = fopen(freeFilename.c_str(), "r")) {
 		std::cout << freeFilename << " is already in use." << std::endl;
 		fclose(testFile);
@@ -41,10 +52,10 @@ void Props::writeToFile(string filename) {
   time ( &rawtime );
   timeinfo = localtime ( &rawtime );
   strftime (buffer,80,"%Y-%m-%d, %H-%M-%S",timeinfo);
-
-	file << "# automatically generated ELPTrack property file" << std::endl;
+	file << "# ELPTrack " << version << std::endl;
+	file << "# automatically generated property file" << std::endl;
 	file << "# " << buffer << std::endl;
-
+	file << "# " << std::endl << std::endl;
 	for (std::map<string, boost::any>::iterator it=theProps->map.begin(); it != theProps->map.end(); it++ ) { 
 		   if(typeid(float) == it->second.type()) {
 		   file << setw(10) << std::left << it->first << "= " << setw(20) << boost::any_cast<float>(it->second) <<
@@ -130,9 +141,20 @@ void Props::notifyListeners(){
 
 
 
-void Props::initProps(int argc, char** argv) {
+void Props::initProps(int argc, char** argv, string version) {
 	if(theProps) return;
+	Props::version = version;
 	theProps = new Props();
+		char cCurrentPath[FILENAME_MAX];
+
+	 if (!_getcwd(cCurrentPath, sizeof(cCurrentPath)))
+		 {
+			 *ErrorLog::log << "Props unable to discover current working directory" << std::endl;
+		 }
+		cCurrentPath[sizeof(cCurrentPath) - 1] = '\0'; /* probably not really required but lets be safe*/
+		curDir = std::string(cCurrentPath);
+
+
 	theProps->init(argc, argv);
 }
 
@@ -141,9 +163,11 @@ void Props::init(int argc, char** argv) {
 
 	optionDesc.add_options()
 		("help,h", "displays this help message when passed in on the command line")
-		(PROP_FILE ",f", po::value<string>(&configFileName)->default_value(DEFAULT_ERROR_LOG), "Path to config file.  If not specified \'ELPTrack.ini\' is used")
+		("version,v", "displays the program version string")
+		(PROP_FILE ",f", po::value<string>(&configFileName)->default_value("ELPTrack.ini"), "Path to config file.  If not specified \'ELPTrack.ini\' is used")
 		(PROP_ERROR_LOG, po::value<string>()->default_value("ELPTrackError.log"), "Path to log file.  If not specified \'ELPTrackError.log\' is used")
 		(PROP_FPS,  po::value<float>()->default_value(30.0f), "maximum for tracking")
+		(PROP_BADFRAMES,  po::value<int>()->default_value(4), "number of consecutive bad acquires permitted before exiting (if the camera is down each frame takes ~20sec)")
 		(PROP_MINX, po::value<float>()->default_value(-3.0f), "minimum x value (in m) for tracking")
 		(PROP_MAXX, po::value<float>()->default_value(3.0f),  "maximum x value (in m) for tracking")
 		(PROP_MINY, po::value<float>()->default_value(0.0f), "minimum y value (in m) for tracking")
@@ -164,12 +188,13 @@ void Props::init(int argc, char** argv) {
 		(PROP_PLANVIEW_FLIPZ, po::value<bool>()->default_value(true), "flip track\'s z coordinates")
 		
 		(PROP_BG_THRESH, po::value<float>()->default_value(.075f),  "background model theshold")
+		(PROP_BG_ADAPT, po::value<float>()->default_value(.001f), "background adaptation rate (must be in range 0-1.  0 will use first image, 1 will use last frame")
 		(PROP_OSC_ADDRESS, po::value<string>()->default_value(""), "IP address of OSC receiver (an empty string will not send msgs)")
 		(PROP_OSC_PORT, po::value<int>()->default_value(7000), "port of OSC receiver")
-		(PROP_OSC_MINX, po::value<float>()->default_value(0), "min x value for tracks sent over osc")
-		(PROP_OSC_MINZ, po::value<float>()->default_value(0), "min z value for tracks sent over osc")
-		(PROP_OSC_MAXX, po::value<float>()->default_value(1.0f), "max x value for tracks sent over osc")
-		(PROP_OSC_MAXZ, po::value<float>()->default_value(1.0f), "max z value for tracks sent over osc")
+		(PROP_OSC_MINX, po::value<float>()->default_value(0), "min x value for tracks sent over osc, set min & max to 0 to use world coords")
+		(PROP_OSC_MINZ, po::value<float>()->default_value(0), "min z value for tracks sent over osc, set min & max to 0 to use world coords")
+		(PROP_OSC_MAXX, po::value<float>()->default_value(1.0f), "max x value for tracks sent over osc, set min & max to 0 to use world coords")
+		(PROP_OSC_MAXZ, po::value<float>()->default_value(1.0f), "max z value for tracks sent over osc, set min & max to 0 to use world coords")
 		(PROP_SHOW_POINTS, po::value<bool>()->default_value(true), "show the point cloud for interactive configuration")
 		(PROP_SHOW_TRACKS, po::value<bool>()->default_value(true), "show the tracks")
 		(PROP_SHOW_RANGE, po::value<bool>()->default_value(true), "show the mesa range image")
@@ -179,7 +204,7 @@ void Props::init(int argc, char** argv) {
 		(PROP_TRACK_TIME_TO_DIE, po::value<int>()->default_value(1000), "ms after a track is lost before it is removed")
 		(PROP_TRACK_TIME_TO_DIE_PROV, po::value<int>()->default_value(500), "ms after a provisional track is lost before it is remmoved")
 		(PROP_TRACK_SMOOTHING, po::value<float>()->default_value(.75f), "smoothing of track movement (range is 0-1)")
-		(PROP_TRACK_MAX_MOVE, po::value<float>()->default_value(2.5f), "the maximum speed a track can move in m/s")
+		(PROP_TRACK_MAX_MOVE, po::value<float>()->default_value(9), "Maximum units in plan view a track can move per frame.")
 		(PROP_MESA_CAM, po::value<string>()->default_value("dialog"), "Mesa data source (filename, ip address, or \'dialog\').")
 		(PROP_MESA_INT_TIME, po::value<float>()->default_value(3.3f), "Mesa Dual integration time of the camera.The ratio is a value from 0 to 100. -1 leave value unchanged")
 		(PROP_MESA_DUAL_INT_TIME, po::value<int>()->default_value(0), "mesa dual intergration ratio (0 turns it off)")
@@ -205,6 +230,10 @@ void Props::init(int argc, char** argv) {
 
 		if(optionVM.count("help")) {
 			std::cout << optionDesc << std::endl;
+			exit(0);
+		}
+		if(optionVM.count("version")) {
+			std::cout << version << std::endl;
 			exit(0);
 		}
 		optionVM.notify();
@@ -236,6 +265,11 @@ void Props::init(int argc, char** argv) {
 //	map.insert(optionVM.begin(), optionVM.end());
 }
 
+
+void niceExit(int value) {
+//		timeEndPeriod(1);
+		exit(value);
+}
 
 //void Props::set( const std::string& opt, const float& val)
 //{

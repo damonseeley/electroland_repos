@@ -16,10 +16,13 @@ public:
 	bool firstFrame;
 
 	float thresh;
+	float adaptionRate;
+	float nonAdaptionRate;
 
-	MesaBGSubtractor(void);
+	MesaBGSubtractor(float adaptionRage, float thresh);
 	~MesaBGSubtractor(void);
 
+	void setAdaption(float f);
 	void process(cv::Mat src, bool removeFromSrc);
 	
 };

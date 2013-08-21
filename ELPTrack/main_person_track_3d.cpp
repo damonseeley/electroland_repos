@@ -3,6 +3,8 @@
 #include <Windows.h> // only on a Windows system
 #undef NOMINMAX
 
+#define ELPT_VERSION "Version 1.0b1"
+
 #include <string>
 
 
@@ -29,6 +31,7 @@
 #include "PropChangeListener.h"
 #include "OSCTrackSender.h"
 #include "ErrorLog.h"
+#include "ELTimer.h"
 
 //#include "FlyCap.h"
 //#include "PulseDetector.h"
@@ -37,6 +40,10 @@
 using namespace pcl;
 using namespace boost;
 using namespace std;
+
+
+#define ELPTRACK_VERSION "1.0b1"
+
 
 enum exitValues { 
 	SUCCESS = 0, 
@@ -74,20 +81,15 @@ struct callback_args{
 };
 struct callback_args cb_args;
 
+SR_FuncCB* defaultMesaCallback;
+
 std::string trackWin("Tracks"); // OpenCV window reference name 
 std::string grayWin("Mesa Intensity"); // OpenCV window reference name 
 std::string rangeWin("Mesa Range"); // OpenCV window reference name 
 std::string bgSubWin("BG Subtraction");
 cv::Size *imsize;
 
-
-float fps;
-float estimatedFPS;
-double msPerFrame;
-long frameCnt;
-DWORD  lastFPSEpoch;
-DWORD  lasttime;
-DWORD  curtime;
+ELTimer *timer;
 
 OSCTrackSender *oscTrackSender;
 
@@ -122,8 +124,9 @@ void removeBox(pcl::visualization::PCLVisualizer& viewer) {
 void  updateTrackerMaxMove() {
 	if(! tracker) return;
 	// the scale may be distoted so take the bigger of the twof
-	float scaler = (planView->worldScaleX > planView->worldScaleZ) ? planView->worldScaleX : planView->worldScaleZ;
-	tracker->maxDistSqr = scaler * (Props::getFloat(PROP_TRACK_MAX_MOVE) * Props::getFloat(PROP_TRACK_MAX_MOVE)) / 1000; // convert to planview space
+	//	float scaler = (planView->worldScaleX > planView->worldScaleZ) ? planView->worldScaleX : planView->worldScaleZ;
+	tracker->maxDistSqr =  Props::getFloat(PROP_TRACK_MAX_MOVE);
+	//scaler * (Props::getFloat(PROP_TRACK_MAX_MOVE) * Props::getFloat(PROP_TRACK_MAX_MOVE)) / 1000; // convert to planview space
 
 
 
@@ -165,21 +168,30 @@ void displayKeyboardHelp() {
 	std::cout << "y/Y   - decrement/increment point count threshold in plan view" << std::endl;
 	std::cout << "t/T   - decrement/increment background model threshold" << std::endl;
 	std::cout << "q/Q   - quit" << std::endl;
+	std::cout << "lArrow/rArrow         - roll point cloud " << std::endl;
 	std::cout << "uArrow/dArrow         - pitch point cloud " << std::endl;
 	std::cout << "shift lArrow/lArrow   -yaw point cloud " << std::endl;
-	std::cout << "lArrow/rArrow         - roll point cloud " << std::endl;
 	std::cout << "shift uArrow/dArrow   -translate point cloud in y " << std::endl;
+	std::cout << "ctrl lArrow/rArrow   -translate point cloud in x " << std::endl;
+	std::cout << "ctrl uArrow/dArrow   -translate point cloud in z " << std::endl;
 
 
 }
 
 int mesaCallback(SRCAM srCam, unsigned int msg, unsigned int param, void *data) {
-	if(msg & CM_MSG_DISPLAY) {
-		return 1;
-	} else {
-	std::cout << "got a call back" << std::endl;
+	if(msg == CM_MSG_DISPLAY) {
+		if(param | MK_DEBUG_STRING) {
+			*ErrorLog::log << "Mesa driver attempted to display a debug string:" <<  (const char*)data << std::endl;
+		} else if (param | MK_BOX_INFO) {
+			*ErrorLog::log << "Mesa driver attempted to display a ASTERISK MessageBox:" << (const char*)data << std::endl;
+		} else if (param | MK_BOX_WARN) {
+			*ErrorLog::log << "Mesa driver attempted to display a WARNING  MessageBox:" << (const char*)data << std::endl;
+		} else if (param | MK_BOX_ERR) {
+			*ErrorLog::log << "Mesa driver attempted to display a HAND   MessageBox:" << (const char*)data << std::endl;
+		}
 		return 0;
-
+	} else {
+		return defaultMesaCallback(srCam, msg, param,data);
 	}
 }
 
@@ -190,19 +202,29 @@ void kb_callback(const pcl::visualization::KeyboardEvent& event, void *args) {
 	if(event.keyUp()){ 
 		switch(event.getKeyCode()) {
 		case 'b':
+			needWorldReset = false;
 			removeBgFromPointCloud = ! removeBgFromPointCloud;
 			std::cout << "Remove background " << removeBgFromPointCloud << std::endl;
 			break;
 		case 'B':
+			needWorldReset = false;
 			cropPointCloud = ! cropPointCloud;
 			std::cout << "Crop Point Cloud " << cropPointCloud << std::endl;
 			break;
 		case 'S':
+			needWorldReset = false;
 			Props::writeToFile("ELPTrack");
 			break;
 		case 'h':
+			needWorldReset = false;
 			displayKeyboardHelp();
 			break;
+		case ' ':
+			needWorldReset = false;
+			std::cout << "FPS: " << timer->actualFPS  <<std::endl;
+			break;
+
+
 		}
 	}
 
@@ -261,7 +283,7 @@ void kb_callback(const pcl::visualization::KeyboardEvent& event, void *args) {
 		std::cout << PROP_PLANVIEW_THRESH << " " << Props::getInt(PROP_PLANVIEW_THRESH) << std::endl;
 		needWorldReset = false;
 			  }
-		break;
+			  break;
 	case 'T': 
 		Props::inc(PROP_BG_THRESH, 0.0001f);
 		bg->thresh = Props::getFloat(PROP_BG_THRESH);
@@ -274,12 +296,14 @@ void kb_callback(const pcl::visualization::KeyboardEvent& event, void *args) {
 		break;
 	case 'q':
 	case 'Q':
+		needWorldReset = false;
 		isRunning = false;
 		break;
 	}
 
 
 
+	
 
 
 	if(event.isShiftPressed()) {
@@ -292,8 +316,17 @@ void kb_callback(const pcl::visualization::KeyboardEvent& event, void *args) {
 		} else 	if(event.getKeySym() == "Right") {
 			Props::inc(PROP_YAW, .01f);
 		}
-	} else {
-
+	} else if(event.isCtrlPressed()) {
+		if(event.getKeySym() == "Left") {
+			Props::inc(PROP_XOFFSET, -.10f);
+		} else 	if(event.getKeySym() == "Right") {
+			Props::inc(PROP_XOFFSET, .10f);
+		} else 	if(event.getKeySym() == "Up") {
+			Props::inc(PROP_ZOFFSET, -.10f);
+		} else 	if(event.getKeySym() == "Down") {
+			Props::inc(PROP_ZOFFSET, .10f);
+		}
+	}else {
 		if(event.getKeySym() == "Left") {
 			Props::inc(PROP_ROLL, -.01f);
 		} else 	if(event.getKeySym() == "Right") {
@@ -314,9 +347,8 @@ void kb_callback(const pcl::visualization::KeyboardEvent& event, void *args) {
 
 
 
-	std::cout << "FPS: " << estimatedFPS << std::endl;
 
-		
+
 }
 
 
@@ -357,22 +389,7 @@ void aquireFrame() {
 	//time_t lasttime;
 	//time_t curtime;
 
-
-	frameCnt++;
-	curtime = timeGetTime();
-	if(frameCnt % 100 == 0) {
-		estimatedFPS = 100000 / (curtime-lastFPSEpoch); // (100 frames/elapsed ms * 1000 ms / 1s)
-		lastFPSEpoch = curtime;
-	}
-	long elspesMS = (curtime-lasttime);
-	elspesMS = elspesMS < 0 ? 0 : elspesMS; // incase of wrap around?
-	elspesMS = msPerFrame - elspesMS;
-	if(elspesMS > 0)
-		//cv::waitKey(elspesMS);
-		//not sure if we need if sleep my be a no-op with negative value
-		boost::this_thread::sleep( boost::posix_time::milliseconds(elspesMS) );
-
-
+	timer->maintainFPS();
 	// get new depth image
 
 
@@ -409,7 +426,7 @@ void aquireFrame() {
 			if(viewer)
 				viewer->showCloud(cloudConstructor->filteredPtr);
 			planView->generatePlanView(cloudConstructor->filteredPtr);
-			tracker->updateTracks(planView->blobs, curtime, lasttime);
+			tracker->updateTracks(planView->blobs, timer->curTime, timer->lastTime);
 
 			oscTrackSender->sendTracks(tracker);
 			//view tracks
@@ -427,7 +444,7 @@ void aquireFrame() {
 					planView->worldDimsToBinDims(t->x, t->z, col, row);
 					cv::circle(planView->displayImage, cv::Point(col*3, row*3), radius*2, CV_RGB  (r,g,b),width*2); 
 					stringstream fpsMsg;
-					fpsMsg << "fps: " << estimatedFPS;
+					fpsMsg << "fps: " << timer->actualFPS;
 					cv::putText(planView->displayImage, fpsMsg.str(), cvPoint(0, planView->displayImage.rows), cv::FONT_HERSHEY_PLAIN, 1.0, cv::Scalar(255,0,0));
 					displayImage = cv::Mat(planView->displayImage);
 				}
@@ -440,10 +457,8 @@ void aquireFrame() {
 		}
 	} else { // if unable to aquireFrame from mesa
 		badFrames++;
-		if(badFrames % 5 == 0) {
-			*ErrorLog::log << "Unable to aquire " << badFrames << " images in a row from Mesa" << std::endl;
-		}
-		if(badFrames % 20 == 0) {
+		*ErrorLog::log << "Unable to aquire " << badFrames << " images in a row from Mesa" << std::endl;
+		if(badFrames >= Props::getInt(PROP_BADFRAMES)) {
 			*ErrorLog::log << "EXITING do to inability to aquire images" << std::endl;
 			exit(GENERAL_ERROR);
 		}
@@ -457,7 +472,6 @@ void aquireFrame() {
 	std::cout << *it << "==?" << *it2 << std::endl;
 	}
 	*/
-	lasttime = curtime;
 	if(viewer) 
 		isRunning = ! viewer->wasStopped();
 } 
@@ -512,9 +526,15 @@ bool isIP(const char *ipadd) {
 
 int main(int argc, char** argv)
 {
+
+
+
+
+
+
 	isRunning = true;	
 	ErrorLog::setLogFile(DEFAULT_ERROR_LOG);
-	Props::initProps(argc, argv);
+	Props::initProps(argc, argv, ELPT_VERSION);
 	ErrorLog::setLogFile(Props::getString(PROP_ERROR_LOG));
 
 	*ErrorLog::log << "------ Starting Up with " << Props::getString(PROP_FILE) << " ------" << std::endl;
@@ -525,15 +545,10 @@ int main(int argc, char** argv)
 	showBGSub = Props::getBool(PROP_SHOW_BGSUB);
 
 
-	fps = Props::getFloat(PROP_FPS);
-	msPerFrame = 1000.0/fps;
-
-	curtime = timeGetTime();
-	lasttime = curtime;
-	lastFPSEpoch = curtime;
+	timer = new ELTimer(Props::getFloat(PROP_FPS));
 
 	mesaCam = new MesaCam();
-	SR_SetCallback(mesaCallback);
+	defaultMesaCallback = SR_SetCallback(mesaCallback);
 	mesaCam->open(Props::getString(PROP_MESA_CAM).c_str(), isIP(Props::getString(PROP_MESA_CAM).c_str()));
 	if(Props::getBool(PROP_USE_MESA_CAM_SETTINGS)) {
 		mesaCam->setPropsFromCam();
@@ -541,7 +556,9 @@ int main(int argc, char** argv)
 		mesaCam->setupCameraFromProps();
 	}
 
-	bg = new MesaBGSubtractor();
+
+
+	bg = new MesaBGSubtractor(Props::getFloat(PROP_BG_ADAPT),Props::getFloat(PROP_BG_THRESH)); 
 
 	cloudConstructor = new PointCloudConstructor(mesaCam->srCam);
 	planView = new PlanView(Props::getFloat(PROP_MINX), Props::getFloat(PROP_MAXX), Props::getFloat(PROP_MINZ), Props::getFloat(PROP_MAXZ), Props::getInt(PROP_PLANVIEW_WIDTH), Props::getInt(PROP_PLANVIEW_HEIGHT));
@@ -554,13 +571,34 @@ int main(int argc, char** argv)
 	resetWorldAndCamDims();
 
 
-	if(showTracks)
+	if(showTracks) {
 		cv::namedWindow(trackWin, 	 CV_WINDOW_NORMAL|CV_GUI_NORMAL); // init window
-	if(showGray)
-		mesaCam->setMode();
+		cv::resizeWindow(trackWin,  Props::getInt(PROP_PLANVIEW_WIDTH)*3, Props::getInt(PROP_PLANVIEW_HEIGHT)*3);
+		cv::moveWindow(trackWin, 1000,0);
+	}
+	//	176 (h) x 144 (v
+	int xOffset = 0;
+	if(showBGSub) {
+		cv::namedWindow(bgSubWin, 	 CV_WINDOW_NORMAL|CV_GUI_NORMAL); // init window
+		cv::resizeWindow(bgSubWin, 176, 144);
+		cv::moveWindow(bgSubWin, xOffset,600);
+		xOffset+=200;
+	}
+
+	if(showGray) {
 		cv::namedWindow(grayWin, 	 CV_WINDOW_NORMAL|CV_GUI_NORMAL); // init window
-	if(showRange)
+		cv::resizeWindow(grayWin, 176, 144);
+		cv::moveWindow(grayWin, xOffset,600);
+		xOffset+=200;
+	}
+
+	if(showRange) {
 		cv::namedWindow(rangeWin, 	 CV_WINDOW_NORMAL|CV_GUI_NORMAL); // init window
+		cv::resizeWindow(rangeWin, 176, 144);
+		cv::moveWindow(rangeWin, xOffset,600);
+		xOffset+=200;
+	}
+
 
 	// need to make this distance in terms of m?
 

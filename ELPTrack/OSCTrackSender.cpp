@@ -8,17 +8,35 @@ void OSCTrackSender::setTransform(
 		float oscMinZ, float oscMaxZ,	
 		float worldMinX, float worldMaxX,
 		float worldMinZ, float worldMaxZ) {
-			this->oscMinX = oscMinX;
-			this->oscMaxX = oscMaxX;
-			this->oscMinZ = oscMinX;
-			this->oscMaxZ = oscMaxZ;
+
+			if((oscMinX == 0) && (oscMaxX ==0)) {
+			this->oscMinX = worldMinX;
+			this->oscMaxX = worldMaxX;
 			this->worldMinX = worldMinX;
 			this->worldMaxX = worldMaxX;
+			scaleX = 1;
+			} else {
+			this->oscMinX = oscMinX;
+			this->oscMaxX = oscMaxX;
+			this->worldMinX = worldMinX;
+			this->worldMaxX = worldMaxX;
+			scaleX = (oscMaxX - oscMinX) / (worldMaxX - worldMinX);
+			}
+
+			if((oscMinZ == 0) && (oscMaxZ ==0)) {
+			this->oscMinZ = worldMinZ;
+			this->oscMaxZ = worldMaxZ;
 			this->worldMinZ = worldMinZ;
 			this->worldMaxZ = worldMaxZ;
-
-			scaleX = (oscMaxX - oscMinX) / (worldMaxX - worldMinX);
+			scaleZ = 1;
+			} else {
+			this->oscMinZ = oscMinZ;
+			this->oscMaxZ = oscMaxZ;
+			this->worldMinZ = worldMinZ;
+			this->worldMaxZ = worldMaxZ;
 			scaleZ = (oscMaxZ - oscMinZ) / (worldMaxZ - worldMinZ);
+			}
+
 	}
 
 OSCTrackSender::OSCTrackSender(std::string ip, int port) {
@@ -46,7 +64,7 @@ void OSCTrackSender::sendTracks(Tracker *tracker) {
 	oscStream << osc::BeginBundleImmediate;
 
 	oscStream << osc::BeginMessage("/metaInfo");
-	oscStream << oscMinX << oscMaxX << oscMinZ << oscMaxZ << 6; // 6 fields in track data
+	oscStream << oscMinX << oscMaxX << oscMinZ << oscMaxZ << worldMinX << worldMaxX << worldMinZ << worldMaxZ << 6; // 6 fields in track data
 	oscStream << osc::EndMessage;
 
 	oscStream << osc::BeginMessage("/tracks");
