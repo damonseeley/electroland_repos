@@ -18,7 +18,6 @@
 
 #include <pcl/visualization/cloud_viewer.h>
 #include <pcl/sample_consensus/sac_model_plane.h>
-
 #include <Eigen/Core>
 
 #include "MesaCam.h"
@@ -56,8 +55,17 @@ PlanView *planView;
 GreedyTracker *tracker;
 bool removeBgFromPointCloud = false;
 bool cropPointCloud = false;
+
 bool showTracks = true;
+bool showRange = true;
+bool showGray = true;
+bool showBGSub = true;
+
 cv::Mat displayImage;
+cv::Mat rangeImage;
+cv::Mat bgSubImage; 
+cv::Mat grayImage;
+
 
 struct callback_args{
 	// structure used to pass arguments to the callback function
@@ -65,8 +73,11 @@ struct callback_args{
 	pcl::visualization::PCLVisualizer::Ptr viewerPtr;
 };
 struct callback_args cb_args;
-std::string win("win"); // OpenCV window reference name 
 
+std::string trackWin("Tracks"); // OpenCV window reference name 
+std::string grayWin("Mesa Intensity"); // OpenCV window reference name 
+std::string rangeWin("Mesa Range"); // OpenCV window reference name 
+std::string bgSubWin("BG Subtraction");
 cv::Size *imsize;
 
 
@@ -140,19 +151,42 @@ void resetWorldAndCamDims() {
 	oscTrackSender->setTransform(Props::getFloat(PROP_OSC_MINX), Props::getFloat(PROP_OSC_MAXX), Props::getFloat(PROP_OSC_MINZ), Props::getFloat(PROP_OSC_MAXZ), Props::getFloat(PROP_MINX), Props::getFloat(PROP_MAXX), Props::getFloat(PROP_MINZ), Props::getFloat(PROP_MAXZ)); 
 	updateTrackerMaxMove();
 }
+void displayKeyboardHelp() {
+	std::cout << "h   - display this help message" << std::endl; 
+	std::cout << "b   - toggle background subtraction" << std::endl;
+	std::cout << "B   - toggle point cloud cropping" << std::endl;
+	std::cout << "S   - save current configuration to .ini file" << std::endl;
+	std::cout << "1/!   - decrement/increment minx" << std::endl;
+	std::cout << "2/@   - decrement/increment miny" << std::endl;
+	std::cout << "3/#   - decrement/increment minz" << std::endl;
+	std::cout << "4/$   - decrement/increment maxx" << std::endl;
+	std::cout << "5/%   - decrement/increment maxy" << std::endl;
+	std::cout << "6/^   - decrement/increment maxz" << std::endl;
+	std::cout << "y/Y   - decrement/increment point count threshold in plan view" << std::endl;
+	std::cout << "t/T   - decrement/increment background model threshold" << std::endl;
+	std::cout << "q/Q   - quit" << std::endl;
+	std::cout << "uArrow/dArrow         - pitch point cloud " << std::endl;
+	std::cout << "shift lArrow/lArrow   -yaw point cloud " << std::endl;
+	std::cout << "lArrow/rArrow         - roll point cloud " << std::endl;
+	std::cout << "shift uArrow/dArrow   -translate point cloud in y " << std::endl;
+
+
+}
+
+int mesaCallback(SRCAM srCam, unsigned int msg, unsigned int param, void *data) {
+	if(msg & CM_MSG_DISPLAY) {
+		return 1;
+	} else {
+	std::cout << "got a call back" << std::endl;
+		return 0;
+
+	}
+}
 
 void kb_callback(const pcl::visualization::KeyboardEvent& event, void *args) {
-	//std::cout << event.getKeySym() << "  " << event.getKeyCode() << std::endl;
-	/*
-	if ((event.getKeyCode() == 'c') || (event.getKeyCode() == 'C')) {
-	if (clicked_points_3d->points.size() >= 3) 
-	{
-	clickMutex.unlock();
-	} else {
-	std::cout << "At least 3 clicked points on the floor plain are required to continue" << std::endl;
-	}
-	}
-	*/
+
+	bool needWorldReset = true;
+
 	if(event.keyUp()){ 
 		switch(event.getKeyCode()) {
 		case 'b':
@@ -165,7 +199,10 @@ void kb_callback(const pcl::visualization::KeyboardEvent& event, void *args) {
 			break;
 		case 'S':
 			Props::writeToFile("ELPTrack");
-
+			break;
+		case 'h':
+			displayKeyboardHelp();
+			break;
 		}
 	}
 
@@ -206,11 +243,34 @@ void kb_callback(const pcl::visualization::KeyboardEvent& event, void *args) {
 	case '^':
 		Props::inc(PROP_MAXZ, 0.1f);
 		break;
-	case 'T':
+	case 'Y': 
+		Props::inc(PROP_PLANVIEW_THRESH, 1);
+		planView->pointCntThresh = Props::getInt(PROP_PLANVIEW_THRESH);
+		needWorldReset = false;
+		std::cout << PROP_PLANVIEW_THRESH << " " << Props::getInt(PROP_PLANVIEW_THRESH) << std::endl;
+		break;
+
+	case 'y': {
+		Props::inc(PROP_PLANVIEW_THRESH, -1);
+		int val = Props::getInt(PROP_PLANVIEW_THRESH);
+		if(val < 0) {
+			val = 0;
+			Props::set(PROP_PLANVIEW_THRESH, 0);
+		}
+		planView->pointCntThresh = val;
+		std::cout << PROP_PLANVIEW_THRESH << " " << Props::getInt(PROP_PLANVIEW_THRESH) << std::endl;
+		needWorldReset = false;
+			  }
+		break;
+	case 'T': 
 		Props::inc(PROP_BG_THRESH, 0.0001f);
+		bg->thresh = Props::getFloat(PROP_BG_THRESH);
+		needWorldReset = false;
 		break;
 	case 't':
 		Props::inc(PROP_BG_THRESH, -0.0001f);
+		bg->thresh = Props::getFloat(PROP_BG_THRESH);
+		needWorldReset = false;
 		break;
 	case 'q':
 	case 'Q':
@@ -227,6 +287,10 @@ void kb_callback(const pcl::visualization::KeyboardEvent& event, void *args) {
 			Props::inc(PROP_YOFFSET, .1f);
 		} else 	if(event.getKeySym() == "Down") {
 			Props::inc(PROP_YOFFSET, -.1f);
+		} else 	if(event.getKeySym() == "Left") {
+			Props::inc(PROP_YAW, -.01f);
+		} else 	if(event.getKeySym() == "Right") {
+			Props::inc(PROP_YAW, .01f);
 		}
 	} else {
 
@@ -245,12 +309,14 @@ void kb_callback(const pcl::visualization::KeyboardEvent& event, void *args) {
 	viewer->runOnVisualizationThreadOnce(removeBox);
 	viewer->runOnVisualizationThreadOnce(addBox);
 
-	resetWorldAndCamDims();
+	if(needWorldReset)
+		resetWorldAndCamDims();
 
-	bg->thresh = Props::getFloat(PROP_BG_THRESH);
 
 
 	std::cout << "FPS: " << estimatedFPS << std::endl;
+
+		
 }
 
 
@@ -312,9 +378,15 @@ void aquireFrame() {
 
 	if(mesaCam->aquire()) {
 		badFrames = 0;
-		cv::Mat rangeImage = mesaCam->getRangeImage();
-		//	mesaCam->aquireRange(rangeImage);
-		bg->process(rangeImage, removeBgFromPointCloud);
+		// getImage returns the actaul data from the camera that gets transformed into a point cloud
+		// bg->process modifies the data so we call it bgSubImage here 
+		// and make a copy to rangeImage if needed
+		bgSubImage = mesaCam->getRangeImage();
+		if(showRange)
+			bgSubImage.copyTo(rangeImage);
+		bg->process(bgSubImage, removeBgFromPointCloud);
+		if(showGray)
+			mesaCam->getIntensityImage().copyTo(grayImage);
 
 
 
@@ -368,10 +440,10 @@ void aquireFrame() {
 		}
 	} else { // if unable to aquireFrame from mesa
 		badFrames++;
-		if(badFrames % 10 == 0) {
+		if(badFrames % 5 == 0) {
 			*ErrorLog::log << "Unable to aquire " << badFrames << " images in a row from Mesa" << std::endl;
 		}
-		if(badFrames % 50 == 0) {
+		if(badFrames % 20 == 0) {
 			*ErrorLog::log << "EXITING do to inability to aquire images" << std::endl;
 			exit(GENERAL_ERROR);
 		}
@@ -441,12 +513,16 @@ bool isIP(const char *ipadd) {
 int main(int argc, char** argv)
 {
 	isRunning = true;	
+	ErrorLog::setLogFile(DEFAULT_ERROR_LOG);
 	Props::initProps(argc, argv);
 	ErrorLog::setLogFile(Props::getString(PROP_ERROR_LOG));
 
 	*ErrorLog::log << "------ Starting Up with " << Props::getString(PROP_FILE) << " ------" << std::endl;
 
 	showTracks = Props::getBool(PROP_SHOW_TRACKS);
+	showGray = Props::getBool(PROP_SHOW_GRAY);
+	showRange = Props::getBool(PROP_SHOW_RANGE);
+	showBGSub = Props::getBool(PROP_SHOW_BGSUB);
 
 
 	fps = Props::getFloat(PROP_FPS);
@@ -457,19 +533,35 @@ int main(int argc, char** argv)
 	lastFPSEpoch = curtime;
 
 	mesaCam = new MesaCam();
+	SR_SetCallback(mesaCallback);
 	mesaCam->open(Props::getString(PROP_MESA_CAM).c_str(), isIP(Props::getString(PROP_MESA_CAM).c_str()));
+	if(Props::getBool(PROP_USE_MESA_CAM_SETTINGS)) {
+		mesaCam->setPropsFromCam();
+	} else {
+		mesaCam->setupCameraFromProps();
+	}
 
 	bg = new MesaBGSubtractor();
 
 	cloudConstructor = new PointCloudConstructor(mesaCam->srCam);
-	planView = new PlanView(Props::getFloat(PROP_MINX), Props::getFloat(PROP_MAXX), Props::getFloat(PROP_MINZ), Props::getFloat(PROP_MAXZ), Props::getInt(PROP_TRACK_WIDTH), Props::getInt(PROP_TRACK_HEIGHT));
+	planView = new PlanView(Props::getFloat(PROP_MINX), Props::getFloat(PROP_MAXX), Props::getFloat(PROP_MINZ), Props::getFloat(PROP_MAXZ), Props::getInt(PROP_PLANVIEW_WIDTH), Props::getInt(PROP_PLANVIEW_HEIGHT));
+	planView->pointCntThresh = Props::getInt(PROP_PLANVIEW_THRESH);
+	planView->setFlipX(Props::getBool(PROP_PLANVIEW_FLIPX));
+	planView->setFlipZ(Props::getBool(PROP_PLANVIEW_FLIPZ));
+
 	oscTrackSender = new OSCTrackSender(Props::getString(PROP_OSC_ADDRESS), Props::getInt(PROP_OSC_PORT));
 
 	resetWorldAndCamDims();
 
 
 	if(showTracks)
-		cv::namedWindow(win, 	 CV_WINDOW_NORMAL|CV_GUI_NORMAL); // init window
+		cv::namedWindow(trackWin, 	 CV_WINDOW_NORMAL|CV_GUI_NORMAL); // init window
+	if(showGray)
+		mesaCam->setMode();
+		cv::namedWindow(grayWin, 	 CV_WINDOW_NORMAL|CV_GUI_NORMAL); // init window
+	if(showRange)
+		cv::namedWindow(rangeWin, 	 CV_WINDOW_NORMAL|CV_GUI_NORMAL); // init window
+
 	// need to make this distance in terms of m?
 
 
@@ -494,20 +586,11 @@ int main(int argc, char** argv)
 	//		 clicked_points_3d = clicked_points_cloud;
 	//		cb_args.clicked_points_3d = clicked_points_3d;
 
+	removeBgFromPointCloud = true;
+	cropPointCloud = true;
+
 	if(Props::getBool(PROP_SHOW_POINTS)) {
 		viewer = new pcl::visualization::CloudViewer ("Mesa PCL example"); // visualizer
-	} else {
-		//assume pointcloud is already setup
-		removeBgFromPointCloud = true;
-		cropPointCloud = true;
-
-	}
-
-	//	aquireFrame(); // need to 
-	//	isRunning = true;
-
-	//		viewer->registerPointPickingCallback (pp_callback, (void*)&cb_args);
-	if(viewer) {
 		viewer->runOnVisualizationThreadOnce(addBox);
 		viewer->registerKeyboardCallback(kb_callback, (void*)&cb_args);
 	}
@@ -533,11 +616,21 @@ int main(int argc, char** argv)
 	floorTransform = pcl::getTransFromUnitVectorsXY(leftInPlane, planeNormal);
 	*/
 
-	if(showTracks) {
+	if(showTracks || showGray || showRange || showBGSub) {
 		displayImage = cv::Mat(cv::Size(10,10), CV_8UC1);
+		rangeImage = cv::Mat(cv::Size(10,10), CV_8UC1);
+		bgSubImage = cv::Mat(cv::Size(10,10), CV_8UC1);
+		grayImage = cv::Mat(cv::Size(10,10), CV_8UC1);
 		CreateThread( NULL, 0, loopThread, NULL, 0, NULL); 
 		while(isRunning) {
-			cv::imshow(win, displayImage);
+			if(showTracks)
+				cv::imshow(trackWin, displayImage);
+			if(showGray)
+				cv::imshow(grayWin,grayImage);
+			if(showRange)
+				cv::imshow(rangeWin,rangeImage);
+			if(showBGSub)
+				cv::imshow(bgSubWin,bgSubImage);
 			cv::waitKey(30);
 		}
 	} else {

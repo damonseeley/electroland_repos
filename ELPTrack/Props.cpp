@@ -47,16 +47,16 @@ void Props::writeToFile(string filename) {
 
 	for (std::map<string, boost::any>::iterator it=theProps->map.begin(); it != theProps->map.end(); it++ ) { 
 		   if(typeid(float) == it->second.type()) {
-		   file << setw(10) << std::left << it->first << "= " << setw(10) << boost::any_cast<float>(it->second) <<
+		   file << setw(10) << std::left << it->first << "= " << setw(20) << boost::any_cast<float>(it->second) <<
 			    "# " << (theProps->optionDesc.find(it->first, false)).description() <<std::endl;
 		   } else if (typeid(int) == it->second.type()) {
-		   file << setw(10) << std::left << it->first << "= " << setw(10) << boost::any_cast<int>(it->second) <<
+		   file << setw(10) << std::left << it->first << "= " << setw(20) << boost::any_cast<int>(it->second) <<
 			    "# " << (theProps->optionDesc.find(it->first, false)).description() <<std::endl;
 		   } else if (typeid(string) == it->second.type()) {
-		   file << setw(10) << std::left << it->first << "= " << setw(10) << boost::any_cast<string>(it->second) <<
+		   file << setw(10) << std::left << it->first << "= " << setw(20) << boost::any_cast<string>(it->second) <<
 			    "# " << (theProps->optionDesc.find(it->first, false)).description() <<std::endl;
 		   } else if (typeid(bool) == it->second.type()) {
-		   file << setw(10) << std::left << it->first << "= " << setw(10) << boost::any_cast<bool>(it->second) <<
+		   file << setw(10) << std::left << it->first << "= " << setw(20) << boost::any_cast<bool>(it->second) <<
 			    "# " << (theProps->optionDesc.find(it->first, false)).description() <<std::endl;
 		   }
 	} 
@@ -141,7 +141,7 @@ void Props::init(int argc, char** argv) {
 
 	optionDesc.add_options()
 		("help,h", "displays this help message when passed in on the command line")
-		(PROP_FILE ",f", po::value<string>(&configFileName)->default_value("ELPTrack.ini"), "Path to config file.  If not specified \'ELPTrack.ini\' is used")
+		(PROP_FILE ",f", po::value<string>(&configFileName)->default_value(DEFAULT_ERROR_LOG), "Path to config file.  If not specified \'ELPTrack.ini\' is used")
 		(PROP_ERROR_LOG, po::value<string>()->default_value("ELPTrackError.log"), "Path to log file.  If not specified \'ELPTrackError.log\' is used")
 		(PROP_FPS,  po::value<float>()->default_value(30.0f), "maximum for tracking")
 		(PROP_MINX, po::value<float>()->default_value(-3.0f), "minimum x value (in m) for tracking")
@@ -156,8 +156,13 @@ void Props::init(int argc, char** argv) {
 		(PROP_XOFFSET, po::value<float>()->default_value(0.0f),  "camera x offset")
 		(PROP_YOFFSET, po::value<float>()->default_value(0.0f),  "camera y offset")
 		(PROP_ZOFFSET, po::value<float>()->default_value(0.0f),  "camera z offset")
-		(PROP_TRACK_WIDTH, po::value<int>()->default_value(60),  "width of plan view image (tracking percision is maxX-minX/width)")
-		(PROP_TRACK_HEIGHT, po::value<int>()->default_value(120),  "height of plan view image (tracking percision is maxZ-minZ/height)")
+		
+		(PROP_PLANVIEW_WIDTH, po::value<int>()->default_value(60),  "width of plan view image (tracking percision is maxX-minX/width)")
+		(PROP_PLANVIEW_HEIGHT, po::value<int>()->default_value(120),  "height of plan view image (tracking percision is maxZ-minZ/height)")
+		(PROP_PLANVIEW_THRESH, po::value<int>()->default_value(2),  "number of pionts needed per grid cell")
+		(PROP_PLANVIEW_FLIPX, po::value<bool>()->default_value(false), "flip track\'s x coordinates")
+		(PROP_PLANVIEW_FLIPZ, po::value<bool>()->default_value(true), "flip track\'s z coordinates")
+		
 		(PROP_BG_THRESH, po::value<float>()->default_value(.075f),  "background model theshold")
 		(PROP_OSC_ADDRESS, po::value<string>()->default_value(""), "IP address of OSC receiver (an empty string will not send msgs)")
 		(PROP_OSC_PORT, po::value<int>()->default_value(7000), "port of OSC receiver")
@@ -167,6 +172,9 @@ void Props::init(int argc, char** argv) {
 		(PROP_OSC_MAXZ, po::value<float>()->default_value(1.0f), "max z value for tracks sent over osc")
 		(PROP_SHOW_POINTS, po::value<bool>()->default_value(true), "show the point cloud for interactive configuration")
 		(PROP_SHOW_TRACKS, po::value<bool>()->default_value(true), "show the tracks")
+		(PROP_SHOW_RANGE, po::value<bool>()->default_value(true), "show the mesa range image")
+		(PROP_SHOW_GRAY, po::value<bool>()->default_value(true), "show the mesa gray image")
+		(PROP_SHOW_BGSUB, po::value<bool>()->default_value(true), "show the range image after background subtraction")
 		(PROP_TRACK_PROVISIONAL_TIME, po::value<int>()->default_value(1000), "ms after a track appears before it is considered established")
 		(PROP_TRACK_TIME_TO_DIE, po::value<int>()->default_value(1000), "ms after a track is lost before it is removed")
 		(PROP_TRACK_TIME_TO_DIE_PROV, po::value<int>()->default_value(500), "ms after a provisional track is lost before it is remmoved")
@@ -184,6 +192,7 @@ void Props::init(int argc, char** argv) {
 		(PROP_MESA_GEN_CONF_MAP, po::value<bool>()->default_value(false), "generate confidence maps")
 		(PROP_MESA_DENOISE, po::value<bool>()->default_value(true), "turns on the 5x5 hardware adaptive neighborhood filter")
 		(PROP_MESA_NONAMBIG, po::value<bool>()->default_value(true), "turns on non ambiguity mode ")
+		(PROP_USE_MESA_CAM_SETTINGS, po::value<bool>()->default_value(true), "use mess settings on camera (ignore settings in this config file)")
 
 
 
@@ -210,12 +219,13 @@ void Props::init(int argc, char** argv) {
 		if(configFileStream) {
 			po::store(po::parse_config_file(configFileStream, optionDesc, false), optionVM);
 		} else {
-			*ErrorLog::log  << "Unable to open config file: " << configFileName << " using default values" << std::endl;
+			*ErrorLog::log  << "CONFIGURATION FILE " << configFileName << " NOT FOUND.***  Using default values" << std::endl;
 		}
 
 	} catch(po::error& e) {
-		*ErrorLog::log << "ERROR in config file: " << e.what() << std::endl;
-		std::cerr << optionDesc << std::endl;
+		std::cerr << "ERROR IN CONFIGURATION FILE: " << e.what() << std::endl;
+		std::cerr << std::endl << optionDesc << std::endl << std::endl;
+		*ErrorLog::log << "ERROR IN CONFIGURATION FILE: " << e.what() << std::endl;
 		exit(1);
 	}
 

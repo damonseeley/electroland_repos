@@ -22,14 +22,17 @@ public:
 	bool open(const char *filenameOrAddress, bool isIP);
 
 	bool aquire();
-
+/*
 	bool aquireRange(cv::Mat &img);
 	bool aquireIntensity(cv::Mat &img);
 	bool aquireConfMap(cv::Mat &img);
+	bool aquire(cv::Mat &range, cv::Mat &intesity);
+	*/
 
 	cv::Mat getRangeImage();
+	cv::Mat getIntensityImage();
+	cv::Mat getConfMap();
 
-	bool aquire(cv::Mat &range, cv::Mat &intesity);
 	~MesaCam();
 
 	void setIntergrationTime(float ms);

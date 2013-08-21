@@ -51,6 +51,7 @@ MesaCam::~MesaCam() {
 	}
 
 }
+
 bool MesaCam::aquire() {
 	return SR_Acquire(srCam) >= 0;
 }
@@ -61,7 +62,17 @@ cv::Mat MesaCam::getRangeImage() {
 	return cv::Mat(imsize, CV_16UC1, SR_GetImage(srCam, 0));
 }
 
+cv::Mat MesaCam::getIntensityImage() {
+	cv::Size imsize(SR_GetCols(srCam), SR_GetRows(srCam)); // SR image size
+	return cv::Mat(imsize, CV_16UC1, SR_GetImage(srCam, 1));
+}
 
+cv::Mat MesaCam::getConfMap() {
+	cv::Size imsize(SR_GetCols(srCam), SR_GetRows(srCam)); // SR image size
+	return cv::Mat(imsize, CV_16UC1, SR_GetImage(srCam, 2));
+}
+
+/*
 bool MesaCam::aquireRange(cv::Mat &img) {
 	if(SR_Acquire(srCam) < 0)
 		return false;
@@ -94,6 +105,7 @@ bool MesaCam::aquireConfMap(cv::Mat &img) {
 	cv::Mat(imsize, CV_16UC1, SR_GetImage(srCam, 2)).copyTo(img);
 	return true;
 }
+*/
 void MesaCam::setModulationFrequency(int f) {
 	if(f < 0) return;
 	ModulationFrq frq;
