@@ -24,8 +24,11 @@
 #define PROP_YOFFSET "camOffsetY"
 #define PROP_ZOFFSET "camOffsetZ"
 
-#define PROP_TRACK_WIDTH "trackWidth"
-#define PROP_TRACK_HEIGHT "trackHeight"
+#define PROP_PLANVIEW_WIDTH "planViewWidth"
+#define PROP_PLANVIEW_HEIGHT "planViewHeight"
+#define PROP_PLANVIEW_THRESH "planViewThresh"
+#define PROP_PLANVIEW_FLIPX "flipX"
+#define PROP_PLANVIEW_FLIPZ "flipZ"
 
 #define PROP_BG_THRESH "bgThresh"
 
@@ -38,6 +41,9 @@
 
 #define PROP_SHOW_POINTS "showPointCloud"
 #define PROP_SHOW_TRACKS "showTracks"
+#define PROP_SHOW_RANGE "showRangeImage"
+#define PROP_SHOW_GRAY "showIntensityImage"
+#define PROP_SHOW_BGSUB "showBGSubImage"
 
 #define PROP_TRACK_PROVISIONAL_TIME "trackProvisionalTime"
 #define PROP_TRACK_TIME_TO_DIE "trackTimeToDie"
@@ -45,7 +51,9 @@
 #define PROP_TRACK_SMOOTHING "trackSmoothing"
 #define PROP_TRACK_MAX_MOVE "trackMaxMove"
 
+
 #define PROP_MESA_CAM "mesaCam"
+#define PROP_USE_MESA_CAM_SETTINGS "mesaUseHardwareSettings"
 #define PROP_MESA_INT_TIME "mesaIntergrationTime"
 #define PROP_MESA_DUAL_INT_TIME "mesaDualIntergrationTime"
 #define PROP_MESA_AMP_THRESH "mesaAmplitudeThreshold"

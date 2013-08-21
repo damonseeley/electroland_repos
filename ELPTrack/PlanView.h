@@ -18,8 +18,15 @@ public:
 	cv::Mat blobsImage;
 	cv::Mat displayImage;
 	cv::SimpleBlobDetector *blobDetector;
+	
+	int pointCntThresh;
 
 	std::vector<Blob> blobs;
+
+
+	bool flipX;
+	bool flipZ;
+
 
 	float minX;
 	float maxX;
@@ -54,6 +61,9 @@ public:
 
 
 	void generatePlanView(pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloud);
+
+	void setFlipX(bool b);
+	void setFlipZ(bool b);
 
 };
 

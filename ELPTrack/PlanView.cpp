@@ -2,6 +2,7 @@
 
 //#include <opencv2/core/operations.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/core/core.hpp>
 
 PlanView::PlanView(float minX, float maxX, float minZ, float maxZ, int width, int height)
 {
@@ -21,6 +22,9 @@ PlanView::PlanView(float minX, float maxX, float minZ, float maxZ, int width, in
 	params.filterByArea = true;
 	params.minArea = 4;
 	params.maxArea = 100;
+
+
+	pointCntThresh  =2;
 
 	params.filterByCircularity = false;
 
@@ -75,6 +79,12 @@ void PlanView::binDimsToWorldDims(float col, float row, float &x, float &z){
 
 }
 
+void PlanView::setFlipX(bool b) {
+	flipX = b;
+}
+	void PlanView::setFlipZ(bool b) {
+		flipZ = b;
+	}
 void PlanView::generatePlanView(pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloud) {
 	bins.setTo(cv::Scalar(0));
 
@@ -86,12 +96,24 @@ void PlanView::generatePlanView(pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloud) 
 		col = (col > binWidth - 1) ? binWidth -1: col;
 		row = (row< 0) ? 0 : row;
 		row = (row > binHeight-1) ? binHeight-1 : row;
+		
+		col = (flipX) ? (binWidth-col -1) : col;
+		row = (flipZ) ? (binHeight-row -1) : row;
+
 		bins.at<float>(row, col)++;
 	}
 
+	/*
+    double maxVal;
+    cv::Point maxloc;
+	double minVal;
+	cv::Point minLoc;
+
+    cv::minMaxLoc(bins, &minVal, &maxVal,&minLoc,&maxloc); //find minimum and maximum intensities and their positions
+	std::cout << "min " << minVal << "  max " << maxVal << std::endl;
 	// detect!
 	bins.convertTo(blobsImage, CV_8UC1);
-
+	*/
 	// extract the x y coordinates of the keypoints: 
 
 
@@ -103,9 +125,10 @@ void PlanView::generatePlanView(pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloud) 
 	//	cv::minMaxLoc(bins, &minVal, &maxVal, &minLoc, &maxLoc);
 	//std::cout << maxVal << " at " << maxLoc << std::endl;
 
-	cv::threshold(bins, bins,2, 255, cv::THRESH_BINARY);
+//	cv::threshold(bins, bins,pointCntThresh, 255, cv::THRESH_TOZERO);
+	cv::threshold(bins, bins,pointCntThresh, 255, cv::THRESH_BINARY);
 	bins.convertTo(thesh, CV_8UC1);
-
+	
 	cv::dilate(thesh, dilate1, cv::Mat(), cv::Point(-1,-1), 1);
 	cv::erode(dilate1, dilate1, cv::Mat(), cv::Point(-1,-1), 1);
 
@@ -114,7 +137,7 @@ void PlanView::generatePlanView(pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloud) 
 
 	//	cv::addWeighted(dilate1, .5, dilate2, .5, 0, dilate1);
 	cv::addWeighted(dilate2, .5, thesh, .5, 0, thesh);
-
+	
 	blobDetector->detect(thesh, keypoints);
 
 	cv::cvtColor(bins, blobsImage,CV_GRAY2RGB); 

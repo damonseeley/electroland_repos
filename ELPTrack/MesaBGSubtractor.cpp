@@ -39,7 +39,7 @@ void MesaBGSubtractor::process(cv::Mat src, bool removeFromSrc) {
 			background.convertTo(background, CV_32F);
 			difference.convertTo(difference, CV_32F);
 		}
-
+		
 	}
 	cv::addWeighted(convertedRange, .001, background , .999, 0, background);
 	cv::absdiff(convertedRange, background, difference);

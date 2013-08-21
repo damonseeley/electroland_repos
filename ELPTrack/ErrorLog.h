@@ -5,6 +5,8 @@
 #include <iostream>
 #include <fstream>
 
+#define DEFAULT_ERROR_LOG "ELPTrackError.log"
+
 class ErrorLog {
 
 public:
