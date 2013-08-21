@@ -57,7 +57,7 @@ void GreedyTracker::updateTracks(std::vector<Blob> &blobs, long curtime, long la
 	std::sort(matches.begin(), matches.end());
 
 	// greedy matching, assume the first/closest match found is best
-	float scaledMaxDistSqr = maxDistSqr * (curtime-lasttime);
+	float scaledMaxDistSqr = maxDistSqr;// * (curtime-lasttime);
 
 	for(std::vector<TrackMatch>::iterator it = matches.begin(); it != matches.end(); ++it) {
 		if(it->matchQaulity > scaledMaxDistSqr) break;// path threshold no more matches

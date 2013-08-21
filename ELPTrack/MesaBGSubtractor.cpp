@@ -4,13 +4,14 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/video/video.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include "ErrorLog.h"
 
-
-MesaBGSubtractor::MesaBGSubtractor(void)
+MesaBGSubtractor::MesaBGSubtractor(float adaptionRate, float thresh)
 {
 	firstFrame=true;
 	useAdaptive = false;
-	thresh = .075;
+	this->thresh = thresh;
+	this->setAdaption(adaptionRate);
 }
 
 
@@ -41,7 +42,7 @@ void MesaBGSubtractor::process(cv::Mat src, bool removeFromSrc) {
 		}
 		
 	}
-	cv::addWeighted(convertedRange, .001, background , .999, 0, background);
+	cv::addWeighted(convertedRange, adaptionRate, background , nonAdaptionRate, 0, background);
 	cv::absdiff(convertedRange, background, difference);
 	if(useAdaptive) {
 		cv::adaptiveThreshold(difference, threshImage, 255, cv::ADAPTIVE_THRESH_MEAN_C, cv::THRESH_BINARY_INV, 21, -15);
@@ -55,3 +56,17 @@ void MesaBGSubtractor::process(cv::Mat src, bool removeFromSrc) {
 		src.setTo(cv::Scalar(0), threshImage);
 
 }
+
+	void MesaBGSubtractor::setAdaption(float f) {
+		if(f<0) {
+			*ErrorLog::log << "Invalid background adaption rate " << f << ". it must be >= 0" << std::endl;
+			f = 0;
+		}
+		if(f>1) {
+			*ErrorLog::log << "Invalid background adaption rate " << f << ". it must be <= 1" << std::endl;
+			f = 1;
+		}
+
+		adaptionRate = f;
+		nonAdaptionRate = 1.0-f;
+	}

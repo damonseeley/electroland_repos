@@ -9,7 +9,7 @@
 #define PROP_FILE "file"
 
 #define PROP_FPS  "fps"
-
+#define PROP_BADFRAMES "badFramesAllowed"
 #define PROP_MINX "worldMinX"
 #define PROP_MAXX "worldMaxX"
 #define PROP_MINY "worldMinY"
@@ -31,6 +31,8 @@
 #define PROP_PLANVIEW_FLIPZ "flipZ"
 
 #define PROP_BG_THRESH "bgThresh"
+#define PROP_BG_ADAPT "adaptionRate"
+
 
 #define PROP_OSC_ADDRESS "oscAddress"
 #define PROP_OSC_PORT "oscPort"
@@ -70,6 +72,7 @@
 
 
 
+#include <direct.h>
 
 
 #include <string>
@@ -82,18 +85,12 @@ namespace po = boost::program_options;
 
 class Props {
 public:
-	
-
-	/*
-	 bool is_empty(const boost::any & operand); 
-     bool is_int(const boost::any & operand); 
-     bool is_double(const boost::any & operand); 
-     bool is_char_ptr(const boost::any & operand); 
-     bool is_string(const boost::any & operand); 
-	 */
-
+	static std::string curDir;
 	static Props *theProps;
-	static void initProps(int argc, char** argv);
+	static string version;
+
+
+	static void initProps(int argc, char** argv, string version);
 	static void writeToFile(string filename);
 
 	static void set(string name, boost::any value, bool shouldNotify=true);	
