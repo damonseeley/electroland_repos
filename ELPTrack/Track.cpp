@@ -41,10 +41,10 @@ void Track::update(long curtime) {
 			age = 0;
 			establishmentTime = curtime;
 		}
-		health = 1.0f - ( (curtime-lastTrack) / provisionalTimeToDeath);
+		health = 1.0f - ( (float)(curtime-lastTrack) / (float)provisionalTimeToDeath);
 	} else {
 		age = curtime-establishmentTime;
-		health = 1.0f - ( (curtime-lastTrack) / timeToDeath);
+		health = 1.0f - ( (float)(curtime-lastTrack) / (float)timeToDeath);
 	}
 	health = (health < 0) ? 0 : health;
 

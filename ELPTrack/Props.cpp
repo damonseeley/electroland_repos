@@ -205,6 +205,7 @@ void Props::init(int argc, char** argv) {
 		(PROP_TRACK_TIME_TO_DIE_PROV, po::value<int>()->default_value(500), "ms after a provisional track is lost before it is remmoved")
 		(PROP_TRACK_SMOOTHING, po::value<float>()->default_value(.75f), "smoothing of track movement (range is 0-1)")
 		(PROP_TRACK_MAX_MOVE, po::value<float>()->default_value(9), "Maximum units in plan view a track can move per frame.")
+		(PROP_PRINT_TRACK_TO_CONSOLE, po::value<bool>()->default_value(false), "Print tracks to console.")
 		(PROP_MESA_CAM, po::value<string>()->default_value("dialog"), "Mesa data source (filename, ip address, or \'dialog\').")
 		(PROP_MESA_INT_TIME, po::value<float>()->default_value(3.3f), "Mesa Dual integration time of the camera.The ratio is a value from 0 to 100. -1 leave value unchanged")
 		(PROP_MESA_DUAL_INT_TIME, po::value<int>()->default_value(0), "mesa dual intergration ratio (0 turns it off)")
@@ -217,6 +218,7 @@ void Props::init(int argc, char** argv) {
 		(PROP_MESA_GEN_CONF_MAP, po::value<bool>()->default_value(false), "generate confidence maps")
 		(PROP_MESA_DENOISE, po::value<bool>()->default_value(true), "turns on the 5x5 hardware adaptive neighborhood filter")
 		(PROP_MESA_NONAMBIG, po::value<bool>()->default_value(true), "turns on non ambiguity mode ")
+		(PROP_MESA_MODFREQ, po::value<int>()->default_value(10), "Set Mesa modulation frequency.  Expected values 10, 155 (for 15.5Mhz), 145 (for 14.5mhz), 31, 29, 15, 19, 20, 21, 30, or 40.s")
 		(PROP_USE_MESA_CAM_SETTINGS, po::value<bool>()->default_value(true), "use mess settings on camera (ignore settings in this config file)")
 
 

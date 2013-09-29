@@ -9,3 +9,6 @@
 	}
 //void Tracker::updateTracks(std::vector<cv::KeyPoint> *keypoints) {
 //}
+	void Tracker::sortTracks() {
+			std::sort(tracks.begin(), tracks.end(), TrackComp()); // sort by id
+	}

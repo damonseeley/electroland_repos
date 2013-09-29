@@ -141,6 +141,7 @@ void MesaCam::setModulationFrequency(int f) {
 		frq = MF_15_5MHz ;
 		break;
 	case 10:
+	default:
 		std::cout << "WARNING: A modulation frequence of 10 may not be supported by the API" << std::endl;
 		frq = (ModulationFrq) (12);
 		break;
