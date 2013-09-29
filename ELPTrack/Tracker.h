@@ -14,10 +14,16 @@ public:
 	 std::vector<Track*> tracks;
 //	 	std::vector<Track*> enters;
 //	std::vector<Track*> exits;
-
+	 struct TrackComp {
+		bool operator() (const Track* lt, const Track* gr) const {
+			return lt->id < gr->id;
+		}
+	};
 	 // in pixels per ms
 	Tracker(float maxDistSqr);
  	virtual void updateTracks(std::vector<Blob> &blobs, long curtime, long lasttime) = 0;
+
+	void sortTracks();
 };
 
 #endif

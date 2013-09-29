@@ -42,7 +42,7 @@ using namespace boost;
 using namespace std;
 
 
-#define ELPTRACK_VERSION "1.0b1"
+#define ELPTRACK_VERSION "1.0b2"
 
 
 enum exitValues { 
@@ -67,6 +67,7 @@ bool showTracks = true;
 bool showRange = true;
 bool showGray = true;
 bool showBGSub = true;
+bool printTracks = false;
 
 cv::Mat displayImage;
 cv::Mat rangeImage;
@@ -428,8 +429,18 @@ void aquireFrame() {
 			planView->generatePlanView(cloudConstructor->filteredPtr);
 			tracker->updateTracks(planView->blobs, timer->curTime, timer->lastTime);
 
+			tracker->sortTracks();
+
 			oscTrackSender->sendTracks(tracker);
+
 			//view tracks
+
+			if(printTracks) {
+				std::cout << std::endl;
+				for(std::vector<Track*>::iterator trackIt = tracker->tracks.begin(); trackIt != tracker->tracks.end(); ++trackIt) {
+					std::cout << *(*trackIt) << std::endl;
+				}
+			}
 			if(showTracks) {
 				for(std::vector<Track*>::iterator trackIt = tracker->tracks.begin(); trackIt != tracker->tracks.end(); ++trackIt) {
 					Track* t = *trackIt;
@@ -538,7 +549,7 @@ int main(int argc, char** argv)
 	ErrorLog::setLogFile(Props::getString(PROP_ERROR_LOG));
 
 	*ErrorLog::log << "------ Starting Up with " << Props::getString(PROP_FILE) << " ------" << std::endl;
-
+	printTracks = Props::getBool(PROP_PRINT_TRACK_TO_CONSOLE);
 	showTracks = Props::getBool(PROP_SHOW_TRACKS);
 	showGray = Props::getBool(PROP_SHOW_GRAY);
 	showRange = Props::getBool(PROP_SHOW_RANGE);

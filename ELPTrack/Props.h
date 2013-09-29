@@ -53,6 +53,7 @@
 #define PROP_TRACK_SMOOTHING "trackSmoothing"
 #define PROP_TRACK_MAX_MOVE "trackMaxMove"
 
+#define PROP_PRINT_TRACK_TO_CONSOLE "printTracksToConsole"
 
 #define PROP_MESA_CAM "mesaCam"
 #define PROP_USE_MESA_CAM_SETTINGS "mesaUseHardwareSettings"

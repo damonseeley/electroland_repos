@@ -53,13 +53,13 @@ OSCTrackSender::OSCTrackSender(std::string ip, int port) {
 	oscMinX = 0;
 	oscMinZ = 0;
 
-	
-
 
 }
 
+
+
 void OSCTrackSender::sendTracks(Tracker *tracker) { 
-	if(! transmitSocket) return; // if no socket skip 
+	if(! transmitSocket) return; // if no socket skip
 	osc::OutboundPacketStream oscStream(buffer, OUTPUT_BUFFER_SIZE);
 	oscStream << osc::BeginBundleImmediate;
 
@@ -77,7 +77,7 @@ void OSCTrackSender::sendTracks(Tracker *tracker) {
 		x = (x > oscMaxX) ? oscMaxX : x;
 		z = (z > oscMaxZ) ? oscMaxZ : z;
 		oscStream << t->id << x << z << (t->age * .001f) << t->provisionality << t->health;
-		std::cout << (*t) << std::endl;
+		//std::cout << (*t) << std::endl;
 
 		
 	}

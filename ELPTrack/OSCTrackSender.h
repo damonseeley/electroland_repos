@@ -32,6 +32,8 @@ public:
 	OSCTrackSender(std::string ip, int port);	
 	void sendTracks(Tracker *tracker);
 
+	
+
 	void setTransform(
 		float oscMinX, float oscMaxX,
 		float oscMinZ, float oscMaxZ,	
