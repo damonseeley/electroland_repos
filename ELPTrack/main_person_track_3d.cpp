@@ -3,7 +3,7 @@
 #include <Windows.h> // only on a Windows system
 #undef NOMINMAX
 
-#define ELPT_VERSION "Version 1.0b1"
+#define ELPT_VERSION "Version 1.0b3"
 
 #include <string>
 
@@ -267,21 +267,21 @@ void kb_callback(const pcl::visualization::KeyboardEvent& event, void *args) {
 		Props::inc(PROP_MAXZ, 0.1f);
 		break;
 	case 'Y': 
-		Props::inc(PROP_PLANVIEW_THRESH, 1);
-		planView->pointCntThresh = Props::getInt(PROP_PLANVIEW_THRESH);
+		Props::inc(PROP_PLANVIEW_THRESH, .01f);
+		planView->pointCntThresh = Props::getFloat(PROP_PLANVIEW_THRESH);
 		needWorldReset = false;
-		std::cout << PROP_PLANVIEW_THRESH << " " << Props::getInt(PROP_PLANVIEW_THRESH) << std::endl;
+		std::cout << PROP_PLANVIEW_THRESH << " " << Props::getFloat(PROP_PLANVIEW_THRESH) << std::endl;
 		break;
 
 	case 'y': {
-		Props::inc(PROP_PLANVIEW_THRESH, -1);
-		int val = Props::getInt(PROP_PLANVIEW_THRESH);
+		Props::inc(PROP_PLANVIEW_THRESH, -.01f);
+		int val = Props::getFloat(PROP_PLANVIEW_THRESH);
 		if(val < 0) {
 			val = 0;
-			Props::set(PROP_PLANVIEW_THRESH, 0);
+			Props::set(PROP_PLANVIEW_THRESH, 0.0f);
 		}
 		planView->pointCntThresh = val;
-		std::cout << PROP_PLANVIEW_THRESH << " " << Props::getInt(PROP_PLANVIEW_THRESH) << std::endl;
+		std::cout << PROP_PLANVIEW_THRESH << " " << Props::getFloat(PROP_PLANVIEW_THRESH) << std::endl;
 		needWorldReset = false;
 			  }
 			  break;
@@ -573,7 +573,8 @@ int main(int argc, char** argv)
 
 	cloudConstructor = new PointCloudConstructor(mesaCam->srCam);
 	planView = new PlanView(Props::getFloat(PROP_MINX), Props::getFloat(PROP_MAXX), Props::getFloat(PROP_MINZ), Props::getFloat(PROP_MAXZ), Props::getInt(PROP_PLANVIEW_WIDTH), Props::getInt(PROP_PLANVIEW_HEIGHT));
-	planView->pointCntThresh = Props::getInt(PROP_PLANVIEW_THRESH);
+	planView->pointCntThresh = Props::getFloat(PROP_PLANVIEW_THRESH);
+	planView->blurRadius = Props::getInt(PROP_PLANVIEW_BLUR_R);
 	planView->setFlipX(Props::getBool(PROP_PLANVIEW_FLIPX));
 	planView->setFlipZ(Props::getBool(PROP_PLANVIEW_FLIPZ));
 

@@ -183,7 +183,8 @@ void Props::init(int argc, char** argv) {
 		
 		(PROP_PLANVIEW_WIDTH, po::value<int>()->default_value(60),  "width of plan view image (tracking percision is maxX-minX/width)")
 		(PROP_PLANVIEW_HEIGHT, po::value<int>()->default_value(120),  "height of plan view image (tracking percision is maxZ-minZ/height)")
-		(PROP_PLANVIEW_THRESH, po::value<int>()->default_value(2),  "number of pionts needed per grid cell")
+		(PROP_PLANVIEW_THRESH, po::value<float>()->default_value(2.0),  "number of pionts needed per grid cell")
+		(PROP_PLANVIEW_BLUR_R, po::value<int>()->default_value(0), "Size of blur kernal used to planview before thresholding.  Should be an odd value.  Less than 3 == no blur")
 		(PROP_PLANVIEW_FLIPX, po::value<bool>()->default_value(false), "flip track\'s x coordinates")
 		(PROP_PLANVIEW_FLIPZ, po::value<bool>()->default_value(true), "flip track\'s z coordinates")
 		

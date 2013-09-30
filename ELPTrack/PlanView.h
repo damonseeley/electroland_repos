@@ -19,7 +19,8 @@ public:
 	cv::Mat displayImage;
 	cv::SimpleBlobDetector *blobDetector;
 	
-	int pointCntThresh;
+	int blurRadius;
+	float pointCntThresh;
 
 	std::vector<Blob> blobs;
 
