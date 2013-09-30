@@ -126,6 +126,7 @@ void PlanView::generatePlanView(pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloud) 
 	//std::cout << maxVal << " at " << maxLoc << std::endl;
 
 //	cv::threshold(bins, bins,pointCntThresh, 255, cv::THRESH_TOZERO);
+	if(blurRadius > 1) cv::blur(bins, bins,cv::Size(blurRadius,blurRadius));
 	cv::threshold(bins, bins,pointCntThresh, 255, cv::THRESH_BINARY);
 	bins.convertTo(thesh, CV_8UC1);
 	

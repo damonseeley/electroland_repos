@@ -29,6 +29,7 @@
 #define PROP_PLANVIEW_THRESH "planViewThresh"
 #define PROP_PLANVIEW_FLIPX "flipX"
 #define PROP_PLANVIEW_FLIPZ "flipZ"
+#define PROP_PLANVIEW_BLUR_R "planViewBlurSize"
 
 #define PROP_BG_THRESH "bgThresh"
 #define PROP_BG_ADAPT "adaptionRate"
