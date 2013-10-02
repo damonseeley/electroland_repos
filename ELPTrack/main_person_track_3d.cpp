@@ -304,7 +304,7 @@ void kb_callback(const pcl::visualization::KeyboardEvent& event, void *args) {
 
 
 
-	
+
 
 
 	if(event.isShiftPressed()) {
@@ -399,72 +399,143 @@ void aquireFrame() {
 		// getImage returns the actaul data from the camera that gets transformed into a point cloud
 		// bg->process modifies the data so we call it bgSubImage here 
 		// and make a copy to rangeImage if needed
-		bgSubImage = mesaCam->getRangeImage();
-		if(showRange)
-			bgSubImage.copyTo(rangeImage);
-		bg->process(bgSubImage, removeBgFromPointCloud);
-		if(showGray)
-			mesaCam->getIntensityImage().copyTo(grayImage);
-
-
-
-		if(bg->useAdaptive) {
-			bg->foreground.convertTo(displayImage, CV_8UC1, 256.0);
-			//		imshow(win, displayImage);
-		} else {
-			//	imshow(win, bg->foreground);
+		try {
+			mesaCam->getRangeImage().copyTo(bgSubImage);
+		} catch (cv::Exception& e) {
+			*ErrorLog::log << "Exception getting range image from mesa " << e.what() << std::endl;
+			return; // stop processing this frame
 		}
-		//				cv::Mat mattedImage;
-		//				mattedImage.setTo(cv::Mat::zeros);
+		try {
+			if(showRange)
+				bgSubImage.copyTo(rangeImage);
+		} catch (cv::Exception& e) {
+			*ErrorLog::log << "Exception copying bgSubImage to rangeImage" << e.what() << std::endl;
+			return; // stop processing this frame
+		}
+		try {
+			bg->process(bgSubImage, removeBgFromPointCloud);
+		} catch (cv::Exception& e) {
+			*ErrorLog::log << "Exception processing background image" << e.what() << std::endl;
+			return; // stop processing this frame
+		}
+		try{
+			if(showGray)
+				mesaCam->getIntensityImage().copyTo(grayImage);
+		} catch (cv::Exception& e) {
+			*ErrorLog::log << "Exception getting intensity image from mesa" << e.what() << std::endl;
+			return; // stop processing this frame
+		}
+
+		try {
+			if(bg->useAdaptive) {
+				bg->foreground.convertTo(displayImage, CV_8UC1, 256.0);
+				//		imshow(win, displayImage);
+			} else {
+				//	imshow(win, bg->foreground);
+			}
+			//				cv::Mat mattedImage;
+			//				mattedImage.setTo(cv::Mat::zeros);
+		} catch (cv::Exception& e) {
+			*ErrorLog::log << "Exception converting forground" << e.what() << std::endl;
+			return; // stop processing this frame
+		}
 
 
 
 		if(cropPointCloud) {
-			cloudConstructor->aquireFrame();
 
-			cloudConstructor->filterFrame();
+			try {
+				cloudConstructor->aquireFrame();
+			} catch (cv::Exception& e) {
+				*ErrorLog::log << "Exception aquiring frame from cloudConstructor" << e.what() << std::endl;
+				return; // stop processing this frame
+			}
+
+			try {
+				cloudConstructor->filterFrame();
+			} catch (cv::Exception& e) {
+				*ErrorLog::log << "Exception filtering frame with cloudConstructor" << e.what() << std::endl;
+				return; // stop processing this frame
+			}
 
 			if(viewer)
-				viewer->showCloud(cloudConstructor->filteredPtr);
-			planView->generatePlanView(cloudConstructor->filteredPtr);
-			tracker->updateTracks(planView->blobs, timer->curTime, timer->lastTime);
+				try {
+					viewer->showCloud(cloudConstructor->filteredPtr);
+			} catch (cv::Exception& e) {
+				*ErrorLog::log << "Exception showing  cloud" << e.what() << std::endl;
+				return; // stop processing this frame
+			}
 
-			tracker->sortTracks();
+			try {
+				planView->generatePlanView(cloudConstructor->filteredPtr);
+			} catch (cv::Exception& e) {
+				*ErrorLog::log << "Exception generating plan view" << e.what() << std::endl;
+				return; // stop processing this frame
+			}
 
-			oscTrackSender->sendTracks(tracker);
+			try {
+				tracker->updateTracks(planView->blobs, timer->curTime, timer->lastTime);
+				tracker->sortTracks();
+			} catch (cv::Exception& e) {
+				*ErrorLog::log << "Exception updating tracks" << e.what() << std::endl;
+				return; // stop processing this frame
+			}
+
+			try {
+
+				oscTrackSender->sendTracks(tracker);
+			} catch (cv::Exception& e) {
+				*ErrorLog::log << "Exception sending tracks vis OSC" << e.what() << std::endl;
+				// ok to keep going
+			}
 
 			//view tracks
-
 			if(printTracks) {
-				std::cout << std::endl;
-				for(std::vector<Track*>::iterator trackIt = tracker->tracks.begin(); trackIt != tracker->tracks.end(); ++trackIt) {
-					std::cout << *(*trackIt) << std::endl;
+				try{
+					std::cout << std::endl;
+					for(std::vector<Track*>::iterator trackIt = tracker->tracks.begin(); trackIt != tracker->tracks.end(); ++trackIt) {
+						std::cout << *(*trackIt) << std::endl;
+					}
+				} catch (cv::Exception& e) {
+					*ErrorLog::log << "Exception printing tracks to console" << e.what() << std::endl;
+					//ok to keep going
 				}
 			}
-			if(showTracks) {
-				for(std::vector<Track*>::iterator trackIt = tracker->tracks.begin(); trackIt != tracker->tracks.end(); ++trackIt) {
-					Track* t = *trackIt;
-					int r = (t->id * 13) % 255;
-					int g = (t->id * 101) % 255;
-					int b = (t->id * 3) % 255;
-					int col;
-					int row;
-					int width = (t->isProvisional) ? 2 : -1;
-					int radius = (t->isMatched) ? 4 : 2;
-					// big if match, solid if not provisional;		
-					planView->worldDimsToBinDims(t->x, t->z, col, row);
-					cv::circle(planView->displayImage, cv::Point(col*3, row*3), radius*2, CV_RGB  (r,g,b),width*2); 
-					stringstream fpsMsg;
-					fpsMsg << "fps: " << timer->actualFPS;
-					cv::putText(planView->displayImage, fpsMsg.str(), cvPoint(0, planView->displayImage.rows), cv::FONT_HERSHEY_PLAIN, 1.0, cv::Scalar(255,0,0));
-					displayImage = cv::Mat(planView->displayImage);
+			if	(showTracks) {
+				try{
+					for(std::vector<Track*>::iterator trackIt = tracker->tracks.begin(); trackIt != tracker->tracks.end(); ++trackIt) {
+						Track* t = *trackIt;
+						int r = (t->id * 13) % 255;
+						int g = (t->id * 101) % 255;
+						int b = (t->id * 3) % 255;
+						int col;
+						int row;
+						int width = (t->isProvisional) ? 2 : -1;
+						int radius = (t->isMatched) ? 4 : 2;
+						// big if match, solid if not provisional;		
+						planView->worldDimsToBinDims(t->x, t->z, col, row);
+						cv::circle(planView->displayImage, cv::Point(col*3, row*3), radius*2, CV_RGB  (r,g,b),width*2); 
+						stringstream fpsMsg;
+						fpsMsg << "fps: " << timer->actualFPS;
+						cv::putText(planView->displayImage, fpsMsg.str(), cvPoint(0, planView->displayImage.rows), cv::FONT_HERSHEY_PLAIN, 1.0, cv::Scalar(255,0,0));
+						displayImage = cv::Mat(planView->displayImage);
+					}
+				} catch (cv::Exception& e) {
+					*ErrorLog::log << "Exception showing tracks in window" << e.what() << std::endl;
+					//ok to keep going
 				}
 			}
 
 
 		} else {
 			if(viewer)
-				viewer->showCloud(cloudConstructor->aquireFrame());
+				try{
+					viewer->showCloud(cloudConstructor->aquireFrame());
+			} catch (cv::Exception& e) {
+				*ErrorLog::log << "Exception showing viewing unfiltered cloud" << e.what() << std::endl;
+				//ok to keep going
+			}
+
 		}
 	} else { // if unable to aquireFrame from mesa
 		badFrames++;
@@ -490,7 +561,12 @@ void aquireFrame() {
 void loop() {
 	while(isRunning)
 	{
-		aquireFrame();
+		try {
+			aquireFrame();
+		} catch (cv::Exception& e) {
+			*ErrorLog::log << "Uncaught exception in aquireFrame" << e.what() << std::endl;
+			//ok to keep going
+		}
 	}
 
 
