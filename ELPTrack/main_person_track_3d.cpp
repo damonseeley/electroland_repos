@@ -3,7 +3,7 @@
 #include <Windows.h> // only on a Windows system
 #undef NOMINMAX
 
-#define ELPT_VERSION "Version 1.0b3"
+#define ELPT_VERSION "Version 1.0b4"
 
 #include <string>
 
@@ -400,29 +400,45 @@ void aquireFrame() {
 		// bg->process modifies the data so we call it bgSubImage here 
 		// and make a copy to rangeImage if needed
 		try {
-			mesaCam->getRangeImage().copyTo(bgSubImage);
+			bgSubImage = mesaCam->getRangeImage();
 		} catch (cv::Exception& e) {
-			*ErrorLog::log << "Exception getting range image from mesa " << e.what() << std::endl;
+			*ErrorLog::log << "Exception getting range image from mesa " << std::endl;
+			*ErrorLog::log << e.what() << std::endl;
+			return; // stop processing this frame
+		} catch (...) {
+			*ErrorLog::log << "Unknown Exception getting range image from mesa " << std::endl;
 			return; // stop processing this frame
 		}
 		try {
 			if(showRange)
 				bgSubImage.copyTo(rangeImage);
 		} catch (cv::Exception& e) {
-			*ErrorLog::log << "Exception copying bgSubImage to rangeImage" << e.what() << std::endl;
+			*ErrorLog::log << "Exception copying bgSubImage to rangeImage" << std::endl;
+			*ErrorLog::log 	<< e.what() << std::endl;
+			return; // stop processing this frame
+		} catch (...) {
+			*ErrorLog::log << "Unknown Exception copying bgSubImage to rangeImage" << std::endl;
 			return; // stop processing this frame
 		}
 		try {
 			bg->process(bgSubImage, removeBgFromPointCloud);
 		} catch (cv::Exception& e) {
-			*ErrorLog::log << "Exception processing background image" << e.what() << std::endl;
+			*ErrorLog::log << "Exception processing background image" << std::endl; 
+			*ErrorLog::log << e.what() << std::endl;
 			return; // stop processing this frame
+		} catch (...) {
+			*ErrorLog::log << "Unknown Exception processing background image" << std::endl; 
+			return;
 		}
 		try{
 			if(showGray)
 				mesaCam->getIntensityImage().copyTo(grayImage);
 		} catch (cv::Exception& e) {
-			*ErrorLog::log << "Exception getting intensity image from mesa" << e.what() << std::endl;
+			*ErrorLog::log << "Exception getting intensity image from mesa" << std::endl;
+			*ErrorLog::log 	<< e.what() << std::endl;
+			return; // stop processing this frame
+		} catch (...) {
+			*ErrorLog::log << "Unknown Exception getting intensity image from mesa" << std::endl;
 			return; // stop processing this frame
 		}
 
@@ -436,8 +452,13 @@ void aquireFrame() {
 			//				cv::Mat mattedImage;
 			//				mattedImage.setTo(cv::Mat::zeros);
 		} catch (cv::Exception& e) {
-			*ErrorLog::log << "Exception converting forground" << e.what() << std::endl;
+			*ErrorLog::log << "Exception converting forground"  << std::endl;
+			*ErrorLog::log << e.what() << std::endl;
 			return; // stop processing this frame
+		} catch (...) {
+
+			*ErrorLog::log << "Unknown Exception converting forground"  << std::endl;
+			return;
 		}
 
 
@@ -447,46 +468,74 @@ void aquireFrame() {
 			try {
 				cloudConstructor->aquireFrame();
 			} catch (cv::Exception& e) {
-				*ErrorLog::log << "Exception aquiring frame from cloudConstructor" << e.what() << std::endl;
+				*ErrorLog::log << "Exception aquiring frame from cloudConstructor"  << std::endl;
+				*ErrorLog::log <<  e.what() << std::endl;
+				return; // stop processing this frame
+			} catch(...) {
+				*ErrorLog::log << "Unknown Exception aquiring frame from cloudConstructor"  << std::endl;
 				return; // stop processing this frame
 			}
+
 
 			try {
 				cloudConstructor->filterFrame();
 			} catch (cv::Exception& e) {
-				*ErrorLog::log << "Exception filtering frame with cloudConstructor" << e.what() << std::endl;
+				*ErrorLog::log << "Exception filtering frame with cloudConstructor" << std::endl;
+				*ErrorLog::log << e.what() << std::endl;
 				return; // stop processing this frame
+			} catch(...) {
+				*ErrorLog::log << "unknown Exception filtering frame with cloudConstructor" << std::endl;
+				return;
+
 			}
 
 			if(viewer)
 				try {
 					viewer->showCloud(cloudConstructor->filteredPtr);
 			} catch (cv::Exception& e) {
-				*ErrorLog::log << "Exception showing  cloud" << e.what() << std::endl;
+				*ErrorLog::log << "Exception showing  cloud" << std::endl;
+				*ErrorLog::log << e.what() << std::endl;
 				return; // stop processing this frame
+			} catch(...) {
+				*ErrorLog::log << "Unknown Exception showing  cloud" << std::endl;
+				return;
 			}
+
 
 			try {
 				planView->generatePlanView(cloudConstructor->filteredPtr);
 			} catch (cv::Exception& e) {
-				*ErrorLog::log << "Exception generating plan view" << e.what() << std::endl;
+				*ErrorLog::log << "Exception generating plan view"   << std::endl;
+				*ErrorLog::log <<   e.what() << std::endl;
 				return; // stop processing this frame
+			} catch(...){
+				*ErrorLog::log << "Unknown Exception generating plan view" <<  std::endl;
+				return;
 			}
 
 			try {
 				tracker->updateTracks(planView->blobs, timer->curTime, timer->lastTime);
 				tracker->sortTracks();
 			} catch (cv::Exception& e) {
-				*ErrorLog::log << "Exception updating tracks" << e.what() << std::endl;
+				*ErrorLog::log << "Exception updating tracks"  << std::endl;
+				*ErrorLog::log << e.what() << std::endl;
 				return; // stop processing this frame
+			} catch(...) {
+				*ErrorLog::log << "Unknown Exception updating tracks"  << std::endl;
+				return;
 			}
+
 
 			try {
 
 				oscTrackSender->sendTracks(tracker);
 			} catch (cv::Exception& e) {
-				*ErrorLog::log << "Exception sending tracks vis OSC" << e.what() << std::endl;
+				*ErrorLog::log << "Exception sending tracks vis OSC" << std::endl;
+				*ErrorLog::log  << e.what() << std::endl;
 				// ok to keep going
+			} catch(...) {
+				*ErrorLog::log << "Unknown Exception sending tracks vis OSC"  << std::endl;
+
 			}
 
 			//view tracks
@@ -497,8 +546,11 @@ void aquireFrame() {
 						std::cout << *(*trackIt) << std::endl;
 					}
 				} catch (cv::Exception& e) {
-					*ErrorLog::log << "Exception printing tracks to console" << e.what() << std::endl;
+					*ErrorLog::log << "Exception printing tracks to console"  << std::endl;
+					*ErrorLog::log <<  e.what() << std::endl;
 					//ok to keep going
+				} catch(...) {
+					*ErrorLog::log << "Unknown Exception printing tracks to console"  << std::endl;
 				}
 			}
 			if	(showTracks) {
@@ -521,8 +573,11 @@ void aquireFrame() {
 						displayImage = cv::Mat(planView->displayImage);
 					}
 				} catch (cv::Exception& e) {
-					*ErrorLog::log << "Exception showing tracks in window" << e.what() << std::endl;
+					*ErrorLog::log << "Exception showing tracks in window"<< std::endl;
+					*ErrorLog::log << e.what() << std::endl;
 					//ok to keep going
+				} catch(...) {
+					*ErrorLog::log << "Unknown Exception showing tracks in window"<< std::endl;
 				}
 			}
 
@@ -532,8 +587,13 @@ void aquireFrame() {
 				try{
 					viewer->showCloud(cloudConstructor->aquireFrame());
 			} catch (cv::Exception& e) {
-				*ErrorLog::log << "Exception showing viewing unfiltered cloud" << e.what() << std::endl;
+				*ErrorLog::log << "Exception showing viewing unfiltered cloud"  << std::endl;
 				//ok to keep going
+				*ErrorLog::log  << e.what() << std::endl;
+			} catch(...) {
+
+				*ErrorLog::log << "Unknown Exception showing viewing unfiltered cloud"  << std::endl;
+
 			}
 
 		}
@@ -564,8 +624,11 @@ void loop() {
 		try {
 			aquireFrame();
 		} catch (cv::Exception& e) {
-			*ErrorLog::log << "Uncaught exception in aquireFrame" << e.what() << std::endl;
+			*ErrorLog::log << "Uncaught exception in aquireFrame"  << std::endl;
+			*ErrorLog::log <<  e.what() << std::endl;
 			//ok to keep going
+		} catch(...) {
+			*ErrorLog::log << "Unknown Uncaught exception in aquireFrame" << std::endl;
 		}
 	}
 
@@ -749,15 +812,50 @@ int main(int argc, char** argv)
 		grayImage = cv::Mat(cv::Size(10,10), CV_8UC1);
 		CreateThread( NULL, 0, loopThread, NULL, 0, NULL); 
 		while(isRunning) {
-			if(showTracks)
-				cv::imshow(trackWin, displayImage);
-			if(showGray)
-				cv::imshow(grayWin,grayImage);
-			if(showRange)
-				cv::imshow(rangeWin,rangeImage);
-			if(showBGSub)
-				cv::imshow(bgSubWin,bgSubImage);
-			cv::waitKey(30);
+			try {
+				if(showTracks)
+					cv::imshow(trackWin, displayImage);
+			} catch (cv::Exception &e) {
+				*ErrorLog::log << "Exception displaying tracks in trackWin" << std::endl;
+				*ErrorLog::log << e.what() << std::endl;
+			} catch (...) {
+				*ErrorLog::log << "Unknown Exception displaying tracks in trackWin" << std::endl;
+			}
+			try {
+				if(showGray)
+					cv::imshow(grayWin,grayImage);
+			} catch (cv::Exception &e) {
+				*ErrorLog::log << "Exception displaying grayImage in grayWin" << std::endl;
+				*ErrorLog::log << e.what() << std::endl;
+			} catch (...) {
+				*ErrorLog::log << "Unknown Exception grayImage tracks in grayWin" << std::endl;
+			}
+			try {
+				if(showRange)
+					cv::imshow(rangeWin,rangeImage);
+			} catch (cv::Exception &e) {
+				*ErrorLog::log << "Exception displaying rangeImage in rangeWin" << std::endl;
+				*ErrorLog::log << e.what() << std::endl;
+			} catch (...) {
+				*ErrorLog::log << "Unknown Exception rangeImage tracks in rangeWin" << std::endl;
+			}
+			try {
+				if(showBGSub)
+					cv::imshow(bgSubWin,bgSubImage);
+			} catch (cv::Exception &e) {
+				*ErrorLog::log << "Exception displaying bgSubImage in bgSubWin" << std::endl;
+				*ErrorLog::log << e.what() << std::endl;
+			} catch (...) {
+				*ErrorLog::log << "Unknown Exception bgSubImage tracks in bgSubWin" << std::endl;
+			}
+			try {
+				cv::waitKey(30);
+			} catch (cv::Exception &e) {
+				*ErrorLog::log << "Exception with cv::waitKey" << std::endl;
+				*ErrorLog::log << e.what() << std::endl;
+			} catch (...) {
+				*ErrorLog::log << "Unknown ExceptionException with cv::waitKey" << std::endl;
+			}
 		}
 	} else {
 		loop();
