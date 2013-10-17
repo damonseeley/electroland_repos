@@ -17,9 +17,15 @@ import netP5.*;
   
 OscP5 oscP5;
 NetAddress oscSendToLocation;
-OscMessage oscMsg;
+OscMessage oscTrackMsg;
+OscMessage oscZMsg;
+
 int sendPort = 7002;
 String sendAddr = "10.22.33.255";
+
+int maxZ = 4000;
+int minZ = 500;
+float zDepth;
 
 SimpleOpenNI  context;
 color[]       userClr = new color[]{ color(255,0,0),
@@ -33,7 +39,7 @@ PVector com = new PVector();
 PVector com2d = new PVector();  
 
 boolean playback = false;
-String  recordPath = "1person_userimgtest.oni";
+//String  recordPath = "1person_userimgtest.oni";
 
 float scale = 2.0f;
 PGraphics buffer;
@@ -45,11 +51,12 @@ void setup()
   
   oscP5 = new OscP5(this,12000);
   oscSendToLocation = new NetAddress(sendAddr,sendPort);
-  oscMsg = new OscMessage("/kinectTracks");
+  resetOSC();
   
   if (playback == true) {
     // THIS IS NOT WORKING JUST NOW
-    context = new SimpleOpenNI(this,recordPath);
+    //context = new SimpleOpenNI(this,recordPath);
+    context = new SimpleOpenNI(this);
     println("curFramePlayer: " + context.curFramePlayer());
     
   } else {
@@ -94,6 +101,13 @@ void draw()
   // draw the skeleton if it's available
   int[] userList = context.getUsers();
   
+  //set closest to maxZ so the default reported value is 0
+  int closestUser = maxZ;
+  
+  if (userList.length == 0) {
+     addZToOSC(0.0 + "");
+  }
+  
   for(int i=0;i<userList.length;i++)
   {
     //draw skeletons
@@ -128,35 +142,71 @@ void draw()
       text("x2d,y2d: " + (int)com2d.x + ", " + (int)com2d.y,com2d.x*scale + offset,com2d.y*scale + txtSize + offset);
       //println("u: " + i + " x2d,y2d: " + (int)com2d.x + ", " + (int)com2d.y);
       //String trackParams = i + " " + (int)com.x + " " + (int)com.y + " " + (int)com.z + " " + (int)com2d.x + " " + (int)com2d.y;
-      addToOSCByParam(i,(int)com.x,(int)com.y,(int)com.z,(int)com2d.x,(int)com2d.y);
+      addTracksToOSCByParam(i,(int)com.x,(int)com.y,(int)com.z,(int)com2d.x,(int)com2d.y);
       //addToOSC(trackParams);
+      
+      if (com.z < closestUser) {
+        if (validatePos(com.x,com.y)) {
+          closestUser = (int)(com.z);
+        }
+        //println("CLOSEST " + closestUser);
+      } 
+      
     }
+    
+    //scale closestUser to a 0-1.0 scale
+    //println("CLOSEST - MinZ " + (closestUser - minZ));
+    //println("Max - Min " + (maxZ - minZ));
+    zDepth = 1.0 - (closestUser - minZ * 1.0)/(maxZ - minZ * 1.0);
+    
   }
+  
+  println(zDepth);
+  addZToOSC(zDepth + "");
   sendOSC();
 }
 
-void addToOSC(String str) {
-  // send OSC packet of users where params are ID,x3d,y3d,z3d,x2d,y2d
-  oscMsg.add(str);
+boolean validatePos(float x, float y) {
+ if (x == 0.0 || y == 0.0) {
+  return false; 
+ } else {
+   return true;
+ } 
 }
 
-void addToOSCByParam(int id, int x3d, int y3d, int z3d, int x2d, int y2d) {
+void resetOSC(){
+  oscTrackMsg = new OscMessage("/kinectTracks");
+  oscZMsg = new OscMessage("/zMove");
+  
+}
+
+void addTracksToOSC(String str) {
+  // send OSC packet of users where params are ID,x3d,y3d,z3d,x2d,y2d
+  oscTrackMsg.add(str);
+}
+
+void addZToOSC(String str) {
+  // send OSC packet of users where params are ID,x3d,y3d,z3d,x2d,y2d
+  oscZMsg.add(str);
+}
+
+void addTracksToOSCByParam(int id, int x3d, int y3d, int z3d, int x2d, int y2d) {
  //only allow messages if users are not at 0,0 in 2D (dead users)
  String trackParams = "";
  String tk = " ";
  if (x2d != 0 || y2d != 0) {
     trackParams = id + tk + x3d + tk + y3d + tk + z3d + tk + x2d + tk + y2d;
-    addToOSC(trackParams);
+    addTracksToOSC(trackParams);
  }
-
  
 }
 
 void sendOSC() {  
   /* send the message */
-  oscP5.send(oscMsg, oscSendToLocation);
+  oscP5.send(oscTrackMsg, oscSendToLocation);
+  oscP5.send(oscZMsg, oscSendToLocation);
+  resetOSC();
   
-  oscMsg = new OscMessage("/kinectTracks");
 }
 
 
