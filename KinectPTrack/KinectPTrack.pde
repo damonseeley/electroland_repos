@@ -20,12 +20,12 @@ NetAddress oscSendToLocation;
 OscMessage oscTrackMsg;
 OscMessage oscZMsg;
 
-int sendPort = 7002;
+int sendPort = 7001;
 String sendAddr = "10.22.33.255";
 
 int maxZ = 4000;
 int minZ = 500;
-float zDepth;
+float zDepth = 0.0;
 
 SimpleOpenNI  context;
 color[]       userClr = new color[]{ color(255,0,0),
@@ -161,7 +161,7 @@ void draw()
     
   }
   
-  println(zDepth);
+  //println(zDepth);
   addZToOSC(zDepth + "");
   sendOSC();
 }
