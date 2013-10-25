@@ -26,10 +26,33 @@
 
 #define PROP_PLANVIEW_WIDTH "planViewWidth"
 #define PROP_PLANVIEW_HEIGHT "planViewHeight"
-#define PROP_PLANVIEW_THRESH "planViewThresh"
+#define PROP_PLANVIEW_UPPER_THESH "planViewUpperThresh"
 #define PROP_PLANVIEW_FLIPX "flipX"
 #define PROP_PLANVIEW_FLIPZ "flipZ"
 #define PROP_PLANVIEW_BLUR_R "planViewBlurSize"
+
+#define PROP_BLOB_THRESH_STEP "blobThresholdStep"
+#define PROP_BLOB_MIN_THRESH "blobMinThreshold"
+#define PROP_BLOB_MAX_THRESH "blobMaxThreshold"
+
+#define PROP_BLOB_MIN_SEP "blobMinDistBetweenBlobs"
+
+#define PROP_BLOB_FILT_AREA "blobFilterByArea"
+#define PROP_BLOB_MIN_AREA "blobMinArea"
+#define PROP_BLOB_MAX_AREA "blobMaxArea"
+
+#define PROP_BLOB_FILT_CIRC "blobFilterByCircularity"
+#define PROP_BLOB_MIN_CIRC "blobMinCircularity"
+#define PROP_BLOB_MAX_CIRC "blobMaxCircularity"
+
+
+#define PROP_BLOB_FILT_INERT "blobFilterByInertia"
+#define PROP_BLOB_MIN_INERT "blobMinInertiaRatio"
+#define PROP_BLOB_MAX_INERT "blobMaxInertiaRatio"
+
+#define PROP_BLOB_FILT_CONV "blobFilterByConvexity"
+#define PROP_BLOB_MIN_CONV "blobMinConvexity"
+#define PROP_BLOB_MAX_CONV "blobMaxConvexity"
 
 #define PROP_BG_THRESH "bgThresh"
 #define PROP_BG_ADAPT "adaptionRate"

@@ -54,6 +54,7 @@ void Props::writeToFile(string filename) {
   strftime (buffer,80,"%Y-%m-%d, %H-%M-%S",timeinfo);
 	file << "# ELPTrack " << version << std::endl;
 	file << "# automatically generated property file" << std::endl;
+	file << "# for explanation of blob tracking parameters see http://docs.opencv.org/modules/features2d/doc/common_interfaces_of_feature_detectors.html#simpleblobdetector" << std::endl;
 	file << "# " << buffer << std::endl;
 	file << "# " << std::endl << std::endl;
 	for (std::map<string, boost::any>::iterator it=theProps->map.begin(); it != theProps->map.end(); it++ ) { 
@@ -183,11 +184,35 @@ void Props::init(int argc, char** argv) {
 		
 		(PROP_PLANVIEW_WIDTH, po::value<int>()->default_value(60),  "width of plan view image (tracking percision is maxX-minX/width)")
 		(PROP_PLANVIEW_HEIGHT, po::value<int>()->default_value(120),  "height of plan view image (tracking percision is maxZ-minZ/height)")
-		(PROP_PLANVIEW_THRESH, po::value<float>()->default_value(2.0),  "number of pionts needed per grid cell")
+
+		(PROP_PLANVIEW_UPPER_THESH, po::value<float>()->default_value(10),  "maximum number of pionts needed per grid cell considered by blob detector (any value above the threshold is treated the as max).")
+
 		(PROP_PLANVIEW_BLUR_R, po::value<int>()->default_value(0), "Size of blur kernal used to planview before thresholding.  Should be an odd value.  Less than 3 == no blur")
 		(PROP_PLANVIEW_FLIPX, po::value<bool>()->default_value(false), "flip track\'s x coordinates")
 		(PROP_PLANVIEW_FLIPZ, po::value<bool>()->default_value(true), "flip track\'s z coordinates")
 		
+		(PROP_BLOB_THRESH_STEP, po::value<float>()->default_value(10.0f), "threshold step size")
+		(PROP_BLOB_MIN_THRESH, po::value<float>()->default_value(50.0f), "min threshold")
+		(PROP_BLOB_MAX_THRESH, po::value<float>()->default_value(220.0f), "max threshold")
+		
+		(PROP_BLOB_MIN_SEP, po::value<float>()->default_value(5), "minimum distance between blobs")
+		
+		(PROP_BLOB_FILT_AREA, po::value<bool>()->default_value(true), "filter by area")
+		(PROP_BLOB_MIN_AREA, po::value<float>()->default_value(4.0f), "minimum blob size")
+		(PROP_BLOB_MAX_AREA, po::value<float>()->default_value(1000.0f), "maximum blob size")
+
+		(PROP_BLOB_FILT_CIRC, po::value<bool>()->default_value(false), "filter by circularity.  Circularity defined as 4*PI*Area/perimiter^2")
+		(PROP_BLOB_MIN_CIRC, po::value<float>()->default_value(0.8f), "minimum circularity")
+		(PROP_BLOB_MAX_CIRC, po::value<float>()->default_value(FLT_MAX), "maximum circularity")
+		
+		(PROP_BLOB_FILT_INERT, po::value<bool>()->default_value(false), "filter by intertia ratio.  I think this might be how uniformily the area is distributed.")
+		(PROP_BLOB_MIN_INERT, po::value<float>()->default_value(0.1f), "minimum intertia ratio")
+		(PROP_BLOB_MAX_INERT, po::value<float>()->default_value(FLT_MAX), "maximum intertia ratio")
+		
+		(PROP_BLOB_FILT_CONV, po::value<bool>()->default_value(false), "filter by convexity.  Concexity is defined by area/area of convex hull.")
+		(PROP_BLOB_MIN_CONV, po::value<float>()->default_value(.95f), "minimum convexity")
+		(PROP_BLOB_MAX_CONV, po::value<float>()->default_value(FLT_MAX), "maximum convexity")
+
 		(PROP_BG_THRESH, po::value<float>()->default_value(.075f),  "background model theshold")
 		(PROP_BG_ADAPT, po::value<float>()->default_value(.001f), "background adaptation rate (must be in range 0-1.  0 will use first image, 1 will use last frame")
 		(PROP_OSC_ADDRESS, po::value<string>()->default_value(""), "IP address of OSC receiver (an empty string will not send msgs)")

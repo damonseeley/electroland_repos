@@ -20,7 +20,8 @@ public:
 	cv::SimpleBlobDetector *blobDetector;
 	
 	int blurRadius;
-	float pointCntThresh;
+
+	float pointMaxCntThresh;
 
 	std::vector<Blob> blobs;
 
@@ -66,6 +67,24 @@ public:
 	void setFlipX(bool b);
 	void setFlipZ(bool b);
 
+	void setBlobTrackerProperties( 
+		float threshStep,
+		float minThresh,
+		float maxThresh,
+		float minDist,
+		bool filterByArea,
+		float minArea,
+		float maxArea,
+		bool filterByCirc,
+		float minCirc,
+		float maxCirc,
+		bool filterByIntert,
+		float minIntert,
+		float maxInter,
+		bool filterByConvexity,
+		float minConvexity,
+		float maxConvexity
+		);
 };
 
 #endif
