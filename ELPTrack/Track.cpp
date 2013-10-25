@@ -15,7 +15,8 @@ Track::Track(float x, float z, long time) {
 	this-> establishmentTime = -1;
 	this->timeToNotProvisional = time + provisionalTime;
 	this->lastTrack = time;
-	this->id = nextId++;
+	this->id = nextId;
+	nextId = (nextId == LONG_MAX) ? 0 : nextId+1;
 	this->isMatched = false;
 	this->isProvisional = true;
 	this->health = 1;
