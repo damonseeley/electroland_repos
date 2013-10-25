@@ -1,4 +1,5 @@
 ELPTrack v1.0b5 (Release) 10/25/2013
+changed track IDs to wrap around to 0 instead of -LONG_MAX
 exposed all relavent blob detection parameters see http://docs.opencv.org/modules/features2d/doc/common_interfaces_of_feature_detectors.html#simpleblobdetector
 checked step size of t/T for background subtraction thresh
 removed planViewThresh and replaced with planViewUpperThresh
