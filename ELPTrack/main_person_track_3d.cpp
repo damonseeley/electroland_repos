@@ -3,7 +3,7 @@
 #include <Windows.h> // only on a Windows system
 #undef NOMINMAX
 
-#define ELPT_VERSION "Version 1.0b4"
+#define ELPT_VERSION "Version 1.0b5"
 
 #include <string>
 
@@ -267,31 +267,31 @@ void kb_callback(const pcl::visualization::KeyboardEvent& event, void *args) {
 		Props::inc(PROP_MAXZ, 0.1f);
 		break;
 	case 'Y': 
-		Props::inc(PROP_PLANVIEW_THRESH, .01f);
-		planView->pointCntThresh = Props::getFloat(PROP_PLANVIEW_THRESH);
+		Props::inc(PROP_PLANVIEW_UPPER_THESH, .01f);
+		planView->pointMaxCntThresh = Props::getFloat(PROP_PLANVIEW_UPPER_THESH);
 		needWorldReset = false;
-		std::cout << PROP_PLANVIEW_THRESH << " " << Props::getFloat(PROP_PLANVIEW_THRESH) << std::endl;
+		std::cout << PROP_PLANVIEW_UPPER_THESH << " " << Props::getFloat(PROP_PLANVIEW_UPPER_THESH) << std::endl;
 		break;
 
 	case 'y': {
-		Props::inc(PROP_PLANVIEW_THRESH, -.01f);
-		int val = Props::getFloat(PROP_PLANVIEW_THRESH);
+		Props::inc(PROP_PLANVIEW_UPPER_THESH, -.01f);
+		int val = Props::getFloat(PROP_PLANVIEW_UPPER_THESH);
 		if(val < 0) {
 			val = 0;
-			Props::set(PROP_PLANVIEW_THRESH, 0.0f);
+			Props::set(PROP_PLANVIEW_UPPER_THESH, 0.0f);
 		}
-		planView->pointCntThresh = val;
-		std::cout << PROP_PLANVIEW_THRESH << " " << Props::getFloat(PROP_PLANVIEW_THRESH) << std::endl;
+		planView->pointMaxCntThresh = val;
+		std::cout << PROP_PLANVIEW_UPPER_THESH << " " << Props::getFloat(PROP_PLANVIEW_UPPER_THESH) << std::endl;
 		needWorldReset = false;
 			  }
 			  break;
 	case 'T': 
-		Props::inc(PROP_BG_THRESH, 0.0001f);
+		Props::inc(PROP_BG_THRESH, 0.001f);
 		bg->thresh = Props::getFloat(PROP_BG_THRESH);
 		needWorldReset = false;
 		break;
 	case 't':
-		Props::inc(PROP_BG_THRESH, -0.0001f);
+		Props::inc(PROP_BG_THRESH, -0.001f);
 		bg->thresh = Props::getFloat(PROP_BG_THRESH);
 		needWorldReset = false;
 		break;
@@ -711,8 +711,29 @@ int main(int argc, char** argv)
 	bg = new MesaBGSubtractor(Props::getFloat(PROP_BG_ADAPT),Props::getFloat(PROP_BG_THRESH)); 
 
 	cloudConstructor = new PointCloudConstructor(mesaCam->srCam);
-	planView = new PlanView(Props::getFloat(PROP_MINX), Props::getFloat(PROP_MAXX), Props::getFloat(PROP_MINZ), Props::getFloat(PROP_MAXZ), Props::getInt(PROP_PLANVIEW_WIDTH), Props::getInt(PROP_PLANVIEW_HEIGHT));
-	planView->pointCntThresh = Props::getFloat(PROP_PLANVIEW_THRESH);
+	planView = new PlanView(Props::getFloat(PROP_MINX), Props::getFloat(PROP_MAXX), Props::getFloat(PROP_MINZ), Props::getFloat(PROP_MAXZ), 
+		Props::getInt(PROP_PLANVIEW_WIDTH), Props::getInt(PROP_PLANVIEW_HEIGHT)
+		);
+	planView->setBlobTrackerProperties(
+		Props::getFloat(PROP_BLOB_THRESH_STEP),
+		Props::getFloat(PROP_BLOB_MIN_THRESH),
+		Props::getFloat(PROP_BLOB_MAX_THRESH),
+		Props::getFloat(PROP_BLOB_MIN_SEP),
+		Props::getBool(PROP_BLOB_FILT_AREA),
+		Props::getFloat(PROP_BLOB_MIN_AREA),
+		Props::getFloat(PROP_BLOB_MAX_AREA),
+		Props::getBool(PROP_BLOB_FILT_CIRC),
+		Props::getFloat(PROP_BLOB_MIN_CIRC),
+		Props::getFloat(PROP_BLOB_MAX_CIRC),
+		Props::getBool(PROP_BLOB_FILT_INERT),
+		Props::getFloat(PROP_BLOB_MIN_INERT),
+		Props::getFloat(PROP_BLOB_MAX_INERT),
+		Props::getBool(PROP_BLOB_FILT_CONV),
+		Props::getFloat(PROP_BLOB_MIN_CONV),
+		Props::getFloat(PROP_BLOB_MAX_CONV)
+		);
+
+	planView->pointMaxCntThresh = Props::getFloat(PROP_PLANVIEW_UPPER_THESH);
 	planView->blurRadius = Props::getInt(PROP_PLANVIEW_BLUR_R);
 	planView->setFlipX(Props::getBool(PROP_PLANVIEW_FLIPX));
 	planView->setFlipZ(Props::getBool(PROP_PLANVIEW_FLIPZ));

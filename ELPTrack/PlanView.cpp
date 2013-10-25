@@ -8,31 +8,58 @@ PlanView::PlanView(float minX, float maxX, float minZ, float maxZ, int width, in
 {
 	setWorldDims(minX, maxX, minZ, maxZ);
 	setBinDims(width, height);
+	pointMaxCntThresh  =200;
+	blobDetector = NULL;
 
 
+}
+
+void PlanView::setBlobTrackerProperties( 
+		float threshStep,
+		float minThresh,
+		float maxThresh,
+		float minDist,
+		bool filterByArea,
+		float minArea,
+		float maxArea,
+		bool filterByCirc,
+		float minCirc,
+		float maxCirc,
+		bool filterByIntert,
+		float minInertiaRatio,
+		float maxInertiaRatio,
+		bool filterByConvexity,
+		float minConvexity,
+		float maxConvexity
+		) {
 	cv::SimpleBlobDetector::Params params;
-	params.thresholdStep = 60;
-	params.minThreshold = 60;
-	params.maxThreshold = 255;
-	params.minDistBetweenBlobs = 4.5;
+	params.thresholdStep = threshStep;
+	params.minThreshold = minThresh;
+	params.maxThreshold = maxThresh;
+	params.minDistBetweenBlobs = minDist;
 
 	params.filterByColor = true;
 	params.blobColor = 255;
 
-	params.filterByArea = true;
-	params.minArea = 4;
-	params.maxArea = 100;
+	params.filterByArea = filterByArea;
+	params.minArea = minArea;
+	params.maxArea = maxArea;
 
-
-	pointCntThresh  =2;
-
-	params.filterByCircularity = false;
+	params.filterByCircularity = filterByCirc;
+	params.minCircularity = minCirc;
+	params.maxCircularity = maxCirc;
 
 	params.filterByInertia = false;
-
-	params.filterByConvexity=false;
-
+	params.minInertiaRatio = minInertiaRatio;
+	params.maxInertiaRatio = maxInertiaRatio;
+	params.filterByConvexity=filterByConvexity;
+	params.minConvexity = minConvexity;
+	params.maxConvexity = maxConvexity;
+	cv::SimpleBlobDetector *oldBlobDetector = blobDetector;
 	blobDetector = new cv::SimpleBlobDetector(params);
+	if(oldBlobDetector) {
+		delete oldBlobDetector;
+	}
 }
 
 
@@ -127,6 +154,9 @@ void PlanView::generatePlanView(pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloud) 
 
 //	cv::threshold(bins, bins,pointCntThresh, 255, cv::THRESH_TOZERO);
 	if(blurRadius > 1) cv::blur(bins, bins,cv::Size(blurRadius,blurRadius));
+	
+
+	/* current binary version
 	cv::threshold(bins, bins,pointCntThresh, 255, cv::THRESH_BINARY);
 	bins.convertTo(thesh, CV_8UC1);
 	
@@ -135,13 +165,23 @@ void PlanView::generatePlanView(pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloud) 
 
 	cv::dilate(thesh, dilate2, cv::Mat(), cv::Point(-1,-1), 2);
 	cv::erode(dilate2, dilate2, cv::Mat(), cv::Point(-1,-1), 2);
-
+	
 	//	cv::addWeighted(dilate1, .5, dilate2, .5, 0, dilate1);
 	cv::addWeighted(dilate2, .5, thesh, .5, 0, thesh);
-	
-	blobDetector->detect(thesh, keypoints);
+	*/
+	//experimental version
+//	cv::normalize(bins, thesh, 0, 255, cv::NORM_MINMAX, CV_8UC1);
 
-	cv::cvtColor(bins, blobsImage,CV_GRAY2RGB); 
+	cv::threshold(bins, bins, pointMaxCntThresh, 255, cv::THRESH_TRUNC);
+	bins *= 255.0f/pointMaxCntThresh;
+	bins.convertTo(thesh, CV_8UC1);
+	
+
+	if (blobDetector) blobDetector->detect(thesh, keypoints);
+
+	cv::cvtColor(thesh, blobsImage,CV_GRAY2RGB); 
+
+//	cv::cvtColor(bins, blobsImage,CV_GRAY2RGB); 
 
 //	cv::drawKeypoints(thesh, keypoints, blobsImage, cv::Scalar::all(-1));
 
