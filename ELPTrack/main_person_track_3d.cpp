@@ -1,3 +1,7 @@
+// ELPTRACK Copyright 2013 Electroland LLC all rights reserved
+// please contact damon@electroland.net for more information
+
+
 // fix for some sort of max macro naming conflict with windows
 #define NOMINMAX
 #include <Windows.h> // only on a Windows system
