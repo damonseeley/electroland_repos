@@ -53,13 +53,22 @@ public class Template {
         br.close();
         return sb.toString();
     }
-    
+
     public void run(PrintWriter pw, Map<String,String> row){
         for (Snippet snippet : snippets){
             if (snippet instanceof StaticSnippet){
                 pw.print(snippet);
+                System.out.print(snippet);
             }else{
-                pw.print(row.get(snippet.getText()));
+                // note: we're not doing any null checking. If a value isn't
+                // mapped, we're going to print "null" in the output file.
+                String insertVal = row.get(snippet.getText());
+                if (insertVal == null){
+                    throw new RuntimeException("Source data does not include '" + snippet.getText() + "'.");
+                }else{
+                    pw.print(insertVal);
+                    System.out.print(insertVal);
+                }
             }
         }
     }
