@@ -14,7 +14,7 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-public class TextInsert {
+public class MergeIntoTemplate {
 
     public static void main(String args[]){
 
