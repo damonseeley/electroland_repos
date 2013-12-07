@@ -58,7 +58,6 @@ public class Template {
         for (Snippet snippet : snippets){
             if (snippet instanceof StaticSnippet){
                 pw.print(snippet);
-                System.out.print(snippet);
             }else{
                 // note: we're not doing any null checking. If a value isn't
                 // mapped, we're going to print "null" in the output file.
@@ -67,7 +66,6 @@ public class Template {
                     throw new RuntimeException("Source data does not include '" + snippet.getText() + "'.");
                 }else{
                     pw.print(insertVal);
-                    System.out.print(insertVal);
                 }
             }
         }
