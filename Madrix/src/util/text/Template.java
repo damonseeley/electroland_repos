@@ -48,22 +48,19 @@ public class Template {
         StringBuffer sb = new StringBuffer();
         BufferedReader br = new BufferedReader(new FileReader(new File(filename)));
         while (br.ready()){
-            sb.append(br.readLine());
+            sb.append(br.readLine()).append(System.getProperty("line.separator"));
         }
         br.close();
         return sb.toString();
     }
     
-    public void run(PrintWriter pw, Map<String,String> row, boolean addCarriageReturns){
+    public void run(PrintWriter pw, Map<String,String> row){
         for (Snippet snippet : snippets){
             if (snippet instanceof StaticSnippet){
                 pw.print(snippet);
             }else{
                 pw.print(row.get(snippet.getText()));
             }
-        }
-        if (addCarriageReturns){
-            pw.println();
         }
     }
 }

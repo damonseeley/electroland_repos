@@ -29,8 +29,7 @@ public class MergeIntoTemplate {
 
             while (tsv.ready()){
 
-                // last boolean = true to have carriage returns between rows, false otherwise.
-                template.run(target, tsv.nextRow(), true);
+                template.run(target, tsv.nextRow());
                 target.flush();
             }
             target.close();
