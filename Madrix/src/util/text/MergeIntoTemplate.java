@@ -25,7 +25,13 @@ public class MergeIntoTemplate {
             CommandLine line     = parser.parse(getOptions(), args);
             TSV         tsv      = new TSV(new File(line.getOptionValue("rows")));
             Template    template = new Template(Template.fileToString(line.getOptionValue("template")), '$');
-            PrintWriter target   = new PrintWriter(new File(line.getOptionValue("target")));
+
+            PrintWriter target;
+            if (line.getOptionValue("target") != null){
+                target   = new PrintWriter(new File(line.getOptionValue("target")));
+            }else{
+                target = new PrintWriter(System.out);
+            }
 
             while (tsv.ready()){
 
