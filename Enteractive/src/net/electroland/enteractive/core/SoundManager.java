@@ -13,25 +13,39 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import processing.core.PApplet;
+
+import com.sun.istack.internal.logging.Logger;
+
+import ddf.minim.AudioPlayer;
+import ddf.minim.Minim;
+
+import net.electroland.enteractive.shows.LilyPad;
 import net.electroland.scSoundControl.SCSoundControl;
 import net.electroland.scSoundControl.SCSoundControlNotifiable;
 import net.electroland.scSoundControl.SoundNode;
 
 /**
- * SoundManager based on LAFM, uses Super Collider.
- * @author asiegel
+ * SoundManager updated in 2014 to use minim for 
+ * formerly used SCSC
+ * @author asiegel, dseeeley
  */
 
 //change test
 
 public class SoundManager implements SCSoundControlNotifiable {
 	
-	private SCSoundControl ss;
+	//private SCSoundControl ss;
 	private boolean serverIsLive;
 	private Hashtable<String, Integer> soundFiles;
 	private List<Speaker> speakers;
 	private String absolutePath;
 	public Properties soundProps;
+	
+	//added for minim sound
+    private Minim minim;
+    
+	static Logger logger = Logger.getLogger(SoundManager.class);
 	
 	public SoundManager(){
 		
@@ -48,10 +62,13 @@ public class SoundManager implements SCSoundControlNotifiable {
 		soundFiles = new Hashtable<String, Integer>();
 		speakers = new ArrayList<Speaker>();
 		absolutePath = soundProps.getProperty("path");
-		ss = new SCSoundControl(this);
-		ss.init();
-		ss.showDebugOutput(false);
-		ss.set_serverResponseTimeout(5000);
+		
+		minim = new Minim(new PApplet());
+		
+		//ss = new SCSoundControl(this);
+		//ss.init();
+		//ss.showDebugOutput(false);
+		//ss.set_serverResponseTimeout(5000);
 		parseSpeakers();
 	}
 	
@@ -69,15 +86,18 @@ public class SoundManager implements SCSoundControlNotifiable {
 			}
 			if(currentHour >= Integer.parseInt(soundProps.getProperty("soundsOn")) && currentHour < Integer.parseInt(soundProps.getProperty("soundsOff"))){
 				float[] amplitudes = getAmplitudes(x, y, width, height);
-				return ss.createMonoSoundNode(soundFiles.get(absolutePath+filename), true, amplitudes, 1.0f);	
+				//return ss.createMonoSoundNode(soundFiles.get(absolutePath+filename), true, amplitudes, 1.0f);	
+				return null;
 			}
 			
 		}
 		return null;
 	}
 	
+	// this method is from the SCSC implementation days.  Left in place to not disturb sprite code that calls it
 	public SoundNode createMonoSound(String filename, float x, float y, float width, float height){
-		if(!filename.equals("none") && serverIsLive){
+		logger.info("CALL: createMonoSound");
+		if(!filename.equals("none")){  //removed check for SCSC serverislive
 			Calendar cal = new GregorianCalendar();
 			int currentHour = 0;
 			if(cal.get(Calendar.HOUR) == 0){
@@ -94,14 +114,32 @@ public class SoundManager implements SCSoundControlNotifiable {
 				for(int i=0; i<amplitudes.length; i++){
 					//System.out.print(amplitudes[i]+" ");
 				}
-				return ss.createMonoSoundNode(soundFiles.get(absolutePath+filename), false, amplitudes, 1.0f);
+				// add call to new playSound methods here using minim
+				
+				//logger.info("CALLING MINIM PLAYSOUNDFILE " + filename);
+				playSoundFile(filename);
+				//playSoundFile("/soundfiles/shooter_highlight_20.wav");
+				//return ss.createMonoSoundNode(soundFiles.get(absolutePath+filename), false, amplitudes, 1.0f);  //SCSC implementation
 			}
 		}
 		return null;
 	}
 	
+    /*
+    public void playSound(String soundName){
+     
+            AudioPlayer ap = minim.loadFile(playList.get(soundName).filename);
+            new PlayThread(ap, ap.length() * 2).start();
+    }
+    */
+    
+    public void playSoundFile(String filename){
+            AudioPlayer ap = minim.loadFile(filename);
+            new PlayThread(ap, ap.length() * 2).start();
+    }
+	
 	public void loadBuffer(String soundFile){
-		ss.readBuf(soundFile);
+		//ss.readBuf(soundFile);
 	}
 	
 	public float[] getAmplitudes(float x, float width){
@@ -186,11 +224,13 @@ public class SoundManager implements SCSoundControlNotifiable {
 	}
 	
 	public void killAll(){
-		ss.init();
+		minim.dispose();
+		//ss.init();
 	}
 	
 	public void shutdown(){
-		ss.shutdown();
+		minim.dispose();
+		//ss.shutdown();
 	}
 	
 	
@@ -217,5 +257,27 @@ public class SoundManager implements SCSoundControlNotifiable {
 			return 1 - (float)Math.sqrt((xdiff*xdiff) + (ydiff*ydiff));
 		}
 	}
+	
+	class PlayThread extends Thread{
+		   
+		   private AudioPlayer ap;
+		   private int millis;
+
+		   public PlayThread(AudioPlayer ap, int millis){
+		       this.ap = ap;
+		       this.millis = millis;
+		   }
+
+		   @Override
+		   public void run(){
+		       ap.play();
+		       try {
+		        Thread.sleep(millis);
+		    } catch (InterruptedException e) {
+		        e.printStackTrace();
+		    }
+		       ap.close();
+		   }
+		}
 
 }
