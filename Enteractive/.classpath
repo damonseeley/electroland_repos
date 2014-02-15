@@ -10,5 +10,11 @@
 	<classpathentry kind="lib" path="libraries/javaosc_ELmod.jar"/>
 	<classpathentry kind="lib" path="libraries/junit-4.6.jar"/>
 	<classpathentry kind="lib" path="libraries/ELU.jar"/>
+	<classpathentry kind="lib" path="libraries/jl1.0.jar"/>
+	<classpathentry kind="lib" path="libraries/jsminim.jar"/>
+	<classpathentry kind="lib" path="libraries/minim.jar"/>
+	<classpathentry kind="lib" path="libraries/mp3spi1.9.4.jar"/>
+	<classpathentry kind="lib" path="libraries/tritonus_aos.jar"/>
+	<classpathentry kind="lib" path="libraries/tritonus_share.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
