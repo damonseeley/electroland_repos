@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import processing.core.PApplet;
+import org.apache.log4j.Logger;
 
-import com.sun.istack.internal.logging.Logger;
+import processing.core.PApplet;
 
 import ddf.minim.AudioPlayer;
 import ddf.minim.Minim;
