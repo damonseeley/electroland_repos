@@ -20,7 +20,6 @@ import processing.core.PApplet;
 import ddf.minim.AudioPlayer;
 import ddf.minim.Minim;
 
-import net.electroland.enteractive.shows.LilyPad;
 import net.electroland.scSoundControl.SCSoundControl;
 import net.electroland.scSoundControl.SCSoundControlNotifiable;
 import net.electroland.scSoundControl.SoundNode;
@@ -96,7 +95,7 @@ public class SoundManager implements SCSoundControlNotifiable {
 	
 	// this method is from the SCSC implementation days.  Left in place to not disturb sprite code that calls it
 	public SoundNode createMonoSound(String filename, float x, float y, float width, float height){
-		logger.info("CALL: createMonoSound");
+		//logger.info("CALL: createMonoSound");
 		if(!filename.equals("none")){  //removed check for SCSC serverislive
 			Calendar cal = new GregorianCalendar();
 			int currentHour = 0;
