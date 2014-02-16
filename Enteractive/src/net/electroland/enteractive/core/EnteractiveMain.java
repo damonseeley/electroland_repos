@@ -80,7 +80,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 	private Timestamp sunrise,midday,sunset,night;	// these get updated whenever the weather checker updates timed events
 	private String[] animationList;
 	private JComboBox animationDropDown, displayDropDown, rasterDropDown, sensorDropDown;
-	private JButton printSensorActivityButton, grabWebcamImage;
+	private JButton printSensorActivityButton, grabWebcamImage, testSound;
 	PImage rippleTexture, sweepTexture, sphereTexture, propellerTexture, spiralTexture, radarTexture;
 	PImage ballTexture, pongTitle;	// pong textures
 	
@@ -288,6 +288,9 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 			System.out.println(new Timestamp(System.currentTimeMillis()).toString() +" Min Activity: "+ minActivity +", Max Activity: "+ maxActivity + ", Avg Activity: "+((float)sumActivity)/tileCount);
 		} else if ((JButton)e.getSource() == grabWebcamImage){
 			tcu.grabWebcamImage();
+		} else if ((JButton)e.getSource() == testSound){ //2014
+			//2014 testing
+			smr.createMonoSound(smr.soundProps.getProperty("shooter"), 0, 0, 10, 10);
 		}
 		//Animation next = new AnotherAnimation(m, getRaster(), smr); 			// some fake animation
 		//amr.startAnimation(next, new FadeTransition(5), dmr.getFixtures()); 	// some fake transition with a 5 second fade
@@ -353,6 +356,12 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		grabWebcamImage.addActionListener(this);
 		grabWebcamImage.setMinimumSize(new Dimension(180, 20));
 		controlPanel.add(grabWebcamImage, "wrap");
+
+		testSound = new JButton("Play Test Sound");
+		testSound.addActionListener(this);
+		testSound.setMinimumSize(new Dimension(180, 20));
+		controlPanel.add(testSound, "wrap");
+		
 		
 		add(controlPanel, "cell 1 0, width 200!, height 380!, gap 0!");
 		
@@ -365,7 +374,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		JPanel placeHolder3 = new JPanel();
 		placeHolder3.setBackground(Color.black);
 		placeHolder3.setForeground(Color.white);
-		placeHolder3.add(new JLabel("Audio Levels Go Here"));
+		//placeHolder3.add(new JLabel("Audio Levels Go Here"));
 		add(placeHolder3, "cell 1 2, width 200!, height 90!, gap 0!");
 		
 		setSize(800, 620);
