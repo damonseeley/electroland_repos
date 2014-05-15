@@ -10,6 +10,8 @@ import SimpleOpenNI.*;
  * date:  12/12/2012 (m/d/y)
  * ----------------------------------------------------------------------------
  */
+ 
+ // Latest code from site: 2014_05_02
 
 import SimpleOpenNI.*;
 import oscP5.*;
@@ -20,11 +22,11 @@ NetAddress oscSendToLocation;
 OscMessage oscTrackMsg;
 OscMessage oscZMsg;
 
-int sendPort = 7001;
-String sendAddr = "10.22.33.255";
+int sendPort = 7100;
+String sendAddr = "192.168.247.83";
 
-int maxZ = 4000;
-int minZ = 500;
+int maxZ = 5000;
+int minZ = 2000;
 float zDepth = 0.0;
 
 SimpleOpenNI  context;
@@ -41,7 +43,7 @@ PVector com2d = new PVector();
 boolean playback = false;
 //String  recordPath = "1person_userimgtest.oni";
 
-float scale = 2.0f;
+float scale = 1.0f;
 PGraphics buffer;
 
 void setup()
@@ -292,4 +294,5 @@ void drawSkeleton(int userId)
   //buffer.endDraw();
 }
 */
+
 
