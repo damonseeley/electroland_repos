@@ -352,10 +352,10 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		//printSensorActivityButton.setMaximumSize(new Dimension(180, 20));
 		controlPanel.add(printSensorActivityButton, "wrap");
 		
-		grabWebcamImage = new JButton("Grab Webcam Image");
-		grabWebcamImage.addActionListener(this);
-		grabWebcamImage.setMinimumSize(new Dimension(180, 20));
-		controlPanel.add(grabWebcamImage, "wrap");
+		//grabWebcamImage = new JButton("Grab Webcam Image");
+		//grabWebcamImage.addActionListener(this);
+		//grabWebcamImage.setMinimumSize(new Dimension(180, 20));
+		//controlPanel.add(grabWebcamImage, "wrap");
 
 		testSound = new JButton("Play Test Sound");
 		testSound.addActionListener(this);
