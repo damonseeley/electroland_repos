@@ -1,0 +1,20 @@
+2014 TO DO
+
+Face not displaying in GUI
+   does it send packets, if so that's OK
+   
+Check for stuck tiles
+   prevent drawing
+   ensure screensaver runs
+   
+
+   
+   
+   NOTES
+   
+   To use ColaSoft Packet Player:
+   1) Run packetplayer
+   2) Run Java app
+   3) Open Wireshark
+   4) Open Wireshark capture interface
+   -- no idea why this works
