@@ -2,9 +2,14 @@ package net.electroland.udpUtils;
 
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
 import net.electroland.enteractive.core.PersonTracker;
+import net.electroland.enteractive.core.Tile;
 import net.electroland.enteractive.utils.HexUtils;
+import net.electroland.util.NoDataException;
+
 import org.apache.log4j.Logger;
 
 
@@ -69,8 +74,9 @@ public class UDPParser extends Thread {
 	
 	public void sensorValues(int offset, byte[] data){
 		//logger.debug("offset: "+ offset + ", sensor states: " + HexUtils.bytesToHex(data, data.length));
-		personTracker.updateSensors(offset, data);
 		tcUtils.updateSensors(offset, data);
+		Map<Integer, Tile>stuckTiles = tcUtils.getStuckTiles();
+		personTracker.updateSensors(offset, data, stuckTiles);
 	}
 	
 	public void tilePowerState(int offset, byte[] data){
@@ -94,6 +100,20 @@ public class UDPParser extends Thread {
 			} catch (InterruptedException e) {
 				logger.error(e.getMessage(), e);
 			}
+			
+			
+			/*
+			double avg = 0;
+			try {
+				avg = personTracker.getModel().getAverage();
+			} catch (NoDataException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("MODEL PEOPLE SIZE: " + (double)personTracker.getModel().getPeople().size() + " AND AVERAGE = " + avg);
+			*/
+
+			
 			personTracker.updateAverage((double)personTracker.getModel().getPeople().size());
 			
 			if(System.currentTimeMillis() - lastTileCheck > tileCheckDuration){
