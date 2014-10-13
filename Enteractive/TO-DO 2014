@@ -1,8 +1,8 @@
 2014 TO DO
    
 Check for stuck tiles
-   prevent drawing
-   ensure screen-saver runs
+   prevent drawing - DONE
+   ensure screen-saver runs - DONE
    
 Reset the max value for "Single" to original - DONE
 
@@ -10,7 +10,7 @@ FIX TIMING VALUE FOR FACE@!! before deploy - DONE, with property
 
 Reset Tile stuck timeout before deploy - DONE, with property set to 120s
 
-Setup process manager
+Setup process manager - DONE
    
 
    
