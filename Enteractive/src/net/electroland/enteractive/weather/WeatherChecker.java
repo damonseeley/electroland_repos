@@ -4,6 +4,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
+import net.electroland.enteractive.core.EnteractiveMain;
+
+import org.apache.log4j.Logger;
+
 public class WeatherChecker  {
 	protected static final Timer TIMER = new Timer();
 	YWeatherParser ywp = new YWeatherParser();
@@ -12,6 +16,9 @@ public class WeatherChecker  {
 	
 	long startupDelay;
 	long period;
+	
+	static Logger logger = Logger.getLogger(WeatherChecker.class);
+
 	
 	public Vector<WeatherChangeListener> listeners= new Vector<WeatherChangeListener>();
 	
@@ -54,7 +61,7 @@ public class WeatherChecker  {
 		public void run() {
 			try { // we don't want this thread to die so catch any exception and keep going
 				
-				System.out.println("fetching weather");
+				logger.info("fetching weather");
 				
 				WeatherRecord record = ywp.fetch();
 				
@@ -72,7 +79,7 @@ public class WeatherChecker  {
 			
 
 			} catch (Exception e) {
-				System.out.println("Exception fetching weather info\n" + e);
+				logger.error("Exception fetching weather info\n" + e);
 			}
 		}
 		
