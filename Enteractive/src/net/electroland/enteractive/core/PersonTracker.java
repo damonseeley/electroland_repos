@@ -1,5 +1,7 @@
 package net.electroland.enteractive.core;
 
+import java.util.Map;
+
 /**
  * Handles any adjustments to the model based on sensor activity sent from UDPParser.
  * @author asiegel
@@ -17,7 +19,7 @@ public class PersonTracker {
 		return model;
 	}
 	
-	public void updateSensors(int offset, byte[] data){
+	public void updateSensors(int offset, byte[] data, Map<Integer, Tile> stuckTiles){
 		boolean[] newdata = new boolean[data.length];
 		for(int i=0; i<data.length; i++){
 			if((int)(data[i] & 0xFF) > 0){
@@ -26,7 +28,7 @@ public class PersonTracker {
 				newdata[i] = false;
 			}
 		}
-		model.updateSensors(offset, newdata);
+		model.updateSensors(offset, newdata, stuckTiles);
 	}
 	
 	public void updateAverage(double average){
