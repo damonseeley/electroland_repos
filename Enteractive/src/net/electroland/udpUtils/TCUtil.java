@@ -4,25 +4,23 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
-
 import net.electroland.enteractive.core.Tile;
 import net.electroland.enteractive.core.TileController;
 import net.electroland.enteractive.utils.HexUtils;
+
+import org.apache.log4j.Logger;
 
 public class TCUtil {
 
@@ -34,10 +32,14 @@ public class TCUtil {
 	private DatagramSocket socket;
 	private String startByte, endByte, updateByte, feedbackByte;
 	private String onChangeByte, powerByte, reportByte, offsetByte, mcResetByte;
-	private int tileTimeout = 120000;		// tiles are rebooted after this duration of being on
+	
+	//private int tileTimeout = 120000;		// tiles are rebooted after this duration of being on
+	//2014 testing value
+	private int tileTimeout = 8000;		// tiles are rebooted after this duration of being on
+
 	private int powerCycleDuration = 120000;	// duration to keep tile off when cycled
 	
-	public TCUtil(){
+	public TCUtil(int timeout){
 		try{
 			tileProps = new Properties();
 			tileProps.load(new FileInputStream(new File("depends//tile.properties")));
@@ -46,6 +48,9 @@ public class TCUtil {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		tileTimeout = timeout;
+		logger.info("Tile timeout set to " + tileTimeout/1000 + " seconds");
 		
 		startByte = tileProps.getProperty("startByte");
 		endByte = tileProps.getProperty("endByte");
@@ -76,6 +81,17 @@ public class TCUtil {
 		sendOffsetPackets();
 	}
 	
+	public Map<Integer, Tile> getStuckTiles(){
+		HashMap<Integer, Tile> stuckTiles = new HashMap<Integer, Tile>();
+		for (TileController tc : tileControllers){
+			for (Tile t : tc.getTiles()){
+				if (t.stuck){
+					stuckTiles.put(t.getID(), t);
+				}
+			}
+		}
+		return stuckTiles;
+	}
 	
 	// TODO THIS IS WHAT ENDED UP "BREAKING" TILES ON SITE
 	
@@ -90,8 +106,30 @@ public class TCUtil {
 			int i=0;
 			while(tileiter.hasNext()){
 				Tile tile = tileiter.next();
+				
+				// TODO - CHECK TILE AGE AND ALSO IF TILE HAS COME "UNSTUCK"
+				
+				
+				if(tile.getSensorState() && tile.getAge() > tileTimeout){
+					if (!tile.getStuck()) {
+						tileLogger.info("TILE "+tile.getID() + " IS STUCK on TileController #" + tc.getID() + ", IP=" + tc.getAddress());
+					}
+					tile.setStuck(true);
+					
+				} else if (!tile.getSensorState()) {
+					if (tile.getStuck()){
+						tileLogger.info("TILE "+tile.getID()+ " CAME UNSTUCK");
+					}
+					tile.setStuck(false);
+				}
+				
+				/* 2014 This is the former logic for tile 'rebooting' which is now not used
+				 * due to potential power faults caused by reboot states on a controller
+				 * note some of this logic has been duplicated above to check
+				 * for tile 'stuck' and 'unstuck' cases
+
 				if(tile.getSensorState() && tile.getAge() > tileTimeout && !tile.rebooting){
-					tileLogger.info("stuck tile,"+tile.getID()+ ","+ tileTimeout/1000 + ",seconds");
+					tileLogger.info("stuck tile,"+tile.getID()+ ","+ tileTimeout/1000 + "seconds");
 					grabWebcamImage();
 					//triggerStateChange = true; 		// turn power off for this one tile
 					tile.reboot();
@@ -105,7 +143,10 @@ public class TCUtil {
 				} else {
 					powerStates[i] = true;			// leave power on for this one tile
 				}
-				i++;
+				
+				*/
+				
+				i++;  // 2014 what is this doing, exactly?
 			
 			}
 			
@@ -128,6 +169,9 @@ public class TCUtil {
 	}
 	
 	public void grabWebcamImage(){
+		
+		// 2014 disable all this webcam nonsense, no longer works
+		/*
 		String url = "http://11flower.dyndns.org/axis-cgi/io/virtualinput.cgi?action=6:/";
 		String s = "stucktile:stucktile";	    
 		String base64authorization = "Basic " + new sun.misc.BASE64Encoder().encode(s.getBytes());	    
@@ -145,6 +189,7 @@ public class TCUtil {
 			logger.info(e);
 			logger.info("stuck tile: unable to access webcam image");
 		}
+		*/
 	}
 	
 	
