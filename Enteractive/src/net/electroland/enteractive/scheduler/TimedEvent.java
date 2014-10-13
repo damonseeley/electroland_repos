@@ -3,6 +3,10 @@ package net.electroland.enteractive.scheduler;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import net.electroland.enteractive.core.EnteractiveMain;
+
+import org.apache.log4j.Logger;
+
 public class TimedEvent {
 	public DateIterator dateIterator;
 	protected TimedEventListener eventListener;
@@ -10,6 +14,9 @@ public class TimedEvent {
 	protected static final Timer TIMER = new Timer();
 	protected Boolean isRunning = Boolean.TRUE;
 	public int hour, minute, sec;
+	
+	static Logger logger = Logger.getLogger(TimedEvent.class);
+
 
 
 	public TimedEvent(int hour, int minute, int sec, TimedEventListener eventListener) {
@@ -31,7 +38,7 @@ public class TimedEvent {
 		dateIterator = new DateIterator(hour, minute, sec);
 		synchronized(isRunning) {
 			isRunning = Boolean.TRUE;
-			System.out.println("rescheduled");
+			logger.info("rescheduled");
 			curTask = new ReschedulingTimerTask();
 			TIMER.schedule(curTask, dateIterator.next().getTime());
 		}
