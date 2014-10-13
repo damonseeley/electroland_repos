@@ -3,6 +3,7 @@ package net.electroland.enteractive.gui;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 
 import net.electroland.enteractive.core.Model;
 import net.electroland.enteractive.core.Tile;
@@ -237,11 +238,23 @@ public class Lights3D extends PApplet{
 			sensors = m.getSensors();
 		}
 		
+		/*
+		 * 2014 code for checking Stuck tiles against Sensors
+		 * Draw the stuck sensors as yellow
+		 */
+		
+		Map<Integer, Tile>stuckTiles = tcu.getStuckTiles();
+		
 		if(sensors != null){
 			noStroke();
 			for(int i=0; i<sensors.length; i++){
 				if(sensors[i]){
-					fill(255,255,255);
+					if(isStuck(i+1,stuckTiles)) {
+						fill(255,255,0);
+					} else {
+						fill(255,255,255);
+					}
+					
 					int x = i % floorWidth;
 					int y = i / floorWidth;
 					rect(x*12 + 4, y*12 + 4, 2, 2);
@@ -249,5 +262,13 @@ public class Lights3D extends PApplet{
 			}
 		}
 	}
+	
+	private static boolean isStuck(int i, Map<Integer, Tile> stuckTiles){
+		//System.out.println("testing for stuck on " + i + stuckTiles);
+		return stuckTiles.get(i)!=null;
+	}
+	
+	
+	
 	
 }
