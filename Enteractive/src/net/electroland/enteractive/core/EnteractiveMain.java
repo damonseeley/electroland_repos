@@ -64,9 +64,9 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 	private SoundManager smr;
 	private Lights3D lights3D;
 	private GUI gui;
-	private TCUtil tcu;
-	private PersonTracker ptr;
-	private UDPParser udp;
+	private TCUtil tcu; //Communicate with Tile Controllers
+	private PersonTracker ptr; //Person level abstraction for some shows
+	private UDPParser udp; //parses incoming UDP from TileControllers
 	private Properties lightProps, systemProps;
 	private WeatherChecker weatherChecker;
 	private int guiWidth = 180;	// TODO get from properties
@@ -108,7 +108,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		//smr = null;
 		//add(dmp,"wrap");
 		
-		tcu = new TCUtil();									// tile controller utilities
+		tcu = new TCUtil(Integer.parseInt(systemProps.getProperty("tilestucktimeout")));  // tile controller utilities
 		ptr = new PersonTracker(16,11);						// person tracker manages the model (x/y tile dimensions)
 		ptr.getModel().addListener(this);					// add this as a listener
 		
@@ -134,8 +134,9 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		*/
 		
 
-		lights3D = new Lights3D(600,600, dmr.getRecipient("floor"),  dmr.getRecipient("face"), ptr.getModel(), tcu);
-		lights3D.setMinimumSize(new Dimension(600,600));
+		lights3D = new Lights3D(800,600, dmr.getRecipient("floor"),  dmr.getRecipient("face"), ptr.getModel(), tcu);
+		lights3D.setMinimumSize(new Dimension(800,600));
+
 		gui = new GUI(guiWidth,guiHeight, dmr.getRecipient("floor"),  dmr.getRecipient("face"));
 		Raster raster = getRaster();
 		((GUI)gui).setRaster(raster);
@@ -164,10 +165,11 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		Collection<Recipient> fixtures = dmr.getRecipients();
 		
 		Timestamp now = new Timestamp(System.currentTimeMillis());
+		
 		sunrise = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), sunriseOn.hour, sunriseOn.minute, sunriseOn.sec, 0);
-		midday = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), middayOff.hour, middayOff.minute, middayOff.sec, 0);
+		midday = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), Integer.parseInt(systemProps.getProperty("middayOff")), middayOff.minute, middayOff.sec, 0);
 		sunset = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), sunsetOn.hour, sunsetOn.minute, sunsetOn.sec, 0);
-		night = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), nightOff.hour, nightOff.minute, nightOff.sec, 0);
+		night = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), Integer.parseInt(systemProps.getProperty("nightOff")), nightOff.minute, nightOff.sec, 0);
 		//System.out.println(now.toString() +" "+ midday.toString() +" "+ sunset.toString());
 		
 		if((now.after(night) && now.before(sunrise)) || (now.after(midday) && now.before(sunset))){
@@ -377,7 +379,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 		//placeHolder3.add(new JLabel("Audio Levels Go Here"));
 		add(placeHolder3, "cell 1 2, width 200!, height 90!, gap 0!");
 		
-		setSize(800, 620);
+		setSize(1002, 622);
 		if(Boolean.parseBoolean(systemProps.getProperty("headless"))){
 			setVisible(false);
 		} else {
@@ -409,7 +411,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 
 	public void timedEvent(TimedEvent event) {
 		// TODO activate/deactivate the face of the building
-		System.out.println("timed event");
+		logger.info("timed event fired");
 		if(event == sunriseOn) {			// activate
 			Recipient floor = dmr.getRecipient("floor");
 			amr.startAnimation(amr.getCurrentAnimation(floor), dmr.getRecipients());
@@ -468,7 +470,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 			}
 			*/
 		} else if(e.getType() == Model.ModelConstants.EMPTY){
-			System.out.println("area empty");
+			logger.info("area empty");
 			// switch to SCREENSAVER
 			
 			Recipient floor = dmr.getRecipient("floor");
@@ -489,7 +491,7 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 				amr.startAnimation(a, transition, fixtures);		// START SCREENSAVER
 			}
 		} else if(e.getType() == Model.ModelConstants.NOT_EMPTY){
-			System.out.println("area re-activated");
+			logger.info("area re-activated");
 			// switch back to LILYPAD
 			
 			Recipient floor = dmr.getRecipient("floor");
@@ -530,23 +532,25 @@ public class EnteractiveMain extends JFrame implements AnimationListener, Action
 			int h = sunrise.get(Calendar.HOUR_OF_DAY);
 			int m = sunrise.get(Calendar.MINUTE);
 			int s = sunrise.get(Calendar.SECOND);
-			System.out.println("Sunrise at " + h + ":" + m + ":" + s);
-			sunriseOn.reschedule(h-1, m, s); // turn on an hour before sunrise
+			logger.info("Sunrise at " + h + ":" + m + ":" + s);
+			int hrsBeforeSunrise = Integer.parseInt(systemProps.getProperty("beforeSunrise"));
+			sunriseOn.reschedule(h-hrsBeforeSunrise, m, s); // turn on an hour before sunrise
 		}
 		if(wce.hasSunsetChanged()) {
 			Calendar sunset = wce.getRecord().getSunset();
 			int h = sunset.get(Calendar.HOUR_OF_DAY);
 			int m = sunset.get(Calendar.MINUTE);
 			int s = sunset.get(Calendar.SECOND);
-			System.out.println("Sunset at " + h + ":" + m + ":" + s);
-			sunsetOn.reschedule(h - 1, m, s); // turn on 1 hour before sunset
+			logger.info("Sunset at " + h + ":" + m + ":" + s);
+			int hrsBeforeSunset = Integer.parseInt(systemProps.getProperty("beforeSunset"));
+			sunsetOn.reschedule(h - hrsBeforeSunset, m, s); // turn on 1 hour before sunset
 		}
 		
 		Timestamp now = new Timestamp(System.currentTimeMillis());
 		sunrise = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), sunriseOn.hour, sunriseOn.minute, sunriseOn.sec, 0);
-		midday = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), middayOff.hour, middayOff.minute, middayOff.sec, 0);
+		midday = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), Integer.parseInt(systemProps.getProperty("middayOff")), middayOff.minute, middayOff.sec, 0);
 		sunset = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), sunsetOn.hour, sunsetOn.minute, sunsetOn.sec, 0);
-		night = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), nightOff.hour, nightOff.minute, nightOff.sec, 0);
+		night = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), Integer.parseInt(systemProps.getProperty("nightOff")), nightOff.minute, nightOff.sec, 0);
 		
 		// if conditions are lower than 29 (mostly cloudy or worse) and vis is less than 10 miles, startup
 		if (wce.getRecord().getCondition() < lowCondition && wce.getRecord().getVisibility() < lowVisibility) {
