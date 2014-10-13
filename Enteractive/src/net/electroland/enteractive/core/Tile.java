@@ -10,6 +10,7 @@ public class Tile {
 	private int activityCount;
 	private long turnedOff;
 	public boolean rebooting;
+	public boolean stuck; // 2014 addition
 	
 	public Tile(TileController parent, int id, int x, int y){
 		this.parent = parent;
@@ -19,7 +20,8 @@ public class Tile {
 		lastActivated = 0;
 		activityCount = 0;
 		rebooting = false;
-		//System.out.println("tile:\t"+id+"\t x: "+x+"\t y:"+y);
+		stuck = false; // 2014 addition
+		//System.out.println("tile:\t"+id+"\t x: "+x+"\t y:"+y);		
 	}
 	
 	public boolean getSensorState(){
@@ -32,6 +34,7 @@ public class Tile {
 			//System.out.println("tile "+id+ " activated ");
 			activityCount++;
 			lastActivated = System.currentTimeMillis();
+			//System.out.println("Tile: " + id + "  " + lastActivated);
 		}
 		//System.out.println("sensor state "+sensorState+" tile "+id);
 	}
@@ -41,6 +44,18 @@ public class Tile {
 		sensorState = false;
 		turnedOff = System.currentTimeMillis();
 		//System.out.println("tile "+id+ " rebooting ");
+	}
+	
+	// 2014 add to include tile stuck condition	
+	public void setStuck(boolean state) {
+		stuck = state;
+		if (stuck == false){
+			turnedOff = System.currentTimeMillis();
+		}
+	}
+	
+	public boolean getStuck() {
+		return stuck;
 	}
 	
 	public int getLightValue(){
