@@ -1,0 +1,2 @@
+# start project on WinXP
+java -classpath ./depends;./soundfiles/;dist/Enteractive.jar;libraries/miglayout15-swing.jar;libraries/log4j-1.2.15.jar;libraries/SCSoundControl.jar;libraries/core.jar;libraries/javaosc_ELmod.jar;libraries/junit-4.6.jar;libraries/jl1.0.jar;libraries/jsminim.jar;libraries/minim.jar;libraries/mp3spi1.9.4.jar;libraries/tritonus_aos.jar;libraries/tritonus_share.jar;libraries/ELU.jar;libraries/EL-Config.jar net.electroland.enteractive.core.EnteractiveMain
