@@ -3,6 +3,7 @@ package net.electroland.enteractive.core;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.electroland.udpUtils.UDPParser;
@@ -13,7 +14,7 @@ import org.apache.log4j.Logger;
 
 public class Model {
 	
-	static Logger logger = Logger.getLogger(UDPParser.class);
+	static Logger logger = Logger.getLogger(Model.class);
 	private int personIndex = 0;
 	private ConcurrentHashMap<Integer,Person> people;	// all active people
 	private List <ModelListener> listeners;
@@ -42,12 +43,16 @@ public class Model {
 		average = new RunningAverage(numSamples);
 	}
 	
-	public void updateSensors(int offset, boolean[] data){
+	public void updateSensors(int offset, boolean[] data, Map<Integer, Tile>stuckTiles){
 		boolean[] olddata = new boolean[data.length];
 		try{
 			//System.out.println(offset+" "+sensors.length+" "+olddata.length);
 			System.arraycopy(sensors, offset, olddata, 0, olddata.length);	// past states of currently reporting sensors
 			compareSensorStates(offset, data, olddata);						// look for any on/off event activity
+			
+			// 2014 addition to prevent stuck tiles from generating people
+			removePeopleFromStuckSensors(stuckTiles);
+			
 			System.arraycopy(sensors, 0, pastSensors, 0, sensors.length);	// copy all past sensor states
 			System.arraycopy(data, 0, sensors, offset, data.length);		// paste in new sensor states
 			checkForEvents();
@@ -93,6 +98,34 @@ public class Model {
 			}
 		}
 	}
+	
+	
+	/*
+	 * 2014 addition
+	 * immediately after people are processed, removes people from tiles that are "stuck"
+	 * such that the do not affect shows or the runnign average for screensaver output
+	 */
+	private void removePeopleFromStuckSensors(Map<Integer, Tile>stuckTiles){
+		synchronized(people){
+			Iterator<Person> iter = people.values().iterator();
+			Person person = null;
+			while(iter.hasNext()){	// for each active person...
+				person = iter.next();
+				if(isStuck(person.getLinearLoc() + 1, stuckTiles)){	// if person is on a stuck tile
+					logger.info("KILLING PERSON " + person.getLinearLoc() + " DUE TO STUCK TILE ");
+					person.die();	// kill
+					people.remove(person.getID()); // and remove person from active people
+				}
+			}
+		}
+	}
+
+	
+	private static boolean isStuck(int i, Map<Integer, Tile> stuckTiles){
+		//System.out.println("testing for stuck on " + i + stuckTiles);
+		return stuckTiles.get(i)!=null;
+	}
+	
 	
 	private void checkForEvents(){
 		if(sensors[0] && sensors[15] && sensors[160] && sensors[175]){				// if all 4 corners are active...
