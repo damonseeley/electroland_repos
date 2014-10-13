@@ -17,6 +17,7 @@ public class Single extends Sprite {
 		this.person = person;
 		minVal = 10;
 		maxVal = 48;
+		//maxVal = 200;
 		brightness = maxVal;
 	}
 
